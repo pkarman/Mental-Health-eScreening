@@ -1,0 +1,155 @@
+.alerts_list {
+	color: #a94442;
+}
+
+.alerts_list:first-line {
+	color: #a94442;
+}   	
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+
+.x.axis path {
+  display: none;
+}
+
+
+
+.axis path, .axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+.bar{
+	fill:#1B7A00;
+}
+
+    	#xaxis .domain {
+		fill:none;
+		stroke:#000;
+	}
+	#xaxis text, #yaxis text {
+		font-size: 12px;
+	}
+	
+	
+
+
+/* HOR */
+
+ .chart {
+  margin: 5px;
+}
+
+
+.chart rect {
+  stroke: none;
+  border: 1pz solid
+  /* fill: steelblue; */
+}
+
+.chart text {
+  fill: white;
+}
+
+.chart text.name {
+  fill: #000;
+  font: 10px sans-serif;
+  word-wrap:break-word;
+}
+
+.chart line {
+  stroke: #C8C8C8;
+  /* stroke-dasharray: 1,15; */
+}
+
+.chart .rule {
+  fill: #000;
+}
+
+/* a bit of hovering effect for each bar */
+.chart rect:hover {
+  fill: #64707D;
+}
+
+.chart line.gap {
+  stroke: #000;
+  stroke-width: 5;
+  stroke-dasharray: 5,5;
+}
+
+	.graphs-legend{
+		font-size: 12px;
+	}
+	.color-red{
+		color: #990000;
+	}
+	
+	.color-green{
+		color: #009900;
+	}
+	
+	.chart_container{
+		min-height: 380px;
+	}
+	
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

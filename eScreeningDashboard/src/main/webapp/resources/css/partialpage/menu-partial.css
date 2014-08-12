@@ -1,0 +1,102 @@
+
+/* SUB MENU Styling */
+
+#sub_tabs {
+	/*
+    list-style: none;
+	margin: 9px -33px 0 0px;
+	font: 0.75em arial;
+	border-bottom-width: 1px;
+	border-bottom-color: #cccccc;
+	border-bottom-style: dashed;
+	width: 453px;
+	font-family: Verdana;
+	float: right;
+	font-weight: bold;
+	font-size: 14px;
+	padding: 10px;
+	*/
+	margin-right: 2px;
+	line-height: 1.42857143;
+	border: 1px solid transparent;
+	border-radius: 4px 4px 0 0;
+	
+	font-weight:bold;
+	font-size:14px;
+	cursor:pointer;
+}
+#sub_tabs a{
+	/*
+    border: 1px solid #ccc;
+	padding: 6px 24px;
+	text-decoration: none;
+	background-color: #3C3D3F;
+	border-bottom: none;
+	outline: none;
+	position: relative;
+	border-radius: 5px 5px 5 5;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	color: #FBFBEF;
+	width:163px;
+	cursor:hand;
+	cursor:pointer;
+	*/
+	
+	color: #fff;
+	background-color: #7E7E7E;
+	border: 1px solid #ddd;
+	border-bottom-color: transparent;
+	cursor: default;
+	padding: 10px;
+	font-weight:bold;
+	font-size:14px;
+	cursor:pointer;
+}
+
+#sub_tabs a:hover {
+    color:#fff;
+	font-weight:bold;
+	font-size:14px;
+	cursor:pointer;
+	text-decoration:none;
+}
+
+#sub_tabs a:visited,  #sub_tabs a:active{
+	color:#fff;
+	font-weight:bold;
+	font-size:14px;
+	cursor:pointer;
+	text-decoration:none;
+}
+
+.bgImgMiddle{
+	/*
+	width: 98.5%;
+	position:absolute;
+	*/
+}
+.visitedTab{
+	border: 1px solid #59b4d4;
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	font-weight: bold;
+	color: #ffffff;	
+}
+.subTabVisited{
+	border: 1px solid #59b4d4;
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	font-weight: bold;
+	font-family:Verdana, Helvetica, Arial, sans-serif;
+	color: #ffffff;	
+}

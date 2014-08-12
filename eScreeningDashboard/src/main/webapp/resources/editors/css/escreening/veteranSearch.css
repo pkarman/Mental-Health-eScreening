@@ -1,0 +1,89 @@
+
+#leftContent {
+   	position: absolute;
+	left: 0px;
+	width: 195px;
+	margin-left: 15px;
+	padding-left: 5px;
+	padding-bottom: 0px;
+	padding-right: 3px;
+	margin-top: 12px;
+	border: medium solid rgb(102, 102, 102);
+	background-color: rgb(48, 51, 53);
+	color: white;
+	font-weight: bold;
+}
+
+#mainContent {
+    margin: 0px 0px 0px 227px;
+	padding: 0px;
+	width:82%;
+	color: rgb(0, 0, 0);
+}
+.filedSelect{
+	width: 156px;
+	height: 22px;
+}
+.exportImg{
+	width: 19px;
+	margin-top: 3px;
+	margin-left: 3px;
+}
+.css-form input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+}
+
+.css-form input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+}
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+.mainDiv{
+	width:100%;
+}
+.fieldAlign{
+	width: 156px;
+	margin-left: 10px;
+}
+.checkBoxAlign{
+	margin-left:10px;
+}
+.labelAlign{
+	margin-left: 10px;
+}
+.imgSize{
+	width: 16px;
+}
+.dateField{
+	width:156px;
+	margin-left:10px;
+}
+.ui-datepicker-trigger{
+	width: 21px;
+	height: 14px;
+	margin-left: -23px;
+}
+.tablePosition{
+	margin-top: -34px;
+	
+}

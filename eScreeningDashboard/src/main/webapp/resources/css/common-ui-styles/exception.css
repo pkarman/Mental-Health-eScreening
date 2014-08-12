@@ -1,0 +1,94 @@
+
+
+#viewTitle{
+	font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+    padding: 10px;
+    text-align: center;
+    text-shadow: 1px 1px rgba(25, 25, 25, 0.4);
+}
+
+#viewTitle span.pageTitle{
+	color:#800000;
+	font-size:28px;
+	font-weight:700;
+	text-align:left;
+	vertical-align:middle;
+	line-height:40px;
+}
+
+#viewTitle span.emphasis{
+	font-weight:900;
+	color:#ff0000;
+}
+
+#linkContainer{position:relative;}
+
+#homeLink{
+  padding-top:15%;
+  width: 25%;
+  height: 25%;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+.exceptionDiv{
+	margin:20px auto; 
+	padding: 20px; 
+	background-color: #c0c0c0; 
+	width: 60%; 
+	height: 220px; 
+	color: #000000; 
+	border: 1px solid #000000;
+}
+.subExceptionDiv{
+	font-weight: bold; 
+	font-size: 18px; 
+	margin-bottom: 28px; 
+	font-family: 'verdana',Georgia,Serif;
+}
+.childExceptionDiv{
+	font-family: 'verdana',Georgia,Serif;
+}
+.exceptionSpan{
+	font-weight: bold; 
+	font-size: 14px;
+}
+.addressDiv{
+	font-size: 14px;
+}
+/**** IE fix ****/
+* html #left{left:20px; /* RC fullwidth hack for the paste-eater */}
+
+
+.exceptionWrapper {
+	background-color: white;
+    border: 2px solid #000000;
+    color: #000000;
+    height: 220px;
+    margin: 20px auto;
+    padding: 20px;
+    width: 60%;
+    box-shadow: 3px 3px 5px 6px #333333;
+}
+
+.exceptionLabel {
+	font-weight: bold; 
+	font-size: 18px; 
+	margin-bottom: 28px; 
+	font-family: 'verdana',Georgia,Serif;
+	text-align: center;
+}
+
+.exceptionContent {
+	font-family: 'verdana',Georgia,Serif;
+	text-align: center;
+}
+
+.exceptionContentLabel {
+	font-weight: bold; 
+	font-size: 14px;
+}
+
+.exceptionAddressDetails {
+	font-size: 14px;
+}

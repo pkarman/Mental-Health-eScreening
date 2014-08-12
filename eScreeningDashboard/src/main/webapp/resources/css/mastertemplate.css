@@ -1,0 +1,105 @@
+
+/*
+a {
+	border-bottom: solid;
+	border-width: 1px;
+}  	   		
+a:visited {
+	color: black;
+}  	
+a:hover {
+	color: #2F4F4F;
+	cursor: hand;
+}  	
+a:active {
+	color: black;
+}
+
+*/
+html body{
+	background-color: #cccccc;
+/* 	width: 1347px;
+ */	min-width:98.5%;
+	overflow: auto; 
+	position: absolute; 
+}
+
+/* #outerPageDiv {
+  	width: 100%;
+	height: 100%;
+} */
+
+/* Start Assessment Button customization on Veteran Page */
+.startAssessmentButton {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf) );
+	background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+	background-color:#63b8ee;
+    border: 2px solid #000000;
+    color: #000000;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: normal;
+    height: 48px;
+    margin-left: 20px;
+    text-align: center;
+    text-decoration: none;
+    width: 256px;
+}
+.startAssessmentButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee) );
+	background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	background-color:#468ccf;
+}
+.startAssessmentButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+#welcomeDiv {
+    background-color: #31456A;
+    height: 32px !important;
+    width: 100%;
+}
+#welcomeMessage {
+    color: #D3D3D3 !important;
+    font-family: Verdana;
+    font-style: normal !important;
+    font-size: 14px;
+}
+
+/* Sign Out Button customization on Veteran Page */
+.buttonSignout {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf) );
+	background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+	background-color:#63b8ee;
+	border:1px solid #3866a3;
+	display:inline-block;
+	color:#FFF8DC;
+	font-family:Verdana;
+	font-size:12px;
+	height:24px;
+	width:122px;
+	text-decoration:none;
+	text-align:center;
+	margin-left: 20px;
+	margin-top: 4px;
+	margin-right: 4px;
+	font-weight: normal;
+	cursor: pointer;
+}
+.buttonSignout:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee) );
+	background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	background-color:#468ccf;
+}
+.buttonSignout:active {
+	position:relative;
+	top:1px;
+}

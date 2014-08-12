@@ -1,0 +1,225 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background-color:#292c39;
+	background-color:hsla(229, 16%, 19%, 1);
+	background-image:url(images/burlapblueBG.png);
+	font-family:Arial, sans-serif;
+	background-repeat:repeat;
+	color:#fff;
+	color:hsla(0,0%,100%,1);
+	min-height:100%;
+	margin:0;
+	padding-left:40px; /* LC full width */
+	padding-right:25px; /* RC full width + CC padding */
+	min-width:240px;
+}
+
+a img{
+	border:0px;
+}
+
+li{
+	height:60px;
+	text-align:left;
+}
+
+#header, #footer{
+	margin-left:-40px; /* LC full width */
+	margin-right:-20px; /* RC fullwidth + CC padding */
+	font-family:MyriadProBold, Arial, sans-serif;
+}
+
+.column {position:relative; float:left;}
+#center{
+	color: #000000;
+	padding:20px 20px -20px 0px;
+	margin-bottom:2%; 
+	width:100%; 
+	height:auto;
+	border:1px solid hsla(0,0%,60%,1);
+	border-radius: 5px;
+	border-bottom-left-radius:20px;
+	border-bottom-right-radius:20px;
+	box-shadow:1px 5px 20px #666666;
+}
+#left{
+	width:20px; /* LC width */
+	padding:0 10px; /* LC padding */
+	right:25px; /* LC full width + CC padding */
+	margin-left:-5%;
+}
+#right{
+	width:20px; /* RC width */
+	padding:0 10px; /* RC padding */
+	margin-right:-5%;
+}
+
+#content-controls{
+	height:40px;
+	padding:20px;
+	border-bottom:1px solid #8996a0;
+	border-bottom:1px solid hsla(206, 11%, 58%, 1);
+	box-shadow:1px 5px 5px 8b8d8e;
+	box-shadow:1px 5px 5px hsla(200, 1%, 55%, 1);
+}
+#footer{
+	clear:both;
+	margin-top:20px;
+	background-color:#2A3B43;
+}
+
+/** Header-specific styles **/
+#header{
+	height:90px;
+	padding-left:2%;
+	margin-bottom:1%;
+}
+#logo-container {
+	margin-top:0.5em;
+	width: 5%;  
+	border: 0;
+}
+
+#logo-container a {
+	border: 0;
+	margin: 0;
+}
+
+#logo-container img {
+	width: 90%;
+	height: auto;
+	float: left;
+}
+
+#agencyName {
+	font-size:0.9em;
+	font-weight:400;
+	text-shadow:1px 3px #4d4f53;
+	text-shadow:1px 3px hsla(220, 4%, 31%, 0.6);
+}
+
+#applicationName {
+	font-family:MyriadProBold, Arial, sans-serif;
+	font-size:2.5em;
+	font-weight:700;
+	letter-spacing:3px;
+	text-shadow:2px 5px #4d4f53;
+	text-shadow:2px 5px hsla(220, 4%, 31%, 0.6);
+}
+
+#userLogged{
+	display:inline;
+	font-family:MyriadProRegular, Arial, sans-serif; 
+	float:right;
+	min-width:15%;
+	min-height:70%;
+	padding-left:30px;
+	padding-right:140px;
+	padding-bottom:2px;
+	font-size:0.9em;
+	font-weight:900;
+	letter-spacing:0.1em;
+	text-overflow:clip;
+	text-align:right;
+	border-left:1px solid #fff;
+	border-left:hairline solid hsla(0,0%,100%,1);
+	text-shadow:2px 5px #4d4f53;
+	text-shadow:2px 5px hsla(220, 4%, 31%, 0.6);
+}
+
+#userLogged span{
+	position:relative;
+	bottom:80%;
+	right:0;
+}
+
+#loggedInContainer{
+	position:relative;
+}
+
+#loggedInContainer span{
+	position:absolute;
+	bottom:0;
+	right:0;
+}
+
+/** Content Area Styles **/
+#controlsLeft{
+	width:48%;
+	text-align:left;
+	float:left;
+}
+#controlsRight{
+	width:48%;
+	float:right;
+}
+
+#setNew,#resetForm{
+	width:inherit;
+	text-align:center;
+	padding-bottom:2px;
+}
+
+#viewTitle{
+	padding: 10px 10px 10px 10px;
+	font-family: MyriadProBold, Arial, Helvetica, sans-serif;
+}
+
+#viewTitle span.pageTitle{
+	color:#000;
+	font-size:2.5em;
+	font-weight:700;
+	text-align:left;
+	vertical-align:middle;
+	line-height:40px;
+}
+
+#viewTitle span.step{
+	padding-left:10px;
+	color:#333;
+	font-size:14px;
+	font-weight:500;
+	text-align:left;
+	vertical-align:middle;
+	line-height:40px;
+}
+
+/* iPhone Checkbox */
+.iPhoneCheckContainer {
+	width: 50px;
+	overflow:hidden;
+}
+
+.css_sized_container{
+	position:relative;
+	float:right;
+	padding-right:40%;
+	width:100px;
+	text-align:center;
+	overflow:hidden;
+}
+
+.error{
+	color:#c4262e;
+	color:hsla(357, 68%, 46%, 1);
+}
+
+.pass{
+	color:#4d4f53;
+	color:hsla(220, 4%, 31%, 1);
+}
+
+#switchButtonLI{
+	text-align:center;
+	margin:0 auto;
+}
+
+.anchorButton{
+	color:#fff;
+	color:hsla(0,0%,100%,1);
+}
+
+/**** IE fix ****/
+* html #left{left:20px; /* RC fullwidth hack for the paste-eater */}

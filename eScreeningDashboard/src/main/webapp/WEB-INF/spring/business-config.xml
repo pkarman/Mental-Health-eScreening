@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+	<context:component-scan
+		base-package="gov.va.escreening" />
+
+	<!-- declare beans -->
+	<bean id="assessmentVariableFactory"
+		class="gov.va.escreening.variableresolver.AssessmentVariableDtoFactoryImpl" />
+	<bean id="customVariableResolver"
+		class="gov.va.escreening.variableresolver.CustomAssessmentVariableResolverImpl" />
+	<bean id="measureVariableResolver"
+		class="gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl" />
+	<bean id="measureAnswerVariableResolver"
+		class="gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolverImpl" />
+	<bean id="formulaAssessmentVariableResolver"
+		class="gov.va.escreening.variableresolver.FormulaAssessmentVariableResolverImpl" />
+	<bean id="expressionEvaluatorService"
+		class="gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl" />
+	<bean id="templateProcessorService"
+		class="gov.va.escreening.templateprocessor.TemplateProcessorServiceImpl" />
+	<bean id="variableResolverService"
+		class="gov.va.escreening.variableresolver.VariableResolverServiceImpl" />
+
+	<bean id="vistaService" class="gov.va.escreening.service.VistaServiceImpl">
+		<property name="vistaApplicationName" value="eScreening" />
+		<property name="vistaPrimaryStation" value="${vista.primaryStation}" />
+	</bean>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/messages/messages" />
+		<property name="cacheSeconds" value="0" />
+	</bean>
+
+	<bean id="assessmentContext" class="gov.va.escreening.context.AssessmentContext"
+		scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Delegates -->
+	<bean id="assessmentDelegate" class="gov.va.escreening.delegate.AssessmentDelegateImpl" />
+	<bean id="createAssessmentDelegate" class="gov.va.escreening.delegate.CreateAssessmentDelegateImpl" />
+	<bean id="editorDelegate" class="gov.va.escreening.delegate.EditorsViewDelegateImpl" />
+	<!-- bean id="vistaDelegate" class="gov.va.escreening.delegate.VistaDelegateImpl"/ -->
+
+	<context:property-placeholder location="classpath:app-settings.properties" system-properties-mode="OVERRIDE" />
+	<bean id="vistaLinkManagedConnectionFactory"
+		class="gov.va.med.vistalink.adapter.spi.VistaLinkManagedConnectionFactory">
+		<property name="connectorJndiName" value="${vista.connector}" />
+	</bean>
+	<tx:annotation-driven />
+
+	<!-- assessment status map state machine is declared here. The status map 
+		is a map between the user's role and current status of assessment the purpose 
+		of this exercise is to, based on the current status of assessment, restrict 
+		user, belonging to a role, to arbitrarily choose any status of assessment. 
+		Status Legend: (source -> assessment_status table) Status '1', 'Clean', '2', 
+		'Incomplete' '3', 'Complete' '4', 'Reviewed' '5', 'Finalized' '6', 'Error' 
+		'7', 'Deleted' Role Legend: (source->role) 1 Consultation and Program Evaluation 
+		Administrator 3 Healthcare System Technical Administrator 4 Clinician 5 Assistant 
+		Read the following map as follows if user is a Clinician and the current 
+		Status is Clean (1) then the only other assessment state the user is allowed 
+		to choose is Incomplete (2) -->
+	<util:map id="assessmentStatusMap" map-class="java.util.HashMap">
+		<entry key="Clinician:1" value="7" />
+		<entry key="Clinician:3" value="2" />
+		<entry key="Clinician:2" value="3,7" />
+
+		<entry key="Healthcare System Technical Administrator:1" value="7" />
+		<entry key="Healthcare System Technical Administrator:3" value="2,7" />
+		<entry key="Healthcare System Technical Administrator:2" value="3,7" />
+		<entry key="Healthcare System Technical Administrator:5" value="3,2" />
+		<entry key="Healthcare System Technical Administrator:7" value="2" />
+		<entry key="Healthcare System Technical Administrator:6" value="2" />
+
+		<entry key="Assistant:2" value="3" />
+
+	</util:map>
+
+	<!-- Following is a list those clinicalReminderIen which are to be shown 
+		in the Clicical Reminder List of escreening -->
+	<util:list id="allowedClinicalReminders" value-type="java.lang.String">
+		<value>Alcohol Use Screen (AUDIT-C)</value>
+		<value>Body Mass Index more than 25</value>
+		<value>Depression Screening</value>
+		<value>Evaluation of Embedded Fragments</value>
+		<value>Homelessness Screening</value>
+		<value>Iraq_Afghan Post-Deployment Screen</value>
+		<value>MST Screening</value>
+		<value>PCL Needed for PTSD</value>
+		<value>Primary Care Depression Screening</value>
+		<value>Screen for Embedded Fragments</value>
+		<value>Screen for PTSD</value>
+		<value>TBI Screening</value>
+	</util:list>
+</beans>

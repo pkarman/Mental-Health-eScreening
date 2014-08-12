@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html ng-app="Editors">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10">
+    <link rel="icon" href="http://54.235.74.13/escreeningdashboard-test/dashboard/resources/images/valogo.ico" type="image/x-icon">
+    <link rel="SHORTCUT ICON" href="http://54.235.74.13/escreeningdashboard-test/dashboard/resources/images/valogo.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>VA Editors</title>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/escreening/standardtopofpage-dashboard.css" type="text/css">
+    <link rel="stylesheet" href="css/escreening/menu-partial.css" type="text/css">
+    <link rel="stylesheet" href="css/escreening/userManagement.css" type="text/css">
+    <link rel="stylesheet" href="css/escreening/formButtons.css" type="text/css">
+    <link rel="stylesheet" href="css/escreening/jquery-ui-1.10.3.custom.min.css" type="text/css">
+    <link rel="stylesheet" href="css/escreening/standardtopofpage-dashboard_new.css" type="text/css">
+    <!--<link rel="stylesheet" type="text/css" href="css/main.css">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="vendors/angular/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
+    <script type="text/javascript" src="vendors/lodash/lodash.min.js"></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/app/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="js/app/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="js/app/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="js/app/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="states.js"></script>
+</head>
+<body style="">
+<!-- Top Nav Content -->
+<a href="#skip" class="offscreen">Skip to main content</a>
+<div id="outerPageDiv">
+    <div id="headerDiv" class="top_header">
+        <div class="container bg_transparent">
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="vaLogoDiv"><a href="index.html" ><img src="css/escreening/dva_eha_logo.png" alt="Department of Veterans Affairs | eScreening Program" border="0"></a></div>
+                </div>
+                <div class="col-md-3 text-right">
+                    <div id="welcomeDiv">
+                        <div id="loggedInUser"><span id="welcomeMessage"><span class="glyphicon glyphicon-user"></span>Welcome TechAdmin, One | <a href="#">Logout<span class="glyphicon glyphicon-log-out"></span></a></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="navbar navbar-default navbar-update" role="navigation">
+        <div class="container bg_transparent">
+            <div class="navbar-header">
+                <nav class="navbar-collapse collapse">
+                    <ul id="tabs" class="nav navbar-nav">
+                        <!-- Here you can see ui-sref in action again. Also notice the use of $state.includes, which
+                             will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
+                             its descendant states are activated. -->
+                        <li ng-class="{active: $state.includes('battery-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Batteries<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('battery-select')}"><a ui-sref="battery-select">Battery Selection</a></li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('sections-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sections<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('sections-select')}"><a ui-sref="sections-select">Section Selection</a></li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('modules-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('modules-select')}">
+                                    <a ui-sref="modules-select">Module Selection</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li ng-class="{active: $state.includes('questions-editor')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Questions<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('questions-freerotext')}"><a ui-sref="questions-freerotext">New Free/Read-Only Text Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-selectsinglemultiple')}"><a ui-sref="questions-selectsinglemultiple">New Select Single/Multiple Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-selectsinglemultiplematrix')}"><a ui-sref="questions-selectsinglemultiplematrix">New Select Single/Multiple Matrix Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-table')}"><a ui-sref="questions-table">New Table Question</a> </li>
+                                <li ng-class="{active: $state.includes('questions-instructions')}"><a ui-sref="questions-instructions">New Instructions</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('formulas-editor')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formulas<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('formulas-editor')}"><a ui-sref="formulas-editor">Formulas Editor</a> </li>
+                                <li ng-class="{active: $state.includes('questionvariable')}"><a ui-sref="questionvariable">New Question Variable</a> </li>
+                                <li ng-class="{active: $state.includes('customvariable')}"><a ui-sref="customvariable">New Custom Variable</a> </li>
+                                <li ng-class="{active: $state.includes('mapvariable')}"><a ui-sref="mapvariable">Map Assessment Variable</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('rules-editor')}">
+                            <a href="#"class="dropdown-toggle" data-toggle="dropdown">Rules/Events<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('rules-editor')}"><a ui-sref="rules-editor">Rules Statement Editor</a> </li>
+                                <li ng-class="{active: $state.includes('select-consult')}"><a ui-sref="select-consult">Select Consult</a> </li>
+                                <li ng-class="{active: $state.includes('select-healthfactor')}"><a ui-sref="select-healthfactor">Select Health Factor</a> </li>
+                                <li ng-class="{active: $state.includes('select-ruletriggeredalert')}"><a ui-sref="select-ruletriggeredalert">Select Rule-Triggered Alert</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('templates-editor')}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Templates<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('template-select')}"><a ui-sref="template-select">Select Template</a> </li>
+                                <li ng-class="{active: $state.includes('template-editor')}"><a ui-sref="template-editor">Template Editor</a> </li>
+                                <li ng-class="{active: $state.includes('statement-editor')}"><a ui-sref="statement-editor">Statement Editor</a> </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- /Top Nav Content -->
+    <!-- Application Active Region Content - Wraps the active navigation module -->
+    <div id="bodyDiv" class="bgImgMiddle col-sm-12" style="padding:0px;max-width:1200px;">
+        <div ui-view class="container left-right-shadow slide" style="padding-top:0px;padding-bottom:0px;" role="application">
+
+        </div>
+    </div>
+
+    <div class="container" style="padding:0px;">
+        <footer>
+            <div class="footer_container">
+                <div class="container bg_transparent">
+                    <div class="row">
+                        <div class="col-md-12"> U.S. Department of Veterans Affairs | eScreening Program (Ver 1.0) </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<!-- /Application Active Region Content -->
+<script type="text/javascript">
+    /*jQuery(document).ready(function ($) {
+        jQuery.event.props.push('dataTransfer');
+    });*/
+</script>
+</body>
+</html>

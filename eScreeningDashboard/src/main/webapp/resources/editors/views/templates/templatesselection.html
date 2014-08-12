@@ -1,0 +1,143 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3>Template Selection</h3>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <select id="selType" class="form-control">
+                            <option value="-1" selected>--Select Type</option>
+                            <option value="0">Veteran's Summary Note</option>
+                            <option value="1">Clinical Summary Note</option>
+                            <option value="2">Program End of Assessment Message</option>
+                        </select>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button id="btnNew" type="button" class="btn btn-primary" ng-click="goToAddEdit();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            New
+                        </button>
+                    </div>
+                </form>
+                <hr>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            San Diego Veteran's Center
+                        </td>
+                        <td>
+                            Veteran's Summary Note
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                                <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="active">
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            Lovell Veteran's Hospital
+                        </td>
+                        <td>
+                            Veteran's Summary Note
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                                <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="success">
+                        <td>
+                            2
+                        </td>
+                        <td>
+                            Veteran's Hospital Tampa
+                        </td>
+                        <td>
+                            Veteran's Summary Note
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                                <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="warning">
+                        <td>
+                            3
+                        </td>
+                        <td>
+                            Rockford Veteran's Mental Health
+                        </td>
+                        <td>
+                            Veteran's Summary Note
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                                <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="danger">
+                        <td>
+                            4
+                        </td>
+                        <td>
+                            Madison VA Hospital
+                        </td>
+                        <td>
+                            Veteran's Summary Note
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                                <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group form-inline pull-right">
+            <button class="btn btn-info" ng-click="goToHome();">Cancel</button>
+        </div>
+    </div>
+</div>

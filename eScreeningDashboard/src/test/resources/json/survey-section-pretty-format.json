@@ -1,0 +1,54 @@
+{
+    "id": 3,
+    "name": "Service History",
+    "description": null,
+    "displayOrder": 3,
+    "createdDate": "2014-07-14T19:32:45.000",
+    "surveys": [
+        {
+            "id": 11,
+            "name": "Service History",
+            "description": null,
+            "version": 1,
+            "displayOrder": 1,
+            "hasMha": false,
+            "createdDate": "2014-07-14T19:32:45.000"
+        },
+        {
+            "id": 12,
+            "name": "OEF OIF Clinical Reminder",
+            "description": null,
+            "version": 1,
+            "displayOrder": 2,
+            "hasMha": false,
+            "createdDate": "2014-07-14T19:32:45.000"
+        },
+        {
+            "id": 13,
+            "name": "Military Deployments & History",
+            "description": null,
+            "version": 1,
+            "displayOrder": 3,
+            "hasMha": false,
+            "createdDate": "2014-07-14T19:32:45.000"
+        },
+        {
+            "id": 14,
+            "name": "Exposures",
+            "description": null,
+            "version": 1,
+            "displayOrder": 4,
+            "hasMha": false,
+            "createdDate": "2014-07-14T19:32:45.000"
+        },
+        {
+            "id": 15,
+            "name": "Service Injuries",
+            "description": null,
+            "version": 1,
+            "displayOrder": 5,
+            "hasMha": false,
+            "createdDate": "2014-07-14T19:32:45.000"
+        }
+    ]
+}

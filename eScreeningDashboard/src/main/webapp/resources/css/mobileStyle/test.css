@@ -1,0 +1,6 @@
+.centered {
+    margin: 0 auto;
+    text-align: center;
+    width: 60%;
+}
+h1.color { text-align:center; color:red; }

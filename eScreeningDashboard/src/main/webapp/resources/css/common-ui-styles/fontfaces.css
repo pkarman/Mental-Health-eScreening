@@ -1,0 +1,76 @@
+@charset "utf-8";
+/* CSS Document -- Import Embedded OTF Fonts */
+
+/* ---- Calibri ---- */
+@font-face{
+	font-family:Pictograms;
+	src:url(../fonts/modernpics.otf);
+}
+@font-face{
+	font-family:Calibri;
+	src:url(../fonts/calibri.otf);
+}
+
+/* ---- Georgia ---- */
+@font-face{
+	font-family:Georgia;
+	src:url(../fonts/georgia.otf);
+}
+
+@font-face{
+	font-family:GeorgiaBold;
+	src:url(../fonts/georgiab.otf);
+}
+
+@font-face{
+	font-family:GeorgiaItalic;
+	src:url(../fonts/georgiai.otf);
+}
+
+@font-face{
+	font-family:GeorgiaZ;
+	src:url(../fonts/georgiaz.otf);
+}
+
+/* ---- Myriad Pro ---- */
+@font-face{
+	font-family:MyriadProRegular;
+	src:url(../fonts/MyriadPro-Regular.otf);
+}
+@font-face{
+	font-family:MyriadProRegularItalic;
+	src:url(../fonts/MyriadPro-It.otf);
+}
+@font-face{
+	font-family:MyriadProCondensed;
+	src:url(../fonts/MyriadPro-Cond.otf);
+}
+@font-face{
+	font-family:MyriadProCondItalic;
+	src:url(../fonts/MyriadPro-CondIt.otf);
+}
+@font-face{
+	font-family:MyriadSemiBold;
+	src:url(../fonts/MyriadPro-SemiBold.otf);
+}
+@font-face{
+	font-family:MyriadProSemiBoldItalic;
+	src:url(../fonts/MyriadPro-SemiBoldIt.otf);
+}
+@font-face{
+	font-family:MyriadProBold;
+	src:url(../fonts/MyriadPro-Bold.otf);
+}
+@font-face{
+	font-family:MyriadProBoldItalic;
+	src:url(../fonts/MyriadPro-BoldIt.otf);
+}
+@font-face{
+	font-family:MyriadProBoldCondensed;
+	src:url(../fonts/MyriadPro-BoldCond.otf);
+}
+@font-face{
+	font-family:MyriadProBoldCondensedItalic;
+	src:url(../fonts/MyriadPro-BoldCondIt.otf);
+}
+

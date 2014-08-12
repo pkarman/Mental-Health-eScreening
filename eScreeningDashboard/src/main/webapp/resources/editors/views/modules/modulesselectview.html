@@ -1,0 +1,56 @@
+<div class="container">
+<h1>Module Selection</h1>
+	<div class="row clearfix">
+        <div class="col-md-12">
+        	
+      
+    		
+            <!-- JH OOOCOMMENT
+            <form class="form-inline">
+                <div class="form-group pull-right">
+                	<button id="btnNew" type="button" class="btn btn-primary" ng-click="addModule();">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        New
+                    </button> 
+                </div>   	
+            </form>
+            -->
+        </div>
+     </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <!--- ngTable Begin --->
+            <table ng-table="tableParams" show-filter="true" class="table">
+                <tr ng-repeat="survey in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+                    <!--<td data-title="'Index'" sortable="'id'">
+                        {{survey.id}}
+                    </td>-->
+                    <td data-title="'Title'" sortable="'name'">
+                        {{survey.name}}
+                    </td>
+                    <!--<td data-title="'Status'" sortable="'status'" filter="{ 'status': 'text' }">
+                        {{survey.status}}
+                    </td>-->
+                    <td data-title="'Description'">
+                        {{survey.description}}
+                    </td>
+                    <td data-title="Actions">
+                        <div class="pull-right">
+                            <div class="cursor-pointer" ng-click="editModule(survey);"><span class="glyphicon glyphicon-edit" title="Edit"></span> Edit</div>
+                            <!-- JH OOOCOMMENT <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span> -->
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <!--- /ngTable --->
+            <hr>
+            <div class="row pull-right">
+                <div class="col-md-12">
+                    <a href="#" class="btn btn-default" ng-click="cancel();">Back</a>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <br>
+        </div>
+    </div>
+</div>

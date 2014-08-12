@@ -1,0 +1,240 @@
+/* Styles for all buttons  */
+.headerDiv{
+	padding-top: 9px;
+}
+/* Common buttons */
+.searchBtn{
+		background-color:#082f54;
+  		font-size: 14px;
+  		font-family: verdana;
+	    border: 2px solid gray;
+	    border-radius: 5px;
+	    color: #FFFFFF;
+	    cursor: pointer;
+	    font-weight: bold;
+	   	min-width: 115px; 
+	   	height: 30px;
+	}
+.searchBtn:hover {
+		background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+		background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+		cursor:hand;
+		color:#ffffff;
+}
+
+/* Index page button styles */
+	
+.indexButtons{
+		background-color:#082f54;
+		-webkit-border-top-left-radius:6px;
+		-moz-border-radius-topleft:6px;
+		border-top-left-radius:6px;
+		-webkit-border-top-right-radius:6px;
+		-moz-border-radius-topright:6px;
+		border-top-right-radius:6px;
+		-webkit-border-bottom-right-radius:6px;
+		-moz-border-radius-bottomright:6px;
+		border-bottom-right-radius:6px;
+		-webkit-border-bottom-left-radius:6px;
+		-moz-border-radius-bottomleft:6px;
+		border-bottom-left-radius:6px;
+		text-indent:0;
+		border:2px solid gray;
+		display:inline-block;
+		color:rgba(239, 242, 246, 1);
+		color:#eff2f6;
+		font-family:Verdana, Helvetica, Arial, sans-serif;
+		font-size:14px;
+		font-weight:bold;
+		font-style:normal;
+		height:33px;
+		width:215px;
+		text-decoration:none;
+		text-align:center;
+}
+.indexButtons:hover {
+		background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+		background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+		cursor:hand;
+		color:#ffffff;
+}.indexButtons:active {
+		position:relative;
+		top:1px;
+}
+
+/* Signout button styles */
+.buttonSignout {
+	background-color:#082f54;
+	font-size: 12px;
+	font-family:Verdana;
+    border: 2px solid gray;
+   	display:inline-block;
+    border-radius: 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+   	width: 100px; 
+	height: 24px;
+	margin-top: 2px;
+	text-decoration:none;
+}
+
+input[type=submit]:hover,button:hover,input[type=button]:hover{
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	cursor:hand;
+	color:#ffffff;
+}
+.submitImg{
+	width:168px;
+	height:40px;
+}
+#submitButtonDiv{
+	text-align:center;
+	margin:0 auto;
+}
+
+/* ----------------- Dashboard Buttons --------------------- */
+
+
+.submitButton {
+		background-color:#082f54;
+		display:inline-block;
+  		font-size: 14px;
+  		font-family: verdana;
+	    border: 2px solid gray;
+	    border-radius: 5px;
+	    color: #FFFFFF;
+	    cursor: pointer;
+	    font-weight: bold;
+	   	width: 171px; 
+	   	height: 30px;
+	}
+	
+.exportButtons{
+	background-color: #082f54;
+	margin-top: 18px;
+	margin-right: 4px;
+	font-size: 12px;
+	font-family: Arial;
+	border: 1px solid gray;
+	text-indent: 0;
+	display: inline-block;
+	color: #FFFFFF;
+	cursor: pointer;
+	font-weight: bold;
+	font-style: normal;
+	height: 26px;
+	width: 64px;
+	text-decoration: none;
+	text-align: left;
+}
+.exportButtons:hover {
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	cursor:hand;
+	color:#ffffff;
+}
+
+/* ----------------- Veteran Assessment Buttons --------------------- */
+
+#nextBtn {
+	margin-right: 30px;
+}
+input[type="button"].startAssessmentButton {
+	width: 250px;
+	height: 40px;
+	font-size: 18px;	
+}
+
+a.startAssessmentButton, div.startAssessmentButton{
+	text-decoration: none;
+}
+
+div.startAssessmentButton{
+	padding: 22px 0 5px 0;
+	text-align: center;
+}
+#formButtons {
+	padding:5px 40px 5px 0;
+	text-align:right;
+}
+
+
+.wideButton {
+	width:200px;
+	height:25px;
+	line-height:25px;
+}
+
+.wideControlButton{
+	width:400px;
+	height:30px;
+	line-height:30px;
+}
+.inputButton{
+	width:100px;
+	height:30px;
+	line-height:10px;
+	
+}
+
+.answerButton{
+	background-color:#082f54;
+	-webkit-border-top-left-radius:6px;
+	-moz-border-radius-topleft:6px;
+	border-top-left-radius:6px;
+	-webkit-border-top-right-radius:6px;
+	-moz-border-radius-topright:6px;
+	border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+	-moz-border-radius-bottomright:6px;
+	border-bottom-right-radius:6px;
+	-webkit-border-bottom-left-radius:6px;
+	-moz-border-radius-bottomleft:6px;
+	border-bottom-left-radius:6px;
+	text-indent:0;
+	border:2px solid gray;
+	display:inline-block;
+	color:rgba(239, 242, 246, 1);
+	color:#eff2f6;
+	font-family:Verdana, Helvetica, Arial, sans-serif;
+	font-size:15px;
+	font-weight:bold;
+	font-style:normal;
+	height:33px;
+	width:305px;
+	text-decoration:none;
+	text-align:center;
+}
+.answerButton:hover {
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	cursor:hand;
+	color:#ffffff;
+}

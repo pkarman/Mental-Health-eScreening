@@ -1,0 +1,274 @@
+@charset "utf-8";
+/**
+ * forms.css - A selection of cross-cutting form styles, provided in common fashion for 
+ * the different sections of the eScreening site.
+ *
+ * @author Bryan Henderson
+ * @date 11/22/2013
+ */
+ 		form fieldset{
+			display: inline-block;
+			width:33%;
+			min-height:350px;
+			border-left:0;
+			border-top:0;
+			border-bottom:0;
+			border-right: 2px solid hsla(0,0%,40%,1);
+			margin-bottom:20px;
+			/*border:0;*/
+		}
+ 		ul {
+		 overflow:hidden;
+		 list-style-type:none;
+		}
+		li {
+			text-align:left;
+			height:60px;
+		}
+		/*dt {
+		 float:left;
+		 width:48%; 
+		 min-width:200px;
+		 text-align:left;
+		 padding:2px 0 5px 0;
+		}*/
+		/*dd {
+		 float:right;
+		 width:48%;
+		 min-width:200px;
+		 text-align:left;
+		 padding:2px 0 5px 0;
+		}*/
+		span.req {
+			-moz-color:rgba(255, 0, 0, 1);
+			-webkit-color:rgba(255, 0, 0, 1);
+			color:rgba(255, 0, 0, 1);
+			color:red;
+			/*-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+ 			filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);*/
+			padding-left:2px;
+		}
+		
+		#createUserFormContainer {
+			padding-top:20px; 
+			text-align:center;
+			width: 1100px;
+		}
+		
+		#createUserStatusMessage{
+			font-size:16px;
+			font-weight:900;
+		}
+		
+		#formHeader {
+			padding: 15px 5px 15px 5px;
+			-moz-border-bottom:1px solid rgba(0, 0, 97, 1);
+			-webkit-border-bottom:1px solid rgba(0, 0, 97, 1);
+			border-bottom:1px solid rgba(0, 0, 97, 1);
+			margin-bottom:15px;
+			/*
+			-moz-box-shadow:inset 0px 1px 0px 0px rgba(124, 172, 222, 1);
+			-webkit-box-shadow:inset 0px 1px 0px 0px rgba(124, 172, 222, 1);
+			box-shadow:inset 0px 1px 0px 0px rgba(124, 172, 222, 1);
+			box-shadow:inset 0px 1px 0px 0px #7cacde;
+			*/
+			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+		}
+		
+		#formHeader h2, #formHeader h3{
+			font-size:27px;
+			font-weight:bold;
+			text-align:left;
+		
+			-moz-text-shadow:1px 1px 2px rgba(124, 172, 222, 1);
+			-webkit-text-shadow:1px 1px 2px rgba(124, 172, 222, 1);
+			text-shadow:1px 1px 2px rgba(124, 172, 222, 1);
+			-ms-filter: "progid:DXImageTransform.Microsoft.dropShadow(color=#7cacde,offX=1,offY=1, positive=true)";
+ 			filter: progid:DXImageTransform.Microsoft.dropShadow(color=#7cacde,offX=1,offY=1, positive=true);
+		}
+		
+		#validationErrorMessage{
+			
+			font-size:16px;
+			font-weight:500;
+			visibility:hidden;
+			margin-bottom:5px;
+		}
+		
+		#validationErrorMessage p{
+			font-weight:900;
+			-moz-color:rgba(153, 0, 0, 1);
+			-webkit-color:rgba(153, 0, 0, 1);
+			color:rgba(153, 0, 0, 1);
+			color:#900;
+		}
+		
+		#validationErrorMessage span{
+			font-weight:700;
+			-moz-color:rgba(0, 0, 0, 0.8);
+			color:rgba(0, 0, 0, 0.8); 
+			color:#000;
+			-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=80)";
+ 			filter: progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+		}
+		
+		/*input[type='submit'],[type='reset']
+		{
+			-moz-border-radius:5px; Firefox 
+			-webkit-border-radius: 5px; Safari, Chrome 
+			border-radius: 5px; CSS3 
+			behavior:url(resources/css/PIE_uncompressed.htc);
+		}*/
+		/*input[type='text'],[type='password']*/
+		label {
+			width: 300px;
+			/* height:60px; */
+			/* display:inline-block; */
+			-moz-color:rgba(56, 56, 56, 1);
+			-webkit-color:rgba(56, 56, 56, 1);
+			color:rgba(56, 56, 56, 1);
+			color:#383838;
+			font-size: 12px;
+			font-weight:700;
+			text-align:left;
+			/* padding-bottom: 20px; */
+		}
+		
+		.grayed {
+			width:160px;
+			height:60px;
+			display:inline-block;
+			-moz-color:rgba(102, 102, 102, 1);
+			-webkit-color:rgba(102, 102, 102, 1);
+			color:rgba(102, 102, 102, 1);
+			color:#000;
+			font-size: 11px;
+			font-weight:500;
+			text-align:left;
+			padding-bottom: 20px;
+		}
+		
+		span.field{
+			display:inline-block;
+			width:300px;
+			height:60px;
+			text-align:left;
+			padding-left:20px;
+			padding-bottom:20px;
+		}
+
+		.inputfield{
+			font-size:11px;
+			width:290px;
+			-moz-border-radius:10px;
+			-webkit-border-radius: 10px;
+			border-radius: 10px;
+			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+		}
+		
+		.selectfield{
+			/* Fill with a consistent style,
+			based on the .inputfield class.
+			*/
+			font-size:11px;
+		}
+		
+		
+		
+		/* Form Field Error */
+		
+		#formError span {
+			display: block;
+			padding: 5px;
+		}
+		.error {
+			 color: #FFFFFF !important;
+			-moz-background-color:rgba(163, 41, 41, 0.4);
+			-webkit-background-color:rgba(163, 41, 41, 0.4);
+			background-color:rgba(163, 41, 41, 0.4);
+			background:#d55858;
+			-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=40)";
+ 			filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+			-moz-color:rgba(255, 255, 255, 1);
+			-webkit-color:rgba(255, 255, 255, 1);
+			color:rgba(255, 255, 255, 1);/*hsla(360, 100%, 100%, 1);*/
+			color:#fff;
+		}
+		
+		/* Tooltip Styles */
+		.ui-tooltip, .arrow:after {
+		    background: rgba(163, 41, 41, 0.4);/*hsla(0, 60%, 40%, 0.4);*/
+		    background:#a32929;
+		    -moz-border:2px solid rgba(255, 255, 255, 1);
+		    -webkit-border:2px solid rgba(255, 255, 255, 1);
+		    border: 2px solid rgba(255, 255, 255, 1);
+		    border: 2px solid #fff;
+		  }
+		  .ui-tooltip {
+		    padding: 10px 20px; 
+		    -moz-color:rgba(255, 255, 255, 1);
+		    -webkit-color:rgba(255, 255, 255, 1);
+		    color: rgba(255, 255, 255, 1);
+		    color:#fff;
+		    border-radius: 10px;
+		    /*
+			font: bold 14px "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
+			-moz-box-shadow: 0 0 7px rgba(0, 0, 0, 1);
+		    -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 1);
+		    box-shadow: 0 0 7px rgba(0, 0, 0, 1);
+		    */
+			-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
+ 			filter: progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
+ 			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+		  }
+		  .arrow {
+		    width: 70px;
+		    height: 16px;
+		    overflow: hidden;
+		    position: absolute;
+		    left: 50%;
+		    margin-left: -35px;
+		    bottom: -16px;
+		  }
+		  .arrow.top {
+		    top: -16px;
+		    bottom: auto;
+		  }
+		  .arrow.left {
+		    left: 20%;
+		  }
+		  .arrow:after {
+		    content: "";
+		    position: absolute;
+		    left: 20px;
+		    top: -20px;
+		    width: 25px;
+		    height: 25px;
+		    -moz-box-shadow:6px 5px 9px -9px rgba(0, 0, 0, 1);
+		    -webkit-box-shadow:6px 5px 9px -9px rgba(0, 0, 0, 1);
+		    box-shadow: 6px 5px 9px -9px rgba(0, 0, 0, 1);
+		    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
+ 			filter: progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
+		    -webkit-transform: rotate(45deg);
+		    -moz-transform: rotate(45deg);
+		    -ms-transform: rotate(45deg);
+		    -o-transform: rotate(45deg);
+		    tranform: rotate(45deg);
+		    behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+		  }
+		  .arrow.top:after {
+		    bottom: -20px;
+		    top: auto;
+		  }
+		  
+
+
+
+
+
+
+
+
+
+
+

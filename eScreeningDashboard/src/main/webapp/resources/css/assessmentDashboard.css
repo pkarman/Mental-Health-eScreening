@@ -1,0 +1,66 @@
+.topContent {
+	width: 96.7%;
+	margin-left: 15px;
+	margin-right: 74px;
+	padding-left: 5px;
+	padding-bottom: 0px;
+	padding-right: 3px;
+	margin-top: 28px;
+	border: medium solid rgb(102, 102, 102);
+	background-color: rgb(48, 51, 53);
+	font-weight: bold;
+}
+.bottomContent {
+	padding: 0px;
+	margin-left:15px;
+	margin-right:15px;
+	color: rgb(0, 0, 0);
+}
+
+.css-form input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+}
+
+.css-form input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+}
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+.fieldAlign{
+	width: 156px;
+	margin-left: 10px;
+}
+label{
+	margin-top: 15px;
+}
+
+.mainDiv{
+	width:100%;
+}
+.searchDiv{
+	position:absolute;
+	margin-top:7px;
+}
+.searchBtnPostion{
+	margin-top:15px;
+}

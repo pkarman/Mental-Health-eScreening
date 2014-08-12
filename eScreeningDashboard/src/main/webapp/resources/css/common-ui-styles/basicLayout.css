@@ -1,0 +1,257 @@
+
+body{
+				background-color:#2A3B43;
+				background-image:url(resources/images/burlapblueBG.png);
+				background-repeat:repeat;
+				color:#fff;
+				color:hsla(0,0%,100%,1);
+				min-height:100%;
+				margin:0;
+				padding-left:40px; /* LC full width */
+				padding-right:25px; /* RC full width + CC padding */
+				min-width:240px;
+			}
+			
+			a img{
+				border:0px;
+			}
+			
+			li{
+				height:40px;
+				text-align:center;
+			}
+			
+			#header, #footer{
+				margin-left:-40px; /* LC full width */
+				margin-right:-20px; /* RC fullwidth + CC padding */
+			}
+			
+			.column {position:relative; float:left;}
+			#center{
+				color: #000000;
+				padding:20px 20px -20px 0px;
+				margin-bottom:2%; 
+				width:100%; 
+				height:auto;
+				border:1px solid hsla(0,0%,60%,1);
+				border-radius: 5px;
+				border-bottom-left-radius:20px;
+				border-bottom-right-radius:20px;
+				box-shadow:1px 5px 20px #666666;
+			}
+			#left{
+				width:20px; /* LC width */
+				padding:0 10px; /* LC padding */
+				right:25px; /* LC full width + CC padding */
+				margin-left:-5%;
+			}
+			#right{
+				width:20px; /* RC width */
+				padding:0 10px; /* RC padding */
+				margin-right:-5%;
+			}
+			
+			#content-controls{
+				height:40px;
+				padding:20px;
+				border-bottom:1px solid hsla(0,0%,40%,1);
+				box-shadow:1px 5px 5px hsla(0,0%,60%,0.8);
+			}
+			#footer{
+				clear:both;
+				margin-top:20px;
+				background-color:#2A3B43;
+			}
+			
+			/** Header-specific styles **/
+			#header{
+				height:90px;
+				padding-left:2%;
+				margin-bottom:1%;
+			}
+			#logo-container {
+				margin-top:0.5em;
+				width: 5%;  
+				border: 0;
+			}
+			
+			#logo-container a {
+				border: 0;
+				margin: 0;
+			}
+			
+			#logo-container img {
+				width: 90%;
+				height: auto;
+				float: left;
+			}
+			
+			#agencyName {
+				min-width:30%;
+				padding-left:0.7em;
+				font-family:FanHeiti;
+				font-size:14px;
+				font-weight:400;
+				text-shadow: 2px 5px hsla(0,0%,20%,0.6);
+			}
+			
+			#applicationName {
+				min-width:30%;
+				padding-left:0.3em;
+				font-family:AdGothic;
+				font-size:16px;
+				font-weight:900;
+				letter-spacing:3px;
+				text-shadow: 2px 5px hsla(0,0%,20%,0.6);
+			}
+			
+			#userLogged{
+				display:inline;
+				float:right;
+				min-width:15%;
+				min-height:70%;
+				padding-left:30px;
+				padding-right:140px;
+				padding-bottom:2px;
+				font-family:FanHeiti;
+				font-size:14px;
+				font-weight:900;
+				letter-spacing:0.1em;
+				text-overflow:clip;
+				text-align:right;
+				border-left:1px solid #fff;
+				border-left:hairline solid hsla(0,0%,100%,1);
+				text-shadow: 2px 5px hsla(0,0%,20%,0.6);
+			}
+			
+			#userLogged span{
+				position:relative;
+				bottom:80%;
+				right:0;
+			}
+			
+			#loggedInContainer{
+				position:relative;
+			}
+			
+			#loggedInContainer span{
+				position:absolute;
+				bottom:0;
+				right:0;
+			}
+			
+			/** Content Area Styles **/
+			#controlsLeft{
+				width:48%;
+				float:left;
+			}
+			#controlsRight{
+				width:48%;
+				float:right;
+			}
+			
+			#setNew,#resetForm{
+				width:inherit;
+				text-align:center;
+				padding-bottom:2px;
+			}
+			
+			#viewTitle{
+				padding: 10px 10px 10px 10px;
+				font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+			}
+			
+			#viewTitle span.pageTitle{
+				color:#000;
+				font-size:28px;
+				font-weight:700;
+				text-align:left;
+				vertical-align:middle;
+				line-height:40px;
+			}
+			
+			#viewTitle span.step{
+				padding-left:10px;
+				color:#333;
+				font-size:14px;
+				font-weight:500;
+				text-align:left;
+				vertical-align:middle;
+				line-height:40px;
+			}
+			
+			/* iPhone Checkbox */
+			.iPhoneCheckContainer {
+      			width: 50px;
+      			overflow:hidden;
+    		}
+    		
+    		.css_sized_container{
+    			position:relative;
+    			float:right;
+    			padding-right:40%;
+    			width:100px;
+    			text-align:center;
+    			overflow:hidden;
+    		}
+    		
+    		.error{
+    			color:#ff0000;
+    		}
+    		
+    		.pass{
+    			color:#333333;
+    		}
+    		
+    		#switchButtonLI{
+    			text-align:center;
+    			margin:0 auto;
+    		}
+    		
+
+			.bigGrayButton {
+				-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+				-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+				box-shadow:inset 0px 1px 0px 0px #ffffff;
+				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #4d4f66) );
+				background:-moz-linear-gradient( center top, #ededed 5%, #4d4f66 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#4d4f66');
+				background-color:#ededed;
+				-webkit-border-top-left-radius:6px;
+				-moz-border-radius-topleft:6px;
+				border-top-left-radius:6px;
+				-webkit-border-top-right-radius:6px;
+				-moz-border-radius-topright:6px;
+				border-top-right-radius:6px;
+				-webkit-border-bottom-right-radius:6px;
+				-moz-border-radius-bottomright:6px;
+				border-bottom-right-radius:6px;
+				-webkit-border-bottom-left-radius:6px;
+				-moz-border-radius-bottomleft:6px;
+				border-bottom-left-radius:6px;
+				text-indent:0;
+				border:2px solid #000000;
+				display:inline-block;
+				color:#000000;
+				font-family:Arial;
+				font-size:15px;
+				font-weight:bold;
+				font-style:normal;
+				height:35px;
+				line-height:35px;
+				width:400px;
+				text-decoration:none;
+				text-align:center;
+				text-shadow:1px 1px 0px #ffffff;
+			}
+			.bigGrayButton:hover {
+				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a199a1), color-stop(1, #ededed) );
+				background:-moz-linear-gradient( center top, #a199a1 5%, #ededed 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a199a1', endColorstr='#ededed');
+				background-color:#a199a1;
+			}.bigGrayButton:active {
+				position:relative;
+				top:1px;
+			}
+			/**** IE fix ****/
+			* html #left{left:20px; /* RC fullwidth hack for the paste-eater */}

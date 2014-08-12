@@ -1,0 +1,163 @@
+
+ul.measure {
+    list-style-type:none;
+}
+
+span.measureText {
+    font-family: serif;
+	font-weight: bold;
+}
+
+span.optionText {
+    font-weight:normal
+}
+
+ul.answerTypeSelectMulti {
+    list-style-type:none;
+}
+
+ul.answerTypeSelectOne {
+    list-style-type:none;
+}
+
+span.answerTextValue {
+    font-style:italic
+}
+
+span.answerOtherValue {
+    font-style:italic
+}
+
+table.reportTable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+    width:800px;
+}
+table.reportTable th {
+    border-width: 1px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+    text-align:right;
+    width:180px;
+}
+table.reportTable th.section {
+    border-width: 1px;
+    padding: 4px;
+    border-style: solid;
+    border-color: #555555;
+    background-color: #555555;
+    color:#ffffff;
+    text-align:center;
+}
+table.reportTable td {
+    border-width: 1px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+
+.printBtn{
+	border: 1px solid #115AB;
+	margin-top:5px;
+	margin-right:10px;
+	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122)));
+	background-image: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	background-image: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
+	font-weight: bold;
+	color: #ffffff;	
+	width: 25%;
+	height: 28px;
+}
+.printBtn:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee) );
+	background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	background-color:#468ccf;
+	cursor:hand;
+}
+.hrWidth{
+	width:98%;
+	margin-left: 1px;
+}
+.left{
+	margin-left:10px;
+}
+.right{
+	margin-left:500px;
+}
+.mainDiv{
+	margin-left: 234px;
+	margin-right: 200px;
+	width: 809px;
+	background-color:white;
+	padding-left: 9px;
+	border-width: 11px;
+	border-radius: 10px;
+}
+.headerText{
+	margin-left:120px;
+}
+.cesamhLogo{
+	float: right; 
+	margin-right: 14px; 
+	margin-top: -24px;
+}
+.left0{
+	margin-left:30px;
+}
+.left1{
+	margin-left:55px;
+	float:left
+}
+.left2{
+	margin-left:110px;
+	float:left;
+}
+.right1{
+	margin-left:145px;
+}
+.pargraphStyles{
+	text-align: justify; 
+	margin-left:10px; 
+	margin-right:10px;
+}
+.headerPos{
+	margin-left:10px;
+}
+.measureTxtDiv{
+	width:777px; 
+	word-break:break-all;
+}
+.cesamh{
+	width: 120px;
+}
+.valogo{
+	width: 110px;
+}
+.logoPos
+{
+	position:absolute;
+}
+#agencyName {
+	font-size:16px;
+}
+
+#applicationName {
+	font-size:26px !important;
+	font-family: Arial,sans-serif !important;
+    letter-spacing: 0px !important;
+    font-weight: normal !important;
+}
+#agencyName {
+	font-size:16px;
+}

@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <h3>Module Selection</h3>
+      <hr>
+      <form class="form-inline">
+        <div class="form-group pull-right">
+          <button id="btnNew" type="button" class="btn btn-primary" ng-click="addModule();"> <span class="glyphicon glyphicon-plus"></span> New </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row clearfix">
+    <div class="col-md-12 column" style="max-height:550px; overflow-y:auto;"> 
+      <!--- ngTable Begin --->
+      <table ng-table="tableParams" show-filter="true" class="table">
+        <tr ng-repeat="module in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+          <td data-title="'Index'" sortable="'id'"> {{module.id}} </td>
+          <td data-title="'Title'" sortable="'title'" filter="{ 'title': 'text' }"> {{module.title}} </td>
+          <td data-title="'Status'" sortable="'status'" filter="{ 'status': 'text' }"> {{module.status}} </td>
+          <td data-title="Description"> {{module.description}} </td>
+          <td data-title="Actions"><div class="pull-right"> <span class="glyphicon glyphicon-edit" title="Edit" ng-click="editModule(module);"></span> <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span> </div></td>
+        </tr>
+      </table>
+      <!--- /ngTable --->
+      <hr>
+      <div class="row pull-right">
+        <div class="col-md-12"> <a href="#" class="btn btn-default" ng-click="cancel();">Cancel</a> </div>
+      </div>
+    </div>
+  </div>
+</div>

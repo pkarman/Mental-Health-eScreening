@@ -1,0 +1,97 @@
+#userManagementContainer {
+	/*padding-top: 35px; 
+	padding-left:15px; 
+	 width:1100px; */ /*  should match .userTableContainer */
+}
+
+#createUserContainer {
+	float: right; 
+	font-weight: bold;
+	margin:10px auto;
+}
+
+/* user table styles */
+.userTableContainer {
+ 	/* width:1100px; */   /* should match userManagementContainer*/
+	margin:10px auto;
+}
+tr.odd{
+	background: #DCE0E6 !important; 
+}
+tr.odd td.sorting_1{
+	background: #DCE0E6 !important;
+}
+tr.even td.sorting_1{
+	background: #fff !important; 
+}
+
+#lastNameColumnHeader {
+	width: 200px;
+}
+
+#firstNameColumnHeader {
+	width: 200px;
+}
+
+#loginIdColumnHeader {
+	width: 125px;
+}
+
+#statusColumnHeader {
+	width: 75px;
+}
+
+#roleColumnHeader {
+	width: 500px;
+}
+
+/*  Edit / Create user styles */
+.formFieldLabel {
+	text-align:right; 
+	padding-right: 5px; 
+	font-weight: bold;
+}
+
+#createUserStatusMessage {
+	color: blue;
+	padding-top: 5px;
+}
+
+.errorLabel {
+	color: red;
+}
+
+#clinicsField {
+	display: none;
+}
+
+ #clinicIdColumnHeader {
+	width: 10px;
+}
+
+#clinicNameColumnHeader {
+	width: 200px;
+}
+
+#programNameColumnHeader {
+	width: 100px;
+}
+
+#locationNameColumnHeader {
+	width: 100px;
+}
+/*
+#checkboxNameColumnHeader {
+	width: 10px;
+} */
+.imgWidth{
+	width:70%;
+	height:70%;
+}
+
+.dataTables_filter input{
+	line-height:initial;
+}
+.h1_margin_tabs{
+	margin-top:22px;
+}

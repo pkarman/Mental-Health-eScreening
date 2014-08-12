@@ -1,0 +1,250 @@
+/* #bodyDiv {
+	background-color: dddddd;
+	height: 100%;
+	width: 100%;
+} */
+
+#errorMsgDiv {
+	color: red;
+	padding-top: 5px;
+}
+
+.dashboardLoginError {
+	/*
+	color: #ff0000;
+	margin-bottom: 10px;
+	text-align: left;
+	*/
+}
+
+
+#formError {
+	/*
+	color: #800000;
+	padding: 8px 0px;
+    background: rgb(0, 0, 0) transparent;
+    background: rgba(0, 0, 0, 0.09);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+    -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)';
+    */
+}
+
+.requireMark {
+	 color: #800000;
+	 font-size: 20px; 
+	 font-weight: bold;
+}
+.leftLogin{
+	position:absolute;
+	margin-left:82px;
+}
+.rightLogin{
+	margin-left:245px;
+	width: 165px;
+	height:38px;
+}
+.loadingCenter{
+	margin-top:0px;
+	margin-left:250px;
+}
+
+/**************************************
+	Veteran Login Styles Start
+*************************************/
+/* body { }
+	a { text-decoration: none; }
+	.container{margin: 20px auto; width: 900px; background: #fff;}
+	h3 { margin-bottom: 15px; font-size: 22px; text-shadow: 2px 2px 2px #ccc; }
+	 */
+	 
+.input-help {
+	/*
+  	position: absolute;
+	top: 213px;
+	*/
+	text-align:left;
+	padding: 3px;
+	color: red;
+	font-weight: bold;
+	font-size: 0.87em;
+}
+/* .input-help::before {
+  content: "\25C0";
+  position: absolute;
+  top:10px;
+  left:-12px;
+  font-size:16px;
+  line-height:16px;
+  color:red;
+  text-shadow:none;
+} */
+/* Show the help box once it has focus */
+.immediate-help:focus + .input-help {
+  display: block;
+}
+	.loginLabelText {
+		margin: 10px 0px 32px 0px;
+		font-size: 20px;
+		font-weight: bold;
+		text-align: center;
+		color: rgb(56, 56, 56);
+	}
+	.loginDiv{
+		 width: 500px; 
+		 height: 160px; 
+		 display: block; 
+		 margin-top:25px;
+		 margin-left:384px;
+	}
+	
+	.loginForm {
+	width: 500px;
+	height: 201px;
+	background-color:#ffffff;
+	overflow:visible;
+	padding: 20px 0px;
+	border: 1px solid #8A8A8A;
+	-moz-box-shadow: 11px 11px 6px;
+	-webkit-box-shadow: 11px 11px 6px;
+	box-shadow: 11px 11px 6px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Verdana, Arial; font-size: 12px; line-height: 9px;
+	
+	}
+	
+	.field{margin-bottom:7px;}
+	
+	label {
+	/*
+	display: block;
+    float: left;
+    font-family: Arial,Verdana;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 25px;
+    margin-right: 10px;
+    text-align: justify;
+    text-shadow: 2px 2px 2px #CCCCCC;
+    width: 150px; 
+	*/
+	}
+	
+	.input{
+	font-family: Arial, Verdana; 
+	font-size: 15px; 
+	padding: 5px; 
+	border: 1px solid #b9bdc1; 
+	width: 300px; 
+	color: #797979;	
+	}
+	
+	.input:focus{
+	background-color:#E7E8E7;	
+	}
+	
+	.textarea {
+	height:150px;	
+	}
+	
+	.hint{
+	display:none;
+	}
+	
+	.field:hover .hint {  
+	position: absolute;
+	display: block;  
+	margin: -30px 0 0 455px;
+	color: #FFFFFF;
+	padding: 7px 10px;
+	background: rgba(0, 0, 0, 0.6);
+	
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;	
+	}
+	
+	
+#hack{
+color:red; /* All browsers */
+color:red !important;/* All browsers but IE6 */
+_color:red; /* Only works in IE6 */
+*color:red; /* IE6, IE7 */
++color:red;/* Only works in IE7*/
+*+color:red; /* Only works in IE7 */
+color:red\9; /* IE6, IE7, IE8, IE9 */
+color:red\0; /* IE8, IE9 */
+color:red\9\0;/*Only works in IE9*/
+
+}
+#veteranLoginButtonWrapper {
+	text-align:center;
+}
+/* #veteranLoginButtonWrapper {
+	float: right; 
+	padding-right:10px;
+}
+
+#veteranLoginButtonWrapper input {
+	width: 170px;
+	height: 24px; 
+	margin-top: 0px;
+	margin-right: 28px;
+	width: 154px\9;
+	margin-right: 8px\9;
+}
+
+
+
+#veteranLogin {
+	height: 30px !important;
+}
+ */
+
+.loginForm h3 {
+	color: #000000;
+	text-align:center;
+}
+
+.loginForm label,.loginForm input {
+	margin-top: 9px;
+	width: 147px;
+	
+}
+.loginControlDivMargin{
+	/* margin-top:25px; */
+}
+.loginErrorDiv{
+	color:red;
+}
+.errorImgWidth{
+	/* width: 7%;*/
+}
+.errorDivMargin{
+	margin-top: 45px;
+}
+/**************************************
+	Veteran Login Styles End
+*************************************/
+
+
+
+#logoutReason {
+	color: #800000; 
+	width: 98%; 
+	margin: 0px auto; 
+	text-align: center; 
+	/* margin-top: 32px;*/
+	font-size: 14px;	
+}
+
+#logoutReason img {
+	width: 16px; 
+	height: 16px;
+}
+
+#logoutReason:hover {
+	cursor: pointer;
+}
+ 

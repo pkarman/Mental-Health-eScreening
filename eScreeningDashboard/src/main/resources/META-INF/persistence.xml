@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+    <persistence-unit name="escreening-dashboard">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>gov.va.escreening.entity.AssessmentStatus</class>
+        <class>gov.va.escreening.entity.AssessmentVarChildren</class>
+        <class>gov.va.escreening.entity.AssessmentVariable</class>
+        <class>gov.va.escreening.entity.AssessmentVariableColumn</class>
+        <class>gov.va.escreening.entity.AssessmentVariableType</class>
+        <class>gov.va.escreening.entity.Battery</class>
+        <class>gov.va.escreening.entity.BatterySurvey</class>
+        <class>gov.va.escreening.entity.CalculationType</class>
+        <class>gov.va.escreening.entity.Clinic</class>
+        <class>gov.va.escreening.entity.ClinicalNote</class>
+        <class>gov.va.escreening.entity.ClinicalReminder</class>
+        <class>gov.va.escreening.entity.ClinicalReminderSurvey</class>
+        <class>gov.va.escreening.entity.ClinicSurvey</class>
+        <class>gov.va.escreening.entity.Consult</class>
+        <class>gov.va.escreening.entity.DashboardAlert</class>
+        <class>gov.va.escreening.entity.DashboardAlertType</class>
+        <class>gov.va.escreening.entity.DialogPrompt</class>
+        <class>gov.va.escreening.entity.Event</class>
+        <class>gov.va.escreening.entity.EventType</class>
+        <class>gov.va.escreening.entity.ExportdataFilterOptions</class>
+        <class>gov.va.escreening.entity.ExportLog</class>
+        <class>gov.va.escreening.entity.ExportType</class>
+        <class>gov.va.escreening.entity.HealthFactor</class>
+        <class>gov.va.escreening.entity.HealthFactorDialogPrompt</class>
+        <class>gov.va.escreening.entity.Measure</class>
+        <class>gov.va.escreening.entity.MeasureAnswer</class>
+        <class>gov.va.escreening.entity.MeasureAnswerValidation</class>
+        <class>gov.va.escreening.entity.MeasureType</class>
+        <class>gov.va.escreening.entity.MeasureValidation</class>
+        <class>gov.va.escreening.entity.NoteTitle</class>
+        <class>gov.va.escreening.entity.NoteTitleMap</class>
+        <class>gov.va.escreening.entity.PersonType</class>
+        <class>gov.va.escreening.entity.Program</class>
+        <class>gov.va.escreening.entity.ProgramBattery</class>
+        <class>gov.va.escreening.entity.ProgramSurvey</class>
+        <class>gov.va.escreening.entity.Role</class>
+        <class>gov.va.escreening.entity.Rule</class>
+        <class>gov.va.escreening.entity.RuleAssessmentVariable</class>
+        <class>gov.va.escreening.entity.RuleEvent</class>
+        <class>gov.va.escreening.entity.Survey</class>
+        <class>gov.va.escreening.entity.SurveyAttempt</class>
+        <class>gov.va.escreening.entity.SurveyMeasureResponse</class>
+        <class>gov.va.escreening.entity.SurveyPage</class>
+        <class>gov.va.escreening.entity.SurveyPageMeasure</class>
+        <class>gov.va.escreening.entity.SurveySection</class>
+        <class>gov.va.escreening.entity.SystemProperty</class>
+        <class>gov.va.escreening.entity.Template</class>
+        <class>gov.va.escreening.entity.TemplateType</class>
+        <class>gov.va.escreening.entity.User</class>
+        <class>gov.va.escreening.entity.UserClinic</class>
+        <class>gov.va.escreening.entity.UserProgram</class>
+        <class>gov.va.escreening.entity.UserStatus</class>
+        <class>gov.va.escreening.entity.Validation</class>
+        <class>gov.va.escreening.entity.VariableTemplate</class>
+        <class>gov.va.escreening.entity.Veteran</class>
+        <class>gov.va.escreening.entity.VeteranAssessment</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentAction</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentAuditLog</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentAuditLogHelper</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentConsult</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentDashboardAlert</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentEvent</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentHealthFactor</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentLog</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentMeasureVisibility</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentNote</class>
+        <class>gov.va.escreening.entity.VeteranAssessmentSurvey</class>
+
+
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/escreening"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.username" value="escrapp"/>
+            <property name="hibernate.connection.password" value="CHANGE_M3"/>
+            <property name="hibernate.archive.autodetection" value="class"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <!--property name="hibernate.hdm2dll.auto" value="create"/-->
+        </properties>
+
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,410 @@
+<div class="container-fluid" style="max-width:1822px;">
+    <!--<div class="row">
+        <div class="btn-group pull-right">
+            <a href="javascript:void(0);" class="btn btn-success" ng-model="hfCollapsed" ng-click="viewHFSelect();">Select Health Factor</a>
+            <a href="javascript:void(0);" class="btn btn-success" ng-model="scCollapsed" ng-click="viewSCSelect();">Select Consult</a>
+            <a href="javascript:void(0);" class="btn btn-success" ng-model="srCollapsed" ng-click="viewSRSelect();">Select Rule-Triggered Alert</a>
+        </div>-->
+        <!--<a href="javascript:void(0);" class="btn btn-primary pull-left" ng-model="rsCollapsed" ng-click="viewSEditor();">Rules Statement Editor</a>-->
+    <!--</div>-->
+    <div class="row" ng-show="rsCollapsed">
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                Rules Statement Editor
+            </h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <form class=" form form-inline">
+                        <div class="form-group">
+                            <label>
+                                Title
+                            </label>
+                            <input type="text" class=" col-sm-12 form-control">
+                        </div>
+                        <div class="col-md-8 form-group pull-right">
+                            <label>
+                                Description
+                            </label>
+                            <input type="text" class="col-sm-12 form-control">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+    <div class="col-md-4">
+        <div class="panel-group" id="panel-307263">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" data-toggle="collapse" data-parent="#panel-307263"
+                       href="#panel-element-438457">Comparison Operators</a>
+                </div>
+                <div id="panel-element-438457" class="panel-collapse in">
+                    <div class="panel-body">
+                        <div class="form-inline">
+                            <button class="btn btn-default">
+                                =
+                            </button>
+                            <button class="btn btn-default">
+                                &lt;
+                            </button>
+                            <button class="btn btn-default">
+                                &gt;
+                            </button>
+                            <button class="btn btn-default">
+                                &lt;=
+                            </button>
+                            <button class="btn btn-default">
+                                &gt;=
+                            </button>
+                            <button class="btn btn-default">
+                                AND
+                            </button>
+                            <button class="btn btn-default">
+                                OR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-307263"
+                       href="#panel-element-810253">Constants</a>
+                </div>
+                <div id="panel-element-810253" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="form-inline">
+                            <button class="btn btn-default">
+                                TRUE
+                            </button>
+                            <button class="btn btn-default">
+                                FALSE
+                            </button>
+                            <button class="btn btn-default">
+                                C1
+                            </button>
+                            <button class="btn btn-default">
+                                C2
+                            </button>
+                        </div>
+                        <div class="form-inline">
+                            <button class="btn btn-default">
+                                C3
+                            </button>
+                            <button class="btn btn-default">
+                                C4
+                            </button>
+                            <button class="btn btn-default">
+                                C5
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" data-toggle="collapse" data-parent="#panel-307263"
+                       href="#panel-element-438457">Defined Variables</a>
+                </div>
+                <div id="panel-element-438457" class="panel-collapse in">
+                    <div class="panel-body">
+                        <div class="btn-group-xs">
+                            <a href="#" class="btn btn-default">Question</a>
+                            <a href="#" class="btn btn-default">Answer</a>
+                            <a href="#" class="btn btn-default">Custom</a>
+                            <a href="#" class="btn btn-default">Formula</a>
+                            <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                        </div>
+                        <hr>
+                        <ul class="list-vertical">
+                            <li class="list-group-item">
+                                Formula Variable 1
+                            </li>
+                            <li class="list-group-item">
+                                Formula Variable 2
+                            </li>
+                            <li class="list-group-item">
+                                Formula Variable 3
+                            </li>
+                            <li class="list-group-item">
+                                Formula Variable 4
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="form-group">
+                    <label>
+                        Rule Editor
+                    </label>
+                    <ul id="lExpressionBuild" class="list-inline">
+                        <li class="list-group-item">
+                            <label class="form-label">
+                                [AnswerOne]
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-label">
+                                &gt;=
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-label">
+                                [AnswerThree]
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-label">
+                                =
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="form-label">
+                                TRUE
+                            </label>
+                        </li>
+                    </ul>
+                    <hr>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="control-label">
+                        Rule Preview
+                    </label>
+                    <div>
+                        <ul id="lRulePreview" class="list-inline">
+                            <li class="list-group-item">
+                                <label for="txtOpVal1" class="control-label">
+                                    Op Value 1
+                                </label>
+                                <div class="pull-right col-sm-3">
+                                    <input type="text" id="txtOpVal1" class="form-control" value="43">
+                                </div>
+                            </li>
+                            <li>
+                                <label class="form-label">
+                                    &gt;=
+                                </label>
+                            </li>
+                            <li class="list-group-item">
+                                <label for="txtOpVal2" class="control-label">
+                                    Op Value2
+                                </label>
+                                <div class="pull-right col-sm-3">
+                                    <input type="text" id="txtOpVal2" class="form-control" value="42">
+                                </div>
+                            </li>
+                            <li>
+                                <label class="form-label">
+                                    =
+                                </label>
+                            </li>
+                            <li>
+                                <label class="form-label" style="color:green;">
+                                    TRUE
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <h4>
+                    Events
+                    <span class="badge">Filters</span>
+                    <div class="btn-group pull-right btn-sm">
+                        <a href="javascript:void(0);" class="btn btn-success" ng-model="hfCollapsed" ng-click="viewHFSelect();">Health Factors</a>
+                        <a href="javascript:void(0);" class="btn btn-success" ng-model="scCollapsed" ng-click="viewSCSelect();">Consults</a>
+                        <a href="javascript:void(0);" class="btn btn-success" ng-model="srCollapsed" ng-click="viewSRSelect();">Rule-Triggered Alerts</a>
+                    </div>
+                </h4>
+                <hr>
+                <form class="form-horizontal">
+                    <div class="form-group form-inline">
+                        <label class="form-label">
+                            Consults
+                        </label>
+                        <button id="btnAddEvent" class="btn btn-info pull-right btn-sm"  ng-click="viewHFSelect();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add
+                        </button>
+                    </div>
+                    <div class="form-group form-inline">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <label class="form-label">
+                                    Consult Dr. Bombay
+                                </label>
+                                <span class="glyphicon glyphicon-remove pull-right" style="color:red;"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <label class="form-label">
+                                    Consult Nurse Ratched
+                                </label>
+                                <span class="glyphicon glyphicon-remove pull-right" style="color:red;"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="row" ng-show="hfCollapsed">
+        <div class="col-md-12">
+            <h3>
+                Select Health Factor View
+            </h3>
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <h3>Select Health Factor</h3>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-inline">
+                            <div class=" form-group">
+                                <label for="txtSearch" class="col-sm-5">
+                                    Filter Name
+                                </label>
+                                <div class="col-sm-5-offset col-sm-7">
+                                    <input type="search" id="txtSearch" class="form-control" placeholder="Enter Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-horizontal">
+                            <label class="control-label">
+                                Health Factors
+                            </label>
+                            <ul id="lHealthFactors">
+                                <li class="list-group-item">
+                                    Health Factor One
+                                </li>
+                                <li class="list-group-item">
+                                    Health Factor Two
+                                </li>
+                                <li class="list-group-item">
+                                    Health Factor Three
+                                </li>
+                                <li class="list-group-item">
+                                    Health Factor Four
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="scCollapsed">
+        <div class="col-md-12">
+            <h3>
+                Select Consult View
+            </h3>
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <h3>Select Consult</h3>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-inline">
+                            <div class=" form-group">
+                                <label for="txtSearch" class="col-sm-5">
+                                    Filter Name
+                                </label>
+                                <div class="col-sm-5-offset col-sm-7">
+                                    <input type="search" id="txtSearch" class="form-control" placeholder="Enter Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-horizontal">
+                            <label class="control-label">
+                                Health Factors
+                            </label>
+                            <ul id="lConsults">
+                                <li class="list-group-item">
+                                    Consult Dr. Bombay
+                                </li>
+                                <li class="list-group-item">
+                                    Consult Nurse Ratched
+                                </li>
+                                <li class="list-group-item">
+                                    Select PTSD Consult
+                                </li>
+                                <li class="list-group-item">
+                                    Select Anxiety Consult
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="srCollapsed">
+        <div class="col-md-12">
+            <h3>Select Rule-Triggered Alert</h3>
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <h3>Rule-Triggered Alert</h3>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-inline">
+                            <div class=" form-group">
+                                <label for="txtName" class="col-sm-5">
+                                    Name
+                                </label>
+                                <div class="col-sm-5-offset col-sm-7">
+                                    <input type="text" id="txtName" class="form-control" placeholder="Enter Name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="form-horizontal">
+                            <label class="control-label">
+                                Text
+                            </label>
+                            <textarea id="taRuleAlertText" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group pull-right">
+                <button class="btn btn-info">Cancel</button>
+                <button class="btn btn-primary" ng-click="dismiss();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

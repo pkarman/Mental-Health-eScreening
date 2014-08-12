@@ -1,0 +1,166 @@
+
+
+@media all and (max-width: 600px) {
+  #applicationName {
+	font-size:14px !important;
+	font-family: Arial,sans-serif !important;
+    letter-spacing: 0px !important;
+    font-weight: normal !important;
+	}
+	
+	.csamhImg{
+		float: right;
+		height: 55px;
+		padding-right: 7px;
+		width: 94px !important;
+	}
+}
+
+
+@media all and (max-width: 600px) {
+	.wecomePageDiv3 {
+		width: 260px;
+		margin: 10px auto;
+	}
+    .wecomePageDiv3 img {
+   		position: absolute;
+		height:250px;
+		width: 250px;
+		margin-top: 32px;
+		margin-left: -10%;
+	}
+	
+	#tabs_welcome li {
+    	display: block !important;
+	}
+	
+	.indexButtons {
+		width: 90% !important;
+		margin-top: 4px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	form#assessmentLoginForm {
+		width: 90%;
+		margin: 0px 10px;
+	}
+	
+	.leftLogin {
+		margin-left: 10%;
+	}
+	.rightLogin {
+		margin-left: 20%;
+	}
+	
+}
+
+
+@media all and (max-width: 900px) { 
+	#viewTitle {
+		font-size: 16px;
+	}
+	
+	.assessmentStartBody img{
+		text-align: center;
+		width: 100%;
+	}
+}
+
+
+@media all and (max-width: 900px) {
+	body {
+		overflow-x: hidden;
+	}
+	#left {
+	    margin-left: 12px;
+	    margin-top: 32px;
+	    width: 120px;
+	    z-index: 1000;
+	}
+	
+	#center {
+		margin-left: 130px;
+	}
+	
+	#centerItemList{
+		margin: 0;
+		width: 88%;
+	}
+
+	.triangleWrapper {
+		position: relative;
+		background: #545655;
+		border: 1px solid #ffffff;
+		width: 120px;
+	    height: 70px;
+	    position: absolute;
+	    border-top-left-radius: 6px;
+	    border-bottom-left-radius: 6px;
+	}
+	
+	#measuresProgress div {
+	    border: medium none;
+	    height: 16px;
+	    margin: 0;
+	    width: 80px;
+	}		
+}
+
+@media all and (max-width: 900px) {
+	th.matrixQuestion {
+		padding: 10px 1%;
+	}
+	
+	table.matrixQuestion {
+		width: 98%;
+	}
+}
+
+@media all and (max-width: 700px) {
+	
+	td.matrixQuestionText{
+		padding: 8px 0 8px 3px;
+	}
+	
+	#centerItemList{
+		margin: 0;
+		padding-left: 8px;
+		width: 98%;
+	}
+}
+
+@media all and (max-width: 600px) {
+	
+	#bottomNavigation {
+		width: 90%;
+	}
+	
+	#backBtn, #saveExitBtn, #nextBtn {
+		width: 100%;
+		margin-bottom: 10px;
+		margin-left: 4%;
+		height: 50px !important;
+	}
+	
+	#nextBtn {
+		margin-right: -4%;
+	}
+	
+	#centerItemList{
+		padding: 0 0 0 2%;
+		width: 99%;
+	}
+	
+	li.freeTextQuestion{
+		display: block;
+	}
+	
+	.dropdownList{
+		display: block !important;
+	}
+	
+	.ddOther {
+  		display: block !important;
+  	}
+}

@@ -1,0 +1,978 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="escreen" resourceRoot="" soapui-version="4.6.2" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="active" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint></con:endpoints><con:resource name="Active" path="/escreeningdashboard/assessment/services/assessments/active"><con:settings/><con:parameters/><con:method name="identification" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>400 500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:act="http://localhost/escreeningdashboard/assessment/services/assessments/active">act:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:act="http://localhost/escreeningdashboard/assessment/services/assessments/active">act:Fault</con:element></con:representation><con:request name="page00" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":1,
+	"currentPage":1,
+	"navigation":"current"
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request><con:request name="page01" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":1,
+	"currentPage":1,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 1,
+            "measureType": "freeText",
+            "answers": [{"answerId": 1, "answerResponse": "John"}]
+         },
+                  {
+            "measureId": 2,
+            "measureType": "freeText",
+            "answers": [{"answerId": 2, "answerResponse": "B"}]
+         },
+                  {
+            "measureId": 3,
+            "measureType": "freeText",
+            "answers": [{"answerId": 3, "answerResponse": "Jr."}]
+         },
+                  {
+            "measureId": 6,
+            "measureType": "freeText",
+            "answers": [{"answerId": 6, "answerResponse": "jbg@oro.oro"}]
+         },
+                  {
+            "measureId": 7,
+            "measureType": "freeText",
+            "answers": [{"answerId": 7, "answerResponse": "1234567890"}]
+         },
+                  {
+            "measureId": 8,
+            "measureType": "freeText",
+            "answers": [{"answerId": 8, "answerResponse": "Mornings"}]
+         },
+                  {
+            "measureId": 4,
+            "measureType": "readOnlyText",
+            "answers": [{"answerId": 4, "answerResponse": "Good"}]
+         },
+                  {
+            "measureId": 5,
+            "measureType": "readOnlyText",
+            "answers": [{"answerId": 5, "answerResponse": "1234"}]
+         }
+	]
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="demographics" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:act="http://localhost/escreeningdashboard/assessment/services/assessments/active">act:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 404 400</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>400 401</con:status><con:params/><con:element xmlns:act="http://localhost/escreeningdashboard/assessment/services/assessments/active">act:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="page00" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":2,
+	"currentPage":1,
+	"navigation":"current"
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page01" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":2,
+	"currentPage":1,
+	"navigation":"next",
+	"userAnswers":[
+		{
+			"measureId":9,
+			"answers":[
+				{
+					"answerId":9,
+					"answerResponse":"true"
+				},
+				{
+					"answerId":10,
+					"answerResponse":"false"
+				},
+				{
+					"answerId":11,
+					"answerResponse":"true"
+				},
+				{
+					"answerId":12,
+					"answerResponse":"false"
+				},
+				{
+					"answerId":13,
+					"answerResponse":"true",
+					"answerType":"other",
+					"otherAnswerResponse":"Get advise on how to move forward."
+				}
+			]
+		}
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page02" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":3,
+	"currentPage":2,
+	"navigation":"next",
+	"userAnswers":[
+        {
+            "measureId": 10,
+            "answers": [
+               {
+                  "answerId": 14,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 15,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 16,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 17,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 18,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 19,
+                  "answerResponse": "true"
+               }
+            ]
+         },
+                  {
+            "measureId": 11,
+            "answers":             [
+                              {
+                  "answerId": 20,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 21,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 22,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 23,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 12,
+            "answers": [
+               {
+                  "answerId": 24,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 25,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 26,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 27,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+         {
+            "measureId": 13,
+            "answers": [
+               {
+                  "answerId": 28,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 29,
+                  "answerResponse": "false"
+               }
+            ]
+         }
+	]
+}
+
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page03" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":4,
+	"currentPage":2,
+	"navigation":"next",
+	"userAnswers":[
+       {
+            "measureId": 14,
+            "answers": [
+               {
+                  "answerId": 30,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 31,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 32,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 33,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+         {
+            "measureId": 15,
+            "answers": [
+               {
+                  "answerId": 34,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 35,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 36,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 37,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 38,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 39,
+                  "answerResponse": "true",
+                  "otherAnswerResponse": "Patents"
+               }
+            ]
+         },
+         {
+            "measureId": 16,
+            "answers": [
+                              {
+                  "answerId": 40,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 41,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 42,
+                  "answerResponse": "true"
+               }
+            ]
+         }
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page04" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":5,
+	"currentPage":4,
+	"navigation":"next",
+	"userAnswers":[
+         {
+            "measureId": 18,
+            "answers": [{"answerId": 45, 
+              "answerResponse": "01/01/1980"
+              }]
+         },
+         {
+            "measureId": 19,
+            "answers": [
+                              {
+                  "answerId": 46,
+                  "answerResponse": "5"
+               },
+                              {
+                  "answerId": 47,
+                  "answerResponse": "11"
+               }
+            ]
+         },
+         {
+            "measureId": 20,
+            "answers": [{"answerId": 48, 
+             "answerResponse": "200"
+            }]
+         },
+                  {
+            "measureId": 17,
+            "answers": [
+                              {
+                  "answerId": 43,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 44,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 21,
+            "answers": [
+                              {
+                  "answerId": 49,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 50,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 51,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 22,
+            "answers": [
+                              {
+                  "answerId": 52,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 53,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 54,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 55,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 56,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 57,
+                  "answerResponse": "false",
+                  "answerType": "other",
+                  "otherAnswerResponse":""
+               }
+            ]
+         }
+
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page05" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":6,
+	"currentPage":5,
+	"navigation":"next",
+	"userAnswers":[
+         {
+            "measureId": 25,
+            "answers": [{"answerId": 71, 
+              "answerResponse": "40"
+              }]
+         },
+                  {
+            "measureId": 26,
+            "answers": [{"answerId": 72, 
+              "answerResponse": "clerk"
+              }]
+         },
+                  {
+            "measureId": 23,
+            "answers": [
+                              {
+                  "answerId": 58,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 59,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 60,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 61,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 62,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 63,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 64,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 65,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 24,
+            "answers": [
+                              {
+                  "answerId": 66,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 67,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 68,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 69,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 70,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 27,
+            "answers": [
+                              {
+                  "answerId": 73,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 74,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 75,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 76,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 77,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 78,
+                  "answerResponse": "true",
+                  "answerType": "other",
+                  "otherAnswerResponse":"Lottery"
+               }
+            ]
+         }
+
+
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page06" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":7,
+	"currentPage":6,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 28,
+            "answers": [
+                              {
+                  "answerId": 80,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 81,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 82,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 83,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 84,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 85,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 86,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+         {
+            "measureId": 29,
+            "tableAnswers": [
+               {
+                 "rowId": 1,
+                 "fields": [
+                   { "answerId": 87, "answerResponse": 10 }
+                  ]
+               },
+               {
+                 "rowId": 2,
+                 "fields": [
+                   { "answerId": 87, "answerResponse": 13 }
+                  ]
+               }
+            ],
+            "answers": [
+               {
+                  "answerId": 88,
+                  "answerResponse": "none"
+               }
+            ]
+         }
+
+         
+	]
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page07" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":8,
+	"currentPage":7,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 31,
+            "answers": [
+                              {
+                  "answerId": 89,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 90,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 91,
+                  "answerResponse": "false"
+               },
+            
+                              {
+                  "answerId": 92,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 93,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 94,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 95,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 96,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 97,
+                  "answerResponse": "false"
+               },
+
+                    {
+                  "answerId": 98,
+                  "answerResponse": "true",
+                  "answerType": "other",
+                  "otherAnswerResponse":"Condo"
+               }
+            ]
+         },
+                  {
+            "measureId": 32,
+            "answers": [
+                              {
+                  "answerId": 99,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 100,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 101,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 102,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 103,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 104,
+                  "answerResponse": "true",
+                  "answerType": "other",
+                  "otherAnswerResponse":"Pet turtle"
+               }
+            ]
+         }
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page08" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":9,
+	"currentPage":8,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 34,
+            "answers": [
+               {
+                  "answerId": 105,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 106,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 107,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 108,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 109,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 110,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 111,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 112,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 113,
+                  "answerResponse": "false",
+                  "answerType": "other",
+                  "otherAnswerResponse":""
+               }
+            ]
+         },
+                  {
+            "measureId": 35,
+            "answers": [
+                              {
+                  "answerId": 114,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 115,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 36,
+            "answers": [
+                              {
+                  "answerId": 116,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 117,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 118,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 119,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 120,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 121,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 122,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 123,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 124,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 125,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 126,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 127,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 128,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 129,
+                  "answerResponse": "false",
+                  "answerType": "other",
+                  "otherAnswerResponse":""
+               }
+            ]
+         }
+
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page09" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":10,
+	"currentPage":9,
+	"navigation":"next",
+	"userAnswers":[
+
+                  {
+            "measureId": 37,
+            "answers": [
+                              {
+                  "answerId": 130,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 131,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 132,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 133,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 134,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 135,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 136,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 137,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 138,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 139,
+                  "answerResponse": "false",
+                  "answerType": "other",
+                  "otherAnswerResponse":""
+               }
+            ]
+         },
+                  {
+            "measureId": 38,
+            "answers": [
+                              {
+                  "answerId": 140,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 141,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 39,
+            "answers": [
+                              {
+                  "answerId": 142,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 143,
+                  "answerResponse": "false"
+               }
+            ]
+         }
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page10" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":11,
+	"currentPage":10,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 40,
+            "answers": [
+                              {
+                  "answerId": 144,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 145,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 41,
+            "answers": [
+                              {
+                  "answerId": 146,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 147,
+                  "answerResponse": "false"
+               }
+            ]
+         },
+                  {
+            "measureId": 42,
+            "answers": [
+                              {
+                  "answerId": 148,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 149,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 150,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 151,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 152,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 153,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 154,
+                  "answerResponse": "false",
+                  "answerType": "other"
+               }
+            ]
+         }
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page11" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":12,
+	"currentPage":11,
+	"navigation":"next",
+	"userAnswers":[
+                  {
+            "measureId": 43,
+            "answers":             [
+                              {
+                  "answerId": 155,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 156,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 157,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 158,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 159,
+                  "answerResponse": "false"
+               },
+                              {
+                  "answerId": 160,
+                  "answerResponse": "false",
+                  "answerType": "other"
+               }
+            ]
+         },
+                  {
+            "measureId": 44,
+            "answers":             [
+                              {
+                  "answerId": 161,
+                  "answerResponse": "true"
+               },
+                              {
+                  "answerId": 162,
+                  "answerResponse": "false",
+                  "answerType": "other"
+               },
+                              {
+                  "answerId": 163,
+                  "answerResponse": "false"
+               }
+            ]
+         }
+	]
+}
+</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="service_history" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:act="http://localhost/escreeningdashboard/assessment/services/assessments/active">act:Response</con:element></con:representation><con:request name="page00" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":13,
+	"currentPage":1,
+	"navigation":"current"
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="page01" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+	"assessmentId":1,
+	"pageId":13,
+	"currentPage":1,
+	"navigation":"next",
+	"userAnswers":[
+
+	]
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint></con:endpoints><con:resource name="Search" path="/escreeningdashboard/dashboard/veteransearch/services/veterans/search"><con:settings/><con:parameters/><con:method name="Search" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>text/html;charset=ISO-8859-1</con:mediaType><con:status>200</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 400</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:test="http://localhost/escreeningdashboard/dashboard/veteransearch/services/veterans/search/test">test:Fault</con:element></con:representation><con:request name="searchVeterans" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{ 
+  "vistaLocalPid":"abc123",
+  "lastName":"testname",
+  "ssnLastFour":"9999" 
+}</con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:properties/><con:wssContainer/><con:sensitiveInformation/></con:soapui-project>

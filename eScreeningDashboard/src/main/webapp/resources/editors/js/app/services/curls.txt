@@ -1,0 +1,50 @@
+curl -X POST -H "Content-Type: application/json" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+curl -X POST -H "Accepts: application/json, Content-Type: application/json" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+curl -X POST -H "Accepts: application/json" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+
+
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+curl -X POST -H "Content-Type: application/json,Accepts:application/json" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+
+
+
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -d '{"name": "boo"}' http://localhost:8080/escreeningdashboard/dashboard/ex/foos2
+
+
+curl -X GET -H "Content-Type: application/json" http://localhost:8080/escreeningdashboard/dashboard/services/surveySections.json
+curl -X GET -H "Content-Type: application/json" http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/1.json
+curl -X GET -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" http://localhost:8080/escreeningdashboard/dashboard/services/surveySections.json
+curl -X GET -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/1.json
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 1, "name": "Health Functioning","description": "","displayOrder": 5,"createdDate": "2014-07-14T19:32:45.000","surveyItems": []}' http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/1
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": -1, "name": "Health Functioning","description": "","displayOrder": 5,"createdDate": "2014-07-14T19:32:45.000","surveyItems": [{"id": 2,"name": "Presenting Problems","description": null,"version": 1,"displayOrder": 1,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"}]}' http://localhost:8080/escreeningdashboard/dashboard/services/surveySection.json
+curl -X DELETE -H "Content-Type: application/json" http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/1.json
+
+
+
+
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id":1,"name":"Identification","description":"Autoassigned","displayOrder":1,"createdDate":1405366365000,"surveyItems":[{"id":1,"name":"Identification","description":"General identification survey for use in all batteries.","version":1,"displayOrder":1,"hasMha":false,"createdDate":1405366365000,"surveySectionItem":{"id":1,"name":"Identification","displayOrder":1}}]}' http://localhost:8080/escreeningdashboard/dashboard/services/surveySection/1
+
+
+
+
+
+
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '' http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/1
+
+
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 2,"name": "Demographics and Social Information","description": null,"displayOrder": 2,"createdDate": "2014-07-14T19:32:45.000","surveys": [{"id": 2,"name": "Presenting Problems","description": null,"version": 1,"displayOrder": 1,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 3,"name": "Basic Demographics","description": null,"version": 1,"displayOrder": 2,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 4,"name": "Education, Employment & Income","description": null,"version": 1,"displayOrder": 3,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 5,"name": "Social Environment","description": null,"version": 1,"displayOrder": 4,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 6,"name": "Promis Emotional Support","description": null,"version": 1,"displayOrder": 5,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 7,"name": "Homelessness Clinical Reminder","description": null,"version": 1,"displayOrder": 6,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 8,"name": "Pragmatic Concerns","description": null,"version": 1,"displayOrder": 7,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 9,"name": "Advance Directive","description": null,"version": 1,"displayOrder": 8,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"},{"id": 10,"name": "Spiritual Health","description": null,"version": 1,"displayOrder": 9,"hasMha": false,"createdDate": "2014-07-14T19:32:45.000"}]}' http://localhost:8080/escreeningdashboard/dashboard/services/surveySections/2
+
+
+
+
+
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000","surveys": [{"id": 1,"name": "Identification","description": null,"version": 1,"displayOrder": 2,"hasMha": false,"createdDate": "2014-07-25T19:06:09.000"}]}' http://localhost:8080/escreeningdashboard/dashboard/services/battery.json
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000","surveys": []}' http://localhost:8080/escreeningdashboard/dashboard/services/battery.json
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000","surveys": null}' http://localhost:8080/escreeningdashboard/dashboard/services/battery.json
+curl -X POST -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000"}' http://localhost:8080/escreeningdashboard/dashboard/services/battery.json
+{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000","surveys": [{"id": 1,"name": "Identification","description": null,"version": 1,"displayOrder": 2,"hasMha": false,"createdDate": "2014-07-25T19:06:09.000"
+
+curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -H "charset: UTF-8" -D '{"id": 3,"name": "Aspire Discharge Battery","description": "I am a description.","isDisabled": false,"createdDate": "2014-07-25T19:06:09.000","surveys": [{"id": 1,"name": "Identification","description": null,"version": 1,"displayOrder": 2,"hasMha": false,"createdDate": "2014-07-25T19:06:09.000"}]}' http://localhost:8080/escreeningdashboard/dashboard/services/batteries/3.json

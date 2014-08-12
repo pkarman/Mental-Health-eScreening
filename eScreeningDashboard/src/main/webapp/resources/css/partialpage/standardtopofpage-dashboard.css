@@ -1,0 +1,213 @@
+html body{
+	background-color: #cccccc;
+	width: 100%; 
+	min-width:1360px;
+	font-family: Arial,sans-serif;
+    margin: 0px !important;
+	overflow: auto; 
+	position: absolute; 
+}
+#vaLogoDiv {
+	float:left; 
+	padding:5 10 0 5;
+}
+
+#headerDiv {
+	width: 100%;
+	height: 75px;
+	background-color: #082f54;
+	color: White;
+} 
+
+#agencyName {
+	font-size:16px;
+}
+
+#applicationName {
+	font-size:26px !important;
+	font-family: Arial,sans-serif !important;
+    letter-spacing: 0px !important;
+    font-weight: normal !important;
+}
+
+/* Welcome styling */
+#welcomeDiv {
+	width:100%; 
+	height:27px; 
+	background-color:#31456a;
+}
+
+#loggedInUser {
+	font-size:16px;
+	float:right;
+}
+.csamhImg{
+float: right;
+height: 55px;
+padding-right: 7px;
+width: 140px;
+}
+
+#welcomeMessage {
+	/* font-style:italic; */
+	color: #B8B8B8;
+}
+.mainTabs{
+	height:35px;
+}
+
+
+
+
+/* Added by Joseph Habib */
+html body {
+	min-width: inherit;
+	margin: 0px !important;
+	position: relative;
+}
+
+h1 {
+	font-weight: bold;
+}
+
+h2 {
+	margin: 4px auto;
+}
+
+.help-inline {
+	color: red;
+	margin: 0 8px;
+}
+
+.container {
+	background-color: #fff;
+}
+
+.h1_button_12 {
+	margin-top: 12px;
+}
+
+.h1_button_22 {
+	margin-top: 22px;
+}
+
+.border-radius-main-form hr {
+	border-top: 1px solid #999;
+}
+
+.border-radius-main-form {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #bbb;
+	padding: 0px 20px;
+}
+
+.border-radius-main-form-left {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #bbb;
+	padding:0 5px;
+}
+
+
+.border-radius-box-a {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #bbb;
+	padding: 1px 1px;
+	margin:10px auto;
+}
+.border-radius-box-a hr{
+	margin:10px auto;
+}
+
+.border-radius-box-a h3{
+	margin:0px;
+	padding:6px 10px;
+	font-size:14px;
+	font-weight:bold;
+}
+.box-padding-10{
+	padding:10px;
+}
+
+.min-height-200{
+	min-height:200px;
+}
+
+.border-bottom-solid-gray{
+	border-bottom:1px solid #A2A2A2;
+}
+.gray-lighter{
+	background-color:#eee;
+}
+.txt_lable_lg {
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.txt_lable_md {
+	font-size: 16px;
+	font-weight: bold;
+}
+.badge_content{
+line-height:22px;
+}
+.badge_content a{
+	color:#fff;
+	text-decoration: underline;
+}
+
+
+h1{
+	font-weight: bold;
+}
+h2{
+	margin: 4px auto;
+}
+.help-inline{
+	color: red;
+	margin:0 8px;
+}
+.container{
+	background-color: #fff;
+}
+
+.h1_button{
+	margin-top: 25px;
+}
+
+.border-radius-main-form{
+	-webkit-border-radius:5px;
+		-moz-border-radius:5px;
+			border-radius:5px;
+			border:1px solid #bbb;
+			padding: 10px 20px;
+			background-color: #eeeeee;
+}
+
+/*
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+	.container{
+		width:90%;
+	}
+}
+
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+	.container{
+		width:90%;
+	}
+}
+*/
+
+

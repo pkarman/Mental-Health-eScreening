@@ -1,0 +1,347 @@
+@charset "utf-8";
+/**
+ * forms.css - A selection of cross-cutting form styles, provided in common fashion for 
+ * the different sections of the eScreening site.
+ *
+ * @author Bryan Henderson
+ * @date 11/22/2013
+ */
+		
+/* #Forms
+================================================== */
+/* -- Form Structural HTML -- */
+form {
+	display:inline-block;
+	margin-bottom: 20px;
+	width:70%; 
+}
+fieldset {
+	margin-bottom: 20px; }
+form fieldset{
+	display:block;
+	text-align:center;
+	width:45%;
+	min-height:350px;
+	border-left:0;
+	border-top:0;
+	border-bottom:0;
+	margin-bottom:20px;
+	border:0;
+}
+ul {
+ overflow:hidden;
+ list-style-type:none;
+}
+li {
+	text-align:left;
+	height:60px;
+}	
+		
+
+/* -- Form Elements -- */
+label{
+	font: 0.75em "MyriadSemiBold", Arial, sans-serif;
+	font-weight:700;
+	color:#292c39;
+	color:hsla(229, 16%, 19%, 1);
+	text-shadow:1px 1px 2px #c2c2a0;
+	text-shadow:1px 1px 2px hsla(60, 22%, 69%, 1);
+	padding-top:2px;
+	padding-bottom:5px;
+	display:inline-block;
+}
+input, textarea{
+	border:1px solid #4d4f53;
+	border:1px solid hsla(220, 4%, 31%, 1);
+	font:1em "Calibri";
+}
+
+
+input,	
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[list="*"],
+input[type="email"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="search"],
+input[type="tel"],
+input[type="number"],
+input[type="url"],
+input[type="file"],
+input[type="color"],
+textarea,
+select{
+	border:1px solid #8996a0;
+	border:1px solid hsla(206, 11%, 58%, 1);
+	padding:6px 4px;
+	outline:none;
+	border-radius:5px;
+	font: 0.75em "Calibri", Arial, sans-serif;
+	color:#292c39;
+	color:hsla(229, 16%, 19%, 1);
+	margin:0;
+	width: 50%;
+	max-width:100%;
+	display:block;
+	margin-bottom:20px;
+	background:#fff; 
+	display:inline-block;
+}
+input[type="checkbox"], input[type="radio"]{
+	border:1px solid #4d4f53;
+	border:1px solid hsla(220, 4%, 31%, 1);
+}
+
+select{
+	padding: 0; 
+	background: transparent;
+    -webkit-appearance: none;
+	background:url(../../images/down_arrow_select.jpg) no-repeat right #fff;
+}
+option[selected]{
+	color:#292c39;
+	color:hsla(229, 16%, 19%, 1);
+	background-color:#c2c2a0;
+	background-color:hsla(60, 22%, 69%, 1);
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="time"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="file"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="color"]:focus,
+input[type="url"]:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="range"]:focus,
+input[list*="browsers"]:focus,
+select:focus,
+textarea:focus{
+	border: 1px solid #f3cf45;
+	border:1px solid hsla(48, 88%, 61%, 1);
+	box-shadow:0 0 3px #ebb700; 
+	box-shadow:0 0 3px hsla(47, 100%, 46%, 1);
+}
+input[type="image"]{
+	height:20px;
+}
+textarea{
+	min-height: 60px; }
+label,
+legend{
+	display: block;
+	font-weight: bold;
+	font-size: 13px;  }
+select{
+	width: 220px;
+	line-height:30px;
+	height:30px; 
+}
+input[type="checkbox"]{
+	display: inline; 
+}
+
+label span,
+legend span{
+	font-weight: normal;
+	font-size: 13px;
+	color: #444; 
+}
+	
+.anchorButton{
+	box-shadow:inset 0px 1px 0px 0px #bee2f9;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#bee2f9, direction=45)";
+	filter: progid:DXImageTransform.Microsoft.Shadow(Color=#bee2f9, direction=45);
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf) );
+	background:linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+	background-color:#0083be;
+	background-color:hsla(199, 100%, 37%, 1);
+	border-top-left-radius:6px;
+	border-top-right-radius:6px;
+	border-bottom-right-radius:6px;
+	border-bottom-left-radius:6px;
+	text-indent:0;
+	border:2px solid #000;
+	border:2px solid hsla(0, 0%, 0%, 1);
+	display:inline-block;
+	color:#fff;
+	color:hsla(0, 100%, 100%, 1);
+	font-family:MyriadSemiBold, Arial, sans-serif;
+	font-size:15px;
+	font-weight:bold;
+	font-style:normal;
+	height:30px;
+	line-height:30px;
+	width:100px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 2px #c5d6e8;
+	text-shadow:1px 1px 2px hsla(211, 43%, 84%, 1);
+}
+
+.inputButton{
+	width:100px;
+	height:30px;
+	line-height:10px;
+	
+}
+
+.wideButton{
+	width:200px;
+	height:25px;
+	line-height:25px;
+}
+
+.wideControlButton{
+	width:400px;
+	height:30px;
+	line-height:30px;
+}
+
+.anchorButton:hover{
+	background:linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
+	background-color:#468ccf;
+	behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+}.anchorButton:active{
+	position:relative;
+	top:1px;
+}
+
+.bigGrayButton {
+	box-shadow:inset 0px 1px 0px 0px #fff;
+	box-shadow:inset 0px 1px 0px 0px hsla(0, 100%, 100%, 1);  
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #4d4f66) );
+	background:-moz-linear-gradient( center top, #ededed 5%, #4d4f66 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c9cac8', endColorstr='#4d4f53');
+	background-color:#c9cac8;
+	background-color:hsla(90, 2%, 79%, 1);
+	-webkit-border-top-left-radius:6px;
+	-moz-border-radius-topleft:6px;
+	border-top-left-radius:6px;
+	-webkit-border-top-right-radius:6px;
+	-moz-border-radius-topright:6px;
+	border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+	-moz-border-radius-bottomright:6px;
+	border-bottom-right-radius:6px;
+	-webkit-border-bottom-left-radius:6px;
+	-moz-border-radius-bottomleft:6px;
+	border-bottom-left-radius:6px;
+	text-indent:0;
+	border:2px solid #000;
+	border:2px solid hsla(0, 0%, 0%, 1);
+	display:inline-block;
+	color:#000;
+	color:hsla(0, 0%, 0%, 1);
+	font-family:Calibri, Arial, sans-serif;
+	font-size:15px;
+	font-weight:bold;
+	font-style:normal;
+	height:35px;
+	line-height:35px;
+	width:400px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #ffffff;
+}
+.bigGrayButton:hover {
+	background:linear-gradient( center top, #a199a1 5%, #ededed 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#beb9a6', endColorstr='#c9cac8');
+	background-color:#a199a1;
+}.bigGrayButton:active {
+	position:relative;
+	top:1px;
+}
+
+/* Form Field Error */
+.error{
+	background:#c4262e;
+	background-color:hsla(357, 68%, 46%, 1);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=40)";
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+	color:#fff;
+	color:hsla(360, 100%, 100%, 1);
+}
+
+/* Tooltip Styles */
+.ui-tooltip, .arrow:after{
+	background:#a32929;
+	background:hsla(0, 60%, 40%, 0.4);
+	border: 2px solid #fff;
+	border:2px solid hsla(0, 100%, 100%, 1);
+}
+.ui-tooltip{
+  padding: 10px 20px; 
+  color:#fff;
+  color: hsla(0, 100%, 100%, 1);
+  border-radius: 10px;
+  font: bold 14px "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
+  box-shadow:6px 5px 9px -9px #000;
+  box-shadow:6px 5px 9px -9px hsla(0, 0%, 0%, 1);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
+  filter: progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
+  behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+}
+.arrow{
+  width: 70px;
+  height: 16px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  margin-left: -35px;
+  bottom: -16px;
+}
+.arrow.top{
+  top: -16px;
+  bottom: auto;
+}
+.arrow.left{
+  left: 20%;
+}
+.arrow:after{
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: -20px;
+  width: 25px;
+  height: 25px;
+  box-shadow:6px 5px 9px -9px #000;
+  box-shadow:6px 5px 9px -9px hsla(0, 0%, 0%, 1);
+  -ms-filter:"progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
+  filter:progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
+  -ms-transform:rotate(45deg);
+  tranform:rotate(45deg);
+  behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+}
+.arrow.top:after{
+  bottom: -20px;
+  top: auto;
+}
+
+#content-container{
+	position:static;
+}
+
+#formButtons{
+	clear:both;
+	text-align:center;
+	margin-right:30px;
+	margin-bottom:20px;
+}

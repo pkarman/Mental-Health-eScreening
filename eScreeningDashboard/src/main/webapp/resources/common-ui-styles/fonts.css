@@ -1,0 +1,12 @@
+@charset "utf-8";
+/*-- Import embedded fonts --*/
+@font-face {
+	font-family:FanHeiti;
+	src:url(../fonts/AdobeFanHeitiStd-Bold.otf);
+}
+
+@font-face {
+	font-family:AdGothic;
+	src:url(../fonts/AdobeGothicStd-Bold.otf);
+}
+

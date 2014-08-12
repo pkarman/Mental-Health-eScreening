@@ -1,0 +1,134 @@
+<h4> Properties </h4>
+<div class="row">
+  <div class="col-md-12 column">
+    <form class="form" role="form">
+      <div class="form-group">
+        <label for="txtVariableNm"> Variable Name </label>
+        <input type="text" id="txtVariableNm" ng-model="question.variableName" class="form-control" placeholder="Variable Name" ng-disabled="vistaDisable" ng-blur="blur();">
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="col-md-12 column">
+      <form role="form" class="form-horizontal">
+        <div class="form-group">
+          <label> Question Text </label>
+          <textarea class="form-control" ng-model="question.text" ng-disabled="vistaDisable" ng-blur="blur();"></textarea>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label> VistA Question Text </label>
+      <textarea class="form-control" ng-model="question.vistaText" ng-blur="blur();"></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <form class="form">
+      <!-- JH OOOCOMMENT
+                <div class="btn-group col-sm-5">
+                    <a href="#" class="btn btn-success btn-sm active">Select Single</a>
+                    <a href="#" class="btn btn-success btn-sm">Select Multiple</a>
+                </div>
+                -->
+      <div class="form-group form-inline">
+        <label class="checkbox">
+          <input type="checkbox" ng-model="question.required" ng-disabled="vistaDisable" ng-blur="blur();">
+          Required </label>
+        <label class="checkbox">
+          <input type="checkbox" ng-model="question.ppi" ng-disabled="vistaDisable" ng-blur="blur();">
+          PPI </label>
+        <!--<label class="checkbox">
+          <input type="checkbox" ng-disabled="vistaDisable">
+          MHA </label>-->
+      </div>
+      
+      <!-- JH OOOCOMMENT
+            <div class="form-group form-inline">
+                <label class="col-sm-4">
+                    Help Text
+                </label>
+                <div class="col-sm-4-offset">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            -->
+    </form>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12"> 
+    <!-- JH OOOCOMMENT
+        <a href="javascript:void(0);" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-plus"></span>Add</a>
+        -->
+    <h4> Answers </h4>
+  </div>
+</div>
+<div class="row">
+  <ul class="list-group odd-even-list" ng-model="question.answers">
+    <li class="list-group-item" ng-repeat="answer in question.answers">
+      <div class="form-group">
+        <label> 1. Answer Text </label>
+        <input type="number" class="form-control" ng-model="answer.text" placeholder="Enter Answer Text" ng-disable="vistaDisable" ng-blur="blur();">
+        <br>
+      </div>
+      <!--<label class="checkbox">
+                    <input type="checkbox" >
+                    &nbsp;PPI
+                </label>--> 
+      
+      <!-- JH OOOCOMMENT
+                <button type="submit" class="btn btn-info btn-xs">
+                    Add Rule
+                </button>
+                --->
+      
+      <div class="form-group">
+        <label> Variable Name </label>
+        <input type="text" class="form-control" ng-model="answer.variableName" placeholder="Enter Variable Name" ng-blur="blur();">
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label> VistA Answer Text </label>
+            <textarea class="form-control" ng-model="answer.vistaText" ng-blur="blur();"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" ng-model="answer.type" ng-options="type.name in types" ng-change="blur();"></select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- JH OOOCOMMENT
+        <div class="btn-group pull-right">
+            <a href="#" class="btn btn-default btn-xs">Calculation Value</a>
+            <a href="#" class="btn btn-default btn-xs">Calculation Type</a>
+            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>
+        </div>
+        --> 
+      
+    </li>
+  </ul>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group pull-right">
+      <button class="btn btn-primary">Save</button>
+      <button class="btn btn-default">Cancel</button>
+    </div>
+  </div>
+</div>

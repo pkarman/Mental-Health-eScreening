@@ -1,0 +1,67 @@
+<h1>Manage Module</h1>
+<div class="col-md-12">
+  <div class="row">
+    <div class="col-sm-12">
+      
+      <!-- JH OOOCOMMENT
+      <div class="btn-group-sm pull-right"> <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a> <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> <a ui-sref="modules.detail.templatecaptureview" class="btn btn-info" href="#/modules/modules.detail/modules.addedt.templatecaptureview">Add/Edit Template</a> </div>
+      -->
+    </div>
+  
+  <div class="border-radius-main-form gray-lighter">
+  <form class="form-inline">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="col-sm-12 form-group">
+          <label>Title</label>
+          <input type="text" class="form-control" ng-model="module.name" placeholder="Enter Module Title">
+        </div>
+        <div class="col-sm-12 form-group pull-right">
+          <label>Description</label>
+          <input type="text" class="form-control" ng-model="module.description" placeholder="Enter Module Description">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="col-sm-12 form-group"><br>
+          <input type="checkbox" id="is_clinical_reminder" ng-model="module.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
+          <label>VistA Title</label>
+          <textarea class="form-control" ng-model="module.vista_title" placeholder="Enter VistA Title" ng-disabled="!module.clinicalReminder" ></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+  </div>
+  </div><br>
+  
+  <h4>Questions</h4>
+  <div class="row">
+    <div class="col-md-4 text-center">
+      
+      
+      <!-- JH OOOCOMMENT
+      <div class="form-inline form-group center-block">
+        <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
+        <button class="btn btn-success btn-sm" popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."><span class="glyphicon glyphicon-plus"></span> Page Break</button>
+      </div>
+      -->
+      <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
+        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
+          <li class="list-group-item text-left" ng-repeat="question in questions">
+            <div class="form-inline"> <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp; <span class="badge" ng-click="editQuestion(question);">Var: {{question.variableName}}</span> <span style="font-size:12px;">| {{question.type}}</span>
+              
+              
+              <!-- JH OOOCOMMENT <div class="form-group pull-right"> <span class="glyphicon glyphicon-remove-circle" style="color:red;" ng-click="deleteQuestion(question);"></span> </div> -->
+              <div class="form-group pull-right"> <span class="glyphicon glyphicon-edit" ng-click="editQuestion(question);"></span> </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+    <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
+      <div class="border-radius-main-form" style="border:1px solid #E8E8E8; min-height:470px; background-color:#FFFFFF;">
+        <div class="col-md-12" ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>

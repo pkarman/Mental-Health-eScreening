@@ -1,0 +1,1100 @@
+body {
+	/*
+	margin: 0;
+	padding-left: 205px;
+	padding-right: 70px;
+	min-width: 240px;
+	*/
+}
+#header, #footer {
+	margin-left: -206px; /* LC full width */
+	margin-right: -70px; /* RC fullwidth + CC padding */
+}
+#header {
+	padding: 1px;
+}
+
+.column {
+	position: relative;
+	float: left;
+	
+	margin-top: 5px;
+}
+
+label {
+	height: 0px;
+	margin: 8px 0px 0px 10px;
+	font-size: 14px;
+}
+
+.assessmentStartBody {
+	text-align: center;
+}
+
+.hidden{
+	display:none;
+}
+
+#left hr {
+	display: none;
+}
+
+#left {
+	/* background-image: url("../images/burlapblueBG.png"); */
+    margin-left: 12px;
+    margin-top: 32px;
+    width: 180px;
+    z-index: 1000;
+	
+}
+#right{
+	width: 20px;           /* RC width */
+	padding: 0 5px;        /* RC padding */
+	margin-right: -100%;
+}
+#center {
+	border: 1px solid #999999;
+    box-shadow: 1px 5px 20px #666666;
+    height: auto;
+    margin-bottom: 1%;
+    padding: 0 18px;
+    text-align: center;
+    width: 79%;
+    margin-left: 178px;
+    position: absolute;
+    margin-top: 32px;
+}
+
+#savedTime {
+	float: right;
+	color: #333333;
+	font-family: LUCIDA CONSOLE;
+	font-size: 14px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	word-spacing: -2px;
+}
+
+/* .triangleWrapper contains some pseudo codes as after/before to wrap the measure stuff with arrow */
+.triangleWrapper {
+	position: relative;
+	background: #545655;
+	border: 1px solid #ffffff;
+	width: 174px;
+    height: 70px;
+    position: absolute;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.triangleWrapper:hover {
+	background: #183862;
+	color: #000000;
+	cursor: pointer;
+	border-right: 0 none transparent !important;
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+.triangleWrapper:hover:after {
+	border-left-color: #183862;
+	color: #000000;
+}
+
+.triangleWrapper:after, .triangleWrapper:before {
+	left: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.triangleWrapper:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-left-color: #545655;
+	border-width: 47px;
+    margin-top: -47px;
+}
+.triangleWrapper:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-left-color: #c2e1f5;
+	border-width: 48px;
+    margin-top: -48px;
+}
+
+/* Ends the .triangleWrapper class definition */
+
+
+#measuresProgress{
+	margin-top:0;
+	padding-left:5px;
+}
+
+#measuresProgress li{
+	text-align:left;
+	margin: 32px 0 20px 0px;
+	height: 80px;
+}
+
+#measuresProgress li:hover{
+	cursor: pointer;
+}
+
+#measuresProgress li label{
+	color:#fff;
+	hsla(360, 100%, 100%, 1);
+	font-family:MyriadProRegular, Arial, sans-serif;
+	font-size:0.8em;
+	font-weight: bold;
+	text-shadow:none;
+	text-align:left;
+}
+
+div.progressBar {
+	margin: 10px 0 0 8px;
+	padding: 4px;
+	width:150px;
+	height:16px;
+	border:none;
+}
+
+div.progressEntry{
+	padding: 10px 0 6%;
+	margin-top: 4px;
+}
+
+div.progressEntry:hover{
+	background-color: #183862;
+	border-radius: 6px;
+	border: 1px solid #ffffff;
+}
+
+div.progressEntry:hover div.progressLabel{
+	padding: 0 0 0 5px;
+}
+
+div.progressEntry:hover div.progressBar{
+	margin: 9px 0 0 7px;
+}
+
+div.progressLabel label{
+	margin:0;
+}
+div.progressLabel{
+	padding: 0 0 0 6px;
+}
+
+
+/* --------------------------------------------------------------- */
+
+#formElements ul li label{
+	color: #353535;
+	width: 170px;
+	text-align: right;
+	margin-right: 20px;
+}
+
+#assessmentContainer {
+	background-color: #ffffff;
+	border: 1px solid #333333;
+	visibility: visible;
+/* 	overflow-y: auto; */
+	margin-top: 32px;
+	margin-bottom: 50px;
+	-moz-box-shadow:    3px 3px 5px 6px #333;
+  	-webkit-box-shadow: 3px 3px 5px 6px #333;
+  	box-shadow:         3px 3px 5px 6px #333;
+  	min-height: 400px;
+  	
+}
+
+#formContainer {
+	width: 98%;
+	margin: 10px 0 38px;
+}
+
+#centerItemList {
+	/* margin-left: 4x; */
+	/* overflow-y: auto; */
+	/* width: 96%; */ /* JH */
+	width: 95%;
+    margin: 0 auto;
+}
+
+#innerFormContainer{
+	/* 	display: table-cell; */
+
+}
+.validationErrorMessage {
+	margin-left: 10px; 
+	color: #ff0000; 
+	font-size: 14px;
+	line-height: 40px;
+	font-weight: bold;
+	position: absolute;
+}
+
+.otherFieldErrorMessage {
+	margin-top: -5px;
+}
+
+.skipQuestion {
+	margin-left: 5px;
+	font-weight: normal;
+/* 	position: absolute; */
+}
+
+.skipQuestion img {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+.tooltip {
+	display: none;
+	position: absolute;
+	border: 1px solid #333;
+	background-color: #161616;
+	border-radius: 4px;
+	padding: 10px;
+	color: #fff;
+	font-size: 14px;
+}
+
+.dialogSkipInfo {
+	color: #000000;
+    font-size: 14px;
+}
+
+.sessionExpireContainer {
+}
+
+.sessionExpireMessageLabel {
+	font-size: 16px;
+	line-height: 2em;
+}
+
+#counter {
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.ui-button-text-only .ui-button-text {
+    color: #000000;
+    font-size: 12px;
+    padding: 0.4em 1em;
+    border: 1px solid #666666;
+    font-weight: bold;
+}
+
+#formElements {
+	margin-top: 80px;
+}
+
+.demographicsMeasureText {
+	position: absolute; 
+	margin-top: -364px; 
+	margin-left: 28%;
+	font-size: 18px;
+}
+
+.col2 {
+	/* background-color: #e4e4e4; */
+}
+
+/* Dialog Error Message Customization */
+.ui-dialog .ui-dialog-title{
+	font-size: 18px;
+	color: #ffffff;
+	font-family: MyriadProRegular,Arial,sans-serif;
+}
+.dialogErrorMessageText {
+	font-size: 16px;
+	line-height: 1.5em;
+	text-align: center;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .customButtonsDialog {
+    background-color: #082F54;
+    border: 2px solid #808080;
+    border-radius: 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: verdana;
+    font-size: 14px;
+    font-weight: bold;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	 background-image:none !important;
+}
+.ui-button-text-only .ui-button-text {
+	color: #ffffff;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .customButtonsDialog:hover {
+	background: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%) !important;
+	background: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%) !important;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgbrgb(33,44,62)), color-stop(0.62, rgb(1,69,122))) !important;
+	background: -webkit-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%) !important;
+	background: -ms-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%) !important;
+	background: linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%) !important;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee') !important;
+}
+
+.surveyQuestion {
+	height: auto;
+	margin: 20px 0px 0px 0px;
+	/* width: 97%; */
+	width: 100%;	
+}
+.matrixCell .surveyQuestion{
+	margin:20px auto;
+	text-align:center;
+	width:30px;
+}
+
+.matrixCell div.selectMultiInput, div.selectOneInput{
+	padding:0px;
+}
+
+.matrixCell li[data="selectOneInt"] {
+	padding: 0px !important;
+}
+
+.matrixCell div.selectMultiInput, .matrixCell div.selectOneInput {
+	padding: 0px;
+}
+
+
+.surveyQuestion label {
+	font-family: Helvetica, Arial, sans-serif !important;
+}
+
+.surveyQuestionText{
+	font-weight: bold;
+	text-align: left;
+	color: #000000;
+	font-size: 14px;
+	word-wrap:break-word;
+	line-height:28px;
+}
+
+.requiredIcon{
+	color: #000000;
+	margin-left: 4px;
+	font-size: 20px;
+	display: inline;
+}
+
+/****** Question Visibility ********/
+
+.qInvisible{
+	display: none !important;
+}
+
+/***************** Table Measure ***********************/
+
+li.surveyQuestion[data="tableQuestion"]{
+	display: table;
+}
+
+li.surveyQuestion[data="tableQuestion"] > div.surveyQuestionText{
+	font-weight: bold;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	display: table-row;
+	line-height: 2.5em;
+}
+
+.tableQuestionEntryContainer {
+	padding-left: 5px;
+	padding-top: 13px;
+	display: table-row;
+}
+
+
+.tableQuestionEntry > div {
+	margin-bottom: 30px;
+	border: 2px solid #666666;
+	padding: 10px;
+	border-radius: 10px;
+	max-width: 900px;
+	display: table;
+}
+
+.tableQuestionEntry-questionContainer{
+	display: table-row;
+}
+
+.tableQuestionButtons {
+	margin-left: 1%;
+	display: table-row;
+}
+
+.tableQuestionAdd{
+	margin-right: 55px;
+}
+
+input.tableNone[type="button"]{
+	margin-left:2px;
+}
+
+.inputButton {
+	margin: 5px;
+}
+
+input.tableQuestionCell {
+	width: 100px; 
+	margin-right: 72px;
+}
+
+label.tableQuestionCell{
+	width: 94px; 
+	text-align: left; 
+	margin-right: 2px;
+}
+
+/* this is shown after the user clicks None button */
+.tableQuestionNA{
+	font-size: 20px;
+	font-weight: bold;
+	margin: 5px 0 20px 2%;
+	text-align: left;
+}
+
+.deleteRow{
+	/*
+	float: left;
+    margin-left: 20%;
+    margin-top: 4px;
+    position: absolute;
+    */
+    background-color: #ffffff;
+  	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#999999));
+  	background-image: -webkit-linear-gradient(top, #ffffff, #999999);
+  	background-image: -moz-linear-gradient(top, #ffffff, #999999);
+  	background-image: -o-linear-gradient(top, #ffffff, #999999);
+  	background-image: linear-gradient(to bottom, #ffffff, #999999);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin: -10px;
+    padding: 10px;
+    border-bottom: 1px solid #666666;
+}
+
+.entryLabelText {
+	font-size: 16px;
+	margin:0;
+}
+
+.tableDeleteButton {
+	float: right;
+	background-color:#082f54;
+ 	font-size: 14px;
+ 	padding: 2px 10px;
+ 	margin-top: -4px;
+ 	font-family: verdana;
+    border: 2px solid #808080;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+}
+
+.highlightTableQuestionEntry > div {
+	-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	border: 2px solid #0000ee;
+}
+
+
+/********************** select one dropdown *************************/
+
+.surveyQuestionDropdown {
+	width: 200px;
+	margin-left: 24px;	
+}
+
+.selectDropdown {
+	display: table-cell;
+	margin-left: 7px;
+	margin-top: 10px;
+}
+
+.dropdownList {
+	display: table-row;
+}
+
+.dropdownList > div.surveyQuestionText {
+	display: table-cell;
+    /* max-width: 265px; */
+    /* width: 50%; */
+}
+
+.ddOther {
+	display: table-cell;
+	padding-left: 7px;
+}
+
+.dropdownWrapper{
+	display: table-row;
+}
+
+.dropdownOther {
+	/* margin-left: 10px; */
+	font-size: 14px;
+}
+
+.dropdownOther input {
+	height: 16px;
+	width: 165px;
+}
+
+label.dropdownOther /* , input.dropdownOther */ {
+	color: #000000;
+    width: 118px;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+/********************** select one radio *************************/
+
+li[data="selectOneInt"] {
+	padding: 0 15px 0 0;
+}
+
+ul.selectOne {
+	list-style-type: none;
+	padding: 0;
+	margin-left: 5%;
+}
+
+ul.selectOne li {
+	padding: 0 7px 0 0;
+	margin: 3px 0;
+}
+
+div.selectOneLabel{
+	
+}
+
+div.selectOneInput{
+	width: 26px;
+}
+
+div.selectOneOther{
+ 	margin-left: 37%; 
+    margin-top: -20px;
+}
+
+label.radioLabel {
+	dispaly: inline;
+}
+
+div.selectOneInput > input[type="radio"] {
+    height: 22px;
+    width: 22px;
+	position:relative;
+	z-index: 10;
+	top: 10px;
+	left: 0;
+	opacity: 0;
+    vertical-align: middle;
+}
+
+div.selectOneInput > input[type="radio"] + div:before {
+	background: url("customInputs.png") no-repeat scroll left -2px rgba(0, 0, 0, 0);
+	background-position: -36px -3px;
+    content: " ";
+    display: inline-block;
+    height: 22px;
+    position: relative;
+/*     left: 47.5px; */
+    top: -10px;
+    width: 22px;
+    z-index: 5;
+    
+    border-radius: 16px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	border: 2px solid #666666;
+}
+
+div.selectOneInput > input[type="radio"]:checked + div:before { 
+	background-position: -36px -133px;
+	background-color: red; 
+} 
+div.selectOneInput > input[type="radio"]:hover:checked + div:before,
+div.selectOneInput > input[type="radio"]:focus:checked + div:before  { 
+	background-position: -36px -166px; 
+} 
+div.selectOneInput > input[type="radio"]:active:checked + div:before { 
+	background-position: -36px -199px; 
+} 
+
+/********************** select multi *************************/
+
+ul.selectMulti, ul.selectMulti li{
+	list-style-type:none; 
+  	margin:0;
+  	padding:0;
+}
+
+ul.selectMulti, ul.selectOne {
+	max-width: 90%;
+}
+
+ul.selectMulti {
+	margin-left: 3%;
+}
+
+ul.selectMulti li, ul.selectOne li{
+  	display: table;
+  	float: left;
+  	clear: none;
+  	/* width: 260px; */ /* JH */ 
+	width: 30%;
+	min-width:260px;
+}
+
+ul.selectMulti li{
+	padding: 0 30px 0 0;
+}
+
+div.selectMultiInput, div.selectOneInput {
+	padding: 0 9px 0 0;
+	display: table-cell;
+	vertical-align:middle;
+	height: 100%;
+}
+
+div.selectMultiInput{
+	width: 73px;
+}
+
+.checkSwitchTextLabel label, div.selectOneLabel label{
+	margin: 0;
+	color: #000000;
+	width: 100%;
+	text-align: left; 
+	line-height: 1.5em;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+div.checkSwitchTextLabel, div.selectOneLabel {
+	display:table-cell;
+	vertical-align:middle;
+	height: 100%;
+	max-width: 188px;
+}
+
+input.selectOther {
+	width: 100%; 
+}
+
+div.checkSwitchOff, div.checkSwitchOn{
+	font-weight: bold;
+}
+
+/***************** free text ***********************/
+
+li.freeTextQuestion{
+	display: table-row;
+}
+
+div.freeTextLabel{
+	display: table-cell;
+	/* width: 50%;
+	max-width: 275px; */
+}
+
+div.freeTextFieldContainer{
+	
+}
+
+div.freeTextFieldContainer input{
+	font-size: 14px;
+	margin-top: 10px;
+	color: #000000;
+	margin-left: 7px; /* should match .selectDropdown */
+}
+
+.phoneFormat {
+ 	font-size: 13px; 
+ 	font-style: italic;
+ 	font-weight: bold;
+ 	color: #454545;
+}
+
+input.freeTextMulti{
+	width: 4em;
+}
+
+label.freeTextMulti{
+	
+}
+
+label.freeTextAnswer{
+	/*width: 5em;*/
+	white-space: nowrap;
+	color: #666;
+	margin-top: 0;
+	margin-left: 10px;
+	width:auto;
+}
+
+label.freeTextQuestion{
+	margin-left: 0;
+	width: 96%;
+	color: #000000;
+}
+
+input.freeTextReadOnly{
+	border: none;
+	background:white;
+	font-size: 14px;
+    margin-top: 10px;
+}
+
+
+/***************** Matrix Questions ***********************/
+
+.matrixQuestionText{
+	width: auto;
+	text-align: left;
+}
+
+table.matrixQuestion{
+	width: 100%;
+	/* max-width: 1100px; */
+	max-width: 100%;
+	border: 1.5px solid #666666;
+	margin: 28px 0px;
+	border-collapse: collapse;
+	text-align:center;
+}
+td.matrixQuestionText  {
+    padding: 8px;
+    min-width: 300px;
+}
+/* 
+.matrixQuestion{
+ 	empty-cells: hide;
+} 
+td:empty {
+	width: 10px;
+	background-color: red;
+}
+th:empty {
+	width: 10px;
+	background-color: red;
+}
+*/
+	
+.matrixQuestion thead{
+	background-color: #ffffff;
+  	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#999999));
+  	background-image: -webkit-linear-gradient(top, #ffffff, #999999);
+  	background-image: -moz-linear-gradient(top, #ffffff, #999999);
+  	background-image: -o-linear-gradient(top, #ffffff, #999999);
+  	background-image: linear-gradient(to bottom, #ffffff, #999999);
+}
+.matrixQuestion th {
+	padding: 4px;
+}
+th.matrixQuestion{
+	padding: 10px 24px;
+	font-size: 14px;
+	width: 15%;
+}
+
+tr.matrixEven{
+	background: white;
+}
+
+tr.matrixOdd{
+	background: #e0e0e0;
+}
+
+td.matrixCell > li.selectOneList{
+	/* padding-left: 40%; */
+	padding-bottom: 13px;
+}
+
+
+td.matrixCell > li.selectMultiCheckbox{
+	padding: 30px 0 0 32%;
+}
+
+td.matrixQuestionText > div.selectOther{
+	width: 150px;
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 24px;
+}
+
+td.matrixQuestionText input.selectOther{
+	padding: 10px;	
+}
+
+.mqRequired {
+	color: #000000;
+	margin-left: 4px;
+	font-size: 1.5em;
+}
+
+.popupOverride {
+	background: red !important;	
+}
+
+
+/*************************************************************/
+/********* Styles for the complete survey page **************/
+#congratsLabel {
+	font-size: 32px;
+	margin: 10px 0px;
+}
+
+#completionInfo {
+	font-size: 22px;
+	margin: 10px 0px 10px 20px;
+	font-weight: bold;
+}
+
+#completionText {
+	margin: 10px 0px;
+    text-align: left;
+}
+
+#graphicImages {}
+
+.imageContainer {
+	display: inline;
+	margin: 0px 10px 20px 10px;
+}
+
+.imageContainer img {
+	margin-top: 20px;
+	padding: 10px;
+	width: 343px;
+	height: 87px;
+}
+
+#questionCompleteGraphics {
+	margin: 20px 0px;
+}
+
+.buttonWrapper {
+	margin-top: -164px;	
+}
+
+.buttonWrapper div{
+	display: inline;
+}
+
+#doneButton {
+	/* display: none; */
+	width: 300px;
+}
+.doneButton {
+	width: 300px !important;
+	height: 40px;
+	margin-top: 190px;
+}
+
+#nextIncompleteButton {
+	width: 190px;
+	float: right;
+	margin-top: 0px;
+}
+
+#previousIncompleteButton {
+	width: 300px;
+}
+
+.progressShowWrapper {
+	padding: 10px;
+}
+
+.accumulatedRequired {
+	font-weight: bold;
+	color: #666666;
+}
+
+.accumulatedTotal {
+	font-weight: bold;
+	color: #666666;
+}
+
+.progressBarCustom {
+	display: block;
+	background: url("progressBarYellow.png") repeat-x scroll 50% 50% #CCCCCC !important;
+    background: #1e5799 !important; /* Old browsers */
+	background: -moz-linear-gradient(top, #b8d779 0%, #b8d779 50%, #c5ea83 51%, #c5ea83 100%) !important; /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b8d779), color-stop(50%,#b8d779), color-stop(51%,#c5ea83), color-stop(100%,#7dbc5ea83e8)) !important; /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #b8d779 0%,#b8d779 50%,#c5ea83 51%,#c5ea83 100%) !important; /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #b8d779 0%,#b8d779 50%,#c5ea83 51%,#c5ea83 100%) !important; /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #b8d779 0%,#b8d779 50%,#c5ea83 51%,#c5ea83 100%) !important; /* IE10+ */
+	background: linear-gradient(to bottom, #b8d779 0%,#b8d779 50%,#c5ea83 51%,#c5ea83 100%) !important; /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8d779', endColorstr='#c5ea83',GradientType=0 ) !important; /* IE6-9 */
+    border: 1px solid #aaaaaa;
+    color: #222222;
+    font-weight: bold;
+				
+}
+
+.progress-main {
+	background: linear-gradient(to bottom, #EBECEF, #BFC3C7) repeat scroll 0 0 #D3D5D9;
+    border-radius: 17px;
+    box-shadow: 0 1px rgba(255, 255, 255, 0.8) inset, 0 2px 4px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 0 6px #B6BABE, 0 7px rgba(255, 255, 255, 0.1);
+    height: 34px;
+    margin: 20px auto;
+    overflow: hidden;
+    padding: 0 15px;
+    text-align: center;
+    width: 220px;
+}
+
+.progress-val {
+  float: right;
+  margin-left: 15px;
+  font: bold 15px/34px Helvetica, Arial, sans-serif;
+  color: #333;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.progress-bar {
+  display: block;
+  overflow: hidden;
+  height: 8px;
+  margin: 13px 0;
+  background: #b8b8b8;
+  border-radius: 4px;
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent 60%);
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent 60%);
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent 60%);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), transparent 60%);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.progress-in {
+  display: block;
+  min-width: 8px;
+  height: 8px;
+  background: #1997e6;
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0) 61%, rgba(0, 0, 0, 0.2)), -webkit-linear-gradient(left, #147cd6, #24c1fc);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0) 61%, rgba(0, 0, 0, 0.2)), -moz-linear-gradient(left, #147cd6, #24c1fc);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0) 61%, rgba(0, 0, 0, 0.2)), -o-linear-gradient(left, #147cd6, #24c1fc);
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0) 61%, rgba(0, 0, 0, 0.2)), linear-gradient(to right, #147cd6, #24c1fc);
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+
+.hideButton {
+	visibility : hidden;
+	position : absolute;
+}
+
+.showButton {
+	visibility : visible;
+	margin-top : 200px;
+}
+
+.lastPageCenter {
+	margin-left: 8px !important;
+	margin-right: 8px;
+    width: 96% !important;
+}
+
+#summaryNotes {
+	text-align: left; 
+	margin-top: 20px;
+	border-bottom: 1px solid #666666;
+}
+
+.instructionLi {
+	margin: 16px 0px;
+}
+
+@media (min-width: 768px) {
+	/* 
+	body{
+		border:4px solid yellow;	
+	}
+	*/
+	ul.selectMulti li, ul.selectOne li{
+		display: table;
+		float: left;
+		clear: none;
+		/* width: 260px; */ /* JH */ 
+		width: 90%;
+		min-width:95%;
+
+	}
+}
+
+@media (min-width: 992px) {
+	/* body{
+		border:4px solid blue;	
+	}*/
+	
+	
+	ul.selectMulti li, ul.selectOne li{
+		display: table;
+		float: left;
+		clear: none;
+		/* width: 260px; */ /* JH */ 
+		width: 45%;
+		min-width:45%;
+	}
+
+	
+	
+}
+@media(min-width:1200px){
+	/* 
+	body{
+		border:4px solid red;	
+	}
+	*/
+	ul.selectMulti li, ul.selectOne li{
+		display: table;
+		float: left;
+		clear: none;
+		/* width: 260px; */ /* JH */ 
+		width: 45%;
+		min-width:260px;
+	}
+
+
+}
+
+@media (min-width: 1800px) {
+	/* 
+	body{
+		border:4px solid green;	
+	}
+	*/
+	ul.selectMulti li, ul.selectOne li{
+		display: table;
+		float: left;
+		clear: none;
+		/* width: 260px; */ /* JH */ 
+		width: 30%;
+		min-width:260px;
+	}
+
+}
+
+

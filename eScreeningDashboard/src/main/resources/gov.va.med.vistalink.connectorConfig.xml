@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connectors encryptionScoped="false"
+	xsi:schemaLocation="http://med.va.gov/vistalink/adapter/config ./connectorConfig.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://med.va.gov/vistalink/adapter/config">
+
+	<connector jndiName="vljtestconnector" ip="54.235.74.13"
+		port="8000" primaryStation="500" access-code="SGll8EpcOHZe9oXgwuPsFg=="
+		verify-code="JQ9S3/VDJAQJO39bZVcqP8q3W8JSIxt9" encrypted="true"
+		enabled="true" timeout="100" always-use-default-as-min="false"/>
+		
+	<connector jndiName="vljsdconnector" ip="10.184.72.10"
+		port="18110" primaryStation="664" access-code="cBM29nD"
+		verify-code="Ry8kq5MP#1234" encrypted="false"
+		enabled="true" timeout="100" always-use-default-as-min="false"/>
+
+</connectors>

@@ -1,0 +1,229 @@
+<h4> Properties </h4>
+<div class="row">
+  <div class="col-md-12 column">
+    <form class="form" role="form">
+      <div class="form-group">
+        <label for="txtVariableNm"> Variable Name </label>
+        <input type="text" id="txtVariableNm" class="form-control" placeholder="Variable Name">
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="col-md-12 column">
+      <form role="form" class="form-horizontal">
+        <div class="form-group">
+          <label> Question Text </label>
+          <textarea class="form-control"></textarea>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label> VistA Question Text </label>
+      <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <form class="form">
+      <!-- JH OOOCOMMENT
+                <div class="btn-group col-sm-5">
+                    <a href="#" class="btn btn-success btn-sm active">Select Single</a>
+                    <a href="#" class="btn btn-success btn-sm">Select Multiple</a>
+                </div>
+                -->
+      <div class="form-group form-inline">
+        <label class="checkbox">
+          <input type="checkbox">
+          Required </label>
+        <label class="checkbox">
+          <input type="checkbox">
+          PPI </label>
+        <label class="checkbox">
+          <input type="checkbox">
+          MHA </label>
+      </div>
+      
+      <!-- JH OOOCOMMENT
+            <div class="form-group form-inline">
+                <label class="col-sm-4">
+                    Help Text
+                </label>
+                <div class="col-sm-4-offset">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            -->
+    </form>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12"> 
+    <!-- JH OOOCOMMENT
+        <a href="javascript:void(0);" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-plus"></span>Add</a>
+        -->
+    <h4> Answers </h4>
+  </div>
+</div>
+<div class="row">
+  <ul class="list-group">
+    <li class="list-group-item">
+      <div class="form-group">
+        <label> Answer Text </label>
+        <input type="number" class="form-control" placeholder="Enter Answer Text">
+        <br>
+      </div>
+      <!--<label class="checkbox">
+                    <input type="checkbox" >
+                    &nbsp;PPI
+                </label>--> 
+      
+      <!-- JH OOOCOMMENT
+                <button type="submit" class="btn btn-info btn-xs">
+                    Add Rule
+                </button>
+                --->
+      
+      <div class="form-group">
+        <label> Variable Name </label>
+        <input type="text" class="form-control" placeholder="Enter Variable Name">
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label> VistA Answer Text </label>
+            <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Type</label>
+            <select class="form-control">
+              <option value="Regular">Regular</option>
+              <option value="Other">Other</option>
+              <option value="None">None</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- JH OOOCOMMENT
+        <div class="btn-group pull-right">
+            <a href="#" class="btn btn-default btn-xs">Calculation Value</a>
+            <a href="#" class="btn btn-default btn-xs">Calculation Type</a>
+            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>
+        </div>
+        --> 
+      
+    </li>
+    <li class="list-group-item">
+      <div class="form-group">
+        <label> Answer Text </label>
+        <input type="number" class="form-control" placeholder="Enter Answer Text">
+        <!--<label class="checkbox">
+                    <input type="checkbox" >
+                    &nbsp;PPI
+                </label>--> 
+        
+        <!-- JH OOOCOMMENT
+                <button type="submit" class="btn btn-info btn-xs">
+                    Add Rule
+                </button>
+                -->
+        <label> Variable Name </label>
+        <input type="text" class="form-control" placeholder="Enter Variable Name">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label> VistA Answer Text </label>
+              <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Type</label>
+              <select class="form-control">
+                <option value="Regular">Regular</option>
+                <option value="Other">Other</option>
+                <option value="None">None</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- JH OOOCOMMENT
+                <div class="btn-group pull-right">
+                    <a href="#" class="btn btn-default btn-xs">Calculation Value</a>
+                    <a href="#" class="btn btn-default btn-xs">Calculation Type</a>
+                    <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>
+                </div>
+                --> 
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="form-group">
+        <label> Answer Text </label>
+        <input type="number" class="form-control" placeholder="Enter Answer Text">
+        <!--<label class="checkbox">
+                    <input type="checkbox" >
+                    &nbsp;PPI
+                </label>--> 
+        
+        <!-- JH OOOCOMMENT
+                <button type="submit" class="btn btn-info btn-xs">
+                    Add Rule
+                </button>
+                -->
+        
+        <label> Variable Name </label>
+        <input type="text" class="form-control"  placeholder="Enter Variable Name">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label> VistA Answer Text </label>
+              <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Type</label>
+              <select class="form-control">
+                <option value="Regular">Regular</option>
+                <option value="Other">Other</option>
+                <option value="None">None</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- JH OOOCOMMENT
+                <div class="btn-group pull-right">
+                    <a href="#" class="btn btn-default btn-xs">Calculation Value</a>
+                    <a href="#" class="btn btn-default btn-xs">Calculation Type</a>
+                    <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>
+                </div>
+                --> 
+      </div>
+    </li>
+  </ul>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group pull-right">
+      <button class="btn btn-primary">Save</button>
+      <button class="btn btn-default">Cancel</button>
+    </div>
+  </div>
+</div>

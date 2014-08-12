@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- <debug /> -->
+
+	<http pattern="/assessment/resources/**" security="none" />
+	<http pattern="/dashboard/resources/**" security="none" />
+	<http pattern="/resources/**" security="none" />
+
+	<http pattern="/dashboard/login*" security="none" />
+
+	<http pattern="/dashboard/**" use-expressions="true" authentication-manager-ref="authenticationManagerForAdmin">
+		<intercept-url pattern="/dashboard/home" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/assessmentDashboard/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/assessmentReport/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/assessmentSummary/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/createUser/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/editUser/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/exportData/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/formsEditor/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/importData/**" access="hasRole('Healthcare System Technical Administrator')" />
+        <intercept-url pattern="/dashboard/myAccount/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/programEditView/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/programListView/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/programManagement/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/services/editors" access="none" />
+		<intercept-url pattern="/dashboard/systemConfiguration/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/userEditView/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/userListView/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/userManagement/**" access="hasRole('Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/veteranSearch/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/vista" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+
+		<intercept-url pattern="/dashboard/createBattery/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/createVeteran/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/editVeteranAssessment/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+        <intercept-url pattern="/dashboard/mapVeteranToVistaRecord/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/selectVeteran/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/veteranDetail/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+
+		<form-login 
+			login-page="/dashboard/login"
+			login-processing-url="/dashboard/j_spring_security_check_admin"
+			default-target-url="/dashboard/home"
+			authentication-failure-url="/dashboard/login?error=true"
+			authentication-success-handler-ref="redirectRoleStrategy"
+			username-parameter="userNameParam"
+			password-parameter="passwordParam" />
+
+		<logout logout-success-url="/dashboard/login" />
+	</http>
+
+	<authentication-manager id="authenticationManagerForAdmin">
+		<authentication-provider user-service-ref="userDetailsService">
+			<password-encoder ref="passwordEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- -->
+	<beans:bean id="authenticationProvider" class="gov.va.escreening.security.EscreenAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="userDetailsService" />
+		<beans:property name="passwordEncoder" ref="passwordEncoder" />
+	</beans:bean>
+
+	<beans:bean id="userDetailsService" class="gov.va.escreening.security.EscreenUserDetailsService">
+		<beans:property name="dataSource" ref="mainDataSource" />
+	</beans:bean>
+
+	<beans:bean id="passwordEncoder" class="gov.va.escreening.security.EscreenPasswordEncoder"/>
+
+	<beans:bean id="redirectRoleStrategy" class="gov.va.escreening.security.RoleBasedAuthenticationSuccessHandler">
+		<beans:property name="roleUrlMap">
+			<beans:map>
+				<beans:entry key="Assistant" value="/dashboard/home" />
+				<beans:entry key="Clinician" value="/dashboard/home" />
+				<beans:entry key="Consultation and Program Evaluation Administrator" value="/dashboard/home" />
+				<beans:entry key="Healthcare System Technical Administrator" value="/dashboard/home" />
+			</beans:map>
+		</beans:property>
+	</beans:bean>
+
+</beans:beans>
