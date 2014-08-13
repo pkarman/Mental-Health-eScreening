@@ -319,7 +319,6 @@ public class XportDataTest {
 		}
 
 		Assert.assertTrue(maLst.size() == totalMasAdded);
-
 		return maMap;
 	}
 
