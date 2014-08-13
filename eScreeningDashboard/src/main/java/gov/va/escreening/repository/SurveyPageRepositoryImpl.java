@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -27,17 +25,10 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
     public List<SurveyPage> getSurveyPagesForVeteranAssessmentId(int veteranAssessmentId) {
 
         logger.trace("getSurveyPagesForVeteranAssessmentId");
-
-//        String sql = "SELECT sp FROM SurveyPage sp "
-//                    + "JOIN sp.survey s "
-//                    + "JOIN s.veteranAssessmentSurveyList vas "
-//                    + "JOIN vas.veteranAssessment va "
-//                    + "WHERE va.veteranAssessmentId = :veteranAssessmentId "
-//                    + "ORDER BY s.displayOrder, sp.pageNumber";
         
         String sql = "select sp.* from survey_page sp join survey s on sp.survey_id = s.survey_id join survey_section ss on s.survey_section_id = ss.survey_section_id "
                 + "where s.survey_id in (select survey_id from veteran_assessment_survey where veteran_assessment_survey.veteran_assessment_id= :veteranAssessmentId) "
-                + " order by ss.display_order, sp.page_number, s.display_order";
+                + " order by ss.display_order, s.display_order, sp.page_number";
 
         Query query = entityManager.createNativeQuery(sql, SurveyPage.class);
         query.setParameter("veteranAssessmentId", veteranAssessmentId);

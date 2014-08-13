@@ -7,10 +7,12 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
+import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,9 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
 
     @Autowired
     private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+    
+    @Autowired
+    private VeteranAssessmentMeasureVisibilityRepository visibilityRepo;
 
     @Transactional(readOnly = true)
     @Override
@@ -70,18 +75,35 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
 
         for (SurveyPage page : survey.getSurveyPageList())
         {
+        	Map<Integer, Boolean> visibilityMap = visibilityRepo.getVisibilityMapForSurveyPage(veteranAssessmentId, page.getSurveyPageId());
+
             int index =1;
             for (gov.va.escreening.entity.Measure m : page.getMeasures())
             {
+            	
                 if(m==null) continue;
+                
+                if(visibilityMap.containsKey(m.getMeasureId()) && !visibilityMap.get(m.getMeasureId()))
+                {
+                	continue;
+                }
                  
-                appendMeasure(String.valueOf(index++) + ". ", sb, resp, m, "");
+                String indent = "";
+                if(visibilityMap.containsKey(m.getMeasureId()))
+                {
+                	indent = "  ";
+                }
+                appendMeasure(indent, sb, resp, m, "");
                 if (m.getChildren() != null)
                 {
-                    int childIndex = 1;
+                    //int childIndex = 1;
                     for (Measure measure : m.getChildren())
                     {
-                        appendMeasure(String.valueOf(childIndex++) + ". ", sb, resp, measure, "  ");
+                    	 if(visibilityMap.containsKey(m.getMeasureId()) && !visibilityMap.get(m.getMeasureId()))
+                         {
+                         	continue;
+                         }
+                        appendMeasure("  ", sb, resp, measure, "  ");
                     }
                 }
             }
@@ -149,10 +171,11 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
         }
 
         sb.append(ques);
-        if (answer != null)
+        if (answer == null)
         {
-            sb.append(" ").append(answer);
+           answer = "No Answer";
         }
+        sb.append(" ").append(answer);
         sb.append("\n\n");
     }
     
