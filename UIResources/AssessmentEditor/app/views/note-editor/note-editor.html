@@ -1,0 +1,9 @@
+<div ng-app="AssessmentEditor" ng-controller="NoteEditorCtrl" class="container app">
+    <div><h5>Note Annotation Text</h5></div>
+    <div text-angular="text-angular" ng-model="noteHTMLVariable" ta-toolbar-class="btn-toolbar"
+         ta-toolbar="[['h1','h2','h3'],['bold','italics']]"
+         ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
+         ta-toolbar-button-active-class="active"></div>
+    <h5>Note Preview</h5>
+    <textarea ng-model="noteHTMLContent" style="width: 100%"></textarea>
+</div>

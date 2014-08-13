@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="AssessmentEditor">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<head>
+    <title ng-bind="$state.current.name + ' - VA Assessment Editor'">VA Assessment Editor</title>
+    <link rel="stylesheet" type="text/css" href="vendors/bootstrap/css/bootstrap.min.css">
+    <link rel='stylesheet' href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="app/css/ng-grid.min.css">
+    <link rel="stylesheet" type="text/css" href="app/css/main.css">
+    <!-- ### JavaScript Modules. ### -->
+
+    <!-- Load vendor scripts. -->
+    <script type="text/javascript" src="vendors/jquery/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="vendors/angular/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
+    <script type="text/javascript" src="vendors/lodash/lodash.min.js"></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="app/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="app/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="app/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="app/services/dd-uuid.js"></script>
+    <script type="text/javascript" src="app/directives/dd-drag-drop.js"></script>
+    <script type="text/javascript" src="app/directives/angular-texteditor.js"></script>
+    <script type="text/javascript" src="app/directives/ng-grid-2.0.7.min.js"></script>
+    <script type="text/javascript" src="app/directives/xeditable.min.js"></script>
+
+    <!-- Load Application JS -->
+    <script type="text/javascript" src="app/main.js"></script>
+    <script type="text/javascript" src="app/services/assessment-list-service.js"></script>
+    <script type="text/javascript" src="app/states.js"></script>
+    <script type="text/javascript" src="app/directives/angular-texteditinplace.js"></script>
+
+    <!-- Load Services. -->
+
+
+    <!-- Load Controllers. -->
+    <script type="text/javascript" src="app/controllers/assessment-builder/assessment-builder.js"></script>
+    <script type="text/javascript" src="app/controllers/note-editor/note-editor.js"></script>
+    <script type="text/javascript" src="app/controllers/completion-editor/completion-editor.js"></script>
+
+</head>
+<body>
+<div class="navbar navbar-fixed-top navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+
+        <!-- ui-sref is a great directive for linking a state location with an anchor link.
+             You should almost always use ui-sref instead of href on your links when you want
+             then to navigate to a state. When this link is clicked it will take the application
+             to the 'home' state. Behind the scenes the directive also adds the correct href attr
+             and url. -->
+        <a class="navbar-brand" ui-sref="home">VA Assessment Editor</a>
+        <ul class="nav navbar-nav">
+
+            <!-- Here you can see ui-sref in action again. Also notice the use of $state.includes, which
+                 will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
+                 its descendant states are activated. -->
+            <li ng-class="{active: $state.inludes('survey-builder')}"><a ui-sref="survey-builder">Survey Builder</a></li>
+            <li ng-class="{active: $state.includes('assessment-builder')}"><a ui-sref="assessment-builder">Pages Builder</a></li>
+            <li ng-class="{active: $state.includes('formula-editor')}"><a ui-sref="formula-editor">Formula Editor</a></li>
+            <li ng-class="{active: $state.includes('action-editor')}"><a ui-sref="action-editor">Action Editor</a></li>
+            <li ng-class="{active: $state.includes('note-editor')}"><a ui-sref="note-editor">Note Editor</a></li>
+            <li ng-class="{active: $state.includes('completion-editor')}"><a ui-sref="completion-editor">Completion Editor</a></li>
+        </ul>
+
+        <!-- Here is a named ui-view. ui-views don't have to be named, but we'll be populate this
+             one from various different child states and we want a name to help us target. -->
+        <p ui-view="hint" class="navbar-text pull-right"></p>
+    </div></div>
+</div>
+<!-- Here is the main ui-view (unnamed) and will be populate by its immediate children's templates
+     unless otherwise explicitly named views are targeted. It's also employing ng-animate. -->
+<div ui-view class="container slide" style="margin-top: 80px;"></div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        jQuery.event.props.push('dataTransfer');
+    });
+</script>
+</body>
+</html>

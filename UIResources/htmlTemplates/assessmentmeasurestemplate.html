@@ -1,0 +1,207 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+	<head>
+    	<meta charset="utf-8">
+    	<meta name="description" content="Measures/Assessments Main View">
+		<meta name="author" content="Bryan Henderson">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">>
+		<title>Measures - Identification</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/common-palette.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/fontfaces.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/forms.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/assessmenttemplate.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/assessment-measures-master.css">
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding-left: 205px;    /* LC fullwidth */
+				padding-right: 70px;   /* RC fullwidth + CC padding */
+				min-width: 240px;       /* LC fullwidth + CC padding */
+			}
+			#header, #footer {
+				margin-left:-220px; /* LC full width */
+				margin-right:-70px; /* RC fullwidth + CC padding */
+			}
+			
+			.column {
+				position: relative;
+				float: left;
+			}
+			
+			#left {
+				width: 180px;           /* LC width */
+				padding: 0 10px;        /* LC padding */
+				right: 240px;           /* LC fullwidth + CC padding */
+				margin-left:-100%;
+				
+			}
+			#right{
+				width: 20px;           /* RC width */
+				padding: 0 5px;        /* RC padding */
+				margin-right: -100%;
+			}
+			#center {
+				/*margin-left:200px;*/
+				margin-bottom:1%;
+				text-align:center; 
+				padding: 0 18px;
+				width: 100%;
+				height:auto;
+				border:1px solid hsla(0,0%,60%,1);
+				box-shadow:1px 5px 20px #666666;
+			}
+			
+			#measuresProgress{
+				margin-top:0;
+				padding-left:5px;
+			}
+			
+			#measuresProgress li{
+				text-align:left;
+			}
+			
+			#measuresProgress li label{
+				color:#fff;
+				hsla(360, 100%, 100%, 1);
+				font-family:MyriadProRegular, Arial, sans-serif;
+				font-size:0.6em;
+				font-weight:400;
+				text-shadow:none;
+				text-align:left;
+			}
+			#measuresProgress div{
+				margin:4px 0px 0px 20px;
+				width:150px;
+				height:10px;
+				border:1px solid green;
+			}
+		</style>
+        <!-- JavaScript loads -->
+	</head>
+	<body>
+		<div id="header" role="heading">
+        	<div id="logo-container">
+                <!-- Link Back to Home, wrapping Logo -->
+                <a href="#">
+                        <img src="resources/images/logo_va_cleaned.png" alt="Department of Veterans Affairs">
+                </a>
+			</div>
+			<!-- End Logo Link -->
+            <!-- Headline and Application text -->
+            <div class="agencyTitle">
+				<span id="agencyName"> 
+					Department of Veterans Affairs
+				</span>
+			</div>
+			<div class="applicationTitle">
+				<span id="applicationName"> 
+					OEF/OIF Health Assessment
+				</span>
+			</div>
+            <div id="loggedInContainer">
+            	<span id="userLogged">Joe Clinician</span>
+            </div>
+        </div>
+		<!-- Three columns, fixed-fluid-fixed -->
+        <div id="center" class="column contentAreaGrayRadial">
+			<!-- Application Active Region - The content here will represent the partial-views of the Measures/Assessments -->
+            <div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
+            	<!-- The presence of the form is for grouping purposes, and if JavaScript is disabled, or if the 
+                    	user is utilizing a screen reader.  It will 'wrap' the partial views, and will be available for a full
+                        submit at the end of the navigation, when JS is not available. Otherwise, the master submit button
+                        will be invisible to the sighted, JS-enabled user. -->
+                    <form id="measuresForm" action="#" method="post" role="form">
+                        <!-- Partial-views will be contained within this section, partial-view per representative <div> container -->
+                        <div id="screen1">
+                            <!-- Controls go here -->
+                            <h3 id="viewTitle" role="heading" aria-relevant="text">Demographics &amp; Social Information</h3>
+                            <h4 id="questionText" role="contentinfo">What brings you to the VA health care system?</h4>
+                            <ul id="formControls" role="rowgroup">
+                            	<li role="row">
+                                	<label for="enrollmentChk">Enrollment</label>
+                                	<input id="enrollmentChk" type="checkbox" value="false" role="checkbox" aria-required required>
+                                </li>
+                                <li role="row">
+                                	<label for="mentalHealthChk">Mental Health Concerns</label>
+                                	<input id="mentalHealthChk" type="checkbox" value="false" role="checkbox" aria-required required>
+                                </li>
+                                <li role="row">
+                                	<label for="physHealthChk">Physical Health Concerns</label>
+                                	<input id="physHealthChk" type="checkbox" value="false" role="checkbox" aria-required required>
+                                </li>
+                                <li role="row">
+                                	<label for="estPrimCareChk">Establish Primary Care</label>
+                                	<input id="estPrimCareChk" type="checkbox" value="false" role="checkbox" aria-required required>
+                                </li>
+                                <li role="row">
+                                	<label for="otherReasonChk">Other (if yes, please specify)</label>
+                                	<input id="otherReasonChk" type="checkbox" value="false" role="checkbox" aria-activedescendant="otherReasonTxt" aria-required required>
+                                    <input id="otherReasonTxt" type="text" value="" placeholder="Provide Other Reason" role="textbox" style="visibility:hidden;">
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="screen2">
+                            <!-- Controls go here -->
+                        </div>
+                        <div id="defaultControls" role="navigation" aria-controls="default form submission" style="visibility:hidden;display:none;">
+                            <input type="submit" value="Submit Assessment">
+                            <input type="reset" value="Reset Assessment">
+                        </div>
+                        <!-- End partial-views and default (non-visible) controls -->
+                </form>
+                <!-- Navigation Control Buttons. -->
+                <div id="bottomNavigation" role="navigation">
+                    <input id="backBtn" type="button" value="&lt;&lt; Back" class="anchorButton inputButton">
+                    <!--<input id="saveExitBtn" type="button" value="Save &amp; Exit" class="anchorButton inputButton">-->
+                    <button id="saveExitButton" class="anchorButton inputButton saveExitBtn" style="height:30px;line-height:30px;"><img src="resources/css/icons/SaveGlyph.png" alt="Icon - Save and Exit" class="buttonIcon"><span class="whiteBtnText"> Save &amp; Exit</span></button>
+                    
+                    <input id="playBtn" type="button" class="anchorButton inputButton" value="&gt;"> 
+                    <input id="nextBtn" type="button" value="Next &gt;&gt;" class="anchorButton inputButton">
+                </div>
+            </div>
+			<!-- End Application Active Region -->
+            <!-- <noscript> section with descriptive text to provide users without JavaScript enabled, or screen reader-equipped, directions
+            	 for use.  -->
+            <noscript id="assessmentNotes">
+            	<!-- TODO:: Describe usage of the Measures/Assessment here. -->
+            </noscript>
+        </div>
+        <div id="left" class="column">
+            <ul id="measuresProgress">
+            	<li>
+                	<label for="idProgress" aria-label="Identification">Identification</label>
+                	<div id="idProgress" role="progressbar"></div>
+                </li>
+                <li>
+                	<label for="demoProgress" aria-label="Demographics">Demographics</label>
+                    <div id="demoProgress" role="progressbar"></div>
+                </li>
+                <li><label for="servProgress" aria-label="Service History">Service History</label>
+                    <div id="servProgress" role="progressbar"></div>
+                </li>
+                <li><label for="symptProgress" aria-label="Health Symptoms">Health Symptoms</label>
+                    <div id="symptProgress" role="progressbar"></div>
+                </li>
+                <li><label for="habitProgress" aria-label="Health Habits">Health Habits</label>
+                    <div id="habitProgress" role="progressbar"></div>
+                </li>
+                <li><label for="psychProgress" aria-label="Psychological Health">Psychological Health</label>
+                    <div id="psychgProgress" role="progressbar"></div>
+                </li>
+                <li><label for="survProgress" aria-label="Satisfaction Survey">Satisfaction Survey</label>
+                    <div id="survProgress" role="progressbar"></div>
+                </li>
+            </ul>
+        </div>
+        <div id="right" class="column">
+            <!-- Dead Space -->
+        </div>
+	</body>
+</html>
+
+

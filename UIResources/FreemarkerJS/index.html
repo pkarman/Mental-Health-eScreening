@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html ng-app="FreemarkApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Freemarker Library Test Application</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <script type="text/javascript" src="js/XMLParser.js"></script>
+    <script type="text/javascript" src="js/freemark.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="app/services/freemarkHTTP.js"></script>
+    <script type="text/javascript" src="app/controllers/freemarkController.js"></script>
+</head>
+<body ng-controller="freemarkController">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Freemark.js Test Application</h1>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form">
+                    <div class="form-group">
+                        <label for="txtFile">Input FTL File</label>
+                        <input type="text" id="txtFile" name="txtFile" class="form-control" disabled ng-model="ftlFileString">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-click="loadFTLFile();">Load FTL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Result Output</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <textarea ng-model="ftlOutput" class="form-control" rows="25">
+
+                </textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

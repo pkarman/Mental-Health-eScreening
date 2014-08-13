@@ -1,0 +1,23 @@
+<h3>api</h3>
+
+<div class='row' ng-controller='DemoApiCtrl'>
+    <div class='col-sm-6'>
+        <p>
+            <button
+                ng-click='loadRandomUser()'
+                class='btn btn-default'>
+                Load Random User
+            </button>
+        </p>
+
+        <pre ng-show='randomUsers'>{{ randomUsers | json }}</pre>
+    </div>
+
+    <div class='col-sm-6'>
+        <p>
+            This is a simple convienence wrapper around $http that lets you set a base url and pass objects through both <code>DELETE</code> and <code>GET</code> which are converted to query strings.
+        </p>
+
+        <pre>{{ codeExample }}</pre>
+    </div>
+</div>

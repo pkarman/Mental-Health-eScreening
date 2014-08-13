@@ -1,0 +1,353 @@
+<div>
+    <div class="container-fluid" ng-controller="ddPageCtrl">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar-nav-fixed affix">
+                    <p style="width:auto;"><span><b>Assessment</b></span><span style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp; {{selectedAssessment.title}}</span></p>
+                    <p style="width:auto;"><span><b>Survey</b></span><span style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select id="selSurvey" name="selSurvey" class="form-control" ng-model="selectedSurvey" ng-options="s.title for s in selectedAssessment.surveys" ng-change="surveyChanged();"></select>
+                        <option value="">-- Choose Type --</option>
+                    </select></span></p>
+                    <p style="width:auto;"><span><b>Pages</b></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" ng-click="addPage();">Add</button>&nbsp;<button class="btn btn-default" ng-click="deletePage();">Delete</button><br>
+                        <div class="pagination">
+                            <ul class="pagination">
+                                <li ng-class="{disabled: currentPage == 0}">
+                                    <a href ng-click="prevPage()">« Prev</a>
+                                </li>
+                                <li ng-repeat="n in range(selectedSurvey.pages.length)"
+                                    ng-class="{active: n == currentPage}"
+                                    ng-click="setPage()">
+                                    <a href ng-bind="n + 1">1</a>
+                                </li>
+                                <li ng-class="{disabled: currentPage == selectedSurvey.pages.length - 1}">
+                                    <a href ng-click="nextPage()">Next »</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </p>
+                    <!--<pagination total-items="totalItems" page="currentPage" on-select-page="pageChange(page);" num-pages="numPages"></pagination>-->
+
+                    <div id="formdragtarget" class="well">
+                        <accordion close-others="oneAtATime">
+                            <accordion-group>
+                                <accordion-heading>
+                                  Question Types  <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <div class="nav">
+                                    <div ng-repeat="item in list1" ng-show="item.title" ng-model="list1" x-dd-draggable="true" style="border:1px solid #cccccc;border-radius:2px;">{{item.title}}</div>
+                                </div>
+                            </accordion-group>
+                            <accordion-group>
+                                <accordion-heading>
+                                    Quick Tools <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <div class="nav">
+                                    <div ng-repeat="item in list2" ng-show="item.title"  ng-model="list2" x-dd-draggable="true" style="border:1px solid #cccccc;border-radius:2px;">{{item.title}}</div>
+                                </div>
+                            </accordion-group>
+                            <accordion-group heading="Survey Tools">
+                                <accordion-heading>
+                                    Survey Tools <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <div class="nav">
+                                    <div ng-repeat="item in list3" ng-show="item.title"  ng-model="list3" x-dd-draggable="true" style="border:1px solid #cccccc;border-radius:2px;">{{item.title}}</div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+                    </div>
+                    <!--/.well -->
+                </div>
+                <!--/sidebar-nav-fixed -->
+            </div>
+            <!--/span-->
+            <div class="col-md-6 jumbotron">
+                <div class="form-group">
+                    <label for="pageTitle" class="col-sm-3 control-label">Page Title</label>
+                    <div id="pageTitle" class="form-control" click-to-edit="assessmentPage.pageTitle"></div>
+                </div>
+                <div id="formdroptarget">
+                    <h3>Page Questions</h3>
+                    <div class="nav">
+                        <div id="dropTarget"  x-dd-drop-target="true" x-on-drop="dropped(dragEl, dropEl)" style="width:100%;height:100%;min-width:400px;min-height:400px;border:1px solid #999999;padding:10px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+            <div class="col-md-3">
+                <div class="sidebar-nav-fixed pull-right affix">
+                    <div class="well">
+                        <div id="freeTextPropsContainer">
+                            <form class="form-horizontal">
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Properties</legend>
+
+                                    <!-- Textarea -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="textarea">Question Text</label>
+                                        <div class="col-md-8">
+                                            <textarea class="form-control" id="textarea" name="textarea"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="txtId">ID</label>
+                                        <div class="col-md-3">
+                                            <input id="txtId" name="txtId" type="text" placeholder="1" class="form-control input-md" required="">
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Basic -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="selOrder">Display Order</label>
+                                        <div class="col-md-8">
+                                            <select id="selOrder" name="selOrder" class="form-control">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Basic -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="selType">Type</label>
+                                        <div class="col-md-8">
+                                            <select id="selType" name="selType" class="form-control">
+                                                <option value="1">Free Text</option>
+                                                <option value="2">Read-Only</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Basic -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="selAnswerType">Answer Type</label>
+                                        <div class="col-md-8">
+                                            <select id="selAnswerType" name="selAnswerType" class="form-control">
+                                                <option value="1">String</option>
+                                                <option value="2">Number</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div id="freeTextValidationsContainer">
+                            <form class="form-horizontal">
+                                <fieldset>
+                                    <!-- Form Name -->
+                                    <legend>Validations</legend>
+
+                                    <!-- Prepended checkbox -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="chkMin">Min Length</label>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+      <span class="input-group-addon">
+          <input type="checkbox">
+      </span>
+                                                <input id="chkMin" name="chkMin" class="form-control" type="text" placeholder="1" required="">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Prepended checkbox -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="chkMax">Max Length</label>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+      <span class="input-group-addon">
+          <input type="checkbox">
+      </span>
+                                                <input id="chkMax" name="chkMax" class="form-control" type="text" placeholder="30" required="">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="">Required</label>
+                                        <div class="col-md-4">
+                                            <div class="checkbox">
+                                                <label for="-0">
+                                                    <input type="checkbox" name="" id="-0" value="required">
+                                                    *
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="">Exact Length</label>
+                                        <div class="col-md-4">
+                                            <div class="checkbox">
+                                                <label for="-0">
+                                                    <input type="checkbox" name="" id="-0" value="exactlength">
+                                                    *
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                        </div>
+                        <!-- Select-Single/Multi -->
+                        <div id="selectSingleMultiPropsContainer">
+                            <form class="form-horizontal">
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Properties</legend>
+
+                                    <!-- Textarea -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="taQuest">Question Text</label>
+                                        <div class="col-md-4">
+                                            <textarea class="form-control" id="taQuest" name="taQuest">Enter Question</textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="txtId">ID</label>
+                                        <div class="col-md-2">
+                                            <input id="txtId" name="txtId" type="text" placeholder="1" class="form-control input-md" required="">
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Basic -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="selOrder">Display Order</label>
+                                        <div class="col-md-4">
+                                            <select id="selOrder" name="selOrder" class="form-control">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Select Basic -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="selType">Answer Type</label>
+                                        <div class="col-md-4">
+                                            <select id="selType" name="selType" class="form-control">
+                                                <option value="1">String</option>
+                                                <option value="2">Number</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="">Other</label>
+                                        <div class="col-md-4">
+                                            <div class="checkbox">
+                                                <label for="-0">
+                                                    <input type="checkbox" name="" id="-0" value="other">
+                                                    *
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="">None</label>
+                                        <div class="col-md-4">
+                                            <div class="checkbox">
+                                                <label for="-0">
+                                                    <input type="checkbox" name="" id="-0" value="none">
+                                                    *
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                            <form class="form-horizontal">
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Validations</legend>
+
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="">Required</label>
+                                        <div class="col-md-4">
+                                            <div class="checkbox">
+                                                <label for="-0">
+                                                    <input type="checkbox" name="" id="-0" value="required">
+                                                    *
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                            <form class="form-horizontal">
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Answer Fields</legend>
+
+                                    <!-- Button (Double) -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="btnAdd"></label>
+                                        <div class="col-md-8">
+                                            <button id="btnAdd" name="btnAdd" class="btn btn-default">Add</button>
+                                            <button id="btnDelete" name="btnDelete" class="btn btn-inverse">Delete</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="txtId">Ans ID</label>
+                                        <div class="col-md-2">
+                                            <input id="txtId" name="txtId" type="text" placeholder="1" class="form-control input-md" required="">
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="txtAnswer">Answer Text</label>
+                                        <div class="col-md-4">
+                                            <input id="txtAnswer" name="txtAnswer" type="text" placeholder="Answer" class="form-control input-md" required="">
+
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                        </div>
+                        <!-- /Select-Single/Multi -->
+
+                    </div>
+                    <!--/.well -->
+
+                </div>
+                <!--/sidebar-nav-fixed -->
+            </div>
+            <!--/span-->
+        </div>
+        <!--/row-->
+
+        <footer>
+            <p>© US Department of Veteran Affairs, 2014</p>
+        </footer>
+    </div>
+</div>

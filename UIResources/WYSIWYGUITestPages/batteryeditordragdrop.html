@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html ng-app="sortableApp" ng-controller="sortableController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js'></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="js/directives/sortable.js"></script>
+    <script type="text/javascript" src="js/directives/xeditable.min.js"></script>
+
+    <style type="text/css">
+        .mod {
+            background-color: #EA8A8A;
+            cursor: move;
+        }
+
+
+    </style>
+
+    <script type="text/javascript">
+        var myapp = angular.module('sortableApp', ['ui.sortable','xeditable']);
+
+        myapp.run(function(editableOptions) {
+            editableOptions.theme = 'bs3';
+        });
+
+
+        myapp.controller('sortableController', function ($scope) {
+            var tmpList = [];
+
+            $scope.word = /^\s*\w*\s*$/;
+
+            $scope.battery = {
+                batteryId:1,
+                title:'Enter Battery Name',
+                description:'Enter Battery Description',
+                sections:[
+                    {
+                        batteryId:1,
+                        title:'Identification',
+                        description:'Veteran\'s personal information.',
+                        modules:[]
+                    },
+                    {
+                        batteryId:1,
+                        title:'Demographics',
+                        description:'Veteran\'s demographic data.',
+                        modules:[]
+                    }
+                ]
+            }
+
+            $scope.modules =
+                [{
+                    title: 'Veteran Identification',
+                    description: 'Identification',
+                    section:'Identification'
+                }, {
+                    title: 'Veteran Demographics',
+                    description: 'Veteran Demographics information',
+                    section:'Identification'
+                }, {
+                    title: 'Physical Health',
+                    description: 'Physical Health History',
+                    section:'Health History'
+                }, {
+                    title: 'Spirituality',
+                    description:'Veteran Spiritual Beliefs',
+                    section:'General Background Information'
+                }, {
+                    title: 'Service History',
+                    description: 'Veteran Military Service Information',
+                    section:'Service History Information'
+                }, {
+                    title: 'General Mental Health',
+                    description: 'General Veteran Mental Wellness',
+                    section:'Mental Health'
+                }, {
+                    title: 'Anxiety Spectrum Module',
+                    description: 'Anxiety Spectrum Disorder Diagnostic',
+                    section:'Mental Health'
+                }, {
+                    title: 'Criminal Behavior Inventory',
+                    description: 'Keyed listing of criminal history',
+                    section:'General Background Information'
+                }, {
+                    title: 'Education',
+                    description: 'Veteran Detailed Educational History',
+                    section:'Identification'
+                }, {
+                    title: 'Post Traumatic Stress Disorder',
+                    description: 'Veteran PTSD Diagnostic',
+                    section:'Mental Health'
+                }
+            ];
+
+            $scope.sourceModules = $scope.modules.slice();
+
+            $scope.sections = [
+                {
+                  batteryId:1,
+                  title:'Identification',
+                  description:'Veteran\'s personal information.',
+                  modules:[
+                      /*{
+                          title:'Drop Modules Here.',
+                          description:'Placeholder Description',
+                          section:'Identification'
+                      }*/
+                  ]
+                },{
+                    batteryId:1,
+                    title:'Demographics',
+                    description:'Veteran\'s demographic data.',
+                    modules:[ /*{
+                        title: 'Drop Modules Here.',
+                        description:'Placeholder Description',
+                        section:'Demographics'
+                    }*/]
+                }
+            ];
+
+            $scope.addSection = function(){
+                $scope.sections.splice(0,0,{
+                    batteryId:1,
+                    title:'Enter Section Title',
+                    description:'Enter Section Description',
+                    modules:[
+                        /*{
+                            title:'Drop Modules Here.',
+                            description:'Placeholder Description',
+                            section:'Identification'
+                        }*/
+                    ]
+                });
+            }
+
+            $scope.addModuleToSection = function(){
+
+            }
+
+            $scope.editSection = function(){
+                alert('Edit-in-Place for Section Title');
+            }
+
+            $scope.editModule = function(){
+                alert('Opens Module View for editing?');
+            }
+
+            $scope.removeModule = function(item){
+               // alert('Removes Module from Section.');
+               var title = item.title;
+               for (var i=0;i<$scope.sections.length;i++){
+                   var sec = $scope.sections[i];
+                   var mods = sec.modules;
+                   for (var j=0;j<mods.length;j++){
+                       var mod = mods[j];
+                       if (mod.title == title){mods.splice(j,1);}
+                   }
+               }
+                $scope.sections.filter(function(e){return e});
+            }
+
+
+            $scope.sortingLog = [];
+
+            $scope.sortableOptions = {
+                connectWith: ".connected-mods-container",
+                stop: function (e, ui) {
+                    // if the element is removed from the first container
+                    if ($(e.target).hasClass('first') &&
+                            e.target != ui.item.sortable.droptarget[0]) {
+                        // clone the original model to restore the removed item
+                        $scope.sourceModules = $scope.modules.slice();
+                    }
+                }
+            }
+
+            $scope.goToSelection = function(){
+                alert("Doesn't go anywhere yet.");
+            }
+
+            $scope.logModels = function () {
+                $scope.sortingLog = [];
+                for (var i = 0; i < $scope.modules.length; i++) {
+                    var logEntry = $scope.modules[i].map(function (x) {
+                        return x.title;
+                    }).join(', ');
+                    logEntry = 'container ' + (i+1) + ': ' + logEntry;
+                    $scope.sortingLog.push(logEntry);
+                }
+            };
+
+            $scope.printObj = function(){
+                alert(JSON.stringify($scope.sections));
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h3>
+                    Edit Battery
+                </h3>
+            </div>
+         </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="form form-inline">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Battery Title
+                            </label>
+                            <input type="text" ng-model="battery.title"  placeholder="Enter Battery Title" ng-required="" class="form-control col-sm-4">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Description
+                            </label>
+                            <input type="text" ng-model="battery.description" placeholder="Enter Battery Description" ng-required="" class="form-control col-sm-4">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="page-header">
+                <h3>
+                    Modules
+                </h3>
+            </div>
+            <ul class="list-group app screen first" ng-model="sourceModules" ui-sortable="sortableOptions">
+                <li ng-repeat="module in sourceModules" class="list-group-item mod">
+                    {{$index}} {{module.title}}
+                </li>
+            </ul>
+            <span class="label label-default">Add Section</span>
+            <button class="btn btn-default pull-right btn-sm" ng-click="addSection();"><span class="glyphicon glyphicon-plus"></span> Add Section</button>
+            <hr>
+            <span class="label label-default">Pages</span>
+            <ul class="pagination pull-right">
+                <li>
+                    <a href="#">Prev</a>
+                </li>
+                <li>
+                    <a href="#">1</a>
+                </li>
+                <li>
+                    <a href="#">2</a>
+                </li>
+                <li>
+                    <a href="#">3</a>
+                </li>
+                <li>
+                    <a href="#">Next</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div class="page-header">
+                <h3>
+                   {{battery.title}}
+                </h3>
+            </div>
+            <div class="col-md-12"style="max-height:500px;overflow-y:auto;" ui-sortable ng-model="sections">
+
+                <div class="panel panel-default"  ng-repeat="section in sections">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" editable-text="section.title" e-form="secTitleFrm" ng-hide="secTitleFrm.$visible">
+                             {{section.title || 'empty'}} <span class="glyphicon glyphicon-edit pull-right" ng-click="secTitleFrm.$show()" ng-hide="secTitleFrm.$visible"></span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group connected-mods-container screen" ui-sortable="sortableOptions" ng-model="section.modules">
+                            <p>Drop Modules Here.</p>
+                            <li class="list-group-item" ng-repeat="module in section.modules track by $index">
+
+                                <span class="glyphicon glyphicon-align-justify pull-left"></span>&nbsp;&nbsp;
+                                {{module.title}}
+                                <div class="form-group pull-right">
+                                    <span class="glyphicon glyphicon-edit" ng-click="editModule();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" ng-click="removeModule(module);"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                    <ul class="pagination pull-right">
+                        <li>
+                            <a href="#">Prev</a>
+                        </li>
+                        <li>
+                            <a href="#">1</a>
+                        </li>
+                        <li>
+                            <a href="#">2</a>
+                        </li>
+                        <li>
+                            <a href="#">3</a>
+                        </li>
+                        <li>
+                            <a href="#">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pull-right">
+        <div class="col-md-12">
+            <a href="#" class="btn btn-primary" ng-click="printObj();">Save</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

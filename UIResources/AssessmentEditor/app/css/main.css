@@ -1,0 +1,86 @@
+/**
+    Created by Bryan on 02/09/2014.
+*/
+body {
+    padding-bottom: 40px;
+    padding-top: 60px;
+}
+
+.sidebar-nav-fixed {
+    width:20%;
+}
+
+.ta-editor {
+    min-height: 300px;
+    height: auto;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+.slide.ng-leave {
+    position: relative;
+}
+.slide.ng-enter {
+    position: absolute;
+}
+.slide.ng-enter, .slide.ng-leave {
+    -webkit-transition: -webkit-transform 0.3s ease-in, opacity 0.3s ease-in;
+    -moz-transition: -moz-transform 0.3s ease-in, opacity 0.3s ease-in;
+    -o-transition: -o-transform 0.3s ease-in, opacity 0.3s ease-in;
+    transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+}
+.slide.ng-enter, .slide.ng-leave.ng-leave-active {
+    -webkit-transform: scaleX(0.0001);
+    -o-transform: scaleX(0.0001);
+    transform: scaleX(0.0001);
+    opacity: 0;
+}
+.slide, .slide.ng-enter.ng-enter-active {
+    -webkit-transform: scaleX(1);
+    -o-transform: scaleX(1);
+    transform: scaleX(1);
+    opacity: 1;
+}
+
+/* ---- Draggable Styles ---- */
+.dd-over {
+    border: 2px dashed black !important;
+}
+
+.dd-target {
+    background-color: #ddd;
+    opacity: .5;
+}
+
+[draggable] {
+    cursor: move;
+}
+
+/* ---- Animation Styles ---- */
+.animate-show {
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+    line-height:20px;
+    opacity:1;
+    padding:10px;
+    border:1px solid black;
+    background:white;
+}
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+    display:block!important;
+}
+
+.animate-show.ng-hide {
+    line-height:0;
+    opacity:0;
+    padding:0 10px;
+}
+
+.check-element {
+    padding:10px;
+    border:1px solid black;
+    background:white;
+}

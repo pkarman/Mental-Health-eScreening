@@ -1,0 +1,17 @@
+<h3>progress</h3>
+
+<div class='row' ng-controller='DemoProgressCtrl'>
+    <div class='col-sm-6'>
+        <div class="progress">
+            <div class="progress-bar" style="width: {{ ProgressService.get() }}%;">
+                <span>{{ ProgressService.get() }}% Complete</span>
+            </div>
+        </div>
+
+        <button ng-click="startProgress()" class="btn btn-primary">Example Loading</button>
+    </div>
+
+    <div class='col-sm-6'>
+        <pre>{{ codeExample }}</pre>
+    </div>
+</div>

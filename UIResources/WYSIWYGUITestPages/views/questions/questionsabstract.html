@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-inline form-group pull-right">
+            <label for="selType" class="col-sm-5 form-label">Question Type</label>
+            <div class="col-sm-5-offset col-sm-7">
+                <select id="selType" ng-model="qType" ng-options="q.name for q in qTypes track by q.name" name="selType" class="form-control">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" ui-view>
+
+    </div>
+</div>

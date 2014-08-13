@@ -1,0 +1,62 @@
+3 Main Scenarios
+------------------------------------
+
+1. Edit Scenario
+-------------------------------------
+- Change the way a Battery is set up for users (veterans).
+- Admin user does one of two things
+	= System-wide, OEF/OIF Battery, make changes that scale down through all instances of Battery in use
+	= Go in, open up Battery, delete Module, or make edit changes (top-level)
+	= Make additional adjustments (page order, question order, add/edit Questions, etc.) - path to Module
+	= Access to all aspects of the Battery (i.e., Templates, Formulas, Rules, Questions, Sections, etc.)
+	= Must remain in-context, path back to the Batter for sub-tasks
+- Probably not desirable to allow out-of-context changes (no flattened navigation, aside from Batteries, Modules
+- Ability to clone as later enhancement
+- In-use Batteries would require creating new Modules when changing scoring, etc.
+- ** Not only Delete, Add Module, Associated Questions, rules, scoring, etc.
+- Adding and Removing Modules (Delete is different) are the primary tasks, all other tasks secondary, but navigable
+
+
+2. Build Battery for Specific Single-Use (i.e., specific Veteran)
+--------------------------------------
+- Build for a clinician for specific user (ex., OEF/OIF Clinician)
+- If possible, start with a clone (only if in scope) of existing Battery 
+   (a direct copy, but must be customized)
+- Otherwise, build it from scratch.
+
+3. New Program requires eScreening
+---------------------------------------
+	= Provide own Battery (with all of the necessary definitions/objects)
+- Would define Questions, etc.  Example: Activities of Daily Living
+- Program would provide basic rules, formulas, required (follow basic Question Types)
+- Create Modules on the basis of the Program's definitions
+- Unless there is a need to override (no ability to clone), if Questions are pre-defined,
+	would like to use existing (makes sense).
+- Battery creations, select and add new Modules, drag in existing Modules (accessibility determined
+	by facility/location?)
+
+
+Annotations:
+
+- Most use cases will not require heavy work in the other areas, but functionality should be present
+	and available.
+- Sections would be in the context of Battery.
+- Templates in Battery (i.e., Clinical Note {associated by Module}, Completion Message, Summary).  
+	Modules, Summary optional
+- Modules:
+	= Module Title would default as Section Name to Veteran, as well as visible to Battery Build
+	= Description, Title
+	= Add Questions
+	= Set up Scoring (formulas, rules, conditional events)
+	= Associate Rules, Events (Map Variables), specify actions for each scoring case
+		(determines Summary text, health factor-based, dependent on score)
+	= Templates would be logical last step
+	= Dashboard Events
+	= Health Factors as associable
+	= Next step is Battery Add/Edit - Add Module
+	= Determine order (sortability)
+	= Provide downstream edits through all sub-flows
+	= Preview Pane as top-level (tabbed?)
+	= Might also require top-level editing of Templates (possible third direct Navigation option,
+		with full access to the Template types).
+

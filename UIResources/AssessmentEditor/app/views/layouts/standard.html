@@ -1,0 +1,52 @@
+<div class="container-fluid">
+    <div id="assessment-list" class="col-md-6 sidebar-nav-fixed affix">
+        <p><button class="btn btn-primary" ng-click="newAssessment()">Create New Assessment</button></p>
+        <p><h6>Existing Assessments:</h6></p>
+        <p>
+            <ul class="nav">
+                <li id="" style="text-decoration: underline;cursor:crosshair;" ng-repeat="item in assessments" ng-show="item.assessmentName"  ng-model="selectedAssessment.assessmentName" ng-click="assessmentSelect(item.assessmentId, item.assessmentName)">{{item.assessmentName}}</li>
+            </ul>
+        </p>
+    </div>
+    <div id="assessment-edit" class="col-md-9 jumbotron pull-right animate-show" ng-show="assessmentSelected">
+        <div id="nav">
+            <form class="form-horizontal">
+                <fieldset>
+
+                    <!-- Form Name -->
+                    <legend>Assessment Properties</legend>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtAssessmentName">Assessment Name</label>
+                        <div class="col-md-5">
+                            <input id="txtAssessmentName" name="txtAssessmentName" type="text" ng-model="selectedAssessment.title" placeholder="Enter Assessment Name" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Select Basic -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="selType">Assessment Type</label>
+                        <div class="col-md-5">
+                            <select id="selType" name="selType" class="form-control" ng-model="selectedAssessment.assessmentType" ng-options="t.name for t in assessmentTypes">
+                                <option value="">-- Choose Type --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Button (Double) -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="btnSave"></label>
+                        <div class="col-md-8">
+                            <button id="btnSave" name="btnSave" class="btn btn-primary" ng-click="saveAssessment();">Save</button>
+                            <button id="btnReset" name="btnReset" class="btn btn-default" ng-click="resetAssessment();">Reset</button>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+</div>

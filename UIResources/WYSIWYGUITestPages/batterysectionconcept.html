@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html  ng-app="batterySecApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="js/directives/ngTable/ng-table.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js'></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="vendors/angularUtils/angularUtils.js"></script>
+    <script type="text/javascript" src="js/directives/ngTable/ng-table.js"></script>
+    <script type="text/javascript" src="vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
+    <script type="text/javascript" src="js/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="js/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="js/directives/angular-texteditor.js"></script>
+    <script type="text/javascript" src="js/directives/sortable.js"></script>
+    <script type="text/javascript" src="js/directives/xeditable.min.js"></script>
+
+    <script type="text/javascript">
+        var batterySecApp = angular.module('batterySecApp', ['ui.router', 'ui.bootstrap', 'ngTable', 'xeditable', 'ui.sortable', 'ngAnimate','textAngular','angularUtils.directives.uiBreadcrumbs']);
+        batterySecApp.run(function(editableOptions) {
+            editableOptions.theme = 'bs3';
+        });
+
+        /* -=-=-=-=-=- Controllers -=-=-=-=-=- */
+        batterySecApp.controller('entryController', ['$rootScope', '$scope', '$state', function($rootScope, $scope, $state){
+            $rootScope.batteries = [];
+
+            $rootScope.selectedBattery = {};
+
+            $rootScope.sections = [
+                                    {id:1, title:'Identification Section', description:'A description', isExpanded:false, modules:[
+                                        {id:1, title:'Identification', status:'Published', description:'Veteran\'s self identification module.', questions:[]},
+                                        {id:2, title:'Demographics', status:'Editable', description:'Veteran\'s demographic information.', questions:[]}]},
+                                    {id:2, title:'Service History', description:'A description', isExpanded:false, modules:[
+                                        {id:5, title:'Service History', status:'Editable', description:'Veteran\'s Military Service History.', questions:[]},
+                                        {id:13, title:'Service-Connected Injuries', status:'Editable', description:'Veteran\'s service-connected injury history.', questions:[]},
+                                        {id:145, title:'Non-Service-Connected Injuries', status:'Editable', description:'Veteran\'s pre-post service wellness history.', questions:[]}]},
+                                    {id:3, title:'General Health', description:'A description', isExpanded:false, modules:[
+                                        {id:65, title:'General Physical Health', status:'Editable', description:'Veteran\'s physical health module.', questions:[]},
+                                        {id:195, title:'General Mental Health', status:'Editable', description:'Veteran\'s mental health module.', questions:[]}]}];
+
+            $rootScope.modules = [
+                {id:1, title:'Identification', status:'Published', description:'Veteran\'s self identification module.', questions:[]},
+                {id:2, title:'Demographics', status:'Editable', description:'Veteran\'s demographic information.', questions:[]},
+                {id:3, title:'Service History',  status:'Editable', description:'Veteran\'s Military Service history module.', questions:[]},
+                {id:4, title:'Spiritual Beliefs', status:'Published', description:'Veteran\'s spiritual beliefs.', questions:[]},
+                {id:5, title:'General Physical Health', status:'Editable', description:'Veteran\'s physical health module.', questions:[]},
+                {id:6, title:'General Mental Health', status:'Editable', description:'Veteran\'s mental health module (general).', questions:[]},
+                {idx:7, title:'OEF/OIF PTSD', status:'Editable', description:'Post-Traumatic Stress Disorder module.', questions:[]},
+                {id:8, title:'OEF/OIF Anxiety Spectrum', status:'Editable', description:'Anxiety Spectrum identification module.', questions:[]},
+                {id:9, title:'OEF/OIF Something 1', status:'Published', description:'I\'m your friendly, neighborhood description!', questions:[]},
+                {id:10, title:'OEF/OIF Something 2', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]},
+                {id:11, title:'OEF/OIF Something 3', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]}
+            ];
+
+            $rootScope.createBattery = function(){
+                return {
+                    id:null,
+                    title:'',
+                    description:'',
+                    status:'',
+                    sections:[],
+                    modules:[],
+                    startInstructions:'',
+                    completionMsg:'',
+                    templates:[]
+                };
+            }
+
+            $rootScope.createSection = function(){
+                return {
+                    id:null,
+                    title:'',
+                    description:'',
+                    modules:[]
+                };
+            }
+
+
+
+            $scope.goToModuleNew = function(){
+                alert('This navigation is not implemented in this demonstrator.');
+            }
+
+            $scope.goToModuleEdit = function(){
+                alert('This navigation is not implemented in this demonstrator.');
+            }
+
+            $scope.goToBatteryNew = function(){
+                $state.go('batteries.batteryedit');
+            }
+
+            $scope.goToBatteryEdit = function(){
+                $state.go('batteries.batteryselection');
+            }
+
+            $scope.goToSections = function(){
+                $state.go('sections')
+            }
+        }]);
+
+        batterySecApp.controller('sectionsController', ['$rootScope','$scope','$state', function($rootScope, $scope, $state){
+            $scope.sections = $rootScope.sections;
+            $scope.battery = $rootScope.selectedBattery;
+
+            $scope.expandAll = function(){
+                for (var i=0;i<$scope.sections.length;i++){
+                    $scope.sections[i].isExpanded=true;
+                }
+            }
+
+            $scope.save = function(){
+                $state.go('home');
+            }
+
+            $scope.cancel = function(){
+                $state.go('home');
+            }
+
+            $scope.addSection = function() {
+                var secToAdd = $rootScope.createSection();
+                secToAdd.index = $scope.sections.length + 2;
+                $scope.sections.unshift($rootScope.createSection());
+            }
+
+            $scope.sortableOptions = {
+                connectWith: ".connected-mods-container"
+                /*stop: function (e, ui) {
+                 // if the element is removed from the first container
+                 if ($(e.target).hasClass('first') &&
+                 e.target != ui.item.sortable.droptarget[0]) {
+                 // clone the original model to restore the removed item
+                 $scope.sections = $scope.modules.slice();
+                 }
+                 }*/
+            }
+
+            $scope.removeSection = function(sec, ind){
+                // Remove the item from battery.sections
+                $scope.sections.splice(ind,1);
+                $scope.sections.filter(function(e){return e});
+                //alert('Sections Length:: ' + $scope.battery.sections.length);
+                // Push section into available sections
+                //$scope.sections.push(sec);
+            }
+        }])
+
+         batterySecApp.controller('batteryAbstractController',['$rootScope','$scope','$state',function($rootScope,$scope,$state){
+             $scope.save = function(){
+                 $state.go('home');
+             }
+
+             $scope.cancel = function(){
+                 $state.go('home');
+             }
+         }])
+
+         batterySecApp.controller('batterySelectionController',['$rootScope','$scope','$state','$filter', 'ngTableParams', function($rootScope,$scope,$state,$filter,ngTableParams){
+             $scope.batteries = [
+                 {id:1, title:'OEF/OIF PTSD Battery', enabled:true, description:'Veteran\'s PTSD Battery.', sections:[],modules:[]},
+                 {id:2, title:'OEF/OIF General Anxiety Battery', enabled:false, description:'Veteran\'s General Anxiety Disorder (GAD) Battery.', sections:[],modules:[]},
+                 {id:3, title:'OEF/OIF Service-Connected Injury Battery',  enabled:true, description:'Veteran\'s Service-Connected Injury Battery.', sections:[],modules:[]},
+                 {id:4, title:'OEF/OIF Non-Service-Connected Injury Battery',enabled:true, description:'Veteran\'s Non-Service-Connected Injury Battery.', sections:[],modules:[]},
+                 {id:5, title:'CESAMH Drug/Alcohol Abuse Battery', enabled:false, description:'Veteran\'s CESAMH Drug Abuse/Alcohol Abuse Inventory.', sections:[],modules:[]},
+                 {id:6, title:'CESAMH Chronic Depression Battery', enabled:true, description:'Veteran\'s CESAMH-specialized Chronic Depression Inventory.', sections:[],modules:[]},
+                 {idx:7, title:'OEF/OIF Schizophrenia Battery', enabled:true, description:'CESAMH Schizophrenia Inventory.', sections:[],modules:[]},
+                 {id:8, title:'OEF/OIF Anxiety Spectrum Disorders Battery', enabled:true, description:'Anxiety Spectrum Identification Battery.', sections:[],modules:[]},
+                 {id:9, title:'OEF/OIF Something 1 Battery', enabled:true, description:'I\'m your friendly, neighborhood description!', sections:[],modules:[]},
+                 {id:10, title:'OEF/OIF Something 2 Battery', enabled:true, description:'I\'m your friendly, neighborhood description!', sections:[],modules:[]},
+                 {id:11, title:'OEF/OIF Something 3 Battery', enabled:false, description:'I\'m your friendly, neighborhood description!', sections:[],modules:[]}
+             ]
+
+             var data = $scope.batteries;
+
+             $scope.tableParams = new ngTableParams({
+                 page: 1,            // show first page
+                 count: 10,          // count per page
+                 filter: {
+                     title: ''       // initial filter
+                 },
+                 sorting: {
+                     title: 'asc'     // initial sorting
+                 }
+             }, {
+                 total: data.length, // length of data
+                 getData: function($defer, params) {
+                     // use build-in angular filter
+                     var filteredData = params.filter() ?
+                             $filter('filter')(data, params.filter()) :
+                             data;
+                     var orderedData = params.sorting() ?
+                             $filter('orderBy')(filteredData, params.orderBy()) :
+                             data;
+
+                     params.total(orderedData.length); // set total for recalc pagination
+                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                 }
+             });
+
+             /* ---- Button Actions ---- */
+             $scope.editBattery = function(bat){
+                $rootScope.selectedBattery = bat;
+                 $state.go('batteries.batteryedit');
+             }
+
+             $scope.addBattery = function(){
+                // $rootScope.module = $rootScope.createModule();
+                 $state.go('batteries.batteryedit');
+             }
+
+             $scope.goToAddEdit = function(){
+                 $state.go('batteries.batteryedit');
+             }
+         }])
+
+         batterySecApp.controller('batteryAddEditController',['$rootScope','$scope','$scope',function($rootScope,$scope,$state){
+             $scope.createSection = function(){
+                 return {
+                     id:null,
+                     title:'',
+                     description:'',
+                     modules:[]
+                 };
+             }
+             $scope.sections = [
+                 {id:1, title:'Identification Section', isExpanded:false, modules:[
+                     {id:1, title:'Identification', status:'Published', sectionTitle:'Identification Section', description:'Veteran\'s self identification module.', questions:[]},
+                     {id:2, title:'Demographics', status:'Editable', sectionTitle:'Identification Section', description:'Veteran\'s demographic information.', questions:[]}]},
+                 {id:2, title:'Service History', isExpanded:false, modules:[
+                     {id:5, title:'Service History', status:'Editable', sectionTitle:'Service History', description:'Veteran\'s Military Service History.', questions:[]},
+                     {id:13, title:'Service-Connected Injuries', status:'Editable', sectionTitle:'Service History', description:'Veteran\'s service-connected injury history.', questions:[]},
+                     {id:145, title:'Non-Service-Connected Injuries', status:'Editable', sectionTitle:'Service History', description:'Veteran\'s pre-post service wellness history.', questions:[]}]},
+                 {id:3, title:'General Health', isExpanded:false, modules:[
+                     {id:65, title:'General Physical Health', status:'Editable', sectionTitle:'General Health', description:'Veteran\'s physical health module.', questions:[]},
+                     {id:195, title:'General Mental Health', status:'Editable', sectionTitle:'General Health', description:'Veteran\'s mental health module.', questions:[]}]}];
+             $scope.battery = $rootScope.selectedBattery;
+
+             $scope.removeSection = function(sec, ind){
+                    // Remove the item from battery.sections
+                    $scope.battery.modules.splice(ind,1);
+                    $scope.battery.modules.filter(function(e){return e});
+                    //alert('Sections Length:: ' + $scope.battery.sections.length);
+                    // Push section into available sections
+                    $scope.sections.push(sec);
+             }
+
+             $scope.selectForBattery = function(module){
+                    // Get the Module's Section title.
+                    //alert("Mod Title:: " + module.title);
+                    var secTitle = module.sectionTitle;
+                    // Look into battery.sections to see if it is pre-existing.  If not, replicate it.
+                    var secExist = false;
+                    for (var i=0; i<$scope.battery.sections.length; i++){
+                        if ($scope.battery.sections[i].title == secTitle){
+                            // Section exists.  Push the module in.
+                            $scope.battery.sections[i].modules.push(module);
+                            secExist = true;
+
+                            //$scope.removeFromSections(module);
+                        }
+                    }
+
+                    if (!secExist) {
+                        // Section does not yet exist.  Find the available section, push into battery.sections, then add module to its modules array.
+                        var sec = {};
+                        for (i = 0; i < $scope.sections.length; i++) {
+                            if ($scope.sections[i].title == secTitle) {
+                                sec = $scope.sections[i];
+                                //  break;
+                            }
+                        }
+                        // Copy section.
+                        if (sec) {
+                            var secCopy = $scope.createSection();
+                            secCopy.id = sec.id;
+                            secCopy.title = sec.title;
+                            secCopy.description = sec.description;
+                            secCopy.modules.push(module); // Add Module
+                            $scope.battery.sections.push(secCopy); // Section to battery.sections.
+                           // $scope.removeFromSections(module);
+                        }
+                    }
+                 $scope.removeFromSections(module);
+             };
+
+             $scope.removeFromSections = function (module) {
+                 // Lastly, remove the module from the parent section in the Available column.
+
+                 var secInd = 0;
+                 for (var i=0;i<$scope.sections.length;i++){
+                     if ($scope.sections[i].title == module.sectionTitle){
+                         secInd = i;
+                     }
+                 }
+                 //alert('secInd:: ' + secInd);
+
+                 if ($scope.sections[secInd].modules.length == 1){
+                     $scope.sections[secInd].modules = [];
+                     return;
+                 } else {
+                     var tempMods = $scope.sections[secInd].modules;
+                     for (var j=0;j<$scope.sections[secInd].modules.length;j++){
+                         if ($scope.sections[secInd].modules[j].title == module.title){
+                             //alert('Mod:: ' + JSON.stringify($scope.sections[secInd].modules[j]));
+                            tempMods = $scope.sections[secInd].modules.splice(j,1);
+                         }
+                     }
+
+                 }
+             }
+
+             $scope.removeFromBattery = function(module){
+                // alert('removeFromBattery called.');
+                 // First, copy over the Module to it's parent Section.
+                 for (var i=0;i<$scope.sections.length;i++){
+                     if ($scope.sections[i].title == module.sectionTitle) {
+                         //alert('Got it!');
+                         $scope.sections[i].modules.push(module);
+                     }
+                 }
+
+                 // Now remove the Module from it's parent Section in battery.sections
+                 var par = {};
+                 for (i=0;i<$scope.battery.sections.length;i++){
+                     if (module.sectionTitle == $scope.battery.sections[i].title){
+                         par = $scope.battery.sections[i];
+                     }
+                 }
+                 if (par && par.title){
+                     if (par.title == module.sectionTitle){
+                         for (i=0;i<par.modules.length;i++){
+                             if (par.modules[i].title == module.title){
+                                 par.modules.splice(i,1);
+                             }
+                         }
+                         // If the section has no Modules, remove it, too.
+                         if (par.modules.length <1){
+                             for (i=0;i<$scope.battery.sections.length;i++){
+                                 if (module.sectionTitle == $scope.battery.sections[i].title){
+                                     $scope.battery.sections.splice(i,1);
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+
+             $scope.sortingLog = [];
+
+             $scope.sortableOptions = {
+                 connectWith: ".connected-mods-container"
+                 /*stop: function (e, ui) {
+                     // if the element is removed from the first container
+                     if ($(e.target).hasClass('first') &&
+                             e.target != ui.item.sortable.droptarget[0]) {
+                         // clone the original model to restore the removed item
+                         $scope.sections = $scope.modules.slice();
+                     }
+                 }*/
+             }
+         }])
+        /* -=-=-=-=-=- End Controllers -=-=-=-=-=- */
+
+        batterySecApp.run(['$rootScope', '$state', '$stateParams', '$modal',
+            function ($rootScope,   $state,   $stateParams,  $modal) {
+
+                // It's very handy to add references to $state and $stateParams to the $rootScope
+                // so that you can access them from any scope within your applications.For example,
+                // <li ng-class="{ active: $state.includes('assessments.list') }"> will set the <li>
+                // to active whenever 'assessments.list' or one of its descendents is active.
+                $rootScope.$state = $state;
+                $rootScope.$stateParams = $stateParams;
+            }])
+
+        batterySecApp.config(
+                [    '$stateProvider', '$urlRouterProvider',
+                    function ($stateProvider,   $urlRouterProvider) {
+
+                        /////////////////////////////
+                        // Redirects and Otherwise //
+                        /////////////////////////////
+
+                        // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
+                        $urlRouterProvider
+
+                            // The `when` method says if the url is ever the 1st param, then redirect to the 2nd param
+                            // Here we are just setting up some convenience urls.
+                            /*.when('/a?id', '/assessment-builder/:id')
+                             */
+                            //.when('/c?id', '/contacts/:id')
+                            //.when('/user/:id', '/contacts/:id')
+                            //.when('/battery-select', '/')
+                            // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
+                                .otherwise('/');
+
+
+                        //////////////////////////
+                        // State Configurations //
+                        //////////////////////////
+
+                        // Use $stateProvider to configure your states.
+                        $stateProvider
+
+                                .state('home', {
+                                    url: '/',
+                                    templateUrl: 'views/home/entry.html',
+                                    data: {
+                                        displayName: false
+                                    },
+                                    controller: 'entryController'
+                                })
+
+                                .state('sections',{
+                                    url:'/sections',
+                                    templateUrl:'views/sections/sections.html',
+                                    controller: 'sectionsController'
+                                })
+
+                                .state('batteries',{
+                                    abstract:true,
+                                    url:'/batteries',
+                                    template:'<div class="row">' +
+                                                '   <div class="col-md-12" ui-view></div>'+
+                                               '</div>',
+                                    controller:'batteryAbstractController'
+                                })
+
+                                .state('batteries.batteryselection',{
+                                    url:'',
+                                    templateUrl:'views/batteries/batteryselection.html',
+                                    controller:'batterySelectionController'
+                                })
+
+                                .state('batteries.batteryedit',{
+                                    url:'/batteries.edit',
+                                    templateUrl:'views/batteries/batteryedit.html',
+                                    controller:'batteryAddEditController'
+                                })
+                    }])
+    </script>
+</head>
+<body>
+<!-- Application Active Region Content - Wraps the active navigation module -->
+<div id="bodyDiv" class="bgImgMiddle">
+    <div class="left-right-shadow container" style="padding:0px;margin:0 auto;">
+        <div class="container">
+            <div class="col-md-12" ui-view></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

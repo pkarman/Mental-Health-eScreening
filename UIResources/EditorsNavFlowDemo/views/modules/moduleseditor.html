@@ -1,0 +1,127 @@
+<div class="container">
+    <div class="btn-group btn-breadcrumb pull-left">
+        <!-- <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-home"></i></a> -->
+        <a ui-sref="select-modules" class="btn btn-default">Select Modules</a>
+        <a ui-sref="modules-editor" class="btn btn-default">Module Editor</a>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h3>Module Editor</h3>
+            <form class="form-inline" role="form">
+               <div class="form-group">
+                    <label for="txtModTitle" class="col-sm-5 form-label">
+                        Title
+                    </label>
+                    <div class="col-sm-5-offset col-sm-7">
+                        <input type="text" id="txtModTitle" class="form-control" placeholder="Enter Title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="txtModDescription" class="col-sm-5 form-label">
+                        Description
+                    </label>
+                    <div class="col-sm-5-offset col-sm-7">
+                        <input type="text" id="txtModDescription" class="form-control" placeholder="Enter Description">
+                    </div>
+                </div>
+                <div class="form-group pull-right">
+                    <button type="button" class="btn btn-default" ng-click="mapSecClick();">
+                       Map Section
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="mapCRClick();">
+                        Map Clinical Reminder
+                    </button>
+                </div>
+            </form>
+            <hr>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h3>Module Questions</h3>
+            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                <li class="active"><a href="#editTab" data-toggle="tab">Edit</a></li>
+                <li><a href="#previewTab" data-toggle="tab">Preview</a></li>
+            </ul>
+            <div id="my-tab-content" class="tab-content">
+                <div class="tab-pane active" id="editTab">
+                    <div class="container">
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <form class="form-inline" role="form">
+                                    <label class="form-label">
+                                        Module Questions
+                                    </label>
+                                    <div class="form-group pull-right">
+                                        <button type="button" class="btn btn-default" ng-click="addQClick();">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                            Add Question
+                                        </button>
+                                        <button type="button" class="btn btn-default" ng-click="addPBClick();">
+                                            Add Pagebreak
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        Instructions: How to do this thing. | Instructions
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge">1</span>
+                                    </a>
+                                    <a href="#" class="list-group-item active">
+                                        How do I know I exist? | Free Text Question
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge">44</span>
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        Cogito Ergo Sum | Select Single/Multiple Question
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge badge-primary">14</span>
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        Doobie doobie doo? | Table Question
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge">5</span>
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        What happened to `badge-success`? | Select Single/Multiple Matrix Question
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge badge-success">88</span>
+                                    </a>
+                                    <a href="#" class="list-group-item">Vestibulum at eros
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="badge">69</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="previewTab">
+                    <h1>Orange</h1>
+                    <p>orange orange orange orange orange</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        //jQuery.event.props.push('dataTransfer');
+        $('#tabs').tab();
+    });
+
+    $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+</script>

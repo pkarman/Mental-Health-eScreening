@@ -1,0 +1,111 @@
+<div class="page-header">
+    <h2>
+        Add Battery
+    </h2>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="breadcrumb">
+                <li>
+                    <a ui-sref="home">Editors</a>
+                </li>
+                <li>
+                    <a ui-sref="batteries.batteryselection">Batteries: Selection</a>
+                </li>
+                <li class="active">
+                    Batteries: Add New
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-inline">
+            <div class="col-sm-3 form-group">
+                <label>
+                    Title
+                </label>
+                <input type="text" class="form-control" placeholder="Enter Battery Title" value="{{battery.title}}">
+            </div>
+            <div class="col-sm-9 form-group pull-right">
+                <label>
+                    Description
+                </label>
+                <input type="text" class="form-control" placeholder="Enter Description" value="{{battery.description}}">
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <div class="btn-group">
+            <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Welcome/Start Instructions</button>
+            <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Completion Message/Instructions</button>
+            <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> CPRS Note Template</button>
+            <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Patient Summary Note</button>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-5">
+        <div class="well" style="height:500px;overflow-x:hidden;">
+            <h3>Available Modules by Section</h3>
+            <hr>
+            <div class="col-md-12" style="height:380px;overflow-x:visible;" ng-model="sections">
+                <div class="panel panel-default" ng-repeat="section in sections track by $index">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{section.title}}<div class="form-group pull-right"><button class="btn btn-success btn-xs" ng-show="section.modules.length > 0"  ng-click="section.isExpanded = !section.isExpanded"><span class="glyphicon glyphicon-plus" ng-class="{'glyphicon glyphicon-minus': section.isExpanded}"></span> </button> </div> </h3>
+                    </div>
+                    <div collapse="!section.isExpanded" style="overflow-y:auto;overflow-x:hidden;">
+                        <div class="panel-body" ng-show="section.isExpanded">
+                            <ul class="list-group" ng-model="section.modules">
+                                <li class="list-group-item" ng-animate="'animate'" ng-repeat="module in section.modules track by $index">
+                                    <label>Module</label> {{module.title}}
+                                    <div class="form-group buttonaction pull-right">
+                                        <span class="glyphicon glyphicon-arrow-right buttonaction pull-right" style="color:blue;" ng-click="selectForBattery(module);"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="well" style="height:500px;overflow-x:hidden;">
+            <h3>Assigned Modules by Section</h3>
+            <hr>
+            <div class="col-md-12" style="height:380px;overflow-x:visible;" ng-model="battery.sections" ui-sortable>
+                <div class="panel panel-default" ng-repeat="sec in battery.sections track by $index">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{sec.title}}<div class="form-group pull-right"><button class="btn btn-success btn-xs" ng-show="sec.modules.length > 0" ng-click="sec.isExpanded = !sec.isExpanded;"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"></span></button> </div> </h3>
+                    </div>
+                    <div collapse="!sec.isExpanded" style="overflow-y:auto;overflow-x:hidden;">
+                        <div class="panel-body" ng-show="sec.isExpanded">
+                            <ul class="list-group" ng-model="sec.modules">
+                                <li class="list-group-item" ng-animate="'animate'" ng-repeat="module in sec.modules track by $index">
+                                    <label>Module</label> {{module.title}}
+                                    <span class="glyphicon glyphicon-remove-circle buttonaction pull-right" style="color:red;" ng-click="removeFromBattery(module);"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="form-group pull-right">
+        <button class="btn btn-default" ng-click="cancel();">
+            Cancel
+        </button>
+        <button class="btn btn-primary" ng-click="save();">
+            Save
+        </button>
+    </div>
+</div>

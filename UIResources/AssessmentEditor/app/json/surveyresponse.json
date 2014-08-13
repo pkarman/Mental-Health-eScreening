@@ -1,0 +1,66 @@
+{
+   "status":200,
+   "assessment":{
+      "assessmentId":1,
+      "pageId":2,
+      "currentSurveyId":2,
+      "currentPage":1,
+      "isLastPage":false,
+      "isComplete":false
+   },
+   "progressStatuses":[
+      {
+         "surveyId":1,
+         "percentComplete":100,
+         "displayOrder":1
+      },
+      {
+         "surveyId":2,
+         "percentComplete":0,
+         "displayOrder":2
+      },
+      {
+         "surveyId":3,
+         "percentComplete":0,
+         "displayOrder":3
+      }
+   ],
+   "page":{
+      "pageTitle":"Demographics and Social Information p1",
+      "measures":[
+         {
+            "measureId":9,
+            "measureText":"What brings you to the VA health care system?",
+            "measureType":"selectMulti",
+            "displayOrder":1,
+            "answers":[
+               {
+                  "answerId":9,
+                  "answerText":"Enrollment",
+                  "hasOther":false
+               },
+               {
+                  "answerId":10,
+                  "answerText":"Mental Health Concerns",
+                  "hasOther":false
+               },
+               {
+                  "answerId":11,
+                  "answerText":"Physical Health Concerns",
+                  "hasOther":false
+               },
+               {
+                  "answerId":12,
+                  "answerText":"Establish Primary Care",
+                  "hasOther":false
+               },
+               {
+                  "answerId":13,
+                  "answerText":"Other (if yes, please specify):",
+                  "hasOther":true
+               }
+            ]
+         }
+      ]
+   }
+}

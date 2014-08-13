@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>FTL Template Readern (A Test Page)</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test Module for FreemarkerJS read/write template editing.">
+    <meta name="author" content="Bryan Henderson">
+    <title>
+        FreemarkerJS Template Editor Test Page
+    </title>
+    <link rel="stylesheet" type="text/css" href="js/directives/ngTable/ng-table.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+   <!-- <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular-sanitize.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular.min.js'></script>
+    <script src="js/directives/minerr.js"></script>-->
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <!--<script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>-->
+
+    <!-- Modules -->
+   <!-- <script type="text/javascript" src="vendors/angularUtils/angularUtils.js"></script>
+    <script type="text/javascript" src="js/directives/ngTable/ng-table.js"></script>
+    <script type="text/javascript" src="js/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="js/directives/angular-routing.js"></script>
+
+    <script type="text/javascript" src="js/directives/sortable.js"></script>
+    <script type="text/javascript" src="js/directives/xeditable.min.js"></script>-->
+    <style type="text/css">
+        .block{
+            border:2px solid #666666;
+            color:#333333;
+            border-radius:4px;
+            background-color:#ebebeb;
+            font-weight:700;
+            padding:2px;
+        }
+
+        .value{
+            border:2px solid #333333;
+            border-radius:4px;
+            color:#999999;
+            background-color:#666666;
+            padding:5px;
+        }
+        .text-lg{
+            font-size: 1.5em;
+        }
+        .text-med{
+            font-size: 1.2em;
+        }
+        .text-xlg{
+            font-size: 2.4em;
+        }
+        .border-around {
+            background: rgba(255,255,255,0.7);
+        }
+        .text-red{
+            color:#E52A3A;
+        }
+        .text-gray{
+            color:#5f5f5f;
+        }
+        .roboto{
+            font-family: "Roboto", sans-serif;
+        }
+        text-sm{
+            font-size: 0.5em;
+        }
+        .border-around{
+            border:1px solid rgba(2,2,2,0.1);
+            border-radius: 6px;
+            vertical-align: text-bottom;
+        }
+        .light{
+            padding: 1em;
+        }
+        .lighter{
+            padding: 0.5em;
+        }
+        .shadWhite{
+            text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+        }
+        .shadBlack{
+            text-shadow: 0 1px 0 rgba(2,2,2,0.7);
+        }
+
+        .include{
+            border:1px solid blueviolet;
+            background-color:cornflowerblue;
+            color:#ffffff;
+        }
+        .section{
+            border:1px solid cadetblue;
+            background-color:aliceblue;
+            font-weight: 800;
+            color:dimgray;
+        }
+        .title{
+            border:1px solid darkred;
+            background-color: indianred;
+            font-weight: 800;
+            color:#ffffff;
+        }
+        .assign{
+            border:2px solid darkblue;
+            border-radius:4px;
+            background-color:dodgerblue;
+            font-size:20px;
+            font-weight:800;
+            color: #ffffff;
+            padding:10px;
+        }
+        .ifelse{
+            border:1px solid greenyellow;
+            background-color: green;
+            font-weight:800;
+            color:#ffffff;
+        }
+        .trim{
+            border:1px solid dimgray;
+            border-radius:4px;
+            background-color:lightslategray;
+            font-weight:800;
+            color:#ffffff;
+            padding:5px;
+        }
+    </style>
+    <script type="text/javascript" src="js/freemark.js"></script>
+    <script type="text/javascript">
+        var ftlContent = '<#include "clinicalnotefunctions">' +
+        '<#-- Template start -->' +
+            '${TITLE_START}'+
+        'DEMOGRAPHICS and SOCIAL:'+
+            '${TITLE_END}'+
+            '${SECTION_START}'+
+                '<#assign section3>'+
+        '<#-- The Veteran is a 28 year-old hispanic. -->'+
+        '<#if hasValue(getFormulaDisplayText(var12)) >'+
+                'The Veteran is a ${getFormulaDisplayText(var12)} year-old<#t>'+
+
+                '<#if !(hasValue(getSelectOneDisplayText(var30))) || wasAnswerNone(var30)>'+
+                '.  <#t>'+
+        '<#else>'+
+        '${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)}.  <#t>'+
+        '</#if>'+
+        '</#if>'+
+        '<#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->'+
+        '<#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >'+
+                'The Veteran reports being<#t>'+
+        '<#if hasValue(getSelectMultiDisplayText(var40)) >'+
+            '${""?left_pad(1)}a ${getSelectMultiDisplayText(var40)}<#t>'+
+        '</#if>'+
+        '<#if hasValue(getSelectOneDisplayText(var20)) >'+
+            '${""?left_pad(1)}${getSelectOneDisplayText(var20)}<#t>'+
+        '</#if>'+
+        '.  <#t>'+
+        '</#if>'+
+        '<#-- The Veteran reported completing some high school. -->'+
+        '<#if hasValue(getSelectOneDisplayText(var50)) >'+
+                'The Veteran reported completing ${getSelectOneDisplayText(var50)}.  <#t>'+
+        '</#if>'+
+        '<#-- The Veteran reported being currently an employed, who usually works as retail. -->'+
+        '<#if hasValue(getSelectOneDisplayText(var60)) && hasValue(getSelectOneDisplayText(var70)) >'+
+                'The Veteran reported being currently ${getSelectOneDisplayText(var60)}, who usually works as an ${getAnswerDisplayText(var70)}.  <#t>'+
+        '<#elseif hasValue(getSelectOneDisplayText(var60)) && !(hasValue(getSelectOneDisplayText(var70)))>'+
+                'The Veteran reported being currently ${getSelectOneDisplayText(var60)}.  <#t>'+
+        '<#elseif !(hasValue(getSelectOneDisplayText(var60))) && hasValue(getSelectOneDisplayText(var70)) >'+
+                'The Veteran reported usually working as an ${getAnswerDisplayText(var70)}.  <#t>'+
+        '</#if>'+
+        '<#--The Veteran reported that the primary source of income is work, and disability.  -->'+
+        '<#if hasValue(getAnswerDisplayText(var80)) >'+
+                'The Veteran reported that <#t>'+
+        '<#if wasAnswerNone(var80)>'+
+                'they do not have any income.  <#t>'+
+        '<#else>'+
+        'their income is derived from ${getSelectMultiDisplayText(var80)}.  <#t>'+
+        '</#if>'+
+        '</#if>'+
+        '<#--The Veteran is married.-->'+
+        '<#if hasValue(getSelectOneDisplayText(var100)) >'+
+                'The Veteran is ${getSelectOneDisplayText(var100)}.  <#t>'+
+        '</#if>'+
+        '<#--The Veteran lives in a house with spouse or partner, and children.-->'+
+        '<#if hasValue(getSelectOneDisplayText(var110)) && hasValue(getSelectMultiDisplayText(var90)) >'+
+                'The Veteran ${getSelectOneDisplayText(var110)} <#t>'+
+        '<#if wasAnswerNone(var90)>'+
+                'alone.  <#t>'+
+        '<#else>'+
+        'with ${getSelectMultiDisplayText(var90)}.  <#t>'+
+        '</#if>'+
+        '<#elseif hasValue(getSelectOneDisplayText(var110)) && !(hasValue(getSelectMultiDisplayText(var90)))>'+
+                'The Veteran ${getSelectOneDisplayText(var110)}.  <#t>'+
+        '<#elseif !(hasValue(getSelectOneDisplayText(var110))) && hasValue(getSelectMultiDisplayText(var90)) >'+
+                'The Veteran lives with ${getSelectMultiDisplayText(var90)}.  <#t>'+
+        '</#if>'+
+        '<#--The Veteran reported not having any children.-->'+
+        '<#if hasValue(getAnswerDisplayText(var131)) >'+
+                '<#if wasAnswerTrue(var131) >'+
+            '${getAnswerDisplayText(var131)}  <#t>'+
+        '<#else>'+
+        '<#--The Veteran has 2 child(ren) who are child(ren) are 2,4 years old.-->'+
+        '<#if !(getNumberOfTableResponseRows(var130) = -1) >'+
+                '<#if (getNumberOfTableResponseRows(var130) = 0) >'+
+        'The Veteran reported not having any children.  <#t>'+
+        '<#elseif (getNumberOfTableResponseRows(var130) = 1) >'+
+        'The Veteran has 1 child who is ${getTableMeasureDisplayText(var130)} years old.  <#t>'+
+        '<#elseif (getNumberOfTableResponseRows(var130) > 1) >'+
+        'The Veteran has ${getNumberOfTableResponseRows(var130)} children who are ${getTableMeasureDisplayText(var130)} years old.  <#t>'+
+        '</#if>'+
+        '</#if>'+
+        '</#if>'+
+        '</#if>'+
+        '<#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->'+
+        '<#if hasValue(getFormulaDisplayText(var11))  >'+
+                '<#assign num = getFormulaDisplayText(var11)?number />'+
+                'The Veteran\'s reported BMI is ${num}, indicating that he/she <#t>'+
+        '<#if (num < 18.5) >'+
+        'is below a normal a weight.  <#t>'+
+        '<#elseif (num < 25) && (num >= 18.5) >'+
+                'is at a normal weight.  <#t>'+
+        '<#elseif (num < 30) && (num >= 25) >'+
+                'is overweight.  <#t>'+
+        '<#elseif (num < 40) && (num >= 30) >'+
+                'is obese.  <#t>'+
+        '<#elseif (num >= 40) >'+
+        'is morbid obese.  <#t>'+
+        '</#if>'+
+        '</#if>'+
+        '</#assign>'+
+        '<#if !(section3 = \'\') >'+
+            '${section3}'+
+                '<#else>'+
+        '${noParagraphData}'+
+        '</#if>'+
+        '${SECTION_END}';
+
+        $(document).ready(function(){
+            var ftl = new FTLTranslator();
+            var ftlHTML = ftl.convert('html',ftlContent);
+            delete ftl;
+            $('#ftlInput').html(ftlContent);
+           // alert('sections:: \n' + ftlHTML.sections);
+            $('#htmlOutput').html(ftlHTML.sections);
+
+            var htmlFTL = ftl.convert('ftl',ftlHTML.sections);
+            $('#convertedOutput').html(htmlFTL.ftl);
+            alert(htmlFTL.ftl);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 jumbotron" style="max-height:100px;">
+                <p><h2>FTL Input</h2></p>
+                <div id="ftlInput" style="width:500px;height:580px;color:blue;background-color:#fff;overflow:auto;"></div>
+            </div>
+            <div class="col-md-6 jumbotron" style="min-height:600px;">
+                <p><h2>HTML Output</h2></p>
+                <div id="htmlOutput" style="width:500px;height:580px;background-color:#fff;overflow:auto;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 jumbotron" style="min-height: 500px;">
+                <p><h2>Converted FTL Output from HTML</h2></p>
+                <textarea id="convertedOutput" style="width:1000px;height:580px;color:darkblue;background-color:#fff;overflow:auto;" cols="10" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

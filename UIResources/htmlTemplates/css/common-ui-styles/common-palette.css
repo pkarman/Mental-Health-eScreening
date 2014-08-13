@@ -1,0 +1,28 @@
+@charset "utf-8";
+/**
+ * common-palette.css - Common styles to provide look and feel, generically designed for multiple content applications.
+ * @author: Bryan Henderson
+ * @date:   11/22/2013
+ */
+.contentAreaGrayRadial{
+	background: #fcfff4; /* Old browsers */
+	background: -moz-radial-gradient(center, ellipse cover,  #fcfff4 0%, #dfe5d7 40%, #b3bead 100%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#fcfff4), color-stop(40%,#dfe5d7), color-stop(100%,#b3bead)); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  #fcfff4 0%,#dfe5d7 40%,#b3bead 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  #fcfff4 0%,#dfe5d7 40%,#b3bead 100%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  #fcfff4 0%,#dfe5d7 40%,#b3bead 100%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  #fcfff4 0%,#dfe5d7 40%,#b3bead 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.contentAreaGrayHorizontal{
+	background: #dfe5d7; /* Old browsers */
+	background: -moz-linear-gradient(left, #dfe5d7 0%, #fcfff4 58%, #b3bead 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#dfe5d7), color-stop(58%,#fcfff4), color-stop(100%,#b3bead)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, #dfe5d7 0%,#fcfff4 58%,#b3bead 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, #dfe5d7 0%,#fcfff4 58%,#b3bead 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, #dfe5d7 0%,#fcfff4 58%,#b3bead 100%); /* IE10+ */
+	background: linear-gradient(to right, #dfe5d7 0%,#fcfff4 58%,#b3bead 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfe5d7', endColorstr='#b3bead',GradientType=1 ); /* IE6-9 */
+}
+

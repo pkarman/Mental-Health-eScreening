@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Create Assessment</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/common-palette.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/fontfaces.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/forms.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/assessmenttemplate.css">
+		<style type="text/css">
+			#center {
+				padding:20px 20px 20px -20px;
+				margin-left:17px;
+				margin-bottom:1%;
+				text-align:center; 
+				width:98%;
+				height:auto;
+				border:1px solid hsla(0,0%,60%,1);
+				box-shadow:1px 5px 20px #666666;
+			}
+		</style>
+        <!-- JavaScript loads -->
+	</head>
+	<body>
+		<div id="header" role="heading">
+        	<div id="logo-container">
+                <!-- Link Back to Home, wrapping Logo -->
+                <a href="#">
+                        <img src="resources/images/logo_va_cleaned.png" alt="Department of Veterans Affairs">
+                </a>
+			</div>
+			<!-- End Logo Link -->
+            <!-- Headline and Application text -->
+            <div class="agencyTitle">
+				<span id="agencyName"> 
+					Department of Veterans Affairs
+				</span>
+			</div>
+			<div class="applicationTitle">
+				<span id="applicationName"> 
+					OEF/OIF Health Assessment
+				</span>
+			</div>
+            <div id="loggedInContainer">
+            	<span id="userLogged">Joe Clinician</span>
+            </div>
+        </div>
+		<!-- Three columns, fixed-fluid-fixed -->
+        <div id="center" class="column contentAreaGrayRadial">
+            <div id="content-controls" class="contentAreaGrayHorizontal" role="navigation">
+                <div id="controlsLeft">
+                	<a id="backButton" name="backbtn" href="#" class="anchorButton" tabindex="1">&lt;&lt; Back</a>
+                </div>
+                <div id="controlsRight">
+                	<span style="float:right;">
+                		<a id="createAssessmentButton" name="n" href="#" class="anchorButton wideControlButton" tabindex="6">Next Step: Choose Sections and Measures &gt;&gt;</a>
+                		<!--  Don't use in final : <input type="button" name="nextbtn" id="createAssessmentButton" 
+                			   value="Next Step: Choose Section and Measures" class="btnclass" style="width: 300px;" /> -->
+                    </span>
+                </div>
+			</div>
+                     <form id="userForm" autocomplete="off" role="form">
+            <!-- Create User Form, no tables allowed :) -->
+            <div>
+               <fieldset style="float:left;" role="columnheader">
+                  <ul>
+                     <!-- First Column -->
+                     <li>
+						<label id="textLabel" for="exampleTextInput" aria-label="Example Text Input">Example Text Input</label>
+                        <input id="exampleTextInput" type="text" placeholder="I am a text field" tabindex="1" autocomplete="off" autofocus aria-describedby="textLabel">
+                     </li>
+                     <li>
+						<label id="selectLabel" for="exampleSelectInput" aria-label="Example Select Input">Example Select Input</label>
+                        <select id="exampleSelectInput" tabindex="3" role="combobox" aria-describedby="selectLabel">
+                        	<option value="0">Value Zero</option>
+                            <option value="1">Value One</option>
+                            <option value="2" selected>Value Two</option>
+                        </select>
+                     </li>
+                     <li>
+						<label id="passwordLabel" for="examplePasswordInput" aria-label="Example Password Input">Example Password Input</label>
+                        <input id="examplePasswordInput" type="password" placeholder="I am a password field" tabindex="5" autocomplete="off" aria-describedby="passwordLabel">
+                     </li>
+                     <li >
+						<label id="colorLabel" for="exampleColorInput" aria-label="Example Color Input">Example Color Input</label>
+                        <input id="exampleColorInput" type="color" placeholder="I am a color field" tabindex="7" autocomplete="off" aria-describedby="colorLabel">
+                     </li>
+                     <li>
+						<label id="emailLabel" for="exampleEmailInput" aria-label="Example Email Input">Example Email Input</label>
+                        <input id="exampleEmailInput" type="email" placeholder="bob@va.gov" tabindex="9" autocomplete="off" aria-describedby="emailLabel">
+                     </li>
+                     <li>
+						<label id="fileLabel" for="exampleFileInput" aria-label="Example File Input">Example File Input</label>
+                        <input id="exampleFileInput" type="file" placeholder="C:\Program Files\nothing.txt" tabindex="11" autocomplete="off" aria-describedby="fileLabel">
+                     </li>
+                     <li>
+						<label id="numberLabel" for="exampleNumberInput" aria-label="Example Number Input">Example Number Input</label>
+                        <input id="exampleNumberInput" type="number" placeholder="1245" tabindex="13" autocomplete="off" aria-describedby="numberLabel">
+                     </li>
+                     <li>
+                     	<label id="telLabel" for="exampleTelInput" aria-label="Example Tel Input">Example Tel Input</label>
+                        <input id="exampleTelInput" type="tel"  placeholder="(770) 123-4567" tabindex="15" autocomplete="off" aria-describedby="telLabel">
+                     </li>
+                     <li>
+                     	<label id="searchLabel" for="exampleSearchInput" aria-label="Example Search Input">Example Search Input</label>
+                        <input id="exampleSearchInput" type="search" placeholder="Dept. of Veterans Affairs" tabindex="17" autocomplete="off" aria-describedby="searchLabel">
+                     </li>
+                     <li>
+                     	<label id="checkboxLabel" for="exampleCheckboxInput" aria-label="Example Checkbox Input">Example Checkbox Input</label>
+                        <div class="checkbox">
+                        <input id="exampleCheckboxInput" type="checkbox" value="Car" checked tabindex="19" autocomplete="off"  aria-describedby="checkboxLabel"><label for="car" style="visibility:hidden;">Car</label>
+                        </div>
+                     </li>
+                     <li>
+                     	<label id="buttonLabel" for="exampleButtonInput" aria-label="Example Button Input">Example Button Input</label>
+                        <input id="exampleButtonInput" type="button" value="Click Me" onClick="alert('I have been clicked.');" tabindex="21" autocomplete="off" class="anchorButton inputButton" aria-describedby="buttonLabel">
+                     </li>
+                     <li>
+                     	<label id="submitLabel" for="exampleSubmitInput" aria-label="Example Submit Input">Example Submit Input</label>
+                        <input id="exampleSubmitInput" type="submit" value="Submit Form" onClick="alert('I have been submitted');" tabindex="23" autocomplete="off" class="anchorButton inputButton" aria-describedby="submitLabel">
+                  </ul>
+               </fieldset>
+               <fieldset style="float:right;" role="columnheader">
+                  <ul class="form">
+                     <li>
+						<label id="dateLabel" for="exampleDateInput" aria-label="Example Date Input">Example Date Input</label>
+                        <input id="exampleDateInput" type="date" placeholder="01/01/1901" tabindex="2" autocomplete="off" aria-describedby="dateLabel">
+                     </li>
+                     <li>
+						<label id="datetimeLabel" for="exampleDateTimeInput" aria-label="Example Datetime Input">Example Datetime Input</label>
+                        <input id="exampleDateTimeInput" type="datetime" placeholder="01/01/1901 00:00 PM" tabindex="4" autocomplete="off" aria-describedby="datetimeLabel"> 
+                     </li>
+                     <li>
+						<label id="datetimelocalLabel" for="exampleDateTimeLocalInput" aria-label="Example Datetime-Local Input">Example Datetime-Local Input</label>
+                        <input id="exampleDateTimeLocalInput" type="datetime-local" placeholder="01/01/1901 00:00 AM" tabindex="6" autocomplete="off" aria-describedby="datetimelocalLabel">
+                     </li>
+                     <li>
+						<label id="monthLabel" for="exampleMonthInput" aria-label="Example Month Input">Example Month Input</label>
+                        <input id="exampleMonthInput" type="month" placeholder="January 1971" tabindex="8" autocomplete="off" aria-describedby="monthLabel">
+                     </li>
+                     <li>
+						<label id="weekLabel" for="exampleWeekInput" aria-label="Example Week Input">Example Week Input</label>
+                        <input id="exampleWeekInput" type="week" placeholder="Week 50, 2013" tabindex="10" autocomplete="off" aria-describedby="weekLabel">
+                     </li>
+                     <li>
+						<label id="timeLabel" for="exampleTimeInput" aria-label="Example Time Input">Example Time Input</label>
+                        <input id="exampleTimeInput" type="time" placeholder="04:01 PM" tabindex="12" autocomplete="off" aria-describedby="timeLabel">
+                     </li>
+                     <li>
+						<label id="rangeLabel" for="exampleRangeInput" aria-label="Example Range Input">Example Range Input</label>
+                        <input id="exampleRangeInput" type="range" maxlength="1000" min="0" max="1000" step="2" placeholder="" tabindex="14" autocomplete="off" aria-describedby="rangeLabel">
+                     </li>
+                     <li>
+                     	<label id="urlLabel" for="exampleURLInput" aria-label="Example URL Input">Example URL Input</label>
+                        <input id="exampleURLInput" type="url" placeholder="http://va.gov" tabindex="16" autocomplete="off" aria-describedby="urlLabel">
+                     </li>
+                     <li>
+                     	<label id="imageLabel" for="exampleImageInput" aria-label="Example Image Input">Example Image Input</label>
+                        <input id="exampleImageInput" type="image" src="resources/images/vetHeaderBG.png" alt="submit" tabindex="18" autocomplete="off" aria-describedby="imageLabel">
+                     </li>
+                     <li>
+                     	<label id="radioLabel" for="exampleRadioButtonInput" aria-label="Example Radio Button Input">Example Radio Button Input</label>
+                        <div class="radio">
+                        	<input id="exampleRadioButtonInput" type="radio" value="Hamster" checked tabindex="20" autocomplete="off" aria-describedby="radioLabel">
+                        </div>
+                     </li>
+                     <li>
+                     	<label id="resetLabel" for="exampleResetInput" aria-label="Example Reset Input">Example Reset Input</label>
+                        <input id="exampleResetInput" type="reset" value="Reset" tabindex="22" autocomplete="off" class="anchorButton inputButton" aria-describedby="resetLabel">
+                     </li>
+                     <li>
+                     	<label id="datalistLabel" for="exampleDataList" aria-label="Example Datalist Input">Example Datalist Input</label>
+                        <input id="exampleDataList" list="browsers" role="combobox">
+                        <datalist id="browsers" aria-describedby="datalistLabel">
+                        	<option value="Internet Explorer">
+                            <option value="Firefox">
+                            <option value="Chrome">
+                            <option value="Opera">
+                            <option value="Safari">
+                        </datalist>
+                     </li>
+                  </ul>
+               </fieldset>
+            </div>
+            <!-- End Create User Form -->
+            <div></div>
+            <div id="formButtons" style="clear:both;">
+               <a href="#" id="saveButton" class="anchorButton" tabindex="26">Save</a>
+               <a href="#" id="resetButton" class="anchorButton" tabindex="25">Reset Form</a>
+            </div>
+         </form>
+        </div>
+        <div id="left" class="column">
+            <!-- Most of the time, this will be a gutter, providing padding,
+                but can be used to provide a sidebar, or a pure semantic 
+                column for two-and-three column layouts, with width/padding mods. -->
+        </div>
+        <div id="right" class="column">
+            <!-- Most of the time, this will be a gutter, providing padding,
+                but can be used to provide a sidebar, or a pure semantic 
+                column for two-and-three column layouts, with width/padding mods. -->
+        </div>
+	</body>
+</html>
+
