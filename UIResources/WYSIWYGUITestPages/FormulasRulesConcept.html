@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html ng-app="FormulasRules" ng-controller="formulasRulesController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Formulas/Rules/Events Editor UI Behavior Test</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js'></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="js/directives/sortable.js"></script>
+    <script type="text/javascript" src="js/directives/xeditable.min.js"></script>
+    <style type="text/css">
+        /**
+          * Extra large button extensions. Extends `.btn`.
+        */
+        .btn-xlarge {
+            padding: 18px 28px;
+            font-size: 22px;
+            line-height: normal;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+        }
+    </style>
+    <script type="text/javascript">
+        var FormulasRules = angular.module('FormulasRules', ['ui.router', 'ui.bootstrap', 'ngTable', 'xeditable', 'ui.sortable', 'ngAnimate','textAngular','angularUtils.directives.uiBreadcrumbs']);
+        FormulasRules.run(function(editableOptions) {
+            editableOptions.theme = 'bs3';
+        });
+
+        /* -=-=-=- Controllers -=-=-=- */
+        FormulasRules.controller('formulasRulesController',function($scope){});
+
+        FormulasRules.controller('formulasRulesSelectController', function ($scope) {});
+
+        FormulasRules.controller('formulasRulesEditorController', function($scope){});
+
+        FormulasRules.controller('formulasRulesToolPanelController',function($scope){});
+
+        FormulasRules.controller('formulasRulesEditPanelController', function($scope){});
+        /* -=-=-=- End Controllers -=-=-=- */
+
+        /* -=-=-=- States Setup and Configuration -=-=-=- */
+        FormulasRules.run(['$rootScope', '$state', '$stateParams', '$modal',
+            function ($rootScope,   $state,   $stateParams,  $modal) {
+
+                // It's very handy to add references to $state and $stateParams to the $rootScope
+                // so that you can access them from any scope within your applications.For example,
+                // <li ng-class="{ active: $state.includes('assessments.list') }"> will set the <li>
+                // to active whenever 'assessments.list' or one of its descendents is active.
+                $rootScope.$state = $state;
+                $rootScope.$stateParams = $stateParams;
+            }]);
+
+        batterySecApp.config(
+                [    '$stateProvider', '$urlRouterProvider',
+                    function ($stateProvider,   $urlRouterProvider) {
+
+                        /////////////////////////////
+                        // Redirects and Otherwise //
+                        /////////////////////////////
+
+                        // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
+                        $urlRouterProvider
+
+                            // The `when` method says if the url is ever the 1st param, then redirect to the 2nd param
+                            // Here we are just setting up some convenience urls.
+                            /*.when('/a?id', '/assessment-builder/:id')
+                             */
+                            //.when('/c?id', '/contacts/:id')
+                            //.when('/user/:id', '/contacts/:id')
+                            //.when('/battery-select', '/')
+                            // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
+                                .otherwise('/');
+
+
+                        //////////////////////////
+                        // State Configurations //
+                        //////////////////////////
+
+                        // Use $stateProvider to configure your states.
+                        $stateProvider
+
+                                .state('formulasselect', {
+                                    url: '/',
+                                    templateUrl: 'views/formulasrules/formulasselect.html',
+                                    data: {
+                                        displayName: false
+                                    },
+                                    controller: 'formulasrulesSelectController'
+                                })
+
+                                .state('formulasruleseditor.html',{
+                                    url:'/editor',
+                                    data:{
+                                        displayName:false
+                                    },
+                                    templateUrl:'views/formulasrules/formulasruleseditor.html',
+                                    views:{
+                                        'toolPanel':{
+                                            templateUrl:'views/formulasrules/toolpanel.html',
+                                            controller:'formulasRulesToolPanelController'
+                                        },
+                                        'editPanel':{
+                                            templateUrl:'views/formulasrules/toolpanel.html',
+                                            controller:'formulasRulesEditPanelController'
+                                        }
+                                    },
+                                    controller: 'sectionsController'
+                                })
+                    }]);
+        /* -=-=-=- End States Setup and Configuration -=-=-=- */
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-12" ui-view>
+            <!-- Select/Edit views will be injected here. -->
+        </div>
+    </div>
+</body>
+</html>

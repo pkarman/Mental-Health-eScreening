@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>
+    </title>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+    <div class="page-header">
+        <h2>
+            Add Battery
+        </h2>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Editors</a>
+                    </li>
+                    <li>
+                        <a href="#">Batteries: Selection</a>
+                    </li>
+                    <li class="active">
+                        Batteries: Add New
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="col-sm-3 form-group">
+                    <label>
+                        Title
+                    </label>
+                    <input type="text" class="form-control" placeholder="Enter Battery Title">
+                </div>
+                <div class="col-sm-9 form-group pull-right">
+                    <label>
+                        Description
+                    </label>
+                    <input type="text" class="form-control" placeholder="Enter Description">
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="btn-group">
+                <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Welcome/Start Instructions</button>
+                <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Completion Message/Instructions</button>
+                <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> CPRS Note Template</button>
+                <button class="btn btn-success"><span class="glyphicon glyphicon-edit"></span> Patient Summary Note</button>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="well">
+                <h3>Sections</h3>
+                <hr>
+                <div class="btn-group-sm text-center">
+                    <button class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Section</button>
+                </div>
+                <hr>
+                <ul class="list-group">
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Identification</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Personal Information</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Demographics</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Service History</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Physical Health</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Mental Health</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Service-Connected Health Issues</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> <b>Section:</b> Non Service-Connected Health Issues</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="page-header">
+                <h3>
+                    Assign Modules
+                    <div>
+                        <br>
+                    </div>
+                </h3>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="max-height:435px;overflow-y:scroll;">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h5>
+                                Identification Section
+                            </h5>
+                            <ul class="list-inline">
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Identification
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Demographics
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item">
+                            <ul class="list-inline">
+                                <h5>
+                                    Demographics and Social Information Section
+                                </h5>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    General Health
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    General Mental Health
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    PTSD Module - OEF
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Depression Module - OEF
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item">
+                            <h5>
+                                Service History
+                            </h5>
+                            <ul class="list-inline">
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 6
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 10
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 22
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item">
+                            <h5>
+                                Health Symptoms
+                            </h5>
+                            <ul class="list-inline">
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 3001
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 1020
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 2200
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item">
+                            <h5>
+                                Health Functions
+                            </h5>
+                            <ul class="list-inline">
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 22
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 48
+                                </li>
+                                <li class="list-group-item">
+                                    <input type="checkbox">
+                                    Module 68
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="form-group pull-right">
+            <button class="btn btn-default" ng-click="goToSelection();">
+                Cancel
+            </button>
+            <button class="btn btn-primary" ng-click="goToSelection();">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
+        >
+</script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+        >
+</script>
+</body>
+
+</html>

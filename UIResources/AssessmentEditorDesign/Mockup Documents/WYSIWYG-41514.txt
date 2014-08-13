@@ -1,0 +1,6 @@
+-- Battery Flow - remove direct nav to Module Editor (create logical separation of concerns, remove
+
+Questions -- Select Single/Multiple  
+
+- Calc Value (firm up purpose)
+- Rules - contain as a group (by Questions), define on specifics (by Answer)

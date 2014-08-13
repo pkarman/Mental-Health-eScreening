@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html ng-app="moduleApp">
+<head lang="en">
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="js/directives/ngTable/ng-table.min.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<!-- JavaScript Loads -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js'></script>
+
+<!-- Load UI Bootstrap Angular Toolkit -->
+<script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+<!-- Modules -->
+<script type="text/javascript" src="vendors/angularUtils/angularUtils.js"></script>
+<script type="text/javascript" src="js/directives/ngTable/ng-table.js"></script>
+<script type="text/javascript" src="vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
+<script type="text/javascript" src="js/directives/angular-animate.js"></script>
+<script type="text/javascript" src="js/directives/angular-routing.js"></script>
+<script type="text/javascript" src="js/directives/angular-texteditor.js"></script>
+<script type="text/javascript" src="js/directives/sortable.js"></script>
+<script type="text/javascript" src="js/directives/xeditable.min.js"></script>
+
+<style type="text/css">
+    .mod {
+        background-color: #EA8A8A;
+        cursor: move;
+    }
+</style>
+
+<script type="text/javascript">
+    var moduleApp = angular.module('moduleApp', ['ui.router', 'ui.bootstrap', 'ngTable', 'xeditable', 'ui.sortable', 'ngAnimate','textAngular','angularUtils.directives.uiBreadcrumbs']);
+    moduleApp.run(function(editableOptions) {
+        editableOptions.theme = 'bs3';
+    });
+
+    moduleApp.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
+            $rootScope.selectedQuestion = {};
+
+
+            $rootScope.createModule = function(){
+                return {
+                    index:null,
+                    moduleId:null,
+                    title:'Enter Module Title',
+                    status:'',
+                    description:'Enter Module Description',
+                    questions:[]
+                };
+            }
+
+            $rootScope.createQuestion = function(){
+                return {
+                    measureId:null,
+                    displayOrder:-1,
+                    measureText:"",
+                    measureType:"",
+                    vistaVariable: "",
+                    helpText:"",
+                    ppi:false,
+                    mha:false,
+                    answers:[],
+                    validations:[]
+                };
+            }
+
+            $rootScope.createBattery = function(){
+                return {
+                    batteryId:null,
+                    title:"Enter Battery Title",
+                    description:"Enter Battery Description",
+                    sections:[]
+                };
+            }
+
+            $rootScope.createSection = function(){
+                return {
+                    sectionId:null,
+                    title:'Enter Section Title',
+                    modules:[]
+                }
+            }
+
+            $rootScope.createFormula = function(){
+                alert('Not presently implemented');
+            }
+
+            $rootScope.createTemplate = function(){
+                alert('Not presently implemented');
+            }
+
+            $rootScope.createRule = function(){
+                alert('Not presently implemented');
+            }
+
+            $rootScope.createTableQuestion = function(){
+                var q = $scope.createQuestion();
+                q.childAnswers = [];
+                return q;
+            }
+
+            $rootScope.battery = $rootScope.createBattery();
+            $rootScope.module = $rootScope.createModule();
+
+            $scope.addQuestion = function(){
+                $scope.selectedQuestion = $rootScope.createQuestion();
+                $scope.goToQuestions();
+            }
+
+            $scope.editQuestion = function(q){
+                $scope.selectedQuestion = q;
+                $scope.goToQuestions();
+            }
+
+            $scope.deleteQuestion = function(q){
+
+            }
+
+            $scope.goToQuestions = function(){
+
+                $state.go('modules-editor.addedit.questions.freetextreadonly');
+            }
+
+            /* ---- Button Actions ---- */
+
+            $scope.goToSelection = function(){
+                $state.go('modules-editor.selection');
+            }
+
+            $scope.goToSections = function(){
+                $state.go('modules-editor.addedit.mapsection');
+            }
+
+            $scope.goToMapConsult = function(){
+                $state.go('modules-editor.addedit.questions.mapconsult');
+            }
+
+            $scope.goToFormulaExpression = function(){
+                $state.go('modules-editor.addedit.expressioneditor');
+            }
+
+            $scope.goToCreateVar = function(){
+                $state.go('modules-editor.addedit.createvariable.questionvariable');
+            }
+     }]);
+
+    moduleApp.controller('moduleSelectController',['$rootScope','$scope','$state', '$filter', 'ngTableParams', function($rootScope, $scope, $state, $filter, ngTableParams){
+
+        $scope.modules = [
+            {id:1, title:'Identification', status:'Published', description:'Veteran\'s self identification module.', questions:[]},
+            {id:2, title:'Demographics', status:'Editable', description:'Veteran\'s demographic information.', questions:[]},
+            {id:3, title:'Service History',  status:'Editable', description:'Veteran\'s Military Service history module.', questions:[]},
+            {id:4, title:'Spiritual Beliefs', status:'Published', description:'Veteran\'s spiritual beliefs.', questions:[]},
+            {id:5, title:'General Physical Health', status:'Editable', description:'Veteran\'s physical health module.', questions:[]},
+            {id:6, title:'General Mental Health', status:'Editable', description:'Veteran\'s mental health module (general).', questions:[]},
+            {idx:7, title:'OEF/OIF PTSD', status:'Editable', description:'Post-Traumatic Stress Disorder module.', questions:[]},
+            {id:8, title:'OEF/OIF Anxiety Spectrum', status:'Editable', description:'Anxiety Spectrum identification module.', questions:[]},
+            {id:9, title:'OEF/OIF Something 1', status:'Published', description:'I\'m your friendly, neighborhood description!', questions:[]},
+            {id:10, title:'OEF/OIF Something 2', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]},
+            {id:11, title:'OEF/OIF Something 3', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]}
+        ]
+
+        var data = $scope.modules;
+
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page
+            filter: {
+                title: ''       // initial filter
+            },
+            sorting: {
+                title: 'asc'     // initial sorting
+            }
+        }, {
+            total: data.length, // length of data
+            getData: function($defer, params) {
+                // use build-in angular filter
+                var filteredData = params.filter() ?
+                        $filter('filter')(data, params.filter()) :
+                        data;
+                var orderedData = params.sorting() ?
+                        $filter('orderBy')(filteredData, params.orderBy()) :
+                        data;
+
+                params.total(orderedData.length); // set total for recalc pagination
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }
+        });
+
+        $scope.buildQuestions = function(){
+            var ques = [];
+            var qId = 1;
+            for (var i = 0; i<10; i++)
+            {
+                var q = $rootScope.createQuestion();
+                q.measureId = qId;
+                q.measureText = "What is your name? Q:: " + qId;
+                q.displayOrder = qId;
+                q.measureType="freeText";
+                q.vistaVariable="00A00" + qId;
+                q.helpText="I am some Help Text.";
+                q.ppi=true;
+                q.mha=false;
+                q.answers=[];
+                q.validations=[];
+                ques.push(q);
+                qId++;
+            }
+
+            return ques;
+        }
+
+        /* ---- Button Actions ---- */
+        $scope.editModule = function(mod){
+            $rootScope.module = mod;
+            mod.questions =  $scope.buildQuestions();
+            $state.go('modules-editor.addedit.questionnull');
+        }
+
+        $scope.addModule = function(){
+            $rootScope.module = $rootScope.createModule();
+            $state.go('modules-editor.addedit.questionnull');
+        }
+
+        $scope.goToAddEdit = function(){
+            $state.go('modules-editor.addedit.questionnull');
+        }
+
+        $scope.cancel = function(){
+            alert('Will take user back to Editors Entry View.');
+        }
+    }]);
+
+    moduleApp.controller('addEditModuleController', ['$rootScope', '$scope', '$state', function($rootScope, $scope, $state){
+        var tmpList = [];
+
+        $scope.selectedQuestion = null;
+
+        $scope.editQuestion = function(question){
+            $scope.selectedQuestion = question;
+
+            switch (question.measuretype){
+                case 'freeText':
+                case 'readOnly':
+                    $state.go('modules-editor.addedit.questions.freetextreadonly');
+                    break;
+                case 'selectOne':
+                case'selectMulti':
+                    $state.go('modules-editor.addedit.questions.selectsinglemultiple');
+                    break;
+                case 'selectOneMatrix':
+                case 'selectMultiMatrix':
+                    $state.go('modules-editor.addedit.questions.selectsinglemultiplematrix');
+                    break;
+                case 'tableQuestion':
+                    $state.go('modules-editor.addedit.questions.tablequestion');
+                    break;
+                case 'instructions':
+                    $state.go('modules-editor.addedit.questions.instructions');
+                    break;
+                default:
+                    $state.go('modules-editor.addedit.questions.freetextreadonly');
+            }
+
+        }
+
+        $scope.addQuestion = function(){
+            $scope.selectedQuestion = $rootScope.createQuestion();
+            $state.go('modules-editor.addedit.questions.freetextreadonly');
+        }
+
+        $scope.deleteQuestion = function(question){
+            alert('Will delete the Question with VISTA Variable: ' + question.vistaVariable);
+        }
+
+        $scope.sortableOptions = {
+            update: function(e, ui) {
+                var logEntry = tmpList.map(function(i){
+                    return i.value;
+                }).join(', ');
+               // $scope.sortingLog.push('Update: ' + logEntry);
+            },
+            stop: function(e, ui) {
+                // this callback has the changed model
+                var logEntry = tmpList.map(function(i){
+                    return i.value;
+                }).join(', ');
+                //$scope.sortingLog.push('Stop: ' + logEntry);
+            }
+        };
+     }]);
+
+     moduleApp.controller('questionsController', ['$rootScope', '$scope', '$state', function($rootScope, $scope, $state){
+
+             $scope.qTypes = [
+                 {name:"Free/Read-Only Text", value:1},
+                 {name:"Select Single/Multiple", value:2},
+                 {name:"Select Single/Multiple Matrix", value:3},
+                 {name:"Table Question", value:4},
+                 {name:"Instructions", value:5}];
+
+             $scope.qType = $scope.qTypes[0];
+
+             $scope.$watch( 'qType', function( qType ) {
+                 var url = 'modules-editor.addedit.questions.freetextreadonly';
+                 switch(qType.name){
+                     case 'Free/Read-Only Text':
+                         url = 'modules-editor.addedit.questions.freetextreadonly';
+                         break;
+                     case 'Select Single/Multiple':
+                         url = 'modules-editor.addedit.questions.selectsinglemultiple';
+                         break;
+                     case 'Select Single/Multiple Matrix':
+                         url = 'modules-editor.addedit.questions.selectsinglemultiplematrix';
+                         break;
+                     case 'Table Question':
+                         url = 'modules-editor.addedit.questions.tablequestion';
+                         break;
+                     case 'Instructions':
+                         url = 'modules-editor.addedit.questions.instructions';
+                         break;
+                 }
+                 $state.go(url);
+             });
+
+             $scope.goToAddEdit = function(){
+                 $state.go('modules-editor.addedit.questionnull');
+             }
+
+
+
+     }]);
+
+    moduleApp.run(['$rootScope', '$state', '$stateParams', '$modal',
+            function ($rootScope,   $state,   $stateParams,  $modal) {
+
+                // It's very handy to add references to $state and $stateParams to the $rootScope
+                // so that you can access them from any scope within your applications.For example,
+                // <li ng-class="{ active: $state.includes('assessments.list') }"> will set the <li>
+                // to active whenever 'assessments.list' or one of its descendents is active.
+                $rootScope.$state = $state;
+                $rootScope.$stateParams = $stateParams;
+            }])
+
+    moduleApp.config(
+            [    '$stateProvider', '$urlRouterProvider',
+                function ($stateProvider,   $urlRouterProvider) {
+
+                    /////////////////////////////
+                    // Redirects and Otherwise //
+                    /////////////////////////////
+
+                    // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
+                    $urlRouterProvider
+
+                    // The `when` method says if the url is ever the 1st param, then redirect to the 2nd param
+                    // Here we are just setting up some convenience urls.
+                    /*.when('/a?id', '/assessment-builder/:id')
+                     */
+                    //.when('/c?id', '/contacts/:id')
+                    //.when('/user/:id', '/contacts/:id')
+                    //.when('/battery-select', '/')
+                    // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
+                    .otherwise('/');
+
+
+                    //////////////////////////
+                    // State Configurations //
+                    //////////////////////////
+
+                    // Use $stateProvider to configure your states.
+                    $stateProvider
+
+                            .state('modules-editor',{
+                                abstract:true,
+                                url:'/',
+                                templateUrl:'views/modules/modulesabstract.html',
+                                data: {
+                                    displayName: false
+                                },
+                                controller:'moduleController'
+                            })
+
+                            .state('modules-editor.selection',{
+                                url:'',
+                                templateUrl:'views/modules/modulesselectview.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Selection'
+                                },
+                                controller:'moduleSelectController'
+                            })
+
+                            .state('modules-editor.addedit',{
+                                url:'/modules-editor.addedit',
+                                templateUrl:'views/modules/moduleseditor.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit'
+                                },
+                                controller:'addEditModuleController'
+                            })
+
+                            .state('modules-editor.addedit.questions',{
+                                abstract:true,
+                                url:'/modules-editor.addedit.questions',
+                                templateUrl:'views/questions/questionsabstract.html',
+                                data: {
+                                    displayName: false
+                                },
+                                controller:'questionsController'
+                            })
+
+                            .state('modules-editor.addedit.questionnull',{
+                                url:'/modules-editor.addedit.questionnull',
+                                templateUrl:'views/questions/questionnull.html',
+                                data:{displayName:false},
+                                controller:['$rootScope','$scope','$state',
+                                    function($rootScope, $scope, $state){
+                                        $scope.addQuestion = function(){
+                                            $state.go('modules-editor.addedit.questions.freetextreadonly');
+                                        }
+                                    }]
+                            })
+
+                            .state('modules-editor.addedit.questions.freetextreadonly',{
+                                url:'',
+                                templateUrl:'views/questions/freereadonlyquestion.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
+                                },
+                                controller:['$rootScope', '$scope', '$state',
+                                    function($rootScope, $scope, $state){
+                                        $scope.isExactLength = false;
+                                        $scope.isMinLength = false;
+                                        $scope.minLengthVal = "";
+                                        $scope.minLenObj = {name:'minLength', value:$scope.minLengthVal};
+
+                                        $scope.isMaxLength = false;
+                                        $scope.maxLengthVal = "";
+                                        $scope.maxLenObj = {name:'maxLength', value:$scope.maxLengthVal};
+
+                                        $scope.isRequired = false;
+                                        $scope.isReqObj = {name:'exactLength', value:$scope.isRequired}
+
+                                        $scope.$watch(
+                                                'isExactLength',
+                                                function(newValue, oldValue){
+                                                    if($scope.isExactLength){
+                                                        $scope.selectedQuestion.validations.push($scope.isReqObj);
+                                                    }
+                                                    else
+                                                    {
+                                                        if ($scope.selectedQuestion.validations.length > 0){
+                                                            for (var i=0;i<$scope.selectedQuestion.validations.length;i++){
+                                                                if($scope.selectedQuestion.validations[i].name == 'exactLength'){
+                                                                    $scope.selectedQuestion.validations.splice(i, 1);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                        )
+
+                                        $scope.$watch(
+                                                'isMinLength',
+                                                function(newValue, oldValue) {
+                                                    if ( $scope.isMinLength ) {
+                                                        $scope.selectedQuestion.validations.push($scope.minLenObj);
+                                                    }
+                                                    else
+                                                    {
+                                                        // Write removal routine.
+                                                        if ($scope.selectedQuestion.validations.length > 0){
+                                                            for (var i=0;i<$scope.selectedQuestion.validations.length;i++){
+                                                                if($scope.selectedQuestion.validations[i].name == 'minLength'){
+                                                                    $scope.selectedQuestion.validations.splice(i, 1);
+                                                                }
+                                                            }
+                                                        }
+                                                        $scope.minLengthVal = "";
+                                                    }
+                                                }
+
+                                        );
+
+                                        $scope.$watch(
+                                                'isMaxLength',
+                                                function(newValue, oldValue){
+                                                    if ($scope.isMaxLength){
+                                                        $scope.selectedQuestion.validations.push($scope.maxLenObj);
+                                                    }
+                                                    else
+                                                    {
+                                                        // Write removal routine.
+                                                        if ($scope.selectedQuestion.validations.length > 0){
+                                                            for (var i=0;i<$scope.selectedQuestion.validations.length;i++){
+                                                                if($scope.selectedQuestion.validations[i].name == 'maxLength'){
+                                                                    $scope.selectedQuestion.validations.splice(i, 1);
+                                                                }
+                                                            }
+                                                        }
+                                                        $scope.maxLengthVal = "";
+                                                    }
+                                                }
+                                        )
+                                        $scope.$watch(
+                                                'isRequired',
+                                                function(newValue, oldValue){
+                                                    if ($scope.isRequired){
+                                                        $scope.selectedQuestion.validations.push({name:'warnIfSkipped', value:true});
+                                                        alert(JSON.stringify('isRequired:: ' + $scope.isRequired + '/n' + $scope.selectedQuestion.validations));
+                                                    }
+                                                    else
+                                                    {
+                                                        // Write removal routine.
+                                                        if ($scope.selectedQuestion.validations.length > 0){
+                                                            for (var i=0;i<$scope.selectedQuestion.validations.length;i++){
+                                                                if($scope.selectedQuestion.validations[i].name == 'warnIfSkipped'){
+                                                                    $scope.selectedQuestion.validations.splice(i, 1);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                        )
+                                    }]
+                            })
+
+                            .state('modules-editor.addedit.questions.selectsinglemultiple',{
+                                url:'/modules-editor.addedit.questions.selectsinglemultiple',
+                                templateUrl:'views/questions/selectsinglemultiplequestion.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple'
+                                },
+                                controller:['$rootScope', '$scope', '$state',
+                                    function($rootScope, $scope, $state){
+
+                                    }]
+                            })
+
+                            .state('modules-editor.addedit.questions.selectsinglemultiplematrix',{
+                                url:'/modules-editor.addedit.questions.selectsinglemultiplematrix',
+                                templateUrl:'views/questions/selectsinglemultiplematrixquestion.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple Matrix'
+                                },
+                                controller:['$rootScope', '$scope', '$state',
+                                    function($rootScope, $scope, $state){
+
+                                    }]
+                            })
+
+                            .state('modules-editor.addedit.questions.tablequestion',{
+                                url:'/modules-editor.addedit.questions.tablequestion',
+                                templateUrl:'views/questions/tablequestion.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'
+                                },
+                                controller:['$rootScope', '$scope', '$state',
+                                    function($rootScope, $scope, $state){
+
+                                    }]
+                            })
+
+                            .state('modules-editor.addedit.questions.instructions', {
+                                url:'/modules-editor.addedit.questions.instructions',
+                                templateUrl:'views/questions/questioninstructions.html',
+                                data: {
+                                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'
+                                },
+                                controller:['$rootScope', '$scope', '$state',
+                                    function($rootScope, $scope, $state){
+                                        $scope.htmlVariable = '<b>I am</b> an example of an <b><i>Instruction!!!</i></b>';
+                                        $scope.htmlcontent = $scope.htmlVariable;
+                                    }]
+                            })
+
+                }]);
+</script>
+</head>
+<body>
+    <!-- Application Active Region Content - Wraps the active navigation module -->
+    <div id="bodyDiv" class="bgImgMiddle">
+        <div class="left-right-shadow container" style="padding:0px;margin:0 auto;">
+            <div class="container">
+                <ui-breadcrumbs displayname-property="data.displayName"></ui-breadcrumbs>
+                <div class="col-md-12" ui-view></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

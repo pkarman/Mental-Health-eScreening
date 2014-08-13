@@ -1,0 +1,76 @@
+<div class="section"><span
+        class="assign">Section:  section3</span><!-- Template start --><!-- The Veteran is a 28 year-old hispanic. -->
+<div class="block if">IF: hasValue(getFormulaDisplayText(var12))</div>The Veteran is a <span class="value">VALUE OF: getFormulaDisplayText(var12)</span> year-old
+<span class="trim">TRIM VALUE</span>
+<div class="block if">IF: !(hasValue(getSelectOneDisplayText(var30))) || wasAnswerNone(var30)</div>.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block else">ELSE</div><span class="value">VALUE OF: ""?left_pad(1)</span>whom is <span class="value">VALUE OF: getSelectOneDisplayText(var30)</span>.
+<span class="trim">TRIM VALUE</span></div></div><!-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
+<div class="block if">IF: hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20))
+</div>The Veteran reports being<span class="trim">TRIM VALUE</span>
+<div class="block if">IF: hasValue(getSelectMultiDisplayText(var40))</div><span
+        class="value">VALUE OF: ""?left_pad(1)</span>a <span
+        class="value">VALUE OF: getSelectMultiDisplayText(var40)</span><span class="trim">TRIM VALUE</span></div>
+<div class="block if">IF: hasValue(getSelectOneDisplayText(var20))</div><span
+        class="value">VALUE OF: ""?left_pad(1)</span><span class="value">VALUE OF: getSelectOneDisplayText(var20)</span>
+<span class="trim">TRIM VALUE</span></div>.  <span
+        class="trim">TRIM VALUE</span></div><!-- The Veteran reported completing some high school. -->
+<div class="block if">IF: hasValue(getSelectOneDisplayText(var50))</div>The Veteran reported completing <span
+        class="value">VALUE OF: getSelectOneDisplayText(var50)</span>.  <span
+        class="trim">TRIM VALUE</span></div><!-- The Veteran reported being currently an employed, who usually works as retail. -->
+<div class="block if">IF: hasValue(getSelectOneDisplayText(var60)) &amp;&amp; hasValue(getSelectOneDisplayText(var70))
+</div>The Veteran reported being currently <span
+        class="value">VALUE OF: getSelectOneDisplayText(var60)</span>, who usually works as an <span class="value">VALUE OF: getAnswerDisplayText(var70)</span>.
+<span class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: hasValue(getSelectOneDisplayText(var60)) &amp;&amp;
+    !(hasValue(getSelectOneDisplayText(var70)))
+</div>The Veteran reported being currently <span class="value">VALUE OF: getSelectOneDisplayText(var60)</span>.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: !(hasValue(getSelectOneDisplayText(var60))) &amp;&amp;
+    hasValue(getSelectOneDisplayText(var70))
+</div>The Veteran reported usually working as an <span class="value">VALUE OF: getAnswerDisplayText(var70)</span>.<span
+        class="trim">TRIM VALUE</span></div><!--The Veteran reported that the primary source of income is work, and disability.  -->
+<div class="block if">IF: hasValue(getAnswerDisplayText(var80))</div>The Veteran reported that <span class="trim">TRIM VALUE</span>
+<div class="block if">IF: wasAnswerNone(var80)</div>they do not have any income.  <span class="trim">TRIM VALUE</span>
+<div class="block else">ELSE</div>their income is derived from <span class="value">VALUE OF: getSelectMultiDisplayText(var80)</span>.
+<span class="trim">TRIM VALUE</span></div></div><!--The Veteran is married.-->
+<div class="block if">IF: hasValue(getSelectOneDisplayText(var100))</div>The Veteran is <span class="value">VALUE OF: getSelectOneDisplayText(var100)</span>.
+<span class="trim">TRIM VALUE</span></div><!--The Veteran lives in a house with spouse or partner, and children.-->
+<div class="block if">IF: hasValue(getSelectOneDisplayText(var110)) &amp;&amp;
+    hasValue(getSelectMultiDisplayText(var90))
+</div>The Veteran <span class="value">VALUE OF: getSelectOneDisplayText(var110)</span> <span
+        class="trim">TRIM VALUE</span>
+<div class="block if">IF: wasAnswerNone(var90)</div>alone.  <span class="trim">TRIM VALUE</span>
+<div class="block else">ELSE</div>with <span class="value">VALUE OF: getSelectMultiDisplayText(var90)</span>.  <span
+        class="trim">TRIM VALUE</span></div>
+<div class="block elseif">ELSE IF: hasValue(getSelectOneDisplayText(var110)) &amp;&amp;
+    !(hasValue(getSelectMultiDisplayText(var90)))
+</div>The Veteran <span class="value">VALUE OF: getSelectOneDisplayText(var110)</span>.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: !(hasValue(getSelectOneDisplayText(var110))) &amp;&amp;
+    hasValue(getSelectMultiDisplayText(var90))
+</div>The Veteran lives with <span class="value">VALUE OF: getSelectMultiDisplayText(var90)</span>.  <span class="trim">TRIM VALUE</span></div><!--The Veteran reported not having any children.-->
+<div class="block if">IF: hasValue(getAnswerDisplayText(var131))</div>
+<div class="block if">IF: wasAnswerTrue(var131)</div><span class="value">VALUE OF: getAnswerDisplayText(var131)</span>
+<span class="trim">TRIM VALUE</span>
+<div class="block else">ELSE</div><!--The Veteran has 2 child(ren) who are child(ren) are 2,4 years old.-->
+<div class="block if">IF: !(getNumberOfTableResponseRows(var130) = -1)</div>
+<div class="block if">IF: (getNumberOfTableResponseRows(var130) = 0)</div>The Veteran reported not having any children.
+<span class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (getNumberOfTableResponseRows(var130) = 1)</div>The Veteran has 1 child who is <span
+        class="value">VALUE OF: getTableMeasureDisplayText(var130)</span> years old.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (getNumberOfTableResponseRows(var130)</div> 1) >The Veteran has <span class="value">VALUE OF: getNumberOfTableResponseRows(var130)</span> children who are
+<span class="value">VALUE OF: getTableMeasureDisplayText(var130)</span> years old.  <span
+        class="trim">TRIM VALUE</span></div></div></div></div><!--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
+<div class="block if">IF: hasValue(getFormulaDisplayText(var11))</div>The Veteran's reported BMI is <span class="value">VALUE OF: num</span>, indicating that he/she
+<span class="trim">TRIM VALUE</span>
+<div class="block if">IF: (num < 18.5)</div>is below a normal a weight.  <span class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (num < 25) &amp;&amp; (num >= 18.5)</div>is at a normal weight.  <span class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (num < 30) &amp;&amp; (num >= 25)</div>is overweight.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (num < 40) &amp;&amp; (num >= 30)</div>is obese.  <span
+        class="trim">TRIM VALUE</span>
+<div class="block elseif">ELSE IF: (num >= 40)</div>is morbid obese.  <span class="trim">TRIM VALUE</span></div></div>
+<div class="block if">IF: !(section3 = '')</div><span class="value">VALUE OF: section3</span>
+<div class="block else">ELSE</div><span class="value">VALUE OF: noParagraphData</span></div>

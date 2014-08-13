@@ -1,0 +1,159 @@
+<div class="container">
+	<div class="row clearfix">
+        <div class="col-md-12 column">
+        	<h3>Module Selection</h3>
+            <hr>
+    		<form class="form-inline">
+            	<div class="form-group">
+                	<label for="txtFilter" class="col-sm-2">
+                    	Filters
+                    </label>
+                    <div class="col-sm-2-offset col-sm-10">
+                    	<input type="text" id="txtFilter" class="form-control" placeholder="Enter Title Text">
+                    </div>
+                </div>
+                <div class="form-group">
+                	<select id="selType" class="form-control">
+                    	<option value="-1" selected>--Select Type</option>
+                        <option value="0">Personal Information</option>
+                        <option value="1">Demographics</option>
+                    </select>
+                </div>
+                <div class="form-group pull-right">
+                	<button id="btnNew" type="button" class="btn btn-primary" ng-click="goToAddEdit();">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        New
+                    </button> 
+                </div>   	
+            </form>
+            <hr>
+        </div>
+     </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        Identification
+                    </td>
+                    <td>
+                        Personal Information
+                    </td>
+                    <td>
+                        A Description...
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                            <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="active">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        Demographics
+                    </td>
+                    <td>
+                        Personal Information
+                    </td>
+                    <td>
+                        A Description...
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                            <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        General Health
+                    </td>
+                    <td>
+                        Health
+                    </td>
+                    <td>
+                        A Description
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                            <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        General Mental Health
+                    </td>
+                    <td>
+                        Mental Health
+                    </td>
+                    <td>
+                        A description...
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                            <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="danger">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        PTSD Module - OEF
+                    </td>
+                    <td>
+                        Mental Health
+                    </td>
+                    <td>
+                        A description...
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                            <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

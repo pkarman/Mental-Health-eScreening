@@ -1,0 +1,123 @@
+
+<div class="row">
+    <div class="col-md-12 column">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label for="txtVariableNm" class="form-label col-sm-5">
+                    Variable Name
+                </label>
+                <div class="col-sm-5-offset col-sm-7">
+                    <input type="text" id="txtVariableNm" class="form-control" placeholder="VISTA Variable #" ng-model="selectedQuestion.vistaVariable">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 column">
+        <form role="form" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-10">
+                </div>
+            </div>
+        </form>
+        <div class="form-group">
+            <label>
+                Question Text
+            </label>
+            <textarea class="form-control" ng-model="selectedQuestion.measureText"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="page-header">
+            <h4>
+                Properties
+            </h4>
+        </div>
+        <form class="form">
+            <div class="form-group">
+                <label>
+                    Answer Type
+                </label>
+                <select class="form-control">
+                    <option value="pizza">
+                        Text
+                    </option>
+                    <option>
+                        Read-Only
+                    </option>
+                    <option value="salad">
+                        Number
+                    </option>
+                    <option value="pizzasalad">
+                        Email
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    Help Text
+                </label>
+                <input type="text" class="form-control" ng-model="selectedQuestion.helpText">
+            </div>
+
+            <div class="form-group form-inline">
+                <label class="checkbox">
+                    <input ng-model="selectedQuestion.ppi" type="checkbox" ng-true-value="true" ng-false-value="false">
+                    PPI
+                </label>
+                &nbsp;&nbsp;
+                <label class="checkbox">
+                    <input ng-model="isRequired" type="checkbox" ng-true-value="true" ng-false-value="false">
+                    Required
+                </label>
+            </div>
+            <div class="btn-group">
+                <a href="#" class="btn btn-success">Calculation Value</a>
+                <a href="#" class="btn btn-success">Calculation Type</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="page-header">
+            <h4>
+                Validations
+            </h4>
+        </div>
+        <form class="form">
+            <label class="checkbox">
+                <input type="checkbox" ng-model="isExactLength" ng-true-value="true" ng-false-value="false">
+                Exact Length
+            </label>
+            <div class="form-group">
+                <label class="form-label">Min Length</label>
+                <div class="input-group">
+                 <span class="input-group-addon">
+                     <input type="checkbox" ng-model="isMinLength" ng-true-value="true" ng-false-value="false">
+                 </span>
+                    <input type="text" class="form-control" ng-model="minLengthVal" placeholder="0">
+                </div><!-- /input-group -->
+            </div>
+            <div class="form-group">
+                <label class="form-label">Max Length</label>
+                <div class="input-group">
+                 <span class="input-group-addon">
+                     <input type="checkbox" ng-model="isMaxLength" ng-true-value="true" ng-false-value="false">
+                 </span>
+                    <input type="text" class="form-control" ng-model="maxLengthVal" placeholder="0">
+                </div><!-- /input-group -->
+            </div>
+        </form>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group pull-right">
+            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-default">Cancel</button>
+        </div>
+    </div>
+</div>

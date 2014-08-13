@@ -1,0 +1,573 @@
+<div class="container-fluid">
+    <h3>
+        Templates
+    </h3>
+    <hr>
+    <div class="row check-element animate-show" ng-show="stCollapsed">
+        <div class="col-md-12">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <h3>Template Selection</h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <select id="selType" class="form-control">
+                                <option value="-1" selected>--Select Type</option>
+                                <option value="0">Veteran's Summary Note</option>
+                                <option value="1">Clinical Summary Note</option>
+                                <option value="2">Program End of Assessment Message</option>
+                            </select>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button id="btnNew" type="button" class="btn btn-primary" ng-click="viewTE();">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                    <hr>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                San Diego Veteran's Center
+                            </td>
+                            <td>
+                                Veteran's Summary Note
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="viewTE();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                Lovell Veteran's Hospital
+                            </td>
+                            <td>
+                                Veteran's Summary Note
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="viewTE();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="success">
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                Veteran's Hospital Tampa
+                            </td>
+                            <td>
+                                Veteran's Summary Note
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="viewTE();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="warning">
+                            <td>
+                                3
+                            </td>
+                            <td>
+                                Rockford Veteran's Mental Health
+                            </td>
+                            <td>
+                                Veteran's Summary Note
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="viewTE();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="danger">
+                            <td>
+                                4
+                            </td>
+                            <td>
+                                Madison VA Hospital
+                            </td>
+                            <td>
+                                Veteran's Summary Note
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" title="Edit" ng-click="viewTE();"></span>
+                                    <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row check-element animate-show" ng-show="teCollapsed">
+        <div class="col-md-12">
+        <div class="row clearfix">
+        <h3>Template Editor</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <form class="inline-form">
+                    <div class="form-group col-sm-6">
+                        <label for="txtTemplateName" class="col-sm-2 form-label">
+                            Name
+                        </label>
+                        <div class="col-sm-2-offset col-sm-10">
+                            <input type="text" id="txtTemplateName" class="form-control" placeholder="Enter Template Name">
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6 pull-right">
+                        <label for="selTemplateType" class="col-sm-4 form-label">
+                            Template Type
+                        </label>
+                        <div class="col-sm-2-offset col-sm-8">
+                            <select id="selTemplateType" class="form-control">
+                                <option value="-1" selected>--Select Type</option>
+                                <option value="0">Veteran's Summary Note</option>
+                                <option value="1">Clinical Summary Note</option>
+                                <option value="2">Program End of Assessment Message</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="pull-left">
+                            Variables
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <form class="form-inline">
+                    <div class="form-group col-md-5">
+                        <label for="txtVarName" class=" col-sm-2 control-label">
+                            Title
+                        </label>
+                        <div class="col-sm-2-offset col-sm-10">
+                            <input type="search" id="txtVarName" placeholder="Enter Title" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="selVarType" class="col-sm-2 control-label">
+                            Type
+                        </label>
+                        <div class="col-sm-2-offset col-sm-10">
+                            <select id="selVarType" class="form-control">
+                                <option value="-1">-- Select Type</option>
+                                <option value="0" selected>Question</option>
+                                <option value="1">Answer</option>
+                                <option value="2">Custom Variable</option>
+                                <option value="3">Formula</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button class="btn btn-success btn-sm" ng-click="addVariable();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        Variable One
+                    </td>
+                    <td>
+                        Question
+                    </td>
+                </tr>
+                <tr class="active">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        Variable Two
+                    </td>
+                    <td>
+                        Question
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        Variable Three
+                    </td>
+                    <td>
+                        Answer
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        Variable Four
+                    </td>
+                    <td>
+                        Custom Variable
+                    </td>
+                </tr>
+                <tr class="danger">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        Variable Five
+                    </td>
+                    <td>
+                        Formula
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-12">
+                    <button id="btnBuildCondition" class="btn btn-primary" ng-click="viewTS();">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add Conditional Statement
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="pull-left">
+                            Conditions and Functions
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <form class="form-inline">
+                    <div class="form-group col-md-5">
+                        <label for="txtFuncName" class=" col-sm-2 control-label">
+                            Title
+                        </label>
+                        <div class="col-sm-2-offset col-sm-10">
+                            <input type="search" id="txtVarName" placeholder="Enter Function Name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="selFuncType" class="col-sm-2 control-label">
+                            Type
+                        </label>
+                        <div class="col-sm-2-offset col-sm-10">
+                            <select id="selVarType" class="form-control">
+                                <option value="-1">-- Select Type</option>
+                                <option value="0" selected>Conditions</option>
+                                <option value="1">Functions</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button class="btn btn-success btn-sm" ng-click="addFormula();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        getBMI
+                    </td>
+                    <td>
+                        Function
+                    </td>
+                </tr>
+                <tr class="active">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        ifNavyNuclear
+                    </td>
+                    <td>
+                        Condition
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        calculateCivilianYears
+                    </td>
+                    <td>
+                        Function
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        calcPerChild
+                    </td>
+                    <td>
+                        Function
+                    </td>
+                </tr>
+                <tr class="danger">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        ifPTSD
+                    </td>
+                    <td>
+                        Conditon
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="taNoteEdit" class="form-label">
+                            Note Editor
+                        </label>
+                        <textarea id="taNoteEdit" class="form-control">
+                            <p><b><i>I'm going to be an</i> </b> modified HTML Redactor when I grow up!</p>
+                        </textarea>
+                    </div>
+                </form>
+                <hr>
+            </div>
+        </div>
+        </div>
+        </div>
+    </div>
+    <div class="row check-element animate-show" ng-show="tsCollapsed">
+        <div class="col-md-12">
+            <div class="row clearfix">
+                <div class="col-md-4 column">
+                    <div class="panel-group" id="panel-307263">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-307263"
+                                   href="#panel-element-438457">Operations</a>
+                            </div>
+                            <div id="panel-element-438457" class="panel-collapse in">
+                                <div class="panel-body">
+                                    Anim pariatur cliche...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-307263"
+                                   href="#panel-element-810253">Constants</a>
+                            </div>
+                            <div id="panel-element-810253" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    Anim pariatur cliche...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-307263"
+                                   href="#panel-element-438457">Defined Variables</a>
+                            </div>
+                            <div id="panel-element-438457" class="panel-collapse in">
+                                <div class="panel-body">
+                                    Anim pariatur cliche...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 column">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">
+                                        Name
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="inputEmail3" placeholder="Enter Name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword3" class="col-sm-2 control-label">
+                                        Description
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="inputPassword3" placeholder="Enter Description">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>
+                                                Formula Editor
+                                            </label>
+                                            <textarea class="form-control"></textarea>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>
+                                                Result Text
+                                            </label>
+                                            <textarea class="form-control"></textarea>
+
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <div class="form-group">
+                                    <label for="lPreview" class="control-label">
+                                        Expression Preview
+                                    </label>
+                                    <div class="col-sm-12">
+                                        <ul id="lPreview" class="list-inline">
+                                            <li class="form-inline">
+                                                <form class="form-inline">
+                                                    <div class="form-group">
+                                                        <label for="txtOpVal1" class="col-sm-2 control-label">
+                                                            OpVal1
+                                                        </label>
+                                                        <input type="text" id="txtOpVal1" class="col-sm-2-offset col-sm-10 form-control" value="28">
+                                                    </div>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12">
+                                                                <button type="submit" class="btn btn-default">
+                                                                    Test
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        Your response:
+                                                    </label>
+                                                    <textarea class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary pull-right" ng-click="dismiss();">Save</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test Module for FreemarkerJS read/write template editing.">
+    <meta name="author" content="Bryan Henderson">
+    <title>
+        FreemarkerJS Template Editor Test Page
+    </title>
+    <link rel="stylesheet" type="text/css" href="js/directives/ngTable/ng-table.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular-sanitize.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular.min.js'></script>
+    <script src="js/directives/minerr.js"></script>
+    <script src="ftlExample.js"></script>
+    <script src="js/freemark.js"></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="vendors/angularUtils/angularUtils.js"></script>
+    <script type="text/javascript" src="js/directives/ngTable/ng-table.js"></script>
+    <script type="text/javascript" src="js/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="js/directives/angular-routing.js"></script>
+
+    <script type="text/javascript" src="js/directives/sortable.js"></script>
+    <script type="text/javascript" src="js/directives/xeditable.min.js"></script>
+    <style type="text/css">
+        .block{
+            border:2px solid #666666;
+            color:#333333;
+            border-radius:4px;
+            background-color:#ebebeb;
+            font-weight:700;
+            padding:2px;
+        }
+
+        .value{
+            border:2px solid #333333;
+            border-radius:4px;
+            color:#999999;
+            background-color:#666666;
+            padding:5px;
+        }
+        .text-lg{
+            font-size: 1.5em;
+        }
+        .text-med{
+            font-size: 1.2em;
+        }
+        .text-xlg{
+            font-size: 2.4em;
+        }
+        .border-around {
+            background: rgba(255,255,255,0.7);
+        }
+        .text-red{
+            color:#E52A3A;
+        }
+        .text-gray{
+            color:#5f5f5f;
+        }
+        .roboto{
+            font-family: "Roboto", sans-serif;
+        }
+        text-sm{
+            font-size: 0.5em;
+        }
+        .border-around{
+            border:1px solid rgba(2,2,2,0.1);
+            border-radius: 6px;
+            vertical-align: text-bottom;
+        }
+        .light{
+            padding: 1em;
+        }
+        .lighter{
+            padding: 0.5em;
+        }
+        .shadWhite{
+            text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+        }
+        .shadBlack{
+            text-shadow: 0 1px 0 rgba(2,2,2,0.7);
+        }
+
+        .include{
+            border:1px solid blueviolet;
+            background-color:cornflowerblue;
+            color:#ffffff;
+        }
+        .section{
+            border:1px solid cadetblue;
+            background-color:aliceblue;
+            font-weight: 800;
+            color:dimgray;
+        }
+        .title{
+            border:1px solid darkred;
+            background-color: indianred;
+            font-weight: 800;
+            color:#ffffff;
+        }
+        .assign{
+            border:2px solid darkblue;
+            border-radius:4px;
+            background-color:dodgerblue;
+            font-size:20px;
+            font-weight:800;
+            color: #ffffff;
+            padding:10px;
+        }
+        .ifelse{
+            border:1px solid greenyellow;
+            background-color: green;
+            font-weight:800;
+            color:#ffffff;
+        }
+        .trim{
+            border:1px solid dimgray;
+            border-radius:4px;
+            background-color:lightslategray;
+            font-weight:800;
+            color:#ffffff;
+            padding:5px;
+        }
+    </style>
+    <script>
+        var TemplateEditor = angular.module('TemplateEditor',['ui.bootstrap','ngAnimate','textAngular']);
+
+        /*TemplateEditor.run(
+                [
+                    '$rootScope','$state','$stateParams','$modal',
+                    function($rootScope,$state,$stateParams,$modal){
+                        $rootScope.$state = $state;
+                        $rootScope.$stateParams = $stateParams;
+                    }
+                ]
+        );*/
+
+       TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate', function(taRegisterTool, taOptions){
+                // $delegate is the taOptions we are decorating.
+                // register the tool with textAngular.
+                taRegisterTool('ftlInclude',{
+                    buttontext:'#include',
+                    action: function(){
+                        var inclPath;
+                        inclPath = prompt("Please enter an include file path", '');
+                        if (inclPath !== '') {
+                            return this.$editor().wrapSelection('insertHTML', '\n<div class="include">#include "'+inclPath+'"</div><br>');
+                        }
+                    }
+                });
+                taOptions.toolbar[1].push('ftlInclude');
+                return taOptions;
+            }]);
+        }]);
+
+       TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool, taOptions){
+                // $delegate is the taOptions we are decorating.
+                // register the tool with textAngular.
+                taRegisterTool('ftlSectionStart',{
+                    buttontext:'section',
+                    action: function(){
+                        return this.$editor().wrapSelection('insertHTML','<div class="section">${SECTION_START}</div><br>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlSectionStart');
+                return taOptions;
+            }]);
+        }]);
+
+        TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlSectionEnd',{
+                    buttontext:'/section',
+                    action: function(){
+                        return this.$editor().wrapSelection('insertHTML','<div class="section">${SECTION_END}</div><br>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlSectionEnd');
+                return taOptions;
+            }]);
+        }]);
+
+        TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool, taOptions){
+                taRegisterTool('ftlTitleStart',{
+                    buttontext:'title',
+                    action: function(){
+                        return this.$editor().wrapSelection('insertHTML','<div class="title">${TITLE_START}</div><br>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlTitleStart');
+                return taOptions;
+            }]);
+        }]);
+
+       TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlTitleEnd',{
+                    buttontext:'/title',
+                    action:function(){
+                        return this.$editor().wrapSelection('insertHTML','<div class="title">${TITLE_END}</div><br>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlTitleEnd');
+                return taOptions;
+            }]);
+        }]);
+
+        TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlAssign',{
+                    buttontext:'assign',
+                    action:function(){
+                        var assignName;
+                        assignName = prompt("Please enter a name", '');
+                        if (assignName !== '') {
+                            return this.$editor().wrapSelection('insertHTML', '<div class="assign">#assign "'+assignName+'"</div><br>');
+                        }
+                    }
+                });
+                taOptions.toolbar[1].push('ftlAssign');
+                return taOptions;
+            }]);
+        }]);
+
+        TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlIf',{
+                    buttontext:'IF',
+                    action:function(){
+                        var ifCond;
+                        ifCond = prompt('Please enter a variable name','');
+                        if (ifCond !== ''){
+                            return this.$editor().wrapSelection('insertHTML','<div class="block if">#if ' +ifCond+'??</div><br>');
+                        }
+                    }
+                });
+                taOptions.toolbar[1].push('ftlIf');
+                return taOptions;
+            }])
+        }]);
+
+       TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlElse',{
+                    buttontext:'ELSE',
+                    action:function(){
+                        return this.$editor().wrapSelection('insertHTML','<div class="block else">#else</div><br>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlElse');
+                return taOptions;
+            }])
+        }]);
+
+        TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlIfElse',{
+                    buttontext:'IFELSE',
+                    action:function(){
+                        var elseIfCond;
+                        elseIfCond = prompt('Please enter a variable statement','');
+                        if (elseIfCond !== '') {
+                            return this.$editor().wrapSelection('insertHTML', '<div class="block ifelse">' + elseIfCond +'</div><br>');
+                        }
+                    }
+                });
+                taOptions.toolbar[1].push('ftlIfElse');
+                return taOptions;
+            }])
+        }]);
+
+       TemplateEditor.config(['$provide',function($provide){
+           $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+               taRegisterTool('ftlValue',{
+                  buttontext:'VALUE',
+                  action:function(){
+                      var valueVal;
+                      valueVal = prompt('Please enter a function value','');
+                      if (valueVal !== ''){
+                          return this.$editor().wrapSelection('insertHTML','<span class="value">' + valueVal + '</span>');
+                      }
+                  }
+               });
+               taOptions.toolbar[1].push('ftlValue');
+               return taOptions;
+           }])
+       }]);
+
+       TemplateEditor.config(['$provide',function($provide){
+            $provide.decorator('taOptions',['taRegisterTool','$delegate',function(taRegisterTool,taOptions){
+                taRegisterTool('ftlT',{
+                    buttontext:'Trim',
+                    action:function(){
+                        return this.$editor().wrapSelection('insertHTML','<span class="tee">#t</span>');
+                    }
+                });
+                taOptions.toolbar[1].push('ftlT');
+                return taOptions;
+            }])
+        }]);
+
+
+
+        TemplateEditor.controller('templateController', ['$rootScope', '$scope', function($rootScope, $scope){
+            $scope.template = "<h1><b>Template Text:</b></h1>";
+            $scope.title = "";
+            $scope.include = "";
+
+            $scope.loadFTL = function(){
+                var ftl = new FTLTranslator();
+                var htmlObj = ftl.convert('html',ftlContent);
+                $scope.title = htmlObj.title;
+                $scope.include = htmlObj.include;
+                $scope.template = htmlObj.sections;
+            }
+        }]);
+    </script>
+</head>
+
+<body ng-app="TemplateEditor" ng-controller="templateController">
+<div class="container">
+    <div class="page-header">
+        <h2>
+            Template Editor
+        </h2>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-inline pull-right">
+                <label class="form-label" style="font-size:16px;">
+                    Type
+                </label>
+                <select class="form-control">
+                    <option value="-1">
+                        -- Select Template Type
+                    </option>
+                    <option value="salad">
+                        Salad
+                    </option>
+                    <option value="pizzasalad">
+                        Pizza and Salad
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>
+                Variables
+            </h4>
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        Variable 1
+                    </td>
+                    <td>
+                        Question
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Variable 2
+                    </td>
+                    <td>
+                        Formula
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Variable 3
+                    </td>
+                    <td>
+                        Answer
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h4>
+                Conditions and Functions
+            </h4>
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        If Condition
+                    </td>
+                    <td>
+                        Condition
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Else Condition
+                    </td>
+                    <td>
+                        Condition
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        True/False
+                    </td>
+                    <td>
+                        Condition
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span>
+                Build Conditional Statement
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h4>
+                    Note Editor
+                </h4>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group pull-right">
+                        <button class="btm btn-success" ng-click="loadFTL();">Load Note</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" ng-model="title" placeholder="Enter Note Title" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Include</label>
+                        <input type="text" ng-model="include" placeholder="Enter Include Name" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <text-angular ng-model="template" ta-toolbar="[['p'],['bold','italics', 'underline','ftlIf','ftlIfElse','ftlElse','ftlValue','ftlT']]" ta-text-editor-class="border-around container" ta-html-editor-class="border-around" rows="10"></text-angular>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group pull-right">
+                <button class="btn btn-default">
+                    Cancel
+                </button>
+                <button class="btn btn-primary">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
+</script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+	<head>
+    	<meta charset="utf-8">
+		<title>Measures - Identification</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/common-palette.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/fontfaces.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/forms.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/assessmenttemplate.css">
+		<style type="text/css">
+			#header, #footer {
+				margin-left:0px; /* LC full width */
+				margin-right:0px; /* RC fullwidth + CC padding */
+			}
+			
+			.column {
+				position: relative;
+				float: left;
+			}
+			
+			#left{
+				width:200px; /* LC width */
+				padding:0 10px; /* LC padding */
+				right:25px; /* LC full width + CC padding */
+				margin-left:0;
+			}
+			#right{
+				width:20px; /* RC width */
+				padding:0 10px; /* RC padding */
+				margin-right:0;
+			}
+			
+			#footer {
+				clear: both;
+			}
+			
+			/*** IE Fix ***/
+			* html #left {
+				left: 150px;            /* RC fullwidth */
+			}
+			#center {
+				padding:20px 20px 20px -20px;
+				margin-left:17px;
+				margin-bottom:1%;
+				text-align:center; 
+				width:98%;
+				height:auto;
+				border:1px solid hsla(0,0%,60%,1);
+				box-shadow:1px 5px 20px #666666;
+			}
+		</style>
+        <!-- JavaScript loads -->
+	</head>
+	<body>
+		<div id="header" role="heading">
+        	<div id="logo-container">
+                <!-- Link Back to Home, wrapping Logo -->
+                <a href="#">
+                        <img src="resources/images/logo_va_cleaned.png" alt="Department of Veterans Affairs">
+                </a>
+			</div>
+			<!-- End Logo Link -->
+            <!-- Headline and Application text -->
+            <div class="agencyTitle">
+				<span id="agencyName"> 
+					Department of Veterans Affairs
+				</span>
+			</div>
+			<div class="applicationTitle">
+				<span id="applicationName"> 
+					OEF/OIF Health Assessment
+				</span>
+			</div>
+            <div id="loggedInContainer">
+            	<span id="userLogged">Joe Clinician</span>
+            </div>
+        </div>
+		<!-- Three columns, fixed-fluid-fixed -->
+        <div id="center" class="column contentAreaGrayRadial">
+			<p>Center</p>
+        </div>
+        <div id="left" class="column">
+            <p>Column Sidebar</p>
+        </div>
+        <div id="right" class="column">
+            <!-- Most of the time, this will be a gutter, providing padding,
+                but can be used to provide a sidebar, or a pure semantic 
+                column for two-and-three column layouts, with width/padding mods. -->
+        </div>
+	</body>
+</html>
+
+

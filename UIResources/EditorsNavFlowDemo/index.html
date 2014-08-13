@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html ng-app="Editors">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>VA Editors Navigation Model Demonstration</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- JavaScript Loads -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js'></script>
+
+    <!-- Load UI Bootstrap Angular Toolkit -->
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+    <!-- Modules -->
+    <script type="text/javascript" src="vendors/angularUtils/angularUtils.js"></script>
+    <script type="text/javascript" src="vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
+    <script type="text/javascript" src="js/directives/angular-animate.js"></script>
+    <script type="text/javascript" src="js/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script type="text/javascript" src="js/directives/angular-texteditor.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="states.js"></script>
+
+</head>
+<body>
+    <!-- Top Nav Content -->
+    <div id="outerPageDiv">
+        <div id="headerDiv" class="top_header">
+            <div class="container bg_transparent">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div id="vaLogoDiv"><!--<a href="index.html" ><img src="css/escreening/dva_eha_logo.png" alt="Department of Veterans Affairs | eScreening Health Assessment" border="0"></a>-->
+                            <a ui-sref="home"> <h1>VA eScreening Editors Navigation Demo</h1></a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <div id="welcomeDiv">
+                            <div id="loggedInUser"><span id="welcomeMessage"><span class="glyphicon glyphicon-user"></span>Welcome TechAdmin, One | <a href="#">Logout<span class="glyphicon glyphicon-log-out"></span></a></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="navbar navbar-default navbar-update" role="navigation">
+        <div class="container bg_transparent">
+            <div class="navbar-header">
+                <nav class="navbar-collapse collapse">
+                   <!-- <ul id="tabs" class="nav navbar-nav">
+                        <!-- Here you can see ui-sref in action again. Also notice the use of $state.includes, which
+                             will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
+                             its descendant states are activated. -->
+                       <!-- <li ng-class="{active: $state.includes('battery-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Batteries<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('battery-select')}"><a ui-sref="battery-select">Battery Selection</a></li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('sections-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sections<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('sections-select')}"><a ui-sref="sections-select">Section Selection</a></li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('modules-select')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('modules-select')}">
+                                    <a ui-sref="modules-select">Module Selection</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li ng-class="{active: $state.includes('questions-editor')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Questions<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('questions-freerotext')}"><a ui-sref="questions-freerotext">New Free/Read-Only Text Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-selectsinglemultiple')}"><a ui-sref="questions-selectsinglemultiple">New Select Single/Multiple Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-selectsinglemultiplematrix')}"><a ui-sref="questions-selectsinglemultiplematrix">New Select Single/Multiple Matrix Question</a></li>
+                                <li ng-class="{active: $state.includes('questions-table')}"><a ui-sref="questions-table">New Table Question</a> </li>
+                                <li ng-class="{active: $state.includes('questions-instructions')}"><a ui-sref="questions-instructions">New Instructions</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('formulas-editor')}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formulas<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('formulas-editor')}"><a ui-sref="formulas-editor">Formulas Editor</a> </li>
+                                <li ng-class="{active: $state.includes('questionvariable')}"><a ui-sref="questionvariable">New Question Variable</a> </li>
+                                <li ng-class="{active: $state.includes('customvariable')}"><a ui-sref="customvariable">New Custom Variable</a> </li>
+                                <li ng-class="{active: $state.includes('mapvariable')}"><a ui-sref="mapvariable">Map Assessment Variable</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('rules-editor')}">
+                            <a href="#"class="dropdown-toggle" data-toggle="dropdown">Rules/Events<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('rules-editor')}"><a ui-sref="rules-editor">Rules Statement Editor</a> </li>
+                                <li ng-class="{active: $state.includes('select-consult')}"><a ui-sref="select-consult">Select Consult</a> </li>
+                                <li ng-class="{active: $state.includes('select-healthfactor')}"><a ui-sref="select-healthfactor">Select Health Factor</a> </li>
+                                <li ng-class="{active: $state.includes('select-ruletriggeredalert')}"><a ui-sref="select-ruletriggeredalert">Select Rule-Triggered Alert</a> </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{active: $state.includes('templates-editor')}"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Templates<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li ng-class="{active: $state.includes('template-select')}"><a ui-sref="template-select">Select Template</a> </li>
+                                <li ng-class="{active: $state.includes('template-editor')}"><a ui-sref="template-editor">Template Editor</a> </li>
+                                <li ng-class="{active: $state.includes('statement-editor')}"><a ui-sref="statement-editor">Statement Editor</a> </li>
+                            </ul>
+                        </li>
+                    </ul>-->
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- /Top Nav Content -->
+    <!-- Application Active Region Content - Wraps the active navigation module -->
+    <div class="row">
+        <div class="span12 ui-view-container">
+            <ui-breadcrumbs displayname-property="data.displayName"></ui-breadcrumbs>
+            <div class="" ui-view></div>
+        </div>
+    </div>
+
+    <div class="container" style="padding:0px;">
+        <footer>
+            <div class="footer_container">
+                <div class="container bg_transparent">
+                    <div class="row">
+                        <div class="col-md-12"> U.S. Department of Veterans Affairs | eScreening Health Assessment (Ver 1.0) </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

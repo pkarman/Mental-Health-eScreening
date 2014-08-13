@@ -1,0 +1,7 @@
+{
+    "assessments":[
+        {"assessmentId":1, "assessmentName":"CESAMH Generalized Mental Health Assessment"},
+        {"assessmentId":2, "assessmentName":"CESAMH PTSD Mental Health Assessment"},
+        {"assessmentId":3, "assessmentName":"CESAMH Clinical Depression Assessment"},
+        {"assessmentId":4, "assessmentName":"CESAMH Bipolar/Schizophrenia Assessment"}]
+}

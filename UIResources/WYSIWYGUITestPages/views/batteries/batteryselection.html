@@ -1,0 +1,48 @@
+<div class="page-header">
+    <h2>
+        Select Battery
+    </h2>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="breadcrumb">
+                <li>
+                    <a ui-sref="home">Editors</a>
+                </li>
+                <li class="active">
+                    Batteries: Selection
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row clearfix">
+    <div class="col-md-12 column" style="max-height:550px; overflow-y:auto;">
+        <!--- ngTable Begin --->
+        <table ng-table="tableParams" show-filter="true" class="table">
+            <tr ng-repeat="battery in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td data-title="'Title'" sortable="'title'" filter="{ 'title': 'text' }">
+                    {{battery.title}}
+                </td>
+                <td data-title="'Enabled'" sortable="'status'" filter="{ 'enabled': 'text' }">
+                    {{battery.enabled}}
+                </td>
+                <td data-title="Description">
+                    {{battery.description}}
+                </td>
+                <td data-title="Actions">
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit" ng-click="editBattery(battery);"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--- /ngTable --->
+    <hr>
+    <div class="row pull-right">
+        <div class="col-md-12">
+            <a class="btn btn-default" ng-click="cancel();">Cancel</a>
+        </div>
+    </div>
+</div>

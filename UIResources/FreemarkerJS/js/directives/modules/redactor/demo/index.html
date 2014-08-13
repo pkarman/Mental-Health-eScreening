@@ -1,0 +1,17 @@
+<h3>redactor</h3>
+
+<div class='row' ng-controller='DemoRedactorCtrl'>
+    <div class='col-sm-6'>
+        <p>
+            <textarea
+                redactor
+                ng-model='myText'></textarea>
+        </p>
+
+        <pre>{{ myText }}</pre>
+    </div>
+
+    <div class='col-sm-6'>
+        <pre>{{ codeExample }}</pre>
+    </div>
+</div>

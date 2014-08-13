@@ -1,0 +1,22 @@
+<h3>print</h3>
+
+<div class='row' ng-controller='DemoPrintCtrl'>
+    <div class='col-sm-6'>
+        <p>
+            <button
+                class='btn btn-default'
+                print='#print-demo'
+                print-title='Print Demo'>
+                Print
+            </button>
+        </p>
+
+        <div id='print-demo'>
+            Hey you there!
+        </div>
+    </div>
+
+    <div class='col-sm-6'>
+        <pre>{{ codeExample }}</pre>
+    </div>
+</div>

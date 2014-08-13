@@ -1,0 +1,102 @@
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3 class="text-left pull-left">
+                    Batteries
+                </h3>
+                <button type="button" class="btn btn-primary pull-right" ng-click="goToAddEdit();">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    New
+                </button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    #
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    1
+                </td>
+                <td>
+                    CESAMH Vietnam-Era PTSD
+                </td>
+                <td>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="active">
+                <td>
+                    1
+                </td>
+                <td>
+                    CESAMH Gulf War-Era PTSD
+                </td>
+                <td>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="success">
+                <td>
+                    2
+                </td>
+                <td>
+                    CESAMH Iraq War-Era PTSD
+                </td>
+                <td>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit" ng-click="goToAddEdit();"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="selectForDelete();"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="warning">
+                <td>
+                    3
+                </td>
+                <td>
+                    CESAMH Anxiety Spectrum
+                </td>
+                <td>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="danger">
+                <td>
+                    4
+                </td>
+                <td>
+                    CESAMH Depression
+                </td>
+                <td>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-edit" title="Edit"></span>
+                        <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete"></span>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

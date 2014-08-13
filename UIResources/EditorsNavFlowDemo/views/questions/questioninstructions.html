@@ -1,0 +1,34 @@
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <form class="form-inline" role="form">
+				<div class="form-group">
+                	<label for="txtVariableNm" class="form-label col-sm-5">
+                    Variable Name
+                    </label>
+                    <div class="col-sm-5-offset col-sm-7">
+                    <input type="text" id="txtVariableNm" class="form-control" placeholder="00A001">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                    <label>
+                        Instruction Text
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div text-angular="text-angular" ng-model="htmlVariable" ta-toolbar-class="btn-toolbar"
+             ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
+             ta-toolbar-button-active-class="active">
+
+        </div>
+        <h5>Note Preview</h5>
+        <textarea ng-model="htmlcontent" style="width: 100%"></textarea>
+    </div>
+</div>
