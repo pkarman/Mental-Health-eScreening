@@ -62,8 +62,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
     @Override
     public BatteryInfo getBattery(int batteryId) {
-        List<BatterySurvey> batterySurveys = batterySurveyService.search(new SearchDTO<Integer>(batteryId, SearchType.QUERY_ANNOTATION));
-        return EditorsBatteryViewTransformer.transformBatterySurveys(batterySurveys);
+        return batteryService.getBattery(batteryId);
     }
 
     @Override

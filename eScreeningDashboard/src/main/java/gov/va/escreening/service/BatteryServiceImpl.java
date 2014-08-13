@@ -10,6 +10,7 @@ import gov.va.escreening.entity.ProgramBattery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ProgramBatteryRepository;
+import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +100,19 @@ public class BatteryServiceImpl implements BatteryService {
 
 		return batteryInfoList;
 	}
+
+    @Transactional(readOnly = true)
+    @Override
+    public BatteryInfo getBattery(int batteryId) {
+        BatteryInfo batteryInfo = null;
+        Battery battery = batteryRepository.findOne(batteryId);
+
+        if(battery != null) {
+            batteryInfo = EditorsBatteryViewTransformer.transformBattery(battery);
+        }
+
+        return batteryInfo;
+    }
 
 	@Override
 	public void update(BatteryInfo batteryInfo) {

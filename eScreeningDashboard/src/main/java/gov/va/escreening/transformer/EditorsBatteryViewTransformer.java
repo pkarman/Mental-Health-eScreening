@@ -9,7 +9,9 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveySection;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pouncilt on 8/2/14.
@@ -40,15 +42,26 @@ public class EditorsBatteryViewTransformer {
         return surveyInfo;
     }
 
-    private static BatteryInfo transformBattery(Battery battery) {
+    public static BatteryInfo transformBattery(Battery battery) {
         BatteryInfo batteryInfo = null;
 
         if(battery != null) {
             batteryInfo = new BatteryInfo();
             BeanUtils.copyProperties(battery, batteryInfo);
+            batteryInfo.setSurveys(transformSurveys(battery.getSurveys()));
         }
 
         return batteryInfo;
+    }
+
+    private static List<SurveyInfo> transformSurveys(Set<Survey> surveys) {
+        List<SurveyInfo> batteryInfoList = new ArrayList<SurveyInfo>();
+
+        for(Survey survey: surveys) {
+            batteryInfoList.add(transformSurvey(survey));
+        }
+
+        return batteryInfoList;
     }
 
     private static SurveyInfo transformSurvey(Survey survey) {

@@ -18,6 +18,7 @@ public interface BatteryService {
 
     BatteryInfo create(BatteryInfo batteryInfo);
     List<BatteryInfo> getBatteryItemList();
+    BatteryInfo getBattery(int batteryId);
     void update(BatteryInfo batteryInfo);
 
 	List<BatteryDto> getBatteryDtoList();
