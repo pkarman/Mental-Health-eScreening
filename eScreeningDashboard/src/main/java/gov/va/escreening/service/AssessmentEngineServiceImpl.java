@@ -1,6 +1,8 @@
 package gov.va.escreening.service;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_EVENT_MARKED_COMPLETED;
+import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.context.AssessmentContext;
 import gov.va.escreening.domain.AssessmentStatusEnum;
@@ -172,17 +174,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 * Given a request for assessment, this method will generate an Assessment. <br/>
 	 * Valid navigations are:
 	 * <ul>
-	 * <li>"next" - the next survey page in the assessment unless we are at the
-	 * last page in which case isComplete is set to true and the same page is
-	 * shown</li>
-	 * <li>"previous" - the previous page unless we are at the first page which
-	 * will respond with first page</li>
-	 * <li>"nextSkipped" - the next page containing at least one skipped
-	 * question (required or not) or the "end" page when all questions are
-	 * answered</li>
+	 * <li>"next" - the next survey page in the assessment unless we are at the last page in which case isComplete is
+	 * set to true and the same page is shown</li>
+	 * <li>"previous" - the previous page unless we are at the first page which will respond with first page</li>
+	 * <li>"nextSkipped" - the next page containing at least one skipped question (required or not) or the "end" page
+	 * when all questions are answered</li>
 	 * <li>"last" - the last page of the assessment that contains questions</li>
-	 * <li>"end" - the "assessment complete" page which is after all survey
-	 * pages have been traversed</li>
+	 * <li>"end" - the "assessment complete" page which is after all survey pages have been traversed</li>
 	 * </ul>
 	 * 
 	 * @param assessmentRequest
@@ -280,8 +278,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	/**
-	 * Gets the survey page, the measures, answer choices, and what the veteran
-	 * has already answered.
+	 * Gets the survey page, the measures, answer choices, and what the veteran has already answered.
 	 * 
 	 * @param surveyPageId
 	 * @return
@@ -320,13 +317,10 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	/**
-	 * Validate and save user input. <b>Note:</b> This saves all responses even
-	 * if they are hidden. As a result you must call
-	 * ruleProcessorService.processRules or
-	 * ruleProcessorService.updateVisibilityForQuestions so that the visibility
-	 * rules are run and invisible questions are removed from the database. This
-	 * is so the visibility rules can take all answers into account. This
-	 * results in the UI question visibility to work correctly when a user
+	 * Validate and save user input. <b>Note:</b> This saves all responses even if they are hidden. As a result you must
+	 * call ruleProcessorService.processRules or ruleProcessorService.updateVisibilityForQuestions so that the
+	 * visibility rules are run and invisible questions are removed from the database. This is so the visibility rules
+	 * can take all answers into account. This results in the UI question visibility to work correctly when a user
 	 * switches from one answer to another and then back again.
 	 * 
 	 * @param assessmentRequest
@@ -467,12 +461,21 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	public boolean transitionAssessmentStatusTo(Integer veteranAssessmentId,
 			AssessmentStatusEnum requestedState) {
 		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
-		if (isValidTransition(veteranAssessment.getAssessmentStatus(), requestedState)) {
+		AssessmentStatus previousState = veteranAssessment.getAssessmentStatus();
+		if (isValidTransition(previousState, requestedState)) {
 			transitionAssessmentTo(veteranAssessment, requestedState);
+			logThisTransition(veteranAssessment, previousState, requestedState);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	private void logThisTransition(VeteranAssessment veteranAssessment,
+			AssessmentStatus previousState, AssessmentStatusEnum requestedState) {
+
+		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_MARKED_FINALIZED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
+		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 	}
 
 	private void transitionAssessmentTo(VeteranAssessment veteranAssessment,
