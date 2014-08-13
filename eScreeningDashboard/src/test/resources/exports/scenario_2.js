@@ -30,7 +30,19 @@
 			pcptsdD_numb : "1",
 			pcptsd_score : "3"
 		}
-	},{
+	}, {
+		surveyName : "ISI",
+		smrMap : {
+			sleep1a_falling : "1",
+			sleep1b_staying : "2",
+			sleep1c_waking : "2",
+			sleep2_satisfied : "2",
+			sleep3_interfere : "2",
+			sleep4_noticeable : "1",
+			sleep5_worried : "2",
+			sleep_score : "12"
+		}
+	}, {
 		surveyName : "Tobacco Cessation Screen",
 		smrMap : {
 			tob_use : "1",
@@ -40,7 +52,7 @@
 			tob_cigar : "1",
 			tob_smokeless : "1"
 		}
-	},{
+	}, {
 		surveyName : "BTBIS",
 		smrMap : {
 			tbi_blast : "1",
