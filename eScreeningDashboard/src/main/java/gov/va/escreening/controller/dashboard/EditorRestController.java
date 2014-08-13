@@ -274,8 +274,7 @@ public class EditorRestController {
 		}
 
 		// Call service class here.
-		battery.setBatteryId(batteryId);
-        editorsViewDelegate.updateBattery(battery);
+		editorsViewDelegate.updateBattery(battery);
 
         return createBatteryResponse(battery);
     }
