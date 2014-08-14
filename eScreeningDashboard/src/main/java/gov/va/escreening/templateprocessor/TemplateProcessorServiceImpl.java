@@ -228,18 +228,18 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 					for (Template template : battery.getTemplates()) {
 						int templateId = template.getTemplateId();
 						//TemplateConstants.Style StyleIdObj = TemplateConstants.getStyleByCode(typeId);
-						if(null == header && null != selHeader && selHeader.getCode() == templateId){
+						if(null == header && null != selHeader && selHeader.getCode() == template.getTemplateType().getTemplateTypeId()){
 							header = template;
 						}
-						else if(null == footer && null != selFooter && selFooter.getCode() == templateId){
+						else if(null == footer && null != selFooter && selFooter.getCode() == template.getTemplateType().getTemplateTypeId()){
 							footer = template;
 						}
 										
-						else if(null == special && null != selSpecial && selSpecial.getCode() == templateId){
+						else if(null == special && null != selSpecial && selSpecial.getCode() == template.getTemplateType().getTemplateTypeId()){
 							special = template;
 						}
 						
-						else if(null == conclusion && null != selConclusion && selConclusion.getCode() == templateId){
+						else if(null == conclusion && null != selConclusion && selConclusion.getCode() == template.getTemplateType().getTemplateTypeId()){
 							conclusion = template;
 						}
 						
