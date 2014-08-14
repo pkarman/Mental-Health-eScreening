@@ -1,6 +1,7 @@
 package gov.va.escreening.vista;
 
 import static org.junit.Assert.*;
+import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.repository.HealthFactorRepository;
@@ -97,9 +98,19 @@ public class VistaRepositoryTest {
         logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
     }
     
+//    @Test
+//    public void testRefreshHF()
+//    {
+//        vistaServiceImpl.refreshHealthFactors(DIVISION, null, DUZ, null);
+//    }
+    
     @Test
-    public void testRefreshHF()
+    public void testFetchVeteran()
     {
-        vistaServiceImpl.refreshHealthFactors(DIVISION, null, DUZ, null);
+    	List<VeteranDto> vList = vistaRepo.searchVeteran(DIVISION, null, DUZ, null, "0034");
+    	for(VeteranDto dto : vList)
+    	{
+    		logger.info(dto.toString());
+    	}
     }
 }

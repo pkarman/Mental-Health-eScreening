@@ -37,8 +37,19 @@ public class VeteranDto implements Serializable {
 
     // Context fields
     private String recordSource;
+    
+    //Indicating if the veteran is a sensitive record
+    private boolean isSensitive;
 
-    public Integer getVeteranId() {
+    public boolean getIsSensitive() {
+		return isSensitive;
+	}
+
+	public void setIsSensitive(boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+
+	public Integer getVeteranId() {
         return veteranId;
     }
 

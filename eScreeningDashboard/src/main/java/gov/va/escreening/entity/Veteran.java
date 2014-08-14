@@ -101,7 +101,18 @@ public class Veteran implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "veteran")
+    @Column(name="is_sensitive")
+    private Boolean isSensitive =false; //default to false
+    
+    public Boolean getIsSensitive() {
+		return isSensitive;
+	}
+
+	public void setIsSensitive(Boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "veteran")
     private List<VeteranAssessment> veteranAssessmentList;
 
     public Veteran() {
