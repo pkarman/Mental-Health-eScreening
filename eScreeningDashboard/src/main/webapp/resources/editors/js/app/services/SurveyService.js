@@ -400,7 +400,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
              */
 
             if (!jsonResponse.status.status == 'succeeded'){
-                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId),
+                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
                     /**
                      * Represents the transformed payload object of a service call request.
                      *

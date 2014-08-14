@@ -396,7 +396,7 @@ angular.module('EscreeningDashboardApp.services.battery', ['ngResource'])
          * @field
          * @type {EScreeningDashboardApp.models.Response}
          */
-        var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId),
+        var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
             /**
              * Represents the transformed payload object of a service call request.
              *

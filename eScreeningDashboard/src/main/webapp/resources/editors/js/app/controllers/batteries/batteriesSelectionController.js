@@ -66,6 +66,7 @@ Editors.controller('batterySelectionController',['$rootScope','$scope','$state',
                     $scope.deleteBattery = function(battery){
                     	BatteryService.remove(BatteryService.setQueryBatterySearchCriteria(battery.id)).then(function(){
                 			console.log('Remove Battery:: SUCCESS');
+                            $state.go('home');
                 		},function(responseError){
                 			$scope.errors.push('Battery Deletion failed.');
                 			console.log('Remove Query Error:: ' + JSON.stringify($scope.errors));
