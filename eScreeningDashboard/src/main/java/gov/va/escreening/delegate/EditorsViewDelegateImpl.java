@@ -55,9 +55,8 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     }
 
     @Override
-    public Integer createBattery(BatteryInfo batteryInfo) {
-        batteryService.create(batteryInfo);
-        return batteryInfo.getBatteryId();
+    public BatteryInfo createBattery(BatteryInfo batteryInfo) {
+        return batteryService.create(batteryInfo);
     }
 
     @Override

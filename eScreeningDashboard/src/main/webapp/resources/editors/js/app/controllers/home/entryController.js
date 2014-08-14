@@ -44,7 +44,7 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', functio
 
             $scope.goToBatteryNew = function(){
             	console.log('ENTRY:: New Battery View Selected.');
-                $state.go('batteries.batteryedit');
+                $state.go('batteries.detail');
             };
 
             $scope.goToBatteryEdit = function(){

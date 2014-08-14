@@ -222,20 +222,12 @@ public class EditorRestController {
 	@ResponseBody
 	public Map addBattery(@RequestBody BatteryInfo battery,
 			@CurrentUser EscreenUser escreenUser) {
-		/*logger.debug("addBattery");
-
-		if (battery != null) {
-			logger.debug(battery.toString());
-		}
-
 		ErrorResponse errorResponse = new ErrorResponse();
 
 		// Data validation.
 		if (StringUtils.isBlank(battery.getName())) {
-			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
 		} else if (battery.getName().length() > 50) {
-			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
 		}
 
@@ -244,10 +236,9 @@ public class EditorRestController {
 		}
 
 		// Call service class here.
-		Integer batteryId = editorDelegate.createBattery(battery);
-		logger.debug("batteryId: " + batteryId);*/
+		BatteryInfo batteryInfo = editorsViewDelegate.createBattery(battery);
 
-		return createBatteryResponse(battery);
+		return createBatteryResponse(batteryInfo);
 	}
 
     @RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -256,16 +247,13 @@ public class EditorRestController {
             @PathVariable("batteryId") Integer batteryId,
             @RequestBody BatteryInfo battery,
             @CurrentUser EscreenUser escreenUser) {
-		logger.debug("updateBattey");
 
-		ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse errorResponse = new ErrorResponse();
 
 		// Data validation.
 		if (StringUtils.isBlank(battery.getName())) {
-			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
 		} else if (battery.getName().length() > 50) {
-			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
 		}
 
@@ -287,7 +275,6 @@ public class EditorRestController {
 
 		// Call service class here instead of hard coding it.
 		BatteryInfo batteryInfo = editorsViewDelegate.getBattery(batteryId);
-
 		return createBatteryResponse(batteryInfo);
 	}
 
