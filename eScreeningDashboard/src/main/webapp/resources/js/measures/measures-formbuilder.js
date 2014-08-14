@@ -952,14 +952,19 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				width: 400,
 				modal: true,
 				draggable: false,
+				close:function( event, ui ) {
+					$(".ui-dialog").attr('aria-hidden', 'true');
+				},				
 				buttons: {
 		          "Ok": function () {
+								$(".ui-dialog").attr('aria-hidden', 'true');
 		        	  $(this).dialog('close');
 		          }
 		        },
 		        open: function (e, ui) {
 		            $(this).parent().find(".ui-dialog-buttonpane .ui-button")
 		                .addClass("customButtonsDialog");
+								$(".ui-dialog").attr('aria-hidden', 'false');
 		        }
 			});
 		}
