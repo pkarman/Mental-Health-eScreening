@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EditorsViewDelegate {
 
-    Integer createBattery(BatteryInfo batteryInfo);
+    BatteryInfo createBattery(BatteryInfo batteryInfo);
     BatteryInfo getBattery(int batteryId);
     List<BatteryInfo> getBatteries();
     void updateBattery(BatteryInfo batteryInfo);

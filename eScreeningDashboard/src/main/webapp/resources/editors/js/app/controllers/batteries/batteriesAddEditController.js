@@ -55,22 +55,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 		console.log('BATTERYSECTIONS:: ' + JSON.stringify($scope.batterySections));
 		
 		// Second to Lastly, set visibility of availSections surveys on the basis of what is present on batterySections
-		/*var secIdx = 0;
-		$scope.batterySections.forEach(function(section){
-            if (section.id == $scope.availSections[secIdx].id){
-                var survIdx = 0;
-                section.surveys.forEach(function(survey){
-                    if (survey.id == $scope.availSections[secIdx].surveys[survIdx].id){
-                        $scope.availSections[secIdx].surveys[survIdx].visible = !survey.visible;
-                    }
-                    survIdx++;
-                });
-            }
-            secIdx++;
-		});*/
-
-
-        $scope.batterySections.forEach(function(batterySectionUIObject) {
+		$scope.batterySections.forEach(function(batterySectionUIObject) {
             $scope.availSections.forEach(function(availableSectionUIObject){
                 if(batterySectionUIObject.id === availableSectionUIObject.id) {
                     batterySectionUIObject.surveys.forEach(function(batterySurveyUIObject) {
@@ -91,15 +76,8 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
                 }
             });
         });
-		
+
 		// Lastly, disable an availSection if all of its Surveys are not Visible.
-		/*$scope.availSections.forEach(function(section){
-			var secvisible = false;
-			section.surveys.forEach(function(survey){
-				if (survey.visible){secvisible = true;}
-			});
-			section.visible = secvisible;
-		});*/
 	});
 	
 	$scope.setEditSurveySectionsVisibility = function(survey, section){
@@ -237,32 +215,6 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
         performDirtyCheckOfSelectedModules();
     };
 
-    $scope.removeFromSections = function (survey) {
-        // Lastly, remove the module from the parent section in the Available column.
-    	
-        /*var secInd = 0;
-        for (var i=0;i<$scope.sections.length;i++){
-            if ($scope.sections[i].name == module.surveySectionItem.name){
-                secInd = i;
-            }
-        }
-        if ($scope.sections[secInd].surveys.length == 1){
-            $scope.sections[secInd].surveys = [];
-            return;
-        } else {
-            var tempMods = $scope.sections[secInd].surveys;
-            for (var j=0;j<$scope.sections[secInd].surveys.length;j++){
-                if ($scope.sections[secInd].surveys[j].name == module.name){
-                    
-                   tempMods = $scope.sections[secInd].surveys.splice(j,1);
-                }
-            }
-
-        }*/
-    };
-
-
-
     $scope.removeFromBattery = function(survey){
     	// First, make non-visible in batterySections.
 		survey.visible = false;
@@ -296,70 +248,6 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 		});
 
         performDirtyCheckOfSelectedModules();
-        // First, copy over the Module to it's parent Section.
-    	/*survey.visible = false;
-    	
-    	var survId = survey.id;
-		var secId = survey.surveySectionId;
-		// Check the parent Survey Section, and if all surveys are not visible, set visible to false.
-		$scope.batterySections.forEach(function(section){
-			var howManyVisible = 0;
-			if (secId == section.id){
-				section.surveys.forEach(function(survey){
-					if (survey.visible){
-						howManyVisible++;
-					}
-				});
-				section.visible = section.isExpanded = howManyVisible > 0 ? true : false;
-			}
-		});
-		
-		// Set visibility on the Available Sections.
-		$scope.availSections.forEach(function(section){
-			if (secId == section.id){
-				section.visible = true;
-				// Now find the Survey match and make it visible.
-				section.surveys.forEach(function(survey){
-					if (survId == survey.id){
-						survey.visible = true;
-					}
-				});
-			}
-		});*/
-    	
-    	// Grab 
-    	
-        /*for (var i=0;i<$scope.sections.length;i++){
-            if ($scope.sections[i].name == module.surveySectionItem.name) {
-                
-                $scope.sections[i].surveys.push(module);
-            }
-        }
-
-        // Now remove the Module from it's parent Section in battery.sections
-        var par = {};
-        for (i=0;i<$scope.batterySections.length;i++){
-            if (module.surveySectionItem.name == $scope.batterySections[i].name){
-                par = $scope.batterySections[i];
-            }
-        }
-        if (par && par.name){
-            if (par.name == module.surveySectionItem.name){
-                for (i=0;i<par.surveys.length;i++){
-                    if (par.surveys[i].name == module.name){
-                        par.surveys.splice(i,1);
-                    }
-                }
-                // If the section has no Modules, remove it, too.
-                if (par.surveys.length <1){
-                    for (i=0;i<$scope.batterySections.length;i++){
-                        if (module.surveySectionItem.name == $scope.batterySections[i].name){
-                            $scope.batterySections.splice(i,1);
-                        }
-                    }
-                }
-            }
-        }*/
     };
 
     $scope.sortingLog = [];
