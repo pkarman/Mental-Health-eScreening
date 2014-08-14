@@ -153,7 +153,7 @@
         	<div class="dialogErrorMessageText"></div>
         </div>
         
-        <div id="dialogRequired" class="hidden" title="Missing Required Fields">
+        <div id="dialogRequired" class="hidden" title="Missing Required Fields" aria-hidden="true">
         	<div class="dialogSkipInfo">  
         		Required inputs can not be empty. Required fields are denoted with an 
         		<span class="requiredIcon">* </span>in each required questions.
@@ -161,8 +161,8 @@
         	</div>
         </div>
         
-        <div id="dialogSkip" class="hidden" title="Skipping Question(s)?">
-        	<div class="dialogSkipInfo">
+        <div id="dialogSkip" class="hidden" title="Skipping Question(s)?" aria-hidden="true">
+        	<div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?">
         		Some of the questions are not answered.
         		Do you want to skip the question(s)?
         	</div>
@@ -177,7 +177,7 @@
         	</div>
         </div>
         
-        <div id="dialogTableQuestionEntryClicked" class="hidden" title="Unanswered Questions">
+        <div id="dialogTableQuestionEntryClicked" class="hidden" title="Unanswered Questions"  aria-hidden="true">
         	<div class="dialogSkipInfo">
         		Please answer each question before creating a new entry
         	</div>

@@ -177,14 +177,19 @@ function openRequiredDialog() {
 		width: 400,
 		modal: true,
 		draggable: false,
+		close:function( event, ui ) {
+			$(".ui-dialog").attr('aria-hidden', 'true');
+		},
 		buttons: {
           "Ok": function () {
-        	  $(this).dialog('close');
+        	  $(".ui-dialog").attr('aria-hidden', 'true');
+						$(this).dialog('close');
           }
         },
         open: function (e, ui) {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
+						$(".ui-dialog").attr('aria-hidden', 'false');
         }
 	});
 }
@@ -194,19 +199,28 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
 		width: 500,
 		modal: true,
 		draggable: false,
+		close:function( event, ui ) {
+			$(".ui-dialog").attr('aria-hidden', 'true');
+		},
 		buttons: {
           "Yes, proceed to next page": function () {
         	  callMeasure(url, requestJSON, initialPageCallback);
         	  $(this).dialog('close');
+						$(this).parents().find('.ui-dialog')
+								.attr('aria-hidden', 'true');
             
           },
           "No, stay on current page": function () {
         	  $(this).dialog('close');
+						$(this).parents().find('.ui-dialog')
+								.attr('aria-hidden', 'true');
           }
         },
         open: function (e, ui) {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
+						$(this).parents().find('.ui-dialog')
+								.attr('aria-hidden', 'false');
         }
 	});
 }
@@ -401,6 +415,9 @@ function showLogoutCounter(logoutTimerValue) {
 		modal: true,
 		draggable: false,
 		closeOnEscape: false,
+		close:function( event, ui ) {
+			$(".ui-dialog").attr('aria-hidden', 'true');
+		},
 		buttons: {
           "Logout": function () {
         	  clearInterval(timer);
@@ -609,6 +626,9 @@ function displayServerError(message) {
 	    		width: 350,
 	    		height: 150,
 	    		draggable: false,
+					close:function( event, ui ) {
+						$(".ui-dialog").attr('aria-hidden', 'true');
+					},
 	    		modal: true,
 	    		title: "Server Error!",
 	            open: function (e, ui) {

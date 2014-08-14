@@ -483,12 +483,13 @@
 								
 								
 	        		  var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
-								var modal_url 			= 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
+								
 
 	        		  $('#VeteranSummaryModal').modal('show');
 	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
 								
 	        		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+								var modal_url 			= 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
 	        		   $.ajax({
 	        			  	type : 'get',
 	        			  	contentType: 'application/json',
