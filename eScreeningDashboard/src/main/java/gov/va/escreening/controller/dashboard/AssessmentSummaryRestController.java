@@ -98,5 +98,36 @@ public class AssessmentSummaryRestController {
 
         return progressNoteContent;
     }
+    
+    
+    @RequestMapping(value = "/assessmentSummary/assessments/{veteranAssessmentId}/veteranSummary", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
+
+        logger.debug("veteranSummary");
+        Set<TemplateConstants.Style> templateStyles 
+									= Sets.newHashSet(TemplateConstants.Style.VETERAN_SUMMARY_HEADER, TemplateConstants.Style.VETERAN_SUMMARY_FOOTER);
+        String progressNoteContent = null;
+
+        try {
+            progressNoteContent = templateProcessorService.generateNote(veteranAssessmentId, ViewType.HTML,  templateStyles, false);
+        }
+        catch (Exception e) {
+            if(e instanceof ErrorResponseException){
+                ErrorResponse error = ((ErrorResponseException)e).getErrorResponse();
+                logger.error(error.getLogMessage());
+                //TODO: we should pass the ErrorResponse instead of a string
+                progressNoteContent = error.getUserMessage("<br/>");
+            }
+            else{
+                logger.error("Exception thrown trying to generate Veteran Summary: " + e, e);
+                progressNoteContent = "An unexpected error occured while generating the Veteran Summary. Please try again and if the problem persists, contact the technical administrator.";
+            }
+        }
+        
+        logger.debug("Returrning note:\n{}", progressNoteContent);
+
+        return progressNoteContent;
+    }
 
 }
