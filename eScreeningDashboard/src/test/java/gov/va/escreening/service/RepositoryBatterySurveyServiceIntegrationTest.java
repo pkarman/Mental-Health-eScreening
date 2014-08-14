@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class RepositoryBatterySurveyServiceIntegrationTest {
 
     }*/
 
+    @Transactional
     @Test
     public void searchWhenSearchTypeIsQueryAnnotation() {
         SearchDTO searchCriteria = createSearchDTO(BATTERY_ID, SearchType.QUERY_ANNOTATION);
