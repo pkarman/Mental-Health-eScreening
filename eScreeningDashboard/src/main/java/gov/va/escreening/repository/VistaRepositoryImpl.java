@@ -192,6 +192,14 @@ public class VistaRepositoryImpl implements VistaRepository {
 		if (resultList == null) {
 			resultList = new ArrayList<VeteranDto>();
 		}
+		
+		for(VeteranDto v : resultList)
+		{
+			if(v.getSsnLastFour() == null || StringUtils.isEmpty(v.getSsnLastFour()))
+			{
+				v.setSsnLastFour(StringUtils.right(lastNameSsn, 4));
+			}
+		}
 
 		return resultList;
 	}
