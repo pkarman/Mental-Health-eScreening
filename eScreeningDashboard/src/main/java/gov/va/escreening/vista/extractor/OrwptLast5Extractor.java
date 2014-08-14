@@ -36,10 +36,16 @@ public class OrwptLast5Extractor implements VistaRecordExtractor<VeteranDto> {
         }
 
         // 3. Date of Birth
-        veteranDto.setBirthDate(VistaUtils.convertVistaDate(fields[2]));
+        if(!fields[2].contains("SENSITIVE"))
+        {
+        	veteranDto.setBirthDate(VistaUtils.convertVistaDate(fields[2]));
+        }
 
         // 4. SSN
-        veteranDto.setSsnLastFour(StringUtils.right(fields[3], 4));
+        if(!fields[3].contains("SENSITIVE"))
+        {
+            veteranDto.setSsnLastFour(StringUtils.right(fields[3], 4));
+        }
 
         return veteranDto;
     }
