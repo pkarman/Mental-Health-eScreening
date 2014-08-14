@@ -212,7 +212,7 @@
               </div>
             </div>
             <div class="col-md-4 text-right"> Veteran Summary
-              <div class="txt_lable_md"> <a href="#"  data-toggle="modal" data-target="#patient_summary_modal">View Veteran Summary</a> </div>
+              <div class="txt_lable_md"> <a href="#"  data-toggle="modal" id="VeteranSummaryButton">View Veteran Summary</a> </div>
             </div>
           </div>
         </div>
@@ -331,23 +331,15 @@
             </div>
           </div>
           
-          <!-- Modal Veteran Summary -->
-          <div class="modal fade" id="patient_summary_modal" tabindex="-1" role="dialog" aria-labelledby="patient_summary_modal_label" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title" id="patient_summary_modal_label">Veteran Summary</h4>
-                </div>
-                <div class="modal-body"> Veteran Summary Contents </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
+         
+
+
           
-          <!-- Modal Veteran Summary -->
+
+
+
+          
+          <!-- Modal Save to VistA -->
           <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -365,6 +357,11 @@
               </div>
             </div>
           </div>
+
+
+
+
+
           
           <!-- Modal Review Summary 
                     <div class="modal fade" id="assessment_reminders_modal" tabindex="-1" role="dialog" aria-labelledby="assessment_reminders_modal_label" aria-hidden="true">
@@ -417,7 +414,26 @@
   </form:form>
 </div>
 
-<!-- Modal -->
+
+<!-- Modal Veteran Summary  -->
+<div class="custom_modal" >
+  <div class="modal fade" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header noPrint">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
+        </div>
+        <div class="modal-body yesPrint">
+          <div class="modal_contents">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+          
+<!-- Modal Review Assessment Preview -->
 <div class="custom_modal" >
   <div class="modal fade" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
     <div class="modal-dialog">
@@ -462,10 +478,32 @@
 <script>
         
 	        $(document).ready(function() {
-	        	$(this).on("click", '#reviewAssessmentButton', function(e){
+	        	$(this).on("click", '#VeteranSummaryButton', function(e){
 	        		  e.preventDefault();
-	        		  
-	        		  
+								
+								
+	        		  var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
+								var modal_url 			= 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
+
+	        		  $('#VeteranSummaryModal').modal('show');
+	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
+								
+	        		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+	        		   $.ajax({
+	        			  	type : 'get',
+	        			  	contentType: 'application/json',
+	        			   	url : modal_url,
+	        		   		success : function(r)
+	        				 {  
+	        					 $(modal_contents).show().html(r);
+	        				 }
+	        		});
+	        	});
+						
+						
+						
+						$(this).on("click", '#reviewAssessmentButton', function(e){
+	        		  e.preventDefault();
 	        		  var modal_contents = $("#AssessmentReportPreview .modal_contents");
 	        		  $('#AssessmentReportPreview').modal('show');
 	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
@@ -481,6 +519,7 @@
 	        				 }
 	        		});
 	        	});
+						
 
 	        	$(this).on("click", '#healthFactorTitlesButton', function(e){
 	        		  e.preventDefault();
