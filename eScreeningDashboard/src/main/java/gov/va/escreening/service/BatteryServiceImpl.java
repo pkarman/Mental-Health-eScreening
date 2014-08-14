@@ -69,9 +69,9 @@ public class BatteryServiceImpl implements BatteryService {
 			List<Survey> surveyList = new ArrayList<Survey>();
 
 			for (SurveyInfo surveyInfo : batteryInfo.getSurveys()) {
-				if (surveyInfo.getIsIncludedInBattery()) {
+				//if (surveyInfo.getIsIncludedInBattery()) {
 					surveyList.add(surveyService.findOne(surveyInfo.getSurveyId()));
-				}
+				//}
 			}
 
 			if (surveyList.size() > 0) {
@@ -92,7 +92,7 @@ public class BatteryServiceImpl implements BatteryService {
 
 		List<BatteryInfo> batteryInfoList = new ArrayList<BatteryInfo>();
 
-		List<Battery> batteryList = batteryRepository.getBatteryList();
+		List<Battery> batteryList = batteryRepository.findAll();
 
 		for (Battery battery : batteryList) {
 			batteryInfoList.add(convertToBatteryItem(battery));

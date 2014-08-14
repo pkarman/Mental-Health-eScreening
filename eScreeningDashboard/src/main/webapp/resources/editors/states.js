@@ -123,21 +123,25 @@ angular.module('Editors')
 	                controller:'batterySelectionController'
 	            })
 	
-	            .state('batteries.batteryedit',{
-	                url:'/batteries.edit/:batteryId',
+	            .state('batteries.detail',{
+	                url:'/details/:batteryId',
 	                templateUrl:'resources/editors/views/batteries/batteryedit.html',
 	                resolve:{
 	                	battery:function($rootScope, $q, $stateParams, BatteryService){
                             var deferred = $q.defer();
                             console.log('VIEW STATE Battery:: Resolve Batteries');
-                            BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function(existingBattery){
-                                console.log('Battery:: ' + existingBattery);
-                                deferred.resolve(existingBattery);
-                            },function(responseError){
-                                $rootScope.errors.push(responseError.getMessage());
-                                console.log('Battery Query Error:: ' + JSON.stringify($rootScope.errors));
-                                deferred.reject(responseError.getMessage());
-                            });
+                            if(Object.isDefined($stateParams.batteryId) && $stateParams.batteryId.trim().length > 0) {
+                                BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function (existingBattery) {
+                                    console.log('Battery:: ' + existingBattery);
+                                    deferred.resolve(existingBattery);
+                                }, function (responseError) {
+                                    $rootScope.errors.push(responseError.getMessage());
+                                    console.log('Battery Query Error:: ' + JSON.stringify($rootScope.errors));
+                                    deferred.reject(responseError.getMessage());
+                                });
+                            } else {
+                                deferred.resolve(new EScreeningDashboardApp.models.Battery());
+                            }
                             return deferred.promise;
 	                	  } 
 	                },

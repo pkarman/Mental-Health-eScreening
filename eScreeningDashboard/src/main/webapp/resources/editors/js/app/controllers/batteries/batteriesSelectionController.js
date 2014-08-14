@@ -54,13 +54,13 @@ Editors.controller('batterySelectionController',['$rootScope','$scope','$state',
 
                     /* ---- Button Actions ---- */
                     $scope.editBattery = function(selectedBattery){
-                       $state.go('batteries.batteryedit',{batteryId:selectedBattery.id});
+                       $state.go('batteries.detail',{batteryId:selectedBattery.id});
                     };
 
                     $scope.addBattery = function(){
                        // $rootScope.module = $rootScope.createModule();
                     	$rootScope.selectedBattery = new EScreeningDashboardApp.models.Battery();
-                        $state.go('batteries.batteryedit',{batteryId:-1});
+                        $state.go('batteries.detail',{batteryId:-1});
                     };
                     
                     $scope.deleteBattery = function(battery){
@@ -74,6 +74,6 @@ Editors.controller('batterySelectionController',['$rootScope','$scope','$state',
                     };
 
                     $scope.goToAddEdit = function(){
-                        $state.go('batteries.batteryedit',{batteryId:1});
+                        $state.go('batteries.detail',{batteryId:1});
                     };
                 }]);
