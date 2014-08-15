@@ -32,6 +32,8 @@ EScreeningDashboardApp.models.Survey = function (jsonSurveyObject) {
         version = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.version))? jsonSurveyObject.version : null,
         displayOrder = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.displayOrder))? jsonSurveyObject.displayOrder : null,
         mha = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mha) && Object.isBoolean((jsonSurveyObject.mha)))? jsonSurveyObject.mha : false,
+        mhaTestName = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mhaTestName))? jsonSurveyObject.mhaTestName : null,
+        mhaResultGroupIen = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mhaResultGroupIen))? jsonSurveyObject.mhaResultGroupIen : null,
         clinicalReminder = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.clinicalReminder) && Object.isBoolean((jsonSurveyObject.clinicalReminder)))? jsonSurveyObject.clinicalReminder : false,
         createdDate = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.createdDate))? (Object.isDate(jsonSurveyObject.createdDate)) ? jsonSurveyObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonSurveyObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
         surveySection = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.surveySection))? new EScreeningDashboardApp.models.SurveySection(jsonSurveyObject.surveySection): undefined,
@@ -74,6 +76,14 @@ EScreeningDashboardApp.models.Survey = function (jsonSurveyObject) {
         return mha;
     };
 
+    this.getMhaTestName = function () {
+        return mhaTestName;
+    };
+
+    this.getMhaResultGroupIen = function() {
+        return mhaResultGroupIen;
+    };
+
     this.isClinicalReminder = function () {
         return clinicalReminder;
     };
@@ -100,23 +110,26 @@ EScreeningDashboardApp.models.Survey = function (jsonSurveyObject) {
 
     this.toString = function () {
         return "Survey {id: " + id + ", name: " + name + ", vistaTitle: " + vistaTitle + ", description: " + description + ", version: " + version +
-            ", displayOrder: " + displayOrder + ", mha: " + mha + ", clinicalReminder" + clinicalReminder + ", markedForDeletion: " + markedForDeletion +
+            ", displayOrder: " + displayOrder + ", mha: " + mha + ", mhaTestName: " + mhaTestName + ", mhaResultGroupIen: " + mhaResultGroupIen +
+            ", clinicalReminder" + clinicalReminder + ", markedForDeletion: " + markedForDeletion +
             ", visible: " + visible + ", createdDate: " + createdDate + "}";
     };
 
     this.toJSON = function (serializeUIProperties) {
         serializeUIProperties = (Object.isDefined(serializeUIProperties) && Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
-        var jsonId = (id != null && id > 0)? id : null,
-            jsonName = (name != null)? "\"" + name + "\"":  null,
-            jsonVistaTitle = (vistaTitle != null)? "\"" + vistaTitle + "\"":  null,
-            jsonDescription = (description != null)? "\"" + description + "\"": null,
-            jsonVersion = (version != null)? version: null,
-            jsonDisplayOrder = (displayOrder != null)? displayOrder: null,
-            jsonIsMha = (mha != null)? mha: false,
-            jsonIsClinicalReminder = (clinicalReminder != null)? clinicalReminder: false,
+        var jsonId = (Object.isDefined(id) && id > 0)? id : null,
+            jsonName = (Object.isDefined(name))? "\"" + name + "\"":  null,
+            jsonVistaTitle = (Object.isDefined(vistaTitle))? "\"" + vistaTitle + "\"":  null,
+            jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
+            jsonVersion = (Object.isDefined(version))? version: null,
+            jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
+            jsonIsMha = (Object.isDefined(mha))? mha: false,
+            jsonMhaTestName = (Object.isDefined(mhaTestName))? "\"" + mhaTestName + "\"":  null,
+            jsonMhaResultGroupIen = (Object.isDefined(mhaResultGroupIen ))? "\"" + mhaResultGroupIen + "\"":  null,
+            jsonIsClinicalReminder = (Object.isDefined(clinicalReminder))? clinicalReminder: false,
             jsonVisible = (serializeUIProperties)? Object.isDefined(visible)? "\"visible\": " + visible + ",": false: "",
             jsonMarkForDeletion = (serializeUIProperties)? Object.isDefined(markedForDeletion)? "\"markedForDeletion\": " + markedForDeletion + ",": false: "",
-            jsonCreatedDate = (createdDate != null)? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
+            jsonCreatedDate = (Object.isDefined(createdDate))? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
             jsonSurveySection = (Object.isDefined(surveySection))? ",\"surveySection\":" + surveySection.toJSON(false, serializeUIProperties): "",
             json =  "{" +
                 "\"id\": " + jsonId + "," +
@@ -125,6 +138,8 @@ EScreeningDashboardApp.models.Survey = function (jsonSurveyObject) {
                 "\"version\": " + jsonVersion + "," +
                 "\"displayOrder\": " + jsonDisplayOrder + "," +
                 "\"mha\": "+ jsonIsMha + "," +
+                "\"mhaTestName\": "+ jsonMhaTestName + "," +
+                "\"mhaResultGroupIen\": "+ jsonMhaResultGroupIen + "," +
                 "\"clinicalReminder\": "+ jsonIsClinicalReminder + "," +
                 jsonVisible +
                 jsonMarkForDeletion +

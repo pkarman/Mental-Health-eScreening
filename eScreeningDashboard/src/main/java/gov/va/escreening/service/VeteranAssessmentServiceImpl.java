@@ -917,7 +917,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 		for (Survey survey : veteranAssessment.getSurveys()) {
 
-			if (survey.isMha() != null && survey.isMha()) {
+			if (survey.isMha()) {
 
 				String mentalHealthTestName = survey.getMhaTestName();
 				String reminderDialogIEN = survey.getMhaResultGroupIen();
