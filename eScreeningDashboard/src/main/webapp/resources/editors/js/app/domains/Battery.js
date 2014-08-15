@@ -94,7 +94,7 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
         return (selectedSurveySection == -1)? null: selectedSurveySection;
     };
     this.toString = function(){
-    	return "Battery {id: " + id + ", name: " + name + ", description: " + description + ", isDisabled: " + disabled +
+    	return "Battery {id: " + id + ", name: " + name + ", description: " + description + ", disabled: " + disabled +
             ", createdDate: " + createdDate + ", surveys: [" + surveys + "]}";
     };
     
@@ -102,8 +102,8 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
         serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
         var jsonId = (id != null && id > 0)? id : null,
             jsonName = (name != null)? "\"" + name + "\"":  null,
-            jsonDescription = (description != null)? "\"" + description + "\"": null,
-            jsonDisabled = (disabled != null)? disabled: false,
+            jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
+            jsonDisabled = (Object.isDefined(disabled))? disabled: false,
             jsonCreatedDate = (createdDate != null)? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
             jsonSurveys = (serializeCollections)? ",\"surveys\": " + generateJsonStringForSurveys(): "",
             json =  "{" +

@@ -17,17 +17,15 @@
     <table ng-table="tableParams" show-filter="true" class="table">
       <tr ng-repeat="battery in $data" ng-class-odd="'odd'" ng-class-even="'even'">
         <td data-title="'Title'" sortable="'name'" filter="{ 'name': 'text' }"> {{battery.name}} </td>
-        <td data-title="'Disabled'" sortable="'isDisabled'" filter="{ 'isDisabled': 'text' }"> {{battery.isDisabled}} </td>
-        <td data-title="Description"> {{battery.description}} </td>
-        <td data-title="Actions"><div class="pull-right">
-        
-        									<span  ng-click="editBattery(battery);" class="cursor-pointer"><span class="glyphicon glyphicon-edit" title="Edit"></span> Edit</span> &nbsp;&nbsp; 
-                          <span  ng-really-message="This will delete the Battery, and it will not be available in the future. Click 'OK' to permanently delete it." 
-                        	ng-really-click="deleteBattery(battery);" class="cursor-pointer">
-                          <span 
-                        	class="glyphicon glyphicon-remove-circle cursor-pointer"
-                        	title="Delete" style="color:red;" 
-                        	></span> Delete</span> </div></td>
+        <td data-title="'Disabled'" sortable="'disabled'" filter="{ 'disabled': 'text' }"> {{battery.disabled}}</td>
+        <td data-title="'Description'"> {{battery.description}} </td>
+        <td data-title="Actions">
+            <div class="pull-right">
+                <span  ng-click="editBattery(battery);" class="cursor-pointer"><span class="glyphicon glyphicon-edit" title="Edit"></span> Edit</span> &nbsp;&nbsp;
+                <!--span  ng-really-message="This will delete the Battery, and it will not be available in the future. Click 'OK' to permanently delete it." ng-really-click="deleteBattery(battery);" class="cursor-pointer">
+                <span class="glyphicon glyphicon-remove-circle cursor-pointer" title="Delete" style="color:red;"></span> Delete</span-->
+            </div>
+        </td>
       </tr>
     </table>
   </div>

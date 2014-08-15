@@ -14,7 +14,7 @@ Editors.controller('batterySelectionController',['$rootScope','$scope','$state',
     									id: $scope.batteries[i].getId(),
     									name: $scope.batteries[i].getName(),
     									description: $scope.batteries[i].getDescription(),
-    									isDisabled: $scope.batteries[i].isDisabled(),
+    									disabled: $scope.batteries[i].isDisabled(),
     									createdDate: $scope.batteries[i].getCreatedDate(),
     									surveys: null
     							};

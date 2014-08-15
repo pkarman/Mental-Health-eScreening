@@ -20,7 +20,7 @@ public class BatteryInfo implements Serializable, BatteryBaseProperties {
     private Integer batteryId;
     private String name;
     private String description;
-    private Boolean isDisabled;
+    private boolean isDisabled;
     private List<SurveyInfo> surveys = new ArrayList<SurveyInfo>();
     private Date dateCreated;
 
@@ -49,11 +49,11 @@ public class BatteryInfo implements Serializable, BatteryBaseProperties {
         this.description = description;
     }
 
-    public Boolean isDisabled() {
+    public boolean isDisabled() {
         return isDisabled;
     }
 
-    public void setDisabled(Boolean isDisabled) {
+    public void setDisabled(boolean isDisabled) {
         this.isDisabled = isDisabled;
     }
 

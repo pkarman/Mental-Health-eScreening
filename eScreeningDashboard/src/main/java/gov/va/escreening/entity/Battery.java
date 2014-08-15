@@ -95,11 +95,11 @@ public class Battery implements Serializable, BatteryBaseProperties {
         this.description = description;
     }
 
-    public Boolean isDisabled() {
+    public boolean isDisabled() {
         return isDisabled;
     }
 
-    public void setDisabled(Boolean isDisabled) {
+    public void setDisabled(boolean isDisabled) {
         this.isDisabled = isDisabled;
     }
 
