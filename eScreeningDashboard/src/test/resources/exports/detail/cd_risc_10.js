@@ -1,0 +1,19 @@
+{
+	testName : "Promis Pain Intensity & Interference ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Promis Pain Intensity & Interference",
+		smrMap : {
+			vars$pain_level : "3",
+			vars$pain_intensity : "4",
+			vars$pain_average : "2",
+			derive$pain_score_intensity : "9",
+			vars$pain_interfere_life : "2",
+			vars$pain_interfere_conc : "2",
+			vars$pain_interfere_day : "3",
+			vars$pain_interfere_rec : "2",
+			vars$pain_interfere_task : "3",
+			vars$pain_interfere_social : "2",
+			derive$pain_score_interference : "14"
+		}
+	} ]
+}

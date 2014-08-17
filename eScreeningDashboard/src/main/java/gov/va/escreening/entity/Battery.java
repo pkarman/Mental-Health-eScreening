@@ -9,164 +9,157 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "battery")
-@NamedQueries({
-        @NamedQuery(name = "Battery.findAll", query = "SELECT b FROM Battery b") })
+@NamedQueries({ @NamedQuery(name = "Battery.findAll", query = "SELECT b FROM Battery b") })
 public class Battery implements Serializable, BatteryBaseProperties {
-    private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "battery_id")
-    private Integer batteryId;
-    
-    @Column(name = "name")
-    private String name;
-    
-    @Column(name = "description")
-    private String description;
-    
-    @Basic(optional = false)
-    @Column(name = "is_disabled")
-    private boolean isDisabled;
-    
-    @JoinColumn(name = "program_id", referencedColumnName = "program_id")
-    @ManyToOne
-    @JoinTable(name="program_battery",
-            joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") },
-            inverseJoinColumns = { @JoinColumn(name = "program_id", referencedColumnName = "program_id") })
-    private Program program;
+	private static final long serialVersionUID = 1L;
 
-    @Basic(optional = false)
-    @Column(name = "date_created")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreated;
-    
-    @OneToMany(mappedBy = "battery")
-    private List<VeteranAssessment> veteranAssessmentList;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "battery_id")
+	private Integer batteryId;
 
-    @OneToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH}) //, fetch = FetchType.EAGER
-    @JoinTable(
-            name = "battery_survey",
-            joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") },
-            inverseJoinColumns = { @JoinColumn(name = "survey_id", referencedColumnName = "survey_id") })
-    private Set<Survey> surveys;
+	@Column(name = "name")
+	private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "battery_template",
-            joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") },
-            inverseJoinColumns = { @JoinColumn(name = "template_id", referencedColumnName = "template_id") })
-    private Set<Template> templates;
+	@Column(name = "description")
+	private String description;
 
-    public Battery() {
-    }
+	@Basic(optional = false)
+	@Column(name = "is_disabled")
+	private boolean isDisabled;
 
-    public Battery(Integer batteryId) {
-        this.batteryId = batteryId;
-    }
+	@JoinColumn(name = "program_id", referencedColumnName = "program_id")
+	@ManyToOne
+	@JoinTable(name = "program_battery", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "program_id", referencedColumnName = "program_id") })
+	private Program program;
 
-    public Battery(Integer batteryId, Date dateCreated) {
-        this.batteryId = batteryId;
-        this.dateCreated = dateCreated;
-    }
+	@Basic(optional = false)
+	@Column(name = "date_created")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreated;
 
-    public Integer getBatteryId() {
-        return batteryId;
-    }
+	@OneToMany(mappedBy = "battery")
+	private List<VeteranAssessment> veteranAssessmentList;
 
-    public void setBatteryId(Integer batteryId) {
-        this.batteryId = batteryId;
-    }
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
+	// , fetch = FetchType.EAGER
+	@JoinTable(name = "battery_survey", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "survey_id", referencedColumnName = "survey_id") })
+	private Set<Survey> surveys;
 
-    public String getName() {
-        return name;
-    }
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "battery_template", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "template_id", referencedColumnName = "template_id") })
+	private Set<Template> templates;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Battery() {
+		this(null);
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public Battery(Integer batteryId) {
+		this(batteryId, new Date());
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public Battery(Integer batteryId, Date dateCreated) {
+		this.batteryId = batteryId;
+		this.dateCreated = dateCreated;
+	}
 
-    public boolean isDisabled() {
-        return isDisabled;
-    }
+	public Integer getBatteryId() {
+		return batteryId;
+	}
 
-    public void setDisabled(boolean isDisabled) {
-        this.isDisabled = isDisabled;
-    }
+	public void setBatteryId(Integer batteryId) {
+		this.batteryId = batteryId;
+	}
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public List<VeteranAssessment> getVeteranAssessmentList() {
-        return veteranAssessmentList;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setVeteranAssessmentList(List<VeteranAssessment> veteranAssessmentList) {
-        this.veteranAssessmentList = veteranAssessmentList;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Set<Survey> getSurveys() {
-        return surveys;
-    }
+	public boolean isDisabled() {
+		return isDisabled;
+	}
 
-    public void setSurveys(Set<Survey> surveys) {
-        this.surveys = surveys;
-    }
+	public void setDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
 
-    public Set<Template> getTemplates() {
-        return templates;
-    }
+	public Date getDateCreated() {
+		return dateCreated;
+	}
 
-    public void setTemplates(Set<Template> templates) {
-        this.templates = templates;
-    }
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (batteryId != null ? batteryId.hashCode() : 0);
-        return hash;
-    }
+	public List<VeteranAssessment> getVeteranAssessmentList() {
+		return veteranAssessmentList;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Battery)) {
-            return false;
-        }
-        Battery other = (Battery) object;
-        if ((this.batteryId == null && other.batteryId != null)
-                || (this.batteryId != null && !this.batteryId.equals(other.batteryId))) {
-            return false;
-        }
-        return true;
-    }
+	public void setVeteranAssessmentList(
+			List<VeteranAssessment> veteranAssessmentList) {
+		this.veteranAssessmentList = veteranAssessmentList;
+	}
 
-    @Override
-    public String toString() {
-        return "gov.va.escreening.entity.Battery[ batteryId=" + batteryId + ", name=" + name + " ]";
-    }
+	public Set<Survey> getSurveys() {
+		return surveys;
+	}
 
-//	public Program getProgram() {
-//		return program;
-//	}
-//
-//	public void setProgram(Program program) {
-//		this.program = program;
-//	}
+	public void setSurveys(Set<Survey> surveys) {
+		this.surveys = surveys;
+	}
+
+	public Set<Template> getTemplates() {
+		return templates;
+	}
+
+	public void setTemplates(Set<Template> templates) {
+		this.templates = templates;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (batteryId != null ? batteryId.hashCode() : 0);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are not set
+		if (!(object instanceof Battery)) {
+			return false;
+		}
+		Battery other = (Battery) object;
+		if ((this.batteryId == null && other.batteryId != null) || (this.batteryId != null && !this.batteryId.equals(other.batteryId))) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "gov.va.escreening.entity.Battery[ batteryId=" + batteryId + ", name=" + name + " ]";
+	}
+
+	// public Program getProgram() {
+	// return program;
+	// }
+	//
+	// public void setProgram(Program program) {
+	// this.program = program;
+	// }
 
 }
