@@ -47,9 +47,20 @@ public class TemplateTagProcessor {
     	noteText = noteText.replace(MATRIX_TH_START.xml(), "<th class='matrixTableHeader'>");
     	noteText = noteText.replace(MATRIX_TH_END.xml(), "</th>");
     	noteText = noteText.replace(MATRIX_TR_START.xml(), "<tr>");
+    	noteText = noteText.replace(TABLE_TR_CTR_START.xml(), "<tr class='justifyCtrTableRow'>");
+    	noteText = noteText.replace(TABLE_TR_END.xml(), "</tr>");
     	noteText = noteText.replace(MATRIX_TR_END.xml(), "</tr>");
-    	noteText = noteText.replace(MATRIX_TD_START.xml(), "<td class='matrixTableData'>");
+    	noteText = noteText.replace(MATRIX_TD_START.xml(), "<td>");
     	noteText = noteText.replace(MATRIX_TD_END.xml(), "</td>");
+    	noteText = noteText.replace(TABLE_TD_RT_START.xml(), "<td class='justifyRtTableData'>");
+    	noteText = noteText.replace(TABLE_TD_CTR_START.xml(), "<td class='justifyCtrTableData'>"); 
+    	noteText = noteText.replace(TABLE_TD_LFT_START.xml(), "<td class='justifyLftTableData'>");
+    	noteText = noteText.replace(TABLE_TD_END.xml(), "</td>");
+    	
+    	noteText = noteText.replace(IMG_LOGO_VA_HC.xml(), "<img src='../resources/images/logo_va_veteran_summary.gif'>");
+    	noteText = noteText.replace(IMG_CESMITH_BLK_BRDR.xml(), "<img src='../resources/images/cesamh_blk_border.png'>");
+    	noteText = noteText.replace(IMG_VA_VET_SMRY.xml(), "<img src='../resources/images/escreening_cdsmith_QR_code_small.png'>");
+    	
     	
     	return htmlEndDivReplace.matcher(noteText).replaceAll("</div>");
 	}

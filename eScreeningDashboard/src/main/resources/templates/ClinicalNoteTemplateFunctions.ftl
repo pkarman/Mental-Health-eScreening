@@ -23,11 +23,21 @@
 <#assign MATRIX_TABLE_START = '<MATRIX_TABLE_START>' />
 <#assign MATRIX_TABLE_END = '<MATRIX_TABLE_END>'/>
 <#assign MATRIX_TR_START = '<MATRIX_TR_START>'/>
+<#assign TABLE_TR_CTR_START = '<TABLE_TR_CTR_START>'/>
+<#assign TABLE_TR_END = '<TABLE_TR_END>'/>
 <#assign MATRIX_TR_END = '<MATRIX_TR_END>'/>
 <#assign MATRIX_TD_START = '<MATRIX_TD_START>'/>
 <#assign MATRIX_TD_END = '<MATRIX_TD_END>'/>
 <#assign MATRIX_TH_START = '<MATRIX_TH_START>'/>
 <#assign MATRIX_TH_END = '<MATRIX_TH_END>'/>
+<#assign TABLE_TD_RT_START = '<TABLE_TD_RT_START>'/>
+<#assign TABLE_TD_CTR_START = '<TABLE_TD_CTR_START>'/>
+<#assign TABLE_TD_LFT_START = '<TABLE_TD_LFT_START>'/>
+<#assign TABLE_TD_END = '<TABLE_TD_END>'/>
+
+<#assign IMG_LOGO_VA_HC = '<IMG_LOGO_VA_HC>'/>
+<#assign IMG_CESMITH_BLK_BRDR = '<IMG_CESMITH_BLK_BRDR>'/>
+<#assign IMG_VA_VET_SMRY = '<IMG_VA_VET_SMRY>'/> 
 
 <#-- String functions -->
 <#function hasValue stringValue>

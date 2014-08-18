@@ -25,10 +25,11 @@ public class TemplateConstants {
 	public static final Integer TEMPLATE_TYPE_CPRS_NOTE_ENTRY = 3;
 	public static final Integer TEMPLATE_TYPE_CPRS_NOTE_SPECIAL = 4;
 	
+	
 	//Template types for veteran summary
 	public static final Integer TEMPLATE_TYPE_VETERAN_SUMMARY_HEADER = 10;
 	public static final Integer TEMPLATE_TYPE_VETERAN_SUMMARY_FOOTER = 11;
-	public static final Integer TEMPLATE_TYPE_VETERAN_SUMMARY_ENTRY = 12;
+	public static final Integer TEMPLATE_TYPE_VETERAN_SUMMARY_ENTRY = 6;
 
 	//Battery Scoring (ticket: 527) one per battery
 	public static final Integer TEMPLATE_TYPE_SCORING_NOTE_HEADER = 21;
@@ -47,8 +48,8 @@ public class TemplateConstants {
 	 * we set the "code" field in this enum element to CPRS_NOTE_HEADER(1). The "1" is the template_id.
 	 * */
 	public enum Style{
-		CPRS_NOTE_HEADER(1), VETERAN_SUMMARY_HEADER(1), CPRS_NOTE_FOOTER(2), VETERAN_SUMMARY_FOOTER(2),
-			CPRS_NOTE_SCORING_MATRIX(4), CPRS_NOTE_SCORING_QA(99), CPRS_NOTE_CONCLUSION(5);
+		CPRS_NOTE_HEADER(1), VETERAN_SUMMARY_HEADER(200), CPRS_NOTE_FOOTER(2), VETERAN_SUMMARY_FOOTER(220),
+			CPRS_NOTE_SCORING_MATRIX(100), CPRS_NOTE_SCORING_QA(99), CPRS_NOTE_CONCLUSION(101);
 			
 		private int code;
 		 

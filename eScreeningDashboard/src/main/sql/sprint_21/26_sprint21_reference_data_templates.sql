@@ -529,19 +529,19 @@ ${MODULE_END}'
 
 
 
-/* SPECIAL STYLE TYPE */
+/* TEST */
  UPDATE template SET template_id = 101, 
-	template_type_id = 4, 
-	name = 'Special Section Test', 
-	description = 'Special Section Test', 
+	template_type_id = 6, 
+	name = 'Test', 
+	description = 'Test', 
 	template_file = 
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-SPECIAL STYLE TYPE:
+TEST TYPE:
 ${MODULE_TITLE_END}
 ${MODULE_START}
-  SPECIAL STYLE TYPE
+  TEST TYPE
  ${MODULE_END}
 '
 	WHERE template_id = 101;

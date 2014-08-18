@@ -228,18 +228,18 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 					for (Template template : battery.getTemplates()) {
 						int templateId = template.getTemplateId();
 						//TemplateConstants.Style StyleIdObj = TemplateConstants.getStyleByCode(typeId);
-						if(null == header && null != selHeader && selHeader.getCode() == template.getTemplateType().getTemplateTypeId()){
+						if(null == header && null != selHeader && selHeader.getCode() == templateId){
 							header = template;
 						}
-						else if(null == footer && null != selFooter && selFooter.getCode() == template.getTemplateType().getTemplateTypeId()){
+						else if(null == footer && null != selFooter && selFooter.getCode() == templateId){
 							footer = template;
 						}
 										
-						else if(null == special && null != selSpecial && selSpecial.getCode() == template.getTemplateType().getTemplateTypeId()){
+						else if(null == special && null != selSpecial && selSpecial.getCode() == templateId){
 							special = template;
 						}
 						
-						else if(null == conclusion && null != selConclusion && selConclusion.getCode() == template.getTemplateType().getTemplateTypeId()){
+						else if(null == conclusion && null != selConclusion && selConclusion.getCode() == templateId){
 							conclusion = template;
 						}
 						
@@ -287,6 +287,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 								if (TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_ENTRY.equals(template.getTemplateType().getTemplateTypeId())) {
 									evaluator.appendTemplate(template);
 								}
+								if (TemplateConstants.TEMPLATE_TYPE_VETERAN_SUMMARY_ENTRY.equals(template.getTemplateType().getTemplateTypeId())) {
+									evaluator.appendTemplate(template);
+								}
 							}
 		                    
 							if (survey.getClinicalReminderSurveyList() != null  && (!survey.getClinicalReminderSurveyList().isEmpty())) {
@@ -298,12 +301,13 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 				}
 				
 				
-				/* Add any special sections for the note i.e. scoring matrix */
+				/* Add any special section and qa section are mutually exclusive by preference which can be changed  */
 				if(showQA){
 					/* Add CLINICAL REMINDERS question section */
 					evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
 				}else{
 					if(null != special){
+						/* Add any special sections for the note i.e. scoring matrix */
 						evaluator.appendTemplate(special);
 					}
 				}
