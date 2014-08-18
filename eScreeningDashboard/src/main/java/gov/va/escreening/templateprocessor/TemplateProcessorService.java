@@ -30,6 +30,8 @@ public interface TemplateProcessorService {
 
 	String generateNote(Integer veteranAssessmentId, ViewType viewType, Set<TemplateConstants.Style> styles, boolean showQA) throws Exception;
 
+	String generateCompletionMsgFor(int batteryId);
+
 	
 	
 	

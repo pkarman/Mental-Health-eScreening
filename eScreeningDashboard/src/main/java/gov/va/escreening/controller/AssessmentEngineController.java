@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -84,9 +85,9 @@ public class AssessmentEngineController {
 		return assessmentResponse;
 	}
 
-	@RequestMapping(value = "/services/assessments/end", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
+	@RequestMapping(value = "/services/assessments/end/{batteryId}", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
-	public CompletionResponse getCompletionData(HttpSession session) {
+	public CompletionResponse getCompletionData(@PathVariable int batteryId, HttpSession session) {
 		logger.debug("In getCompletionData");
 		assessmentDelegate.ensureValidAssessmentContext();
 		assessmentDelegate.markAssessmentAsComplete();
@@ -94,7 +95,7 @@ public class AssessmentEngineController {
 		// delete everything out of the session
 		session.invalidate();
 
-		return assessmentDelegate.getCompletionResponse();
+		return assessmentDelegate.getCompletionResponse(batteryId);
 	}
 
 	@RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
