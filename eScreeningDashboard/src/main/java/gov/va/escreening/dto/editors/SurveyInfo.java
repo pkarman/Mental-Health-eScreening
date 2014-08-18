@@ -11,7 +11,7 @@ import gov.va.escreening.entity.SurveyBaseProperties;
 import gov.va.escreening.serializer.JsonDateSerializer;
 
 @JsonRootName(value="survey")
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"mhaTestName", "mhaResultGroupIen", "isIncludedInBattery", "surveyStatusItemInfo"})
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"isIncludedInBattery", "surveyStatusItemInfo"})
 public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private String description;
     private Integer version;
     private Integer displayOrder;
-    private Boolean hasMha;
+    private boolean hasMha;
     private String mhaTestName;
     private String mhaResultGroupIen;
     private Boolean clinicalReminder;
@@ -74,11 +74,11 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
         this.displayOrder = displayOrder;
     }
 
-    public Boolean isMha() {
+    public boolean isMha() {
         return hasMha;
     }
 
-    public void setMha(Boolean hasMha) {
+    public void setMha(boolean hasMha) {
         this.hasMha = hasMha;
     }
 

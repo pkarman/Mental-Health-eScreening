@@ -178,7 +178,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
             selectVeteranResultDto.setMiddleName(dbResultList.get(i).getMiddleName());
             selectVeteranResultDto.setLastName(dbResultList.get(i).getLastName());
             selectVeteranResultDto.setBirthDate(dbResultList.get(i).getBirthDate());
-
+            selectVeteranResultDto.setIsSensitive(dbResultList.get(i).getIsSensitive());
             searchResultList.add(selectVeteranResultDto);
         }
 
@@ -209,7 +209,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
             selectVeteranResultDto.setMiddleName(vistaResultList.get(i).getMiddleName());
             selectVeteranResultDto.setLastName(vistaResultList.get(i).getLastName());
             selectVeteranResultDto.setBirthDate(vistaResultList.get(i).getBirthDate());
-
+            selectVeteranResultDto.setIsSensitive(vistaResultList.get(i).getIsSensitive());
             searchResultList.add(selectVeteranResultDto);
         }
 

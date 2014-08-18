@@ -196,6 +196,8 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             			version:domainSurveys[i].getVersion(),
             			displayOrder:domainSurveys[i].getDisplayOrder(),
             			mha:domainSurveys[i].isMHA(),
+                        mhaTestName:domainSurveys[i].getMhaTestName(),
+                        mhaResultGroupIen:domainSurveys[i].getMhaResultGroupIen(),
                         visible: domainSurveys[i].isVisible(),
                         markedForDeletion: domainSurveys[i].isMarkedForDeletion(),
             			createdDate:domainSurveys[i].getCreatedDate(),

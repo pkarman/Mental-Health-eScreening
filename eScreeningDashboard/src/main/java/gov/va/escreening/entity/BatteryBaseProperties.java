@@ -8,6 +8,6 @@ public interface BatteryBaseProperties {
     void setBatteryId(Integer batteryId);
     String getDescription();
     void setDescription(String description);
-    Boolean isDisabled();
-    void setDisabled(Boolean disabled);
+    boolean isDisabled();
+    void setDisabled(boolean disabled);
 }

@@ -15,7 +15,7 @@ public class ModuleExporterPromisPainIntensityInterference extends ModuleExporte
 	public class CveScore1 implements CellValueExtractor {
 		@Override
 		public String apply(String colName, Map<String, String> usrRespMap) {
-			return sumColumns(new String[] { "pain_intensity", "pain_average" }, colName, usrRespMap);
+			return sumColumns(new String[] { "pain_level", "pain_intensity", "pain_average" }, colName, usrRespMap);
 		}
 	}
 
@@ -29,7 +29,8 @@ public class ModuleExporterPromisPainIntensityInterference extends ModuleExporte
 	@Override
 	protected List<DataExportCell> applyNow(String moduleName,
 			Map<String, String> usrRespMap, VeteranAssessment assessment) {
-		return Arrays.asList(create(usrRespMap, "pain_intensity"),//
+		return Arrays.asList(create(usrRespMap, "pain_level"),//
+				create(usrRespMap, "pain_intensity"),//
 				create(usrRespMap, "pain_average"),//
 				create(usrRespMap, "pain_score_intensity", new CveScore1()),//
 				create(usrRespMap, "pain_interfere_life"),//

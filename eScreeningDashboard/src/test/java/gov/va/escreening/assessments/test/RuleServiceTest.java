@@ -398,17 +398,18 @@ public class RuleServiceTest {
         logger.info(output);
     }
     
-//    @Test
-//    public void testFullQuesAndAnswers()
-//    {
-//        List<Survey> surveyList = surveyRepo.findForVeteranAssessmentId(88);
-//        for(Survey s : surveyList)
-//        {
-//            logger.info("==== Survey ID ======" + s.getSurveyId());
-//            logger.info(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 88));
-//        }
-        
-//        Survey s = surveyRepo.findOne(12);
-//        surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 88);
-//    }
+    @Test
+    public void testFullQuesAndAnswers()
+    {
+        List<Survey> surveyList = surveyRepo.findForVeteranAssessmentId(56);
+        for(Survey s : surveyList)
+        {
+            logger.info("==== Survey ID ======" + s.getSurveyId());
+            logger.info(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 56));
+        }
+    }
+//        
+////        Survey s = surveyRepo.findOne(12);
+////        surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 88);
+////    }
 }

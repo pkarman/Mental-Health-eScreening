@@ -151,6 +151,7 @@ public class VeteranServiceImpl implements VeteranService {
         veteranDto.setWorkPhone(veteran.getOfficePhone());
         veteranDto.setFullName(VeteranUtil.getFullName(veteran.getFirstName(), veteran.getMiddleName(),
                 veteran.getLastName(), veteran.getSuffix(), null));
+        veteranDto.setIsSensitive(veteran.getIsSensitive());
         return veteranDto;
     }
 
@@ -175,7 +176,7 @@ public class VeteranServiceImpl implements VeteranService {
         veteran.setDateRefreshedFromVista(veteranDto.getDateRefreshedFromVista());
         veteran.setCellPhone(veteranDto.getCellPhone());
         veteran.setOfficePhone(veteranDto.getWorkPhone());
-
+        veteran.setIsSensitive(veteranDto.getIsSensitive());
         return veteran;
     }
 
@@ -274,6 +275,7 @@ public class VeteranServiceImpl implements VeteranService {
         veteran.setBirthDate(veteranDto.getBirthDate());
         veteran.setGender(veteranDto.getGender());
         veteran.setDateRefreshedFromVista(new Date());
+        veteran.setIsSensitive(veteranDto.getIsSensitive());
 
         // Save it.
         veteranRepository.create(veteran);

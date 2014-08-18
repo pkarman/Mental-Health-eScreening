@@ -55,6 +55,11 @@ public class OrwptSelectExtractor implements VistaRecordExtractor<VeteranDto> {
         // 6. LocationName
         veteranDto.setInpatientStatus((fields[5]!= null)? true: false);
 
+        //9. sensitive
+        if(fields[8].equals("1"))
+        {
+        	veteranDto.setIsSensitive(true);
+        }
         return veteranDto;
     }
 

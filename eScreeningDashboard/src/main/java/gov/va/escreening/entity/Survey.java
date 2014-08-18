@@ -44,7 +44,7 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private Integer displayOrder;
     @Basic(optional = false)
     @Column(name = "has_mha")
-    private Boolean hasMha;
+    private boolean hasMha;
     @Column(name = "mha_test_name")
     private String mhaTestName;
     @Column(name = "mha_result_group_ien")
@@ -134,11 +134,11 @@ public class Survey implements Serializable, SurveyBaseProperties{
         this.displayOrder = displayOrder;
     }
 
-    public Boolean isMha() {
+    public boolean isMha() {
         return hasMha;
     }
 
-    public void setMha(Boolean hasMha) {
+    public void setMha(boolean hasMha) {
         this.hasMha = hasMha;
     }
 

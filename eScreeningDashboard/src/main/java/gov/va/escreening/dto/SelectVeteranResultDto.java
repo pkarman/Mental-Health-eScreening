@@ -14,8 +14,17 @@ public class SelectVeteranResultDto implements Serializable {
     private String firstName;
     private String ssnLastFour;
     private Date birthDate;
+    private boolean isSensitive;
 
-    public Integer getVeteranId() {
+    public boolean getIsSensitive() {
+		return isSensitive;
+	}
+
+	public void setIsSensitive(boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+
+	public Integer getVeteranId() {
         return veteranId;
     }
 

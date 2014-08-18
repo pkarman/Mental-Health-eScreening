@@ -9,11 +9,13 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
+import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.service.BatteryService;
 
 import javax.annotation.Resource;
@@ -46,6 +48,9 @@ public class RepositoryTest {
     
     @Resource
     MeasureRepository measureRepo;
+    
+    @Resource
+    VeteranRepository veteranRepo;
     
     @Test
     public void testgetSurveyPage()
@@ -94,5 +99,18 @@ public class RepositoryTest {
         m= measureRepo.findOne(1);
         assertEquals("TEST VISTA", m.getVistaText());
         
+    }
+    
+    @Test
+    public void testVeteranRepo()
+    {
+    	Veteran v = veteranRepo.findOne(17);
+    	assertFalse(v.getIsSensitive());
+    	
+    	v.setIsSensitive(true);
+    	veteranRepo.update(v);
+    	
+    	v = veteranRepo.findOne(17);
+    	assertTrue(v.getIsSensitive());
     }
 }

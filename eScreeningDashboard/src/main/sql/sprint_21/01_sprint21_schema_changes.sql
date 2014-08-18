@@ -1,0 +1,1 @@
+alter table veteran add column is_sensitive BOOLEAN NOT NULL DEFAULT 0;

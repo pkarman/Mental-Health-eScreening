@@ -46,6 +46,10 @@ public class OrwptLast5Extractor implements VistaRecordExtractor<VeteranDto> {
         {
             veteranDto.setSsnLastFour(StringUtils.right(fields[3], 4));
         }
+        else
+        {
+        	veteranDto.setIsSensitive(true);
+        }
 
         return veteranDto;
     }
