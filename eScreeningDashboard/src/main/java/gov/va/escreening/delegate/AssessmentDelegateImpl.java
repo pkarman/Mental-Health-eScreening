@@ -34,9 +34,12 @@ import gov.va.escreening.service.AssessmentEngineService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.VeteranAssessmentSurveyService;
 import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.templateprocessor.TemplateProcessorService;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -71,6 +74,9 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
     private SurveyRepository surveyRepository;
     @Autowired
     private SurveySectionRepository surveySectionRepository;
+
+    @Resource(type=TemplateProcessorService.class)
+    private TemplateProcessorService templateProcessorService;
 
     @Override
     public List<VeteranDto> findVeterans(VeteranDto veteran) {
@@ -217,19 +223,14 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
     }
 
     @Override
-    public CompletionResponse getCompletionResponse() {
+    public CompletionResponse getCompletionResponse(int batteryId) {
 
         // TODO: we will be integrating with database in new ticket
 
         CompletionResponse response = new CompletionResponse();
 
         // test data program specific completion text
-        response.setCompletionText("<b>Thank you for your time and effort.</b> Next, you will finish your "
-                +
-                "enrollment for health benefits and receive a individualized print-out of health recommendations based on the "
-                +
-                "information you provided. If you have any questions or comments about this process, please call the " +
-                "Intake eScreening Study Office at (858) 552-8585 x5550.");
+        response.setCompletionText(templateProcessorService.generateCompletionMsgFor(batteryId));
 
         // test data for summary notes
         response.setSummaryNotes(Arrays

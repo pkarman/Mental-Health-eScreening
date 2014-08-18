@@ -79,7 +79,7 @@ function showLastPageCall() {
 	$("#backBtn").css("visibility", "hidden");
 	$.ajax({
 		  type: "GET",
-		  url: "services/assessments/end",
+		  url: "services/assessments/end/5",
 	      dataType: 'json',
 	      contentType: "application/json; charset=utf-8",
 		  async:false

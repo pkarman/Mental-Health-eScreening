@@ -565,5 +565,37 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			return TemplateTagProcessor.resolveClinicalNoteTags(text.toString(), viewType);
 		}
 	}
+
+	@Override
+	public String generateCompletionMsgFor(int batteryId) {
+		String tt="<div class='moduleTemplateTitle'>";
+		String closeDiv="</div>";
+		String brk="<br/>";
+		String st="<div class='templateSectionTitle'>";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(tt).append("Thank You!").append(closeDiv);
+		sb.append(brk);
+		sb.append(st).append("Please let the assistant know that you have completed your screen. They will provide you with a personalized summary of your screens. The results of this screen will be sent electronically to a Transition Case Manager for review.").append(closeDiv);
+		sb.append(brk);
+		sb.append(st).append("The goal of OEF/OIF/OND Care Management is to help you maximize your VA services and benefits. Here are some services that we provide: ").append(closeDiv);
+		sb.append(brk);
+		
+		sb.append(st).append("- Care coordination and support with access to VA healthcare services & benefits").append(closeDiv);
+		sb.append(st).append("- Advocacy to address post-deployment health concerns").append(closeDiv);
+		sb.append(st).append("- Resources to address  employment, education or housing  concerns  ").append(closeDiv);
+		sb.append(st).append("- Applying for VA, other government, and community benefits").append(closeDiv);
+		sb.append(st).append("- Resources for marriage, family, and spirituality concerns ").append(closeDiv);
+		sb.append(st).append("- Aid with concerns about drinking or drug use").append(closeDiv);
+		sb.append(st).append("- Assistance if you are feeling sad, depressed or anxious").append(closeDiv);
+		sb.append(st).append("- Assistance with visual impairments").append(closeDiv);
+		sb.append(st).append("- Help if you really aren’t sure what you need, but things just don’t feel right").append(closeDiv);
+		sb.append(brk);
+
+		sb.append(st).append("You may ask to meet with a Transition Case Manager today to discuss any issues presented in this screen. You can also call the OEF/OIF/OND Care Management team at any point in the future for assistance. Their contact information is listed on your personalized summary.").append(closeDiv);
+
+		return sb.toString();
+	}
+
 }
 

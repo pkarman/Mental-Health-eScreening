@@ -71,13 +71,11 @@ public interface AssessmentDelegate {
      */
     String getVeteranFullName();
 
-    /**
-     * @return A CompletionResponse for the current VeteranAssessment
-     */
-    CompletionResponse getCompletionResponse();
-    
+ 
     /**
      * Updates the assessment status as complete and logs it to the database.
      */
     void markAssessmentAsComplete();
+
+	CompletionResponse getCompletionResponse(int batteryId);
 }
