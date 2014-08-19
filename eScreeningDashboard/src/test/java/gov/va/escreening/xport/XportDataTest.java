@@ -72,6 +72,7 @@ public class XportDataTest {
 
 	private static final String minimum = System.getProperty("ROOT_DIR_MINIMUM", "target/test-classes/exports/minimum");
 	private static final String detail = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/detail");
+	private static final String empty = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/empty");
 
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
@@ -279,6 +280,11 @@ public class XportDataTest {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierTypeHtml(testTuple);
 	}
+	
+	private boolean invokeVeteranSummaryTemplateReview(String jsonFileName, String root) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return templateDataVerifierVetSummary(testTuple);
+	}
 
 	private boolean exportDataVerifier(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
@@ -302,6 +308,15 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
 		String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
+
+		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
+	}
+	
+	private boolean templateDataVerifierVetSummary(Object[] testTuple) throws Exception {
+		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
+		VeteranAssessment va = (VeteranAssessment) testTuple[1];
+
+		String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
 
 		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
 	}
@@ -343,14 +358,7 @@ public class XportDataTest {
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileForExportData() throws UnsupportedEncodingException, IOException {
-		File dir = new File(minimum);
-		for (String fileName : dir.list(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".js");
-			}
-		})) {
+		for (String fileName : testFilesFor(minimum)) {
 			assertTrue(fileName, exportDataTester(fileName, minimum));
 		}
 	}
@@ -358,14 +366,7 @@ public class XportDataTest {
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileForExportDataDetail() throws UnsupportedEncodingException, IOException {
-		File dir = new File(detail);
-		for (String fileName : dir.list(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".js");
-			}
-		})) {
+		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTester(fileName, detail));
 		}
 	}
@@ -373,33 +374,59 @@ public class XportDataTest {
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileWithJsonDetailForTemplatesCorrectnessWith__TEXT() throws Exception {
-		File dir = new File(detail);
-		for (String fileName : dir.list(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".js");
-			}
-		})) {
-			assertTrue(String.format("Template generation failed TXT type for %s", fileName), invokeTemplateTxtReview(fileName, detail));
+		for (String fileName : testFilesFor(detail)) {
+			assertTrue(String.format("CPRS Note document generation failed (for TXT type) for %s", fileName), invokeTemplateTxtReview(fileName, detail));
 		}
 	}
 
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileWithJsonDetailForTemplatesCorrectnessWith__HTML() throws Exception {
-		File dir = new File(detail);
-		for (String fileName : dir.list(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".js");
-			}
-		})) {
-			assertTrue(String.format("Template generation failed HTML type for %s", fileName), invokeTemplateHtmlReview(fileName, detail));
+		for (String fileName : testFilesFor(detail)) {
+			assertTrue(String.format("CPRS Note document generation failed (for HTML type) for %s", fileName), invokeTemplateHtmlReview(fileName, detail));
+		}
+	}
+	
+	@Test
+	public void testEveryFileWithJsonDetailForVeteranSummaryTemplatesCorrectness() throws Exception {
+		for (String fileName : testFilesFor(detail)){
+			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, detail));
+		}
+	}
+	
+	@Test
+	public void testEveryFileWithJsonEmptyForTemplatesCorrectnessWith__TEXT() throws Exception {
+		for (String fileName : testFilesFor(empty)) {
+			assertTrue(String.format("CPRS Note document generation failed (for TXT type) for %s", fileName), invokeTemplateTxtReview(fileName, empty));
 		}
 	}
 
+	@Test
+	public void testEveryFileWithJsonEmptyForTemplatesCorrectnessWith__HTML() throws Exception {
+		for (String fileName : testFilesFor(empty)) {
+			assertTrue(String.format("CPRS Note document generation failed (for HTML type) for %s", fileName), invokeTemplateHtmlReview(fileName, empty));
+		}
+	}
+	
+	@Test
+	public void testEveryFileWithJsonEmptyForVeteranSummaryTemplatesCorrectness() throws Exception {
+		for (String fileName : testFilesFor(empty)){
+			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
+		}
+	}
+
+	private String[] testFilesFor(String testDir){
+		File dir = new File(testDir);
+		return dir.list(
+			new FilenameFilter() {
+	
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".js");
+				}
+			});
+	}
+	
 	@Before
 	public void testSetup() {
 		assertNotNull(var);
