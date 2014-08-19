@@ -89,12 +89,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	@Override
 	public String generateVeteranPrintout(int veteranAssessmentId) 
 			throws IllegalSystemStateException, TemplateProcessorException {
-		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
-		checkArgument(assessment != null, "Assessment ID is invalid");
 		
-		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, 
-				EnumSet.of(TemplateType.VET_SUMMARY_HEADER, TemplateType.VET_SUMMARY_FOOTER));
-		return createDocument(assessment, ViewType.HTML, DocumentType.VET_SUMMARY, templateMap, false); 
+		return createDocument(veteranAssessmentId, ViewType.HTML, DocumentType.VET_SUMMARY, 
+				EnumSet.noneOf(TemplateConstants.TemplateType.class), false); 
 	}
 	
 	@Override 
@@ -106,56 +103,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	public String generateCPRSNote(int veteranAssessmentId, ViewType viewType, EnumSet<TemplateType> optionalTemplates) 
 			throws IllegalSystemStateException, TemplateProcessorException{
 		
-		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
-		checkArgument(assessment != null, "Assessment ID is invalid");
-		
-		Set<TemplateType> requiredTemplates = Sets.union(EnumSet.of(TemplateType.CPRS_HEADER, TemplateType.CPRS_FOOTER), optionalTemplates);
-
-		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, requiredTemplates);
-		return createDocument(assessment, viewType, DocumentType.CPRS_NOTE, templateMap, true); 
+		return createDocument(veteranAssessmentId, viewType, DocumentType.CPRS_NOTE, optionalTemplates, true); 
 	}
 	
-	private Map<TemplateType, Template> getTemplateMap(VeteranAssessment assessment, Set<TemplateType> requiredTemplates)
-			throws IllegalSystemStateException{
-		
-		EnumMap<TemplateType, Template> templateMap = new EnumMap<>(TemplateConstants.TemplateType.class);
-
-		Battery battery = assessment.getBattery();
-
-		if (battery != null) {
-			for (Template template : battery.getTemplates()) {
-				TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
-				
-				if(requiredTemplates.contains(type)){
-					templateMap.put(type, template);
-					if(templateMap.size() == requiredTemplates.size())
-						break;
-				}
-			}
-		} 
-		else {
-			ErrorBuilder
-			.throwing(IllegalSystemStateException.class)
-			.toUser("No battery was found for this assessment. Please contact the technical administrator.")
-			.toAdmin("The following veteran assessment does not have any battery created for assessment: " + assessment)
-			.throwIt();
-		}
-
-		// throw a system configuration exception if we don't have all required templates
-		Set<TemplateType> missingTemplates = Sets.difference(requiredTemplates, templateMap.keySet());
-		if(templateMap.size() != requiredTemplates.size()) {
-			String errorMsg = "For battery '" + battery.getName()
-					+ "' the following required templates are missing: " +Joiner.on(',').join(missingTemplates);
-			
-			ErrorBuilder
-				.throwing(IllegalSystemStateException.class)
-				.toUser(errorMsg + ". Please contact the technical administrator.")
-				.toAdmin(errorMsg + ".  Battery details: " + battery)
-				.throwIt();
-		}
-		
-		return templateMap;
-	}
 	
 	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates
@@ -167,11 +117,17 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @return the rendered document
 	 * @throws IllegalSystemStateException
 	 */
-	private String createDocument(VeteranAssessment assessment, ViewType viewType, DocumentType documentType, 
-			Map<TemplateType, Template> templateMap, boolean includeSections) throws IllegalSystemStateException{
+	private String createDocument(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
+			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 
-		int veteranAssessmentId = assessment.getVeteranAssessmentId();
+		//get assessment
+		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+		checkArgument(assessment != null, "Assessment ID is invalid");
 		
+		//get Battery level templates
+		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, 
+				Sets.union(EnumSet.of(documentType.getHeaderType(), documentType.getFooterType()), optionalTemplates));
+				
 		// start generation of template with header, section, templates for each
 		// module in a section, and in the end the footer
 		TemplateEvaluator evaluator = new TemplateEvaluator(veteranAssessmentId, viewType)
@@ -244,6 +200,62 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return templateOutput;
 	}
 
+	/**
+	 * Queries the DB to get the required templates and returns a map from template type to the template instance.
+	 * @param assessment
+	 * @param requiredTemplates
+	 * @return
+	 * @throws IllegalSystemStateException
+	 */
+	private Map<TemplateType, Template> getTemplateMap(VeteranAssessment assessment, Set<TemplateType> requiredTemplates)
+			throws IllegalSystemStateException{
+		
+		EnumMap<TemplateType, Template> templateMap = new EnumMap<>(TemplateConstants.TemplateType.class);
+		
+		//TODO: PLEASE remove this when we go to a template system for questions and answers
+		if(requiredTemplates.contains(TemplateType.VISTA_QA)){ 
+			templateMap.put(TemplateType.VISTA_QA, new Template());
+		}
+
+		Battery battery = assessment.getBattery();
+
+		if (battery != null) {
+			for (Template template : battery.getTemplates()) {
+				TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
+				
+				if(requiredTemplates.contains(type)){
+					templateMap.put(type, template);
+					
+					//TODO: Commenting out this shortcut just in case we forget to remove the VISTA_QA temp code above. Please uncomment when we go to vista question answer
+//					if(templateMap.size() == requiredTemplates.size())
+//						break;
+				}
+			}
+		} 
+		else {
+			ErrorBuilder
+			.throwing(IllegalSystemStateException.class)
+			.toUser("No battery was found for this assessment. Please contact the technical administrator.")
+			.toAdmin("The following veteran assessment does not have any battery created for assessment: " + assessment)
+			.throwIt();
+		}
+
+		// throw a system configuration exception if we don't have all required templates
+		Set<TemplateType> missingTemplates = Sets.difference(requiredTemplates, templateMap.keySet());
+		if(templateMap.size() != requiredTemplates.size()) {
+			String errorMsg = "For battery '" + battery.getName()
+					+ "' the following required templates are missing: " +Joiner.on(',').join(missingTemplates);
+			
+			ErrorBuilder
+				.throwing(IllegalSystemStateException.class)
+				.toUser(errorMsg + ". Please contact the technical administrator.")
+				.toAdmin(errorMsg + ".  Battery details: " + battery)
+				.throwIt();
+		}
+		
+		return templateMap;
+	}
+	
 	/**
      * Throws a TemplateProcessorException with a generic error message and the given technical message. This should be
      * used when a bug is found.
