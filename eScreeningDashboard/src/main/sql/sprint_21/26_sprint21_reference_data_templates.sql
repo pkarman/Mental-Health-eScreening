@@ -624,7 +624,7 @@ ${MODULE_START}
 <#elseif score == 1>
 	<#assign scoreText = "Declined">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -656,7 +656,7 @@ ${MODULE_START}
 <#elseif score == 1>
 	<#assign scoreText = "stable housing">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -692,7 +692,7 @@ ${MODULE_START}
 <#elseif (score >= 4) && (score <= 12)>
 	<#assign scoreText = "at risk">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -729,7 +729,7 @@ ${MODULE_START}
 <#elseif (score >= 4) && (score <= 12)>
 	<#assign scoreText = "at risk">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -764,7 +764,7 @@ ${MODULE_START}
 <#elseif (score == 1) >
 	<#assign scoreText = "at risk">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -804,7 +804,7 @@ ${MODULE_START}
 <#elseif (score == 2)>
 	<#assign scoreText = "declined to answer">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -840,7 +840,7 @@ ${MODULE_START}
 <#elseif (score == 2)>
 	<#assign scoreText = "current user">
 	<#assign isComplete = true>
-<#if>
+</#if>
 
 <#if isComplete>
 	
@@ -877,7 +877,7 @@ ${MODULE_START}
 <#elseif (score >= 4 && >
 	<#assign scoreText = "at risk">
 	<#assign isComplete = true>
-<<#if>
+</#if>
 
 <#if isComplete>
 	
