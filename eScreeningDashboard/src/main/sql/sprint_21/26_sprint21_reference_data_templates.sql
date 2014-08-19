@@ -572,7 +572,7 @@ ${MATRIX_TABLE_END}
 
 ${MODULE_END}
 ');	
-	
+INSERT INTO battery_template (battery_id, template_id) VALUES (5, 200);	
 	
 	/* Veteran Summary - Footer */
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (220, 7, 'Veteran Summary Footer', 'Veteran Summary Footer',
@@ -601,7 +601,11 @@ ${MATRIX_TABLE_END}
 
 ${MODULE_END}
 ');
+INSERT INTO battery_template (battery_id, template_id) VALUES (5, 220);
 	
+
+
+
 -- /* VETERAN SUMMARY - Advance Directive  */
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (300, 8, 'Veteran Summary Advance Directive Entry', 'Veteran Summary Advance Directive Entry',
 '
