@@ -1,9 +1,6 @@
 package gov.va.escreening.templateprocessor;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static gov.va.escreening.constants.TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_FOOTER;
-import static gov.va.escreening.constants.TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_HEADER;
-import static gov.va.escreening.constants.TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_SPECIAL;
 import static gov.va.escreening.templateprocessor.TemplateTags.*;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
@@ -13,6 +10,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
 import gov.va.escreening.constants.TemplateConstants;
+import gov.va.escreening.constants.TemplateConstants.DocumentType;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.Battery;
@@ -34,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +47,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 @Transactional(noRollbackFor = { TemplateProcessorException.class, Exception.class })
@@ -85,239 +87,139 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 
 	@Override
-	public String generateClinicalNote(Integer veteranAssessmentId,
-			ViewType viewType, Integer styleType, boolean showQA) throws Exception {
-
+	public String generateVeteranPrintout(int veteranAssessmentId) 
+			throws IllegalSystemStateException, TemplateProcessorException {
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
 		checkArgument(assessment != null, "Assessment ID is invalid");
+		
+		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, 
+				EnumSet.of(TemplateType.VET_SUMMARY_HEADER, TemplateType.VET_SUMMARY_FOOTER));
+		return createDocument(assessment, ViewType.HTML, DocumentType.VET_SUMMARY, templateMap, false); 
+	}
+	
+	@Override 
+	public String generateCPRSNote(int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, TemplateProcessorException {
+		return generateCPRSNote(veteranAssessmentId, viewType, EnumSet.noneOf(TemplateConstants.TemplateType.class));
+	}
+	
+	@Override
+	public String generateCPRSNote(int veteranAssessmentId, ViewType viewType, EnumSet<TemplateType> optionalTemplates) 
+			throws IllegalSystemStateException, TemplateProcessorException{
+		
+		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+		checkArgument(assessment != null, "Assessment ID is invalid");
+		
+		Set<TemplateType> requiredTemplates = Sets.union(EnumSet.of(TemplateType.CPRS_HEADER, TemplateType.CPRS_FOOTER), optionalTemplates);
 
-		// get the header and foot templates for the battery
-		Template header = null;
-		Template footer = null;
-		Template special = null;
+		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, requiredTemplates);
+		return createDocument(assessment, viewType, DocumentType.CPRS_NOTE, templateMap, true); 
+	}
+	
+	private Map<TemplateType, Template> getTemplateMap(VeteranAssessment assessment, Set<TemplateType> requiredTemplates)
+			throws IllegalSystemStateException{
+		
+		EnumMap<TemplateType, Template> templateMap = new EnumMap<>(TemplateConstants.TemplateType.class);
+
 		Battery battery = assessment.getBattery();
 
 		if (battery != null) {
 			for (Template template : battery.getTemplates()) {
-				int typeId = template.getTemplateType().getTemplateTypeId();
-				if (typeId == TEMPLATE_TYPE_CPRS_NOTE_HEADER){
-					header = template;
-				}else if (typeId == TEMPLATE_TYPE_CPRS_NOTE_FOOTER){
-					footer = template;
-				}else if (typeId == TEMPLATE_TYPE_CPRS_NOTE_SPECIAL){
-					special = template;
-
-					if (header != null && footer != null && special != null){
+				TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
+				
+				if(requiredTemplates.contains(type)){
+					templateMap.put(type, template);
+					if(templateMap.size() == requiredTemplates.size())
 						break;
-					}
 				}
 			}
 		} 
 		else {
 			ErrorBuilder
-				.throwing(IllegalSystemStateException.class)
-				.toUser("No battery was found for assessment. Please contact the clinician to create a battery")
-				.toAdmin("The following veteran assessment does not any battery created for assessment: " + assessment)
-				.throwIt();
+			.throwing(IllegalSystemStateException.class)
+			.toUser("No battery was found for this assessment. Please contact the tech admin to create a battery.")
+			.toAdmin("The following veteran assessment does not have any battery created for assessment: " + assessment)
+			.throwIt();
 		}
 
-		// throw a system configuration exception if we don't have header and
-		// footer defined for this battery
-		if (header == null || footer == null) {
+		// throw a system configuration exception if we don't have all required templates
+		Set<TemplateType> missingTemplates = Sets.difference(requiredTemplates, templateMap.keySet());
+		if(templateMap.size() != requiredTemplates.size()) {
+			String errorMsg = "For battery '" + battery.getName()
+					+ "' the following required templates are missing: " +Joiner.on(',').join(missingTemplates);
+			
 			ErrorBuilder
 				.throwing(IllegalSystemStateException.class)
-				.toUser("Header and footer templates have to be created for battery: '" + battery.getName() 
-						+ "'. Please contact the technical administrator.")
-				.toAdmin("The following battery does not have a header and/or a footer defined: " + battery)
+				.toUser(errorMsg + ". Please contact the technical administrator.")
+				.toAdmin(errorMsg + ".  Battery details: " + battery)
 				.throwIt();
 		}
+		
+		return templateMap;
+	}
+	
+	/**
+	 * Renders an entire document containing a header, entries, footer, and any optional templates
+	 * @param assessment the assessment the document is being created for
+	 * @param viewType the type of rendering
+	 * @param documentType the type of document that is to be built (e.g. cprs note, or veteran summary printout)
+	 * @param templateMap map from template type to the template to render
+	 * @param includeSections if true then sections should be surrounded by section tags.
+	 * @return the rendered document
+	 * @throws IllegalSystemStateException
+	 */
+	private String createDocument(VeteranAssessment assessment, ViewType viewType, DocumentType documentType, 
+			Map<TemplateType, Template> templateMap, boolean includeSections) throws IllegalSystemStateException{
 
+		int veteranAssessmentId = assessment.getVeteranAssessmentId();
+		
 		// start generation of template with header, section, templates for each
 		// module in a section, and in the end the footer
-		TemplateEvaluator evaluator = new TemplateEvaluator(veteranAssessmentId, viewType).appendHeader(header);
+		TemplateEvaluator evaluator = new TemplateEvaluator(veteranAssessmentId, viewType)
+			.appendHeader(templateMap.get(documentType.getHeaderType()));
+		
 		StringBuilder quesAndAnswers = new StringBuilder();
 		
 		Map<Integer, Survey> surveysTaken = assessment.getSurveyMap();
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
 		for (SurveySection section : sections) {
 
-			evaluator.startSection(section);
-			// append templates in section-order for each survey found in the
-			// battery
+			// start section
+			if(includeSections)
+				evaluator.startSection(section);
+			
+			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
 				if (surveysTaken.containsKey(survey.getSurveyId())) {
-					// TODO: see if we can make survey.getTemplateMap mapping
-					// from templateTypeId to template (see:
-					// https://en.wikibooks.org/wiki/Java_Persistence/Relationships#Maps)
 					for (Template template : survey.getTemplates()) {
-						if (TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_ENTRY.equals(template.getTemplateType().getTemplateTypeId())) {
+						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
+						if(type.equals(documentType.getEntryType())) {
 							evaluator.appendTemplate(template);
 						}
 					}
 					
-                    if (survey.getClinicalReminderSurveyList() != null && (!survey.getClinicalReminderSurveyList().isEmpty())){
+                    if (templateMap.containsKey(TemplateType.VISTA_QA) 
+                    		&& survey.getClinicalReminderSurveyList() != null 
+                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){
                         quesAndAnswers.append(surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, veteranAssessmentId));
                     }
-					
 				}
 			}
 		}
 		
-		/* Add any special sections for the note i.e. scoring matrix */
-		if(styleType == TemplateConstants.TEMPLATE_CPRS_NOTE_STYLE_BASIC_SCORE){
-			evaluator.appendTemplate(special);
+		/* Add optional Assessment Scoring Table */
+		if(templateMap.containsKey(TemplateType.ASSESS_SCORE_TABLE)){
+			evaluator.appendTemplate(templateMap.get(TemplateType.ASSESS_SCORE_TABLE));
 		}
 		
-		
-		//TODO: This should be optional depending on what type of templates we are rendering (e.g. CPRS note, Veteran Summary)
-		/* Add CLINICAL REMINDERS question section */
-			
-		if(showQA) {
+		/* Add optional VistA questions/answer text */
+		if(templateMap.containsKey(TemplateType.VISTA_QA)) {
 			evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
 		}
 		
-		return evaluator.appendFooter(footer).generate();
-	}
-
-	@Override
-	public String generateNote(Integer veteranAssessmentId, ViewType viewType, Set<TemplateConstants.Style> styles, boolean showQA) throws Exception {
-		logger.debug("Attempting to resolve template selected styles.", "Assessment id: " + veteranAssessmentId);
-		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
-		checkArgument(assessment != null, "Assessment ID is invalid");
-		
-		TemplateConstants.Style selHeader = null;
-		TemplateConstants.Style selFooter = null;
-		TemplateConstants.Style selSpecial = null;
-		TemplateConstants.Style selConclusion = null;
-		Battery battery = assessment.getBattery();
-		
-		for(TemplateConstants.Style s : styles){
-			if(null != s && null == selHeader && TemplateConstants.styleHeader.contains(s)){
-				selHeader = s;
-			}
-			else if(null != s  && null == selFooter && TemplateConstants.styleFooter.contains(s)){
-				selFooter = s;
-			}
-			else if(null != s  && null == selSpecial && TemplateConstants.styleSpecial.contains(s)){
-				selSpecial = s;
-			}
-			else if(null != s  && null == selConclusion && TemplateConstants.styleConclusion.contains(s)){
-				selConclusion = s;
-			}	
-			if (selHeader != null && selFooter != null && selSpecial != null && selConclusion != null){
-				
-				break;
-			}
-		}
-		
-		if(selHeader != null && selFooter != null){
-			logger.debug("Successfully resolved template selected styles (header & footer required).", "Assessment id: " + veteranAssessmentId, "Styles{ selHeader(required): " 
-						+ selHeader + " selFooter(required): " + selFooter + " selSpecial(required): " + selSpecial + " selConclusion(required): " + selConclusion + "}");
-		}else{
-			logger.debug("Failed to resolve template selected styles (header & footer required).", "Assessment id: " + veteranAssessmentId, "Styles{ selHeader(required): " 
-					+ selHeader + " selFooter(required): " + selFooter + " selSpecial(required): " + selSpecial + " selConclusion(required): " + selConclusion + "}");
-		}
-				
-				// get the header(required), footer(required), special and conclusion templates for the battery
-				Template header = null;
-				Template footer = null;
-				Template special = null;
-				Template conclusion = null;
-				
-				if (battery != null && selHeader != null && selFooter != null) {
-					for (Template template : battery.getTemplates()) {
-						int templateId = template.getTemplateId();
-						//TemplateConstants.Style StyleIdObj = TemplateConstants.getStyleByCode(typeId);
-						if(null == header && null != selHeader && selHeader.getCode() == templateId){
-							header = template;
-						}
-						else if(null == footer && null != selFooter && selFooter.getCode() == templateId){
-							footer = template;
-						}
-										
-						else if(null == special && null != selSpecial && selSpecial.getCode() == templateId){
-							special = template;
-						}
-						
-						else if(null == conclusion && null != selConclusion && selConclusion.getCode() == templateId){
-							conclusion = template;
-						}
-						
-						if (header != null && footer != null && special != null){break;}
-					}
-				} 
-				else {
-					ErrorBuilder
-						.throwing(IllegalSystemStateException.class)
-						.toUser("No battery was found for assessment. Please contact the clinician to create a battery")
-						.toAdmin("The following veteran assessment does not any battery created for assessment: " + assessment)
-						.throwIt();
-				}
+		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();
+	}	
 	
-				// throw a system configuration exception if we don't have header and
-				// footer defined for this battery
-				if (header == null || footer == null) {
-					ErrorBuilder
-						.throwing(IllegalSystemStateException.class)
-						.toUser("Header and footer templates have to be created for battery: '" + battery.getName() 
-								+ "'. Please contact the technical administrator.")
-						.toAdmin("The following battery does not have a header and/or a footer defined: " + battery)
-						.throwIt();
-				}
-				
-				
-				// start generation of template with header, section, templates for each
-				// module in a section, and in the end the footer
-				TemplateEvaluator evaluator = new TemplateEvaluator(veteranAssessmentId, viewType).appendHeader(header);
-				
-				StringBuilder quesAndAnswers = new StringBuilder();
-				Map<Integer, Survey> surveysTaken = assessment.getSurveyMap();
-				List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
-				for (SurveySection section : sections) {
-
-					evaluator.startSection(section);
-					// append templates in section-order for each survey found in the
-					// battery
-					for (Survey survey : section.getSurveyList()) {
-						if (surveysTaken.containsKey(survey.getSurveyId())) {
-							// TODO: see if we can make survey.getTemplateMap mapping
-							// from templateTypeId to template (see:
-							// https://en.wikibooks.org/wiki/Java_Persistence/Relationships#Maps)
-							for (Template template : survey.getTemplates()) {
-								if (TemplateConstants.TEMPLATE_TYPE_CPRS_NOTE_ENTRY.equals(template.getTemplateType().getTemplateTypeId())) {
-									evaluator.appendTemplate(template);
-								}
-								if (TemplateConstants.TEMPLATE_TYPE_VETERAN_SUMMARY_ENTRY.equals(template.getTemplateType().getTemplateTypeId())) {
-									evaluator.appendTemplate(template);
-								}
-							}
-		                    
-							if (survey.getClinicalReminderSurveyList() != null  && (!survey.getClinicalReminderSurveyList().isEmpty())) {
-		                        quesAndAnswers.append(surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, veteranAssessmentId));
-		                    }
-							
-						}
-					}
-				}
-				
-				
-				/* Add any special section and qa section are mutually exclusive by preference which can be changed  */
-				if(showQA){
-					/* Add CLINICAL REMINDERS question section */
-					evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
-				}else{
-					if(null != special){
-						/* Add any special sections for the note i.e. scoring matrix */
-						evaluator.appendTemplate(special);
-					}
-				}
-				
-				
-				return evaluator.appendFooter(footer).generate();
-	}
-	
-	@Override
-	public String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
+	private String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
 		String templateText = getTemplateText(template);
 		Integer templateId = template.getTemplateId();
 		

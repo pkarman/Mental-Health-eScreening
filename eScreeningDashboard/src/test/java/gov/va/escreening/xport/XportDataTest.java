@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.va.escreening.constants.TemplateConstants;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.entity.Measure;
@@ -24,12 +25,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -42,7 +43,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -292,8 +292,7 @@ public class XportDataTest {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
-		Set<TemplateConstants.Style> templateStyles = Sets.newHashSet(TemplateConstants.Style.CPRS_NOTE_HEADER, TemplateConstants.Style.CPRS_NOTE_FOOTER);
-		String progressNoteContent = templateProcessorService.generateNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, templateStyles, true);
+		String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
 
 		return !progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">");
 	}
@@ -302,8 +301,7 @@ public class XportDataTest {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
-		Set<TemplateConstants.Style> templateStyles = Sets.newHashSet(TemplateConstants.Style.CPRS_NOTE_HEADER, TemplateConstants.Style.CPRS_NOTE_SCORING_MATRIX, TemplateConstants.Style.CPRS_NOTE_FOOTER);
-		String progressNoteContent = templateProcessorService.generateNote(va.getVeteranAssessmentId(), ViewType.HTML, templateStyles, false);
+		String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
 
 		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
 	}

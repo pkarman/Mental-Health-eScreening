@@ -31,7 +31,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     
     private static final Logger logger = LoggerFactory.getLogger(VariableResolverServiceImpl.class);
     
-    
+    //TODO: If we don't need to support the use of template ID and we can just use a template object that we already have queried, that would make this faster.
     @Override
 	public List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(Integer veteranAssessmentId, Integer templateId) {
     	

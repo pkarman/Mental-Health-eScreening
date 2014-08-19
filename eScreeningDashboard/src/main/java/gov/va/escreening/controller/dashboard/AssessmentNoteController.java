@@ -1,10 +1,6 @@
 package gov.va.escreening.controller.dashboard;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
 
-import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
@@ -19,8 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.google.common.collect.Sets;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -41,12 +35,9 @@ public class AssessmentNoteController {
 
         logger.debug("In AssessmentNoteController::setupPage");
         logger.debug("veteranAssessmentId: " + veteranAssessmentId);
-        Set<TemplateConstants.Style> templateStyles 
-        		= Sets.newHashSet(TemplateConstants.Style.CPRS_NOTE_HEADER, TemplateConstants.Style.CPRS_NOTE_FOOTER);
-      
+        
         try {
-//        	String generatedNote = templateProcessorService.generateClinicalNote(veteranAssessmentId, ViewType.HTML, TemplateConstants.TEMPLATE_CPRS_NOTE_STYLE_BASIC, false);
-        	String generatedNote = templateProcessorService.generateNote(veteranAssessmentId, ViewType.HTML, templateStyles , false);
+        	String generatedNote = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.HTML);
         	model.addAttribute("assessmentClinicalNotes", generatedNote);
         }
        	catch(TemplateProcessorException tpe) {
@@ -59,7 +50,7 @@ public class AssessmentNoteController {
         }
         catch(Exception e) {
         	logger.error(String.format("%s %s", e.getClass(), e.getMessage()), e);
-        	model.addAttribute("errorMessage", ERROR_DIV + "An error occured while generating the Clinical note.  Please contact an administrator for assistance.</div>");
+        	model.addAttribute("errorMessage", ERROR_DIV + "An error occured while generating the veteran summary printout.  Please contact an administrator for assistance.</div>");
         }
 
         return "dashboard/assessmentNote";

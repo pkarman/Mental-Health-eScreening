@@ -1,15 +1,14 @@
 package gov.va.escreening.vista;
 
 import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.constants.TemplateConstants;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
+import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.entity.HealthFactor;
-import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
@@ -36,6 +35,7 @@ import gov.va.escreening.vista.dto.VistaProgressNote;
 import gov.va.escreening.vista.dto.VistaServiceCategoryEnum;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +51,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.common.collect.Sets;
 
 @Service("vistaDelegate")
 public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
@@ -197,12 +195,10 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 			Long locationIEN, String visitString,
 			VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient) throws Exception {
 
-		Set<TemplateConstants.Style> templateStyles 
-							= Sets.newHashSet(TemplateConstants.Style.CPRS_NOTE_HEADER, TemplateConstants.Style.CPRS_NOTE_FOOTER);
 		Long titleIEN = Long.parseLong(veteranAssessment.getNoteTitle().getVistaIen());
 		Date visitDate = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
 		Object[] identifiers = { Long.parseLong(veteranAssessment.getClinician().getVistaDuz().trim()), visitDate, locationIEN, null };
-		String progressNoteContent = templateProcessorService.generateNote(veteranAssessment.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, templateStyles, true);
+		String progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessment.getVeteranAssessmentId(), ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
 		Boolean appendContent = true;
 		Long visitIEN = null;
 		Date visitDateTime = veteranAssessment.getDateCompleted();

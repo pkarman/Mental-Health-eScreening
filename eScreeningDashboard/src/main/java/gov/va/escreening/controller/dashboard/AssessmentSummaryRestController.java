@@ -1,6 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
 import gov.va.escreening.constants.TemplateConstants;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.ErrorResponseException;
@@ -10,8 +11,8 @@ import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.google.common.collect.Sets;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -74,12 +73,10 @@ public class AssessmentSummaryRestController {
     public String getCprsNote(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
 
         logger.debug("getCprsNote");
-        Set<TemplateConstants.Style> templateStyles 
-									= Sets.newHashSet(TemplateConstants.Style.CPRS_NOTE_HEADER, TemplateConstants.Style.CPRS_NOTE_SCORING_MATRIX, TemplateConstants.Style.CPRS_NOTE_FOOTER);
         String progressNoteContent = null;
 
         try {
-            progressNoteContent = templateProcessorService.generateNote(veteranAssessmentId, ViewType.HTML,  templateStyles, false);
+            progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
         }
         catch (Exception e) {
             if(e instanceof ErrorResponseException){
@@ -105,12 +102,10 @@ public class AssessmentSummaryRestController {
     public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
 
         logger.debug("veteranSummary");
-        Set<TemplateConstants.Style> templateStyles 
-									= Sets.newHashSet(TemplateConstants.Style.VETERAN_SUMMARY_HEADER, TemplateConstants.Style.VETERAN_SUMMARY_FOOTER);
         String progressNoteContent = null;
 
         try {
-            progressNoteContent = templateProcessorService.generateNote(veteranAssessmentId, ViewType.HTML,  templateStyles, false);
+            progressNoteContent = templateProcessorService.generateVeteranPrintout(veteranAssessmentId);
         }
         catch (Exception e) {
             if(e instanceof ErrorResponseException){
