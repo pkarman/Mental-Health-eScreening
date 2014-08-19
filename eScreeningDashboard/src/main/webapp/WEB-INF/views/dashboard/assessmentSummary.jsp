@@ -41,6 +41,10 @@
         .moduleTemplateText { margin: 10px 0 20px; }
         .matrixTableHeader{ width:200px; }
 		.matrixTableData{ width:240px; }
+		.justifyRtTableData{ text-align:right; }
+		.justifyLftTableData{ text-align:left; }
+		.justifyCtrTableData{ text-align:center; }
+		.spacer1TableData{ width:500px; }
 		
         @media print {
         .non-printable { display: none; }
