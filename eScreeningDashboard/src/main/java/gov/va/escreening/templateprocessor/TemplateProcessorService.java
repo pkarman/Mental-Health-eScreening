@@ -33,6 +33,8 @@ public interface TemplateProcessorService {
 	 */
 	public String generateCPRSNote(int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, TemplateProcessorException;
 
+	String generateCompletionMsgFor(int batteryId);
+
 	
 	/**
 	 * Renders the given assessment's veteran summary printout (this is always in HTML)
