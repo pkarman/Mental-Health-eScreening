@@ -665,7 +665,7 @@ ${MODULE_START}
 	${LINE_BREAK}
 	${LINE_BREAK}
 	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: Call the VA’s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
+	Recommendation: Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
 </#if>
 ${MODULE_END}
 ');
@@ -922,7 +922,7 @@ Pain
 ${MODULE_TITLE_END}
 ${MODULE_START}
 Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
-Recommendation: Tell your clinician if medications aren’t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+Recommendation: Tell your clinician if medications aren\'t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
 ${MODULE_END}
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
@@ -938,7 +938,7 @@ ${MODULE_TITLE_START}
 PTSD 
 ${MODULE_TITLE_END}
 ${MODULE_START}
-PTSD is when remembering a traumatic event keeps you from living a normal life. It’s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
+PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
 Recommendation: Ask your clinician for further evaluation and treatment options. 
 ${MODULE_END}
 ');
