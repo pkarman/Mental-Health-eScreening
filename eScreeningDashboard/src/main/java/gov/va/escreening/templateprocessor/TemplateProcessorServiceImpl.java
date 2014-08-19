@@ -136,7 +136,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		else {
 			ErrorBuilder
 			.throwing(IllegalSystemStateException.class)
-			.toUser("No battery was found for this assessment. Please contact the tech admin to create a battery.")
+			.toUser("No battery was found for this assessment. Please contact the technical administrator.")
 			.toAdmin("The following veteran assessment does not have any battery created for assessment: " + assessment)
 			.throwIt();
 		}

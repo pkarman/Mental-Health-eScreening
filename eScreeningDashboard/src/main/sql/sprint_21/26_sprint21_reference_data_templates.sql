@@ -531,7 +531,7 @@ ${MODULE_END}'
 
 /* TEST */
  UPDATE template SET template_id = 101, 
-	template_type_id = 6, 
+	template_type_id = 8, 
 	name = 'Test', 
 	description = 'Test', 
 	template_file = 
@@ -553,7 +553,7 @@ ${MODULE_START}
  /* VETERAN SUMMARY -  TEMPLATES*/
 	
 -- /* VETERAN SUMMARY - Advance Directive  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (300, 6, 'Veteran Summary Advance Directive Entry', 'Veteran Summary Advance Directive Entry',
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (300, 8, 'Veteran Summary Advance Directive Entry', 'Veteran Summary Advance Directive Entry',
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -586,7 +586,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (9, 300);
 
 
 -- /* VETERAN SUMMARY - Homelessness  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (301, 6, 'Veteran Summary Homelessness Entry', 'Veteran Summary Homelessness Entry',
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (301, 8, 'Veteran Summary Homelessness Entry', 'Veteran Summary Homelessness Entry',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
@@ -619,7 +619,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (7, 301);
 
 
 -- /* VETERAN SUMMARY - Alcohol Use  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (302, 6, 'Veteran Summary Alcohol Use Entry', 'Veteran Summary Alcohol Use Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (302, 8, 'Veteran Summary Alcohol Use Entry', 'Veteran Summary Alcohol Use Entry', 
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
@@ -655,7 +655,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (6, 302);
 
 
 -- /* VETERAN SUMMARY - Insomnia  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (303, 6, 'Veteran Summary Insomnia Entry', 'Veteran Summary Insomnia Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (303, 8, 'Veteran Summary Insomnia Entry', 'Veteran Summary Insomnia Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -694,7 +694,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (36, 303);
 
 
 -- /* VETERAN SUMMARY - Environmental Exposure  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (304, 6, 'Veteran Summary Environmental Exposure Entry', 'Veteran Summary Environmental Exposure Entry', '
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (304, 8, 'Veteran Summary Environmental Exposure Entry', 'Veteran Summary Environmental Exposure Entry', '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
@@ -730,7 +730,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (14, 304);
 
 
 -- /* VETERAN SUMMARY - Military Sexual Trauma (MST)  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (305, 6, 'Veteran Summary Military Sexual Trauma (MST) Entry', 'Veteran Summary Military Sexual Trauma (MST) Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (305, 8, 'Veteran Summary Military Sexual Trauma (MST) Entry', 'Veteran Summary Military Sexual Trauma (MST) Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -769,7 +769,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (32, 305);
 
 
 -- /* VETERAN SUMMARY - Tobacco Use  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (306, 6, 'Veteran Summary Tobacco Use Entry', 'Veteran Summary Tobacco Use Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (306, 8, 'Veteran Summary Tobacco Use Entry', 'Veteran Summary Tobacco Use Entry', 
 ' 
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -807,7 +807,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (25, 306);
 
 
 -- /* VETERAN SUMMARY - Traumatic Brain Injury (TBI)  */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (307, 6, 'Veteran Summary Traumatic Brain Injury (TBI) Entry', 'Veteran Summary Traumatic Brain Injury (TBI) Entry',
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (307, 8, 'Veteran Summary Traumatic Brain Injury (TBI) Entry', 'Veteran Summary Traumatic Brain Injury (TBI) Entry',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
@@ -842,7 +842,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (29, 307);
 
 
 -- /* VETERAN SUMMARY - My Depression Score */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (308, 6, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (308, 8, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -859,7 +859,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
 
 
 -- /* VETERAN SUMMARY -  My Pain Score  (Basic Pain) */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (309, 6, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (309, 8, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -876,7 +876,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 
 
 -- /* VETERAN SUMMARY -  My PTSD Score*/
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (310, 6, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (310, 8, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
