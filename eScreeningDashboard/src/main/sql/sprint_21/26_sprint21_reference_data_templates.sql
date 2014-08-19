@@ -3,6 +3,174 @@
 /* ********************************************** */
 
 
+-- /* MEDICATION */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+MEDICATIONS:
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign med_section>
+	
+	<#-- var3500: ${var3500!""}<br><br>  var3501: ${var3501!""}<br><br>  var3501.value:  ${var3501.value!""}<br><br>  -->
+<#assign noMedText = "The Veteran reported taking no medication.">
+<#if var3501?? && (var3501.value == "true")>
+	<#assign allAnswersNone = true>
+	<#assign allAnswersPresent = true>
+<#else>
+	<#assign allAnswersNone = false>
+	<#assign allAnswersPresent = false>
+</#if>
+
+<#if !allAnswersPresent && !allAnswersNone>
+	<#if ((var3500.children)?? && ((var3500.children?size) > 0))>
+		
+				<#assign rows = {}>
+				<#list ((var3500.children)![]) as v>
+					<#list v.children as c>
+						<#if (c.row)?? >
+							<#assign row_idx = (c.row)?string>
+							<#assign row_key = (c.key)?string>
+							<#assign row_value = (c.value)?string>
+							<#assign r ={}>
+							<#assign row_name = ("row" + row_idx + "_" + row_key)?string >
+							<#assign rows =  rows + {row_name:row_value}>
+						</#if>
+					</#list>
+				</#list>
+	
+				<#assign uniqueRows = []>
+				<#assign e = []>
+				<#if (rows?keys)??>
+					<#list (rows?keys?sort) as k>
+						<#assign e = (k?split("_"))>
+						<#if !(uniqueRows?seq_contains(e[0]))>
+							<#assign uniqueRows = uniqueRows + [e[0]]>
+						</#if>
+					</#list>
+				</#if>
+			
+				<#assign outputText = "">
+				<#if (uniqueRows?size > 0)>
+					<#assign all_rows = "">
+					<#assign nextLine = "">
+					<#list uniqueRows as r>
+						<#assign med = (rows[r + "_" + "var3511"])!"">
+						<#assign dose = (rows[r + "_" + "var3521"])!"">
+						<#assign freq = (rows[r + "_" + "var3531"])!"">
+						<#assign dur = (rows[r + "_" + "var3541"])!"">
+						<#assign doc = (rows[r + "_" + "var3551"])!"">
+
+						<#if (med?has_content) && (dose?has_content) && (freq?has_content) && (dur?has_content) && (doc?has_content)>
+							<#assign all_rows = all_rows + nextLine +
+							"MEDICATION/SUPPLEMENT: " + med + "${LINE_BREAK}" 
+							+ "DOSAGE: " + dose + "${LINE_BREAK}" 
+							+ "FREQUENCY: " + freq + "${LINE_BREAK}" 
+							+ "DURATION: " + dur + "${LINE_BREAK}" 
+							+ "PRESCRIBER NAME AND/OR FACILITY: " + doc >
+							<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+						<#else>
+							<assign outputText = getNotCompletedText()>
+						</#if>
+					</#list>
+
+					<#if outputText?has_content>
+						${outputText}
+					<#else>
+						${all_rows!""}
+					</#if>
+				<#else>
+					${getNotCompletedText()}
+				</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+<#else>
+	${noMedText}
+</#if>
+  </#assign>
+
+  <#if !(med_section = "") >
+     ${med_section}
+  <#else>
+     ${noParagraphData}
+  </#if>
+${MODULE_END}
+'
+where template_id = 22;
+
+
+
+
+
+
+
+-- /* WHODAS */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+WHODAS:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#function getScoreText score>
+			<#assign text = "">
+			<#if (score?number >= 1) && (score?number < 2)>
+				<#assign text = "no">
+			<#elseif (score?number >= 2) && (score?number < 3)>
+				<#assign text = "mild">
+			<#elseif (score?number >= 3) && (score?number < 4)>
+				<#assign text = "moderate">
+			<#elseif (score?number >= 4) && (score?number < 5)>
+				<#assign text = "severe">
+			<#elseif (score?number >= 5) && (score?number < 6)>
+				<#assign text = "extreme">
+			</#if>
+
+			<#return text>
+	</#function>	
+
+ 	<#assign section>
+		<#-- I DON\'T think that WHODAS needs ALL NONE Logic -->
+		<#--  var4200: ${var4200!""}<br><br>  -->
+
+ 		<#if (var4119.value)?? && (var4239.value)?? && (var4319.value)?? && (var4419.value)?? 
+				&& (var4499.value)?? && (var4559.value)?? && (var4789.value)?? && (var4200.children)?? 
+				&& ((var4200.children)?size > 0)>
+		
+			<#t><b>Understanding and Communicating</b> - the Veteran had an average score of ${var4119.value} which indicates ${getScoreText(var4119.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Mobility</b> - the Veteran had an average score of ${var4239.value}, which indicates ${getScoreText(var4239.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Self-Care</b> - the Veteran had an average score of ${var4319.value} which indicates ${getScoreText(var4319.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Getting Along</b> - the Veteran had an average score of ${var4419.value} which indicates ${getScoreText(var4419.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Life Activities (Household/Domestic)</b> - the Veteran had an average score of ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. ${LINE_BREAK}${LINE_BREAK} 
+			
+			<#if isSelectedAnswer(var4200, var4202)>
+				<b>Life Activities (School /Work)</b> - the Veteran had an average score of ${var4559.value} which is a rating of ${getScoreText(var4559.value)} disability. ${LINE_BREAK}${LINE_BREAK}    
+			<#elseif isSelectedAnswer(var4200, var4201)>
+				<b>Life Activities (School /Work)</b> - the Veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
+			</#if>
+			
+			<b>Participation in Society</b> - the Veteran had an average score of ${var4789.value} which indicates ${getScoreText(var4789.value)} disability. ${NBSP} 
+
+		<#else>
+			${getNotCompletedText()}. ${NBSP}
+		</#if>
+ 	</#assign>
+  	<#if !(section = "") >
+     	${section}
+  	<#else>
+     	${noParagraphData}
+  </#if> 
+${MODULE_END}
+'
+where template_id = 24;
 
 
 /* Homelessness Clinical Reminder */
