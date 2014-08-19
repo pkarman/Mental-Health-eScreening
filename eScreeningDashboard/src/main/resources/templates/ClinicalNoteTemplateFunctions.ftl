@@ -40,6 +40,15 @@
 <#assign IMG_CESMITH_BLK_BRDR = '<IMG_CESMITH_BLK_BRDR>'/>
 <#assign IMG_VA_VET_SMRY = '<IMG_VA_VET_SMRY>'/> 
 
+<#assign GRAPH_SECTION_START = '<GRAPH_SECTION_START>'/>
+<#assign GRAPH_SECTION_END = '<GRAPH_SECTION_END>'/> 
+<#assign GRAPH_HEADER_START = '<GRAPH_HEADER_START>'/> 
+<#assign GRAPH_HEADER_END = '<GRAPH_HEADER_END>'/> 
+<#assign GRAPH_BODY_START = '<GRAPH_BODY_START>'/>  
+<#assign GRAPH_BODY_END = '<GRAPH_BODY_END>'/>
+<#assign GRAPH_FOOTER_START = '<GRAPH_FOOTER_START>'/> 
+<#assign GRAPH_FOOTER_END = '<GRAPH_FOOTER_END>'/> 
+
 <#-- String functions -->
 <#function hasValue stringValue>
 	<#if stringValue='notfound' >

@@ -149,7 +149,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 					for (Template template : survey.getTemplates()) {
 						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
 						if(type.equals(documentType.getEntryType())) {
-							evaluator.appendTemplate(template);
+							evaluator.appendModule(template);
 						}
 					}
 					
@@ -454,6 +454,13 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			text.append(BATTERY_FOOTER_START.xml());
 			appendTemplate(footerTemplate);
 			text.append(BATTERY_FOOTER_END.xml());
+			return this;
+		}
+		
+		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
+			text.append(MODULE_COMPONENTS_START.xml());
+			appendTemplate(moduleTemplate);
+			text.append(MODULE_COMPONENTS_END.xml());
 			return this;
 		}
 

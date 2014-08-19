@@ -24,7 +24,8 @@ public class TemplateTagProcessor {
 	}
 	
 	private static Pattern htmlEndDivReplace = Pattern.compile(createTagRegex(Style.XML, 
-			BATTERY_HEADER_END, BATTERY_FOOTER_END, SECTION_TITLE_END, SECTION_END, MODULE_TITLE_END, MODULE_END));
+			BATTERY_HEADER_END, BATTERY_FOOTER_END, SECTION_TITLE_END, SECTION_END, MODULE_COMPONENTS_END, MODULE_TITLE_END, MODULE_END,
+			GRAPH_SECTION_END, GRAPH_HEADER_END, GRAPH_BODY_END, GRAPH_FOOTER_END));
 	
 	private static String resolveHtmlType(String noteText) {
 	    noteText = noteText.replace(BATTERY_HEADER_START.xml(), "<div class='templateHeader'>");
@@ -35,6 +36,8 @@ public class TemplateTagProcessor {
 
 	    noteText = noteText.replace(SECTION_START.xml(), "<div class='templateSection'>");
         
+	    noteText = noteText.replace(MODULE_COMPONENTS_START.xml(), "<div class='moduleTemplate'>");
+	    
 		noteText = noteText.replace(MODULE_TITLE_START.xml(), "<div class='moduleTemplateTitle'>");
 		
 		noteText = noteText.replace(MODULE_START.xml(), "<div class='moduleTemplateText'>");
@@ -62,13 +65,18 @@ public class TemplateTagProcessor {
     	noteText = noteText.replace(IMG_CESMITH_BLK_BRDR.xml(), "<img src='../resources/images/cesamh_blk_border.png'>");
     	noteText = noteText.replace(IMG_VA_VET_SMRY.xml(), "<img src='../resources/images/escreening_cdsmith_QR_code_small.png'>");
     	
+    	//GRAPH stuff
+    	noteText = noteText.replace(GRAPH_SECTION_START.xml(), "<div class='graphSection'>");
+    	noteText = noteText.replace(GRAPH_HEADER_START.xml(), "<div class='graphicHeader'>");
+    	noteText = noteText.replace(GRAPH_BODY_START.xml(), "<div class='graphicBody'>");
+    	noteText = noteText.replace(GRAPH_FOOTER_START.xml(), "<div class='graphicFooter'>");
     	
     	return htmlEndDivReplace.matcher(noteText).replaceAll("</div>");
 	}
 	
 	private static final Pattern textEmptyReplace = Pattern.compile(createTagRegex(Style.XML, 
 			BATTERY_HEADER_START,
-			MODULE_TITLE_START, MODULE_START, 
+			MODULE_COMPONENTS_START, MODULE_COMPONENTS_END, MODULE_TITLE_START, MODULE_START, 
 			MATRIX_TABLE_START, MATRIX_TABLE_END, MATRIX_TH_START, MATRIX_TH_END, MATRIX_TR_START, MATRIX_TR_END, MATRIX_TD_START, MATRIX_TD_END));
 	
 	private static final String dashedLine = "--------------------------------------------------------------------------------";
