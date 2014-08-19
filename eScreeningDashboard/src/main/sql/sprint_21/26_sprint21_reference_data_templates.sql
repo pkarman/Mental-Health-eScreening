@@ -564,7 +564,7 @@ ${MODULE_START}
 ${MATRIX_TABLE_START}
 	${MATRIX_TR_START}
 		${MATRIX_TD_START}eScreening Summary ${MATRIX_TD_END}
-		${TABLE_TD_RT_START}${NBSP}${TABLE_TD_END}
+		${TABLE_TD_SPACER1_START}${NBSP}${NBSP}${TABLE_TD_END}
 		${TABLE_TD_RT_START}${IMG_LOGO_VA_HC}${TABLE_TD_END}
 		${TABLE_TD_RT_START}${IMG_CESMITH_BLK_BRDR}${TABLE_TD_END}
 	${MATRIX_TR_END}
@@ -584,7 +584,7 @@ ${MODULE_TITLE_END}
 ${MODULE_START}
 ${MATRIX_TABLE_START}
 	${MATRIX_TR_START}
-		${TABLE_TD_LFT_START}For online information about support services and benefits, visit the VA Center of Excellence resource site:${TABLE_TD_END}
+		${TABLE_TD_CTR_START}For online information about support services and benefits, visit the VA Center of Excellence resource site:${TABLE_TD_END}
 	${MATRIX_TR_END}
 	${TABLE_TR_CTR_START}
 		${TABLE_TD_CTR_START}http://escreening.cesamh.org ${TABLE_TD_END}
