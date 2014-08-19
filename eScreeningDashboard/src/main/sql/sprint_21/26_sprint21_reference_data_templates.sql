@@ -550,7 +550,57 @@ ${MODULE_START}
 	
 	
 	
- /* VETERAN SUMMARY -  TEMPLATES*/
+ /* VETERAN SUMMARY -  TEMPLATES*/	
+	
+/* VETERAN SUMMARY HEADER INSERT */
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (200, 6, 'Veteran Summary Header', 'Veteran Summary Header',
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+
+${MODULE_TITLE_END}
+${MODULE_START}
+
+${MATRIX_TABLE_START}
+	${MATRIX_TR_START}
+		${MATRIX_TD_START}eScreening Summary ${MATRIX_TD_END}
+		${TABLE_TD_RT_START}${NBSP}${TABLE_TD_END}
+		${TABLE_TD_RT_START}${IMG_LOGO_VA_HC}${TABLE_TD_END}
+		${TABLE_TD_RT_START}${IMG_CESMITH_BLK_BRDR}${TABLE_TD_END}
+	${MATRIX_TR_END}
+${MATRIX_TABLE_END}
+
+${MODULE_END}
+');	
+	
+	
+	/* Veteran Summary - Footer */
+INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (220, 7, 'Veteran Summary Footer', 'Veteran Summary Footer',
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+VETERAN SUMMARY FOOTER
+${MODULE_TITLE_END}
+${MODULE_START}
+${MATRIX_TABLE_START}
+	${MATRIX_TR_START}
+		${TABLE_TD_LFT_START}For online information about support services and benefits, visit the VA Center of Excellence resource site:${TABLE_TD_END}
+	${MATRIX_TR_END}
+	${TABLE_TR_CTR_START}
+		${TABLE_TD_CTR_START}http://escreening.cesamh.org ${TABLE_TD_END}
+	${TABLE_TR_END}
+	${TABLE_TR_CTR_START}
+		${TABLE_TD_CTR_START}${IMG_VA_VET_SMRY}${TABLE_TD_END}
+	${TABLE_TR_END}
+	${MATRIX_TR_START}
+		${TABLE_TD_LFT_START}For confidential help and support any time, call the Veteran\'s Suicide Prevention/Crisis Hotline at 
+(800) 273-8255. The Hotline is never closed; someone is always there to take your call, even on holidays and in the middle of the night. 
+${TABLE_TD_END}
+	${MATRIX_TR_END}
+${MATRIX_TABLE_END}
+
+${MODULE_END}
+');
 	
 -- /* VETERAN SUMMARY - Advance Directive  */
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (300, 8, 'Veteran Summary Advance Directive Entry', 'Veteran Summary Advance Directive Entry',
