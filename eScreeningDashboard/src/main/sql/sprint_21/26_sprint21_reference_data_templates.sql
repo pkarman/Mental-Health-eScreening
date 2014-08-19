@@ -874,7 +874,7 @@ ${MODULE_START}
 <#if (score >= 0) && (score <= 3)>
 	<#assign scoreText = "negative screen">
 	<#assign isComplete = true>
-<#elseif (score >= 4 && >
+<#elseif (score >= 4 ) >
 	<#assign scoreText = "at risk">
 	<#assign isComplete = true>
 </#if>
