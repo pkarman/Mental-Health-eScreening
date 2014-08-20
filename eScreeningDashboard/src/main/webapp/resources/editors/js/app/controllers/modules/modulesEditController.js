@@ -3,8 +3,11 @@
  */
 Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', function($rootScope, $scope, $state, SurveyService, QuestionService, questions){
     var tmpList = [];
-    console.log(JSON.stringify(questions));
     $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
+
+    $scope.getFirstChildMeasureAnswers = function(childQuestions) {
+        return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
+    };
 
     $scope.editQuestion = function(question){
         $scope.selectedQuestion = question;

@@ -310,3 +310,16 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
 
      return surveyUIObjects;
  };
+ EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers = function (childQuestions) {
+     var firstChildMeasureAnswers = [];
+
+     if(Object.isDefined(childQuestions) && childQuestions.length > 0) {
+         if(Object.isDefined(childQuestions[0])) {
+             if(Object.isDefined(childQuestions[0].answers) && childQuestions[0].answers.length > 0) {
+                 firstChildMeasureAnswers = childQuestions[0].answers;
+             }
+         }
+     }
+
+     return firstChildMeasureAnswers;
+ };
