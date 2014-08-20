@@ -110,6 +110,9 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                     $scope.editSections[i] = editSection;
                                 }
                             }
+                        }, function(responseError) {
+                            $scope.errors.push(responseError.getMessage());
+                            $scope.inError = true;
                         });
             	} else {
             		// Update.
