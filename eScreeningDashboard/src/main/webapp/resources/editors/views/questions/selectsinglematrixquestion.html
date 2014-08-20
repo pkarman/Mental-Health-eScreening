@@ -76,7 +76,7 @@
     <div class="col-md-12">
         <div class="form-group">
             <ul class="list-group odd-even-list">
-                <li class="list-group-item" ng-repeat="answer in selectedQuestion.answers">
+                <li class="list-group-item" ng-repeat="answer in getFirstChildMeasureAnswers(selectedQuestion.childQuestions)">
                     <div class="form-group">
                         <label> {{$index + 1}}. Column Name </label>
                         <input type="text" class="form-control" ng-model="answer.text" placeholder="Enter Column Name">
