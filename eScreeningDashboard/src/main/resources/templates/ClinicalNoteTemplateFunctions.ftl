@@ -49,6 +49,9 @@
 <#assign GRAPH_FOOTER_START = '<GRAPH_FOOTER_START>'/> 
 <#assign GRAPH_FOOTER_END = '<GRAPH_FOOTER_END>'/> 
 
+<#assign VET_SMRY_HDR_SPAN_START = '<VET_SMRY_HDR_SPAN_START>'/>
+<#assign SPAN_END = '<SPAN_END>'/>
+
 <#-- String functions -->
 <#function hasValue stringValue>
 	<#if stringValue='notfound' >

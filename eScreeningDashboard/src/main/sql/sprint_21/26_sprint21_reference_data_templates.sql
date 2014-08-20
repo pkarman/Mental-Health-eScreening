@@ -731,7 +731,7 @@ ${MODULE_START}
 
 ${MATRIX_TABLE_START}
 	${MATRIX_TR_START}
-		${MATRIX_TD_START}eScreening Summary ${MATRIX_TD_END}
+		${MATRIX_TD_START}${VET_SMRY_HDR_SPAN_START}eScreening Summary ${SPAN_END}${MATRIX_TD_END}
 		${TABLE_TD_SPACER1_START}${NBSP}${NBSP}${TABLE_TD_END}
 		${TABLE_TD_RT_START}${IMG_LOGO_VA_HC}${TABLE_TD_END}
 		${TABLE_TD_RT_START}${IMG_CESMITH_BLK_BRDR}${TABLE_TD_END}
@@ -780,7 +780,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Advance Directive
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -812,7 +812,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Homelessness
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -845,7 +845,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Alcohol Use
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -882,7 +882,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Insomnia
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -920,7 +920,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Environmental Exposure
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -957,7 +957,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Military Sexual Trauma (MST)
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -996,7 +996,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Tobacco Use
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->
@@ -1033,7 +1033,7 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-
+Traumatic Brain Injury (TBI)
 ${MODULE_TITLE_END}
 ${MODULE_START}
 <#assign isComplete = false> <#-- fix when get right variables -->

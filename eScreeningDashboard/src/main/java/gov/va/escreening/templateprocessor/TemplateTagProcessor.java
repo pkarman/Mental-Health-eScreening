@@ -61,8 +61,8 @@ public class TemplateTagProcessor {
     	noteText = noteText.replace(TABLE_TD_SPACER1_START.xml(), "<td class='spacer1TableData'>");
     	noteText = noteText.replace(TABLE_TD_END.xml(), "</td>");
     	
-    	noteText = noteText.replace(IMG_LOGO_VA_HC.xml(), "<img src='../resources/images/logo_va_veteran_summary.gif'>");
-    	noteText = noteText.replace(IMG_CESMITH_BLK_BRDR.xml(), "<img src='../resources/images/cesamh_blk_border.png'>");
+    	noteText = noteText.replace(IMG_LOGO_VA_HC.xml(), "<img class='vetSmyImg_va_logo' src='../resources/images/logo_va_veteran_summary.gif'>");
+    	noteText = noteText.replace(IMG_CESMITH_BLK_BRDR.xml(), "<img class='vetSmyImg_cesmith' src='../resources/images/cesamh_blk_border.png'>");
     	noteText = noteText.replace(IMG_VA_VET_SMRY.xml(), "<img src='../resources/images/escreening_cdsmith_QR_code_small.png'>");
     	
     	//GRAPH stuff
@@ -71,6 +71,8 @@ public class TemplateTagProcessor {
     	noteText = noteText.replace(GRAPH_BODY_START.xml(), "<div class='graphicBody'>");
     	noteText = noteText.replace(GRAPH_FOOTER_START.xml(), "<div class='graphicFooter'>");
     	
+    	noteText = noteText.replace(VET_SMRY_HDR_SPAN_START.xml(), "<span class='vetSmryTitle'>");
+    	noteText = noteText.replace(SPAN_END.xml(), "</span>");
     	return htmlEndDivReplace.matcher(noteText).replaceAll("</div>");
 	}
 	
