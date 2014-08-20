@@ -33,38 +33,32 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
 		AssessmentVariableDto variableDto = null;
-		//StopWatch sw = new StopWatch("AssessmentVariableDtoFactoryImpl");
+		// StopWatch sw = new StopWatch("AssessmentVariableDtoFactoryImpl");
 		Integer type = assessmentVariable.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 		switch (type) {
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-			//sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE");
+			// sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE");
 			variableDto = measureVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
-			//sw.stop();
+			// sw.stop();
 			break;
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
-			//sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER");
+			// sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER");
 			variableDto = measureAnswerVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
-			//sw.stop();
+			// sw.stop();
 			break;
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
-			//sw.start("ASSESSMENT_VARIABLE_TYPE_CUSTOM");
 			variableDto = customVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId);
-			//sw.stop();
 			break;
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-			//sw.start("ASSESSMENT_VARIABLE_TYPE_FORMULA");
 
-			int id=assessmentVariable.getAssessmentVariableId();
-			variableDto = new AssessmentVariableDto(id, "var"+id, "string", "formula_"+id, "37.0", "37.0", null, null, 0);
-			// variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(assessmentVariable,
-			// veteranAssessmentId, measureAnswerHash);
-			//sw.stop();
+			int id = assessmentVariable.getAssessmentVariableId();
+			variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
 			break;
 		default:
 			throw new UnsupportedOperationException(String.format("Assessment variable of type id: %s is not supported.", type));
 		}
 
-		//System.out.println(sw.prettyPrint());
+		// System.out.println(sw.prettyPrint());
 		return variableDto;
 	}
 
