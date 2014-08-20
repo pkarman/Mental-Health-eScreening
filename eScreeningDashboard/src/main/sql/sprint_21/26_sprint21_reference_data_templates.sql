@@ -1067,7 +1067,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (29, 307);
 
 
 -- /* VETERAN SUMMARY - My Depression Score */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (308, 8, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (308, 8, 1, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#if (var1599)?? >
@@ -1101,7 +1101,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
 
 
 -- /* VETERAN SUMMARY -  My Pain Score  (Basic Pain) */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (309, 8, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (309, 8, 1, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
@@ -1137,7 +1137,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 
 
 -- /* VETERAN SUMMARY -  My PTSD Score*/
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (310, 8, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (310, 8, 1, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
 
