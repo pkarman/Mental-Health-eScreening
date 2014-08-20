@@ -27,10 +27,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -58,11 +60,46 @@ public class XportDataTest {
 	class AssesmentTestData {
 		String testName;
 		List<TestSurvey> testSurveys;
+
+		public void add(AssesmentTestData newAtd) {
+			Set<TestSurvey> uniqueSurveys = new HashSet<TestSurvey>();
+			uniqueSurveys.addAll(this.testSurveys);
+			uniqueSurveys.addAll(newAtd.testSurveys);
+			this.testSurveys.clear();
+			this.testSurveys.addAll(uniqueSurveys);
+			testName = concatenateSurveyNames("", newAtd);
+		}
+
+		private String concatenateSurveyNames(String tn,
+				AssesmentTestData newAtd) {
+			for (TestSurvey ts : testSurveys) {
+				tn += ts.surveyName + "/";
+			}
+
+			return newAtd != null ? newAtd.concatenateSurveyNames(tn, null) + " test assessment" : tn;
+		}
 	}
 
 	class TestSurvey {
 		Map<String, String> smrMap;
 		String surveyName;
+
+		@Override
+		public int hashCode() {
+			return surveyName.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TestSurvey other = (TestSurvey) obj;
+			return surveyName.equals(other.surveyName);
+		}
 	}
 
 	private static final int OOO_BATTERY_ID = 4;
@@ -71,7 +108,7 @@ public class XportDataTest {
 
 	private static final String minimum = System.getProperty("ROOT_DIR_MINIMUM", "target/test-classes/exports/minimum");
 	private static final String detail = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/detail");
-	private static final String empty = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/empty");
+	private static final String empty = System.getProperty("ROOT_DIR_EMPTY", "target/test-classes/exports/empty");
 
 	FilenameFilter jsonFilter;
 
@@ -96,7 +133,6 @@ public class XportDataTest {
 	VeteranAssessmentRepository var;
 
 	private Map<String, SmrBldr> smrBldrMap;
-
 
 	private boolean compare(Map<String, String> testData,
 			List<DataExportCell> exportedData) {
@@ -178,8 +214,34 @@ public class XportDataTest {
 	}
 
 	private Object[] createTestAssessment(String fileName, String root) throws UnsupportedEncodingException, IOException {
-
 		AssesmentTestData atd = createAssesmentTestData(fileName, root);
+		VeteranAssessment assessment = crTstAssFromTstData(atd);
+		return new Object[] { atd, assessment };
+	}
+
+	private Object[] createTestAssessment(String[] fileNames, String root) throws UnsupportedEncodingException, IOException {
+		AssesmentTestData atd = createAssessmentTestDataFromMultipleFiles(fileNames, root);
+		VeteranAssessment assessment = crTstAssFromTstData(atd);
+		return new Object[] { atd, assessment };
+	}
+
+	private AssesmentTestData createAssessmentTestDataFromMultipleFiles(
+			String[] fileNames, String root) throws IOException {
+		AssesmentTestData atd =null;
+
+		for (String fileName : fileNames) {
+			AssesmentTestData newAtd = createAssesmentTestData(fileName, root);
+			if (atd == null) {
+				atd = newAtd;
+			} else {
+				atd.add(newAtd);
+			}
+		}
+		
+		return atd;
+	}
+
+	private VeteranAssessment crTstAssFromTstData(AssesmentTestData atd) {
 		Map<String, List<MeasureAnswer>> maMap = createMeasureAnswerMap();
 		Map<String, Survey> surveyMap = createSurveyMap();
 
@@ -201,7 +263,7 @@ public class XportDataTest {
 			ts.smrMap = cleanSmrMap(ts.smrMap);
 		}
 		assessment = var.update(assessment);
-		return new Object[] { atd, assessment };
+		return assessment;
 	}
 
 	private List<Integer> getTestAssessmentSurveys(AssesmentTestData atd,
@@ -252,6 +314,11 @@ public class XportDataTest {
 		return exportDataVerifier(testTuple);
 	}
 
+	private boolean mixDataExports(String jsonFileNames[], String root) throws UnsupportedEncodingException, IOException {
+		Object[] testTuple = createTestAssessment(jsonFileNames, root);
+		return exportDataVerifier(testTuple);
+	}
+
 	private boolean invokeTemplateTxtReview(String jsonFileName, String root) throws Exception {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierTypeTxt(testTuple);
@@ -263,6 +330,22 @@ public class XportDataTest {
 	}
 
 	private boolean invokeVeteranSummaryTemplateReview(String jsonFileName,
+			String root) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return templateDataVerifierVetSummary(testTuple);
+	}
+
+	private boolean mixTemplateTxtReview(String[] jsonFileName, String root) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return templateDataVerifierTypeTxt(testTuple);
+	}
+
+	private boolean mixTemplateHtmlReview(String[] jsonFileName, String root) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return templateDataVerifierTypeHtml(testTuple);
+	}
+
+	private boolean mixVeteranSummaryTemplateReview(String[] jsonFileName,
 			String root) throws Exception {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierVetSummary(testTuple);
@@ -322,7 +405,6 @@ public class XportDataTest {
 		return true;
 	}
 
-
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileForExportData() throws UnsupportedEncodingException, IOException {
@@ -381,6 +463,51 @@ public class XportDataTest {
 		for (String fileName : testFilesFor(empty)) {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
 		}
+	}
+
+	// -------{}{}{}------
+	// @Rollback(value = false)
+	@Test
+	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
+		assertTrue(mixDataExports(testFilesFor(minimum), minimum));
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void mix__DETAIL__ExportDataDetail() throws UnsupportedEncodingException, IOException {
+		assertTrue(mixDataExports(testFilesFor(detail), detail));
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void mix__DETAIL__TemplatesCorrectnessWith__TEXT() throws Exception {
+		assertTrue(mixTemplateTxtReview(testFilesFor(detail), detail));
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void mix__DETAIL__TemplatesCorrectnessWith__HTML() throws Exception {
+		assertTrue(mixTemplateHtmlReview(testFilesFor(detail), detail));
+	}
+
+	@Test
+	public void mix__DETAIL__VeteranSummaryTemplatesCorrectness() throws Exception {
+		assertTrue(mixVeteranSummaryTemplateReview(testFilesFor(detail), detail));
+	}
+
+	@Test
+	public void mix__EMPTY__TemplatesCorrectnessWith__TEXT() throws Exception {
+		assertTrue(mixTemplateTxtReview(testFilesFor(empty), empty));
+	}
+
+	@Test
+	public void mix__EMPTY__TemplatesCorrectnessWith__HTML() throws Exception {
+		assertTrue(mixTemplateHtmlReview(testFilesFor(empty), empty));
+	}
+
+	@Test
+	public void mix__EMPTY__VeteranSummaryTemplatesCorrectness() throws Exception {
+		assertTrue(mixVeteranSummaryTemplateReview(testFilesFor(empty), empty));
 	}
 
 	private String[] testFilesFor(String testDir) {
