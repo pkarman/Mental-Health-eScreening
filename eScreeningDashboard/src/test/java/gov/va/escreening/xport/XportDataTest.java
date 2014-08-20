@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -41,8 +42,10 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -173,22 +176,6 @@ public class XportDataTest {
 	}
 
 	private VeteranAssessment createTestAssessment(List<Integer> surveyIdList) {
-		// VeteranAssessment assessment = new VeteranAssessment();
-		// assessment.setBattery(new Battery(5));
-		// assessment.setClinic(new Clinic(17));
-		// assessment.setClinician(new User(TEST_USER_ID));
-		// assessment.setCreatedByUser(new User(TEST_USER_ID));
-		// assessment.setProgram(new Program(OOO_BATTERY_ID));
-		// assessment.setVeteran(new Veteran(TEST_VET_ID));
-		// assessment.setNoteTitle(new NoteTitle(1));
-		// assessment.setAccessMode(0);
-		// assessment.setDateCreated(Calendar.getInstance().getTime());
-		// assessment.setAssessmentStatus(new AssessmentStatus(2));
-		//
-		// vetAssessmentRepo.create(assessment);
-		//
-		// assessment = vetAssessmentRepo.findByVeteranId(TEST_VET_ID).get(0);
-
 		Integer assessmentId = vas.create(TEST_VET_ID, OOO_BATTERY_ID, 17, TEST_USER_ID, TEST_USER_ID, 1, 5, surveyIdList);
 
 		VeteranAssessment assessment = var.findOne(assessmentId);
@@ -427,6 +414,24 @@ public class XportDataTest {
 			});
 	}
 	
+	@Test
+	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
+		StopWatch sw = new StopWatch("testVeteran18ForTemplatesCorrectnessWith__HTML");
+
+		for (int i = 0; i < 1; i++) {
+			System.out.print(".");
+			sw.start("generateNote" + i);
+			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
+			sw.stop();
+
+			// System.out.println(sw.prettyPrint());
+			
+			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
+		}
+		System.out.println(sw.prettyPrint());
+		System.out.println(sw.getTotalTimeSeconds() / 100);
+	}
+
 	@Before
 	public void testSetup() {
 		assertNotNull(var);
