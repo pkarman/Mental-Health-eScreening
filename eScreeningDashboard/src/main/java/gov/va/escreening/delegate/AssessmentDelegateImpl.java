@@ -224,22 +224,8 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
     @Override
     public CompletionResponse getCompletionResponse(int batteryId) {
-
-        // TODO: we will be integrating with database in new ticket
-
         CompletionResponse response = new CompletionResponse();
-
-        // test data program specific completion text
         response.setCompletionText(templateProcessorService.generateCompletionMsgFor(batteryId));
-
-        // test data for summary notes
-        response.setSummaryNotes(Arrays
-                .asList(
-                        "<b>Weight Issue</b><br/>This is an example note telling you about an something that was triggered by your responses. Sudden she seeing garret far regard. By hardly it direct if pretty up regret. Ability thought enquire settled prudent you sir. Or easy knew sold on well come year. Something consulted age extremely end procuring. Collecting preference he inquietude projection me in by. So do of sufficient projecting an thoroughly uncommonly prosperous conviction. Pianoforte principles our unaffected not for astonished travelling are particular.",
-                        "<b>Drug Abuse</b><br/>Her companions instrument set estimating sex remarkably solicitude motionless. Property men the why smallest graceful day insisted required. Inquiry justice country old placing sitting any ten age. Looking venture justice in evident in totally he do ability. Be is lose girl long of up give. Trifling wondered unpacked ye at he. In household certainty an on tolerably smallness difficult. Many no each like up be is next neat. Put not enjoyment behaviour her supposing. At he pulled object others.",
-                        "<b>Sleep Patterns</b><br/>Him rendered may attended concerns jennings reserved now. Sympathize did now preference unpleasing mrs few. Mrs for hour game room want are fond dare. For detract charmed add talking age. Shy resolution instrument unreserved man few. She did open find pain some out. If we landlord stanhill mr whatever pleasure supplied concerns so. Exquisite by it admitting cordially september newspaper an. Acceptance middletons am it favourable. It it oh happen lovers afraid. "
-                ));
-
         return response;
     }
 

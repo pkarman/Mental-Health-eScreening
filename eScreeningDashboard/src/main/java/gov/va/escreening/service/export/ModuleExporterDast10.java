@@ -23,8 +23,11 @@ public class ModuleExporterDast10 extends ModuleExporterAbstract implements Modu
 			// take the value of DAST3_ablestop and invert it (if 0 then 1, else if 1 then 0)
 			String DAST3_ablestop = usrRespMap.get("DAST3_ablestop");
 			DAST3_ablestop = (DAST3_ablestop != null) ? ("0".equals(DAST3_ablestop) ? "1" : "0") : null;
-
-			return sumColumns(new String[] { "DAST1_other", "DAST2_abuse", "DAST3_ablestop", "DAST4_blackout", "DAST5_guilty", "DAST6_complain", "DAST7_neglect", "DAST8_illegal", "DAST9_withdraw", "DAST10_medical" }, colName, usrRespMap);
+			int ablestop = DAST3_ablestop==null?0:Integer.parseInt(DAST3_ablestop);
+			
+			String strSum=sumColumns(new String[] { "DAST1_other", "DAST2_abuse", "DAST4_blackout", "DAST5_guilty", "DAST6_complain", "DAST7_neglect", "DAST8_illegal", "DAST9_withdraw", "DAST10_medical" }, colName, usrRespMap);
+			
+			return String.valueOf(ablestop+Integer.parseInt(strSum));
 		}
 	}
 
