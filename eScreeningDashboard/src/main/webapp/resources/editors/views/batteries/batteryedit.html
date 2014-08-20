@@ -2,6 +2,15 @@
     <h1>
         Add/Edit Battery
     </h1>
+    
+    <!-- Alerts and Messages 
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-danger">Error Message </div>
+            <div class="alert alert-success">Your data has been saved successfully</div>
+          </div>
+        </div>
+    -->
     <div class="row">
         <div class="col-md-12">
             <ul class="breadcrumb">
@@ -114,12 +123,15 @@
 </div>
 <hr>
 <div class="row">
-    <div class="form-group pull-right">
-        <button class="btn btn-default" ng-click="cancelBattery();">
-            Cancel
-        </button>
-        <button class="btn btn-primary" ng-disabled="battForm.$valid==false" ng-click="saveBattery();">
-            Save
-        </button>
-    </div>
+  <div class="col-md-12">
+      <div class="form-group pull-right">
+     
+          <button class="btn btn-primary" ng-disabled="battForm.$valid==false" ng-click="saveBattery();">
+              Save
+          </button>
+          <button class="btn btn-default" ng-click="cancelBattery();">
+              Cancel
+          </button>
+      </div>
+  </div>
 </div>
