@@ -1067,14 +1067,31 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (29, 307);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (308, 8, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
 '
 <#include "clinicalnotefunctions"> 
-<#-- Template start -->
-${MODULE_TITLE_START}
-Depression
-${MODULE_TITLE_END}
-${MODULE_START}
-Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.${LINE_BREAK}
-Recommendation: Ask your clinician for further evaluation and treatment options. 
-${MODULE_END}
+<#if (var1599)?? >
+	<#assign score = getSelectOneDisplayText(var1599)>
+	<#-- Template start -->
+	${MODULE_TITLE_START}
+	Depression
+	${MODULE_TITLE_END}
+	${MODULE_START}
+	Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.${LINE_BREAK}
+	Recommendation: Ask your clinician for further evaluation and treatment options. 
+	${MODULE_END}
+	${GRAPH_SECTION_START}
+	${GRAPH_HEADER_START}My Depression Score${GRAPH_HEADER_END}
+
+
+	${GRAPH_BODY_START}
+    getStackedGraph( 
+       { 
+         "Minimal":[0,4], 
+         "Mild": [4,10], 
+         "Moderate":[10,15], 
+         "Moderately Severe":[15,20],
+		 "Severe":[20,27]
+		 }, ${score});                    
+	${ GRAPH_BODY_END}
+</#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
 
@@ -1084,14 +1101,33 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (309, 8, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
 '
 <#include "clinicalnotefunctions"> 
-<#-- Template start -->
-${MODULE_TITLE_START}
-Pain 
-${MODULE_TITLE_END}
-${MODULE_START}
-Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
-Recommendation: Tell your clinician if medications aren\'t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
-${MODULE_END}
+<#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
+	<#assign score = getSelectOneDisplayText(var2300)>
+	<#-- Template start -->
+	${MODULE_TITLE_START}
+	Pain 
+	${MODULE_TITLE_END}
+	${MODULE_START}
+	Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
+	Recommendation: Tell your clinician if medications aren’t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+	${MODULE_END}	
+	${GRAPH_SECTION_START}
+	${GRAPH_HEADER_START}My Pain Score${GRAPH_HEADER_END}
+
+
+	${GRAPH_BODY_START}
+    getStackedGraph( 
+       { 
+         "None":[0,1], 
+         "Mild": [1,4], 
+         "Moderate":[4,6], 
+         "Severe":[6,8],
+		 "Positive":[8,10],
+		"Worst Possible":[10,10]
+          
+        }, ${score});                    
+	${ GRAPH_BODY_END}
+</#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 
@@ -1101,13 +1137,32 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (310, 8, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
-<#-- Template start -->
-${MODULE_TITLE_START}
-PTSD 
-${MODULE_TITLE_END}
-${MODULE_START}
-PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
-Recommendation: Ask your clinician for further evaluation and treatment options. 
-${MODULE_END}
+
+<#if var1989??>
+	<#assign score = getCustomVariableDisplayText(var1989)>
+
+	<#-- Template start -->
+	${MODULE_TITLE_START}
+	Post-traumatic Stress Disorder 
+	${MODULE_TITLE_END}
+	${MODULE_START}
+	PTSD is when remembering a traumatic event keeps you from living a normal life. It’s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
+	Recommendation: Ask your clinician for further evaluation and treatment options. 
+	${MODULE_END}
+	${GRAPH_SECTION_START}
+	${GRAPH_HEADER_START}My PTSD Score${GRAPH_HEADER_END}
+
+
+	${GRAPH_BODY_START}
+    getStackedGraph( 
+       { 
+         "Negative":[17,35], 
+         "Negative": [35,50], 
+         "Positive":[50,65], 
+         "Positive":[65,85]
+          
+        }, ${score});                    
+	${ GRAPH_BODY_END}
+</#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (35, 310);
