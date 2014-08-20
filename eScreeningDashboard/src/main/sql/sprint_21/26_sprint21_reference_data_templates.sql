@@ -727,16 +727,15 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 ${MODULE_TITLE_START}
 
 ${MODULE_TITLE_END}
+
+
 ${MODULE_START}
 
-${MATRIX_TABLE_START}
-	${MATRIX_TR_START}
-		${MATRIX_TD_START}${VET_SMRY_HDR_SPAN_START}eScreening Summary ${SPAN_END}${MATRIX_TD_END}
-		${TABLE_TD_SPACER1_START}${NBSP}${NBSP}${TABLE_TD_END}
-		${TABLE_TD_RT_START}${IMG_LOGO_VA_HC}${TABLE_TD_END}
-		${TABLE_TD_RT_START}${IMG_CESMITH_BLK_BRDR}${TABLE_TD_END}
-	${MATRIX_TR_END}
-${MATRIX_TABLE_END}
+<div class="row moduleTemplateHeader">
+    <div class="col-md-6"><h5>eScreening Summary</h5></div>
+    <div class="col-md-6 text-right"><img width="198" height="66" src=" resources/images/ logo_va_veteran_summary.gif "> <img width="130" height="56" src=" resources/images/cesamh_blk_border.png"></div>
+</div>
+
 
 ${MODULE_END}
 ');	
@@ -782,26 +781,30 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 ${MODULE_TITLE_START}
 Advance Directive
 ${MODULE_TITLE_END}
-${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if score == 0>
-	<#assign scoreText = "Complete">
+${MODULE_START}					
+<#if (var820.children)?? && ((var820.children)?size > 0)>
 	<#assign isComplete = true>
-<#elseif score == 1>
-	<#assign scoreText = "Declined">
-	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
 </#if>
 
 <#if isComplete>
-	
+	<#assign scoreText = "">
+	<#if isSelectedAnswer(var820,var821)>
+		<#assign scoreText = "Declined">
+	<#elseif isSelectedAnswer(var820,var822)>
+		<#assign scoreText = "Complete">
+	</#if>
+
 	Advance Directive ${LINE_BREAK}
 	This is a legal paper that tells your wishes for treatment if you become too sick to talk, and if needed, can help your doctors and family to make decisions about your care. 
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendations: Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive. 
+	Results: ${scoreText}	
+	<#if scoreText == "Declined">
+		${LINE_BREAK}
+		Recommendations: Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive. 
+	</#if>
 </#if>
 ${MODULE_END} ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (9, 300);
