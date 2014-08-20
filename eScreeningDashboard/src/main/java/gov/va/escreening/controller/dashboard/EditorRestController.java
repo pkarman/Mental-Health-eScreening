@@ -444,8 +444,7 @@ public class EditorRestController {
 		status.put("status", surveySectionInfoList != null && !surveySectionInfoList.isEmpty() ? "succeeded" : "failed");
 
 		Map surveySectionItems = new HashMap();
-		//surveySectionItems.put("surveySections", createSurveySectionList(surveySectionItemList));
-        surveySectionItems.put("surveySections", surveySectionInfoList);
+		surveySectionItems.put("surveySections", surveySectionInfoList);
 
 		Map responseMap = new HashMap();
 		responseMap.put("status", status);
@@ -493,7 +492,7 @@ public class EditorRestController {
 
     private Map createSectionResponse(SurveySectionInfo surveySection) {
         Map status = new HashMap();
-        status.put("message", "The Quick Brown fox jumps over the lazy dog");
+        status.put("message", (surveySection != null && surveySection.getSurveySectionId() != null)? "Section created successfully." : "There was a problem processing your request.  If problem continues to exist, please contact the system administrator.");
         status.put("status", (surveySection != null && surveySection.getSurveySectionId() != null)? "succeeded" : "failed");
 
         Map surveySectionItems = new HashMap(           );
@@ -508,7 +507,7 @@ public class EditorRestController {
 
     private Map createBatteryResponse(BatteryInfo batteryInfo) {
         Map status = new HashMap();
-        status.put("message", (batteryInfo != null && batteryInfo.getBatteryId() != null)? null : "The Quick Brown fox jumps over the lazy dog");
+        status.put("message", (batteryInfo != null && batteryInfo.getBatteryId() != null)? "Battery created successfully." : "There was a problem processing your request.  If problem continues to exist, please contact the system administrator.");
         status.put("status", (batteryInfo != null && batteryInfo.getBatteryId() != null)? "succeeded" : "failed");
 
         Map batteryMap = new HashMap();
@@ -523,7 +522,7 @@ public class EditorRestController {
 
     private Map createBatteriesResponse(List<BatteryInfo> batteryInfoList) {
         Map status = new HashMap();
-        status.put("message", batteryInfoList != null && !batteryInfoList.isEmpty() ? null : "The Quick Brown fox jumps over the lazy dog");
+        status.put("message", batteryInfoList != null && !batteryInfoList.isEmpty() ? "Batteries created successfully." : "There was a problem processing your request.  If problem continues to exist, please contact the system administrator.");
         status.put("status", batteryInfoList != null && !batteryInfoList.isEmpty() ? "succeeded" : "failed");
 
         Map surveySectionItems = new HashMap();
