@@ -3,7 +3,6 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             $scope.editSections = [];
             $scope.inError = false;
             $scope.errors = [];
-            $scope.errors = [];
             $scope.battery = $rootScope.selectedBattery;
             $scope.isDirty = false;
             $scope.predicate = "-displayOrder";
@@ -123,9 +122,8 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                 console.log('Sections:: ' + existingSections);
 
 	                            }, function(responseError) {
-	                                $rootScope.errors.push(responseError.getMessage());
-	                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
-	
+	                                $scope.errors.push(responseError.getMessage());
+                                    $scope.inError = true;
 	                            });
 	                        }
 	                    );
@@ -147,6 +145,9 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                         array[index] = editSection;
                                     }
                                 });
+                            }, function(responseError) {
+                                $scope.errors.push(responseError.getMessage());
+                                $scope.inError = true;
                             }
                         );
             		}
