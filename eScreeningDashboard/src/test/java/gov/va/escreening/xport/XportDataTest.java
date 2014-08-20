@@ -31,7 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -45,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -68,14 +66,14 @@ public class XportDataTest {
 	}
 
 	private static final int OOO_BATTERY_ID = 4;
-
 	private static final int TEST_USER_ID = 5;
-
 	private static final int TEST_VET_ID = 20;
 
 	private static final String minimum = System.getProperty("ROOT_DIR_MINIMUM", "target/test-classes/exports/minimum");
 	private static final String detail = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/detail");
 	private static final String empty = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/empty");
+
+	FilenameFilter jsonFilter;
 
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
@@ -99,10 +97,6 @@ public class XportDataTest {
 
 	private Map<String, SmrBldr> smrBldrMap;
 
-	@Test
-	public void btbis() throws UnsupportedEncodingException, IOException {
-		assertTrue(exportDataTester("btbis.js", minimum));
-	}
 
 	private boolean compare(Map<String, String> testData,
 			List<DataExportCell> exportedData) {
@@ -267,8 +261,9 @@ public class XportDataTest {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierTypeHtml(testTuple);
 	}
-	
-	private boolean invokeVeteranSummaryTemplateReview(String jsonFileName, String root) throws Exception {
+
+	private boolean invokeVeteranSummaryTemplateReview(String jsonFileName,
+			String root) throws Exception {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierVetSummary(testTuple);
 	}
@@ -298,7 +293,7 @@ public class XportDataTest {
 
 		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
 	}
-	
+
 	private boolean templateDataVerifierVetSummary(Object[] testTuple) throws Exception {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
@@ -327,20 +322,6 @@ public class XportDataTest {
 		return true;
 	}
 
-	@Test
-	public void pc_ptsd() throws UnsupportedEncodingException, IOException {
-		assertTrue(exportDataTester("pc_ptsd.js", minimum));
-	}
-
-	@Test
-	public void roas() throws UnsupportedEncodingException, IOException {
-		assertTrue(exportDataTester("roas.js", minimum));
-	}
-
-	@Test
-	public void scenario_1() throws UnsupportedEncodingException, IOException {
-		assertTrue(exportDataTester("scenario_1.js", minimum));
-	}
 
 	// @Rollback(value = false)
 	@Test
@@ -373,14 +354,14 @@ public class XportDataTest {
 			assertTrue(String.format("CPRS Note document generation failed (for HTML type) for %s", fileName), invokeTemplateHtmlReview(fileName, detail));
 		}
 	}
-	
+
 	@Test
 	public void testEveryFileWithJsonDetailForVeteranSummaryTemplatesCorrectness() throws Exception {
-		for (String fileName : testFilesFor(detail)){
+		for (String fileName : testFilesFor(detail)) {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, detail));
 		}
 	}
-	
+
 	@Test
 	public void testEveryFileWithJsonEmptyForTemplatesCorrectnessWith__TEXT() throws Exception {
 		for (String fileName : testFilesFor(empty)) {
@@ -394,26 +375,19 @@ public class XportDataTest {
 			assertTrue(String.format("CPRS Note document generation failed (for HTML type) for %s", fileName), invokeTemplateHtmlReview(fileName, empty));
 		}
 	}
-	
+
 	@Test
 	public void testEveryFileWithJsonEmptyForVeteranSummaryTemplatesCorrectness() throws Exception {
-		for (String fileName : testFilesFor(empty)){
+		for (String fileName : testFilesFor(empty)) {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
 		}
 	}
 
-	private String[] testFilesFor(String testDir){
+	private String[] testFilesFor(String testDir) {
 		File dir = new File(testDir);
-		return dir.list(
-			new FilenameFilter() {
-	
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".js");
-				}
-			});
+		return dir.list(jsonFilter);
 	}
-	
+
 	@Test
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
 		StopWatch sw = new StopWatch("testVeteran18ForTemplatesCorrectnessWith__HTML");
@@ -425,7 +399,7 @@ public class XportDataTest {
 			sw.stop();
 
 			// System.out.println(sw.prettyPrint());
-			
+
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		System.out.println(sw.prettyPrint());
@@ -439,6 +413,13 @@ public class XportDataTest {
 		assertNotNull(measureAnswerRepo);
 		assertNotNull(surveyRepo);
 		assertNotNull(templateProcessorService);
+
+		jsonFilter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".json");
+			}
+		};
 
 		smrBldrMap = new HashMap<String, SmrBldr>();
 		smrBldrMap.put("default", new SmrBldrDefault());
