@@ -27,7 +27,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             tabsLoad("assessmentDashboard");
-        });
+            $(".modal-wide").on("show.bs.modal", function() {
+              var height = $(window).height() - 200;
+               $(this).find(".modal-body").css("max-height", height);
+              });
+            });
     </script>
     <style type="text/css">
         /* for print preview styles  */
@@ -38,18 +42,54 @@
         .templateSectionTitle { font-weight:bold; font-size: 20px; margin: 10px 0; }
         .templateSection { }
         .moduleTemplateTitle { font-weight: bold; }
-        .moduleTemplateText { margin: 10px 0 20px; }
+        .moduleTemplateText { margin: 10px 20px 20px ; }
         .matrixTableHeader{ width:200px; }
 		.matrixTableData{ width:240px; }
 		.justifyRtTableData{ text-align:right; }
 		.justifyLftTableData{ text-align:left; }
 		.justifyCtrTableData{ text-align:center; }
 		.spacer1TableData{ width:500px; }
-		
-        @media print {
-        .non-printable { display: none; }
-        body { overflow: visible !important;}
-        }
+    
+   #VeteranSummaryModal .moduleTemplateTitle { 
+    font-weight: bold;
+     margin: 10px 20px 20px 20px;
+   }
+    #VeteranSummaryModal .moduleTemplateText {
+      margin: 10px 20px 20px 20px;
+    }
+    #VeteranSummaryModal .matrixTableHeader{ width:200px; }
+    
+    #VeteranSummaryModal .moduleTemplate{
+        display:inline-table;
+				width:48%;
+        border-top:1px dashed #000000;
+    }
+    
+    #VeteranSummaryModal .moduleTemplate:nth-of-type(even){
+      border-right:1px dashed #000000;
+    }
+    #VeteranSummaryModal .moduleTemplate:nth-of-type(odd){
+      border-left:1px dashed #000000;
+    }
+    
+    #VeteranSummaryModal .justifyRtTableData{
+      text-align:right;
+    }
+    #VeteranSummaryModal .justifyLftTableData{
+      text-align:left;
+    }
+    .modal.modal-wide .modal-dialog {
+      width: 1000px;
+    }
+    .modal-wide .modal-body {
+      overflow-y: auto;
+    }
+    #VeteranSummaryModal .modal-body p { margin-bottom: 900px;}
+    
+    @media print {
+    .non-printable { display: none; }
+    body { overflow: visible !important;}
+    }
     </style>
 </head>
 <body>
@@ -216,7 +256,7 @@
               </div>
             </div>
             <div class="col-md-4 text-right"> Veteran Summary
-              <div class="txt_lable_md"> <a href="#"  data-toggle="modal" id="VeteranSummaryButton">View Veteran Summary</a> </div>
+              <div class="txt_lable_md"> <a href="#"  data-toggle="modal" id="VeteranSummaryButton" >View Veteran Summary</a> </div>
             </div>
           </div>
         </div>
@@ -421,7 +461,7 @@
 
 <!-- Modal Veteran Summary  -->
 <div class="custom_modal" >
-  <div class="modal fade" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
+  <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header noPrint">
