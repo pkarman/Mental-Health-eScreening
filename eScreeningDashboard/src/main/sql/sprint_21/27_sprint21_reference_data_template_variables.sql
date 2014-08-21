@@ -94,7 +94,41 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10601, 3441, 307, 'did not agree');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10602, 3442, 307, 'agreed');
 
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10620, 3489, 307);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10620, 3400, 307);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10621, 2016, 307, 'none');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10622, 2010, 307, 'Blast or explosion (IED, RPG, Land Mine, Grenade, etc.)');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10623, 2011, 307, 'Vehicular accident/crash (any vehicle including aircraft)');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10624, 2012, 307, 'Fragment wound or bullet wound above the shoulders');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10625, 2013, 307, 'Fall');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10626, 2014, 307, 'Blow to head (hit by falling/flying object, head hit by another person, head hit against something, etc.)');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10627, 2015, 307, 'Other injury to head');
+
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10630, 3410, 307);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10631, 2022, 307, 'none');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10632, 2017, 307, 'Loss of consciousness\"knocked out\"');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10633, 2018, 307, 'Being dazed, confused or \"seeing stars\"');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10634, 2019, 307, 'Not remembering the event');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10635, 2020, 307, 'Concussion');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10636, 2021, 307, 'Head injury');
+
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10640, 3420, 307);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10641, 2030, 307, 'none');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10642, 2023, 307, 'Memory problems or lapses');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10643, 2024, 307, 'Balance problems or dizziness');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10644, 2025, 307, 'Sensitivity to bright light');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10645, 2027, 307, 'Irritability');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10646, 2028, 307, 'Headaches');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10647, 2029, 307, 'Sleep problems');
+
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10650, 3430, 307);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10651, 2037, 307, 'none');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10652, 2031, 307, 'Memory problems or lapses');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10653, 2032, 307, 'Balance problems or dizziness');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10654, 2033, 307, 'Sensitivity to bright light');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10655, 2034, 307, 'Irritability');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10656, 2035, 307, 'Headaches');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10657, 2036, 307, 'Sleep problems');
+
 
 
 
