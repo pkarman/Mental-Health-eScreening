@@ -35,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,7 +114,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @param viewType the type of rendering
 	 * @param documentType the type of document that is to be built (e.g. cprs note, or veteran summary printout)
 	 * @param templateMap map from template type to the template to render
-	 * @param includeSections if true then sections should be surrounded by section tags.
+	 * @param includeSections if true then sections should be surrounded by section tags. If templates are find to be 
+	 * graphical, then they will not be appended in their section.  They will be appended to the end. So includeSections
+	 * should be false when graphical templates are included.
 	 * @return the rendered document
 	 * @throws IllegalSystemStateException
 	 */
@@ -137,6 +140,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		Map<Integer, Survey> surveysTaken = assessment.getSurveyMap();
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
+		List<Template> graphicalTemplates = new LinkedList();
 		for (SurveySection section : sections) {
 
 			// start section
@@ -149,7 +153,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 					for (Template template : survey.getTemplates()) {
 						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
 						if(type.equals(documentType.getEntryType())) {
-							evaluator.appendModule(template);
+							if(template.getIsGraphical()){
+								graphicalTemplates.add(template);
+							}
+							else{
+								evaluator.appendModule(template);
+							}
 						}
 					}
 					
@@ -160,6 +169,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
                     }
 				}
 			}
+		}
+		
+		/* now add graphical module templates after all the rest */
+		for(Template template : graphicalTemplates){
+			evaluator.appendModule(template);
 		}
 		
 		/* Add optional Assessment Scoring Table */

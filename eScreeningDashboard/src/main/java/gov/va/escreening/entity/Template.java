@@ -59,6 +59,8 @@ public class Template implements Serializable {
     @JoinColumn(name = "template_type_id", referencedColumnName = "template_type_id")
     @ManyToOne(optional = false)
     private TemplateType templateType;
+    @Column(name = "is_graphical")
+    private boolean isGraphical;
 
     public Template() {
     }
@@ -128,6 +130,15 @@ public class Template implements Serializable {
     public void setTemplateType(TemplateType templateType) {
         this.templateType = templateType;
     }
+    
+    public Boolean getIsGraphical(){
+    	return isGraphical;
+    }
+    
+    public void setIsGraphical(Boolean isGraphical){
+    	this.isGraphical = isGraphical;
+    }
+    
 
     @Override
     public int hashCode() {
