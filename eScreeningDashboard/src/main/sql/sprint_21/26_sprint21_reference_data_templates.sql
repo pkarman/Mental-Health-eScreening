@@ -1149,7 +1149,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
          "Moderately Severe":[15,20],
 		 "Severe":[20,27]
 		 }, ${score});                    
-	${ GRAPH_BODY_END}
+	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
@@ -1185,7 +1185,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 		"Worst Possible":[10,10]
           
         }, ${score});                    
-	${ GRAPH_BODY_END}
+	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
@@ -1221,7 +1221,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
          "Positive":[65,85]
           
         }, ${score});                    
-	${ GRAPH_BODY_END}
+	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (35, 310);
