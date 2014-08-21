@@ -824,7 +824,7 @@ ${MODULE_START}
 	<#assign isComplete = false>
 </#if>
 
-var2000: ${var2000!""}<br><br>
+
 <#if isComplete>
 	<#assign scoreText = "">
 	<#assign addRec = false>
@@ -946,28 +946,32 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 ${MODULE_TITLE_START}
 Environmental Exposure
 ${MODULE_TITLE_END}
-${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score == 0)>
-	<#assign scoreText = "none reported">
-	<#assign isComplete = true>
-<#elseif (score == 1) >
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
-</#if>
+${MODULE_START}  
 
+<#if (var10540.children)??  && ((var10540.children)?size > 0)>
+	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
+</#if>
 <#if isComplete>
+	<#assign showRec = false>
+	<#assign scoreText = "">
+	<#if isSelectedAnswer(var10540,var10541)>
+		<#assign scoreText = "none reported">
+	<#elseif isSelectedAnswer(var10540,var10542)>
+		<#assign scoreText = "at risk">
+		<#assign showRec = true>
+	</#if>
 	
 	Environmental Exposure ${LINE_BREAK}
 	This is when you have been exposed to a hazard that may have potential health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
 	Results: ${scoreText}	
-	${LINE_BREAK}
-	Recommendation: Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm. 
-
+	<#if showRec>
+		${LINE_BREAK}
+		Recommendation: Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm. 
+	</#if>
 
 </#if>
 ${MODULE_END}
@@ -985,29 +989,38 @@ ${MODULE_TITLE_START}
 Military Sexual Trauma (MST)
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score == 0)>
-	<#assign scoreText = "negative screen">
+
+<#if (var2003.children)?? && ((var2003.children)?size > 0)>
 	<#assign isComplete = true>
-<#elseif (score == 1)>
-	<#assign scoreText = "postive screen">
-	<#assign isComplete = true>
-<#elseif (score == 2)>
-	<#assign scoreText = "declined to answer">
-	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
 </#if>
 
 <#if isComplete>
-	
+	<#assign scoreText = "">
+	<#assign showRec = -999>
+	<#if isSelectedAnswer(var2003,var2004)>
+		<#assign scoreText = "negative screen">
+		<#assign showRec = 0>
+	<#elseif isSelectedAnswer(var2003,var2005)>
+		<#assign scoreText = "postive screen">
+		<#assign showRec = 1>
+	<#elseif isSelectedAnswer(var2003,var2006)>
+		<#assign scoreText = "declined to answer">
+	</#if>
+
 	Military Sexual Trauma (MST) ${LINE_BREAK}
 	MST is sexual assault or repeated, threatening sexual harassment that occurred while the Veteran was in the military. MST can happen any time or anywhere, to men and women. MST can affect your physical and mental health, even years later.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: Ask your clinician for help managing your MST. 
-
+	Results: ${scoreText}
+`	<#if showRec == 0>
+		${LINE_BREAK}
+		Recommendation: none
+	<#elseif showRec == 1>
+		${LINE_BREAK}
+		Recommendation: Ask your clinician for help managing your MST. 
+	</#if>
 </#if>
 ${MODULE_END}
 ');
@@ -1024,25 +1037,31 @@ ${MODULE_TITLE_START}
 Tobacco Use
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score >= 0) && (score <= 2)>
-	<#assign scoreText = "negative screen">
+<#if (var600.children)?? && ((var600.children)?size > 0)>
 	<#assign isComplete = true>
-<#elseif (score == 2)>
-	<#assign scoreText = "current user">
-	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
 </#if>
 
 <#if isComplete>
-	
+
+	<#assign showRec = false>
+	<#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)>
+		<#assign scoreText = "negative screen">
+	<#elseif isSelectedAnswer(var600,var603)>
+		<#assign scoreText = "current user">
+		<#assign showRec = true>
+	</#if>
+
 	Tobacco Use ${LINE_BREAK}
 	The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed.  
+	Results: ${scoreText}	
+	<#if showRec>
+		${LINE_BREAK}
+		Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed.  
+	</#if>
 
 </#if>
 ${MODULE_END}
@@ -1061,26 +1080,41 @@ ${MODULE_TITLE_START}
 Traumatic Brain Injury (TBI)
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score >= 0) && (score <= 3)>
-	<#assign scoreText = "negative screen">
+<#if (var3489)?? && (var2047.children)?? && ((var2047.children)?size > 0)>
 	<#assign isComplete = true>
-<#elseif (score >= 4 ) >
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
 </#if>
 
 <#if isComplete>
+
+	<#assign score = getFormulaDisplayText(var3489)>
+	<#if score != "notset" && score != "notfound">
+		<assign score = score?number>
+	<#else>
+		<assign score = -999>
+	</#if>
+
+	<#if (score >= 0) && (score <= 3)>
+		<#assign scoreText = "negative screen">
+	<#elseif (score >= 4 )>
+		<#assign scoreText = "at risk">
+	</#if>
+
+	<#assign showRec = false>
+	<#if isSelectedAnswer(var2047,var3442)>
+		<#assign showRec = true>
+	</#if>
 	
 	Traumatic Brain Injury (TBI) ${LINE_BREAK}
 	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: Ask your clinician about treatment for any symptoms that are bothering you. 
-
+	Results: ${scoreText}	
+	<#if showRec>
+		${LINE_BREAK}
+		Recommendation: Ask your clinician about treatment for any symptoms that are bothering you. 
+	</#if>
 </#if>
 ${MODULE_END}
 ');

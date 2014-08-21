@@ -84,7 +84,7 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10563, 2006, 305, 'declined to answer');
 
 	/* Tobacco Use */
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10580, 600, 100);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10580, 600, 306);
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10581, 601, 306, 'denied using tobacco ');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10582, 602, 306, 'quit using tobacco');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10583, 603, 306, 'endorsed using');
@@ -94,7 +94,7 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10601, 3441, 307, 'did not agree');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10602, 3442, 307, 'agreed');
 
-
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10620, 3489, 307);
 
 
 
