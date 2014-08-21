@@ -7,7 +7,6 @@ import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 
 @Transactional(noRollbackFor = { CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class })
 public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFactory {
@@ -33,18 +31,13 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
 		AssessmentVariableDto variableDto = null;
-		// StopWatch sw = new StopWatch("AssessmentVariableDtoFactoryImpl");
 		Integer type = assessmentVariable.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 		switch (type) {
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-			// sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE");
 			variableDto = measureVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
-			// sw.stop();
 			break;
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
-			// sw.start("ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER");
 			variableDto = measureAnswerVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
-			// sw.stop();
 			break;
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
 			variableDto = customVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId);
@@ -58,7 +51,6 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 			throw new UnsupportedOperationException(String.format("Assessment variable of type id: %s is not supported.", type));
 		}
 
-		// System.out.println(sw.prettyPrint());
 		return variableDto;
 	}
 

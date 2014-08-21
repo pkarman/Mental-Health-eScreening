@@ -21,6 +21,7 @@
 		<jdbc.username>escrapp</jdbc.username>
 		<jdbc.password>CHANGE_M3</jdbc.password>
 		<vista.connector>vljtestconnector</vista.connector>
+		<quick.order.ien>51</quick.order.ien>
 		<vista.primaryStation>500</vista.primaryStation>
 		<sample.patient.ien>100022</sample.patient.ien>
 	</properties>
@@ -581,6 +582,7 @@
 				<jdbc.db>escreening</jdbc.db>
 				<log.suffix>sd</log.suffix>
 				<vista.connector>vljsdconnector</vista.connector>
+				<quick.order.ien>370</quick.order.ien>
 				<vista.primaryStation>664</vista.primaryStation>
 			</properties>
 		</profile>

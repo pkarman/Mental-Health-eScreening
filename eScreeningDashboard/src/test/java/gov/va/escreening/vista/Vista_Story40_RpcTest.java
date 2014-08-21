@@ -3,13 +3,9 @@ package gov.va.escreening.vista;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.vista.dto.VistaDateFormat;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_RequestParameters;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_VistaLinkRequest;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_VistaLinkRequestContext;
-import gov.va.escreening.vista.request.ORWDX_SAVE_RequestParameters;
-import gov.va.escreening.vista.request.ORWDX_SAVE_VistaLinkRequest;
-import gov.va.escreening.vista.request.ORWDX_SAVE_VistaLinkRequestContext;
 import gov.va.escreening.vista.request.VistaLinkRequest;
 import gov.va.escreening.vista.request.VistaLinkRequestContext;
 import gov.va.med.exception.FoundationsException;
@@ -22,11 +18,8 @@ import gov.va.med.vistalink.rpc.RpcRequest;
 import gov.va.med.vistalink.rpc.RpcRequestFactory;
 import gov.va.med.vistalink.rpc.RpcResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +27,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.resource.ResourceException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -195,7 +187,10 @@ public class Vista_Story40_RpcTest {
 			connection.close();
 		}
 	}
-
+	
+	@Value("${quick.order.ien}")
+    private long qoi;
+	
 	@Test
 	public void testStory40_TBI_Consult_Save_Scenario_1() throws Exception {
 		VistaLinkClientStrategy vistaLinkClientStrategy = createVistaLinkClientStrategy(null, "", "OR CPRS GUI CHART");
@@ -206,7 +201,7 @@ public class Vista_Story40_RpcTest {
 			exportColumnsMap.put("TBI_consult_where", "Baghdad, Iraq");
 			//exportColumnsMap.put("TBI_consult_when", "2003");
 			//exportColumnsMap.put("TBI_consult_how", "Shell exploded within 100 feet");
-			System.out.println(client.saveTBIConsultOrders(va, exportColumnsMap));
+			System.out.println(client.saveTBIConsultOrders(va, qoi, exportColumnsMap));
 		} finally {
 			client.closeConnection();
 		}
