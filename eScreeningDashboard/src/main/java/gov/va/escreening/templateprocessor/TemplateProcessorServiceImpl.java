@@ -472,12 +472,20 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		}
 		
 		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
-			text.append(MODULE_COMPONENTS_START.xml());
-			appendTemplate(moduleTemplate);
-			text.append(MODULE_COMPONENTS_END.xml());
+			String templateText = processTemplate(moduleTemplate, assessmentId);
+			if(!templateText.trim().isEmpty()) // only append if there is content
+				text.append(MODULE_COMPONENTS_START.xml())
+					.append(templateText)
+					.append(MODULE_COMPONENTS_END.xml());
 			return this;
 		}
 
+		/**
+		 * Appends the given template if it has any contents
+		 * @param moduleTemplate
+		 * @return true if the template had contents 
+		 * @throws IllegalSystemStateException
+		 */
 		private TemplateEvaluator appendTemplate(Template moduleTemplate) throws IllegalSystemStateException {
 			logger.debug("Appending template {}", moduleTemplate.getName());
 			text.append(processTemplate(moduleTemplate, assessmentId));

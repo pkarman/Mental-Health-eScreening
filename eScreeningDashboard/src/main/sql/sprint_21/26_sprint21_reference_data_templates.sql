@@ -692,30 +692,10 @@ ${MODULE_END}'
  WHERE template_id = 100;
 
 
+/* remove TEST template */
+DELETE FROM battery_template WHERE template_id = 101;
+DELETE FROM template WHERE template_id = 101;
 
-
-
-
-
-/* TEST */
- UPDATE template SET template_id = 101, 
-	template_type_id = 8, 
-	name = 'Test', 
-	description = 'Test', 
-	template_file = 
-'<#include "clinicalnotefunctions"> 
-<#-- Template start -->
-${MODULE_TITLE_START}
-TEST TYPE:
-${MODULE_TITLE_END}
-${MODULE_START}
-  TEST TYPE
- ${MODULE_END}
-'
-	WHERE template_id = 101;
-
-
-	
 	
 	
  /* VETERAN SUMMARY -  TEMPLATES*/	
@@ -724,19 +704,12 @@ ${MODULE_START}
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (200, 6, 'Veteran Summary Header', 'Veteran Summary Header',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-
-${MODULE_TITLE_END}
-
-
 ${MODULE_START}
-
+<#-- TODO: This should be changed to how our WYSIWYG editor outputs (e.g. tables) -->
 <div class="row moduleTemplateHeader">
     <div class="col-md-6"><h5>eScreening Summary</h5></div>
     <div class="col-md-6 text-right"><img width="198" height="66" src=" resources/images/ logo_va_veteran_summary.gif "> <img width="130" height="56" src=" resources/images/cesamh_blk_border.png"></div>
 </div>
-
-
 ${MODULE_END}
 ');	
 INSERT INTO battery_template (battery_id, template_id) VALUES (5, 200);	
@@ -745,11 +718,8 @@ INSERT INTO battery_template (battery_id, template_id) VALUES (5, 200);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (220, 7, 'Veteran Summary Footer', 'Veteran Summary Footer',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-VETERAN SUMMARY FOOTER
-${MODULE_TITLE_END}
 ${MODULE_START}
-${MATRIX_TABLE_START}
+${MATRIX_TABLE_START}<#-- TODO: This should be changed to how our WYSIWYG editor outputs (e.g. tables) -->
 	${MATRIX_TR_START}
 		${TABLE_TD_CTR_START}For online information about support services and benefits, visit the VA Center of Excellence resource site:${TABLE_TD_END}
 	${MATRIX_TR_END}
@@ -778,17 +748,12 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Advance Directive
-${MODULE_TITLE_END}
-${MODULE_START}					
 <#if (var820.children)?? && ((var820.children)?size > 0)>
-	<#assign isComplete = true>
-<#else>
-	<#assign isComplete = false>
-</#if>
+	${MODULE_TITLE_START}
+	Advance Directive
+	${MODULE_TITLE_END}
+	${MODULE_START}					
 
-<#if isComplete>
 	<#assign scoreText = "">
 	<#if isSelectedAnswer(var820,var821)>
 		<#assign scoreText = "Declined">
@@ -800,10 +765,10 @@ ${MODULE_START}
 	This is a legal paper that tells your wishes for treatment if you become too sick to talk, and if needed, can help your doctors and family to make decisions about your care. 
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	
+	<b>Results:</b> ${scoreText}	
 	<#if scoreText == "Declined">
 		${LINE_BREAK}
-		Recommendations: Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive. 
+		<b>Recommendations:</b> Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive. 
 	</#if>
 </#if>
 ${MODULE_END} ');
@@ -814,18 +779,12 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (9, 300);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (301, 8, 'Veteran Summary Homelessness Entry', 'Veteran Summary Homelessness Entry',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Homelessness
-${MODULE_TITLE_END}
-${MODULE_START}
 <#if (var2000.children)?? && ((var2000.children)?size > 0)>
-	<#assign isComplete = true>
-<#else>
-	<#assign isComplete = false>
-</#if>
+	${MODULE_TITLE_START}
+	Homelessness
+	${MODULE_TITLE_END}
+	${MODULE_START}
 
-
-<#if isComplete>
 	<#assign scoreText = "">
 	<#assign addRec = false>
 	<#if isSelectedAnswer(var2000,var761)>
@@ -840,10 +799,10 @@ ${MODULE_START}
 		This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
 		${LINE_BREAK}
 		${LINE_BREAK}
-		Results: ${scoreText}	
+		<b>Results:</b> ${scoreText}	
 		<#if addRec>
 			${LINE_BREAK}
-			Recommendation: Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
+			<b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
 		</#if>
 	</#if>
 </#if>
@@ -856,10 +815,6 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (7, 301);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (302, 8, 'Veteran Summary Alcohol Use Entry', 'Veteran Summary Alcohol Use Entry', 
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Alcohol Use
-${MODULE_TITLE_END}
-${MODULE_START}
 <#assign score = -999>
 <#assign isComplete = false> 
 <#if var1229??>
@@ -871,6 +826,11 @@ ${MODULE_START}
 </#if>
 
 <#if isComplete>
+	${MODULE_TITLE_START}
+	Alcohol Use
+	${MODULE_TITLE_END}
+	${MODULE_START}
+
 	<#assign scoreText = "">
 	<#if (score >= 0) && (score <= 2)>
 		<#assign scoreText = "negative screen">
@@ -884,8 +844,8 @@ ${MODULE_START}
 	Drinking too much, too often, or both, causes serious problems. Abuse can have negative effects on school, work, and relationships, and can cause liver disease and cirrhosis, congestive heart failure, seizures, falls, hypertension, and other serious health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: If female, limit yourself to one drink a day; if male, limit yourself to 2 drinks a day. If this is difficult, ask your clinician for help with managing your drinking.  
+	<b>Results:</b> ${scoreText}	${LINE_BREAK}
+	<b>Recommendation:</b> If female, limit yourself to one drink a day; if male, limit yourself to 2 drinks a day. If this is difficult, ask your clinician for help with managing your drinking.  
 </#if>
 ${MODULE_END}
 ');
@@ -897,10 +857,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Insomnia
-${MODULE_TITLE_END}
-${MODULE_START}
 <#assign score = -999>
 <#assign isComplete = false> 
 <#if var2189??>
@@ -912,6 +868,11 @@ ${MODULE_START}
 </#if>
 
 <#if isComplete>
+	${MODULE_TITLE_START}
+	Insomnia
+	${MODULE_TITLE_END}
+	${MODULE_START}
+
 	<#assign scoreText = "">
 	<#if (score >= 0) && (score <= 7)>
 		<#assign scoreText = "negative screen">
@@ -927,10 +888,10 @@ ${MODULE_START}
 	Insomnia is having trouble sleeping that lasts longer than a few weeks. Some causes are: medical (like depression or pain), lifestyle factors (such as too much caffeine), or even stress. 
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	
+	<b>Results:</b> ${scoreText}	
 	<#if (score >= 15)>
 		${LINE_BREAK}
-		Recommendation: Describe your sleeping problems to your clinician, or learn more about insomnia at the  CESAMH site at: http://escreening.cesamh.org 
+		<b>Recommendation:</b> Describe your sleeping problems to your clinician, or learn more about insomnia at the  CESAMH site at: http://escreening.cesamh.org 
 	</#if>
 </#if>
 ${MODULE_END}
@@ -943,17 +904,12 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (36, 303);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (304, 8, 'Veteran Summary Environmental Exposure Entry', 'Veteran Summary Environmental Exposure Entry', '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Environmental Exposure
-${MODULE_TITLE_END}
-${MODULE_START}  
-
 <#if (var10540.children)??  && ((var10540.children)?size > 0)>
-	<#assign isComplete = true>
-<#else>
-	<#assign isComplete = false>
-</#if>
-<#if isComplete>
+	${MODULE_TITLE_START}
+	Environmental Exposure
+	${MODULE_TITLE_END}
+	${MODULE_START}  
+
 	<#assign showRec = false>
 	<#assign scoreText = "">
 	<#if isSelectedAnswer(var10540,var10541)>
@@ -967,10 +923,10 @@ ${MODULE_START}
 	This is when you have been exposed to a hazard that may have potential health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	
+	<b>Results:</b> ${scoreText}	
 	<#if showRec>
 		${LINE_BREAK}
-		Recommendation: Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm. 
+		<b>Recommendation:</b> Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm. 
 	</#if>
 
 </#if>
@@ -985,18 +941,12 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Military Sexual Trauma (MST)
-${MODULE_TITLE_END}
-${MODULE_START}
-
 <#if (var2003.children)?? && ((var2003.children)?size > 0)>
-	<#assign isComplete = true>
-<#else>
-	<#assign isComplete = false>
-</#if>
-
-<#if isComplete>
+	${MODULE_TITLE_START}
+	Military Sexual Trauma (MST)
+	${MODULE_TITLE_END}
+	${MODULE_START}
+	
 	<#assign scoreText = "">
 	<#assign showRec = -999>
 	<#if isSelectedAnswer(var2003,var2004)>
@@ -1013,13 +963,13 @@ ${MODULE_START}
 	MST is sexual assault or repeated, threatening sexual harassment that occurred while the Veteran was in the military. MST can happen any time or anywhere, to men and women. MST can affect your physical and mental health, even years later.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}
+	<b>Results:</b> ${scoreText}
 `	<#if showRec == 0>
 		${LINE_BREAK}
-		Recommendation: none
+		<b>Recommendation:</b> none
 	<#elseif showRec == 1>
 		${LINE_BREAK}
-		Recommendation: Ask your clinician for help managing your MST. 
+		<b>Recommendation:</b> Ask your clinician for help managing your MST. 
 	</#if>
 </#if>
 ${MODULE_END}
@@ -1033,17 +983,11 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 ' 
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Tobacco Use
-${MODULE_TITLE_END}
-${MODULE_START}
 <#if (var600.children)?? && ((var600.children)?size > 0)>
-	<#assign isComplete = true>
-<#else>
-	<#assign isComplete = false>
-</#if>
-
-<#if isComplete>
+	${MODULE_TITLE_START}
+	Tobacco Use
+	${MODULE_TITLE_END}
+	${MODULE_START}
 
 	<#assign showRec = false>
 	<#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)>
@@ -1057,10 +1001,10 @@ ${MODULE_START}
 	The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	
+	<b>Results:</b> ${scoreText}	
 	<#if showRec>
 		${LINE_BREAK}
-		Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed.  
+		<b>Recommendations:</b> Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed.  
 	</#if>
 
 </#if>
@@ -1076,11 +1020,6 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (25, 306);
 INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (307, 8, 'Veteran Summary Traumatic Brain Injury (TBI) Entry', 'Veteran Summary Traumatic Brain Injury (TBI) Entry',
 '<#include "clinicalnotefunctions"> 
 <#-- Template start -->
-${MODULE_TITLE_START}
-Traumatic Brain Injury (TBI)
-${MODULE_TITLE_END}
-${MODULE_START}      
-
 <#function calcScore obj>
 	<#assign result = 0>
 	<#if (obj.children)?? && ((obj.children)?size > 0)>
@@ -1164,7 +1103,11 @@ ${MODULE_START}
 </#if>
 
 <#if isComplete>
-	
+	${MODULE_TITLE_START}
+	Traumatic Brain Injury (TBI)
+	${MODULE_TITLE_END}
+	${MODULE_START}  
+
 	<#if (score >= 0) && (score <= 3)>
 		<#assign scoreText = "negative screen">
 	<#elseif (score >= 4 )>
@@ -1185,13 +1128,13 @@ ${MODULE_START}
 	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	
+	<b>Results:</b> ${scoreText}	
 	<#if showRec>
 		${LINE_BREAK}
-		Recommendation: ${tbi_consult_text}.
+		<b>Recommendation:</b> ${tbi_consult_text}.
 	</#if>
+	${MODULE_END}
 </#if>
-${MODULE_END}
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (29, 307);
 
@@ -1207,24 +1150,35 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	${MODULE_TITLE_START}
 	Depression
 	${MODULE_TITLE_END}
+	
+	${GRAPH_SECTION_START}
+
+		${GRAPH_BODY_START}
+		  {
+	        "type": "stacked",
+	        "title": "My Depression Score",
+	        "footer": "*a score of 10 or greater is a positive screen",
+	        "data": {
+	            "graphStart": 0,
+	            "ticks": [0, 4, 10, 15, 20, 27],
+	            <#-- This is unecessarily complex please change to simpler form: "Minimal":4 -->
+	            "intervals": [
+	                {"row": [{"count": 4 , "legend": "Minimal"}]},
+	                {"row": [{"count": 10 , "legend": "Mild"}]},
+	                {"row": [{"count": 15, "legend": "Moderate"}]},
+	                {"row": [{"count": 20, "legend": "Moderately Severe"}]},
+	                {"row": [{"count": 27, "legend": "Severe"}]}
+	            ],
+	            "score": ${score}
+	        }
+    	}
+		${GRAPH_BODY_END}
+	${GRAPH_SECTION_END}
+	
 	${MODULE_START}
 	Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.${LINE_BREAK}
-	Recommendation: Ask your clinician for further evaluation and treatment options. 
+	<b>Recommendation:</b> Ask your clinician for further evaluation and treatment options. 
 	${MODULE_END}
-	${GRAPH_SECTION_START}
-	${GRAPH_HEADER_START}My Depression Score${GRAPH_HEADER_END}
-
-
-	${GRAPH_BODY_START}
-    getStackedGraph( 
-       { 
-         "Minimal":[0,4], 
-         "Mild": [4,10], 
-         "Moderate":[10,15], 
-         "Moderately Severe":[15,20],
-		 "Severe":[20,27]
-		 }, ${score});                    
-	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
@@ -1241,26 +1195,36 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	${MODULE_TITLE_START}
 	Pain 
 	${MODULE_TITLE_END}
+	
+	${GRAPH_SECTION_START}
+
+		${GRAPH_BODY_START}
+		  {
+	        "type": "stacked",
+	        "title": "My Pain Score",
+	        "footer": "",
+	        "data": {
+	            "graphStart": 0,
+	            "ticks": [0,1,4,6,8,10],
+	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
+	            "intervals": [
+	                {"row": [{"count": 1, "legend": "None"}]},
+	                {"row": [{"count": 4, "legend": "Mild"}]},
+	                {"row": [{"count": 6, "legend": "Moderate"}]},
+	                {"row": [{"count": 8, "legend": "Severe"}]},
+	                {"row": [{"count": 10, "legend": "Very Severe"}]}
+	            ],
+	            "score": ${score}
+	        }
+    	  }
+		${GRAPH_BODY_END}
+	${GRAPH_SECTION_END}
+
 	${MODULE_START}
 	Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
-	Recommendation: Tell your clinician if medications aren’t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+	<b>Recommendation:</b> Tell your clinician if medications aren’t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
 	${MODULE_END}	
-	${GRAPH_SECTION_START}
-	${GRAPH_HEADER_START}My Pain Score${GRAPH_HEADER_END}
 
-
-	${GRAPH_BODY_START}
-    getStackedGraph( 
-       { 
-         "None":[0,1], 
-         "Mild": [1,4], 
-         "Moderate":[4,6], 
-         "Severe":[6,8],
-		 "Positive":[8,10],
-		"Worst Possible":[10,10]
-          
-        }, ${score});                    
-	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
@@ -1271,7 +1235,6 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (310, 8, 1, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
-
 <#if var1989??>
 	<#assign score = getCustomVariableDisplayText(var1989)>
 
@@ -1279,24 +1242,32 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	${MODULE_TITLE_START}
 	Post-traumatic Stress Disorder 
 	${MODULE_TITLE_END}
+	
+	${GRAPH_SECTION_START}
+
+		${GRAPH_BODY_START}
+		  {
+	        "type": "stacked",
+	        "title": "My PTSD Score",
+	        "footer": "",
+	        "data": {
+	            "graphStart": 17,
+	            "ticks": [17,35,50,65,85],
+	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
+	            "intervals": [
+	                {"row": [{"count": 50, "legend": "Negative"}]},
+	                {"row": [{"count": 85, "legend": "Positive"}]},
+	            ],
+	            "score": ${score}
+	        }
+    	  }
+		${GRAPH_BODY_END}
+	${GRAPH_SECTION_END}
+	
 	${MODULE_START}
 	PTSD is when remembering a traumatic event keeps you from living a normal life. It’s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
-	Recommendation: Ask your clinician for further evaluation and treatment options. 
+	<b>Recommendation:</b> Ask your clinician for further evaluation and treatment options. 
 	${MODULE_END}
-	${GRAPH_SECTION_START}
-	${GRAPH_HEADER_START}My PTSD Score${GRAPH_HEADER_END}
-
-
-	${GRAPH_BODY_START}
-    getStackedGraph( 
-       { 
-         "Negative":[17,35], 
-         "Negative": [35,50], 
-         "Positive":[50,65], 
-         "Positive":[65,85]
-          
-        }, ${score});                    
-	${GRAPH_BODY_END}
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (35, 310);

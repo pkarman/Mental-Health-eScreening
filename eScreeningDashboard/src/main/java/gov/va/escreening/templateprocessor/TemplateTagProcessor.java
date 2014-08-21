@@ -25,7 +25,7 @@ public class TemplateTagProcessor {
 	
 	private static Pattern htmlEndDivReplace = Pattern.compile(createTagRegex(Style.XML, 
 			BATTERY_HEADER_END, BATTERY_FOOTER_END, SECTION_TITLE_END, SECTION_END, MODULE_COMPONENTS_END, MODULE_TITLE_END, MODULE_END,
-			GRAPH_SECTION_END, GRAPH_HEADER_END, GRAPH_BODY_END, GRAPH_FOOTER_END));
+			GRAPH_SECTION_END, GRAPH_BODY_END));
 	
 	private static String resolveHtmlType(String noteText) {
 	    noteText = noteText.replace(BATTERY_HEADER_START.xml(), "<div class='templateHeader'>");
@@ -67,12 +67,8 @@ public class TemplateTagProcessor {
     	
     	//GRAPH stuff
     	noteText = noteText.replace(GRAPH_SECTION_START.xml(), "<div class='graphSection'>");
-    	noteText = noteText.replace(GRAPH_HEADER_START.xml(), "<div class='graphicHeader'>");
     	noteText = noteText.replace(GRAPH_BODY_START.xml(), "<div class='graphicBody'>");
-    	noteText = noteText.replace(GRAPH_FOOTER_START.xml(), "<div class='graphicFooter'>");
     	
-    	noteText = noteText.replace(VET_SMRY_HDR_SPAN_START.xml(), "<span class='vetSmryTitle'>");
-    	noteText = noteText.replace(SPAN_END.xml(), "</span>");
     	return htmlEndDivReplace.matcher(noteText).replaceAll("</div>");
 	}
 	

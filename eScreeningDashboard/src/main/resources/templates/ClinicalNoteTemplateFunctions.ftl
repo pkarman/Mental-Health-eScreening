@@ -42,15 +42,8 @@
 
 <#assign GRAPH_SECTION_START = '<GRAPH_SECTION_START>'/>
 <#assign GRAPH_SECTION_END = '<GRAPH_SECTION_END>'/> 
-<#assign GRAPH_HEADER_START = '<GRAPH_HEADER_START>'/> 
-<#assign GRAPH_HEADER_END = '<GRAPH_HEADER_END>'/> 
 <#assign GRAPH_BODY_START = '<GRAPH_BODY_START>'/>  
 <#assign GRAPH_BODY_END = '<GRAPH_BODY_END>'/>
-<#assign GRAPH_FOOTER_START = '<GRAPH_FOOTER_START>'/> 
-<#assign GRAPH_FOOTER_END = '<GRAPH_FOOTER_END>'/> 
-
-<#assign VET_SMRY_HDR_SPAN_START = '<VET_SMRY_HDR_SPAN_START>'/>
-<#assign SPAN_END = '<SPAN_END>'/>
 
 <#-- String functions -->
 <#function hasValue stringValue>
