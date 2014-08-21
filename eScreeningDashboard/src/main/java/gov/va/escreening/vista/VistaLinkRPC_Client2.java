@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.springframework.core.env.Environment;
 
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLinkClient {
 
@@ -127,31 +128,6 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 	}
 
 	/**
-	 * Implementation of Appendix D, Para (Between D & D1) of CPRS Reminder Dialogs
-	 * 
-	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
-	 */
-
-	@Override
-	public Long getQuickOrderDialogIEN() {
-		RpcInvoker<Long> rpcInvoker = new VistaLinkRpcInvoker<Long>() {
-
-			@Override
-			protected List<Object> prepareReqParams() {
-				return Arrays.asList((Object) "3172", "0", "");
-			}
-
-			@Override
-			protected Long prepareResponse(String rawResponse) {
-				String[] resAry = rawResponse.split("\\^");
-				return Long.valueOf(resAry[5]);
-			}
-		};
-
-		return rpcInvoker.invokeRpc(getConnection(), getRequest(), "ORQQPXRM DIALOG PROMPTS");
-	}
-
-	/**
 	 * Implementation of Appendix D, Para D7 of CPRS Reminder Dialogs
 	 * 
 	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
@@ -224,11 +200,12 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 	 */
 
 	@Override
-	public Long getTBIConsultDisplayGroupIEN(Long partPatientIEN,
-			Long partLocationIEN, Long partProviderIEN, Boolean partInpatient,
-			String partSex, Integer partAge, Long locationIEN) {
+	public Long getTBIConsultDisplayGroupIEN(Long quickOrderIen,
+			Long partPatientIEN, Long partLocationIEN, Long partProviderIEN,
+			Boolean partInpatient, String partSex, Integer partAge,
+			Long locationIEN) {
 
-		ORWDXM1_BLDQRSP_RequestParameters rp = new ORWDXM1_BLDQRSP_RequestParameters(getQuickOrderDialogIEN(), partPatientIEN, partLocationIEN, partProviderIEN, partInpatient, partSex, partAge, 0L, "C", 0L, 0L, 0L, Boolean.valueOf(false), locationIEN);
+		ORWDXM1_BLDQRSP_RequestParameters rp = new ORWDXM1_BLDQRSP_RequestParameters(quickOrderIen, partPatientIEN, partLocationIEN, partProviderIEN, partInpatient, partSex, partAge, 0L, "C", 0L, 0L, 0L, Boolean.valueOf(false), locationIEN);
 		VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters> rCtxt = new ORWDXM1_BLDQRSP_VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters>(getRequest(), getConnection(), rp);
 
 		VistaLinkRequest<Map<String, Object>> vistaReq = new ORWDXM1_BLDQRSP_VistaLinkRequest(rCtxt);
@@ -245,7 +222,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 	@Override
 	public Map<String, Object> saveTBIConsultOrders(
 			final VeteranAssessment veteranAssessment,
-			final Map<String, String> exportColumnsMap) {
+			final long quickOrderIen, final Map<String, String> exportColumnsMap) {
 
 		return new VistaLinkRpcInvoker<Map<String, Object>>() {
 			/**
@@ -269,9 +246,9 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				// 4. Order Dialog (Should always be “GMRCOR CONSULT”)
 				reqParams.add(String.valueOf("GMRCOR CONSULT"));
 				// 5. Display Group (Step D5)
-				reqParams.add(getDlgGrpIEN(veteranAssessment));
+				reqParams.add(getDlgGrpIEN(quickOrderIen, veteranAssessment));
 				// 6. Quick Order Dialog IEN (IEN from ORQQPXRM DIALOG PROMPTS)
-				reqParams.add(getQuickOrderDialogIEN());
+				reqParams.add(quickOrderIen);
 				// 7. ORIFN - null if new order (Always be null for e-screening)
 				reqParams.add("");
 				// 8. Response List (Variables are defined in Step D7)
@@ -353,14 +330,15 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				return sb.toString();
 			}
 
-			private Long getDlgGrpIEN(VeteranAssessment veteranAssessment) {
+			private Long getDlgGrpIEN(Long quickOrderIen,
+					VeteranAssessment veteranAssessment) {
 				Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
 				Long locationIen = Long.valueOf(veteranAssessment.getClinic().getVistaIen());
 				Long partProviderIEN = Long.valueOf(veteranAssessment.getClinician().getVistaDuz());
 				Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
 				String partSex = String.valueOf(veteranAssessment.getVeteran().getGender().charAt(0)).toUpperCase();
 				Integer partAge = Integer.valueOf(Years.yearsBetween(new LocalDate(veteranAssessment.getVeteran().getBirthDate()), new LocalDate()).getYears());
-				return getTBIConsultDisplayGroupIEN(patientIen, locationIen, partProviderIEN, partInpatient, partSex, partAge, locationIen);
+				return getTBIConsultDisplayGroupIEN(quickOrderIen, patientIen, locationIen, partProviderIEN, partInpatient, partSex, partAge, locationIen);
 			}
 
 			@Override

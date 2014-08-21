@@ -47,8 +47,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +61,9 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 	private MessageSource messageSource;
 
 	private VeteranAssessmentService veteranAssessmentService;
+
+	@Value("${quick.order.ien}")
+	private long quickOrderIen;
 
 	@Resource(name = "surveyResponsesHelper")
 	SurveyResponsesHelper surveyResponsesHelper;
@@ -154,7 +159,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 		if (btbisSurvey != null) {
 			logger.debug("saving TBI Consult Request to Vista");
 
-			Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), ExportTypeEnum.DEIDENTIFIED.getExportTypeId()));
+			Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), ExportTypeEnum.DEIDENTIFIED.getExportTypeId()));
 			logger.debug("TBI Consult Response {}", vistaResponse);
 		}
 	}

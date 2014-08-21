@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.core.env.Environment;
+
 /**
  * Created by pouncilt on 4/9/14.
  */
@@ -63,12 +65,11 @@ public interface VistaLinkClient {
     PatientDemographics findPatientDemographics(Long patientIEN) throws VistaLinkClientException;
     ConsultationUrgencyDataSet getConsultationUrgencyDataSet(String consultationOrderType) throws VistaLinkClientException;
     ConsultationServiceNameDataSet getConsultationServiceNameDataSet(String startPositionSearchCriteria, String purpose, Boolean includeSynonyms) throws VistaLinkClientException;
-    Long getTBIConsultDisplayGroupIEN(Long partPatientIEN, Long partLocationIEN, Long partProviderIEN, Boolean partInpatient, String partSex,Integer partAge, Long locationIEN);  
+    Long getTBIConsultDisplayGroupIEN(Long quickOrderIen, Long partPatientIEN, Long partLocationIEN, Long partProviderIEN, Boolean partInpatient, String partSex,Integer partAge, Long locationIEN);  
     
-    Long getQuickOrderDialogIEN();
     Map<String, Long> getIENsMapForResponseList();
     public Map<String, Long> getConsultationServiceNameDataSet2(String startPositionSearchCriteria, String purpose,	Boolean includeSynonyms) throws VistaLinkClientException;
-    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, Map<String, String> tbiexportColumnsMap);
+    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, Map<String, String> tbiexportColumnsMap);
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
     void closeConnection();

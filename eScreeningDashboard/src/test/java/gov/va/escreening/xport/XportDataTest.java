@@ -524,9 +524,6 @@ public class XportDataTest {
 			sw.start("generateNote" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
 			sw.stop();
-
-			// System.out.println(sw.prettyPrint());
-
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		System.out.println(sw.prettyPrint());
