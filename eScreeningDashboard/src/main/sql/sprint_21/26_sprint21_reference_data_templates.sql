@@ -818,25 +818,34 @@ ${MODULE_TITLE_START}
 Homelessness
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if score == 0>
-	<#assign scoreText = "unstable housing">
+<#if (var2000.children)?? && ((var2000.children)?size > 0)>
 	<#assign isComplete = true>
-<#elseif score == 1>
-	<#assign scoreText = "stable housing">
-	<#assign isComplete = true>
+<#else>
+	<#assign isComplete = false>
 </#if>
 
+var2000: ${var2000!""}<br><br>
 <#if isComplete>
-	
-	Homelessness ${LINE_BREAK}
-	This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
-	${LINE_BREAK}
-	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
+	<#assign scoreText = "">
+	<#assign addRec = false>
+	<#if isSelectedAnswer(var2000,var761)>
+		<#assign scoreText = "unstable housing/at risk">
+		<#assign addRec = true>
+	<#elseif isSelectedAnswer(var2000,var762)>
+		<#assign scoreText = "stable housing">
+	</#if>
+
+	<#if scoreText?has_content>
+		Homelessness ${LINE_BREAK}
+		This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
+		${LINE_BREAK}
+		${LINE_BREAK}
+		Results: ${scoreText}	
+		<#if addRec>
+			${LINE_BREAK}
+			Recommendation: Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
+		</#if>
+	</#if>
 </#if>
 ${MODULE_END}
 ');
@@ -851,21 +860,25 @@ ${MODULE_TITLE_START}
 Alcohol Use
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score >= 0) && (score <= 2)>
-	<#assign scoreText = "negative screen">
-	<#assign isComplete = true>
-<#elseif (score == 3) >
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
-<#elseif (score >= 4) && (score <= 12)>
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
+<#assign score = -999>
+<#assign isComplete = false> 
+<#if var1229??>
+	<#assign score = getFormulaDisplayText(var1229)>
+	<#if score != "notset" && score != "notfound">
+		<#assign isComplete = true>
+		<#assign score = score?number>
+	</#if>
 </#if>
 
 <#if isComplete>
+	<#assign scoreText = "">
+	<#if (score >= 0) && (score <= 2)>
+		<#assign scoreText = "negative screen">
+	<#elseif (score == 3) >
+		<#assign scoreText = "at risk">
+	<#elseif (score >= 4) && (score <= 12)>
+		<#assign scoreText = "at risk">
+	</#if>
 	
 	Alcohol Use ${LINE_BREAK}
 	Drinking too much, too often, or both, causes serious problems. Abuse can have negative effects on school, work, and relationships, and can cause liver disease and cirrhosis, congestive heart failure, seizures, falls, hypertension, and other serious health risks.
@@ -876,7 +889,7 @@ ${MODULE_START}
 </#if>
 ${MODULE_END}
 ');
-INSERT INTO survey_template (survey_id, template_id) VALUES (6, 302);
+INSERT INTO survey_template (survey_id, template_id) VALUES (26, 302);
 
 
 -- /* VETERAN SUMMARY - Insomnia  */
@@ -888,29 +901,37 @@ ${MODULE_TITLE_START}
 Insomnia
 ${MODULE_TITLE_END}
 ${MODULE_START}
-<#assign isComplete = false> <#-- fix when get right variables -->
-<#assign score = 0>
-<#assign scoreText = "">
-<#if (score >= 0) && (score <= 7)>
-	<#assign scoreText = "negative screen">
-	<#assign isComplete = true>
-<#elseif (score >= 8) && (score <= 14)>
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
-<#elseif (score >= 4) && (score <= 12)>
-	<#assign scoreText = "at risk">
-	<#assign isComplete = true>
+<#assign score = -999>
+<#assign isComplete = false> 
+<#if var2189??>
+	<#assign score = getFormulaDisplayText(var2189)>
+	<#if score != "notset" && score != "notfound">
+		<#assign isComplete = true>
+		<#assign score = score?number>
+	</#if>
 </#if>
 
 <#if isComplete>
+	<#assign scoreText = "">
+	<#if (score >= 0) && (score <= 7)>
+		<#assign scoreText = "negative screen">
+	<#elseif (score >= 8) && (score <= 14)>
+		<#assign scoreText = "subthreshold insomnia">
+	<#elseif (score >= 15) && (score <= 21)>
+		<#assign scoreText = "moderate insomnia">
+	<#elseif (score >= 22) && (score <= 28)>
+		<#assign scoreText = "severe insomnia">
+	</#if>
 	
 	Insomnia ${LINE_BREAK}
 	Insomnia is having trouble sleeping that lasts longer than a few weeks. Some causes are: medical (like depression or pain), lifestyle factors (such as too much caffeine), or even stress. 
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
-	Recommendation: Describe your sleeping problems to your clinician, or learn more about insomnia at the  CESAMH site at: http://escreening.cesamh.org 
-
+	Results: ${scoreText}	
+	<#if (score >= 15)>
+		${LINE_BREAK}
+		Recommendation: Describe your sleeping problems to your clinician, or learn more about insomnia at the  CESAMH site at: http://escreening.cesamh.org 
+	</#if>
 </#if>
 ${MODULE_END}
 ');
@@ -943,7 +964,8 @@ ${MODULE_START}
 	This is when you have been exposed to a hazard that may have potential health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
-	Results: ${scoreText}	${LINE_BREAK}
+	Results: ${scoreText}	
+	${LINE_BREAK}
 	Recommendation: Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm. 
 
 
@@ -1067,7 +1089,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (29, 307);
 
 
 -- /* VETERAN SUMMARY - My Depression Score */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (308, 8, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (308, 8, 1, 'Veteran Summary PHQ 9 Depression Entry', 'Veteran Summary PHQ 9 Depression Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#if (var1599)?? >
@@ -1101,7 +1123,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (30, 308);
 
 
 -- /* VETERAN SUMMARY -  My Pain Score  (Basic Pain) */
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (309, 8, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (309, 8, 1, 'Veteran Summary Basic Pain Score Entry', 'Veteran Summary Basic Pain Score Entry', 
 '
 <#include "clinicalnotefunctions"> 
 <#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
@@ -1137,7 +1159,7 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 
 
 -- /* VETERAN SUMMARY -  My PTSD Score*/
-INSERT INTO template(template_id, template_type_id, name, description, template_file) VALUES (310, 8, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
+INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (310, 8, 1, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
 

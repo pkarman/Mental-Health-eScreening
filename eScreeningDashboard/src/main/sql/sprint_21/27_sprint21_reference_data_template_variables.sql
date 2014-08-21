@@ -67,23 +67,15 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10520, 2189, 303);
 
 	/* Environmental Exposure */
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10530, 2200, 304);
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10531, 2201, 304, 'chemical agents');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10532, 2202, 304, 'biological agents');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10533, 2203, 304, 'JP8 or other fuels');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10534, 2204, 304, 'asbestos');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10535, 2205, 304, 'nerve gas');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10536, 2206, 304, 'radiological agents');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10537, 2207, 304, 'sand/dust or particulate matter');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10538, 2208, 304, 'depleted uranium');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10539, 2209, 304, 'industrial pollution');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10540, 2210, 304, 'exhaust fumes');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10541, 2211, 304, 'paints');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10542, 2212, 304, 'animal/insect bites');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10543, 2213, 304, 'smoke from burn pits');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10544, 2214, 304, 'pesticides');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10545, 2215, 304, 'other');
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10546, 2216, 304, 'other');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_id) VALUES (10540, 1, 'Do you have any persistent major concerns regarding the effects of something you believe you may have been exposed to or encountered while deployed', 'Do you have any persistent major concerns regarding the effects of something you believe you may have been exposed to or encountered while deployed question', 125);
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (10541, 2, 'No', 'No answer', 1250);
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (10542, 2, 'yes', 'yes  answer', 1251);
+
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10540, 10540, 304);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10541, 10541, 304, 'no');
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10542, 10542, 304, 'yes');
+
+
 
 	/* Military Sexual Trauma (MST) */
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (10560, 2003, 305);
