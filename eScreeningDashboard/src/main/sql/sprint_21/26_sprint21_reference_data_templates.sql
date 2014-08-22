@@ -1213,7 +1213,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 
 	${MODULE_START}
 	Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
-	<b>Recommendation:</b> Tell your clinician if medications aren’t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+	<b>Recommendation:</b> Tell your clinician if medications aren\'t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
 	${MODULE_END}	
 
 </#if>
@@ -1255,7 +1255,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	${GRAPH_SECTION_END}
 	
 	${MODULE_START}
-	PTSD is when remembering a traumatic event keeps you from living a normal life. It’s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
+	PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK}
 	<b>Recommendation:</b> Ask your clinician for further evaluation and treatment options. 
 	${MODULE_END}
 </#if>
