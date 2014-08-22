@@ -768,8 +768,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif isSelectedAnswer(var820,var822)>
 		<#assign scoreText = "Complete">
 	</#if>
-
-	Advance Directive ${LINE_BREAK}
 	This is a legal paper that tells your wishes for treatment if you become too sick to talk, and if needed, can help your doctors and family to make decisions about your care. 
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -803,7 +801,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	</#if>
 
 	<#if scoreText?has_content>
-		Homelessness ${LINE_BREAK}
 		This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
 		${LINE_BREAK}
 		${LINE_BREAK}
@@ -847,8 +844,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif (score >= 4) && (score <= 12)>
 		<#assign scoreText = "at risk">
 	</#if>
-	
-	Alcohol Use ${LINE_BREAK}
 	Drinking too much, too often, or both, causes serious problems. Abuse can have negative effects on school, work, and relationships, and can cause liver disease and cirrhosis, congestive heart failure, seizures, falls, hypertension, and other serious health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -891,8 +886,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif (score >= 22) && (score <= 28)>
 		<#assign scoreText = "severe insomnia">
 	</#if>
-	
-	Insomnia ${LINE_BREAK}
 	Insomnia is having trouble sleeping that lasts longer than a few weeks. Some causes are: medical (like depression or pain), lifestyle factors (such as too much caffeine), or even stress. 
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -926,8 +919,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign scoreText = "at risk">
 		<#assign showRec = true>
 	</#if>
-	
-	Environmental Exposure ${LINE_BREAK}
 	This is when you have been exposed to a hazard that may have potential health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -966,8 +957,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif isSelectedAnswer(var2003,var2006)>
 		<#assign scoreText = "declined to answer">
 	</#if>
-
-	Military Sexual Trauma (MST) ${LINE_BREAK}
 	MST is sexual assault or repeated, threatening sexual harassment that occurred while the Veteran was in the military. MST can happen any time or anywhere, to men and women. MST can affect your physical and mental health, even years later.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -1004,8 +993,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign scoreText = "current user">
 		<#assign showRec = true>
 	</#if>
-
-	Tobacco Use ${LINE_BREAK}
 	The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -1131,8 +1118,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign showRec = true>
 		<#assign tbi_consult_text = "You have declined further assessment">
 	</#if>
-	
-	Traumatic Brain Injury (TBI) ${LINE_BREAK}
 	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -1365,78 +1350,64 @@ where template_id = 3;
 
 
 
--- /* DEMOGRAPHICS UPDATE */
-update template 
+-- /* EDUCATION, EMPLOYMENT AND INCOME      UPDATE*/
+update escreening.template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
 ${MODULE_TITLE_START}
-DEMOGRAPHICS: 
+EDUCATION, EMPLOYMENT AND INCOME: 
 ${MODULE_TITLE_END}
 ${MODULE_START}
-  <#assign demo_section>
-	
-	<#-- var30: ${var30}<br><br> var40: ${var40}<br><br> var20: ${var20}<br><br> var143: ${var143}<br><br> --> <#-- test objs -->
-	
-	<#if (var30.children)?? && (var40.children)?? && (var20.children)?? && (var143.children)??
-			&& (var30.children?size > 0) && (var40.children?size > 0) && (var20.children?size > 0) && (var143.children?size > 0)	>
-
-		<#assign age = "">
-		<#if var143?? >
-			<#assign age = calcAge(var143.children[0].value)>
-		</#if>
-	
+  <#assign ed_section>
+	<#-- var50: ${var50}<br><br>  var60: ${var60}<br><br>  var70: ${var70!""}<br><br>   var80: ${var80!""}<br><br>  var100: ${var100}<br><br> --> 
   	
-		<#-- The Veteran is a 28 year-old hispanic. -->
+<#if (var50.children)?? && (var60.children)?? && (var70.children)?? && (var80.children)?? && (var100.children)??
+		&& ((var50.children)?size > 0) && ((var60.children)?size > 0) && ((var70.children)?size > 0)  
+		&& ((var80.children)?size > 0) && ((var100.children)?size > 0)>
     
-		The Veteran is a ${age} year-old
-        
-		<#if isSelectedAnswer(var30,var33) >
-          ,  ${NBSP}
-        <#else>
-          ${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)}. ${NBSP}
-        </#if> 
-    
-    <#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
-    <#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >
-      The Veteran reports being
-      <#if hasValue(getSelectMultiDisplayText(var40)) >
-        ${""?left_pad(1)}a ${getSelectMultiDisplayText(var40)}
+    <#-- The Veteran reported completing some high school. -->
+    <#if hasValue(getSelectOneDisplayText(var50)) >
+      The Veteran reported completing ${getSelectOneDisplayText(var50)}. ${NBSP}
+    </#if> 
+    <#-- The Veteran reported being currently an employed, who usually works as retail. -->
+    <#if hasValue(getSelectOneDisplayText(var60)) && hasValue(getSelectOneDisplayText(var70)) >
+      The Veteran reported being currently ${getSelectOneDisplayText(var60)}, who usually works as a ${getFreeformDisplayText(var70)}.  ${NBSP}
+    <#elseif hasValue(getSelectOneDisplayText(var60)) && !(hasValue(getFreeformDisplayText(var70)))>
+      The Veteran reported being currently ${getSelectOneDisplayText(var60)}.  ${NBSP}
+    <#elseif !(hasValue(getSelectOneDisplayText(var60))) && hasValue(getFreeformDisplayText(var70)) >
+      The Veteran reported usually working as a ${getFreeformDisplayText(var70)}.  ${NBSP}
+    </#if>
+    <#--The Veteran reported that the primary source of income is work, and disability.  -->
+    <#if var80?? >
+      The Veteran reported that 
+      <#if wasAnswerNone(var80)>
+        they do not have any income. ${NBSP}
+      <#else>
+        their income is derived from ${getSelectMultiDisplayText(var80)}. ${NBSP}
       </#if> 
-      <#if hasValue(getSelectOneDisplayText(var20)) >
-        ${""?left_pad(1)}${getSelectOneDisplayText(var20)}
-      </#if> 
-      .  ${NBSP}
+    </#if> 
+    <#--The Veteran is married.-->
+    <#if hasValue(getSelectOneDisplayText(var100)) >
+      The Veteran is ${getSelectOneDisplayText(var100)}. ${NBSP}
     </#if> 
    
-    <#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
-    <#if hasValue(getFormulaDisplayText(var11))  >
-      <#assign num = getFormulaDisplayText(var11)?number />
-      The Veteran\'s reported BMI is ${num}, indicating that he/she 
-      <#if (num < 18.5) >
-        is below a normal a weight.
-      <#elseif (num < 25) && (num >= 18.5) >
-        is at a normal weight. 
-      <#elseif (num < 30) && (num >= 25) >
-        is overweight.  
-      <#elseif (num < 40) && (num >= 30) >
-        is obese.  
-      <#elseif (num >= 40) >
-        is morbid obese.  ${NBSP}
-      </#if>
-    </#if>
-    
-    <#else>
-    	${getNotCompletedText()}
-    </#if>
+   	<#else>
+   		${getNotCompletedText()}
+   	</#if>
   </#assign>
-  <#if !(demo_section = "") >
-     ${demo_section}
+  <#if !(ed_section = "") >
+     ${ed_section}
   <#else>
      ${noParagraphData}
   </#if> 
 ${MODULE_END}
-' where template_id = 3;
+'
+where template_id = 5;
+
+
+
+
 
 
 
