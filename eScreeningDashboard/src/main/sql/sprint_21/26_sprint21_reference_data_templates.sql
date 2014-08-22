@@ -1169,13 +1169,13 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 0,
 	            "ticks": [0, 4, 10, 15, 20, 27],
-	            "intervals": [
+	            "intervals": {
 	                "Minimal":4,
 	                "Mild":10,
 	                "Moderate":15,
 	                "Moderately Severe":20,
 	                "Severe":27
-	            ],
+	            },
 	            "score": ${score}
 	        }
     	}
@@ -1213,13 +1213,13 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 0,
 	            "ticks": [0,1,4,6,8,10],
-	            "intervals": [
+	            "intervals": {
 	                "None": 1,
 	                "Mild": 4,
 	                "Moderate": 6,
 	                "Severe": 8,
 	                "Very Severe":10
-	            ],
+	            },
 	            "score": ${score}
 	        }
     	  }
@@ -1259,10 +1259,10 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 17,
 	            "ticks": [17,35,50,65,85],
-	            "intervals": [
+	            "intervals": {
 	                "Negative": 50,
 	                "Positive":85
-	            ],
+	            },
 	            "score": ${score}
 	        }
     	  }
