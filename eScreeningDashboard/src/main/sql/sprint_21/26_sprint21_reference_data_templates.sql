@@ -1169,13 +1169,12 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 0,
 	            "ticks": [0, 4, 10, 15, 20, 27],
-	            <#-- This is unecessarily complex please change to simpler form: "Minimal":4 -->
 	            "intervals": [
-	                {"row": [{"count": 4 , "legend": "Minimal"}]},
-	                {"row": [{"count": 10 , "legend": "Mild"}]},
-	                {"row": [{"count": 15, "legend": "Moderate"}]},
-	                {"row": [{"count": 20, "legend": "Moderately Severe"}]},
-	                {"row": [{"count": 27, "legend": "Severe"}]}
+	                "Minimal":4,
+	                "Mild":10,
+	                "Moderate":15,
+	                "Moderately Severe":20,
+	                "Severe":27
 	            ],
 	            "score": ${score}
 	        }
@@ -1216,11 +1215,11 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	            "ticks": [0,1,4,6,8,10],
 	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
 	            "intervals": [
-	                {"row": [{"count": 1, "legend": "None"}]},
-	                {"row": [{"count": 4, "legend": "Mild"}]},
-	                {"row": [{"count": 6, "legend": "Moderate"}]},
-	                {"row": [{"count": 8, "legend": "Severe"}]},
-	                {"row": [{"count": 10, "legend": "Very Severe"}]}
+	                "None": 1,
+	                "Mild": 4,
+	                "Moderate": 6,
+	                "Severe": 8,
+	                "Very Severe":10
 	            ],
 	            "score": ${score}
 	        }
@@ -1263,8 +1262,8 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	            "ticks": [17,35,50,65,85],
 	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
 	            "intervals": [
-	                {"row": [{"count": 50, "legend": "Negative"}]},
-	                {"row": [{"count": 85, "legend": "Positive"}]},
+	                "Negative": 50,
+	                "Positive":85
 	            ],
 	            "score": ${score}
 	        }
