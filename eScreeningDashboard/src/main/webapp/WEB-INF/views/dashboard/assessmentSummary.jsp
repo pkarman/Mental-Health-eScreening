@@ -11,6 +11,8 @@
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+    <script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
+    
     <link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
@@ -34,6 +36,99 @@
             });
     </script>
     <style type="text/css">
+    
+    
+    .bar {
+    }
+    .pointer {
+      width:2px; height:21px; background-color:#222c76; text-align:center; margin:0 auto;
+    }
+    .axis path, .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+    .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+    }
+    #tooltip {
+      position: absolute;
+      text-align: center;
+      height: auto;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      pointer-events: none;
+    }
+    #tooltip.hidden {
+      display: none;
+    }
+    #tooltip p {
+      margin: 0;
+      font-family: sans-serif;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .value {
+      color: #fff;
+      background-color: #0f3a64;
+      width: 40px;
+      padding: 10px;
+    }
+    .hide{
+      display:none;
+    }
+    
+    .stackedBars {
+    
+    }
+    .stackedBars svg{
+      font-family: arial;
+      background-color:#fff;
+      font-size: 10px;
+      position:absolute;
+    }
+    .scoreBlock{
+      border-right:1px dashed #000000;
+      min-height:200px;
+    }
+    .scoreBlock h3{
+      font-size:14px;
+      font-family: arial;
+      font-weight:bold;
+      margin:0px;
+      padding:0px;
+      text-decoration:underline;
+    }
+    .scoreBlock h4{
+      font-size:70px;
+      font-family: arial;
+      font-weight:bold;
+       margin:0px;
+      padding:0px;
+    }
+    .scoreBlock h5{
+      font-size:14px;
+      font-family: arial;
+      font-weight:bold;
+       margin:0px;
+      padding:0px;
+    }
+
+    .graphBlock{
+      border-right:1px dashed #000000;
+      min-height:200px;
+    }
+
+    .graphTitle{
+      text-align:center;
+      font-weight:bold;
+    }
+    .graphFooterNote{
+      text-align:center;
+    }
+    
+    
         /* for print preview styles  */
         @page { size: auto; margin: 17mm 0mm 16.12mm 0mm;}
         .container_main { width: 96%;  padding: 0 2%; margin: 0 auto;}
@@ -52,22 +147,21 @@
     
    #VeteranSummaryModal .moduleTemplateTitle { 
     font-weight: bold;
-     margin: 10px 20px 20px 20px;
+     margin: 10px 10px 20px 10px;
    }
     #VeteranSummaryModal .moduleTemplateText {
-      margin: 10px 20px 20px 20px;
+      margin: 10px 10px 20px 10px;
      
     }
     #VeteranSummaryModal .moduleTemplateText:first-line {
-      //font-weight: bold;
-     
+      // font-weight: bold;
     }
     
     #VeteranSummaryModal .matrixTableHeader{ width:200px; }
     
     #VeteranSummaryModal .moduleTemplate{
         display:inline-table;
-				width:48%;
+		width:48%;
         border-top:1px dashed #000000;
     }
     
@@ -96,13 +190,28 @@
       font-weight:bold  !important;
       line-height: 35px;
     }
+    #VeteranSummaryModal .graphicBlock{
+      width:100% !important;
+      border:none !important;
+      border-top:1px dashed #000000 !important;
+    }
     
-   
+    #VeteranSummaryModal .graphicBlock .scoreBlock{
+      border:none !important;
+      display: inline-table;
+      width: 150px;
+      border-right: 1px dashed #000 !important;
+      padding-right: 5px;
+    }
+   #VeteranSummaryModal .graphicBlock  .moduleTemplateText{
+      display: inline-table;
+      width: 300px;
+   }
     
 
     @media print {
     
-    *{
+    * {
       overflow: visible;
     }
     body * {
@@ -479,11 +588,6 @@
               </div>
             </div>
           </div>
-
-
-
-
-
           
           <!-- Modal Review Summary 
                     <div class="modal fade" id="assessment_reminders_modal" tabindex="-1" role="dialog" aria-labelledby="assessment_reminders_modal_label" aria-hidden="true">
@@ -524,10 +628,7 @@
                       </div>
                     </div>
                     --> 
-                  
 
-
-          
           <br />
         </div>
       </div>
@@ -535,7 +636,6 @@
     <!-- row --> 
   </form:form>
 </div>
-
 
 <!-- Modal Veteran Summary  -->
 <div class="custom_modal" >
@@ -547,6 +647,9 @@
           <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
         </div>
         <div class="modal-body yesPrint">
+            <div align="right" class="non-printable">
+              <button class="btn btn-primary" onClick="window.print();"><span class=" glyphicon glyphicon-print"></span> Print Review Note</button>
+            </div>
           <div class="modal_contents">Loading...</div>
         </div>
       </div>
@@ -602,10 +705,8 @@
 	        $(document).ready(function() {
 	        	$(this).on("click", '#VeteranSummaryButton', function(e){
 	        		  e.preventDefault();
-								
-								
+
 	        		  var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
-								
 
 	        		  $('#VeteranSummaryModal').modal('show');
 	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
@@ -619,9 +720,29 @@
 	        		   		success : function(r)
 	        				 {  
 	        					 $(modal_contents).show().html(r);
+                      
+                      // $(".graphicBody").length;
+                      // console.log("graphArea.length" + $(".graphicBody").length);
+                      
+                      $(".graphicBody").each(function(){
+                        var $this = $(this);
+                        var json      = $.parseJSON($this.html());
+
+                        //clear the graph area
+                        $this.html("");
+                        
+                        graphStacked(json, $(".graphicBody"));
+                        $('.bars > g').each(function() {
+                          $(this).prependTo(this.parentNode);
+                        });
+                     });
+
 	        				 }
-	        		});
-	        	});
+                        
+            	});
+	        	
+            
+            });
 						
 						
 						
@@ -688,4 +809,199 @@
 	        });
         
         </script>
+        
+        
+        
+        <script>
+      //TODO: graphStart has to be used to make the bar values start from non-zero numbers 
+      //TODO: for the colors of each bar, what happens when we have more than 6 intervals?
+       
+     function graphStacked(graphObj, containerDivClass){
+       
+       var container = $(containerDivClass);
+       // Load Objects
+       var graphparams = graphObj.data;
+       //graphStart is never used
+       var graphStart   = graphparams.graphStart;
+       var ticks        = graphparams.ticks;
+       
+       var legends = [];
+       var d3DataSet = [];
+       var scoresInterval;
+       var lastInterval = graphStart;
+       $.each(graphparams.intervals, function(name, intervalEnd){
+            legends.push(name);
+            d3DataSet.push([{x:name, y:intervalEnd}]);  // adds 	[Object { x="None", y=1}]
+            if(graphparams.score > lastInterval && graphparams.score <= intervalEnd){
+                scoresInterval = name;
+            }
+            lastInterval = intervalEnd;
+       }); 
+       
+       
+       //get the name of the interval where the score ended up
+       
+       //TODO: Can we use the moduleTemplateTitle block to hold the score stuff?  Also the wrong title is being used in this block 
+       //it should be the title in the moduleTemplateTitle above the score and the graphObj.title should be over the graph.
+       
+       // Update body with title block
+       var titleBlock = "<div class='scoreBlock text-center'><h3>"+ graphObj.title +"</h3><h4>"+graphparams.score+"</h4><h5>" + scoresInterval +"</h5></div>";
+       container.append(titleBlock);
+       console.log("--------");
+       $(".graphicBody").parent().parent().addClass("graphicBlock");
+       
+       // $( ".scoreBlock" ).insertBefore( ".graphSection" );
+
+ 
+        var margins = {
+                top: 46,
+                left: 15,
+                right: 15,
+                bottom: 0
+            },
+            containerWidth    = 550,
+            containerHeight   = 100,
+            legendPanel       = {
+                                  width: containerWidth - margins.left - margins.right
+                                 },
+            width       = containerWidth - margins.left - margins.right,
+            height      = containerHeight - margins.top - margins.bottom,
+            value;
+            
+            // Settings
+            xMax            = d3.max(ticks),
+            xCurrent        = graphparams.score, //4,
+            ticks           = ticks, //[0, 4, 10, 20, 27],
+            colors          = ['#cfd8e0'  , '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'],
+            series          = legends,
+            dataset         = d3DataSet,
+            stack = d3.layout.stack();
+           
+
+        stack(dataset);
+        var dataset = dataset.map(function(group) {
+            return group.map(function(d) {
+                // Invert the x and y values, and y0 becomes x0
+                return {
+                    x: d.y,
+                    y: d.x,
+                    x0: d.y0
+                };
+            });
+        }),
+        svg = d3.select(containerDivClass)
+            .append('svg')
+                .attr('width', width + margins.left + margins.right)
+                .attr('height', height + margins.top + margins.bottom + 60)
+            .append('g')
+                .attr('class', 'bars')
+                .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
+       
+        xScale = d3.scale.linear()
+            .domain([0, xMax])
+            .range([0, width]),
+        notes = dataset[0].map(function(d) { return d.y; }),
+        _ = console.log(notes),
+        yScale = d3.scale.ordinal()
+            .domain(notes)
+            .rangeRoundBands([0, height], .1),
+        xAxis = d3.svg.axis()
+            .scale(xScale).tickValues(ticks)
+            .orient('bottom'),
+        yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient('left'),
+        
+        
+        // Bars Start
+        groups = svg.selectAll('g')
+            .data(dataset)
+            .enter()
+              .append('g')
+                .attr('class', function(d, i) {
+                    return "bar_" + [i];
+                })
+                .style('fill', function(d, i) {
+                    return colors[i];
+                })
+                
+        rects = groups.selectAll('rect')
+            .data(function(d) { return d; })
+            .enter()
+                .append('rect')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('height', function(d) { return yScale.rangeBand(); })
+                    .attr('width', function(d) { return xScale(d.x); })
+
+      var xPos = parseFloat(width / xMax) * xCurrent;
+      var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
+
+
+      d3.select('#tooltip')
+          .style('margin-left', xPos + 'px')
+          .style('margin-top', yPos + 'px')
+          .style('position', 'absolute')
+          .select('#value')
+          .text(xCurrent);
+
+        // xAxis postion
+        svg.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis);
+
+        
+        // yAxis postion
+        svg.append('g')
+            .attr('class', 'axis')
+            .call(yAxis);
+
+        // legend Rect
+        svg.append('rect')
+            .attr('fill', 'white')
+            .attr('width', legendPanel.width)
+            .attr('height', 5 * dataset.length)
+            .attr('x', 0)
+            .attr('y', 100);
+
+         // legend Text & Box
+        series.forEach(function(s, i) {
+            svg.append('text')
+                .attr('fill', 'black')
+                .attr('x', i * 105 + 15)
+                .attr('y', 100)
+                .text(s);
+            svg.append('rect')
+                .attr('fill', colors[i])
+                .attr('width', 10)
+                .attr('height', 10)
+                .attr('x', i * 105)
+                .attr('y', 90);
+        });
+        
+        //add footer if we were given one
+        if(graphObj.footer != null && graphObj.footer != ""){
+            container.append("<div class='text-center'><h5>" + graphObj.footer +"</h5></div>");
+        }
+     }
+      
+        
+        
+        $( document ).ready(function() {
+            //var graphArea = $(".graphicBody");
+            //var json = $.parseJSON(graphArea.html());
+            //clear the graph area
+            //graphArea.html("");
+            
+            //graphStacked(json, ".graphicBody");
+            //  $('.bars > g').each(function() {
+            //  $(this).prependTo(this.parentNode);
+            //});
+          });
+
+
+
+
+    </script>
 </html>
