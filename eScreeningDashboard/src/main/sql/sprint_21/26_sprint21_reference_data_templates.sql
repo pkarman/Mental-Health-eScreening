@@ -1213,7 +1213,6 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 0,
 	            "ticks": [0,1,4,6,8,10],
-	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
 	            "intervals": [
 	                "None": 1,
 	                "Mild": 4,
@@ -1260,7 +1259,6 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 	        "data": {
 	            "graphStart": 17,
 	            "ticks": [17,35,50,65,85],
-	            <#-- This is unecessarily complex please change to simpler form: "None":4 -->
 	            "intervals": [
 	                "Negative": 50,
 	                "Positive":85
