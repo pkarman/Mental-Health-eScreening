@@ -14,7 +14,7 @@
     <link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
-    <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard.css" />" rel="stylesheet" type="text/css" />
+    <!--  <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard.css" />" rel="stylesheet" type="text/css" /> -->
     <link href="<c:url value="/resources/css/jquery.dataTables.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
@@ -56,7 +56,13 @@
    }
     #VeteranSummaryModal .moduleTemplateText {
       margin: 10px 20px 20px 20px;
+     
     }
+    #VeteranSummaryModal .moduleTemplateText:first-line {
+      //font-weight: bold;
+     
+    }
+    
     #VeteranSummaryModal .matrixTableHeader{ width:200px; }
     
     #VeteranSummaryModal .moduleTemplate{
@@ -85,10 +91,82 @@
       overflow-y: auto;
     }
     #VeteranSummaryModal .modal-body p { margin-bottom: 900px;}
+    #VeteranSummaryModal .moduleTemplateHeader h5{
+      font-size:22px !important;
+      font-weight:bold  !important;
+      line-height: 35px;
+    }
     
+   
+    
+
     @media print {
+    
+    *{
+      overflow: visible;
+    }
+    body * {
+      visibility:hidden;
+      overflow: visible !important;
+      font-size: 11px;
+      
+      
+    }
+     
+     
+    .yesPrint, .yesPrint * {
+    	visibility:visible !important;
+    	min-height: none !important;
+      	max-height: none !important;
+      	height: auto !important;
+    }
+  
     .non-printable { display: none; }
-    body { overflow: visible !important;}
+
+   
+    .custom_modal .modal-wide .modal-body{
+      overflow: visible;
+      position:absolute;
+      left:0;
+      top:0;
+      width:750px !important;
+      height: auto !important;
+      background-color: #666;
+    	visibility:visible !important;
+    	min-height: none !important;
+      	max-height: none !important;
+      	padding: 0px;
+      	margin: 0px;
+    }
+	.justifyCtrTableData img{
+		display: block;
+		text-align: center;
+		margin: 0 auto;
+		min-height: 100px;
+		min-width: 100px;
+	}
+	.moduleTemplateText{margin: 0px; padding: 0px}
+	
+	.moduleTemplateHeader .col-md-6{
+		width: 350px;
+		float: left;
+	}
+	
+    .moduleTemplateHeader img{
+   		width: 130px;
+   	}
+   	.moduleTemplateHeader h5{
+   		font-size: 16px;
+   	}
+   	#VeteranSummaryModal .moduleTemplateTitle{
+   		margin: 5px;
+   		padding: 0px;
+   	}
+    
+    #VeteranSummaryModal .moduleTemplateText{
+        margin: 5px;
+   		padding: 0px;
+    }
     }
     </style>
 </head>
@@ -584,6 +662,29 @@
 	        		});
 	        	});
 	        	
+	        	
+	        	
+	        	function printElement(elem, append, delimiter) {
+	        		var domClone = elem.cloneNode(true);
+	        		var $printSection = document.getElementById("yesPrint");
+	        		if (!$printSection) {
+                var $printSection = document.createElement("div");
+                  $printSection.id = "yesPrint";
+                  document.body.appendChild($printSection);
+              }
+                if (append !== true) {
+                  $printSection.innerHTML = "";
+                }
+                else if (append === true) {
+                if (typeof (delimiter) === "string") {
+                  $printSection.innerHTML += delimiter;
+                }
+                else if (typeof (delimiter) === "object") {
+                  $printSection.appendChlid(delimiter);
+                }
+	        		}
+	        			$printSection.appendChild(domClone);
+	        		}
 	        });
         
         </script>

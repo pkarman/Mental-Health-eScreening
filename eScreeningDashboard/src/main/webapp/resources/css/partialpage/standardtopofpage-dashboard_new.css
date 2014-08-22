@@ -824,13 +824,33 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 @media only print {
+
+/*
 .noPrint {
 	display: none;
 }
 .yesPrint {
-	display: block !important;
+  visibility:visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  height: auto !important;
 }
+
 .modal-content {
 	width: 100%;
 }
+
+.custom_modal .modal-wide .modal-body{
+      overflow: visible;
+      position:absolute;
+      left:0;
+      top:0;
+      width:750px !important;
+      height: auto !important;
+      background-color: #666;
+    	visibility:visible !important;
+    	min-height: none !important;
+      	max-height: none !important;
+    }
+    */    
 }
