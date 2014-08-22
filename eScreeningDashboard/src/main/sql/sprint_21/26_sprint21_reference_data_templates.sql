@@ -768,8 +768,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif isSelectedAnswer(var820,var822)>
 		<#assign scoreText = "Complete">
 	</#if>
-
-	Advance Directive ${LINE_BREAK}
 	This is a legal paper that tells your wishes for treatment if you become too sick to talk, and if needed, can help your doctors and family to make decisions about your care. 
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -803,7 +801,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	</#if>
 
 	<#if scoreText?has_content>
-		Homelessness ${LINE_BREAK}
 		This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
 		${LINE_BREAK}
 		${LINE_BREAK}
@@ -847,8 +844,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif (score >= 4) && (score <= 12)>
 		<#assign scoreText = "at risk">
 	</#if>
-	
-	Alcohol Use ${LINE_BREAK}
 	Drinking too much, too often, or both, causes serious problems. Abuse can have negative effects on school, work, and relationships, and can cause liver disease and cirrhosis, congestive heart failure, seizures, falls, hypertension, and other serious health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -891,8 +886,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif (score >= 22) && (score <= 28)>
 		<#assign scoreText = "severe insomnia">
 	</#if>
-	
-	Insomnia ${LINE_BREAK}
 	Insomnia is having trouble sleeping that lasts longer than a few weeks. Some causes are: medical (like depression or pain), lifestyle factors (such as too much caffeine), or even stress. 
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -926,8 +919,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign scoreText = "at risk">
 		<#assign showRec = true>
 	</#if>
-	
-	Environmental Exposure ${LINE_BREAK}
 	This is when you have been exposed to a hazard that may have potential health risks.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -966,8 +957,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 	<#elseif isSelectedAnswer(var2003,var2006)>
 		<#assign scoreText = "declined to answer">
 	</#if>
-
-	Military Sexual Trauma (MST) ${LINE_BREAK}
 	MST is sexual assault or repeated, threatening sexual harassment that occurred while the Veteran was in the military. MST can happen any time or anywhere, to men and women. MST can affect your physical and mental health, even years later.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -1004,8 +993,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign scoreText = "current user">
 		<#assign showRec = true>
 	</#if>
-
-	Tobacco Use ${LINE_BREAK}
 	The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications.
 	${LINE_BREAK}
 	${LINE_BREAK}
@@ -1131,8 +1118,6 @@ INSERT INTO template(template_id, template_type_id, name, description, template_
 		<#assign showRec = true>
 		<#assign tbi_consult_text = "You have declined further assessment">
 	</#if>
-	
-	Traumatic Brain Injury (TBI) ${LINE_BREAK}
 	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
 	${LINE_BREAK}
 	${LINE_BREAK}
