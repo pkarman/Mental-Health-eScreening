@@ -1138,7 +1138,7 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 '
 <#include "clinicalnotefunctions"> 
 <#if (var1599)?? >
-	<#assign score = getSelectOneDisplayText(var1599)>
+	<#assign score = getCustomVariableDisplayText(var1599)>
 	<#-- Template start -->
 	${MODULE_TITLE_START}
 	Depression
