@@ -3,12 +3,23 @@
 /* ********************************************** */
 
 
-
+/* WHODAS */
+UPDATE assessment_variable set formula_template = '([4480] + [4500] + [4520] + [4540])'
+WHERE assessment_variable_id = 4559;
 
 
 /* ********************************************** */
 /* Template Variables  UPDATES */
 /* ********************************************** */
+
+
+/* CPRS NOTE EDUCATION, EMPLOYMENT AND INCOME */
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (103, 103, 5, 'separated')
+ON DUPLICATE KEY UPDATE override_display_value= "separated";
+
+/* CPRS NOTE SOCIAL  */
+
+
 
 /* Veteran Summary Template Variables Update */
 

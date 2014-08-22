@@ -135,7 +135,7 @@ ${MODULE_START}
 
  	<#assign section>
 		<#-- I DON\'T think that WHODAS needs ALL NONE Logic -->
-		<#--  var4200: ${var4200!""}<br><br>  -->
+		<#--  var4200: ${var4200!""}<br><br>  --> var4499: ${var4499!""}<br><br> var4559: ${var4559!""}<br><br>  var4789: ${var4789!""}<br><br>  var4200: ${var4200!""}<br><br>	
 
  		<#if (var4119.value)?? && (var4239.value)?? && (var4319.value)?? && (var4419.value)?? 
 				&& (var4499.value)?? && (var4559.value)?? && (var4789.value)?? && (var4200.children)?? 
@@ -151,13 +151,20 @@ ${MODULE_START}
 
 			<b>Life Activities (Household/Domestic)</b> - the Veteran had an average score of ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. ${LINE_BREAK}${LINE_BREAK} 
 			
+			<#assign avg = 0>
 			<#if isSelectedAnswer(var4200, var4202)>
-				<b>Life Activities (School /Work)</b> - the Veteran had an average score of ${var4559.value} which is a rating of ${getScoreText(var4559.value)} disability. ${LINE_BREAK}${LINE_BREAK}    
+				<#if var4559.value != 0>
+					<#assign avg = var4559.value/4>
+				</#if>
+				<b>Life Activities (School /Work)</b> - the Veteran had an average score of ${avg} which is a rating of ${getScoreText(avg)} disability. ${LINE_BREAK}${LINE_BREAK}    
 			<#elseif isSelectedAnswer(var4200, var4201)>
+				<#if var4559.value != 0>
+					<#assign avg = var4559.value/4>
+				</#if>
 				<b>Life Activities (School /Work)</b> - the Veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
 			</#if>
 			
-			<b>Participation in Society</b> - the Veteran had an average score of ${var4789.value} which indicates ${getScoreText(var4789.value)} disability. ${NBSP} 
+			<b>Participation in Society</b> - the Veteran had an average score of ${avg} which indicates ${getScoreText(avg)} disability. ${NBSP} 
 
 		<#else>
 			${getNotCompletedText()}. ${NBSP}
@@ -171,6 +178,7 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 24;
+
 
 
 /* Homelessness Clinical Reminder */
@@ -1271,3 +1279,569 @@ INSERT INTO template(template_id, template_type_id, is_graphical, name, descript
 </#if>
 ');
 INSERT INTO survey_template (survey_id, template_id) VALUES (35, 310);
+
+
+
+-- /* PRESENTING CONCERN(S) UPDATE */
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PRESENTING CONCERN(S):
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign concerns_section> 
+
+	
+
+	<#if (var200.children)?? && (var210.children)?? && (var220.children)?? && (var230.children)?? && (var240.children)?? 
+		&& (var250.children)?? && (var260.children)?? && (var270.children)??
+		&& ((var200.children)?size > 0) && ((var210.children)?size > 0) && ((var220.children)?size > 0) && ((var230.children)?size > 0) && ((var240.children)?size > 0) 
+		&& ((var250.children)?size > 0) && ((var260.children)?size > 0) && ((var270.children)?size > 0)>
+
+    <#-- The Veteran identified enrollment, mental health , physical health, establishing a PCP, and vic as the presenting concerns. -->
+    <#if hasValue(getSelectMultiDisplayText(var200)) >
+      The Veteran identified ${getSelectMultiDisplayText(var200)} as the presenting concern(s). ${NBSP}
+					${LINE_BREAK}
+					${LINE_BREAK}
+	</#if>
+    
+	<#assign fragments = []>
+	<#assign healthCareText = "">
+	<#assign vaBeneifitsText = "">
+	<#assign employmentText = "">
+	<#assign financialInfoText = "">
+	<#assign SocialText = "">
+	<#assign legalText = "">
+	<#assign housingText = "">
+	<#assign otherText = "">
+
+	<#if hasValue(var210) && !isSelectedAnswer(var210, var211)>      
+		<#assign healthCareText = "Healthcare (specifically, " + getSelectMultiDisplayText(var210) + ")">
+		<#assign fragments = fragments + [healthCareText] >
+	</#if>
+
+	<#if hasValue(var250) && !isSelectedAnswer(var250, var251)>   
+		<#assign vaBeneifitsText = "VA Benefits (specifically, " + getSelectMultiDisplayText(var250) + ")" >
+		<#assign fragments = fragments + [vaBeneifitsText] >
+	</#if>
+
+	<#if hasValue(var220) && !isSelectedAnswer(var220, var221)>  
+		<#assign employmentText = "Employment (specifically, " + getSelectMultiDisplayText(var220) + ")">
+		<#assign fragments = fragments + [employmentText] >
+	</#if>
+
+	<#if hasValue(var230) && !isSelectedAnswer(var230, var231)>      
+		<#assign SocialText = "Social (specifically, " + getSelectMultiDisplayText(var230) + ")">
+		<#assign fragments = fragments + [SocialText]  >
+	</#if>
+
+	<#if hasValue(var270) && !isSelectedAnswer(var270, var271)>      
+		<#assign legalText = "Legal (specifically, " + getSelectMultiDisplayText(var270) + ")" >
+		<#assign fragments = fragments + [legalText]  >
+	</#if>
+
+	<#if hasValue(var240) && !isSelectedAnswer(var240, var241)>       
+		<#assign housingText = "Housing (specifically, " + getSelectMultiDisplayText(var240) + ")">
+		<#assign fragments = fragments + [housingText] >
+	</#if>
+
+	<#if (fragments?size > 0)>
+		The Veteran indicated that he/she would like information or assistance with the following: ${createSentence(fragments)}.${NBSP}
+	<#else>
+		The Veteran indicated that he/she would not like information or assistance with Healthcare, VA BEnefits, Social, Legal or Housing concerns.
+	</#if>
+   <#else>
+	 ${getNotCompletedText()}
+   </#if>
+  </#assign>
+  <#if !(concerns_section = "") >
+     ${concerns_section}
+  <#else>
+     ${noParagraphData}
+  </#if>
+${MODULE_END}
+'
+where template_id = 3;
+
+
+
+
+-- /* DEMOGRAPHICS UPDATE */
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+DEMOGRAPHICS: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign demo_section>
+	
+	<#-- var30: ${var30}<br><br> var40: ${var40}<br><br> var20: ${var20}<br><br> var143: ${var143}<br><br> --> <#-- test objs -->
+	
+	<#if (var30.children)?? && (var40.children)?? && (var20.children)?? && (var143.children)??
+			&& (var30.children?size > 0) && (var40.children?size > 0) && (var20.children?size > 0) && (var143.children?size > 0)	>
+
+		<#assign age = "">
+		<#if var143?? >
+			<#assign age = calcAge(var143.children[0].value)>
+		</#if>
+	
+  	
+		<#-- The Veteran is a 28 year-old hispanic. -->
+    
+		The Veteran is a ${age} year-old
+        
+		<#if isSelectedAnswer(var30,var33) >
+          ,  ${NBSP}
+        <#else>
+          ${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)}. ${NBSP}
+        </#if> 
+    
+    <#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
+    <#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >
+      The Veteran reports being
+      <#if hasValue(getSelectMultiDisplayText(var40)) >
+        ${""?left_pad(1)}a ${getSelectMultiDisplayText(var40)}
+      </#if> 
+      <#if hasValue(getSelectOneDisplayText(var20)) >
+        ${""?left_pad(1)}${getSelectOneDisplayText(var20)}
+      </#if> 
+      .  ${NBSP}
+    </#if> 
+   
+    <#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
+    <#if hasValue(getFormulaDisplayText(var11))  >
+      <#assign num = getFormulaDisplayText(var11)?number />
+      The Veteran\'s reported BMI is ${num}, indicating that he/she 
+      <#if (num < 18.5) >
+        is below a normal a weight.
+      <#elseif (num < 25) && (num >= 18.5) >
+        is at a normal weight. 
+      <#elseif (num < 30) && (num >= 25) >
+        is overweight.  
+      <#elseif (num < 40) && (num >= 30) >
+        is obese.  
+      <#elseif (num >= 40) >
+        is morbid obese.  ${NBSP}
+      </#if>
+    </#if>
+    
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+  </#assign>
+  <#if !(demo_section = "") >
+     ${demo_section}
+  <#else>
+     ${noParagraphData}
+  </#if> 
+${MODULE_END}
+' where template_id = 3;
+
+
+
+-- /* DEMOGRAPHICS UPDATE*/
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+${LINE_BREAK}
+DEMOGRAPHICS: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign demo_section>
+	
+	<#-- var30: ${var30}<br><br> var40: ${var40}<br><br> var20: ${var20}<br><br> var143: ${var143}<br><br> --> <#-- test objs -->
+	
+	<#if (var30.children)?? && (var40.children)?? && (var20.children)?? && (var143.children)??
+			&& (var30.children?size > 0) && (var40.children?size > 0) && (var20.children?size > 0) && (var143.children?size > 0)	>
+
+		<#assign age = "">
+		<#if var143?? >
+			<#assign age = calcAge(var143.children[0].value)>
+		</#if>
+	
+  	
+		<#-- The Veteran is a 28 year-old hispanic. -->
+    
+		The Veteran is a ${age} year-old<#t>
+        
+		<#if isSelectedAnswer(var30,var33) >
+          ,  <#t>
+        <#else>
+          ${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)},  <#t> 
+        </#if> 
+    
+    <#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
+    <#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >
+      <#-- The Veteran reports being<#t>  -->
+      <#if hasValue(getSelectMultiDisplayText(var40)) >
+        ${""?left_pad(1)} ${getSelectMultiDisplayText(var40)}<#t>
+      </#if> 
+      <#if hasValue(getSelectOneDisplayText(var20)) >
+        ${""?left_pad(1)}${getSelectOneDisplayText(var20)}<#t>
+      </#if> 
+      .  <#t>
+    </#if> 
+   
+    <#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
+    <#if hasValue(getFormulaDisplayText(var11))  >
+      <#assign num = getFormulaDisplayText(var11)?number />
+      The Veteran\'s reported BMI is ${num}, indicating that he/she <#t>
+      <#if (num < 18.5) >
+        is below a normal a weight.  <#t>
+      <#elseif (num < 25) && (num >= 18.5) >
+        is at a normal weight.  <#t>
+      <#elseif (num < 30) && (num >= 25) >
+        is overweight.  <#t>
+      <#elseif (num < 40) && (num >= 30) >
+        is obese.  <#t>
+      <#elseif (num >= 40) >
+        is morbid obese.  <#t>
+      </#if>
+    </#if>
+    
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+  </#assign>
+  <#if !(demo_section = "") >
+     ${demo_section}
+  <#else>
+     ${noParagraphData}
+  </#if> 
+${MODULE_END}
+'
+where template_id = 4;
+
+
+-- /* SOCIAL UPDATE */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SOCIAL: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign social_section> 
+	<#if (var90.children)?? && (var160.children)??  && (var130.children)??  
+			&& ((var90.children)?size > 0) && ((((var160.children)?size > 0) && ((var130.children)?size > 0)) || ((var131.value)?? && var131.value == "true")) >
+    <#--The Veteran lives in a house with spouse or partner, and children.-->
+    <#if hasValue(getSelectOneDisplayText(var110)) && hasValue(getSelectMultiDisplayText(var90)) >
+      The Veteran ${getSelectOneDisplayText(var110)}  
+      <#if wasAnswerNone(var90)>
+        alone.  ${NBSP}
+      <#else> 
+        with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+      </#if>
+    <#elseif hasValue(getSelectOneDisplayText(var110)) && !(hasValue(getSelectMultiDisplayText(var90)))>
+      The Veteran ${getSelectOneDisplayText(var110)}.  ${NBSP}
+    <#elseif !(hasValue(getSelectOneDisplayText(var110))) && hasValue(getSelectMultiDisplayText(var90)) >
+     The Veteran lives with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+    </#if>
+    <#--The Veteran reported not having any children.-->
+    <#if hasValue(getAnswerDisplayText(var131)) >
+      <#if wasAnswerTrue(var131) >
+        ${getAnswerDisplayText(var131)}  
+      <#else>
+        <#--The Veteran has 2 child(ren) who are child(ren) are 2,4 years old.-->
+		<#assign rowCount = ((var130.children)?size)!0>
+        <#if !(rowCount = -1) >
+          <#if (rowCount = 0) >
+            The Veteran reported not having any children. ${NBSP}
+          <#elseif (rowCount == 1) >
+			<#assign text = ((var130.children[0].children[0].displayText)!"")>
+            The Veteran has 1 child who is ${text} years old. ${NBSP}
+          <#elseif (rowCount > 1) >
+            The Veteran has ${getNumberOfTableResponseRows(var130)} children who are ${getTableMeasureDisplayText(var130)} years old. ${NBSP}
+          </#if>
+        </#if>
+      </#if>
+    </#if>
+    
+    <#if hasValue(getSelectMultiDisplayText(var160)) >
+    	${LINE_BREAK}${LINE_BREAK}Source(s) of support is/are: ${getSelectMultiDisplayText(var160)}. ${NBSP}
+    </#if>
+    
+    <#--The Veteran indicated a history of physical violence .-->
+    <#if hasValue(getSelectOneDisplayText(var150)) >
+    	${LINE_BREAK}${LINE_BREAK}The Veteran ${getSelectOneDisplayText(var150)} a history of physical violence or intimidation in a current relationship. ${NBSP}
+    </#if>
+   
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+    
+    
+  </#assign>
+  <#if !(social_section = "") >
+     ${social_section}
+  <#else>
+     ${noParagraphData}
+  </#if> 
+${MODULE_END}
+'
+where template_id = 6;
+
+
+-- /* SPIRITUAL HEALTH */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SPIRITUAL HEALTH: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign spiritual_section>
+	<#--  var420: ${var420!""}<br><br>  -->
+  	<#if (var400.children)?? && (var430.children)?? && (var440.children)?? && (var420.children)?? 
+			&& ((var400.children)?size > 0) && ((var430.children)?size > 0) && ((var440.children)?size > 0) && ((var420.children)?size > 0)>
+  	<#-- The Veteran reported that spirituality is important.  --> 
+    <#assign text1 = "">
+	<#if hasValue(getSelectOneDisplayText(var400)) >
+		<#assign text1 = getSelectOneDisplayText(var400)>
+     </#if>
+
+	<#if isSelectedAnswer(var420,var423)>
+		<#assign text2 = "is not connected to a faith community but would like to be part of one">
+	<#else>
+		<#assign text2 = getSelectOneDisplayText(var420) + " connected to a faith community">
+	</#if>
+	
+	The Veteran reported that spirituality and/or religion ${text1} important to him/her.  ${LINE_BREAK}${LINE_BREAK}
+	The Veteran ${text2} and ${getSelectOneDisplayText(var430)} a referral to see a chaplain at the time of screening. ${LINE_BREAK}${LINE_BREAK}
+	
+	
+	<#-- The Veteran feels that combat or military service affected his/her religious views in the following way: god. -->
+  	<#if hasValue(getSelectOneDisplayText(var440)) >
+		<#if isSelectedAnswer(var440,var443)>
+			The Veteran does not know how combat or military service has affected his/her religious views.  ${NBSP}
+		<#else>
+			The Veteran feels that combat or military service ${getSelectOneDisplayText(var440)} have an effect on his/her religious views.${NBSP}
+		</#if>
+    </#if>  	
+
+	
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+  </#assign>
+  <#if !(spiritual_section = "") >
+     ${spiritual_section}
+  <#else>
+     ${noParagraphData}
+  </#if> 
+${MODULE_END}
+'
+where template_id = 11;
+
+
+-- /* WHODAS UPDATE */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+WHODAS:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#function getScoreText score>
+			<#assign text = "">
+			<#if (score?number >= 1) && (score?number < 2)>
+				<#assign text = "no">
+			<#elseif (score?number >= 2) && (score?number < 3)>
+				<#assign text = "mild">
+			<#elseif (score?number >= 3) && (score?number < 4)>
+				<#assign text = "moderate">
+			<#elseif (score?number >= 4) && (score?number < 5)>
+				<#assign text = "severe">
+			<#elseif (score?number >= 5) && (score?number < 6)>
+				<#assign text = "extreme">
+			</#if>
+
+			<#return text>
+	</#function>	
+
+ 	<#assign section>
+		<#-- I DON\'T think that WHODAS needs ALL NONE Logic -->
+		<#--  var4200: ${var4200!""}<br><br>  --> 
+
+ 		<#if (var4119.value)?? && (var4239.value)?? && (var4319.value)?? && (var4419.value)?? 
+				&& (var4499.value)?? && (var4789.value)?? && (var4200.children)?? 
+				&& ((var4200.children)?size > 0)>
+		  <#if (var4200.children)?? && ((isSelectedAnswer(var4200, var4201)) ||  (isSelectedAnswer(var4200, var4202) && var4559??))>
+		
+			<#t><b>Understanding and Communicating</b> - the Veteran had an average score of ${var4119.value} which indicates ${getScoreText(var4119.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Mobility</b> - the Veteran had an average score of ${var4239.value}, which indicates ${getScoreText(var4239.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Self-Care</b> - the Veteran had an average score of ${var4319.value} which indicates ${getScoreText(var4319.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Getting Along</b> - the Veteran had an average score of ${var4419.value} which indicates ${getScoreText(var4419.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Life Activities (Household/Domestic)</b> - the Veteran had an average score of ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. ${LINE_BREAK}${LINE_BREAK} 
+			
+			<#assign avg = 0>
+			<#if isSelectedAnswer(var4200, var4202)>
+				<#if (var4559.value)?? && var4559.value?number != 0>
+					<#assign avg = var4559.value?number/4>
+				</#if>
+				<b>Life Activities (School /Work)</b> - the Veteran had an average score of ${avg} which is a rating of ${getScoreText(avg)} disability. ${LINE_BREAK}${LINE_BREAK}    
+			<#elseif isSelectedAnswer(var4200, var4201)>
+				<#if (var4559.value)?? && var4559.value?number != 0>
+					<#assign avg = var4559.value?number/4>
+				</#if>
+				<b>Life Activities (School /Work)</b> - the Veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
+			</#if>
+			
+			<b>Participation in Society</b> - the Veteran had an average score of ${avg} which indicates ${getScoreText(avg)} disability. ${NBSP} 
+		  <#else>
+			${getNotCompletedText()}.
+		  </#if>
+		<#else>
+			${getNotCompletedText()}.
+		</#if>
+ 	</#assign>
+  	<#if !(section = "") >
+     	${section}
+  	<#else>
+     	${noParagraphData}
+  </#if> 
+${MODULE_END}
+'
+where template_id = 24;
+
+
+
+-- /* ROAS AGGRESSION UPDATE */
+update escreening.template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+AGGRESSION: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign agression_section>
+
+    	<#if (var3200.children)?? && (var3210.children)?? && (var3220.children)?? && (var3230.children)?? && (var3240.children)?? 
+				&& (var3250.children)?? && (var3260.children)?? && (var3270.children)?? && (var3280.children)?? && (var3290.children)?? 
+				&& (var3300.children)?? && (var3310.children)?? && (var3320.children)?? && (var3330.children)?? && (var3340.children)?? 
+				&& (var3350.children)??
+				&& ((var3200.children)?size > 0) && ((var3210.children)?size > 0) && ((var3220.children)?size > 0) && ((var3230.children)?size > 0) && ((var3240.children)?size > 0) 
+				&& ((var3250.children)?size > 0) && ((var3260.children)?size > 0) && ((var3270.children)?size > 0) && ((var3280.children)?size > 0) && ((var3290.children)?size > 0) 
+				&& ((var3300.children)?size > 0) && ((var3310.children)?size > 0) && ((var3320.children)?size > 0) && ((var3330.children)?size > 0) && ((var3340.children)?size > 0) 
+				&& ((var3350.children)?size > 0)>
+	
+			<#if !(getScore(var3200) == 999 ||  getScore(var3210) == 999 ||  getScore(var3220) == 999  || getScore(var3230) == 999  ||  getScore(var3240) == 999  || getScore(var3250) == 999  ||  getScore(var3260) == 999  
+				|| getScore(var3270) == 999  ||  getScore(var3280) == 999  || getScore(var3290) == 999)  ||  getScore(var3300) == 999 ||  getScore(var3310) == 999  || getScore(var3320) == 999  ||  getScore(var3330) == 999  
+				|| getScore(var3340) == 999  ||  getScore(var3350) == 999  >
+			
+			  <#if (var3389)?? && (getFormulaDisplayText(var3389) != "notfound") && (getFormulaDisplayText(var3389)?number == 0)>       <#-- veteran answered no to all questions" -->
+				${getAnsweredNeverAllText("Aggression")}.${NBSP}
+			  <#else>
+    			The Veteran had a score of ${getFormulaDisplayText(var3389)} on the Retrospective Overt Aggression Scale (range 0-84).${LINE_BREAK}${LINE_BREAK}
+    			
+    			<#assign fragments = []>
+	
+	
+				<#assign verbalAggressionText = "">
+				<#assign verbalAggressionSubText = []>
+				<#if (getQuestionCalcValue(var3200) > 1) >
+					<#assign verbalAggressionSubText = verbalAggressionSubText + ["shouting angrily"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3210) > 1) >
+					<#assign verbalAggressionSubText = verbalAggressionSubText + ["yelling mild insults"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3220) > 1) >
+					<#assign verbalAggressionSubText = verbalAggressionSubText + ["making vague threats"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3230) > 1) >
+					<#assign verbalAggressionSubText = verbalAggressionSubText + ["making clear threats of violence"]>
+				</#if>
+				<#if verbalAggressionSubText?has_content >      
+					<#assign verbalAggressionText = "Verbal Aggression (" + createSentence(verbalAggressionSubText) + ")">
+					<#assign fragments = fragments + [verbalAggressionText] >
+				</#if>
+
+				<#assign physicalAggressionObjectsText = "">
+				<#assign physicalAggressionObjectsSubText = []>
+				<#if (getQuestionCalcValue(var3240) > 1) >
+					<#assign physicalAggressionObjectsSubText = physicalAggressionObjectsSubText + ["slamming doors"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3250) > 1) >
+					<#assign physicalAggressionObjectsSubText = physicalAggressionObjectsSubText + ["throwing objects"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3260) > 1) >
+					<#assign physicalAggressionObjectsSubText = physicalAggressionObjectsSubText + ["breaking objects or smashing windows"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3270) > 1) >
+					<#assign physicalAggressionObjectsSubText = physicalAggressionObjectsSubText + ["setting fires or throwing object dangerously"]>
+				</#if>
+				<#if physicalAggressionObjectsSubText?has_content >      
+					<#assign physicalAggressionObjectsText = "Physical aggression toward objects (" + createSentence(physicalAggressionObjectsSubText) + ")">
+					<#assign fragments = fragments + [physicalAggressionObjectsText] >
+				</#if>
+
+
+
+				<#assign physicalAggressionSelfText = "">
+				<#assign physicalAggressionSelfSubText = []>
+				<#if (getQuestionCalcValue(var3280) > 1) >
+					<#assign physicalAggressionSelfSubText = physicalAggressionSelfSubText + ["hitting self or pulling own hair"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3290) > 1) >
+					<#assign physicalAggressionSelfSubText = physicalAggressionSelfSubText + ["banging head or fists against objects"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3300) > 1) >
+					<#assign physicalAggressionSelfSubText = physicalAggressionSelfSubText + ["cutting or bruising self"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3310) > 1) >
+					<#assign physicalAggressionSelfSubText = physicalAggressionSelfSubText + ["other serious self injury"]>
+				</#if>
+				<#if physicalAggressionSelfSubText?has_content >      
+					<#assign physicalAggressionSelfText = "Physical aggression toward self (" + createSentence(physicalAggressionSelfSubText) + ")">
+					<#assign fragments = fragments + [physicalAggressionSelfText] >
+				</#if>
+
+				<#assign physicalAggressionOthersText = "">
+				<#assign physicalAggressionOthersSubText = []>
+				<#if (getQuestionCalcValue(var3320) > 1) >
+					<#assign physicalAggressionOthersSubText = physicalAggressionOthersSubText + ["swinging at people or grabbing others"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3330) > 1) >
+					<#assign physicalAggressionOthersSubText = physicalAggressionOthersSubText + ["striking or pushing on others"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3340) > 1) >
+					<#assign physicalAggressionOthersSubText = physicalAggressionOthersSubText + ["bruising or causing welts on others"]>
+				</#if>
+				<#if (getQuestionCalcValue(var3350) > 1) >
+					<#assign physicalAggressionOthersSubText = physicalAggressionOthersSubText + ["attacking others causing severe physical injury"]>
+				</#if>
+				<#if physicalAggressionOthersSubText?has_content >      
+					<#assign physicalAggressionOthersText = "Physical aggression towards others (" + createSentence(physicalAggressionOthersSubText) + ")">
+					<#assign fragments = fragments + [physicalAggressionOthersText]  >
+				</#if>
+				The Veteran indicated the following concerning aggressive behaviors in the past month: ${createSentence(fragments)}.${NBSP}
+			  </#if>
+    		<#else>
+    			${getNotCompletedText()}
+    		</#if>
+    	<#else>
+    		${getNotCompletedText()}
+    	</#if>
+  </#assign>
+  <#if !(agression_section = "") >
+     ${agression_section}
+  <#else>
+     ${noParagraphData}
+  </#if>
+${MODULE_END}
+'
+where template_id = 38;
