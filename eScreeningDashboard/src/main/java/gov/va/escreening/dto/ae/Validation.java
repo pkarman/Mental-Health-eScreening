@@ -6,8 +6,17 @@ public class Validation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private Integer id;
     private String name;
     private String value;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -29,14 +38,14 @@ public class Validation implements Serializable {
 
     }
 
-    public Validation(String name, String value) {
+    public Validation(Integer id, String name, String value) {
+        this.id = id;
         this.name = name;
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return "Validation [name=" + name + ", value=" + value + "]";
+        return "Validation [id=" + id + ", name=" + name + ", value=" + value + "]";
     }
-
 }

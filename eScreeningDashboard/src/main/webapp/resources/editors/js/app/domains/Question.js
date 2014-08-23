@@ -38,40 +38,40 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
         childQuestions = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.childQuestions) && Object.isArray(jsonQuestionObject.childQuestions)) ? EScreeningDashboardApp.models.QuestionsTransformer.transformJSONPayload({"questions": jsonQuestionObject.childQuestions}) : [],
         tableAnswers = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.tableAnswers) && Object.isArray(jsonQuestionObject.tableAnswers)) ? EScreeningDashboardApp.models.TableAnswersTransformer.transformJSONPayload({"tableAnswers": jsonQuestionObject.tableAnswers}) : [];
 
-        this.escapeTags = function(string){
-        	string = string.replace(/</g, 'tag');
-        	string = string.replace(/>/g, 'endtag;');
-        	string = prettifyStr(text);
-        	alert('string:: ' + string);
-        	return string;
+    this.escapeTags = function(string){
+        string = string.replace(/</g, 'tag');
+        string = string.replace(/>/g, 'endtag;');
+        string = prettifyStr(text);
+        alert('string:: ' + string);
+        return string;
+    };
+
+    var unescapeTags = function(string){
+        string = string.replace(/tag/g, '<');
+        string = string.replace(/endtag/g, '>');
+        return string;
+    };
+
+    var prettifyStr = function(text) {
+        var e = {
+            lsquo:  '\u2018',
+            rsquo:  '\u2019',
+            ldquo:  '\u201c',
+            rdquo:  '\u201d',
         };
-        
-        var unescapeTags = function(string){
-        	string = string.replace(/tag/g, '<');
-        	string = string.replace(/endtag/g, '>');
-        	return string;
-        };
-        
-        var prettifyStr = function(text) {
-      	  var e = {
-      			    lsquo:  '\u2018',
-      			    rsquo:  '\u2019',
-      			    ldquo:  '\u201c',
-      			    rdquo:  '\u201d',
-      			  };
-      			  var subs = [
-      			    {pattern: "(^|[\\s\"])'",      replace: '$1' + e.lsquo},
-      			    {pattern: '(^|[\\s-])"',       replace: '$1' + e.ldquo},
-      			    {pattern: "'($|[\\s\"])?",     replace: e.rsquo + '$1'},
-      			    {pattern: '"($|[\\s.,;:?!])',  replace: e.rdquo + '$1'}
-      			  ];
-      			  for (var i = 0; i < subs.length; i++) {
-      			    var sub = subs[i];
-      			    var pattern = new RegExp(sub.pattern, 'g');
-      			    text = text.replace(pattern, sub.replace);
-      			  };
-      			  return text;
-      			};
+        var subs = [
+            {pattern: "(^|[\\s\"])'",      replace: '$1' + e.lsquo},
+            {pattern: '(^|[\\s-])"',       replace: '$1' + e.ldquo},
+            {pattern: "'($|[\\s\"])?",     replace: e.rsquo + '$1'},
+            {pattern: '"($|[\\s.,;:?!])',  replace: e.rdquo + '$1'}
+        ];
+        for (var i = 0; i < subs.length; i++) {
+            var sub = subs[i];
+            var pattern = new RegExp(sub.pattern, 'g');
+            text = text.replace(pattern, sub.replace);
+        }
+        return text;
+    };
 
     var generateJsonStringForAnswers = function (){
         var answersJson = "[";
@@ -186,8 +186,6 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
     	return tableAnswerUIObjects;
     };
-    
-
 
     this.getSelf = function(){
     	return this;
@@ -231,6 +229,41 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
     this.getValidations = function(){
         return validations;
+    };
+
+    this.filterValidations = function (targetPropertyName, targetPropertyValue) {
+        var isPropertyName =  "is"  + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+            hasPropertyName = "has" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+            getPropertyName = "get" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+            propertyNameValue = false,
+            filteredValidations = [];
+
+        validations.forEach(function (validation) {
+            if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
+                validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
+                if(typeof validation[isPropertyName] === 'function'){
+                    propertyNameValue = validation[isPropertyName]();
+                } else if(typeof validation[hasPropertyName] === 'function') {
+                    propertyNameValue = validation[hasPropertyName]();
+                } else if(typeof validation[getPropertyName] === 'function') {
+                    propertyNameValue = validation[getPropertyName]();
+                } else {
+                    propertyNameValue = validation[targetPropertyName];
+                }
+
+                if(propertyNameValue === targetPropertyValue) {
+                    filteredValidations.push(validation);
+                }
+            }
+        });
+
+        return filteredValidations;
+    };
+
+    this.findValidation = function (targetPropertyName, targetPropertyValue) {
+        var filteredValidations = this.filterValidations(targetPropertyName, targetPropertyValue);
+
+        return (Object.isArray(filteredValidations) && filteredValidations.length > 0)? filteredValidations[0] : new EScreeningDashboardApp.models.Validation();
     };
     
     this.getChildMeasures = function(){

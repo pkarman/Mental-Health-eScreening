@@ -79,6 +79,7 @@ var EScreeningDashboardApp = (function() {
                 });
             });
         };
+
         this.sort = function(surveySections, propertyName, sortDirection){
             var spliceIndex, targetElement,
                 isPropertyName = "is" + propertyName.charAt(0).toUpperCase() + propertyName.substring(1),

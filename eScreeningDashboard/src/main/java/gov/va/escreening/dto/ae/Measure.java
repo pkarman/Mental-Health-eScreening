@@ -179,6 +179,7 @@ public class Measure implements Serializable, MeasureBaseProperties {
 
             for (MeasureValidation measureValidation : dbMeasure.getMeasureValidationList()) {
                 Validation validation = new Validation();
+                validation.setId(measureValidation.getMeasureValidationId());
                 validation.setName(measureValidation.getValidation().getCode());
 
                 if ("boolean".equalsIgnoreCase(measureValidation.getValidation().getDataType())

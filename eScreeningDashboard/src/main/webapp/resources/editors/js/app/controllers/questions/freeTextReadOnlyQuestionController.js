@@ -1,26 +1,24 @@
 /**
  * Created by Bryan Henderson - 08/07/2014
  */
-Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', function($rootScope, $scope, $state,QuestionService){
-	$scope.question = EScreeningDashboardApp.models.Question.toUIObjects($rootScope.selectedQuestion);
-    $scope.isExactLength = false;
-    $scope.isMinLength = false;
-    $scope.minLengthVal = "";
-    $scope.minLenObj = {name:'minLength', value:$scope.minLengthVal};
-    $scope.vistaDisable = true;
+Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'textFormatTypeMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
+    $scope.textFormatTypeMenuOptions = textFormatTypeMenuOptions;
+    $scope.currentlySelectedTextFormatMenuOption = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatTypeMenuOptions);
+    $scope.showExactLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatMenuOption) || $scope.currentlySelectedTextFormatMenuOption.value === "number")? true : false;
+    $scope.showMinLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatMenuOption) || $scope.currentlySelectedTextFormatMenuOption.value === "number")? true : false;
+    $scope.showMaxLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatMenuOption) || $scope.currentlySelectedTextFormatMenuOption.value === "number")? true : false;
+    $scope.showMinValueField = (Object.isDefined($scope.currentlySelectedTextFormatMenuOption) && $scope.currentlySelectedTextFormatMenuOption.value === "number")? true : false;
+    $scope.showMaxValueField = (Object.isDefined($scope.currentlySelectedTextFormatMenuOption) && $scope.currentlySelectedTextFormatMenuOption.value === "number")? true : false;
 
-    $scope.isMaxLength = false;
-    $scope.maxLengthVal = "";
-    $scope.maxLenObj = {name:'maxLength', value:$scope.maxLengthVal};
+    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+    $scope.exactLengthField = selectedQuestionDomainObject.findValidation("name", "exactLength").toUIObject();
+    $scope.minLengthField = selectedQuestionDomainObject.findValidation("name", "minLength").toUIObject();
+    $scope.maxLengthField = selectedQuestionDomainObject.findValidation("name", "maxLength").toUIObject();
+    $scope.minValueField = selectedQuestionDomainObject.findValidation("name", "minValue").toUIObject();
+    $scope.maxValueField = selectedQuestionDomainObject.findValidation("name", "maxValue").toUIObject();
 
-    $scope.isRequired = false;
-    $scope.isReqObj = {name:'exactLength', value:$scope.isRequired};
-	
+
 	$scope.isDirty = false;
-	$scope.types = [
-	                {name:"Free Text", value:"freeText"},
-	                {name:"Read Only", value:"readOnly"}
-	                ];
 	
 	$scope.blur = function(){
 		$scope.isDirty = true;
@@ -28,7 +26,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
 	
 	$scope.save = function(){
 		// Not sure exactly what we need to be doing here quite yet.
-		EscreeningDashboardApp.services.QuestionService.update(QuestionService.setUpdateQuestionRequestParameter($scope.question)).then(function(question){
+		QuestionService.update(QuestionService.setUpdateQuestionRequestParameter($scope.question)).then(function(question){
 			// Process this.
 		});
 	};

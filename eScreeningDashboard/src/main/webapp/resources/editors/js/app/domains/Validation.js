@@ -29,7 +29,10 @@ EScreeningDashboardApp.models.Validation = function (jsonValidationObject) {
         code = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.code))? jsonValidationObject.code : null,
         description = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.description))? jsonValidationObject.description : null,
         dataType = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.dataType))? jsonValidationObject.dataType : null,
-        createdDate = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.createdDate))? (Object.isDate(jsonValidationObject.createdDate)) ? jsonValidationObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonValidationObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
+        createdDate = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.createdDate))? (Object.isDate(jsonValidationObject.createdDate)) ? jsonValidationObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonValidationObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
+        name = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.name))? jsonValidationObject.name : null,
+        value = (Object.isDefined(jsonValidationObject) && Object.isDefined(jsonValidationObject.value))? jsonValidationObject.value : null,
+        selected = (Object.isDefined(jsonValidationObject))? (Object.isBoolean(jsonValidationObject.selected))? jsonValidationObject.selected : true: false;
 
     this.getId = function(){
         return id;
@@ -38,6 +41,14 @@ EScreeningDashboardApp.models.Validation = function (jsonValidationObject) {
     this.getCode = function(){
     	return code;
     };
+
+    this.getName = function() {
+        return name;
+    }
+
+    this.getValue = function() {
+        return value;
+    }
     
     this.getDescription = function(){
     	return description;
@@ -50,30 +61,46 @@ EScreeningDashboardApp.models.Validation = function (jsonValidationObject) {
     this.getCreatedDate = function(){
     	return createdDate;
     };
-    
-    this.toString = function() {
-        return "Validation{id: " + id + ", code: " + code + ", description: " + description + ", dataType: " + dataType + ", dateCreated: " + createdDate + "}";
+
+    this.isSelected = function () {
+        return selected;
     };
 
-    this.toJSON = function () {
+    this.selected = function (selectedStatus) {
+        selected = selectedStatus;
+    };
+    
+    this.toString = function() {
+        return "Validation{id: " + id + ", code: " + code + ", name: " + name + ", value: " + value + ", description: " +
+                description + ", dataType: " + dataType + ", dateCreated: " + createdDate + ", selected: " + selected + "}";
+    };
+
+    this.toJSON = function (serializeUIProperties) {
+        serializeUIProperties = (Object.isDefined(serializeUIProperties) && Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
         var jsonId = (Object.isDefined(id) && id > 0)? id : null,
             jsonCode = (Object.isDefined(code))? "\"" + code + "\"": null,
+            jsonName = (Object.isDefined(name))? "\"" + name + "\"": null,
+            jsonValue = (Object.isDefined(value))? "\"" + value + "\"": null,
             jsonDescription = (Object.isDefined(description))? "\"" + description + "\"" : null,
             jsonDataType = (Object.isDefined(dataType))? "\"" + dataType + "\"": null,
-            jsonCreatedDate =  (createdDate != null)? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
+            jsonCreatedDate =  (Object.isDefined(createdDate))? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
+            jsonSelected = (serializeUIProperties)? Object.isDefined(selected)? "\"selected\": " + selected + "," : "\"selected\": " + false  + "," : "",
             json = "{" +
                 "\"id\": " + jsonId + "," +
                 "\"code\": " + jsonCode + "," +
+                "\"name\": " + jsonName + "," +
+                "\"value\": " + jsonValue + "," +
                 "\"description\": " + jsonDescription + "," +
-                "\"dataType\": " + jsonDataType +
-                ", \"createdDate\": " + jsonCreatedDate +
+                "\"dataType\": " + jsonDataType + "," +
+                jsonSelected +
+                "\"createdDate\": " + jsonCreatedDate +
             "}";
 
         return json;
     };
     
     this.toUIObject = function(){
-    	var ValidationUIObject = JSON.parse(this.toJSON());
+    	var ValidationUIObject = JSON.parse(this.toJSON(true));
     	return ValidationUIObject;
     };
 };

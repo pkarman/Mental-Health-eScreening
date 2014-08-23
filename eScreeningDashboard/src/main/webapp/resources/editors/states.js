@@ -263,25 +263,46 @@ angular.module('Editors')
                 })
 
                 .state('modules.detail.editReadOnlyQuestion',{
-                    url:'/question/readOnly/:questionId',
+                    url:'/question/readOnly/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
+                    },
+                    resolve: {
+                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: 1, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
+                                {id: 1, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
+                                {id: 1, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+                            ];
+                        }]
                     },
                     controller:'freeTextReadOnlyQuestionController'
                 })
 
                 .state('modules.detail.editSelectMultipleQuestion',{
-                    url:'/question/selectMultiple/:questionId',
+                    url:'/question/selectMultiple/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple'
+                    },
+                    resolve: {
+                        answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of answer types from the database.
+                            return [
+                                {id: -1, name: "Regular"},
+                                {id: -1, name: "Other"},
+                                {id: -1, name: "None"}
+                            ];
+                        }]
                     },
                     controller:'selectMultipleQuestionController'
                 })
 
                 .state('modules.detail.editSelectMultipleMatrixQuestion',{
-                    url:'/question/selectMultipleMatrix/:questionId',
+                    url:'/question/selectMultipleMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple Matrix'
@@ -290,7 +311,7 @@ angular.module('Editors')
                 })
 
                 .state('modules.detail.editTableQuestion',{
-                    url:'/question/table/:questionId',
+                    url:'/question/table/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/tablequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'
@@ -302,7 +323,7 @@ angular.module('Editors')
                 })
 
                 .state('modules.detail.editInstructionQuestion', {
-                    url:'/question/instruction/:questionId',
+                    url:'/question/instruction/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/questioninstructions.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'

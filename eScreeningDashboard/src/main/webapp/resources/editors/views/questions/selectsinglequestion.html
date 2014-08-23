@@ -4,7 +4,7 @@
     <form class="form" role="form">
       <div class="form-group">
         <label for="txtVariableNm"> Variable Name </label>
-        <input type="text" ng-model="selectedQuestion.variableName" id="txtVariableNm" class="form-control" placeholder="Variable Name" ng-disabled="true">
+        <input type="text" ng-model="selectedQuestionUIObject.variableName" id="txtVariableNm" class="form-control" placeholder="Variable Name" ng-disabled="true">
       </div>
     </form>
   </div>
@@ -15,7 +15,7 @@
       <form role="form" class="form-horizontal">
         <div class="form-group">
           <label> Question Text </label>
-          <textarea class="form-control" ng-model="selectedQuestion.text"></textarea>
+          <textarea class="form-control" ng-model="selectedQuestionUIObject.text"></textarea>
         </div>
       </form>
     </div>
@@ -25,7 +25,7 @@
   <div class="col-md-12">
     <div class="form-group">
       <label> VistA Question Text </label>
-      <textarea class="form-control" ng-model="selectedQuestion.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
+      <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
     </div>
   </div>
 </div>
@@ -40,9 +40,9 @@
                 -->
       <div class="form-group form-inline">
         <label class="checkbox">
-          <input type="checkbox" ng-model="selectedQuestion.required"> Required </label>
+          <input type="checkbox" ng-model="selectedQuestionUIObject.required"> Required </label>
         <label class="checkbox">
-          <input type="checkbox" ng-model="selectedQuestion.ppi"> PPI </label>
+          <input type="checkbox" ng-model="selectedQuestionUIObject.ppi"> PPI </label>
         <!--  <label class="checkbox">
           <input type="checkbox"> MHA </label>-->
       </div>
@@ -71,10 +71,10 @@
 </div>
 <div class="row">
   <ul class="list-group odd-even-list">
-    <li class="list-group-item" ng-repeat="answer in selectedQuestion.answers">
+    <li class="list-group-item" ng-repeat="answerUIObject in selectedQuestionUIObject.answers">
       <div class="form-group">
         <label> {{$index + 1}}. Answer Text </label>
-        <input type="text" class="form-control" ng-model="answer.text" placeholder="Enter Answer Text">
+        <input type="text" class="form-control" ng-model="answerUIObject.text" placeholder="Enter Answer Text">
         <br>
       </div>
       <!--<label class="checkbox">
@@ -90,13 +90,13 @@
       
       <div class="form-group">
         <label> Export Value </label>
-        <input type="text" class="form-control" ng-model="answer.exportName" ng-disabled="!module.clinicalReminder" placeholder="Enter Export Value">
+        <input type="text" class="form-control" ng-model="answerUIObject.exportName" ng-disabled="!module.clinicalReminder" placeholder="Enter Export Value">
       </div>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
             <label> VistA Answer Text </label>
-            <textarea class="form-control" ng-model="answer.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
+            <textarea class="form-control" ng-model="answerUIObject.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@
         
         <div class="checkbox">
             <label>
-            <input type="checkbox" ng-model="answer.otherResponse" ng-true-value="other" ng-false-value="{{ null }}"> Other
+            <input type="checkbox" ng-model="answerUIObject.otherResponse" ng-true-value="other" ng-false-value="{{ null }}"> Other
             </label>
         </div>
   
