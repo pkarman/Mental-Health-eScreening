@@ -566,17 +566,10 @@ public class XportDataTest {
 
 	@Test
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
-		StopWatch sw = new StopWatch("testVeteran18ForTemplatesCorrectnessWith__HTML");
-
 		for (int i = 0; i < 1; i++) {
-			System.out.print(".");
-			sw.start("generateNote" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
-			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
-		System.out.println(sw.prettyPrint());
-		System.out.println(sw.getTotalTimeSeconds() / 100);
 	}
 
 	@Before
