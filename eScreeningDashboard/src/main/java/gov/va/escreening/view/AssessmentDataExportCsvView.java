@@ -27,10 +27,11 @@ public class AssessmentDataExportCsvView extends AbstractView {
 
 		BufferedWriter writer = new BufferedWriter(response.getWriter());
 
-		String csvFileName = String.format("va_export_data_as_of_ts_%s.csv", System.nanoTime());
+		AssessmentDataExport dataExport = (AssessmentDataExport) model.get("dataExportList");
+
+		String csvFileName = dataExport.getFilterOptions().getFilePath();
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + csvFileName + "\"");
 
-		AssessmentDataExport dataExport = (AssessmentDataExport) model.get("dataExportList");
 
 		try {
 			setCsvHeader(writer, dataExport.getTableContent());

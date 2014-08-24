@@ -1,0 +1,16 @@
+{
+	testName : "Identification ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Identification",
+		smrMap : {
+			text$demo_lastname : "King",
+			text$demo_firstname : "John",
+			text$demo_midname : "T",
+			text$demo_SSN : "2345",
+			text$demo_contact : "786-232-2232",
+			vars$demo_call : "5",
+			other$demo_call_spec : "do't call me when i am coding",
+			text$demo_email : "thebestcoder@gmail.com"
+		}
+	} ]
+}

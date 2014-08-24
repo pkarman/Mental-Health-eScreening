@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ModuleExporterAbstract implements ModuleDataExporter {
 	protected final Logger logger = LoggerFactory.getLogger(ModuleExporterAbstract.class);
 	protected static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	protected static final DateFormat tf = new SimpleDateFormat("HH:mm:ss zzz");
 	private static final String MISSING_DEFAULT = String.valueOf(ExportDataDefaultValuesEnum.MISSINGVALUE.getDefaultValueNum());
 
 	@Resource(name = "surveyResponsesHelper")
@@ -30,6 +31,10 @@ public abstract class ModuleExporterAbstract implements ModuleDataExporter {
 
 	protected String getOrMiss(String data) {
 		return (data != null && !data.isEmpty()) ? data : miss();
+	}
+
+	protected String getStrFromInt(Integer duration) {
+		return duration == null ? "" : String.valueOf(duration);
 	}
 
 	protected int getIntFromStr(String strVal) {

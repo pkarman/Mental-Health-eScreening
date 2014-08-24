@@ -9,11 +9,12 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.access.SingletonBeanFactoryLocator;
 
 enum ModuleCategory {
-	SOCIAL, SERVICE, HEALTH_SYMPTOMS, HEALTH_FUNCTION, HEALTH_HABITS, PSYCHOLOGICAL_HEALTH
+	SOCIAL, SERVICE, HEALTH_SYMPTOMS, HEALTH_FUNCTION, HEALTH_HABITS, PSYCHOLOGICAL_HEALTH, MANDATORY
 }
 
 public enum ModuleEnum {
 
+	ME_Mandatory(ModuleCategory.MANDATORY, "Identification", "ID of Veteran", null, "meMandatory"), //
 	ME_IDScreen(ModuleCategory.SOCIAL, "Identification", "ID of Veteran", null, "meIDScreen"), //
 	ME_PresentingProblems(ModuleCategory.SOCIAL, "Presenting Problems", "OOO Presenting Problems", null, "mePresentingProblems"), //
 	ME_BasicDemographics(ModuleCategory.SOCIAL, "Basic Demographics", "Basic Demographics", null, "meDemographics"), //
@@ -62,14 +63,14 @@ public enum ModuleEnum {
 	private final String moduleName;
 	private final String description;
 	private final String measureName;
-	private final String moduleExporterName;
+	private final String springComponentName;
 
-	private ModuleEnum(ModuleCategory category, String moduleName, String description, String measureName, String meResourceName) {
+	private ModuleEnum(ModuleCategory category, String moduleName, String description, String measureName, String meSpringComponentName) {
 		this.category = category;
 		this.moduleName = moduleName;
 		this.description = description;
 		this.measureName = measureName;
-		this.moduleExporterName = meResourceName;
+		this.springComponentName = meSpringComponentName;
 	}
 
 	public ModuleCategory getCategory() {
@@ -90,7 +91,7 @@ public enum ModuleEnum {
 
 	public List<DataExportCell> apply(BeanFactory bf,
 			VeteranAssessment assessment, Integer identifiedExportType) {
-		ModuleDataExporter mde = bf.getBean(moduleExporterName, ModuleDataExporter.class);
+		ModuleDataExporter mde = bf.getBean(springComponentName, ModuleDataExporter.class);
 
 		return mde.apply(this, assessment, identifiedExportType);
 	}

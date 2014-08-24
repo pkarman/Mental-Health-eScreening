@@ -78,6 +78,19 @@ public class XportDataTest {
 
 			return newAtd != null ? newAtd.concatenateSurveyNames(tn, null) + " test assessment" : tn;
 		}
+
+		public void removePPIInfoExportNames() {
+			for (TestSurvey ts : testSurveys) {
+				if ("Identification".equals(ts.surveyName)) {
+					ts.smrMap.remove("demo_firstname");
+					ts.smrMap.remove("demo_midname");
+					ts.smrMap.remove("demo_lastname");
+					ts.smrMap.remove("demo_SSN");
+					ts.smrMap.remove("demo_email");
+					ts.smrMap.remove("demo_contact");
+				}
+			}
+		}
 	}
 
 	class TestSurvey {
@@ -227,7 +240,7 @@ public class XportDataTest {
 
 	private AssesmentTestData createAssessmentTestDataFromMultipleFiles(
 			String[] fileNames, String root) throws IOException {
-		AssesmentTestData atd =null;
+		AssesmentTestData atd = null;
 
 		for (String fileName : fileNames) {
 			AssesmentTestData newAtd = createAssesmentTestData(fileName, root);
@@ -237,7 +250,7 @@ public class XportDataTest {
 				atd.add(newAtd);
 			}
 		}
-		
+
 		return atd;
 	}
 
@@ -309,14 +322,26 @@ public class XportDataTest {
 		return false;
 	}
 
-	private boolean exportDataTester(String jsonFileName, String root) throws UnsupportedEncodingException, IOException {
+	private boolean exportDataTesterIdentified(String jsonFileName, String root) throws UnsupportedEncodingException, IOException {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
-		return exportDataVerifier(testTuple);
+		return exportDataVerifierIdentified(testTuple);
 	}
 
-	private boolean mixDataExports(String jsonFileNames[], String root) throws UnsupportedEncodingException, IOException {
+	private boolean exportDataTesterDeIdentified(String jsonFileName,
+			String root) throws UnsupportedEncodingException, IOException {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return exportDataVerifierDeIdentified(testTuple);
+	}
+
+	private boolean mixDataExportsIdentified(String jsonFileNames[], String root) throws UnsupportedEncodingException, IOException {
 		Object[] testTuple = createTestAssessment(jsonFileNames, root);
-		return exportDataVerifier(testTuple);
+		return exportDataVerifierIdentified(testTuple);
+	}
+
+	private boolean mixDataExportsDeIdentified(String jsonFileNames[],
+			String root) throws UnsupportedEncodingException, IOException {
+		Object[] testTuple = createTestAssessment(jsonFileNames, root);
+		return exportDataVerifierDeIdentified(testTuple);
 	}
 
 	private boolean invokeTemplateTxtReview(String jsonFileName, String root) throws Exception {
@@ -351,10 +376,20 @@ public class XportDataTest {
 		return templateDataVerifierVetSummary(testTuple);
 	}
 
-	private boolean exportDataVerifier(Object[] testTuple) {
+	private boolean exportDataVerifierIdentified(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-		List<DataExportCell> exportedData = exportDataService.buildExportDataForAssessment(va, 1);
+		List<DataExportCell> exportedData = exportDataService.createDataExportForOneAssessment(va, 1);
+
+		return exportDataVerifierResult(atd, exportedData);
+	}
+
+	private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
+		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
+		VeteranAssessment va = (VeteranAssessment) testTuple[1];
+		List<DataExportCell> exportedData = exportDataService.createDataExportForOneAssessment(va, 2);
+
+		atd.removePPIInfoExportNames();
 
 		return exportDataVerifierResult(atd, exportedData);
 	}
@@ -409,15 +444,23 @@ public class XportDataTest {
 	@Test
 	public void testEveryFileForExportData() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(minimum)) {
-			assertTrue(fileName, exportDataTester(fileName, minimum));
+			assertTrue(fileName, exportDataTesterIdentified(fileName, minimum));
 		}
 	}
 
 	// @Rollback(value = false)
 	@Test
-	public void testEveryFileForExportDataDetail() throws UnsupportedEncodingException, IOException {
+	public void testEveryFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(detail)) {
-			assertTrue(fileName, exportDataTester(fileName, detail));
+			assertTrue(fileName, exportDataTesterIdentified(fileName, detail));
+		}
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void testEveryFileForExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
+		for (String fileName : testFilesFor(detail)) {
+			assertTrue(fileName, exportDataTesterDeIdentified(fileName, detail));
 		}
 	}
 
@@ -469,13 +512,19 @@ public class XportDataTest {
 	// @Rollback(value = false)
 	@Test
 	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
-		assertTrue(mixDataExports(testFilesFor(minimum), minimum));
+		assertTrue(mixDataExportsIdentified(testFilesFor(minimum), minimum));
 	}
 
 	// @Rollback(value = false)
 	@Test
-	public void mix__DETAIL__ExportDataDetail() throws UnsupportedEncodingException, IOException {
-		assertTrue(mixDataExports(testFilesFor(detail), detail));
+	public void mix__DETAIL__ExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
+		assertTrue(mixDataExportsIdentified(testFilesFor(detail), detail));
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void mix__DETAIL__ExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
+		assertTrue(mixDataExportsDeIdentified(testFilesFor(detail), detail));
 	}
 
 	// @Rollback(value = false)

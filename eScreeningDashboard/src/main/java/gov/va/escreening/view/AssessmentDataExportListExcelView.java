@@ -51,7 +51,7 @@ public class AssessmentDataExportListExcelView extends AbstractExcelView {
 			} else {
 				setExcelHeader(excelSheet, dataExport.getTableContent());
 				setExcelRows(excelSheet, dataExport.getTableContent());
-				exportDataService.saveDataExport(workbook, dataExport);
+				exportDataService.logDataExport(dataExport);
 				logger.debug(String.format("Export was successful. Created spread sheet with %s rows.  The filter criteria was: %s.", dataExport.getTableContent().size(), dataExport.getFilterOptions().toString()));
 			}
 		} catch (DataExportException cdnmce) {

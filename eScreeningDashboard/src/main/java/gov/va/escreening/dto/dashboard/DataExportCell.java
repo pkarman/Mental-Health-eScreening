@@ -3,32 +3,34 @@ package gov.va.escreening.dto.dashboard;
 public class DataExportCell {
 	String columnName;
 	String cellValue;
-	
+
 	public String getColumnName() {
 		return columnName;
 	}
+
 	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+		this.columnName = columnName == null ? "" : columnName;
 	}
-	
+
 	public String getCellValue() {
 		return cellValue;
 	}
+
 	public void setCellValue(String cellValue) {
-		this.cellValue = cellValue;
+		this.cellValue = cellValue == null ? "" : cellValue;
 	}
-	
-	public DataExportCell() {}
-	
+
+	public DataExportCell() {
+	}
+
 	public DataExportCell(String columnName, String cellValue) {
-		this.columnName = columnName;
-		this.cellValue = cellValue;
+		setColumnName(columnName);
+		setCellValue(cellValue);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "DataExportCell [columnName=" + columnName + ", cellValue="
-				+ cellValue + "]";
+		return "DataExportCell [columnName=" + columnName + ", cellValue=" + cellValue + "]";
 	}
 
 }

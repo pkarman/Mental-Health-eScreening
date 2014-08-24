@@ -11,12 +11,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public interface ExportDataService {
 	
-	//AssessmentDataExport getDataExportTest();
-	
 	AssessmentDataExport getAssessmentDataExport(ExportDataFormBean exportDataFormBean);
 	
-	void saveDataExport(HSSFWorkbook workbook, AssessmentDataExport dataExport) throws Exception;
+	void logDataExport(AssessmentDataExport dataExport) throws Exception;
 
-	List<DataExportCell> buildExportDataForAssessment(VeteranAssessment assessment,
+	List<DataExportCell> createDataExportForOneAssessment(VeteranAssessment assessment,
 			Integer identifiedExportType);
 }

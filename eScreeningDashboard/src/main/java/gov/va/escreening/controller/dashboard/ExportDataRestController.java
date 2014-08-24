@@ -64,7 +64,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	}
 
 	@RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
-	public ModelAndView exportDataAsXls(
+	public ModelAndView exportDataAsCsv(
 			ModelAndView modelAndView,
 			HttpServletRequest request,
 			@CurrentUser EscreenUser escreenUser,
@@ -78,7 +78,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			@RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
 		if (logger.isDebugEnabled()) {
-			logger.debug(String.format("exportDataAsXls: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+			logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
 		}
 
 		List<String> errors = new ArrayList<String>();
@@ -92,8 +92,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
 		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
-		DataExportFilterOptions filterOptions = createFilterOptions(exportDataFormBean);
-		dataExport.setFilterOptions(filterOptions);
+		
 		modelAndView.setViewName("DataExportCsvView");
 		modelAndView.addObject("dataExportList", dataExport);
 
@@ -182,44 +181,6 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		List<DropDownObject> dropDownObjectList = programService.getProgramDropDownObjects(escreenUser.getProgramIdList());
 
 		return dropDownObjectList;
-	}
-
-	private DataExportFilterOptions createFilterOptions(
-			ExportDataFormBean exportDataFormBean) {
-
-		DataExportFilterOptions filterOptions = new DataExportFilterOptions();
-
-		if (exportDataFormBean.getToAssessmentDate() != null)
-			filterOptions.setAssessmentEnd(exportDataFormBean.getToAssessmentDate());
-
-		if (exportDataFormBean.getFromAssessmentDate() != null)
-			filterOptions.setAssessmentStart(exportDataFormBean.getFromAssessmentDate());
-
-		if (exportDataFormBean.getClinicianId() != null)
-			filterOptions.setClinicianUserId(exportDataFormBean.getClinicianId());
-
-		if (exportDataFormBean.getCommentText() != null)
-			filterOptions.setComment(exportDataFormBean.getCommentText());
-
-		if (exportDataFormBean.getCreatedByUserId() != null)
-			filterOptions.setCreatedByUserId(exportDataFormBean.getCreatedByUserId());
-
-		if (exportDataFormBean.getExportedByUserId() != null)
-			filterOptions.setExportedByUserId(exportDataFormBean.getExportedByUserId());
-
-		if (exportDataFormBean.getExportLogId() != null)
-			filterOptions.setExportLogId(exportDataFormBean.getExportLogId());
-
-		if (exportDataFormBean.getExportTypeId() != null)
-			filterOptions.setExportTypeId(exportDataFormBean.getExportTypeId());
-
-		if (exportDataFormBean.getProgramId() != null)
-			filterOptions.setProgramId(exportDataFormBean.getProgramId());
-
-		if (exportDataFormBean.getVeteranId() != null)
-			filterOptions.setVeteranId(exportDataFormBean.getVeteranId());
-
-		return filterOptions;
 	}
 
 	/**

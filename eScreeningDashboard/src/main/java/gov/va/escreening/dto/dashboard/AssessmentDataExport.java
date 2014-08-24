@@ -16,7 +16,7 @@ public class AssessmentDataExport {
 		return tableContent;
 	}
 
-	public void setTableContent(List<List<DataExportCell>> tableContent) {
+	public void setReport(List<List<DataExportCell>> tableContent) {
 		this.tableContent = tableContent;
 	}
 
