@@ -25,6 +25,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +44,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -80,16 +80,33 @@ public class XportDataTest {
 		}
 
 		public void removePPIInfoExportNames() {
+			TestSurvey identificationTs = hasIdentificationSurvey();
+			if (identificationTs != null) {
+				identificationTs.smrMap.remove("demo_firstname");
+				identificationTs.smrMap.remove("demo_midname");
+				identificationTs.smrMap.remove("demo_lastname");
+				identificationTs.smrMap.remove("demo_SSN");
+				identificationTs.smrMap.remove("demo_email");
+				identificationTs.smrMap.remove("demo_contact");
+			}
+		}
+
+		public TestSurvey hasIdentificationSurvey() {
 			for (TestSurvey ts : testSurveys) {
 				if ("Identification".equals(ts.surveyName)) {
-					ts.smrMap.remove("demo_firstname");
-					ts.smrMap.remove("demo_midname");
-					ts.smrMap.remove("demo_lastname");
-					ts.smrMap.remove("demo_SSN");
-					ts.smrMap.remove("demo_email");
-					ts.smrMap.remove("demo_contact");
+					return ts;
 				}
 			}
+			return null;
+		}
+
+		public TestSurvey hasBasicDemoSurvey() {
+			for (TestSurvey ts : testSurveys) {
+				if ("Basic Demographics".equals(ts.surveyName)) {
+					return ts;
+				}
+			}
+			return null;
 		}
 	}
 
@@ -307,7 +324,7 @@ public class XportDataTest {
 	}
 
 	private boolean decMatchesWithTestData(DataExportCell dec,
-			AssesmentTestData atd) {
+			AssesmentTestData atd, boolean deidentified) {
 		String expectedVal = null;
 		for (TestSurvey ts : atd.testSurveys) {
 			expectedVal = ts.smrMap.remove(dec.getColumnName());
@@ -317,9 +334,32 @@ public class XportDataTest {
 				return same;
 			}
 		}
-		assertNotNull(String.format("export data=>%s is not provided in user provided json", dec.getColumnName()), expectedVal);
+		// there are some mendatory columns which will always be returned by the system. These columns may or may not be
+		// provided in the user provided json. These columns are as follows:
+		// assessment_id, created_by, battery_name, program_name, vista_clinic, note_title, clinician_name,
+		// date_created, time_created, date_completed, time_completed, duration, demo_lastname, demo_firstname,
+		// demo_midname, demo_SSN, demo_DOB
+		if (!ignoreThisExportName(dec.getColumnName(), atd, deidentified)) {
+			assertNotNull(String.format("%s => export column name =>%s is not provided in user provided json", atd.testName, dec.getColumnName()), expectedVal);
+			return false;
+		} else {
+			assertNull(String.format("%s => export column name =>%s shoudl have been null as it is not provided in user provided json", atd.testName, dec.getColumnName()), expectedVal);
+			return true;
+		}
 
-		return false;
+	}
+
+	private static final List<String> mandatoryExportNames = Arrays.asList("assessment_id", "created_by", "battery_name", "program_name", "vista_clinic", "note_title", "clinician_name", "date_created", "time_created", "date_completed", "time_completed", "duration", "veteran_ien");
+	private static final List<String> identificationSurveyPpiExportNames = Arrays.asList("demo_lastname", "demo_firstname", "demo_midname", "demo_SSN");
+	private static final List<String> basicDemoPpiExportNames = Arrays.asList("demo_DOB");
+
+	private boolean ignoreThisExportName(String columnName,
+			AssesmentTestData atd, boolean deidentified) {
+		boolean columnIsMandatory = mandatoryExportNames.contains(columnName);
+		boolean columnIsIdScreen = atd.hasIdentificationSurvey() == null && identificationSurveyPpiExportNames.contains(columnName);
+		boolean columnIsBasicDemo = atd.hasBasicDemoSurvey() == null && basicDemoPpiExportNames.contains(columnName);
+
+		return columnIsMandatory || columnIsIdScreen || columnIsBasicDemo;
 	}
 
 	private boolean exportDataTesterIdentified(String jsonFileName, String root) throws UnsupportedEncodingException, IOException {
@@ -381,7 +421,7 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		List<DataExportCell> exportedData = exportDataService.createDataExportForOneAssessment(va, 1);
 
-		return exportDataVerifierResult(atd, exportedData);
+		return exportDataVerifierResult(atd, exportedData, false);
 	}
 
 	private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
@@ -391,7 +431,7 @@ public class XportDataTest {
 
 		atd.removePPIInfoExportNames();
 
-		return exportDataVerifierResult(atd, exportedData);
+		return exportDataVerifierResult(atd, exportedData, true);
 	}
 
 	private boolean templateDataVerifierTypeTxt(Object[] testTuple) throws Exception {
@@ -422,11 +462,11 @@ public class XportDataTest {
 	}
 
 	private boolean exportDataVerifierResult(AssesmentTestData atd,
-			List<DataExportCell> exportedData) {
+			List<DataExportCell> exportedData, boolean deidentified) {
 
 		for (DataExportCell dec : exportedData) {
 			if (!"999".equals(dec.getCellValue())) {
-				if (!decMatchesWithTestData(dec, atd)) {
+				if (!decMatchesWithTestData(dec, atd, deidentified)) {
 					return false;
 				}
 			}
@@ -462,6 +502,12 @@ public class XportDataTest {
 		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTesterDeIdentified(fileName, detail));
 		}
+	}
+
+	// @Rollback(value = false)
+	@Test
+	public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
+		assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
 	}
 
 	// @Rollback(value = false)

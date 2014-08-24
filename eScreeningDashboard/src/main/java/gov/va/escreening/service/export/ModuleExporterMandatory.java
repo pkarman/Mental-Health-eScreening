@@ -9,6 +9,7 @@ import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,16 +27,19 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 	SurveyRepository surveyrepository;
 
 	Integer identificationSurveyId;
+	Integer basicDemographicsSurveyId;
 
 	@PostConstruct
 	void initSurveys() {
 		for (Survey s : surveyrepository.findAll()) {
 			if ("Identification".equals(s.getName())) {
 				identificationSurveyId = s.getSurveyId();
-				break;
+			} else if ("Basic Demographics".equals(s.getName())) {
+				basicDemographicsSurveyId = s.getSurveyId();
 			}
 		}
 		Preconditions.checkNotNull(identificationSurveyId, "There is no 'Identification' Survey found in the system");
+		Preconditions.checkNotNull(basicDemographicsSurveyId, "There is no 'Basic Demographics' Survey found in the system");
 	}
 
 	@Override
@@ -53,16 +57,15 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 		mandatoryData.add(new DataExportCell("vista_clinic", getOrMiss(assessment.getClinic().getName())));
 		mandatoryData.add(new DataExportCell("note_title", getOrMiss(assessment.getNoteTitle().getName())));
 		mandatoryData.add(new DataExportCell("clinician_name", getOrMiss(assessment.getClinician().getUserFullName())));
-		mandatoryData.add(new DataExportCell("date_created", df.format(assessment.getDateCreated())));
-		mandatoryData.add(new DataExportCell("time_created", tf.format(assessment.getDateCreated())));
+		mandatoryData.add(new DataExportCell("date_created", getOrMiss(getDtAsStr(assessment.getDateCreated()))));
+		mandatoryData.add(new DataExportCell("time_created", getOrMiss(getTmAsStr(assessment.getDateCreated()))));
+		mandatoryData.add(new DataExportCell("date_completed", getOrMiss(getDtAsStr(assessment.getDateCompleted()))));
+		mandatoryData.add(new DataExportCell("time_completed", getOrMiss(getTmAsStr(assessment.getDateCompleted()))));
+		mandatoryData.add(new DataExportCell("duration", getOrMiss(getStrFromInt(assessment.getDuration()))));
 
-		if (assessment.getDateCompleted() != null) {
-			mandatoryData.add(new DataExportCell("date_completed", df.format(assessment.getDateCompleted())));
-			mandatoryData.add(new DataExportCell("time_completed", tf.format(assessment.getDateCompleted())));
+		if (assessment.getSurveyMap().get(basicDemographicsSurveyId) == null) {
+			mandatoryData.add(new DataExportCell("demo_DOB", getOrMiss(getDtAsStr(assessment.getVeteran().getBirthDate()))));
 		}
-
-		mandatoryData.add(new DataExportCell("duration", getStrFromInt(assessment.getDuration())));
-
 		return mandatoryData;
 	}
 
@@ -79,8 +82,7 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 				mandatoryIdendifiedData.addAll(Arrays.asList(new DataExportCell("demo_lastname", getOrMiss(v.getLastName())),//
 						new DataExportCell("demo_firstname", getOrMiss(v.getFirstName())),//
 						new DataExportCell("demo_midname", getOrMiss(v.getMiddleName())),//
-						new DataExportCell("demo_SSN", getOrMiss(v.getSsnLastFour())),//
-						new DataExportCell("demo_DOB", df.format(v.getBirthDate()))));
+						new DataExportCell("demo_SSN", getOrMiss(v.getSsnLastFour()))));//
 			}
 			mandatoryIdendifiedData.add(new DataExportCell("veteran_ien", v.getVeteranIen()));
 		}

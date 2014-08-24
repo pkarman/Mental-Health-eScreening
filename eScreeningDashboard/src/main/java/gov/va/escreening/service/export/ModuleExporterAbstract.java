@@ -8,6 +8,7 @@ import gov.va.escreening.util.SurveyResponsesHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class ModuleExporterAbstract implements ModuleDataExporter {
 	protected final Logger logger = LoggerFactory.getLogger(ModuleExporterAbstract.class);
-	protected static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-	protected static final DateFormat tf = new SimpleDateFormat("HH:mm:ss zzz");
+	private static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	private static final DateFormat tf = new SimpleDateFormat("HH:mm:ss zzz");
 	private static final String MISSING_DEFAULT = String.valueOf(ExportDataDefaultValuesEnum.MISSINGVALUE.getDefaultValueNum());
 
 	@Resource(name = "surveyResponsesHelper")
@@ -31,6 +32,14 @@ public abstract class ModuleExporterAbstract implements ModuleDataExporter {
 
 	protected String getOrMiss(String data) {
 		return (data != null && !data.isEmpty()) ? data : miss();
+	}
+
+	protected String getTmAsStr(Date dateCreated) {
+		return dateCreated != null ? tf.format(dateCreated) : "";
+	}
+
+	protected String getDtAsStr(Date dateCreated) {
+		return dateCreated != null ? df.format(dateCreated) : "";
 	}
 
 	protected String getStrFromInt(Integer duration) {
