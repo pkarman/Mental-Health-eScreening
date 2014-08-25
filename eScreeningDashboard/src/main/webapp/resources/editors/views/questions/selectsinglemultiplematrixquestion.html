@@ -1,251 +1,223 @@
 <h4>Properties</h4>
 <div class="row">
-  <div class="col-md-12">
-      <form role="form" class="form">
-        <div class="form-group">
-          <label> Question Text </label>
-          <textarea class="form-control" ng-model="selectedQuestion.text" ng-disabled="vistaDisable"></textarea>
-        </div>
-      </form>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <label> VistA Question Text </label>
-      <textarea class="form-control" ng-model="selectedQuestion.vistaText" ng-disabled="vistaDisable"></textarea>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12 column" style="display: block;"> 
-    
-    <!-- JH OOOCOMMENT
-        <form class="form-horizontal">
-            
-            <div class="form-group form-inline">
-                
-                <div class="btn-group pull-left">
-                    <a href="#" class="btn btn-success btn-sm active">Select Single</a>
-                    <a href="#" class="btn btn-success btn-sm">Select Multiple</a>
-                </div>
-                
-            &nbsp;
-                <label class="form-label">Help Text</label>
-                <input type="text" class="form-control" style="width:360px;" placeholder="Enter Help Text">
-            </div>
-           
-            <div class="form-group form-inline">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    &nbsp;PPI
-                </label>
-                &nbsp;&nbsp;
-                <label class="checkbox">
-                    <input type="checkbox">
-                    MHA
-                </label>
-                &nbsp;&nbsp;
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Required
-                </label>
+    <div class="col-md-12">
+        <form role="form" class="form">
+            <div class="form-group">
+                <label> Question Text </label>
+                <textarea class="form-control" ng-model="selectedQuestionUIObject.text"
+                          ng-disabled="vistaDisable"></textarea>
             </div>
         </form>
-         --> 
-  </div>
+    </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <h4 class="col-sm-7"> Matrix Columns </h4>
-      
-      <!-- JH OOOCOMMENT
+    <div class="col-md-12">
+        <div class="form-group">
+            <label> VistA Question Text </label>
+            <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText"
+                      ng-disabled="vistaDisable"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 column" style="display: block;">
+
+        <!-- JH OOOCOMMENT
+            <form class="form-horizontal">
+
+                <div class="form-group form-inline">
+
+                    <div class="btn-group pull-left">
+                        <a href="#" class="btn btn-success btn-sm active">Select Single</a>
+                        <a href="#" class="btn btn-success btn-sm">Select Multiple</a>
+                    </div>
+
+                &nbsp;
+                    <label class="form-label">Help Text</label>
+                    <input type="text" class="form-control" style="width:360px;" placeholder="Enter Help Text">
+                </div>
+
+                <div class="form-group form-inline">
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        &nbsp;PPI
+                    </label>
+                    &nbsp;&nbsp;
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        MHA
+                    </label>
+                    &nbsp;&nbsp;
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        Required
+                    </label>
+                </div>
+            </form>
+             -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <h4 class="col-sm-7"> Matrix Columns </h4>
+
+            <!-- JH OOOCOMMENT
+                  <div class="form-group pull-right">
+                      <button class="btn btn-primary btn-sm">
+                          <span class="glyphicon glyphicon-plus"></span>
+                          Add
+                      </button>
+
+                  </div>
+                  -->
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="answerUIObject in getFirstChildMeasureAnswers(selectedQuestionUIObject.childQuestions)">
+                    <div class="form-group">
+                        <label> {{$index + 1}}. Column Name </label>
+                        <input type="text" class="form-control" ng-model="answerUIObject.text" placeholder="Enter Column Name">
+                    </div>
+                    <div class="form-group">
+                        <label> Vista Answer text </label>
+                        <input type="text" class="form-control" ng-model="answerUIObject.vistaText"
+                               ng-disabled="!module.clinicalReminder" placeholder="Enter Vista Answer Text">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select class="form-control" ng-model="answerUIObject.type"
+                                ng-options="answerType.name for answerType in answerTypeMenuOptions">
+                            <option value=""> -- Choose Type --</option>
+                        </select>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <h4> Matrix Questions </h4>
+
+            <!-- JH OOOCOMMENT
             <div class="form-group pull-right">
-                <button class="btn btn-primary btn-sm">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Add
-                </button>
-                
+              <button type="submit" class="btn btn-primary btn-sm"> <span class="glyphicon glyphicon-plus"></span> Add </button>
             </div>
-            --> 
+            -->
+        </div>
     </div>
-  </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <ul class="list-group">
-        <li class="list-group-item">
-          <div class="form-group">
-            <label> Column Name </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Column Name">
-          </div>
-          <div class="form-group">
-            <label> Vista Answer text </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Vista Answer text " value="">
-          </div>
-          <div class="form-group">
-            <label>Type</label>
-            <select class="form-control">
-              <option value="Regular">Regular</option>
-              <option value="Other">Other</option>
-              <option value="None">None</option>
-            </select>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="form-group">
-            <label> Column Name </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Column Name">
-          </div>
-          <div class="form-group">
-            <label> Vista Answer text </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Vista Answer text " value="">
-          </div>
-          <div class="form-group">
-            <label>Type</label>
-            <select class="form-control">
-              <option value="Regular">Regular</option>
-              <option value="Other">Other</option>
-              <option value="None">None</option>
-            </select>
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div class="form-group">
-            <label> Column Name </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Column Name">
-          </div>
-          <div class="form-group">
-            <label> Vista Answer text </label>
-            <input type="text" class="form-control" ng-model="" placeholder="Enter Vista Answer text " value="">
-          </div>
-          <div class="form-group">
-            <label>Type</label>
-            <select class="form-control">
-              <option value="Regular">Regular</option>
-              <option value="Other">Other</option>
-              <option value="None">None</option>
-            </select>
-          </div>
-        </li>
-      </ul>
+    <div class="col-md-12">
+        <div class="form-group">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="">
+                        <div class="form-group">
+                            <div>
+                                <div class="">
+                                    <label>Question Text</label>
+                                    <input type="text" class=" form-control" placeholder="Enter Question Text">
+                                </div>
+                                <label> Variable Name </label>
+
+                                <div class="">
+                                    <input type="text" class="form-control" placeholder="Variable Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label> VistA Question text </label>
+                                    <textarea class="form-control"
+                                              ng-model="selectedQuestionUIObject.vistAQuestionText"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- JH OOOCOMMENT
+                        <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
+                        <div class="clear-fix"></div>
+                        -->
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="form-group">
+                            <div>
+                                <div class="">
+                                    <label>Question Text</label>
+                                    <input type="text" class=" form-control" placeholder="Enter Question Text">
+                                </div>
+                                <label> Variable Name </label>
+
+                                <div class="">
+                                    <input type="text" class="form-control" placeholder="Variable Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label> VistA Question text </label>
+                                    <textarea class="form-control"
+                                              ng-model="selectedQuestionUIObject.vistAQuestionText"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- JH OOOCOMMENT
+                        <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
+                        <div class="clear-fix"></div>
+                        -->
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="form-group">
+                            <div>
+                                <div class="">
+                                    <label>Question Text</label>
+                                    <input type="text" class=" form-control" placeholder="Enter Question Text">
+                                </div>
+                                <label class="control-label"> Variable Name </label>
+
+                                <div class="">
+                                    <input type="text" class="form-control" placeholder="Variable Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label> VistA Question text </label>
+                                    <textarea class="form-control"
+                                              ng-model="selectedQuestionUIObject.vistAQuestionText"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JH OOOCOMMENT
+                        <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
+                        <div class="clear-fix"></div>
+                        -->
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <h4> Matrix Questions </h4>
-      
-      <!-- JH OOOCOMMENT
-      <div class="form-group pull-right">
-        <button type="submit" class="btn btn-primary btn-sm"> <span class="glyphicon glyphicon-plus"></span> Add </button>
-      </div>
-      -->
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <ul class="list-group">
-        <li class="list-group-item">
-          <div class="">
-            <div class="form-group">
-              <div>
-                <div class="">
-                  <label>Question Text</label>
-                  <input type="text" class=" form-control" placeholder="Enter Question Text">
-                </div>
-                <label> Variable Name </label>
-                <div class="">
-                  <input type="text" class="form-control" placeholder="Variable Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label> VistA Question text </label>
-                  <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
-                </div>
-              </div>
-            </div>
-            <!-- JH OOOCOMMENT
-            <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
-            <div class="clear-fix"></div>
-            -->
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div>
-            <div class="form-group">
-              <div>
-                <div class="">
-                  <label>Question Text</label>
-                  <input type="text" class=" form-control" placeholder="Enter Question Text">
-                </div>
-                <label> Variable Name </label>
-                <div class="">
-                  <input type="text" class="form-control" placeholder="Variable Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label> VistA Question text </label>
-                  <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
-                </div>
-              </div>
-            </div>
-            <!-- JH OOOCOMMENT
-            <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
-            <div class="clear-fix"></div>
-            -->
-          </div>
-        </li>
-        <li class="list-group-item">
-          <div>
-            <div class="form-group">
-              <div>
-                <div class="">
-                  <label>Question Text</label>
-                  <input type="text" class=" form-control" placeholder="Enter Question Text">
-                </div>
-                <label class="control-label"> Variable Name </label>
-                <div class="">
-                  <input type="text" class="form-control" placeholder="Variable Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label> VistA Question text </label>
-                  <textarea class="form-control" ng-model="selectedQuestion.vistAQuestionText"></textarea>
-                </div>
-              </div>
-            </div>
-            
-            <!-- JH OOOCOMMENT
-            <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
-            <div class="clear-fix"></div>
-            -->
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
 </div>
 <hr>
 <div class="row">
-  <div class="col-md-12">
-    <div class="form-group pull-right">
-      <button class="btn btn-primary">Save</button>
-      <button class="btn btn-default">Cancel</button>
+    <div class="col-md-12">
+        <div class="form-group pull-right">
+            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-default">Cancel</button>
+        </div>
     </div>
-  </div>
 </div>

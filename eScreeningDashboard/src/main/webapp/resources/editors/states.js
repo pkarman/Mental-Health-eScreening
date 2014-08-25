@@ -307,6 +307,16 @@ angular.module('Editors')
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple Matrix'
                     },
+                    resolve: {
+                        answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of answer types from the database.
+                            return [
+                                {id: -1, name: "Regular"},
+                                {id: -1, name: "Other"},
+                                {id: -1, name: "None"}
+                            ];
+                        }]
+                    },
                     controller:'selectMultipleMatrixQuestionController'
                 })
 
