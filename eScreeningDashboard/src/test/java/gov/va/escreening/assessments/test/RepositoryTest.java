@@ -9,6 +9,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
+import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
@@ -99,6 +100,28 @@ public class RepositoryTest {
         m= measureRepo.findOne(1);
         assertEquals("TEST VISTA", m.getVistaText());
         
+    }
+    
+    @Test
+    public void testMeasureValidation()
+    {
+    	Measure m = measureRepo.findOne(1);
+    	assertEquals(1, m.getMeasureValidationList().size());
+    	
+    	gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
+    	
+    	List<gov.va.escreening.dto.ae.Validation> vdtoList = mdto.getValidations();
+    	
+    	gov.va.escreening.dto.ae.Validation newValidation = new gov.va.escreening.dto.ae.Validation();
+    	newValidation.setName("minLength");
+    	newValidation.setValue("6");
+    	
+    	vdtoList.add(newValidation);
+    	
+    	measureRepo.updateMeasure(mdto);
+    	
+    	m = measureRepo.findOne(1);
+    	assertEquals(2, m.getMeasureValidationList().size());
     }
     
     @Test

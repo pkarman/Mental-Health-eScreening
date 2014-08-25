@@ -1,24 +1,32 @@
 package gov.va.escreening.repository;
 
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.Validation;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
+import gov.va.escreening.entity.MeasureValidation;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure> implements MeasureRepository {
 
+	@Autowired
+	ValidationRepository validationRepo;
+	
     public MeasureRepositoryImpl() {
         super();
 
@@ -135,8 +143,30 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure> 
             {
                 ma.setAnswerText(answerDto.getAnswerText());
                 ma.setExportName(answerDto.getExportName());
-                ma.setVistaText(answerDto.getVistaText());
+                ma.setVistaText(answerDto.getVistaText());    
             }
+        }
+        
+        m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+        for(Validation mvdto : measureDto.getValidations())
+        {
+        	gov.va.escreening.entity.Validation v = validationRepo.findValidationByCode(mvdto.getName());
+        	MeasureValidation mv = new MeasureValidation();
+        	 if ("boolean".equalsIgnoreCase(v.getDataType())) {
+                 mv.setBooleanValue(Integer.getInteger(mvdto.getValue()));
+             }
+             else if ("number".equalsIgnoreCase(v.getDataType())) {
+                    mv.setNumberValue(Integer.getInteger(mvdto.getValue()));
+             }
+             else {
+                 mv.setTextValue(mvdto.getValue());
+             }
+        	
+        	mv.setDateCreated(Calendar.getInstance().getTime());
+        	mv.setMeasure(m);
+        	
+        	mv.setValidation(v);        	
+        	m.getMeasureValidationList().add(mv);
         }
         
         update(m);
