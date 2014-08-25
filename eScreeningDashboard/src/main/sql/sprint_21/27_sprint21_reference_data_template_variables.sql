@@ -152,7 +152,7 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 
 
 	/* PTSD */
-INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (11510, 1989, 310);
+INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (11510, 1929, 310); 
 
 	/* PHQ 9 DEPRESSION */
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id) VALUES (11515, 1599, 308);

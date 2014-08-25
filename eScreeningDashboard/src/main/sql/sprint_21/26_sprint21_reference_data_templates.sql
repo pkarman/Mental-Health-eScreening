@@ -1226,8 +1226,8 @@ INSERT INTO survey_template (survey_id, template_id) VALUES (20, 309);
 INSERT INTO template(template_id, template_type_id, is_graphical, name, description, template_file) VALUES (310, 8, 1, 'Veteran Summary PTSD Entry', 'Veteran Summary PTSD Entry',
 '
 <#include "clinicalnotefunctions"> 
-<#if var1989??>
-	<#assign score = getCustomVariableDisplayText(var1989)>
+<#if var1929??>
+	<#assign score = getCustomVariableDisplayText(var1929)>
 
 	<#-- Template start -->
 	${MODULE_TITLE_START}

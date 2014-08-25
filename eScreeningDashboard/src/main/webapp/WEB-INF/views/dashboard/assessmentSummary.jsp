@@ -562,13 +562,6 @@
             </div>
           </div>
           
-         
-
-
-          
-
-
-
           
           <!-- Modal Save to VistA -->
           <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
@@ -702,306 +695,300 @@
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/assessmentSummary.js" />"></script>
 <script>
         
-	        $(document).ready(function() {
-	        	$(this).on("click", '#VeteranSummaryButton', function(e){
-	        		  e.preventDefault();
+$(document).ready(function() {
+    $(this).on("click", '#VeteranSummaryButton', function(e){
+        e.preventDefault();
 
-	        		  var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
+        var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
 
-	        		  $('#VeteranSummaryModal').modal('show');
-	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
-								
-	        		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
-								var modal_url 			= 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
-	        		   $.ajax({
-	        			  	type : 'get',
-	        			  	contentType: 'application/json',
-	        			   	url : modal_url,
-	        		   		success : function(r)
-	        				 {  
-	        					 $(modal_contents).show().html(r);
-                      
-                      // $(".graphicBody").length;
-                      // console.log("graphArea.length" + $(".graphicBody").length);
-                      
-                      $(".graphicBody").each(function(){
-                        var $this = $(this);
-                        var json      = $.parseJSON($this.html());
+        $('#VeteranSummaryModal').modal('show');
+        $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
 
-                        //clear the graph area
-                        $this.html("");
-                        
-                        graphStacked(json, $(".graphicBody"));
-                        $('.bars > g').each(function() {
-                          $(this).prependTo(this.parentNode);
-                        });
-                     });
-
-	        				 }
-                        
-            	});
-	        	
+ 		var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+ 	    var modal_url = 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
+ 	    $.ajax({
+		  	type : 'get',
+		  	contentType: 'application/json',
+		   	url : modal_url,
+	   		success : function(r)
+			{  
+	   		    $(modal_contents).show().html(r);
             
-            });
+	            
+	            $(".graphicBody").each(function(graphId){
+	                var $this = $(this);
+	                var graphObj  = $.parseJSON($this.html());
+	
+	                //clear the graph area
+	                $this.html("");
+	              
+	                //process graph request by type
+	                if(graphObj.type == "stacked"){
+	                    graphStacked(graphId, graphObj, $this.parents(".moduleTemplate"));
+	                }
+	                //TODO: add more types 
+	                
+	            });
+			}
+ 	    });    
+ 	});
 						
 						
 						
-						$(this).on("click", '#reviewAssessmentButton', function(e){
-	        		  e.preventDefault();
-	        		  var modal_contents = $("#AssessmentReportPreview .modal_contents");
-	        		  $('#AssessmentReportPreview').modal('show');
-	        		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
-	        		  
-	        		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
-	        		   $.ajax({
-	        			  	type : 'get',
-	        			  	contentType: 'application/json',
-	        			   	url : 'assessmentSummary/assessments/' + vaid + '/cprsNote',
-	        		   		success : function(r)
-	        				 {  
-	        					 $(modal_contents).show().html(r);
-	        				 }
-	        		});
-	        	});
-						
-
-	        	$(this).on("click", '#healthFactorTitlesButton', function(e){
-	        		  e.preventDefault();
-	        		  $('#healthFactorTitles').modal('show'); 
-	        		  
-	        		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
-	        		   $.ajax({
-	        			  	type : 'get',
-	        			  	contentType: 'application/json',
-	        			   	url : 'assessmentSummary/assessments/' + vaid + '/healthFactorTitles',
-	        		   		success : function(r)
-	        				 {
-								  console.log(r);
-	        					 
-	        					 $('#healthFactorTitles .modal_contents').show().html(r);
-	        				 }
-	        		});
-	        	});
-	        	
-	        	
-	        	
-	        	function printElement(elem, append, delimiter) {
-	        		var domClone = elem.cloneNode(true);
-	        		var $printSection = document.getElementById("yesPrint");
-	        		if (!$printSection) {
-                var $printSection = document.createElement("div");
-                  $printSection.id = "yesPrint";
-                  document.body.appendChild($printSection);
-              }
-                if (append !== true) {
-                  $printSection.innerHTML = "";
-                }
-                else if (append === true) {
-                if (typeof (delimiter) === "string") {
-                  $printSection.innerHTML += delimiter;
-                }
-                else if (typeof (delimiter) === "object") {
-                  $printSection.appendChlid(delimiter);
-                }
-	        		}
-	        			$printSection.appendChild(domClone);
-	        		}
-	        });
-        
-        </script>
-        
-        
-        
-        <script>
-      //TODO: graphStart has to be used to make the bar values start from non-zero numbers 
-      //TODO: for the colors of each bar, what happens when we have more than 6 intervals?
-       
-     function graphStacked(graphObj, containerDivClass){
-       
-       var container = $(containerDivClass);
-       // Load Objects
-       var graphparams = graphObj.data;
-       //graphStart is never used
-       var graphStart   = graphparams.graphStart;
-       var ticks        = graphparams.ticks;
-       
-       var legends = [];
-       var d3DataSet = [];
-       var scoresInterval;
-       var lastInterval = graphStart;
-       $.each(graphparams.intervals, function(name, intervalEnd){
-            legends.push(name);
-            d3DataSet.push([{x:name, y:intervalEnd}]);  // adds 	[Object { x="None", y=1}]
-            if(graphparams.score > lastInterval && graphparams.score <= intervalEnd){
-                scoresInterval = name;
-            }
-            lastInterval = intervalEnd;
-       }); 
-       
-       
-       //get the name of the interval where the score ended up
-       
-       //TODO: Can we use the moduleTemplateTitle block to hold the score stuff?  Also the wrong title is being used in this block 
-       //it should be the title in the moduleTemplateTitle above the score and the graphObj.title should be over the graph.
-       
-       // Update body with title block
-       var titleBlock = "<div class='scoreBlock text-center'><h3>"+ graphObj.title +"</h3><h4>"+graphparams.score+"</h4><h5>" + scoresInterval +"</h5></div>";
-       container.append(titleBlock);
-       console.log("--------");
-       $(".graphicBody").parent().parent().addClass("graphicBlock");
-       
-       // $( ".scoreBlock" ).insertBefore( ".graphSection" );
-
- 
-        var margins = {
-                top: 46,
-                left: 15,
-                right: 15,
-                bottom: 0
-            },
-            containerWidth    = 550,
-            containerHeight   = 100,
-            legendPanel       = {
-                                  width: containerWidth - margins.left - margins.right
-                                 },
-            width       = containerWidth - margins.left - margins.right,
-            height      = containerHeight - margins.top - margins.bottom,
-            value;
-            
-            // Settings
-            xMax            = d3.max(ticks),
-            xCurrent        = graphparams.score, //4,
-            ticks           = ticks, //[0, 4, 10, 20, 27],
-            colors          = ['#cfd8e0'  , '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'],
-            series          = legends,
-            dataset         = d3DataSet,
-            stack = d3.layout.stack();
-           
-
-        stack(dataset);
-        var dataset = dataset.map(function(group) {
-            return group.map(function(d) {
-                // Invert the x and y values, and y0 becomes x0
-                return {
-                    x: d.y,
-                    y: d.x,
-                    x0: d.y0
-                };
-            });
-        }),
-        svg = d3.select(containerDivClass)
-            .append('svg')
-                .attr('width', width + margins.left + margins.right)
-                .attr('height', height + margins.top + margins.bottom + 60)
-            .append('g')
-                .attr('class', 'bars')
-                .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
-       
-        xScale = d3.scale.linear()
-            .domain([0, xMax])
-            .range([0, width]),
-        notes = dataset[0].map(function(d) { return d.y; }),
-        _ = console.log(notes),
-        yScale = d3.scale.ordinal()
-            .domain(notes)
-            .rangeRoundBands([0, height], .1),
-        xAxis = d3.svg.axis()
-            .scale(xScale).tickValues(ticks)
-            .orient('bottom'),
-        yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient('left'),
-        
-        
-        // Bars Start
-        groups = svg.selectAll('g')
-            .data(dataset)
-            .enter()
-              .append('g')
-                .attr('class', function(d, i) {
-                    return "bar_" + [i];
-                })
-                .style('fill', function(d, i) {
-                    return colors[i];
-                })
-                
-        rects = groups.selectAll('rect')
-            .data(function(d) { return d; })
-            .enter()
-                .append('rect')
-                    .attr('x', 0)
-                    .attr('y', 0)
-                    .attr('height', function(d) { return yScale.rangeBand(); })
-                    .attr('width', function(d) { return xScale(d.x); })
-
-      var xPos = parseFloat(width / xMax) * xCurrent;
-      var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
-
-
-      d3.select('#tooltip')
-          .style('margin-left', xPos + 'px')
-          .style('margin-top', yPos + 'px')
-          .style('position', 'absolute')
-          .select('#value')
-          .text(xCurrent);
-
-        // xAxis postion
-        svg.append('g')
-            .attr('class', 'axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis);
-
-        
-        // yAxis postion
-        svg.append('g')
-            .attr('class', 'axis')
-            .call(yAxis);
-
-        // legend Rect
-        svg.append('rect')
-            .attr('fill', 'white')
-            .attr('width', legendPanel.width)
-            .attr('height', 5 * dataset.length)
-            .attr('x', 0)
-            .attr('y', 100);
-
-         // legend Text & Box
-        series.forEach(function(s, i) {
-            svg.append('text')
-                .attr('fill', 'black')
-                .attr('x', i * 105 + 15)
-                .attr('y', 100)
-                .text(s);
-            svg.append('rect')
-                .attr('fill', colors[i])
-                .attr('width', 10)
-                .attr('height', 10)
-                .attr('x', i * 105)
-                .attr('y', 90);
-        });
-        
-        //add footer if we were given one
-        if(graphObj.footer != null && graphObj.footer != ""){
-            container.append("<div class='text-center'><h5>" + graphObj.footer +"</h5></div>");
+	$(this).on("click", '#reviewAssessmentButton', function(e){
+   		  e.preventDefault();
+   		  var modal_contents = $("#AssessmentReportPreview .modal_contents");
+   		  $('#AssessmentReportPreview').modal('show');
+   		  $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
+   		  
+   		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+   		   $.ajax({
+   			  	type : 'get',
+   			  	contentType: 'application/json',
+   			   	url : 'assessmentSummary/assessments/' + vaid + '/cprsNote',
+   		   		success : function(r)
+   				 {  
+   					 $(modal_contents).show().html(r);
+   				 }
+   		   });
+	   	});
+	
+	
+   	$(this).on("click", '#healthFactorTitlesButton', function(e){
+   	    e.preventDefault();
+   		$('#healthFactorTitles').modal('show'); 
+   		  
+   		var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+   		$.ajax({
+   		   type : 'get',
+   	       contentType: 'application/json',
+   	       url : 'assessmentSummary/assessments/' + vaid + '/healthFactorTitles',
+   	       success : function(r){
+   	        console.log(r);
+   			$('#healthFactorTitles .modal_contents').show().html(r);
+   		   }
+   		});
+   	});
+	   	
+	   	
+	   	
+   	function printElement(elem, append, delimiter) {
+   		var domClone = elem.cloneNode(true);
+   		var $printSection = document.getElementById("yesPrint");
+   		if (!$printSection) {
+          var $printSection = document.createElement("div");
+            $printSection.id = "yesPrint";
+            document.body.appendChild($printSection);
         }
-     }
-      
+          if (append !== true) {
+            $printSection.innerHTML = "";
+          }
+          else if (append === true) {
+          if (typeof (delimiter) === "string") {
+            $printSection.innerHTML += delimiter;
+          }
+          else if (typeof (delimiter) === "object") {
+            $printSection.appendChlid(delimiter);
+          }
+   		}
+   			$printSection.appendChild(domClone);
+   		}
+   });
+        
+</script>
         
         
-        $( document ).ready(function() {
-            //var graphArea = $(".graphicBody");
-            //var json = $.parseJSON(graphArea.html());
-            //clear the graph area
-            //graphArea.html("");
-            
-            //graphStacked(json, ".graphicBody");
-            //  $('.bars > g').each(function() {
-            //  $(this).prependTo(this.parentNode);
-            //});
-          });
+        
+<script>
+      //TODO:
+	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
+	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
+	  // 2. the y axis label should not be given 
+	  // 3. the score is not showing up in the graph
+       
+    function graphStacked(graphId, graphObj, parentDiv){
+        parentDiv.addClass("graphicBlock");
+        
+        var titleContainer = parentDiv.children(".moduleTemplateTitle");
+        var graphContainer = parentDiv.children(".graphSection");
+        var descriptionContainer = parentDiv.children(".moduleTemplateText");
+    	  
+		// Load Objects
+		var graphparams = graphObj.data;
+		//graphStart is never used
+		var graphStart   = graphparams.graphStart;
+		var ticks        = graphparams.ticks;
+		
+		var legends = [];
+		var d3DataSet = [];
+		var scoresInterval;
+		var lastInterval = graphStart;
+		$.each(graphparams.intervals, function(name, intervalEnd){
+		     legends.push(name);
+		     d3DataSet.push([{x:name, y:intervalEnd}]);  // adds 	[Object { x="None", y=1}]
+		     if(graphparams.score > lastInterval && graphparams.score <= intervalEnd){
+		         scoresInterval = name;
+		     }
+		     lastInterval = intervalEnd;
+		}); 
+		
+		
+		// Update title block to contain the scoring
+		titleContainer.wrap("<div class='scoreBlock text-center'>");
+		titleContainer.parent().append("<div><h4>" + graphparams.score + "</h4><h5>" + scoresInterval + "</h5></div>");
+		
+		//Start adding to the graphic block with the graph's title 
+		graphContainer.prepend("<div class='graphHeader text-center'>" + graphObj.title + "</div>"); 
+		
+		
+		//Add d3 graph
+        var graphContainerId = "graph_" + graphId;
+        var graphSelector = "#" + graphContainerId;
+        graphContainer.children(".graphicBody").prop("id", graphContainerId)
+        
+        //Set d3 graph attributes
+	    var margins = {
+		          top: 46,
+		          left: 15,
+		          right: 15,
+		          bottom: 0
+		      },
+		      containerWidth    = 550,
+		      containerHeight   = 100,
+		      legendPanel       = {
+		                            width: containerWidth - margins.left - margins.right
+		                           },
+		      width       = containerWidth - margins.left - margins.right,
+		      height      = containerHeight - margins.top - margins.bottom,
+		      value;
+		      
+		      // Settings
+		      xMax            = d3.max(ticks),
+		      xCurrent        = graphparams.score, //4,
+		      ticks           = ticks, //[0, 4, 10, 20, 27],
+		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'],
+		      series          = legends,
+		      dataset         = d3DataSet,
+		      stack = d3.layout.stack();
+		     
+		
+	    stack(dataset);
+	    var dataset = dataset.map(
+		    function(group) {
+			    return group.map(function(d) {
+			        // Invert the x and y values, and y0 becomes x0
+			        return {
+			            x: d.y,
+			            y: d.x,
+			            x0: d.y0
+			        };
+			    });
+			}),
+	
+			svg = d3.select(graphSelector)
+			    .append('svg')
+			        .attr('width', width + margins.left + margins.right)
+			        .attr('height', height + margins.top + margins.bottom + 60)
+			    .append('g')
+			        .attr('class', 'bars')
+			        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
+			
+			xScale = d3.scale.linear()
+			    .domain([graphStart, xMax])
+			    .range([0, width]),
+			    
+			notes = dataset[0].map(function(d) { return d.y; }),
+			_ = console.log(notes),
+			
+			yScale = d3.scale.ordinal()
+			    .domain(notes)
+			    .rangeRoundBands([0, height], .1),
+			    
+			xAxis = d3.svg.axis()
+			    .scale(xScale).tickValues(ticks)
+			    .orient('bottom'),
+			    
+			yAxis = d3.svg.axis()
+			    .scale(yScale)
+			    .orient('left'),
+			
+			// Bars Start
+			groups = svg.selectAll('g')
+			    .data(dataset)
+			    .enter()
+			      .append('g')
+			        .attr('class', function(d, i) {
+			            return "bar_" + [i];
+			        })
+			        .style('fill', function(d, i) {
+			            return colors[i];
+			        })
+			        
+			rects = groups.selectAll('rect')
+			    .data(function(d) { return d; })
+			    .enter()
+			        .append('rect')
+			            .attr('x', 0)
+			            .attr('y', 0)
+			            .attr('height', function(d) { return yScale.rangeBand(); })
+			            .attr('width', function(d) { return xScale(d.x); });
 
-
-
-
-    </script>
+		var xPos = parseFloat(width / xMax) * xCurrent;
+		var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
+		
+	
+		d3.select('#tooltip')
+		    .style('margin-left', xPos + 'px')
+		    .style('margin-top', yPos + 'px')
+		    .style('position', 'absolute')
+		    .select('#value')
+		    .text(xCurrent);
+		
+		  // xAxis postion
+		  svg.append('g')
+		      .attr('class', 'axis')
+		      .attr('transform', 'translate(0,' + height + ')')
+		      .call(xAxis);
+		
+		  
+		  // yAxis postion
+		  svg.append('g')
+		      .attr('class', 'axis')
+		      .call(yAxis);
+		
+		  // legend Rect
+		  svg.append('rect')
+		      .attr('fill', 'white')
+		      .attr('width', legendPanel.width)
+		      .attr('height', 5 * dataset.length)
+		      .attr('x', 0)
+		      .attr('y', 100);
+		
+		   // legend Text & Box
+		  series.forEach(function(s, i) {
+		      svg.append('text')
+		          .attr('fill', 'black')
+		          .attr('x', i * 105 + 15)
+		          .attr('y', 100)
+		          .text(s);
+		      svg.append('rect')
+		          .attr('fill', colors[i])
+		          .attr('width', 10)
+		          .attr('height', 10)
+		          .attr('x', i * 105)
+		          .attr('y', 90);
+		  });
+		  
+		  // fix graphic bar issue
+		  $(graphSelector).find('.bars > g')
+		      .each(function() {
+		          $(this).prependTo(this.parentNode);
+		  });
+		   
+		  //add footer if we were given one
+		  if(graphObj.footer != null && graphObj.footer != ""){
+		      graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
+		  }
+	}
+</script>
 </html>
