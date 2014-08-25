@@ -7,12 +7,19 @@ import static org.junit.Assert.assertTrue;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.controller.dashboard.ExportDataRestController;
+import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
+import gov.va.escreening.entity.ExportLog;
+import gov.va.escreening.entity.ExportLogData;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.ExportLogDataRepository;
+import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
@@ -38,9 +45,11 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,6 +153,12 @@ public class XportDataTest {
 
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
+
+	@Resource(type = ExportLogRepository.class)
+	ExportLogRepository exportLogRepository;
+
+	@Resource(type = ExportLogDataRepository.class)
+	ExportLogDataRepository exportLogDataRepository;
 
 	Logger logger = Logger.getLogger(XportDataTest.class);
 
@@ -554,7 +569,34 @@ public class XportDataTest {
 		}
 	}
 
-	// -------{}{}{}------
+	@Rollback(value = false)
+	@Test
+	public void addDataToExportLog() {
+		List<ExportLog> exportLog = exportLogRepository.findAll();
+		if (!exportLog.isEmpty()) {
+			ExportLog el = exportLog.iterator().next();
+			el.addExportLogData(new ExportLogData("The Quick Brown Fox @ " + new DateTime().getMillisOfDay()));
+
+			exportLogRepository.update(el);
+		}
+	}
+
+	@Rollback(value = false)
+	@Test
+	public void readExportLogById() {
+		int elId = -1;
+		List<ExportLog> exportLogs = exportLogRepository.findAll();
+		if (!exportLogs.isEmpty()) {
+			ExportLog el = exportLogs.iterator().next();
+			elId = el.getExportLogId();
+		}
+
+		if (elId > -1) {
+			ExportLog exportLog = exportLogRepository.findOne(elId);
+
+		}
+	}
+
 	// @Rollback(value = false)
 	@Test
 	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
@@ -616,6 +658,22 @@ public class XportDataTest {
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
+	}
+
+	@Resource(type = ExportDataRestController.class)
+	ExportDataRestController exportDataRestController;
+
+	@Rollback(value = false)
+	@Test
+	public void testVeteran18ForExportData() throws Exception {
+		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
+		edfb.setExportedByUserId(1);
+		AssessmentDataExport adeOriginal = exportDataService.getAssessmentDataExport(edfb);
+
+		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
+		// and make sure that adeOriginal is equal to adeCopy
+		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
+		assertEquals(adeCopy, adeOriginal);
 	}
 
 	@Before

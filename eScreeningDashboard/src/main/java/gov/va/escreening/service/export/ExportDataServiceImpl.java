@@ -4,6 +4,7 @@ import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.dto.dashboard.DataExportFilterOptions;
 import gov.va.escreening.entity.ExportLog;
+import gov.va.escreening.entity.ExportLogData;
 import gov.va.escreening.entity.ExportType;
 import gov.va.escreening.entity.Program;
 import gov.va.escreening.entity.User;
@@ -26,6 +27,8 @@ import gov.va.escreening.service.VeteranAssessmentSurveyService;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -38,7 +41,7 @@ import com.google.common.base.Preconditions;
 @Transactional
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAware {
-
+	private static final Logger logger = LoggerFactory.getLogger(ExportDataServiceImpl.class);
 	private BeanFactory bf;
 
 	@Autowired
@@ -69,6 +72,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	@Override
 	public AssessmentDataExport getAssessmentDataExport(
 			ExportDataFormBean exportDataFormBean) {
+
 		AssessmentDataExport assessmentDataExport = new AssessmentDataExport();
 
 		List<VeteranAssessment> matchingAssessments = null;
@@ -86,8 +90,9 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 		assessmentDataExport.setFilterOptions(filterOptions);
 
 		// 3) log this activity
-		logDataExport(assessmentDataExport);
+		ExportLog exportLog = logDataExport(assessmentDataExport);
 
+		assessmentDataExport.setExportLogId(exportLog.getExportLogId());
 		return assessmentDataExport;
 	}
 
@@ -133,11 +138,77 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	}
 
 	@Override
-	public void logDataExport(AssessmentDataExport dataExport) {
+	public ExportLog logDataExport(AssessmentDataExport dataExport) {
 
 		// Add an entry to the exportLog table
 		ExportLog exportLog = createExportLogFromOptions(dataExport.getFilterOptions());
+
+		addExportLogDataToExportLog(exportLog, dataExport);
+
 		exportLogRepository.create(exportLog);
+		return exportLog;
+	}
+
+	private void addExportLogDataToExportLog(ExportLog exportLog,
+			AssessmentDataExport dataExport) {
+
+		String header = createHeaderFromDataExport(dataExport);
+		exportLog.addExportLogData(new ExportLogData(header));
+		List<String> data = createDataFromDataExport(dataExport);
+		for (String eldRow : data) {
+			exportLog.addExportLogData(new ExportLogData(eldRow));
+		}
+
+		dataExport.setHeaderAndData(header, data);
+	}
+
+	private List<String> createDataFromDataExport(
+			AssessmentDataExport dataExport) {
+
+		List<List<DataExportCell>> tableContent = dataExport.getTableContent();
+
+		if (tableContent != null && !tableContent.isEmpty()) {
+			List<String> rows = new ArrayList<String>();
+			for (List<DataExportCell> row : tableContent) {
+				StringBuilder sb = new StringBuilder();
+				for (DataExportCell cell : row) {
+					sb.append(cell.getCellValue().replaceAll(",", "-"));
+					sb.append(",");
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug(String.format("row of length %s is being added [%s]", sb.length(), sb));
+				}
+				rows.add(sb.toString());
+			}
+			return rows;
+
+		} else {
+			// if export log is downloaded again
+			return dataExport.getData();
+		}
+	}
+
+	private String createHeaderFromDataExport(AssessmentDataExport dataExport) {
+		List<List<DataExportCell>> tableContent = dataExport.getTableContent();
+
+		String header = null;
+
+		if (tableContent != null && !tableContent.isEmpty()) {
+			List<DataExportCell> firstRow = tableContent.iterator().next();
+			StringBuilder sb = new StringBuilder();
+			for (DataExportCell dec : firstRow) {
+				sb.append(dec.getColumnName().replaceAll(",", "-"));
+				sb.append(",");
+			}
+			header = sb.toString();
+		} else {
+			// if export log is requested to be downloaded again
+			header = dataExport.getHeader();
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
+		}
+		return header;
 	}
 
 	private ExportLog createExportLogFromOptions(DataExportFilterOptions options) {
@@ -232,5 +303,22 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	@Override
 	public void setBeanFactory(BeanFactory arg0) throws BeansException {
 		this.bf = arg0;
+	}
+
+	@Override
+	public AssessmentDataExport downloadExportData(Integer userId,
+			int exportLogId, String comment) {
+
+		ExportLog exportLog = exportLogRepository.findOne(exportLogId);
+
+		AssessmentDataExport ade = AssessmentDataExport.createFromExportLog(exportLog);
+
+		ade.getFilterOptions().setComment(comment);
+		ade.getFilterOptions().setCreatedByUserId(userId);
+
+		ExportLog newExportLog = logDataExport(ade);
+
+		ade.setExportLogId(newExportLog.getExportLogId());
+		return ade;
 	}
 }
