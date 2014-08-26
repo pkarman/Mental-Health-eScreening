@@ -6,7 +6,7 @@ SET GLOBAL general_log = 'ON';
 /* create database user */
 CREATE USER 'escrapp'@'localhost' IDENTIFIED BY 'CHANGE_M3';
 
-CREATE DATABASE IF NOT EXISTS `escreening`;
+CREATE DATABASE IF NOT EXISTS escreening;
 CREATE DATABASE IF NOT EXISTS `escreening-test`;
 CREATE DATABASE IF NOT EXISTS `escreening-demo`;
 CREATE DATABASE IF NOT EXISTS `escreening-int`;
