@@ -57,7 +57,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
             lsquo:  '\u2018',
             rsquo:  '\u2019',
             ldquo:  '\u201c',
-            rdquo:  '\u201d',
+            rdquo:  '\u201d'
         };
         var subs = [
             {pattern: "(^|[\\s\"])'",      replace: '$1' + e.lsquo},
@@ -261,9 +261,21 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     };
 
     this.findValidation = function (targetPropertyName, targetPropertyValue) {
-        var filteredValidations = this.filterValidations(targetPropertyName, targetPropertyValue);
+        var filteredValidations = this.filterValidations(targetPropertyName, targetPropertyValue),
+            filteredValidation = null,
+            filteredValidationConstructorParameters;
 
-        return (Object.isArray(filteredValidations) && filteredValidations.length > 0)? filteredValidations[0] : new EScreeningDashboardApp.models.Validation();
+        if (Object.isArray(filteredValidations) && filteredValidations.length > 0) {
+            filteredValidation = filteredValidations[0];
+        } else {
+            filteredValidationConstructorParameters = {} ;
+            filteredValidationConstructorParameters[targetPropertyName] = targetPropertyValue;
+            filteredValidationConstructorParameters["selected"] = false;
+
+            filteredValidation = new EScreeningDashboardApp.models.Validation(filteredValidationConstructorParameters);
+        }
+
+        return filteredValidation;
     };
     
     this.getChildMeasures = function(){
@@ -277,8 +289,8 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     this.toString = function() {
         return "Question{id: " + id + ", name: " + name + ", text: " + text + ", type: " + type + ", ppi: " + ppi +
             ", displayOrder: " + displayOrder + ", required: " + required + ", visible: " + visible + ", variableName: " + variableName +
-            ", answers: " + answers.toString() + ", validations: " + validations.toString() +
-            ", childQuestions:" + childQuestions.toString() + ", tableAnswers: " + tableAnswers.toString() + "]}";
+            ", answers: [" + answers.toString() + "], validations: [" + validations.toString() +
+            "], childQuestions: [" + childQuestions.toString() + "], tableAnswers: [" + tableAnswers.toString() + "]}\n";
     };
 
     this.toJSON = function (serializeCollections) {

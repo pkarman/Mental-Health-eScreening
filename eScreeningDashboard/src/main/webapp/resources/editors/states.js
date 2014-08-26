@@ -269,7 +269,7 @@ angular.module('Editors')
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                     },
                     resolve: {
-                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                        currentlySelectedTextFormatDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
                             //TODO: Need to dynamically pull a unique list of validation type from the
                             //TODO: measure_validation table where measure_validation.validation_id = 1.
                             return [

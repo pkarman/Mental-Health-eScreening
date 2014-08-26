@@ -33,9 +33,9 @@
         <form class="form">
             <div class="form-group">
                 <label> Text Format </label>
-                <select class="form-control" ng-model="currentlySelectedTextFormatMenuOption"
-                        ng-options="textFormatType.value for textFormatType in textFormatTypeMenuOptions"
-                        ng-disabled="vistaDisable" ng-blur="blur();">
+                <select class="form-control" ng-model="currentlySelectedTextFormatDropDownMenu"
+                        ng-options="textFormatType.value for textFormatType in currentlySelectedTextFormatDropDownMenuOptions"
+                        ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()">
                     <option value=""> -- Choose Type --</option>
                 </select>
             </div>
@@ -70,7 +70,7 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="exactLengthField.selected">
                     </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="exactLengthField.value">
+                    <input type="number" class="form-control" placeholder="0" ng-model="exactLengthField.value" ng-disabled="!exactLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
@@ -82,7 +82,7 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="minLengthField.selected">
                     </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="minLengthField.value">
+                    <input type="number" class="form-control" placeholder="0" ng-model="minLengthField.value" ng-disabled="!minLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
@@ -93,7 +93,7 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="maxLengthField.selected">
                     </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="maxLengthField.value">
+                    <input type="number" class="form-control" placeholder="0" ng-model="maxLengthField.value" ng-disabled="!maxLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
@@ -104,7 +104,7 @@
                 <span class="input-group-addon">
                     <input type="checkbox" ng-model="minValueField.selected">
                 </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="minValueField.value">
+                    <input type="text" class="form-control" placeholder="0" ng-model="minValueField.value" ng-disabled="!minValueField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
@@ -115,7 +115,7 @@
                 <span class="input-group-addon">
                     <input type="checkbox" ng-model="maxValueField.selected">
                 </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="maxValueField.value">
+                    <input type="number" class="form-control" placeholder="0" ng-model="maxValueField.value" ng-disabled="!maxValueField.selected">
                 </div>
                 <!-- /input-group -->
             </div>

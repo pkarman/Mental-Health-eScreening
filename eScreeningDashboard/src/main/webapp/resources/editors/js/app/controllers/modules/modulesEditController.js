@@ -9,7 +9,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
     $scope.getDefaultTextFormatType = function (targetQuestionUIObject, dropDownMenuOptions) {
-        var defaultTextFormatTypeValidation = null;
+        var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation();
 
         if(Object.isDefined(targetQuestionUIObject)) {
            if(Object.isArray(targetQuestionUIObject.validations)) {
@@ -65,6 +65,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.module),
             selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
 
+        console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
         SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
             $scope.module = existingSurvey;
         }, function(responseError) {

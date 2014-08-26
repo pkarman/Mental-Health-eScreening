@@ -120,7 +120,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure> 
     
     @Override
     @Transactional
-    public void updateMeasure(gov.va.escreening.dto.ae.Measure measureDto)
+    public gov.va.escreening.dto.ae.Measure updateMeasure(gov.va.escreening.dto.ae.Measure measureDto)
     {
         Measure m = findOne(measureDto.getMeasureId());
         
@@ -171,5 +171,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure> 
         
         update(m);
         commit();
+
+        gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(m, null, null);
+
+        return dto;
     }
 }

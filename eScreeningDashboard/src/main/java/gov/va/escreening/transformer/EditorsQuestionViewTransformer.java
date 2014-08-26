@@ -27,7 +27,7 @@ public class EditorsQuestionViewTransformer {
         return questionInfoList;
     }
 
-    private static QuestionInfo transformQuestion(Measure measure) {
+    public static QuestionInfo transformQuestion(Measure measure) {
         QuestionInfo questionInfo = new QuestionInfo();
 
         if(measure != null) {
