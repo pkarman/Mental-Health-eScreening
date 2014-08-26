@@ -15,6 +15,8 @@ INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_hist
 INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (229, 'PREFERRED HEALTHCARE LANGUAGE-VIETNAMESE', 91, 0);
 INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (230, 'PREFERRED HEALTHCARE LANGUAGE-OTHER', 91, 0);
 
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (235, 'ADV DIRECTIVE OUTPT SCREEN COMPLETED', 91, 0);
+
 INSERT INTO rule (rule_id, name, expression) VALUES (3001, 'LANGUAGE-ENGLISH', '[800] == 1'); 
 INSERT INTO rule (rule_id, name, expression) VALUES (3002, 'LANGUAGE-SPANISH', '[800] == 2'); 
 INSERT INTO rule (rule_id, name, expression) VALUES (3003, 'LANGUAGE-TAGALOG', '[800] == 3');
@@ -25,6 +27,9 @@ INSERT INTO rule (rule_id, name, expression) VALUES (3007, 'LANGUAGE-KOREAN', '[
 INSERT INTO rule (rule_id, name, expression) VALUES (3008, 'LANGUAGE-RUSSIAN', '[800] == 8'); 
 INSERT INTO rule (rule_id, name, expression) VALUES (3009, 'LANGUAGE-VIETNAMESE', '[800] == 9');
 INSERT INTO rule (rule_id, name, expression) VALUES (3010, 'LANGUAGE-OTHER', '[800] == 10');
+
+
+INSERT INTO rule (rule_id, name, expression) VALUES (3015, 'ADV DIRECTIVE OUTPT SCREEN COMPLETED', '([820]==1)||([820]==0)');
 
 /* Add association for rules and variables. */
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3001, 800);
@@ -37,6 +42,7 @@ INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3008, 800);
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3009, 800);
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3010, 800);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3015, 820);
 
 
 /* MST Health Factor: Add event for adding health factors for MST Clinical Reminder */
@@ -51,6 +57,8 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (300
 INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3009, 2, 'Add HF LANGUAGE-VIETNAMESE', 229);
 INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3010, 2, 'Add HF LANGUAGE-OTHER', 230);
 
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3015, 2, 'Add HF ADV DIRECTIVE OUTPT SCREEN COMPLETED', 235);
+
 /* MST Health Factor: Associate rules to events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(3001, 3001);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3002, 3002);
@@ -62,6 +70,7 @@ INSERT INTO rule_event (rule_id, event_id) VALUES(3007, 3007);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3008, 3008);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3009, 3009);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3010, 3010);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3015, 3015);
 
 
 
