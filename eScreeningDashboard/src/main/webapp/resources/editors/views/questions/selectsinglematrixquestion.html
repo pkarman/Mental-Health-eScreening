@@ -83,10 +83,12 @@
                         <label> {{$index + 1}}. Column Name </label>
                         <input type="text" class="form-control" ng-model="answerUIObject.text" placeholder="Enter Column Name">
                     </div>
+                    <!--
                     <div class="form-group">
                         <label> Vista Answer text </label>
                         <input type="text" class="form-control" ng-model="answerUIObject.vistaText" ng-disabled="!module.clinicalReminder" placeholder="Enter Vista Answer text " value="">
                     </div>
+                    //-->
                     <div class="checkbox">
                         <label><input type="checkbox" ng-model="answerUIObject.otherResponse" ng-true-value="other" ng-false-value="{{ null }}"> Other </label>
                     </div>
