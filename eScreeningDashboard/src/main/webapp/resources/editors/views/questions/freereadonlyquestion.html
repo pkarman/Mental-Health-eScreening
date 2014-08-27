@@ -21,11 +21,13 @@
             <label> Question Text </label>
             <textarea class="form-control" ng-model="selectedQuestionUIObject.text"></textarea>
         </div>
+        <!--
         <div class="form-group">
             <label> VistA Question Text </label>
             <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText"
                       ng-disabled="!module.clinicalReminder"></textarea>
         </div>
+        //-->
     </div>
 </div>
 <div class="row">
@@ -47,8 +49,7 @@
             -->
             <div class="form-group form-inline">
                 <label class="checkbox">
-                    <input ng-model="selectedQuestionUIObject.ppi" type="checkbox" ng-true-value="true"
-                           ng-false-value="false"> PPI </label> &nbsp;&nbsp;
+                    <input type="checkbox" ng-model="selectedQuestionUIObject.ppi"> PPI </label> &nbsp;&nbsp;
                 <label class="checkbox">
                     <input type="checkbox" ng-model="selectedQuestionUIObject.required"> Required
                 </label>
