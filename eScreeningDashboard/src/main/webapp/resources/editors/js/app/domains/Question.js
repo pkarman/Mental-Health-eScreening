@@ -367,9 +367,16 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
 
      if(Object.isDefined(childQuestions) && childQuestions.length > 0) {
          if(Object.isDefined(childQuestions[0])) {
-             if(Object.isDefined(childQuestions[0].answers) && childQuestions[0].answers.length > 0) {
-                 firstChildMeasureAnswers = childQuestions[0].answers;
+             if(Object.isDefined(childQuestions[0].answers)) {
+                 if (childQuestions[0].answers.length > 0) {
+                     firstChildMeasureAnswers = childQuestions[0].answers;
+                 }
+             } else if (Object.isDefined(childQuestions[0].getAnswers())) {
+                 if (childQuestions[0].getAnswers().length > 0) {
+                     firstChildMeasureAnswers = childQuestions[0].getAnswers();
+                 }
              }
+
          }
      }
 

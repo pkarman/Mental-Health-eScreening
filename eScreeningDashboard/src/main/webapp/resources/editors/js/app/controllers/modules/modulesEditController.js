@@ -52,7 +52,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             case 'tableQuestion':
                 $state.go('modules.detail.editTableQuestion');
                 break;
-            case 'instructions':
+            case 'instruction':
                 $state.go('modules.detail.editInstructionQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             default:
@@ -62,8 +62,17 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.save = function () {
-        var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.module),
-            selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+        var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions),
+            selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.module),
+            selectedQuestionDomainObject;
+
+        $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
+            if(index > 0) {
+                childMeasure.answers = firstChildQuestionAnswers;
+            }
+        });
+
+        selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject),
 
         console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
         SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
