@@ -59,7 +59,7 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (301
 
 INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3015, 2, 'Add HF ADV DIRECTIVE OUTPT SCREEN COMPLETED', 235);
 
-/* MST Health Factor: Associate rules to events */
+/* Advance Directives Health Factor: Associate rules to events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(3001, 3001);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3002, 3002);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3003, 3003);
@@ -72,5 +72,18 @@ INSERT INTO rule_event (rule_id, event_id) VALUES(3009, 3009);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3010, 3010);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3015, 3015);
 
+/****************************************************************************************/
+/************** Health Factors for OEF OIF Clinical Reminder ***************************/
+/****************************************************************************************/
 
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (251, 'PREFERRED HEALTHCARE LANGUAGE-ENGLISH', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (252, 'PREFERRED HEALTHCARE LANGUAGE-SPANISH', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (253, 'PREFERRED HEALTHCARE LANGUAGE-TAGALOG', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (254, 'PREFERRED HEALTHCARE LANGUAGE-CHINESE', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (255, 'PREFERRED HEALTHCARE LANGUAGE-GERMAN', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (256, 'PREFERRED HEALTHCARE LANGUAGE-JAPANESE', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (257, 'PREFERRED HEALTHCARE LANGUAGE-KOREAN', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (258, 'PREFERRED HEALTHCARE LANGUAGE-RUSSIAN', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (259, 'PREFERRED HEALTHCARE LANGUAGE-VIETNAMESE', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (260, 'PREFERRED HEALTHCARE LANGUAGE-OTHER', 91, 0);
 
