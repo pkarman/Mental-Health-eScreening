@@ -325,11 +325,7 @@ angular.module('Editors')
                     templateUrl:'resources/editors/views/questions/tablequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'
-                    },
-                    controller:['$rootScope', '$scope', '$state',
-                        function($rootScope, $scope, $state){
-
-                        }]
+                    }
                 })
 
                 .state('modules.detail.editInstructionQuestion', {
@@ -338,11 +334,7 @@ angular.module('Editors')
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'
                     },
-                    controller:['$rootScope', '$scope', '$state',
-                        function($rootScope, $scope, $state){
-                            $scope.htmlVariable = '<b>I am</b> an example of an <b><i>Instruction!!!</i></b>';
-                            $scope.htmlcontent = $scope.htmlVariable;
-                        }]
+                    controller:'instructionQuestionController'
                 })
 
                 /////////////////////////////
