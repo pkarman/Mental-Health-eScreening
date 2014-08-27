@@ -4,6 +4,7 @@
 Editors.controller('selectMultipleQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
 	$scope.question = EScreeningDashboardApp.models.Question.toUIObjects($rootScope.selectedQuestion);
 	$scope.answerTypeMenuOptions = answerTypeMenuOptions;
+    $scope.parentSave = $scope.save;
 	$scope.isDirty = false;
 	
 	$scope.blur = function(){
@@ -11,14 +12,10 @@ Editors.controller('selectMultipleQuestionController', ['$rootScope', '$scope', 
 	};
 	
 	$scope.save = function(){
-		// Not sure exactly what we need to be doing here quite yet.
-		EscreeningDashboardApp.services.QuestionService.update(QuestionService.setUpdateQuestionRequestParameter($scope.question)).then(function(question){
-			// Process this.
-		});
+        $scope.parentSave();
 	};
 	
 	$scope.cancel = function(){
-		// Not sure exactly what we need to be doing here quite yet, either.
 		$state.go('^');
 	};
 }]);

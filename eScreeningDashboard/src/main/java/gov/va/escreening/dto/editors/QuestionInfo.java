@@ -22,6 +22,7 @@ public class QuestionInfo implements MeasureBaseProperties {
     private String vistaText;
     private String variableName;
     private Boolean ppi;
+    private Boolean mha;
     private List<AnswerInfo> answers = new ArrayList<AnswerInfo>();
     private List<ValidationInfo> validations = new ArrayList<ValidationInfo>();
     private List<QuestionInfo> childQuestions = new ArrayList<QuestionInfo>();
@@ -171,6 +172,24 @@ public class QuestionInfo implements MeasureBaseProperties {
 
     public void setPpi(Boolean ppi) {
         this.ppi = ppi;
+    }
+
+    @Override
+    public Boolean getIsMha() {
+        return isMha();
+    }
+
+    @Override
+    public void setIsMha(Boolean isMha) {
+        setMha(isMha);
+    }
+
+    public Boolean isMha() {
+        return mha;
+    }
+
+    public void setMha(Boolean mha) {
+        this.mha = mha;
     }
 
     public List<ValidationInfo> getValidations() {

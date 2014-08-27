@@ -26,4 +26,6 @@ public interface MeasureBaseProperties {
     void setVariableName(String variableName);
     Boolean getIsPPI();
     void setIsPPI(Boolean isPPI);
+    Boolean getIsMha();
+    void setIsMha(Boolean isMha);
 }

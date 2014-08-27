@@ -38,6 +38,7 @@ public class Measure implements Serializable, MeasureBaseProperties {
     private String vistaText;
     private String variableName;
     private Boolean isPPI;
+    private Boolean isMha;
 
     public String getVistaText() {
         return vistaText;
@@ -61,6 +62,14 @@ public class Measure implements Serializable, MeasureBaseProperties {
 
     public void setIsPPI(Boolean isPPI) {
         this.isPPI = isPPI;
+    }
+
+    public Boolean getIsMha() {
+        return isMha;
+    }
+
+    public void setIsMha(Boolean isMha) {
+        this.isMha = isMha;
     }
 
 	public Integer getMeasureId() {
@@ -163,6 +172,7 @@ public class Measure implements Serializable, MeasureBaseProperties {
         vistaText = dbMeasure.getVistaText();
         variableName = dbMeasure.getVariableName();
         isPPI = dbMeasure.getIsPatientProtectedInfo();
+        isMha = dbMeasure.getIsMha();
         
         isVisible = measureVisibilityMap != null? measureVisibilityMap.get(dbMeasure.getMeasureId()):null;
         if(isVisible == null) //if only java had a default option in Map

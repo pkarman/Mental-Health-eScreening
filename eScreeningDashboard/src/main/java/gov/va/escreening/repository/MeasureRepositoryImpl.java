@@ -126,6 +126,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure> 
         
         m.setIsRequired(measureDto.getIsRequired());
         m.setIsPatientProtectedInfo(measureDto.getIsPPI());
+        m.setIsMha(measureDto.getIsMha());
         m.setMeasureText(measureDto.getMeasureText());
         m.setVistaText(measureDto.getVistaText());
         

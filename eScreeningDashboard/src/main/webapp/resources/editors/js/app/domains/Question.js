@@ -31,6 +31,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
         displayOrder = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.displayOrder))? jsonQuestionObject.displayOrder : null,
         required = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.required) && Object.isBoolean(jsonQuestionObject.required)) ? jsonQuestionObject.required : false,
         ppi = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.ppi) && Object.isBoolean(jsonQuestionObject.ppi)) ? jsonQuestionObject.ppi : false,
+        mha = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.mha) && Object.isBoolean(jsonQuestionObject.mha)) ? jsonQuestionObject.mha : false,
         visible = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.visible) && Object.isBoolean(jsonQuestionObject.visible))? visible : false,
         variableName = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.variableName))? jsonQuestionObject.variableName : null,
         answers = (Object.isDefined(jsonQuestionObject) && Object.isArray(jsonQuestionObject.answers))? EScreeningDashboardApp.models.AnswersTransformer.transformJSONPayload({"answers": jsonQuestionObject.answers}): [],
@@ -215,6 +216,10 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
         return ppi;
     };
 
+    this.isMha = function (){
+        return mha;
+    };
+
     this.getVisible = function() {
         return visible;
     };
@@ -287,7 +292,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     };
 
     this.toString = function() {
-        return "Question{id: " + id + ", name: " + name + ", text: " + text + ", type: " + type + ", ppi: " + ppi +
+        return "Question{id: " + id + ", name: " + name + ", text: " + text + ", type: " + type + ", ppi: " + ppi + ", mha: " + mha +
             ", displayOrder: " + displayOrder + ", required: " + required + ", visible: " + visible + ", variableName: " + variableName +
             ", answers: [" + answers.toString() + "], validations: [" + validations.toString() +
             "], childQuestions: [" + childQuestions.toString() + "], tableAnswers: [" + tableAnswers.toString() + "]}\n";
@@ -302,6 +307,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
             jsonVisible = (Object.isDefined(visible))? visible : false,
             jsonIsRequired = (Object.isDefined(required))? required : false,
             jsonIsPpi = (Object.isDefined(ppi))? ppi : false,
+            jsonIsMha = (Object.isDefined(mha))? mha : false,
             jsonVariableName = (Object.isDefined(variableName))? "\"" + variableName + "\"" : null,
             jsonAnswers =  (serializeCollections)? "\"answers\": " + generateJsonStringForAnswers() : "",
             jsonValidations = (serializeCollections)? ",\"validations\": " + generateJsonStringForValidations(): "",
@@ -315,6 +321,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
                 "\"visible\": " + jsonVisible + "," +
                 "\"required\": " + jsonIsRequired + "," +
                 "\"ppi\": " + jsonIsPpi + "," +
+                "\"mha\": " + jsonIsMha + "," +
                 "\"variableName\": " + jsonVariableName + "," +
                 jsonAnswers + 
                 jsonValidations + 
