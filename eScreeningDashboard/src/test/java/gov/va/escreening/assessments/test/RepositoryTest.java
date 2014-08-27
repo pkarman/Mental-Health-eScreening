@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import gov.va.escreening.domain.BatteryDto;
+import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
@@ -122,6 +124,29 @@ public class RepositoryTest {
     	
     	m = measureRepo.findOne(1);
     	assertEquals(2, m.getMeasureValidationList().size());
+    }
+    
+    @Test
+    public void testMeasureAnswer()
+    {
+    	Measure m = measureRepo.findOne(10);
+    	
+    	gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
+    	
+    	Answer a = mdto.getAnswers().get(0);
+    	a.setExportName("testExport");
+    	a.setAnswerText("TEST ANSWER TEXT");
+    	a.setVistaText("Test Vista text");
+    	
+    	measureRepo.updateMeasure(mdto);
+    	
+    	m = measureRepo.findOne(10);
+    	
+    	MeasureAnswer ma = m.getMeasureAnswerList().get(0);
+    	
+    	assertEquals("testExport", ma.getExportName());
+    	assertEquals("TEST ANSWER TEXT", ma.getAnswerText());
+    	assertEquals("Test Vista text", ma.getVistaText());
     }
     
     @Test
