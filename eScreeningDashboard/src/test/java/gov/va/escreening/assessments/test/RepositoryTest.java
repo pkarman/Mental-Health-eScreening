@@ -137,6 +137,7 @@ public class RepositoryTest {
     	a.setExportName("testExport");
     	a.setAnswerText("TEST ANSWER TEXT");
     	a.setVistaText("Test Vista text");
+    	a.setAnswerType("NO TYPE");
     	
     	measureRepo.updateMeasure(mdto);
     	
@@ -147,6 +148,7 @@ public class RepositoryTest {
     	assertEquals("testExport", ma.getExportName());
     	assertEquals("TEST ANSWER TEXT", ma.getAnswerText());
     	assertEquals("Test Vista text", ma.getVistaText());
+    	assertEquals("NO TYPE", ma.getAnswerType());
     }
     
     @Test

@@ -160,6 +160,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				ma.setAnswerText(answerDto.getAnswerText());
 				ma.setExportName(answerDto.getExportName());
 				ma.setVistaText(answerDto.getVistaText());
+				ma.setAnswerType(answerDto.getAnswerType());
 			}
 		}
 
