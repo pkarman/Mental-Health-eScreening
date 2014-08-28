@@ -136,6 +136,7 @@
 #VeteranSummaryModal .moduleTemplateTitle {
   font-weight: bold;
   margin: 10px 10px 20px 10px;
+  text-decoration: underline;
 }
 #VeteranSummaryModal .moduleTemplateText {
   margin: 10px 10px 20px 10px;
@@ -265,6 +266,7 @@ body * {
 #VeteranSummaryModal .moduleTemplateTitle {
   margin: 5px;
   padding: 0px;
+  text-decoration: underline;
 }
 #VeteranSummaryModal .moduleTemplateText {
   margin: 5px;
