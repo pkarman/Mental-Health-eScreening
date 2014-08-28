@@ -450,47 +450,50 @@ public class XportDataTest {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
-		StopWatch sw = new StopWatch("templateDataVerifierTypeTxt");
+		String name = "templateProcessorService-->templateDataVerifierTypeTxt-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 10; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
 			sw.stop();
-			System.out.println(sw.prettyPrint());
-
 			assertTrue(!progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">") && !progressNoteContent.contains("</"));
 		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 10);
+
 		return true;
 	}
 
 	private boolean templateDataVerifierTypeHtml(Object[] testTuple) throws Exception {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-
-		StopWatch sw = new StopWatch("templateDataVerifierTypeHtml");
+		String name = "templateProcessorService-->templateDataVerifierTypeHtml-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 10; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
-			System.out.println(sw.prettyPrint());
-
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 10);
+
 		return true;
 	}
 
 	private boolean templateDataVerifierVetSummary(Object[] testTuple) throws Exception {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-
-		StopWatch sw = new StopWatch("templateDataVerifierVetSummary");
+		String name = "templateProcessorService-->templateDataVerifierVetSummary-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 10; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
 			sw.stop();
-			System.out.println(sw.prettyPrint());
-
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 10);
 		return true;
 	}
 
@@ -545,14 +548,17 @@ public class XportDataTest {
 
 	@Test
 	public void testSmrListResponseTimeForVet18() throws UnsupportedEncodingException, IOException {
-		StopWatch sw = new StopWatch("testSmrListResponseTimeForVet18");
+		String name="testSmrListResponseTimeForVet18";
+		StopWatch sw = new StopWatch(name);
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 			sw.start("iter_" + i);
-			smrLister.save(18);
+			smrLister.refreshSmrFromDb(18);
 			sw.stop();
 		}
-		System.out.println(sw.prettyPrint());
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 100);
+
 	}
 
 	// @Rollback(value = false)
@@ -672,14 +678,16 @@ public class XportDataTest {
 
 	@Test
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
-		StopWatch sw = new StopWatch("testVeteran18ForTemplatesCorrectnessWith__HTML");
-		for (int i = 0; i < 10; i++) {
+		String name="templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 100; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
-		System.out.println(sw.prettyPrint());
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 100);
 	}
 
 	@Resource(type = ExportDataRestController.class)

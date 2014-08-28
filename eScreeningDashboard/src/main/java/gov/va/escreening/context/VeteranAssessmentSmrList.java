@@ -16,11 +16,11 @@ public class VeteranAssessmentSmrList {
 
 	private ThreadLocal<List<SurveyMeasureResponse>> t = new ThreadLocal<List<SurveyMeasureResponse>>();
 
-	public List<SurveyMeasureResponse> get() {
+	public List<SurveyMeasureResponse> fetchCachedSmr() {
 		return t.get();
 	}
 
-	public void save(int vetAssId) {
+	public void refreshSmrFromDb(int vetAssId) {
 		t.set(smrr.findForVeteranAssessmentId(vetAssId));
 	}
 }

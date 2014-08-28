@@ -80,10 +80,10 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	}
 
 	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
-		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.get();
+		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.fetchCachedSmr();
 		if (smrList == null) {
-			veteranAssessmentSmrList.save(veteranAssessmentId);
-			smrList = veteranAssessmentSmrList.get();
+			veteranAssessmentSmrList.refreshSmrFromDb(veteranAssessmentId);
+			smrList = veteranAssessmentSmrList.fetchCachedSmr();
 		}
 		return smrList;
 	}

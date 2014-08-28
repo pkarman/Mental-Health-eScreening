@@ -275,7 +275,7 @@ public class RuleServiceImpl implements RuleService {
     @Override
     public boolean evaluate(Integer veteranAssessmentId, Rule rule){
 		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.save(veteranAssessmentId);
+		smrLister.refreshSmrFromDb(veteranAssessmentId);
 
         /* Should support:
         for single select: a particular option was selected (if each value has a calculated value then that would work)

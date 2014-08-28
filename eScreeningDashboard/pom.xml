@@ -509,7 +509,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<jdbc.showSql>true</jdbc.showSql>
+				<jdbc.showSql>false</jdbc.showSql>
 				<jdbc.url>jdbc:mysql://localhost/escreening</jdbc.url>
 				<jdbc.db>escreening</jdbc.db>
 				<log.suffix>dev</log.suffix>
