@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
@@ -35,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +84,10 @@ public class RuleServiceImpl implements RuleService {
     private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
     @Autowired
     private VeteranAssessmentRepository veteranAssessmentRepository;
-    
+
+    @Resource(name="veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
+
     @Override
     public void processRules(Integer veteranAssessmentId, Collection<SurveyMeasureResponse> responses) {
         if(responses.isEmpty()){
@@ -268,7 +274,9 @@ public class RuleServiceImpl implements RuleService {
      */
     @Override
     public boolean evaluate(Integer veteranAssessmentId, Rule rule){
-        
+		// load list of SurveyMeasureResponse for this assessment id
+		smrLister.save(veteranAssessmentId);
+
         /* Should support:
         for single select: a particular option was selected (if each value has a calculated value then that would work)
         for select multi: we have to know if the calculated value of an option was true

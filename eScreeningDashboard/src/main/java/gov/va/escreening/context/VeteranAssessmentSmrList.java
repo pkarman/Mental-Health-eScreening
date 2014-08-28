@@ -1,17 +1,26 @@
 package gov.va.escreening.context;
 
 import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
 import java.util.List;
 
-public class VeteranAssessmentSmrList {
-	private static ThreadLocal<List<SurveyMeasureResponse>> t = new ThreadLocal<List<SurveyMeasureResponse>>();
+import javax.annotation.Resource;
 
-	public static List<SurveyMeasureResponse> get() {
+import org.springframework.stereotype.Component;
+
+@Component("veteranAssessmentSmrList")
+public class VeteranAssessmentSmrList {
+	@Resource(type = SurveyMeasureResponseRepository.class)
+	SurveyMeasureResponseRepository smrr;
+
+	private ThreadLocal<List<SurveyMeasureResponse>> t = new ThreadLocal<List<SurveyMeasureResponse>>();
+
+	public List<SurveyMeasureResponse> get() {
 		return t.get();
 	}
 
-	public static void save(List<SurveyMeasureResponse> smrList) {
-		t.set(smrList);
+	public void save(int vetAssId) {
+		t.set(smrr.findForVeteranAssessmentId(vetAssId));
 	}
 }
