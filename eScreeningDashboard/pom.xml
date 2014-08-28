@@ -26,24 +26,24 @@
 		<sample.patient.ien>100022</sample.patient.ien>
 	</properties>
 	<dependencies>
-        <!-- Web Services -->
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
-        </dependency>
+		<!-- Web Services -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.4.1.1</version>
-        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.4.1.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.4.1.1</version>
-        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.4.1.1</version>
+		</dependency>
 
 		<!-- Spring -->
 		<dependency>
@@ -268,20 +268,20 @@
 		</dependency>
 
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.0</version>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.2</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+		</dependency>
 
 
-        <!-- JSR 303 with Hibernate Validator -->
+		<!-- JSR 303 with Hibernate Validator -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -321,7 +321,7 @@
 			<version>12.0</version>
 		</dependency>
 
-		<!-- Freemarker  -->
+		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
@@ -381,6 +381,15 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<parallel>classes</parallel>
+					<useUnlimitedThreads>true</useUnlimitedThreads>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
@@ -453,7 +462,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/baseline</basedir>
 							</fileset>
 						</configuration>
@@ -466,7 +475,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sandbox</basedir>
 							</fileset>
 						</configuration>
@@ -479,7 +488,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_21</basedir>
 							</fileset>
 						</configuration>
