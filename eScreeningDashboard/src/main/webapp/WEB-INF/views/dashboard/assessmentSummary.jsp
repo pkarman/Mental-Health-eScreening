@@ -25,6 +25,8 @@
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
+    
+    <link href="<c:url value="/resources/css/partialpage/assessmentSummary.css" />" rel="stylesheet" type="text/css" />
     <title>Assessment Summary</title>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -38,245 +40,7 @@
     <style type="text/css">
     
     
-    .bar {
-    }
-    .pointer {
-      width:2px; height:21px; background-color:#222c76; text-align:center; margin:0 auto;
-    }
-    .axis path, .axis line {
-      fill: none;
-      stroke: black;
-      shape-rendering: crispEdges;
-    }
-    .axis text {
-      font-family: sans-serif;
-      font-size: 11px;
-    }
-    #tooltip {
-      position: absolute;
-      text-align: center;
-      height: auto;
-      -webkit-border-radius: 0px;
-      -moz-border-radius: 0px;
-      pointer-events: none;
-    }
-    #tooltip.hidden {
-      display: none;
-    }
-    #tooltip p {
-      margin: 0;
-      font-family: sans-serif;
-      font-size: 16px;
-      line-height: 20px;
-    }
-    .value {
-      color: #fff;
-      background-color: #0f3a64;
-      width: 40px;
-      padding: 10px;
-    }
-    .hide{
-      display:none;
-    }
     
-    .stackedBars {
-    
-    }
-    .stackedBars svg{
-      font-family: arial;
-      background-color:#fff;
-      font-size: 10px;
-      position:absolute;
-    }
-    .scoreBlock{
-      border-right:1px dashed #000000;
-      min-height:200px;
-    }
-    .scoreBlock h3{
-      font-size:14px;
-      font-family: arial;
-      font-weight:bold;
-      margin:0px;
-      padding:0px;
-      text-decoration:underline;
-    }
-    .scoreBlock h4{
-      font-size:70px;
-      font-family: arial;
-      font-weight:bold;
-       margin:0px;
-      padding:0px;
-    }
-    .scoreBlock h5{
-      font-size:14px;
-      font-family: arial;
-      font-weight:bold;
-       margin:0px;
-      padding:0px;
-    }
-
-    .graphBlock{
-      border-right:1px dashed #000000;
-      min-height:200px;
-    }
-
-    .graphTitle{
-      text-align:center;
-      font-weight:bold;
-    }
-    .graphFooterNote{
-      text-align:center;
-    }
-    
-    
-        /* for print preview styles  */
-        @page { size: auto; margin: 17mm 0mm 16.12mm 0mm;}
-        .container_main { width: 96%;  padding: 0 2%; margin: 0 auto;}
-        .templateHeader { }
-        .templateFooter { }
-        .templateSectionTitle { font-weight:bold; font-size: 20px; margin: 10px 0; }
-        .templateSection { }
-        .moduleTemplateTitle { font-weight: bold; }
-        .moduleTemplateText { margin: 10px 20px 20px ; }
-        .matrixTableHeader{ width:200px; }
-		.matrixTableData{ width:240px; }
-		.justifyRtTableData{ text-align:right; }
-		.justifyLftTableData{ text-align:left; }
-		.justifyCtrTableData{ text-align:center; }
-		.spacer1TableData{ width:500px; }
-    
-   #VeteranSummaryModal .moduleTemplateTitle { 
-    font-weight: bold;
-     margin: 10px 10px 20px 10px;
-   }
-    #VeteranSummaryModal .moduleTemplateText {
-      margin: 10px 10px 20px 10px;
-     
-    }
-    #VeteranSummaryModal .moduleTemplateText:first-line {
-      // font-weight: bold;
-    }
-    
-    #VeteranSummaryModal .matrixTableHeader{ width:200px; }
-    
-    #VeteranSummaryModal .moduleTemplate{
-        display:inline-table;
-		width:48%;
-        border-top:1px dashed #000000;
-    }
-    
-    #VeteranSummaryModal .moduleTemplate:nth-of-type(even){
-      border-right:1px dashed #000000;
-    }
-    #VeteranSummaryModal .moduleTemplate:nth-of-type(odd){
-      border-left:1px dashed #000000;
-    }
-    
-    #VeteranSummaryModal .justifyRtTableData{
-      text-align:right;
-    }
-    #VeteranSummaryModal .justifyLftTableData{
-      text-align:left;
-    }
-    .modal.modal-wide .modal-dialog {
-      width: 1000px;
-    }
-    .modal-wide .modal-body {
-      overflow-y: auto;
-    }
-    #VeteranSummaryModal .modal-body p { margin-bottom: 900px;}
-    #VeteranSummaryModal .moduleTemplateHeader h5{
-      font-size:22px !important;
-      font-weight:bold  !important;
-      line-height: 35px;
-    }
-    #VeteranSummaryModal .graphicBlock{
-      width:100% !important;
-      border:none !important;
-      border-top:1px dashed #000000 !important;
-    }
-    
-    #VeteranSummaryModal .graphicBlock .scoreBlock{
-      border:none !important;
-      display: inline-table;
-      width: 150px;
-      border-right: 1px dashed #000 !important;
-      padding-right: 5px;
-    }
-   #VeteranSummaryModal .graphicBlock  .moduleTemplateText{
-      display: inline-table;
-      width: 300px;
-   }
-    
-
-    @media print {
-    
-    * {
-      overflow: visible;
-    }
-    body * {
-      visibility:hidden;
-      overflow: visible !important;
-      font-size: 11px;
-      
-      
-    }
-     
-     
-    .yesPrint, .yesPrint * {
-    	visibility:visible !important;
-    	min-height: none !important;
-      	max-height: none !important;
-      	height: auto !important;
-    }
-  
-    .non-printable { display: none; }
-
-   
-    .custom_modal .modal-wide .modal-body{
-      overflow: visible;
-      position:absolute;
-      left:0;
-      top:0;
-      width:750px !important;
-      height: auto !important;
-      background-color: #666;
-    	visibility:visible !important;
-    	min-height: none !important;
-      	max-height: none !important;
-      	padding: 0px;
-      	margin: 0px;
-    }
-	.justifyCtrTableData img{
-		display: block;
-		text-align: center;
-		margin: 0 auto;
-		min-height: 100px;
-		min-width: 100px;
-	}
-	.moduleTemplateText{margin: 0px; padding: 0px}
-	
-	.moduleTemplateHeader .col-md-6{
-		width: 350px;
-		float: left;
-	}
-	
-    .moduleTemplateHeader img{
-   		width: 130px;
-   	}
-   	.moduleTemplateHeader h5{
-   		font-size: 16px;
-   	}
-   	#VeteranSummaryModal .moduleTemplateTitle{
-   		margin: 5px;
-   		padding: 0px;
-   	}
-    
-    #VeteranSummaryModal .moduleTemplateText{
-        margin: 5px;
-   		padding: 0px;
-    }
-    }
     </style>
 </head>
 <body>
@@ -641,9 +405,14 @@
         </div>
         <div class="modal-body yesPrint">
             <div align="right" class="non-printable">
-              <button class="btn btn-primary" onClick="window.print();"><span class=" glyphicon glyphicon-print"></span> Print Review Note</button>
+              <button class="btn btn-primary" onClick="window.print();"><span class=" glyphicon glyphicon-print"></span> Print </button>
+              
+		
+                      
             </div>
           <div class="modal_contents">Loading...</div>
+          
+          <div class="page_foot">DEPARTMENT OF VETERANS AFFAIRS <br>VA San Diego Healthcare System   I   3350 La Jolla Village Dr.  I  San Diego, CA  92161</div>
         </div>
       </div>
     </div>
@@ -838,7 +607,7 @@ $(document).ready(function() {
 		titleContainer.parent().append("<div><h4>" + graphparams.score + "</h4><h5>" + scoresInterval + "</h5></div>");
 		
 		//Start adding to the graphic block with the graph's title 
-		graphContainer.prepend("<div class='graphHeader text-center'>" + graphObj.title + "</div>"); 
+		graphContainer.prepend("<div class='graphHeader'>" + graphObj.title + "</div>"); 
 		
 		
 		//Add d3 graph
@@ -853,7 +622,7 @@ $(document).ready(function() {
 		          right: 15,
 		          bottom: 0
 		      },
-		      containerWidth    = 550,
+		      containerWidth    = 450,
 		      containerHeight   = 100,
 		      legendPanel       = {
 		                            width: containerWidth - margins.left - margins.right
@@ -869,6 +638,9 @@ $(document).ready(function() {
 		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'],
 		      series          = legends,
 		      dataset         = d3DataSet,
+		      pointerColor    = '#0f3a65',
+		      pointerWidth    = 36,
+		      pointerHeight   = 36,
 		      stack = d3.layout.stack();
 		     
 		
@@ -934,16 +706,49 @@ $(document).ready(function() {
 			            .attr('width', function(d) { return xScale(d.x); });
 
 		var xPos = parseFloat(width / xMax) * xCurrent;
-		var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
+		//var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
+		var yPos = 0;
 		
-	
-		d3.select('#tooltip')
+	    //alert("yPos"+yPos);
+		/*
+	    d3.select('.tooltip')
+		 	.attr('fill', 'red')
 		    .style('margin-left', xPos + 'px')
-		    .style('margin-top', yPos + 'px')
+		    .style('margin-top', 0 + 'px')
 		    .style('position', 'absolute')
-		    .select('#value')
+		    .style('z-index', '1000000000000')
+		    .select('.value')
 		    .text(xCurrent);
+		*/
+		  
 		
+		pointer = svg.append('rect')
+        .attr('fill', pointerColor)
+        .attr('width', pointerWidth)
+        .attr('height',pointerHeight)
+        .attr('x', xPos - (pointerWidth/2))
+        .attr('y', -40)
+        .attr('class', 'pointerBlock');
+
+
+	    svg.append('rect')
+	        .attr('fill', 'black')
+	        .attr('width', 1)
+	        .attr('height', 5)
+	        .attr('x', xPos)
+	        .attr('y', -5)
+	        .attr('class', 'pointerLine');
+	
+	    svg.append('text')
+	            .attr('fill', 'white')
+	            .attr('font-size', '20')
+	            .attr('font-weight', 'bold')
+	            .style("text-anchor", "middle")
+	            .attr('x', xPos)
+	            .attr('y', -15)
+	            .text(xCurrent);
+    
+    
 		  // xAxis postion
 		  svg.append('g')
 		      .attr('class', 'axis')
@@ -965,18 +770,21 @@ $(document).ready(function() {
 		      .attr('y', 100);
 		
 		   // legend Text & Box
-		  series.forEach(function(s, i) {
-		      svg.append('text')
+		  textWidth = 15;
+		   series.forEach(function(s, i) {
+			   text = svg.append('text')
 		          .attr('fill', 'black')
-		          .attr('x', i * 105 + 15)
+		          .attr('x', textWidth)
 		          .attr('y', 100)
+		          .attr('font-size', '10')
 		          .text(s);
-		      svg.append('rect')
+			   box = svg.append('rect')
 		          .attr('fill', colors[i])
 		          .attr('width', 10)
 		          .attr('height', 10)
-		          .attr('x', i * 105)
+		          .attr('x', textWidth - 15)
 		          .attr('y', 90);
+		      	  textWidth += parseFloat(text.style("width"))  + 30;
 		  });
 		  
 		  // fix graphic bar issue
@@ -984,9 +792,12 @@ $(document).ready(function() {
 		      .each(function() {
 		          $(this).prependTo(this.parentNode);
 		  });
-		   
+		 
+		  
+		  
 		  //add footer if we were given one
 		  if(graphObj.footer != null && graphObj.footer != ""){
+			  
 		      graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
 		  }
 	}

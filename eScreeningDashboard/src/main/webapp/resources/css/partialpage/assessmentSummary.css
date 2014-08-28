@@ -1,0 +1,301 @@
+.bar {
+}
+.pointer {
+  width: 2px;
+  height: 21px;
+  background-color: #222c76;
+  text-align: center;
+  margin: 0 auto;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+.axis text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
+.tooltip {
+  position: absolute;
+  text-align: center;
+  height: auto;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  pointer-events: none;
+  opacity:1;
+}
+.tooltip.hidden {
+  display: none;
+}
+.tooltip p {
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+.value {
+  color: #fff;
+  background-color: #0f3a64;
+  width: 40px;
+  padding: 10px;
+}
+.hide {
+  display: none;
+}
+.stackedBars {
+}
+.stackedBars svg {
+  font-family: arial;
+  background-color: #fff;
+  font-size: 10px;
+  position: absolute;
+}
+.scoreBlock {
+  border-right: 1px dashed #000000;
+  min-height: 200px;
+}
+.scoreBlock h3 {
+  font-size: 14px;
+  font-family: arial;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+  text-decoration: underline;
+}
+.scoreBlock h4 {
+  font-size: 70px;
+  font-family: arial;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.scoreBlock h5 {
+  font-size: 14px;
+  font-family: arial;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.graphBlock {
+  border-right: 1px dashed #000000;
+  min-height: 200px;
+}
+.graphTitle {
+  text-align: center;
+  font-weight: bold;
+}
+.graphFooterNote {
+  text-align: center;
+}
+/* for print preview styles  */
+@page {
+  size: auto;
+  margin: 17mm 0mm 16.12mm 0mm;
+}
+.container_main {
+  width: 96%;
+  padding: 0 2%;
+  margin: 0 auto;
+}
+.templateHeader {
+}
+.templateFooter {
+}
+.templateSectionTitle {
+  font-weight: bold;
+  font-size: 20px;
+  margin: 10px 0;
+}
+.templateSection {
+}
+.moduleTemplateTitle {
+  font-weight: bold;
+}
+.moduleTemplateText {
+  margin: 10px 20px 20px;
+}
+.matrixTableHeader {
+  width: 200px;
+}
+.matrixTableData {
+  width: 240px;
+}
+.justifyRtTableData {
+  text-align: right;
+}
+.justifyLftTableData {
+  text-align: left;
+}
+.justifyCtrTableData {
+  text-align: center;
+}
+.spacer1TableData {
+  width: 500px;
+}
+#VeteranSummaryModal .moduleTemplateTitle {
+  font-weight: bold;
+  margin: 10px 10px 20px 10px;
+}
+#VeteranSummaryModal .moduleTemplateText {
+  margin: 10px 10px 20px 10px;
+}
+#VeteranSummaryModal .moduleTemplateText:first-line {
+/* font-weight: bold; */
+}
+#VeteranSummaryModal .matrixTableHeader {
+  width: 200px;
+}
+#VeteranSummaryModal .moduleTemplate {
+  display: inline-table;
+  width: 48%;
+  border-top: 1px dashed #000000;
+}
+#VeteranSummaryModal .moduleTemplate:nth-of-type(even) {
+  border-right: 1px dashed #000000;
+}
+#VeteranSummaryModal .moduleTemplate:nth-of-type(odd) {
+  border-left: 1px dashed #000000;
+}
+#VeteranSummaryModal .justifyRtTableData {
+  text-align: right;
+}
+#VeteranSummaryModal .justifyLftTableData {
+  text-align: left;
+}
+.modal.modal-wide .modal-dialog {
+  width: 1000px;
+}
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+#VeteranSummaryModal .modal-body p {
+  margin-bottom: 900px;
+}
+#VeteranSummaryModal .moduleTemplateHeader h5 {
+  font-size: 22px !important;
+  font-weight: bold !important;
+  line-height: 35px;
+}
+#VeteranSummaryModal .graphicBlock {
+  width: 100% !important;
+  border: none !important;
+  border-top: 1px dashed #000000 !important;
+}
+#VeteranSummaryModal .graphicBlock .scoreBlock {
+  border: none !important;
+  display: inline-table;
+  width: 150px;
+  border-right: 1px dashed #000 !important;
+  padding-right: 5px;
+}
+#VeteranSummaryModal .graphicBlock .moduleTemplateText {
+  display: inline-table;
+  width: 300px;
+  border-left: 1px dashed #000000 !important;
+  padding-left: 10px;
+}
+#VeteranSummaryModal .graphicBlock .graphSection {
+  display: inline-table;
+  width: 450px;
+}
+#VeteranSummaryModal .graphicBlock .graphHeader {
+  font-weight: bold;
+  text-align: center;
+}
+.graphicBody{ 
+  font-size:10px;
+}
+.page_foot{
+display:none;
+}
+@media print {
+* {
+  overflow: visible;
+}
+body * {
+  visibility: hidden;
+  overflow: visible !important;
+  font-size: 11px;
+}
+.yesPrint, .yesPrint * {
+  visibility: visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  height: auto !important;
+}
+.non-printable {
+  display: none;
+}
+.custom_modal .modal-wide .modal-body {
+  overflow: visible;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 750px !important;
+  height: auto !important;
+  background-color: #666;
+  visibility: visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  padding: 0px;
+  margin: 0px;
+}
+.justifyCtrTableData img {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  min-height: 100px;
+  min-width: 100px;
+}
+.moduleTemplateText {
+  margin: 0px;
+  padding: 0px
+}
+.moduleTemplateHeader .col-md-6 {
+  width: 350px;
+  float: left;
+}
+.moduleTemplateHeader img {
+  width: 130px;
+}
+.moduleTemplateHeader h5 {
+  font-size: 16px;
+}
+#VeteranSummaryModal .moduleTemplateTitle {
+  margin: 5px;
+  padding: 0px;
+}
+#VeteranSummaryModal .moduleTemplateText {
+  margin: 5px;
+  padding: 0px;
+}
+
+
+#VeteranSummaryModal .graphicBlock .scoreBlock {
+  border: none !important;
+  display: inline-table;
+  width: 100px;
+  border-right: 1px dashed #000 !important;
+  padding-right: 5px;
+}
+#VeteranSummaryModal .graphicBlock .moduleTemplateText {
+  display: inline-table;
+  width: 150px;
+  border-left: 1px dashed #000000 !important;
+  padding-left: 10px;
+}
+#VeteranSummaryModal .graphicBlock .graphSection {
+  display: inline-table;
+  width: 450px;
+}
+#VeteranSummaryModal .graphicBlock .graphHeader {
+  font-weight: bold;
+  text-align: center;
+}
+
+.page_foot{
+  display:block;
+  position:fixed;
+}
+}
