@@ -594,7 +594,7 @@ $(document).ready(function() {
 		var lastInterval = graphStart;
 		$.each(graphparams.intervals, function(name, intervalEnd){
 		     legends.push(name);
-		     d3DataSet.push([{x:name, y:intervalEnd}]);  // adds 	[Object { x="None", y=1}]
+		     d3DataSet.push([{x:"", y:intervalEnd}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
 		     if(graphparams.score > lastInterval && graphparams.score <= intervalEnd){
 		         scoresInterval = name;
 		     }

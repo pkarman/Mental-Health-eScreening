@@ -295,7 +295,13 @@ body * {
 }
 
 .page_foot{
+  /*
   display:block;
   position:fixed;
+  */
 }
+
+.circle_progress_wrapper{
+  display:none;
+ }
 }
