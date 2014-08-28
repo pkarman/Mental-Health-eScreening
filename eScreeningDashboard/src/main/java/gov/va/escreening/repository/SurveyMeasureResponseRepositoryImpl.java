@@ -56,7 +56,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 */
 
 		List<SurveyMeasureResponse> measureResponseList = new ArrayList<SurveyMeasureResponse>();
-		for (SurveyMeasureResponse smr : veteranAssessmentSmrList.get()) {
+		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getSurvey().getSurveyId().equals(surveyId)) {
 				measureResponseList.add(smr);
 			}
@@ -79,6 +79,15 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		return surveyMeasureResponseMap;
 	}
 
+	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
+		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.get();
+		if (smrList == null) {
+			veteranAssessmentSmrList.save(veteranAssessmentId);
+			smrList = veteranAssessmentSmrList.get();
+		}
+		return smrList;
+	}
+
 	@Override
 	public List<SurveyMeasureResponse> findForAssessmentIdMeasureRow(
 			int veteranAssessmentId, int measureId, int tabularRow) {
@@ -96,7 +105,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 * </pre>
 		 */
 		List<SurveyMeasureResponse> surveyMeasureResponseList = new ArrayList<SurveyMeasureResponse>();
-		for (SurveyMeasureResponse smr : veteranAssessmentSmrList.get()) {
+		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getMeasure().getMeasureId().equals(measureId) && smr.getTabularRow().equals(tabularRow)) {
 				surveyMeasureResponseList.add(smr);
 			}
@@ -129,7 +138,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 * </pre>
 		 */
 		List<SurveyMeasureResponse> surveyMeasureResponseList = new ArrayList<SurveyMeasureResponse>();
-		for (SurveyMeasureResponse smr : veteranAssessmentSmrList.get()) {
+		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getMeasure().getMeasureId().equals(measureId)) {
 				surveyMeasureResponseList.add(smr);
 			}
@@ -166,7 +175,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 * }
 		 * </pre>
 		 */
-		for (SurveyMeasureResponse smr : veteranAssessmentSmrList.get()) {
+		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getMeasureAnswer().getMeasureAnswerId().equals(measureAnswerId)) {
 				if (tabularRow == null ? true : smr.getTabularRow().equals(tabularRow)) {
 					return smr;
