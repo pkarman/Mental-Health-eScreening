@@ -4,7 +4,7 @@
 Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
     $rootScope.selectedQuestion = {};
 
-    $rootScope.createModule = function(){
+    $scope.createModule = function(){
         return {
             index:null,
             moduleId:null,
@@ -66,7 +66,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $rootScope.battery = $rootScope.createBattery();
-    $rootScope.module = $rootScope.createModule();
+    $scope.module = $scope.createModule();
 
     $scope.addQuestion = function(){
         $scope.selectedQuestion = $rootScope.createQuestion();

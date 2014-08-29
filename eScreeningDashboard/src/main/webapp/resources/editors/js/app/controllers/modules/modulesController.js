@@ -5,7 +5,7 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'SurveyService', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, SurveyService, surveys) {
-    $scope.surveys = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
+    $rootScope.surveys = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
     
     $scope.refreshTable = function () {
         console.log('\n\n refreshing table');
@@ -84,13 +84,13 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
     	console.log('Transition to Add/Edit Modules');
-        $rootScope.module = survey;
+        $scope.module = survey;
         console.log(JSON.stringify(survey));
         $state.go('modules.detail.question', {surveyId: survey.id});
     };
 
     $scope.addModule = function(){
-        $rootScope.module = $rootScope.createModule();
+        $scope.module = $rootScope.createModule();
         $state.go('modules.detail.question');
     };
 
