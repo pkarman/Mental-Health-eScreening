@@ -282,3 +282,12 @@ FOREIGN KEY (program_id) REFERENCES program (program_id);
 
 ALTER TABLE program_battery ADD CONSTRAINT fk_program_battery_battery
 FOREIGN KEY (battery_id) REFERENCES battery (battery_id);
+
+ALTER TABLE export_log_data ADD UNIQUE INDEX export_log_id_plus_index_UNIQUE (export_log_id ASC, export_log_data_index ASC);
+ALTER TABLE export_log_data 
+ADD CONSTRAINT export_log_id_fk
+  FOREIGN KEY (export_log_id)
+  REFERENCES escreening.export_log (export_log_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+

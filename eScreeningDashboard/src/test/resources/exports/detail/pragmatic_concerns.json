@@ -1,0 +1,23 @@
+{
+	testName : "Pragmatic Concerns ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Pragmatic Concerns",
+		smrMap : {
+			vars$demo_legal_civil : "1",
+			vars$demo_legal_child : "1",
+			vars$demo_legal_tax : "1",
+			vars$demo_legal_bank : "1",
+			vars$demo_legal_ticket : "1",
+			vars$demo_legal_arrest : "1",
+			vars$demo_legal_restrain : "1",
+			vars$demo_legal_dui : "1",
+			vars$demo_legal_prob : "1",
+			vars$demo_legal_parole : "1",
+			vars$demo_legal_jag : "1",
+			vars$demo_legal_cps : "1",
+			vars$demo_legal_none : "1",
+			vars$demo_legal_other : "1",
+			other$demo_legal_otherspec : "ded"
+		}
+	} ]
+}

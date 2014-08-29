@@ -7,12 +7,20 @@ import static org.junit.Assert.assertTrue;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
+import gov.va.escreening.controller.dashboard.ExportDataRestController;
+import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
+import gov.va.escreening.entity.ExportLog;
+import gov.va.escreening.entity.ExportLogData;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.ExportLogDataRepository;
+import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
@@ -38,12 +46,15 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -145,6 +156,12 @@ public class XportDataTest {
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
 
+	@Resource(type = ExportLogDataRepository.class)
+	ExportLogDataRepository exportLogDataRepository;
+
+	@Resource(type = ExportLogRepository.class)
+	ExportLogRepository exportLogRepository;
+
 	Logger logger = Logger.getLogger(XportDataTest.class);
 
 	@Resource(type = TemplateProcessorService.class)
@@ -161,6 +178,9 @@ public class XportDataTest {
 
 	@Resource(type = VeteranAssessmentRepository.class)
 	VeteranAssessmentRepository var;
+
+	@Resource(type = VeteranAssessmentSmrList.class)
+	VeteranAssessmentSmrList smrLister;
 
 	private Map<String, SmrBldr> smrBldrMap;
 
@@ -438,27 +458,51 @@ public class XportDataTest {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
-		String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
+		String name = "templateProcessorService-->templateDataVerifierTypeTxt-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 2; i++) {
+			sw.start("iter_" + i);
+			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
+			sw.stop();
+			assertTrue(!progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">") && !progressNoteContent.contains("</"));
+		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
 
-		return !progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">");
+		return true;
 	}
 
 	private boolean templateDataVerifierTypeHtml(Object[] testTuple) throws Exception {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
+		String name = "templateProcessorService-->templateDataVerifierTypeHtml-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 2; i++) {
+			sw.start("iter_" + i);
+			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
+			sw.stop();
+			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
+		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
 
-		String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
-
-		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
+		return true;
 	}
 
 	private boolean templateDataVerifierVetSummary(Object[] testTuple) throws Exception {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-
-		String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
-
-		return !progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</");
+		String name = "templateProcessorService-->templateDataVerifierVetSummary-->" + va.getVeteranAssessmentId();
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 2; i++) {
+			sw.start("iter_" + i);
+			String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
+			sw.stop();
+			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
+		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		return true;
 	}
 
 	private boolean exportDataVerifierResult(AssesmentTestData atd,
@@ -510,6 +554,21 @@ public class XportDataTest {
 		assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
 	}
 
+	@Test
+	public void testSmrListResponseTimeForVet18() throws UnsupportedEncodingException, IOException {
+		String name = "testSmrListResponseTimeForVet18";
+		StopWatch sw = new StopWatch(name);
+
+		for (int i = 0; i < 5; i++) {
+			sw.start("iter_" + i);
+			smrLister.refreshSmrFromDb(18);
+			sw.stop();
+		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
+
+	}
+
 	// @Rollback(value = false)
 	@Test
 	public void testEveryFileWithJsonDetailForTemplatesCorrectnessWith__TEXT() throws Exception {
@@ -554,7 +613,42 @@ public class XportDataTest {
 		}
 	}
 
-	// -------{}{}{}------
+
+	@Rollback(value = false)
+	@Test
+	public void readExportLogById() {
+		int elId = -1;
+
+		addExportLogOfVet18();
+		
+		List<ExportLog> exportLogs = exportLogRepository.findAll();
+		if (!exportLogs.isEmpty()) {
+			ExportLog el = exportLogs.iterator().next();
+			elId = el.getExportLogId();
+		}
+
+		if (elId > -1) {
+			ExportLog exportLog = exportLogRepository.findOne(elId);
+
+		}
+	}
+
+	private AssessmentDataExport addExportLogOfVet18() {
+		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
+		edfb.setExportedByUserId(1);
+		return exportDataService.getAssessmentDataExport(edfb);
+	}
+
+	@Rollback(value = false)
+	@Test
+	public void testVeteran18ForExportData() throws Exception {
+		AssessmentDataExport adeOriginal=addExportLogOfVet18();
+		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
+		// and make sure that adeOriginal is equal to adeCopy
+		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
+		assertEquals(adeCopy.getData(), adeOriginal.getData());
+	}
+
 	// @Rollback(value = false)
 	@Test
 	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
@@ -590,6 +684,19 @@ public class XportDataTest {
 		assertTrue(mixVeteranSummaryTemplateReview(testFilesFor(detail), detail));
 	}
 
+	@Rollback(value = false)
+	@Test
+	
+	public void addDataToExportLog() {
+		List<ExportLog> exportLog = exportLogRepository.findAll();
+		if (!exportLog.isEmpty()) {
+			ExportLog el = exportLog.iterator().next();
+			el.addExportLogData(new ExportLogData("The Quick Brown Fox @ " + new DateTime().getMillisOfDay()));
+
+			exportLogRepository.update(el);
+		}
+	}
+
 	@Test
 	public void mix__EMPTY__TemplatesCorrectnessWith__TEXT() throws Exception {
 		assertTrue(mixTemplateTxtReview(testFilesFor(empty), empty));
@@ -612,11 +719,20 @@ public class XportDataTest {
 
 	@Test
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
-		for (int i = 0; i < 1; i++) {
+		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 5; i++) {
+			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
+			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
+		// System.out.println(sw.prettyPrint());
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
 	}
+
+	@Resource(type = ExportDataRestController.class)
+	ExportDataRestController exportDataRestController;
 
 	@Before
 	public void testSetup() {

@@ -1,4 +1,4 @@
-SET NAMES 'utf8';
+SET NAMES utf8;
 
 
 /* Create tables */
@@ -590,3 +590,11 @@ CREATE TABLE program_battery (
   battery_id INT NOT NULL,
   program_initials VARCHAR(15) NOT NULL,
 PRIMARY KEY (program_battery_id));
+
+CREATE TABLE export_log_data (
+  export_log_data_id INT NOT NULL AUTO_INCREMENT,
+  export_log_id INT NOT NULL,
+  export_log_data_index INT NOT NULL,
+  export_log_data VARCHAR(20480) NOT NULL,
+  date_created TIMESTAMP NOT NULL,
+  PRIMARY KEY (export_log_data_id));
