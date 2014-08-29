@@ -76,14 +76,91 @@ INSERT INTO rule_event (rule_id, event_id) VALUES(3015, 3015);
 /************** Health Factors for OEF OIF Clinical Reminder ***************************/
 /****************************************************************************************/
 
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (251, 'PREFERRED HEALTHCARE LANGUAGE-ENGLISH', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (252, 'PREFERRED HEALTHCARE LANGUAGE-SPANISH', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (253, 'PREFERRED HEALTHCARE LANGUAGE-TAGALOG', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (254, 'PREFERRED HEALTHCARE LANGUAGE-CHINESE', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (255, 'PREFERRED HEALTHCARE LANGUAGE-GERMAN', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (256, 'PREFERRED HEALTHCARE LANGUAGE-JAPANESE', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (257, 'PREFERRED HEALTHCARE LANGUAGE-KOREAN', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (258, 'PREFERRED HEALTHCARE LANGUAGE-RUSSIAN', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (259, 'PREFERRED HEALTHCARE LANGUAGE-VIETNAMESE', 91, 0);
-INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (260, 'PREFERRED HEALTHCARE LANGUAGE-OTHER', 91, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (251, 'IRAQ/AFGHAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (252, 'NO IRAQ/AFGHAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (253, 'AFGHANISTAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (254, 'TAJIKISTAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (255, 'GEORGIA SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (256, 'UZBEKISTAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (257, 'KYRGYZSTAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (258, 'PHILIPPINES SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (259, 'PAKISTAN SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (260, 'OTHER OEF SERVICE', 52, 0);
+
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (261, 'IRAQ SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (262, 'KUWAIT SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (263, 'SAUDI ARABIA SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (264, 'TURKEY SERVICE', 52, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (265, 'OTHER OIF SERVICE', 52, 0);
+
+INSERT INTO rule (rule_id, name, expression) VALUES (3051, 'IRAQ/AFGHAN', '([660] == 1) || ([660]==2)'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3052, 'NO IRAQ/AFGHAN SERVICE', '[660] == 0'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3053, 'AFGHANISTAN', '[663] == 1');
+INSERT INTO rule (rule_id, name, expression) VALUES (3054, 'TAJIKISTAN', '[663] == 2'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3055, 'GEORGIA', '[663] == 4'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3056, 'UZBEKISTAN', '[663] == 5');
+INSERT INTO rule (rule_id, name, expression) VALUES (3057, 'KYRGYZSTAN', '[663] == 6'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3058, 'PHILIPPINES', '[663] == 7'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3059, 'PAKISTAN', '[663] == 8');
+INSERT INTO rule (rule_id, name, expression) VALUES (3060, 'OTHER OEF SERVICE', '[663] == 10');
+
+INSERT INTO rule (rule_id, name, expression) VALUES (3061, 'IRAQ', '[683]==1'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3062, 'KUWAIT SERVICE', '[683] == 3'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3063, 'SAUDI ARABIA', '[683] == 5');
+INSERT INTO rule (rule_id, name, expression) VALUES (3064, 'TURKEY', '[683] == 6'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3065, 'OTHER OIF', '[683] == 9'); 
+
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3051, 660);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3052, 660);
+
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3053, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3054, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3055, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3056, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3057, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3058, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3059, 663);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3060, 663);
+
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3061, 683);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3062, 683);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3063, 683);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3064, 683);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3065, 683);
+
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3051, 2, 'Add HF 251', 251);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3052, 2, 'Add HF 252', 252);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3053, 2, 'Add HF 253', 253);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3054, 2, 'Add HF 254', 254);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3055, 2, 'Add HF 255', 255);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3056, 2, 'Add HF 256', 256);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3057, 2, 'Add HF 257', 257);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3058, 2, 'Add HF 258', 258);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3059, 2, 'Add HF 259', 259);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3060, 2, 'Add HF 260', 260);
+
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3061, 2, 'Add HF 261', 261);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3062, 2, 'Add HF 262', 262);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3063, 2, 'Add HF 263', 263);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3064, 2, 'Add HF 264', 264);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3065, 2, 'Add HF 265', 265);
+
+INSERT INTO rule_event (rule_id, event_id) VALUES(3051, 3051);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3052, 3052);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3053, 3053);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3054, 3054);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3055, 3055);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3056, 3056);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3057, 3057);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3058, 3058);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3059, 3059);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3060, 3060);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3061, 3061);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3062, 3062);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3063, 3063);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3064, 3064);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3065, 3065);
+
+
+
 
