@@ -61,7 +61,7 @@ import com.google.gson.JsonSyntaxException;
 // this is to ensure all tests do not leave trace, so they are repeatable.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
-public class XportDataTest{
+public class XportDataTest1 {
 
 	class AssesmentTestData {
 		String testName;
@@ -154,7 +154,7 @@ public class XportDataTest{
 	@Resource(type = ExportLogRepository.class)
 	ExportLogRepository exportLogRepository;
 
-	Logger logger = Logger.getLogger(XportDataTest.class);
+	Logger logger = Logger.getLogger(XportDataTest1.class);
 
 	@Resource(type = TemplateProcessorService.class)
 	private TemplateProcessorService templateProcessorService;

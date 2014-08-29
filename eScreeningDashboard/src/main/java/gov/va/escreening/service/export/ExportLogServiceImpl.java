@@ -1,6 +1,5 @@
 package gov.va.escreening.service.export;
 
-import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.dashboard.ExportDataSearchResult;
 import gov.va.escreening.entity.ExportLog;
 import gov.va.escreening.repository.ExportLogRepository;

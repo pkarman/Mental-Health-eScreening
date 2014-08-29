@@ -4,7 +4,6 @@ import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
-import gov.va.escreening.dto.dashboard.DataExportFilterOptions;
 import gov.va.escreening.dto.dashboard.ExportDataSearchResult;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.security.CurrentUser;
@@ -27,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,10 +92,26 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
 		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
-		
+
 		modelAndView.setViewName("DataExportCsvView");
 		modelAndView.addObject("dataExportList", dataExport);
 
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/exportData/services/exports/downloadAgain/{exportLogId}", method = RequestMethod.GET)
+	public ModelAndView downloadAgain(
+			ModelAndView modelAndView,
+			HttpServletRequest request,
+			@CurrentUser EscreenUser escreenUser,
+			@PathVariable int exportLogId,
+			@RequestParam(value = "comment", required = true) String comment) {
+		
+		AssessmentDataExport dataExport = exportDataService.downloadExportData(escreenUser.getUserId(), exportLogId, comment);
+		
+		modelAndView.setViewName("DataExportCsvView");
+		modelAndView.addObject("dataExportList", dataExport);
+		
 		return modelAndView;
 	}
 
@@ -119,6 +135,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
 		return dataTableResponse;
 	}
+
 
 	@RequestMapping(value = "/exportData/services/exports/filterOptions", method = RequestMethod.POST)
 	@ResponseBody
@@ -197,7 +214,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	 * @param exportDataType
 	 * @return
 	 */
-	private ExportDataFormBean getSearchFormBean(EscreenUser escreenUser,
+	public ExportDataFormBean getSearchFormBean(EscreenUser escreenUser,
 			String fromAssessmentDate, String toAssessmentDate,
 			String clinicianId, String createdByUserId, String programId,
 			String veteranId, String comment, String exportDataType,
@@ -284,7 +301,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		}
 
 		// Populate the clinic id list from the logged in user.
-		exportDataFormBean.setProgramIdList(escreenUser.getProgramIdList());
+		exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
 		return exportDataFormBean;
 	}
