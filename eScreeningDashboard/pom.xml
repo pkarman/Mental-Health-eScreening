@@ -595,5 +595,25 @@
 				<vista.primaryStation>664</vista.primaryStation>
 			</properties>
 		</profile>
+		<profile>
+			<id>sandiego-test</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>sandiego</value>
+				</property>
+			</activation>
+			<build>
+				<finalName>${project.artifactId}-sdtest</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost/escreening</jdbc.url>
+				<jdbc.db>escreening-test</jdbc.db>
+				<log.suffix>test</log.suffix>
+				<vista.connector>vljsdconnector</vista.connector>
+				<quick.order.ien>370</quick.order.ien>
+				<vista.primaryStation>664</vista.primaryStation>
+			</properties>
+		</profile>
 	</profiles>
 </project>
