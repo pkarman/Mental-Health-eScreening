@@ -1,8 +1,9 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', function($rootScope, $scope, $state, SurveyService, QuestionService, questions){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', 'survey', function($rootScope, $scope, $state, SurveyService, QuestionService, questions, survey){
     var tmpList = [];
+    $scope.module = survey;
     $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
@@ -76,7 +77,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
         console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
         SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
-            $scope.module = existingSurvey;
+            $scope.module = existingSurvey.toUIObject();
         }, function(responseError) {
             $rootScope.errors.push(responseError.getMessage());
             console.log('Update Module Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
