@@ -9,6 +9,7 @@ import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.controller.dashboard.ExportDataRestController;
+import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.entity.ExportLog;
 import gov.va.escreening.entity.ExportLogData;
@@ -17,6 +18,7 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.ExportLogDataRepository;
 import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
@@ -631,8 +633,20 @@ public class XportDataTest {
 		}
 	}
 
-	private void addExportLogOfVet18() {
-		
+	private AssessmentDataExport addExportLogOfVet18() {
+		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
+		edfb.setExportedByUserId(1);
+		return exportDataService.getAssessmentDataExport(edfb);
+	}
+
+	@Rollback(value = false)
+	@Test
+	public void testVeteran18ForExportData() throws Exception {
+		AssessmentDataExport adeOriginal=addExportLogOfVet18();
+		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
+		// and make sure that adeOriginal is equal to adeCopy
+		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
+		assertEquals(adeCopy.getData(), adeOriginal.getData());
 	}
 
 	// @Rollback(value = false)
@@ -672,6 +686,7 @@ public class XportDataTest {
 
 	@Rollback(value = false)
 	@Test
+	
 	public void addDataToExportLog() {
 		List<ExportLog> exportLog = exportLogRepository.findAll();
 		if (!exportLog.isEmpty()) {
