@@ -204,6 +204,19 @@ angular.module('Editors')
                         displayName: 'Modules-Editor: Add/Edit'
                     },
                     resolve: {
+                        survey: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
+                            var selectedSurvey = null;
+
+                            if(Object.isArray($rootScope.surveys)) {
+                                $rootScope.surveys.forEach(function (survey) {
+                                    if(survey.id === parseInt($stateParams.surveyId)) {
+                                        selectedSurvey = survey;
+                                    }
+                                });
+                            }
+
+                            return selectedSurvey;
+                        }],
                         questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
                             var deferred = $q.defer();
 
@@ -234,14 +247,15 @@ angular.module('Editors')
                 .state('modules.detail.question',{
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false},
+                    data:{displayName:false}/*,
                     controller:['$rootScope','$scope','$state',
                         function($rootScope, $scope, $state){
                             $scope.addQuestion = function(){
                                 $state.go('modules.detail.editReadOnlyQuestion');
                             }
                         }
-                    ]
+                    ],*//*
+                    controller: 'addEditModuleController'*/
                 })
 
                 .state('modules.detail.editSelectOneQuestion',{
