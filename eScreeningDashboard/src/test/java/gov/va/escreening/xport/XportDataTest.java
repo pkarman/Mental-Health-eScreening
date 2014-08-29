@@ -11,11 +11,13 @@ import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.controller.dashboard.ExportDataRestController;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.entity.ExportLog;
+import gov.va.escreening.entity.ExportLogData;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.repository.ExportLogDataRepository;
 import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -42,6 +44,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +64,7 @@ import com.google.gson.JsonSyntaxException;
 // this is to ensure all tests do not leave trace, so they are repeatable.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
-public class XportDataTest{
+public class XportDataTest {
 
 	class AssesmentTestData {
 		String testName;
@@ -150,6 +153,9 @@ public class XportDataTest{
 
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
+
+	@Resource(type = ExportLogDataRepository.class)
+	ExportLogDataRepository exportLogDataRepository;
 
 	@Resource(type = ExportLogRepository.class)
 	ExportLogRepository exportLogRepository;
@@ -493,7 +499,7 @@ public class XportDataTest{
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
 		return true;
 	}
 
@@ -548,7 +554,7 @@ public class XportDataTest{
 
 	@Test
 	public void testSmrListResponseTimeForVet18() throws UnsupportedEncodingException, IOException {
-		String name="testSmrListResponseTimeForVet18";
+		String name = "testSmrListResponseTimeForVet18";
 		StopWatch sw = new StopWatch(name);
 
 		for (int i = 0; i < 5; i++) {
@@ -557,7 +563,7 @@ public class XportDataTest{
 			sw.stop();
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
 
 	}
 
@@ -605,10 +611,14 @@ public class XportDataTest{
 		}
 	}
 
+
 	@Rollback(value = false)
 	@Test
 	public void readExportLogById() {
 		int elId = -1;
+
+		addExportLogOfVet18();
+		
 		List<ExportLog> exportLogs = exportLogRepository.findAll();
 		if (!exportLogs.isEmpty()) {
 			ExportLog el = exportLogs.iterator().next();
@@ -619,6 +629,10 @@ public class XportDataTest{
 			ExportLog exportLog = exportLogRepository.findOne(elId);
 
 		}
+	}
+
+	private void addExportLogOfVet18() {
+		
 	}
 
 	// @Rollback(value = false)
@@ -656,6 +670,18 @@ public class XportDataTest{
 		assertTrue(mixVeteranSummaryTemplateReview(testFilesFor(detail), detail));
 	}
 
+	@Rollback(value = false)
+	@Test
+	public void addDataToExportLog() {
+		List<ExportLog> exportLog = exportLogRepository.findAll();
+		if (!exportLog.isEmpty()) {
+			ExportLog el = exportLog.iterator().next();
+			el.addExportLogData(new ExportLogData("The Quick Brown Fox @ " + new DateTime().getMillisOfDay()));
+
+			exportLogRepository.update(el);
+		}
+	}
+
 	@Test
 	public void mix__EMPTY__TemplatesCorrectnessWith__TEXT() throws Exception {
 		assertTrue(mixTemplateTxtReview(testFilesFor(empty), empty));
@@ -678,7 +704,7 @@ public class XportDataTest{
 
 	@Test
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
-		String name="templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
+		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
 		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 5; i++) {
 			sw.start("iter_" + i);
@@ -687,7 +713,7 @@ public class XportDataTest{
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name+":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
 	}
 
 	@Resource(type = ExportDataRestController.class)
