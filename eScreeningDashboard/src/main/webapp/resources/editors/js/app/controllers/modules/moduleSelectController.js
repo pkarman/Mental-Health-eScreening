@@ -69,13 +69,13 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
 
     /* ---- Button Actions ---- */
     $scope.editModule = function(mod){
-        $rootScope.module = mod;
+        $scope.module = mod;
         mod.questions =  $scope.buildQuestions();
         $state.go('modules.detail.question');
     }
 
     $scope.addModule = function(){
-        $rootScope.module = $rootScope.createModule();
+        $scope.module = $scope.createModule();
         $state.go('modules.detail.question');
     }
 
