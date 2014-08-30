@@ -100,18 +100,16 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	}
 
 	@RequestMapping(value = "/exportData/services/exports/downloadAgain/{exportLogId}", method = RequestMethod.GET)
-	public ModelAndView downloadAgain(
-			ModelAndView modelAndView,
-			HttpServletRequest request,
-			@CurrentUser EscreenUser escreenUser,
+	public ModelAndView downloadAgain(ModelAndView modelAndView,
+			HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
 			@PathVariable int exportLogId,
 			@RequestParam(value = "comment", required = true) String comment) {
-		
+
 		AssessmentDataExport dataExport = exportDataService.downloadExportData(escreenUser.getUserId(), exportLogId, comment);
-		
+
 		modelAndView.setViewName("DataExportCsvView");
 		modelAndView.addObject("dataExportList", dataExport);
-		
+
 		return modelAndView;
 	}
 
@@ -120,11 +118,16 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	public DataTableResponse<ExportDataSearchResult> getExportLog(
 			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-		List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList());
-
-		// Start populating the response.
 		String echo = request.getParameter("sEcho");
 		logger.debug("sEcho: " + echo);
+
+		List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), -1);
+		return prepareResponse(results, echo);
+	}
+
+	private DataTableResponse<ExportDataSearchResult> prepareResponse(
+			List<ExportDataSearchResult> results, String echo) {
+		// Start populating the response.
 
 		DataTableResponse<ExportDataSearchResult> dataTableResponse = new DataTableResponse<ExportDataSearchResult>();
 		dataTableResponse.setEcho(echo);
@@ -136,6 +139,18 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		return dataTableResponse;
 	}
 
+	@RequestMapping(value = "/exportData/services/exports/exportLog/{noOfDays}", method = RequestMethod.POST)
+	@ResponseBody
+	public DataTableResponse<ExportDataSearchResult> getExportLog(
+			HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
+			@PathVariable int noOfDays) {
+
+		String echo = request.getParameter("sEcho");
+		logger.debug("sEcho: " + echo);
+
+		List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), noOfDays);
+		return prepareResponse(results, echo);
+	}
 
 	@RequestMapping(value = "/exportData/services/exports/filterOptions", method = RequestMethod.POST)
 	@ResponseBody

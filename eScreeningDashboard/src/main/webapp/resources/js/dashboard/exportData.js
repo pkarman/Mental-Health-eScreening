@@ -17,7 +17,7 @@ app.directive('reportTable', function() {
 			"bAutoWidth": false,
 	    	"sPaginationType": "full_numbers",
 	    	"sServerMethod": "POST",
-	    	"sAjaxSource": "exportData/services/exports/exportLog",
+	    	"sAjaxSource": "exportData/services/exports/exportLog/30",
 	    	"fnServerData": scope.$eval(attrs.fnDataCallback)
         };
 
