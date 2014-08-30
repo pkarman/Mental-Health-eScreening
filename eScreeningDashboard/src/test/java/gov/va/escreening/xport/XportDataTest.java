@@ -24,6 +24,7 @@ import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
+import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
@@ -50,6 +51,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -462,7 +464,7 @@ public class XportDataTest {
 		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 2; i++) {
 			sw.start("iter_" + i);
-			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
+			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">") && !progressNoteContent.contains("</"));
 		}
@@ -479,7 +481,7 @@ public class XportDataTest {
 		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 2; i++) {
 			sw.start("iter_" + i);
-			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
+			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE, TemplateType.VISTA_QA));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
@@ -613,14 +615,13 @@ public class XportDataTest {
 		}
 	}
 
-
 	@Rollback(value = false)
 	@Test
 	public void readExportLogById() {
 		int elId = -1;
 
 		addExportLogOfVet18();
-		
+
 		List<ExportLog> exportLogs = exportLogRepository.findAll();
 		if (!exportLogs.isEmpty()) {
 			ExportLog el = exportLogs.iterator().next();
@@ -639,10 +640,29 @@ public class XportDataTest {
 		return exportDataService.getAssessmentDataExport(edfb);
 	}
 
+	private AssessmentDataExport addExportLogOfProgramOOO() {
+		EscreenUser eUser=new EscreenUser("1pharmacist", "password", Arrays.asList(new SimpleGrantedAuthority("user1")));
+		eUser.setCprsVerified(true);
+		eUser.setProgramIdList(new ArrayList(Arrays.asList(1,2,3,4,5)));
+		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
+		edfb.setExportedByUserId(5);
+		return exportDataService.getAssessmentDataExport(edfb);
+	}
+
 	@Rollback(value = false)
 	@Test
 	public void testVeteran18ForExportData() throws Exception {
-		AssessmentDataExport adeOriginal=addExportLogOfVet18();
+		AssessmentDataExport adeOriginal = addExportLogOfVet18();
+		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
+		// and make sure that adeOriginal is equal to adeCopy
+		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
+		assertEquals(adeCopy.getData(), adeOriginal.getData());
+	}
+
+	@Rollback(value = false)
+	@Test
+	public void testProgramOOOForExportData() throws Exception {
+		AssessmentDataExport adeOriginal = addExportLogOfProgramOOO();
 		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
 		// and make sure that adeOriginal is equal to adeCopy
 		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
@@ -686,7 +706,6 @@ public class XportDataTest {
 
 	@Rollback(value = false)
 	@Test
-	
 	public void addDataToExportLog() {
 		List<ExportLog> exportLog = exportLogRepository.findAll();
 		if (!exportLog.isEmpty()) {
@@ -723,7 +742,7 @@ public class XportDataTest {
 		StopWatch sw = new StopWatch(name);
 		for (int i = 0; i < 5; i++) {
 			sw.start("iter_" + i);
-			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA));
+			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}

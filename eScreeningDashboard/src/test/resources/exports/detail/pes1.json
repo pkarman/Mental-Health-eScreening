@@ -1,0 +1,10 @@
+{
+	testName : "Promis Emotional Support2 ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Promis Emotional Support",
+		smrMap : {
+			vars$es1_listen : "2",
+			derive$es_score_promis : "2"
+		}
+	} ]
+}
