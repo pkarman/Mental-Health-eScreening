@@ -1,0 +1,25 @@
+{
+	testName : "Service History ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Service History",
+		smrMap : {
+			vars$serv_oper_none : "1",
+			vars$serv_oper_OEF : "1",
+			vars$serv_oper_OIF : "1",
+			vars$serv_oper_gwot : "1",
+			vars$serv_oper_ond : "1",
+			vars$serv_oper_caribbean : "1",
+			vars$serv_oper_gulf : "1",
+			vars$serv_oper_somalia : "1",
+			vars$serv_oper_bosnia : "1",
+			vars$serv_oper_kosovo : "1",
+			vars$serv_oper_djibouti : "1",
+			vars$serv_oper_libya : "1",
+			vars$Serv_oper_vietnam : "1",
+			vars$serv_oper_korea : "1",
+			vars$serv_oper_other : "1",
+			other$serv_oper_other1spec : "1jhjhjhj hj",
+			other$serv_oper_other2spec : "jkjkjkjk"
+		}
+	} ]
+}

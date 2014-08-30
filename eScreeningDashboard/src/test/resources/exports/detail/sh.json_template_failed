@@ -1,0 +1,12 @@
+{
+	testName : "Spiritual Health ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Spiritual Health",
+		smrMap : {
+			vars$spirit_rel_important : "1",
+			vars$spirit_combat_change : "1",
+			vars$spirit_faith_comm : "2",
+			vars$spirit_chap_referral : "1"
+		}
+	} ]
+}
