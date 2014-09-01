@@ -287,7 +287,7 @@ ALTER TABLE export_log_data ADD UNIQUE INDEX export_log_id_plus_index_UNIQUE (ex
 ALTER TABLE export_log_data 
 ADD CONSTRAINT export_log_id_fk
   FOREIGN KEY (export_log_id)
-  REFERENCES escreening.export_log (export_log_id)
+  REFERENCES export_log (export_log_id)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 

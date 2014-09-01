@@ -68,7 +68,7 @@ $.ajax({
 /*
 $.ajax({
     type: 'POST',
-    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/exportLog',
+    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/exportLog/30',
     data: '{}', // 
     success: function(data) { alert(JSON.stringify(data)); },
     contentType: "application/json",
