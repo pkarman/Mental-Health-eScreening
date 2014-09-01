@@ -161,6 +161,37 @@ INSERT INTO rule_event (rule_id, event_id) VALUES(3063, 3063);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3064, 3064);
 INSERT INTO rule_event (rule_id, event_id) VALUES(3065, 3065);
 
+/*****************************************************************
+*************  Tobacco Cessation Screen **************************
+******************************************************************/
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (271, 'LIFETIME NON-USER OF TOBACCO', 320, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (272, 'CURRENT TOBACCO USER', 320, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (273, 'QUIT TOBACCO >7 YEARS AGO', 320, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (274, 'QUIT TOBACCO >12 MO & <7 YRS AGO (Historical)', 320, 0);
+INSERT INTO health_factor (health_factor_id, name, clinical_reminder_id, is_historical) VALUES (275, 'QUIT TOBACCO IN THE LAST 12 MONTHS', 320, 0);
 
+INSERT INTO rule (rule_id, name, expression) VALUES (3071, 'LIFETIME NON-USER OF TOBACCO', '[600] == 0'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3072, 'CURRENT TOBACCO USER', '[600] == 2'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3073, 'QUIT TOBACCO >7 YEARS AGO', '[610] == 5');
+INSERT INTO rule (rule_id, name, expression) VALUES (3074, 'QUIT TOBACCO >12 MO & <7 YRS AGO', '[610] == 3'); 
+INSERT INTO rule (rule_id, name, expression) VALUES (3075, 'QUIT TOBACCO IN THE LAST 12 MONTHS', '[610] == 4'); 
 
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3071, 600);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3072, 600);
+
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3073, 610);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3074, 610);
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (3075, 610);
+
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3071, 2, 'Add HF LIFETIME NON-USER OF TOBACCO', 271);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3072, 2, 'Add HF CURRENT TOBACCO USER', 272);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3073, 2, 'Add HF QUIT TOBACCO >7 YEARS AGO', 273);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3074, 2, 'Add HF QUIT TOBACCO >12 MO & <7 YRS AGO', 274);
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (3075, 2, 'Add HF QUIT TOBACCO IN THE LAST 12 MONTHS', 275);
+
+INSERT INTO rule_event (rule_id, event_id) VALUES(3071, 3071);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3072, 3072);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3073, 3073);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3074, 3074);
+INSERT INTO rule_event (rule_id, event_id) VALUES(3075, 3075);
 
