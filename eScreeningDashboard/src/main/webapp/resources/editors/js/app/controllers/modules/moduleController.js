@@ -66,7 +66,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $rootScope.battery = $rootScope.createBattery();
-    $scope.module = $scope.createModule();
+    $scope.selectedSurveyUIObject = $scope.createModule();
 
     $scope.addQuestion = function(){
         $scope.selectedQuestion = $rootScope.createQuestion();
