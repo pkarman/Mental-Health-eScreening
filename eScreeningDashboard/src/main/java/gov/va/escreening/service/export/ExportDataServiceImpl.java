@@ -75,24 +75,21 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 
 		AssessmentDataExport assessmentDataExport = new AssessmentDataExport();
 
-		List<VeteranAssessment> matchingAssessments = null;
-
-		// 1) Use the passed in filter criteria to pull in the matching assessments
 		if (exportDataFormBean.getHasParameter()) {
-			matchingAssessments = veteranAssessmentService.searchVeteranAssessmentForExport(exportDataFormBean);
-		} else {
-			return assessmentDataExport;
+			// 1) Use the passed in filter criteria to pull in the matching assessments
+			List<VeteranAssessment> matchingAssessments = veteranAssessmentService.searchVeteranAssessmentForExport(exportDataFormBean);
+
+			// 2) prepare exportData from matching assessments
+			assessmentDataExport.setTableContents(createDataExportReport(matchingAssessments, exportDataFormBean.getExportTypeId()));
+			DataExportFilterOptions filterOptions = createFilterOptions(exportDataFormBean);
+			assessmentDataExport.setFilterOptions(filterOptions);
+
+			// 3) log this activity
+			ExportLog exportLog = logDataExport(assessmentDataExport);
+
+			assessmentDataExport.setExportLogId(exportLog.getExportLogId());
 		}
 
-		// 2) prepare exportData from matching assessments
-		assessmentDataExport.setReport(createDataExportReport(matchingAssessments, exportDataFormBean.getExportTypeId()));
-		DataExportFilterOptions filterOptions = createFilterOptions(exportDataFormBean);
-		assessmentDataExport.setFilterOptions(filterOptions);
-
-		// 3) log this activity
-		ExportLog exportLog = logDataExport(assessmentDataExport);
-
-		assessmentDataExport.setExportLogId(exportLog.getExportLogId());
 		return assessmentDataExport;
 	}
 
@@ -152,14 +149,20 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	private void addExportLogDataToExportLog(ExportLog exportLog,
 			AssessmentDataExport dataExport) {
 
-		String header = createHeaderFromDataExport(dataExport);
-		exportLog.addExportLogData(new ExportLogData(header));
-		List<String> data = createDataFromDataExport(dataExport);
-		for (String eldRow : data) {
-			exportLog.addExportLogData(new ExportLogData(eldRow));
+		if (!dataExport.hasData()) {
+			return;
 		}
 
-		dataExport.setHeaderAndData(header, data);
+		String header = createHeaderFromDataExport(dataExport);
+		if (header != null) {
+			exportLog.addExportLogData(new ExportLogData(header));
+			List<String> data = createDataFromDataExport(dataExport);
+			for (String eldRow : data) {
+				exportLog.addExportLogData(new ExportLogData(eldRow));
+			}
+			dataExport.setHeaderAndData(header, data);
+		}
+
 	}
 
 	private List<String> createDataFromDataExport(
@@ -205,7 +208,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 			// if export log is requested to be downloaded again
 			header = dataExport.getHeader();
 		}
-		if (logger.isDebugEnabled()) {
+		if (header != null && logger.isDebugEnabled()) {
 			logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
 		}
 		return header;

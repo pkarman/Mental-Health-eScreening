@@ -18,6 +18,7 @@ import gov.va.escreening.service.export.ExportLogService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +86,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		ExportDataFormBean exportDataFormBean = getSearchFormBean(escreenUser, fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType, errors);
 
 		if (errors.size() > 0) {
+			modelAndView.addObject("createUserStatusMessage", errors);
 			modelAndView.setViewName("exportData");
 			return modelAndView;
 		}
@@ -93,8 +95,13 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
 		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
 
-		modelAndView.setViewName("DataExportCsvView");
-		modelAndView.addObject("dataExportList", dataExport);
+		if (dataExport != null) {
+			modelAndView.setViewName("DataExportCsvView");
+			modelAndView.addObject("dataExportList", dataExport);
+		} else if (errors.size() > 0) {
+			modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
+			modelAndView.setViewName("exportData");
+		}
 
 		return modelAndView;
 	}
@@ -240,7 +247,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
 		exportDataFormBean.setHasParameter(false);
 
-		if (clinicianId != null && !clinicianId.isEmpty() && !clinicianId.equalsIgnoreCase("undefined")) {
+		if (clinicianId != null && !clinicianId.isEmpty() && !"null".equals(clinicianId) && !clinicianId.equalsIgnoreCase("undefined")) {
 			if (isInteger(clinicianId)) {
 				exportDataFormBean.setClinicianId(Integer.parseInt(clinicianId));
 				exportDataFormBean.setHasParameter(true);
@@ -250,7 +257,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			}
 		}
 
-		if (createdByUserId != null && !createdByUserId.isEmpty() && !createdByUserId.equalsIgnoreCase("undefined")) {
+		if (createdByUserId != null && !createdByUserId.isEmpty() && !"null".equals(createdByUserId) && !createdByUserId.equalsIgnoreCase("undefined")) {
 			if (isInteger(createdByUserId)) {
 				exportDataFormBean.setCreatedByUserId(Integer.parseInt(createdByUserId));
 				exportDataFormBean.setHasParameter(true);
@@ -260,7 +267,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			}
 		}
 
-		if (veteranId != null && !veteranId.isEmpty() && !veteranId.equalsIgnoreCase("undefined")) {
+		if (veteranId != null && !veteranId.isEmpty() && !"null".equals(veteranId) && !veteranId.equalsIgnoreCase("undefined")) {
 			if (isInteger(veteranId)) {
 				exportDataFormBean.setVeteranId(Integer.parseInt(veteranId));
 				exportDataFormBean.setHasParameter(true);
@@ -270,7 +277,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			}
 		}
 
-		if (fromAssessmentDate != null && !fromAssessmentDate.equalsIgnoreCase("undefined")) {
+		if (fromAssessmentDate != null && !fromAssessmentDate.isEmpty() && !fromAssessmentDate.equalsIgnoreCase("undefined")) {
 			try {
 				exportDataFormBean.setFromAssessmentDate(sdf.parse(fromAssessmentDate));
 				exportDataFormBean.setHasParameter(true);
@@ -280,7 +287,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			}
 		}
 
-		if (toAssessmentDate != null && !toAssessmentDate.equalsIgnoreCase("undefined")) {
+		if (toAssessmentDate != null && !toAssessmentDate.isEmpty() && !toAssessmentDate.equalsIgnoreCase("undefined")) {
 			try {
 				exportDataFormBean.setToAssessmentDate(sdf.parse(toAssessmentDate));
 				exportDataFormBean.setHasParameter(true);
@@ -290,7 +297,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 			}
 		}
 
-		if (programId != null && !programId.isEmpty() && !programId.equalsIgnoreCase("undefined")) {
+		if (programId != null && !programId.isEmpty() && !"null".equals(programId) && !programId.equalsIgnoreCase("undefined")) {
 			if (isInteger(programId)) {
 				exportDataFormBean.setProgramId(Integer.parseInt(programId));
 				exportDataFormBean.setHasParameter(true);
@@ -316,7 +323,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		}
 
 		// Populate the clinic id list from the logged in user.
-		exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
+		// exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
 		return exportDataFormBean;
 	}

@@ -71,7 +71,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 	}
 
 	@Override
-	public List<VeteranAssessment> searchVeteranAssessment(Integer clinicanId,
+	public List<VeteranAssessment> searchVeteranAssessmentForExport(Integer clinicanId,
 			Integer createdByUserId, Integer programId,
 			Date fromAssessmentDate, Date toAssessmentDate, Integer veteranId,
 			List<Integer> programIdList) {
@@ -81,10 +81,6 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		Root<VeteranAssessment> veteranAssessmentRoot = criteriaQuery.from(VeteranAssessment.class);
 		Join<VeteranAssessment, AssessmentStatus> assessmentStatusJoin = veteranAssessmentRoot.join("assessmentStatus");
-		Join<VeteranAssessment, Veteran> veteranJoin = veteranAssessmentRoot.join("veteran");
-		Join<VeteranAssessment, Program> programJoin = veteranAssessmentRoot.join("program");
-		Join<VeteranAssessment, User> clinicianJoin = veteranAssessmentRoot.join("clinician");
-		Join<VeteranAssessment, User> createdByUserJoin = veteranAssessmentRoot.join("createdByUser");
 
 		List<Predicate> criteriaList = new ArrayList<Predicate>();
 
@@ -94,10 +90,12 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		criteriaList.add(statusPredicate);
 
 		if (clinicanId != null) {
+			Join<VeteranAssessment, User> clinicianJoin = veteranAssessmentRoot.join("clinician");
 			criteriaList.add(criteriaBuilder.equal(clinicianJoin.get("userId"), clinicanId));
 		}
 
 		if (createdByUserId != null) {
+			Join<VeteranAssessment, User> createdByUserJoin = veteranAssessmentRoot.join("createdByUser");
 			criteriaList.add(criteriaBuilder.equal(createdByUserJoin.get("userId"), createdByUserId));
 		}
 
@@ -110,6 +108,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		}
 
 		if (veteranId != null) {
+			Join<VeteranAssessment, Veteran> veteranJoin = veteranAssessmentRoot.join("veteran");
 			criteriaList.add(criteriaBuilder.equal(veteranJoin.get("veteranId"), veteranId));
 		}
 
@@ -123,6 +122,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		}
 
 		if (programIdList != null && programIdList.size() > 0) {
+			Join<VeteranAssessment, Program> programJoin = veteranAssessmentRoot.join("program");
 			Expression<Integer> exp = programJoin.get("programId");
 			Predicate programIdPredicate = exp.in(programIdList);
 			criteriaList.add(programIdPredicate);
@@ -138,7 +138,6 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		// Generate the query based on the criteria.
 		TypedQuery<VeteranAssessment> query = entityManager.createQuery(criteriaQuery);
-
 		List<VeteranAssessment> veteranAssessments = query.getResultList();
 
 		return veteranAssessments;
