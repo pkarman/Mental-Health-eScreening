@@ -1,8 +1,10 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.domain.UserStatusEnum;
 import gov.va.escreening.entity.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -20,7 +22,15 @@ public class UserRepositoryImpl extends AbstractHibernateRepository<User> implem
     @Override
     public List<User> findByProgramIdAndRoleIdList(int programId, List<Integer> roleIdList) {
 
-        String sql = "SELECT u FROM User u JOIN u.role r JOIN u.userProgramList up JOIN up.program p WHERE r.roleId IN (:roleIdList) AND p.programId = :programId ORDER BY u.lastName, u.firstName";
+        String sql = "SELECT u FROM User u "
+        		+ "JOIN u.role r "
+        		+ "JOIN u.userStatus us "
+        		+ "JOIN u.userProgramList up "
+        		+ "JOIN up.program p "
+        		+ "WHERE r.roleId IN (:roleIdList) "
+        		+ "AND us.userStatusId IN (:userStatusIdList) "
+        		+ "AND p.programId = :programId "
+        		+ "ORDER BY u.lastName, u.firstName";
 
         if (roleIdList == null || roleIdList.size() < 1) {
             return new ArrayList<User>();
@@ -28,6 +38,7 @@ public class UserRepositoryImpl extends AbstractHibernateRepository<User> implem
 
         TypedQuery<User> query = entityManager.createQuery(sql, User.class);
         query.setParameter("roleIdList", roleIdList);
+        query.setParameter("userStatusIdList", Arrays.asList(UserStatusEnum.ACTIVE.getUserStatusId())); // return only those clinician which are active
         query.setParameter("programId", programId);
 
         return query.getResultList();
