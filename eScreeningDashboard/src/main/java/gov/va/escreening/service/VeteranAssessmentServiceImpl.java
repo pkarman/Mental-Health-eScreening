@@ -264,7 +264,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			ExportDataFormBean exportDataFormBean) {
 
 		// Get the data from the repository.
-		List<VeteranAssessment> veteranAssessmentSearchResult = veteranAssessmentRepository.searchVeteranAssessment(exportDataFormBean.getClinicianId(), exportDataFormBean.getCreatedByUserId(), exportDataFormBean.getProgramId(), exportDataFormBean.getFromAssessmentDate(), exportDataFormBean.getToAssessmentDate(), exportDataFormBean.getVeteranId(), exportDataFormBean.getProgramIdList());
+		List<VeteranAssessment> veteranAssessmentSearchResult = veteranAssessmentRepository.searchVeteranAssessmentForExport(exportDataFormBean.getClinicianId(), exportDataFormBean.getCreatedByUserId(), exportDataFormBean.getProgramId(), exportDataFormBean.getFromAssessmentDate(), exportDataFormBean.getToAssessmentDate(), exportDataFormBean.getVeteranId(), exportDataFormBean.getProgramIdList());
 
 		return veteranAssessmentSearchResult;
 	}
@@ -276,16 +276,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			SearchAttributes searchAttributes) {
 
 		// Get the data from the repository.
-		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = veteranAssessmentRepository.searchVeteranAssessment(
-				assessmentReportFormBean.getVeteranAssessmentId(), 
-				assessmentReportFormBean.getVeteranId(), 
-				assessmentReportFormBean.getProgramId(), 
-				assessmentReportFormBean.getClinicianId(), 
-				assessmentReportFormBean.getCreatedByUserId(), 
-				assessmentReportFormBean.getFromAssessmentDate(), 
-				assessmentReportFormBean.getToAssessmentDate(), 
-				assessmentReportFormBean.getProgramIdList(), 
-				searchAttributes);
+		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = veteranAssessmentRepository.searchVeteranAssessment(assessmentReportFormBean.getVeteranAssessmentId(), assessmentReportFormBean.getVeteranId(), assessmentReportFormBean.getProgramId(), assessmentReportFormBean.getClinicianId(), assessmentReportFormBean.getCreatedByUserId(), assessmentReportFormBean.getFromAssessmentDate(), assessmentReportFormBean.getToAssessmentDate(), assessmentReportFormBean.getProgramIdList(), searchAttributes);
 
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 
@@ -1094,7 +1085,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	@Override
 	public SearchResult<AssessmentSearchResult> searchVeteranAssessment(
 			String programId, SearchAttributes searchAttributes) {
-		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = vadar.searchVeteranAssessment(programId.isEmpty()?null:Integer.parseInt(programId), searchAttributes);
+		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), searchAttributes);
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 	}
 }

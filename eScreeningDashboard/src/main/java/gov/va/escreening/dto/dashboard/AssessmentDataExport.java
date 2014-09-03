@@ -11,10 +11,6 @@ import java.util.Map;
 
 public class AssessmentDataExport {
 
-	public AssessmentDataExport() {
-		tableContent = new ArrayList<List<DataExportCell>>();
-	}
-
 	String header;
 	List<String> data;
 	private List<List<DataExportCell>> tableContent;
@@ -22,10 +18,6 @@ public class AssessmentDataExport {
 
 	public List<List<DataExportCell>> getTableContent() {
 		return tableContent;
-	}
-
-	public void setReport(List<List<DataExportCell>> tableContent) {
-		this.tableContent = tableContent;
 	}
 
 	public DataExportFilterOptions getFilterOptions() {
@@ -40,7 +32,9 @@ public class AssessmentDataExport {
 		this.header = header;
 		this.data = data;
 
-		this.tableContent.clear();
+		if (this.tableContent != null) {
+			this.tableContent.clear();
+		}
 	}
 
 	public String getHeader() {
@@ -152,5 +146,17 @@ public class AssessmentDataExport {
 			return false;
 		}
 		return true;
+	}
+
+	public void setTableContents(List<List<DataExportCell>> tableContents) {
+		this.tableContent = tableContents;
+	}
+
+	public boolean hasTableContents() {
+		return getTableContent() != null && !getTableContent().isEmpty();
+	}
+
+	public boolean hasData() {
+		return header != null && !header.isEmpty() && data != null && !data.isEmpty();
 	}
 }

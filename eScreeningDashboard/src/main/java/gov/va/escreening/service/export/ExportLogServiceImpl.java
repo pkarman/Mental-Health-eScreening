@@ -28,10 +28,10 @@ public class ExportLogServiceImpl implements ExportLogService {
 
 	@Override
 	public List<ExportDataSearchResult> getExportLogs(
-			List<Integer> programIdList) {
+			List<Integer> programIdList, int noOfDays) {
 
 		// TODO will need to modify after questions are answered
-		List<ExportLog> exportlogs = exportLogRepository.findAll();
+		List<ExportLog> exportlogs = noOfDays==-1?exportLogRepository.findAll():exportLogRepository.findAllForDays(noOfDays);
 		List<ExportDataSearchResult> exportSearchResults = new ArrayList<ExportDataSearchResult>();
 
 		for (ExportLog exportLog : exportlogs) {

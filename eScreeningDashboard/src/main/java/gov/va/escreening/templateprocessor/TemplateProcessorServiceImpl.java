@@ -141,7 +141,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 		
 		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.refreshSmrFromDb(veteranAssessmentId);
+		smrLister.loadSmrFromDb(veteranAssessmentId);
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
