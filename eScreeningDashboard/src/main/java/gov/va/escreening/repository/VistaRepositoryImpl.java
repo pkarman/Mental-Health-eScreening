@@ -78,7 +78,7 @@ public class VistaRepositoryImpl implements VistaRepository {
 	@Autowired
 	private VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory;
 	private boolean useProprietaryMessageFormat = true;
-	private int timeOut = 10000;
+	private int timeOut = 30000;
 	
 	@Value(value="${sample.patient.ien}")
 	private String samplePatientIen;
