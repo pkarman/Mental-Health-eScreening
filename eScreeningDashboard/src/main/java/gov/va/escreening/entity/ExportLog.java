@@ -232,4 +232,11 @@ public class ExportLog implements Serializable {
 		exportLogData.setDataIndex(getExportLogDataList().size());
 		getExportLogDataList().add(exportLogData);
 	}
+
+	public void setExportLogData(String header, List<String> data) {
+		addExportLogData(new ExportLogData(header));
+		for (String eldRow : data) {
+			addExportLogData(new ExportLogData(eldRow));
+		}
+	}
 }

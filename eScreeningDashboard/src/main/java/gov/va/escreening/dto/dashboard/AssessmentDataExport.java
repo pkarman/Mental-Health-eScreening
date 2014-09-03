@@ -152,7 +152,11 @@ public class AssessmentDataExport {
 		this.tableContent = tableContents;
 	}
 
-	public boolean hasData() {
+	public boolean hasTableContents() {
 		return getTableContent() != null && !getTableContent().isEmpty();
+	}
+
+	public boolean hasData() {
+		return header != null && !header.isEmpty() && data != null && !data.isEmpty();
 	}
 }

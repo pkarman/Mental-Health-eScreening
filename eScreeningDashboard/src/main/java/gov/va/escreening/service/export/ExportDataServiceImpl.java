@@ -146,22 +146,15 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 		return exportLog;
 	}
 
-	private void addExportLogDataToExportLog(ExportLog exportLog,
-			AssessmentDataExport dataExport) {
-
-		if (!dataExport.hasData()) {
-			return;
-		}
+	private void addExportLogDataToExportLog(ExportLog exportLog, AssessmentDataExport dataExport) {
 
 		String header = createHeaderFromDataExport(dataExport);
 		if (header != null) {
-			exportLog.addExportLogData(new ExportLogData(header));
 			List<String> data = createDataFromDataExport(dataExport);
-			for (String eldRow : data) {
-				exportLog.addExportLogData(new ExportLogData(eldRow));
-			}
 			dataExport.setHeaderAndData(header, data);
 		}
+
+		exportLog.setExportLogData(dataExport.getHeader(), dataExport.getData());
 
 	}
 
@@ -322,6 +315,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 		ExportLog newExportLog = logDataExport(ade);
 
 		ade.setExportLogId(newExportLog.getExportLogId());
+		
 		return ade;
 	}
 }
