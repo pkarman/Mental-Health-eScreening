@@ -20,7 +20,7 @@ public class VeteranAssessmentSmrList {
 		return t.get();
 	}
 
-	public void refreshSmrFromDb(int vetAssId) {
+	public void loadSmrFromDb(int vetAssId) {
 		t.set(smrr.findForVeteranAssessmentId(vetAssId));
 	}
 }

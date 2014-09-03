@@ -563,7 +563,7 @@ public class XportDataTest {
 
 		for (int i = 0; i < 5; i++) {
 			sw.start("iter_" + i);
-			smrLister.refreshSmrFromDb(18);
+			smrLister.loadSmrFromDb(18);
 			sw.stop();
 		}
 		// System.out.println(sw.prettyPrint());
