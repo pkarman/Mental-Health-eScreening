@@ -254,9 +254,9 @@ $.ajax({
                         	<div class="form-group">
                                 <label class="labelAlign col-md-3 control-label" for="filterId">Filters</label>
                                 <div class="col-md-9">
-                                <select id="filterId" class="form-control" placeholder="Select Program"
+                                <select id="filterId" class="form-control"
                                     name="filterId"
-                                    ng-options="filter.stateId as filter.stateName for filter in filterOptionList"
+                                    ng-options="filter.stateName as filter.stateName for filter in filterOptionList"
                                     ng-model="exportDataFormBean.filterId">
                                     <option value="">Select Export Date</option>
                                 </select>
