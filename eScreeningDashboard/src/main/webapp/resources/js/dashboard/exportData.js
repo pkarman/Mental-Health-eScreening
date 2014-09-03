@@ -68,40 +68,12 @@ app.directive('reportTable', function() {
 	        });
 		}
 		
+		scope.destroyDataTable = function(stateId) {
+			dataTable.fnDestroy();
+			sourceURL = "exportData/services/exports/exportLog/" + stateId;
+		    exportDataTable(sourceURL);
+		}
         
-        $( "#filterId" ).change(function() {
-			
-        	/*
-        	if( $(this).val() == 0 ){
-			  	sourceURL = "exportData/services/exports/exportLog/30";
-        	}else if($(this).val() == 1){
-        		sourceURL = "exportData/services/exports/exportLog/60";
-			}else if($(this).val() == 2){
-				sourceURL = "exportData/services/exports/exportLog/90";
-			}else if($(this).val() == 3){
-				sourceURL = "exportData/services/exports/exportLog/180";
-			}else if($(this).val() == 4	){
-				sourceURL = "exportData/services/exports/exportLog/365";
-			}else if($(this).val() == 5	){
-				sourceURL = "exportData/services/exports/exportLog/-1";
-			}else if($(this).val() == "" ){
-				sourceURL = "exportData/services/exports/exportLog";
-			}else{
-				sourceURL = "exportData/services/exports/exportLog";
-			}
-			*/
-        	
-        	if( $(this).val() == -1 ){
-        		sourceURL = "exportData/services/exports/exportLog/-1";
-        	}else{
-        		sourceURL = "exportData/services/exports/exportLog/" + $(this).val();
-			}
-        	
-        	 
-			 // alert("Update 2" + sourceURL);
-			 dataTable.fnDestroy();
-        	 exportDataTable(sourceURL);
-		});
     };
 });
 
@@ -131,14 +103,21 @@ app.factory('filterOptionService', function($http) {
 				url : "exportData/services/exports/filterOptions",
 				responseType : "json"
 			}).then(function(result) {
-				console.log(">>>>>>> DATA >>> ");
-				console.log(result.data);
+				// console.log(">>>>>>> DATA >>> ");
+				// console.log(result.data.stateId);
+				
+			
+				
+				
 				return result.data;
 				
 			});
 		}
 	};
 });
+
+
+
 
 
 
@@ -357,8 +336,17 @@ function exportDataController($scope,$element,$http,$window, programListService,
 
 
 	filterOptionService.getFilterOptionList().then(function(data) {
+		 $scope.filter = null;
 		$scope.filterOptionList = data;
 	});	
+	
+	
+	
+	$scope.callFilters = function () {	    
+	    $scope.destroyDataTable($scope.filter.stateId);
+	}
+	
+	
 	
 	
 	/**
