@@ -32,11 +32,19 @@ public interface SurveyMeasureResponseRepository extends RepositoryInterface<Sur
      * Retrieves the SurveyMeasureResposne based on veteran assessment and measure answer.
      * @param veteranAssessmentId
      * @param measureAnswerId
+     * @return
+     */
+    SurveyMeasureResponse findSmrUsingPreFetch(int veteranAssessmentId, int measureAnswerId);
+
+    /**
+     * Retrieves the SurveyMeasureResposne based on veteran assessment and measure answer.
+     * @param veteranAssessmentId
+     * @param measureAnswerId
      * @param tabularRow the optional row index 
      * @return
      */
     SurveyMeasureResponse find(int veteranAssessmentId, int measureAnswerId, @Nullable Integer tabularRow);
-
+    
     /**
      * Retrieves the SurveyMeasureResposne based on veteran assessment, measure, and tabularRow id.
      * @param veteranAssessmentId

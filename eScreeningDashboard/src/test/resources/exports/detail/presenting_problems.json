@@ -1,0 +1,30 @@
+{
+	testName : "Presenting Problems ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Presenting Problems",
+		smrMap : {
+			vars$demo_va_enroll : "1",
+			vars$demo_va_physhealth : "1",
+			vars$demo_va_menthealth : "1",
+			vars$demo_va_primcare : "1",
+			vars$demo_va_other : "1",
+			other$demo_va_otherspec : "demo other spec",
+			vars$demo_info_prost : "1",
+			vars$demo_info_subst : "1",
+			vars$demo_info_visual : "1",
+			vars$demo_info_loan : "1",
+			vars$demo_info_rehab : "1",
+			vars$demo_info_work : "1",
+			vars$demo_info_adj : "1",
+			vars$demo_info_relat : "1",
+			vars$demo_info_support : "1",
+			vars$demo_info_parole : "1",
+			vars$demo_info_warrant : "1",
+			vars$demo_info_bank : "1",
+			vars$demo_info_home : "1",
+			vars$demo_info_forcl : "1",
+			vars$demo_info_other : "1",
+			other$demo_info_otherspec : "other spec"
+		}
+	} ]
+}

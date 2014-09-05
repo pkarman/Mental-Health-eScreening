@@ -77,7 +77,7 @@ INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_d
 INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_days, description) VALUES (3, 'Last 90 days', 90, 'Exports for the last 90 days');
 INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_days, description) VALUES (4, 'Last 180 days', 180, 'Exports for the last 180 days');
 INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_days, description) VALUES (5, 'Last  365 days', 365, 'Exports for the last 365 days');
-INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_days, description) VALUES (6, 'All exports', 9999, 'All of the exports');
+INSERT INTO exportdata_filter_options (exportdata_filter_options_id, name, num_days, description) VALUES (6, 'All exports', -1, 'All of the exports');
 
 /* These correspond to roles used by Spring Security */
 INSERT role (role_id, name) VALUES (1, 'Consultation and Program Evaluation Administrator');

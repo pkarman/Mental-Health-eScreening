@@ -1,0 +1,36 @@
+{
+	testName : "Social Environment ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Social Environment",
+		smrMap : {
+			vars$demo_children : "0",
+			vars$child_agegroup1 : "0",
+			vars$child_agegroup2 : "0",
+			vars$child_agegroup3 : "0",
+			vars$child_agegroup4 : "0",
+			vars$child_agegroup5 : "0",
+			vars$child_agegroup6 : "0",
+			vars$child_agegroup7 : "0",
+			vars$child_agegroup8 : "0",
+			vars$child_agegroup9 : "0",
+			vars$child_agegroup10 : "0",
+			vars$demo_livewith_parent : "1",
+			vars$demo_livewith_alone : "1",
+			vars$demo_livewith_friend : "1",
+			vars$demo_livewith_spouse : "1",
+			vars$demo_livewith_child : "1",
+			vars$demo_livewith_other : "1",
+			other$demo_livewith_otherspec : "demo live with other spec",
+			vars$demo_emo_parents : "1",
+			vars$demo_emo_friends : "1",
+			vars$demo_emo_spouse : "1",
+			vars$demo_emo_therapist : "1",
+			vars$demo_emo_spiritual : "1",
+			vars$demo_emo_children : "1",
+			vars$demo_emo_other : "1",
+			other$demo_emo_other_spec : "hjhjjhj",
+			vars$demo_emo_none : "1",
+			vars$demo_rel_hurt : "1"
+		}
+	} ]
+}

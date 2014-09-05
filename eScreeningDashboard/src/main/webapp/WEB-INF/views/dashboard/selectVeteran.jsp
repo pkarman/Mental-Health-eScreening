@@ -138,7 +138,7 @@
 
            
                 
-                <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="get">
+                <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
 					<div class="border-radius-main-form gray-lighter">
 					<h2>Search Criteria</h2>
 					

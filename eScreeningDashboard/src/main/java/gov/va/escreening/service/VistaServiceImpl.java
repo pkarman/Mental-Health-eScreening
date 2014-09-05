@@ -456,7 +456,7 @@ public class VistaServiceImpl implements VistaService {
             else
             {
                 Clinic c = existingDbClinic.get(location.getName());
-                if (c.getVistaIen() == null || !c.getVistaIen().equals(location.getIen()))
+                if (c.getVistaIen() == null || !c.getVistaIen().equals(location.getIen().toString()))
                 {
                     c.setVistaIen(location.getIen().toString());
                     clinicRepo.update(c);

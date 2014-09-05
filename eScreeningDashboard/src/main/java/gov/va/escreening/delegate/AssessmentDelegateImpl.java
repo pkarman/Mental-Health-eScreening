@@ -11,6 +11,7 @@ import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICA
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import static gov.va.escreening.constants.AssessmentConstants.SURVEY_IDENTIFICATION_ID;
 import gov.va.escreening.context.AssessmentContext;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranDtoHelper;
@@ -36,7 +37,6 @@ import gov.va.escreening.service.VeteranAssessmentSurveyService;
 import gov.va.escreening.service.VeteranService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -52,200 +52,197 @@ import com.google.common.base.Strings;
 @Transactional
 public class AssessmentDelegateImpl implements AssessmentDelegate {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentDelegate.class);
+	private static final Logger logger = LoggerFactory.getLogger(AssessmentDelegate.class);
 
-    @Autowired
-    private AssessmentContext assessmentContext;
-    @Autowired
-    private VeteranAssessmentService veteranAssessmentService;
-    @Autowired
-    private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
-    @Autowired
-    private VeteranService veteranService;
-    @Autowired
-    private AssessmentEngineService assessmentEngineService;
-    @Autowired
-    private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
-    @Autowired
-    private VeteranAssessmentRepository veteranAssessmentRepository;
-    @Autowired
-    private AssessmentStatusRepository assessmentStatusRepository;
-    @Autowired
-    private SurveyRepository surveyRepository;
-    @Autowired
-    private SurveySectionRepository surveySectionRepository;
+	@Resource(name = "veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
 
-    @Resource(type=TemplateProcessorService.class)
-    private TemplateProcessorService templateProcessorService;
+	@Autowired
+	private AssessmentContext assessmentContext;
+	@Autowired
+	private VeteranAssessmentService veteranAssessmentService;
+	@Autowired
+	private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
+	@Autowired
+	private VeteranService veteranService;
+	@Autowired
+	private AssessmentEngineService assessmentEngineService;
+	@Autowired
+	private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
+	@Autowired
+	private VeteranAssessmentRepository veteranAssessmentRepository;
+	@Autowired
+	private AssessmentStatusRepository assessmentStatusRepository;
+	@Autowired
+	private SurveyRepository surveyRepository;
+	@Autowired
+	private SurveySectionRepository surveySectionRepository;
 
-    @Override
-    public List<VeteranDto> findVeterans(VeteranDto veteran) {
-        logger.debug("findVeterans");
-        return veteranService.findVeterans(veteran);
-    }
+	@Resource(type = TemplateProcessorService.class)
+	private TemplateProcessorService templateProcessorService;
 
-    @Override
-    public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId) {
+	@Override
+	public List<VeteranDto> findVeterans(VeteranDto veteran) {
+		logger.debug("findVeterans");
+		return veteranService.findVeterans(veteran);
+	}
 
-        List<VeteranAssessment> veteranAssessments = veteranAssessmentService
-                .getAvailableAssessmentsForVeteran(veteranId);
+	@Override
+	public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId) {
 
-        if (veteranAssessments == null || veteranAssessments.size() < 1) {
-            return null;
-        }
-        else {
-            for (VeteranAssessment assessment : veteranAssessments) {
-                if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
-                    return assessment;
-            }
-            return null;
-        }
-    }
+		List<VeteranAssessment> veteranAssessments = veteranAssessmentService.getAvailableAssessmentsForVeteran(veteranId);
 
-    @Override
-    public void setUpAssessmentContext(VeteranDto veteran, VeteranAssessment veteranAssessment) {
-        logger.debug("Set up assessment context");
+		if (veteranAssessments == null || veteranAssessments.size() < 1) {
+			return null;
+		} else {
+			for (VeteranAssessment assessment : veteranAssessments) {
+				if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
+					return assessment;
+			}
+			return null;
+		}
+	}
 
-        assessmentContext.setVeteran(veteran);
-        assessmentContext.setVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
-        assessmentContext.setIsInitialized(true);
-    }
+	@Override
+	public void setUpAssessmentContext(VeteranDto veteran,
+			VeteranAssessment veteranAssessment) {
+		logger.debug("Set up assessment context");
 
-    @Override
-    public void ensureValidAssessmentContext() throws InvalidAssessmentContextException {
-        logger.debug("Ensuring valid assessment context");
-        if (!assessmentContext.getIsInitialized() || assessmentContext.getVeteran() == null)
-            throw new InvalidAssessmentContextException("Veteran not logged in");
-    }
+		assessmentContext.setVeteran(veteran);
+		assessmentContext.setVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
+		assessmentContext.setIsInitialized(true);
+	}
 
-    @Override
-    public List<SurveySection> getAssessmentSections() {
-        logger.debug("Getting surveys for current assessment");
-        ensureValidAssessmentContext();
+	@Override
+	public void ensureValidAssessmentContext() throws InvalidAssessmentContextException {
+		logger.debug("Ensuring valid assessment context");
+		if (!assessmentContext.getIsInitialized() || assessmentContext.getVeteran() == null)
+			throw new InvalidAssessmentContextException("Veteran not logged in");
+	}
 
-        return surveySectionRepository.findForVeteranAssessmentId(assessmentContext.getVeteranAssessmentId());
-    }
+	@Override
+	public List<SurveySection> getAssessmentSections() {
+		logger.debug("Getting surveys for current assessment");
+		ensureValidAssessmentContext();
 
-    @Override
-    public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
+		return surveySectionRepository.findForVeteranAssessmentId(assessmentContext.getVeteranAssessmentId());
+	}
 
-        if (assessmentRequest != null) {
-            logger.debug("Assessment request: {}", assessmentRequest);
+	@Override
+	public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
 
-            // we set the assessment ID from the context (not from the request)
-            assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
-        }
+		if (assessmentRequest != null) {
+			logger.debug("Assessment request: {}", assessmentRequest);
 
-        AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest);
+			// we set the assessment ID from the context (not from the request)
+			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
+			smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
+		}
 
-        prepopulateResponseAnswers(response);
+		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest);
 
-        return response;
-    }
+		prepopulateResponseAnswers(response);
 
-    @Override
-    public Integer getVeteranAssessmentId() {
-        return assessmentContext.getVeteranAssessmentId();
-    }
+		return response;
+	}
 
-    private void prepopulateResponseAnswers(AssessmentResponse response) {
-        // Check to see if this is the identification survey, if it is then pre-populate the response answers
-        VeteranDto veteran = assessmentContext.getVeteran();
-        if (veteran != null && response.getAssessment() != null &&
-                response.getAssessment().getCurrentSurveyId() == SURVEY_IDENTIFICATION_ID) {
-            for (Measure measure : response.getPage().getMeasures()) {
-                
-                String responseText = null;                
-                if(!measure.getAnswers().isEmpty() && measure.getAnswers().get(0) != null){
-                    switch(measure.getMeasureId()){
-                
-                        case MEASURE_IDENTIFICATION_FIRST_NAME_ID:
-                            responseText = veteran.getFirstName();
-                            break;
-                        case MEASURE_IDENTIFICATION_MIDDLE_NAME_ID:
-                            responseText = veteran.getMiddleName();
-                            break;
-                        //case MEASURE_IDENTIFICATION_SUFFIX_ID:
-                        //    responseText = veteran.getSuffix();
-                        //    break;
-                        case MEASURE_IDENTIFICATION_LAST_NAME_ID:
-                            responseText = veteran.getLastName();
-                            break;
-                        case MEASURE_IDENTIFICATION_SSN_LAST_FOUR:
-                            responseText = veteran.getSsnLastFour();
-                            break;
-                        case MEASURE_IDENTIFICATION_EMAIL:
-                            responseText = veteran.getEmail();
-                            break;
-                        case MEASURE_IDENTIFICATION_PHONE_:
-                            responseText = VeteranDtoHelper.getPhoneByPriority(veteran);
-                            break;
-                        case MEASURE_IDENTIFICATION_CALL_TIME:
-                            if(!Strings.isNullOrEmpty(veteran.getBestTimeToCall())){
-                                // pre populate best time to call
-                                try{
-                                    String prevResponse = veteran.getBestTimeToCall();
-                                    for(Answer answer : measure.getAnswers()){
-                                        if(prevResponse.equalsIgnoreCase(answer.getAnswerText())){
-                                            answer.setAnswerResponse("true");
-                                            answer.setOtherAnswerResponse(veteran.getBestTimeToCallOther());
-                                        }
-                                    }
-                                }
-                                catch(NumberFormatException e){
-                                    logger.error("Error parsing previously saved call time measure answer", e);
-                                }
-                            }
-                            return;
-                    }
-                    
-                    if(responseText != null){
-                        measure.getAnswers().get(0).setAnswerResponse(responseText);
-                    }
-                }
-                
-            }
-        }
-    }
+	@Override
+	public Integer getVeteranAssessmentId() {
+		return assessmentContext.getVeteranAssessmentId();
+	}
 
-    @Override
-    public String getVeteranFullName() {
-        if(assessmentContext.getVeteran() == null){
-            return null;
-        }
-        
-        if (StringUtils.isNotBlank(assessmentContext.getVeteran().getFirstName())) {
-            return assessmentContext.getVeteran().getLastName() + ", " + assessmentContext.getVeteran().getFirstName();
-        }
-        else {
-            return assessmentContext.getVeteran().getLastName();
-        }
-    }
+	private void prepopulateResponseAnswers(AssessmentResponse response) {
+		// Check to see if this is the identification survey, if it is then pre-populate the response answers
+		VeteranDto veteran = assessmentContext.getVeteran();
+		if (veteran != null && response.getAssessment() != null && response.getAssessment().getCurrentSurveyId() == SURVEY_IDENTIFICATION_ID) {
+			for (Measure measure : response.getPage().getMeasures()) {
 
-    @Override
-    public CompletionResponse getCompletionResponse(int batteryId) {
-        CompletionResponse response = new CompletionResponse();
-        response.setCompletionText(templateProcessorService.generateCompletionMsgFor(batteryId));
-        return response;
-    }
+				String responseText = null;
+				if (!measure.getAnswers().isEmpty() && measure.getAnswers().get(0) != null) {
+					switch (measure.getMeasureId()) {
 
-    @Override
-    public void markAssessmentAsComplete() {
-        Integer assessmentId = assessmentContext.getVeteranAssessmentId();
-        VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
+					case MEASURE_IDENTIFICATION_FIRST_NAME_ID:
+						responseText = veteran.getFirstName();
+						break;
+					case MEASURE_IDENTIFICATION_MIDDLE_NAME_ID:
+						responseText = veteran.getMiddleName();
+						break;
+					// case MEASURE_IDENTIFICATION_SUFFIX_ID:
+					// responseText = veteran.getSuffix();
+					// break;
+					case MEASURE_IDENTIFICATION_LAST_NAME_ID:
+						responseText = veteran.getLastName();
+						break;
+					case MEASURE_IDENTIFICATION_SSN_LAST_FOUR:
+						responseText = veteran.getSsnLastFour();
+						break;
+					case MEASURE_IDENTIFICATION_EMAIL:
+						responseText = veteran.getEmail();
+						break;
+					case MEASURE_IDENTIFICATION_PHONE_:
+						responseText = VeteranDtoHelper.getPhoneByPriority(veteran);
+						break;
+					case MEASURE_IDENTIFICATION_CALL_TIME:
+						if (!Strings.isNullOrEmpty(veteran.getBestTimeToCall())) {
+							// pre populate best time to call
+							try {
+								String prevResponse = veteran.getBestTimeToCall();
+								for (Answer answer : measure.getAnswers()) {
+									if (prevResponse.equalsIgnoreCase(answer.getAnswerText())) {
+										answer.setAnswerResponse("true");
+										answer.setOtherAnswerResponse(veteran.getBestTimeToCallOther());
+									}
+								}
+							} catch (NumberFormatException e) {
+								logger.error("Error parsing previously saved call time measure answer", e);
+							}
+						}
+						return;
+					}
 
-        // update the status of the assessment to complete
-        AssessmentStatus status = assessmentStatusRepository.findOne(AssessmentStatusEnum.COMPLETE.getAssessmentStatusId());
-        veteranAssessment.setAssessmentStatus(status);
-        veteranAssessmentRepository.update(veteranAssessment);
+					if (responseText != null) {
+						measure.getAnswers().get(0).setAnswerResponse(responseText);
+					}
+				}
 
-        // TODO: Currently only a Veteran can take the assessment, person type will need to be detected once a
-        // user can take an assessment to properly track the person_id
-        veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
-        VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(
-                veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED,
-                veteranAssessment.getAssessmentStatus().getAssessmentStatusId(),
-                PERSON_TYPE_VETERAN);
-        veteranAssessmentAuditLogRepository.update(auditLogEntry);
-    }
+			}
+		}
+	}
+
+	@Override
+	public String getVeteranFullName() {
+		if (assessmentContext.getVeteran() == null) {
+			return null;
+		}
+
+		if (StringUtils.isNotBlank(assessmentContext.getVeteran().getFirstName())) {
+			return assessmentContext.getVeteran().getLastName() + ", " + assessmentContext.getVeteran().getFirstName();
+		} else {
+			return assessmentContext.getVeteran().getLastName();
+		}
+	}
+
+	@Override
+	public CompletionResponse getCompletionResponse(int batteryId) {
+		CompletionResponse response = new CompletionResponse();
+		response.setCompletionText(templateProcessorService.generateCompletionMsgFor(batteryId));
+		return response;
+	}
+
+	@Override
+	public void markAssessmentAsComplete() {
+		Integer assessmentId = assessmentContext.getVeteranAssessmentId();
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
+
+		// update the status of the assessment to complete
+		AssessmentStatus status = assessmentStatusRepository.findOne(AssessmentStatusEnum.COMPLETE.getAssessmentStatusId());
+		veteranAssessment.setAssessmentStatus(status);
+		veteranAssessmentRepository.update(veteranAssessment);
+
+		// TODO: Currently only a Veteran can take the assessment, person type will need to be detected once a
+		// user can take an assessment to properly track the person_id
+		veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
+		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
+		veteranAssessmentAuditLogRepository.update(auditLogEntry);
+	}
 }

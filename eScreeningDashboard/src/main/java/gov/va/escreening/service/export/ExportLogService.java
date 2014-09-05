@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ExportLogService {
 
-    List<ExportDataSearchResult> getExportLogs(List<Integer> programIdList);
+	List<ExportDataSearchResult> getExportLogs(List<Integer> programIdList,	int noOfDays);
 
 }

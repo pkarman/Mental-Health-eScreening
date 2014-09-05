@@ -56,7 +56,7 @@ public interface VeteranAssessmentRepository extends RepositoryInterface<Veteran
 	 * @param programIdList
 	 * @return
 	 */
-	List<VeteranAssessment> searchVeteranAssessment(Integer clinicanId,
+	List<VeteranAssessment> searchVeteranAssessmentForExport(Integer clinicanId,
 			Integer createdByUserId, Integer programId,
 			Date fromAssessmentDate, Date toAssessmentDate, Integer veteranId,
 			List<Integer> programIdList);

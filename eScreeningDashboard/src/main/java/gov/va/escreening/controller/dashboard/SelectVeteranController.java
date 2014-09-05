@@ -72,7 +72,7 @@ public class SelectVeteranController {
      * @param escreenUser
      * @return
      */
-    @RequestMapping(value = "/selectVeteran", method = RequestMethod.GET, params = "searchButton")
+    @RequestMapping(value = "/selectVeteran", method = RequestMethod.POST, params = "searchButton")
     public String searchPageSelectVeteran(@Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
             BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
 

@@ -7,48 +7,73 @@ var app = angular.module('exportDataFormApp', []);
 
 app.directive('reportTable', function() {
 	return function(scope, element, attrs) {
-
-        var options = {};
-        options = {
-	    	"bProcessing": true,
-	    	"bServerSide": false,
-	    	"bFilter": false,
-	    	"bJQueryUI": true,
-			"bAutoWidth": false,
-	    	"sPaginationType": "full_numbers",
-	    	"sServerMethod": "POST",
-	    	"sAjaxSource": "exportData/services/exports/exportLog",
-	    	"fnServerData": scope.$eval(attrs.fnDataCallback)
-        };
-
-        var aoColumns = {};
-        aoColumns = [
-			{ "mData": "exportedOn", "type": "select", "values": [ '1 week', '2 weeks']},
-			{ "mData": "exportedBy"},
-			{ "mData": "assignedClinician"},
-			{ "mData": "createdByUser"},
-			{ "mData": "exportType"},
-			{ "mData": "assessmentStartDate", "bSortable": false,"mRender":function(data, type, assessment){
-			       return "Start: " + assessment.assessmentStartDate + "<br > End: " +assessment.assessmentEndDate;}},
-			{ "mData": "programName"},
-			{ "mData": "veteranId","sClass":"numeric", "sWidth":"45px"},
-			{ "mData": "comment", "sWidth":"150px", "sClass":"wrap", "bSortable": false},
-        	{ "mData": "exportLogId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#"  data-toggle="modal" data-target="#modal_confirmation" ng-click="exportIdentifiedDataButton()" ng-model="exportIdentifiedDataButton"><span class="glyphicon glyphicon-download"></span></a>'; }}];
-        options["aoColumns"] = aoColumns;
-
-        //console.log("inside the directive");
-
-        // apply the plugin
-        var dataTable = element.dataTable(options);
-
-        // watch for any changes to our data, rebuild the DataTable
-        scope.$watch(attrs.aaData, function(value) {
-            var val = value || null;
-            if (val) {
-                dataTable.fnClearTable();
-                dataTable.fnAddData(scope.$eval(attrs.aaData));
-            }
-        });
+		// check dataType to update datatable link	
+		function checkDataType(exportType, exportLogId){
+			if (exportType == "Identified"){
+				ngclick = "angular.element(this).scope().exportIdentifiedDataButton("+exportLogId+")";
+				return ngclick;
+			}else{
+				ngclick = "angular.element(this).scope().exportDeidentifiedDataButton("+exportLogId+")";
+				return ngclick;
+			}
+		}
+        
+        var dataTable;
+		var sourceURL = "exportData/services/exports/exportLog";
+		
+		exportDataTable(sourceURL);
+		
+		
+		function exportDataTable(sourceURL){
+			var options = {};
+	        options = {
+		    	"bProcessing": true,
+		    	"bServerSide": false,
+		    	"bFilter": false,
+		    	"bJQueryUI": true,
+				"bAutoWidth": false,
+		    	"sPaginationType": "full_numbers",
+		    	"sServerMethod": "POST",
+		    	"sAjaxSource": sourceURL,
+		    	"fnServerData": scope.$eval(attrs.fnDataCallback)
+	        };
+	
+	
+	        var aoColumns = {};
+	        aoColumns = [
+				{ "mData": "exportedOn", "type": "select", "values": [ '1 week', '2 weeks']},
+				{ "mData": "exportedBy"},
+				{ "mData": "assignedClinician"},
+				{ "mData": "createdByUser"},
+				{ "mData": "exportType"},
+				{ "mData": "assessmentStartDate", "bSortable": false,"mRender":function(data, type, assessment){
+				       return "Start: " + assessment.assessmentStartDate + "<br > End: " +assessment.assessmentEndDate;}},
+				{ "mData": "programName"},
+				{ "mData": "veteranId","sClass":"numeric", "sWidth":"45px"},
+				{ "mData": "comment", "sWidth":"150px", "sClass":"wrap", "bSortable": false},
+	        	{ "mData": "exportLogId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#"  data-toggle="modal" data-target="#modal_confirmation" onclick="'+checkDataType(full.exportType, full.exportLogId)+'" ng-model="exportIdentifiedDataButton" data-exportLogId="'+full.exportLogId+'"  data-exportType="exportAgain" class="font-size-24"><span class="glyphicon glyphicon-download"></span></a>'; }}];
+	        options["aoColumns"] = aoColumns;
+	
+	
+	        // apply the plugin
+	        dataTable = element.DataTable(options);
+	
+	        // watch for any changes to our data, rebuild the DataTable
+	        scope.$watch(attrs.aaData, function(value) {
+	            var val = value || null;
+	            if (val) {
+	                dataTable.fnClearTable();
+	                dataTable.fnAddData(scope.$eval(attrs.aaData));
+	            }
+	        });
+		}
+		
+		scope.destroyDataTable = function(stateId) {
+			dataTable.fnDestroy();
+			sourceURL = "exportData/services/exports/exportLog/" + stateId;
+		    exportDataTable(sourceURL);
+		}
+        
     };
 });
 
@@ -78,11 +103,21 @@ app.factory('filterOptionService', function($http) {
 				url : "exportData/services/exports/filterOptions",
 				responseType : "json"
 			}).then(function(result) {
+				// console.log(">>>>>>> DATA >>> ");
+				// console.log(result.data.stateId);
+				
+			
+				
+				
 				return result.data;
+				
 			});
 		}
 	};
 });
+
+
+
 
 
 
@@ -92,34 +127,31 @@ app.factory('filterOptionService', function($http) {
  * @param $element
  * @param $http
  */
-function exportDataController($scope,$element,$http,$window, programListService, filterOptionService) {
-
-
-	
+function exportDataController($scope,$element,$http,$window, programListService, filterOptionService) {	
 	/*
 		Modal view button for Identified Data
 		Call different alert type and change the text
 	*/
-	$scope.exportIdentifiedDataButton = function(){
+	$scope.exportIdentifiedDataButton = function(exportLogId){
 		$scope.exportDataFormBean.exportDataType = 'identified';
 		$("#alertType").removeClass("alert-warning").addClass("alert-danger");
 		$("#alertData").text("Identified Data");
 		$("#comment").val("");
-		console.log("Re-Export"); 
+		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
 	
 	
 	/* Modal view button for De-Identified Data
 	   Call different alert type and change the text */
 		
-	$scope.exportDeidentifiedDataButton = function(){
+	$scope.exportDeidentifiedDataButton = function(exportLogId){
 		$scope.exportDataFormBean.exportDataType = 'deidentified';
 		$("#alertType").removeClass("alert-danger").addClass("alert-warning");
 		$("#alertData").text("De-Identified Data");
 		$("#comment").val("");
+		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
 	
-
 	 
 	//console.log("inside the controller");
 
@@ -140,25 +172,34 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	
 	$scope.searchDatabase = function() {
 		console.log("Export Started");
-		$scope.qstring = "";
-		$scope.qstring = "fromAssessmentDate=" + $scope.exportDataFormBean.fromAssessmentDate;
-		$scope.qstring = $scope.qstring + "&toAssessmentDate=" + $scope.exportDataFormBean.toAssessmentDate;
-		$scope.qstring = $scope.qstring + "&clinicianId=" + $scope.exportDataFormBean.clinicianId;
-		$scope.qstring = $scope.qstring + "&showDeletedClinicians=" + $scope.exportDataFormBean.showDeletedClinicians;
-		$scope.qstring = $scope.qstring + "&createdByUserId=" + $scope.exportDataFormBean.createdByUserId;
-		$scope.qstring = $scope.qstring + "&showDeletedAssessmentCreators=" + $scope.exportDataFormBean.showDeletedAssessmentCreators;
-		$scope.qstring = $scope.qstring + "&programId=" + $scope.exportDataFormBean.programId;
-		$scope.qstring = $scope.qstring + "&veteranId=" + $scope.exportDataFormBean.veteranId;
-		$scope.qstring = $scope.qstring + "&comment=" + $scope.exportDataFormBean.comment;
-		$scope.qstring = $scope.qstring + "&exportDataType=" + $scope.exportDataFormBean.exportDataType;
+		var modal_confirmation = $('#modal_confirmation');
 		
-	
-		console.log("---  V5  ---");
-		console.log( $scope.qstring );
-		console.log("------");
-		
-		$('#modal_confirmation').modal('hide');
-		window.open("exportData/services/exports/exportData?"+$scope.qstring, "_blank")
+		if ( typeof $scope.exportDataFormBean.exportLogId === "undefined"){
+			// if there export data for first time
+			$scope.qstring = "";
+			$scope.qstring = "fromAssessmentDate=" + $scope.exportDataFormBean.fromAssessmentDate;
+			$scope.qstring = $scope.qstring + "&toAssessmentDate=" + $scope.exportDataFormBean.toAssessmentDate;
+			$scope.qstring = $scope.qstring + "&clinicianId=" + $scope.exportDataFormBean.clinicianId;
+			$scope.qstring = $scope.qstring + "&showDeletedClinicians=" + $scope.exportDataFormBean.showDeletedClinicians;
+			$scope.qstring = $scope.qstring + "&createdByUserId=" + $scope.exportDataFormBean.createdByUserId;
+			$scope.qstring = $scope.qstring + "&showDeletedAssessmentCreators=" + $scope.exportDataFormBean.showDeletedAssessmentCreators;
+			$scope.qstring = $scope.qstring + "&programId=" + $scope.exportDataFormBean.programId;
+			$scope.qstring = $scope.qstring + "&veteranId=" + $scope.exportDataFormBean.veteranId;
+			$scope.qstring = $scope.qstring + "&comment=" + $scope.exportDataFormBean.comment;
+			$scope.qstring = $scope.qstring + "&exportDataType=" + $scope.exportDataFormBean.exportDataType;
+			console.log("---  V5  ---");
+			console.log( $scope.qstring );
+			modal_confirmation.modal('hide');
+			window.open("exportData/services/exports/exportData?"+$scope.qstring, "_blank");
+		}else{
+			// if export data again
+			$scope.qstring = "";
+			$scope.qstring = $scope.qstring + "&comment=" + $scope.exportDataFormBean.comment;
+			console.log("Export Again Section ");
+			modal_confirmation.modal('hide');
+			
+			window.open("exportData/services/exports/downloadAgain/"+ $scope.exportDataFormBean.exportLogId+ "?" +$scope.qstring, "_blank");
+		}
 		
 	};
 
@@ -295,8 +336,17 @@ function exportDataController($scope,$element,$http,$window, programListService,
 
 
 	filterOptionService.getFilterOptionList().then(function(data) {
+		 $scope.filter = null;
 		$scope.filterOptionList = data;
 	});	
+	
+	
+	
+	$scope.callFilters = function () {	    
+	    $scope.destroyDataTable($scope.filter.stateId);
+	}
+	
+	
 	
 	
 	/**
