@@ -348,8 +348,12 @@ public class RuleServiceImpl implements RuleService {
                         logger.error(message);
                         throw new IllegalStateException(message);
                     }
-                    logger.debug("Adding health factor {} to assessment {}", healthFactor, veteranAssessmentId );
-                    healthFactorSet.add(healthFactor);
+                    
+                    if(healthFactor.getVistaIen() !=null)
+                    {
+                    	logger.debug("Adding health factor {} to assessment {}", healthFactor, veteranAssessmentId );
+                    	healthFactorSet.add(healthFactor);
+                    }
                     break;
                     
                 case RuleConstants.EVENT_TYPE_DASHBOARD_ALERT:
