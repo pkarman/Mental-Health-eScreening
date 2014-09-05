@@ -41,7 +41,12 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
 
             service.query(querySurveySectionSearchCriteria, function (jsonResponse) {
                 var existingSurveySections = handleSurveySectionQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionsTransformer, null);
-                deferred.resolve((existingSurveySections.length === 0)? existingSurveySections[0]: existingSurveySections);
+
+                existingSurveySections.forEach(function(existingSurveySection) {
+                    EScreeningDashboardApp.models.Survey.sortByDisplayOrder(existingSurveySection.getSurveys());
+                });
+
+                deferred.resolve((existingSurveySections.length === 1)? existingSurveySections[0]: existingSurveySections);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
