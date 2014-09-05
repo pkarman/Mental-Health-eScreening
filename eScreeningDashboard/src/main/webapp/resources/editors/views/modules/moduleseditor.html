@@ -1,12 +1,21 @@
 <h1>Manage Module</h1>
-<!-- Alerts and Messages
+<!-- Alerts and Messages -->
 <div class="row">
   <div class="col-md-12">
-    <div class="alert alert-danger">Error Message </div>
-    <div class="alert alert-success">Your data has been saved successfully</div>
+    <div class="alert alert-danger" ng-show="errors.length > 0">
+        Error Message(s):<br><br>
+        <div ng-repeat="error in errors">
+            {{error}}
+        </div>
+    </div>
+    <div class="alert alert-success" ng-show="messages.length > 0">
+        <div ng-repeat="message in messages">
+            {{message}}
+        </div>
+    </div>
   </div>
 </div>
--->
+
 
 
 <div class="col-md-12">
@@ -59,11 +68,16 @@
       <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
         <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
           <li class="list-group-item text-left" ng-repeat="question in questions">
-            <div class="form-inline"> <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp; <span class="badge" ng-click="editQuestion(question);">Var: {{question.variableName}}</span> <span style="font-size:12px;">| {{question.type}}</span>
-              
-              
-              <!-- JH OOOCOMMENT <div class="form-group pull-right"> <span class="glyphicon glyphicon-remove-circle" style="color:red;" ng-click="deleteQuestion(question);"></span> </div> -->
-              <div class="form-group pull-right"> <span class="glyphicon glyphicon-edit" ng-click="editQuestion(question);"></span> </div>
+            <div class="form-inline">
+                <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;
+                <span class="badge" ng-click="editQuestion(question);">Var: {{question.variableName}}</span>
+                <span style="font-size:12px;">| {{question.type}}</span>
+                <div class="form-group pull-right">
+                    <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deleteQuestion(question);"/>
+                </div>
+                <div class="form-group pull-right">
+                    <span class="glyphicon glyphicon-edit" ng-click="editQuestion(question);"/>
+                </div>
             </div>
           </li>
         </ul>

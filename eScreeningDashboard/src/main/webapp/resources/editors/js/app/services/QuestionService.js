@@ -242,13 +242,13 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                  * @type {Resource}
                  */
                 service = $resource(
-                    "services/:questions/:questionId",
+                    "services/surveys/:surveyId/:questions/:questionId",
                     {},
                     {
                         save: {
                             method: 'DELETE',
                             params: {
-                                "questionId": removeQuestionRequestParameters.questionId
+                                /*"questionId": removeQuestionRequestParameters.questionId*/
                             },
                             isArray: false
                         }
@@ -297,14 +297,19 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
          * @param {String} questionId Represent the Question id to save.
          * @returns {{questionId: *, questions: String}} A search criteria object.
          */
-        var setRemoveQuestionRequestParameter = function (questionId) {
+        var setRemoveQuestionRequestParameter = function (surveyId, questionId) {
             var removeQuestionRequestParameter = {
+                "surveyId": surveyId,
                 "questionId": questionId,
                 "questions": "questions"
             };
 
             if (!Object.isDefined(questionId)) {
                 throw new BytePushers.exceptions.NullPointerException("questionId parameter can not be null");
+            }
+
+            if (!Object.isDefined(surveyId)) {
+                throw new BytePushers.exceptions.NullPointerException("surveyId parameter can not be null");
             }
 
             return removeQuestionRequestParameter;
@@ -486,8 +491,8 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
              * @type {EScreeningDashboardApp.models.Response}
              */
 
-            if (!jsonResponse.status.status == 'succeeded'){
-                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId),
+            if (jsonResponse.status.status.toLowerCase() === 'succeeded'){
+                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
                     /**
                      * Represents the transformed payload object of a service call request.
                      *

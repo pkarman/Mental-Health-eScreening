@@ -102,7 +102,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.deleteQuestion = function(question){
-        alert('Will delete the Question with VISTA Variable: ' + question.vistaVariable);
+        QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
+            $rootScope.messages.push(response.getMessage()); //Your data has been saved successfully
+            //$state.go('modules.detail.question');
+        }, function(responseError) {
+            $rootScope.errors.push(responseError.getMessage());
+        });
     };
 
     $scope.sortableOptions = {

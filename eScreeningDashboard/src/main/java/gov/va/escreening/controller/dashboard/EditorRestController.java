@@ -117,7 +117,7 @@ public class EditorRestController {
     @ResponseBody
     public Response deleteQuestion(@PathVariable("surveyId") Integer surveyId, @PathVariable("questionId") Integer questionId, @CurrentUser EscreenUser escreenUser) {
         //editorsViewDelegate.deleteBattery(questionId);
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Your data has been deleted successfully."), null);
     }
 
 

@@ -167,7 +167,7 @@ angular.module('Editors')
                     },
                     /*resolve: {
                         surveyId: ['$stateParams', function($stateParams){
-                            return $stateParams.surveyId;
+                            return $stateParams.selectedSurveyId;
                         }]
                     },*/
                     controller:'moduleController'
@@ -198,7 +198,7 @@ angular.module('Editors')
                 })
 
                 .state('modules.detail',{
-                    url:"/:surveyId/details",
+                    url:"/:selectedSurveyId/details",
                     templateUrl:'resources/editors/views/modules/moduleseditor.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit'
@@ -209,7 +209,7 @@ angular.module('Editors')
 
                             if(Object.isArray($rootScope.surveyUIObjects)) {
                                 $rootScope.surveyUIObjects.forEach(function (surveyUIObject) {
-                                    if(surveyUIObject.id === parseInt($stateParams.surveyId)) {
+                                    if(surveyUIObject.id === parseInt($stateParams.selectedSurveyId)) {
                                         selectedSurveyUIObject = surveyUIObject;
                                     }
                                 });
@@ -220,7 +220,7 @@ angular.module('Editors')
                         questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
                             var deferred = $q.defer();
 
-                            QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.surveyId)).then(function (existingSurveys){
+                            QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.selectedSurveyId)).then(function (existingSurveys){
                                 deferred.resolve(existingSurveys);
                             }, function(responseError) {
                                 $rootScope.errors.push(responseError.getMessage());

@@ -79,7 +79,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.deleteQuestion = function(q){
-
+        console.info("deleteQuestion() method.");
     };
 
     $scope.goToQuestions = function(){

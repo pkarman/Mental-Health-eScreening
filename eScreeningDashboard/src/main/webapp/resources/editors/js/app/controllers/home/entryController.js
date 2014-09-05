@@ -5,10 +5,15 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', functio
 			$scope.entryApp = '/escreeningdashboard/';
 			
 			$rootScope.errors = [];
+            $rootScope.messages = [];
 			
 			$rootScope.clearErrors = function(){
 				$rootScope.errors = [];
 			};
+
+            $rootScope.clearMessages = function () {
+                $rootScope.messages = [];
+            };
 			
             $rootScope.batteries = [];
 
@@ -56,4 +61,13 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', functio
             	console.log('ENTRY:: Manage Sections View Selected.');
                 $state.go('sections');
             };
+
+
+            $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+                $rootScope.clearErrors();
+                $rootScope.clearMessages();
+            });
+
+
+
         }]);
