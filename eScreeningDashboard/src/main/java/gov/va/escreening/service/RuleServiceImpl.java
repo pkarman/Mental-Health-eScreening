@@ -85,9 +85,6 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private VeteranAssessmentRepository veteranAssessmentRepository;
 
-    @Resource(name="veteranAssessmentSmrList")
-	VeteranAssessmentSmrList smrLister;
-
     @Override
     public void processRules(Integer veteranAssessmentId, Collection<SurveyMeasureResponse> responses) {
         if(responses.isEmpty()){
@@ -274,8 +271,6 @@ public class RuleServiceImpl implements RuleService {
      */
     @Override
     public boolean evaluate(Integer veteranAssessmentId, Rule rule){
-		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
 
         /* Should support:
         for single select: a particular option was selected (if each value has a calculated value then that would work)

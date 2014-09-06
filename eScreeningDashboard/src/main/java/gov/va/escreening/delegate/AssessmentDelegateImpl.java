@@ -54,9 +54,6 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	private static final Logger logger = LoggerFactory.getLogger(AssessmentDelegate.class);
 
-	@Resource(name = "veteranAssessmentSmrList")
-	VeteranAssessmentSmrList smrLister;
-
 	@Autowired
 	private AssessmentContext assessmentContext;
 	@Autowired
@@ -136,7 +133,6 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 			// we set the assessment ID from the context (not from the request)
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
-			smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
 		}
 
 		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest);

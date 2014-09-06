@@ -3,6 +3,7 @@ package gov.va.escreening.assessments.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.entity.AssessmentStatus;
@@ -66,6 +67,9 @@ public class RuleServiceTest {
     @Resource
     SurveyRepository surveyRepo;
    
+	@Resource(name = "veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
+
     
     @Test
     public void testSetup() {
@@ -126,10 +130,10 @@ public class RuleServiceTest {
         res = createResponse(241, 2415, false, assessment.getVeteranAssessmentId(), 22);
         assessment.getSurveyMeasureResponseList().add(res);
         
-        
-        
         vetAssessmentRepo.update(assessment);
         
+        // load fresh set of SMR list as they will be read from this cache while evaulating rules
+        smrLister.loadSmrFromDb(assessment.getVeteranAssessmentId());
         assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
     }
     
@@ -171,13 +175,13 @@ public class RuleServiceTest {
 
     @Test
     @Transactional
-    public void testRule105()
+    public void testRule105() throws InterruptedException
     {   
-        VeteranAssessment assessment = createTestAssessment();
+        final VeteranAssessment assessment = createTestAssessment();
         assertNotNull(assessment);
          
-        Rule r = ruleRepo.findOne(105);
-        
+        final Rule r = ruleRepo.findOne(105);
+
         assertFalse(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
         
         SurveyMeasureResponse res = createResponse(542, 5421, true, assessment.getVeteranAssessmentId(), 22);
@@ -195,7 +199,19 @@ public class RuleServiceTest {
         
         vetAssessmentRepo.update(assessment);
         
-        assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+        // load fresh set of SMR list as they will be read from this cache while evaulating rules
+        smrLister.loadSmrFromDb(assessment.getVeteranAssessmentId());
+        //Runnable runnable=new Runnable(){
+			//@Override
+			//public void run() {
+				assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+			//}
+        //};
+        
+        //Thread t=new Thread(runnable);
+        //t.start();
+        //t.join();
+        
     }
 
     private VeteranAssessment createTestAssessment() {
