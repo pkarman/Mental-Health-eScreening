@@ -37,7 +37,7 @@ public class ORWDXM1_BLDQRSP_VistaLinkRequest extends VistaLinkBaseRequest imple
 	private List<Map<String, Object>> getResult(RpcResponse response) throws Exception {
 		String[] parsedRpcResponseLines = super.parseRpcSimpleResponseWithNewLineDelimiter(response);
 		
-		logger.debug("ORWDXM1_BLDQRSP_VistaLinkRequest (Results--> "+Arrays.toString(parsedRpcResponseLines));
+		logger.debug("ORWDXM1_BLDQRSP_VistaLinkRequest (Results)--> "+Arrays.toString(parsedRpcResponseLines));
 
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		for (String r : parsedRpcResponseLines) {

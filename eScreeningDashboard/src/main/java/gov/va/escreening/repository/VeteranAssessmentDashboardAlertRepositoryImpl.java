@@ -110,7 +110,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	}
 
 	private boolean validDate(DateTime date) {
-		return !weekEnd(date) && !fedHoliday(date);
+		//return !weekEnd(date) && !fedHoliday(date);
+		return true;
 	}
 
 	private boolean fedHoliday(DateTime date) {
