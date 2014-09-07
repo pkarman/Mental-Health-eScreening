@@ -6,16 +6,9 @@ import static org.junit.Assert.assertTrue;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
-import gov.va.escreening.entity.AssessmentStatus;
-import gov.va.escreening.entity.Battery;
-import gov.va.escreening.entity.Clinic;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.User;
-import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.repository.RuleRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -24,7 +17,6 @@ import gov.va.escreening.service.RuleService;
 import gov.va.escreening.service.SurveyMeasureResponseService;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -39,13 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional //this is to ensure all tests do not leave trace, so they are repeatable.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
-public class RuleServiceTest {
+public class RuleServiceTest extends AssessmentTestBase
+{
     
-    private static final int OOO_BATTERY_ID = 5;
-    private static final int TEST_USER_ID = 5;
-    private static final int TEST_VET_ID = 18;
+    static final int OOO_BATTERY_ID = 5;
 
     Logger logger = Logger.getLogger(RuleServiceTest.class);
+    
     @Resource
     private AssessmentDelegate assessmentDelegate;
     
@@ -137,42 +129,6 @@ public class RuleServiceTest {
         assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
     }
     
-    private SurveyMeasureResponse createResponse(int measureId, int measureAnswerId, boolean value, 
-            int assessmentId, int surveyId)
-    {
-        SurveyMeasureResponse res = new SurveyMeasureResponse();
-        res.setBooleanValue(value);
-        res.setMeasure(new Measure(measureId));
-        res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
-        res.setVeteranAssessment(new VeteranAssessment(assessmentId));
-        res.setSurvey(new Survey(surveyId));
-        return res;
-    }
-    
-    private SurveyMeasureResponse createResponse(int measureId, int measureAnswerId, long value, 
-            int assessmentId, int surveyId)
-    {
-        SurveyMeasureResponse res = new SurveyMeasureResponse();
-        res.setNumberValue(value);
-        res.setMeasure(new Measure(measureId));
-        res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
-        res.setVeteranAssessment(new VeteranAssessment(assessmentId));
-        res.setSurvey(new Survey(surveyId));
-        return res;
-    }
-    
-    private SurveyMeasureResponse createResponse(int measureId, int measureAnswerId, String value, 
-            int assessmentId, int surveyId)
-    {
-        SurveyMeasureResponse res = new SurveyMeasureResponse();
-        res.setTextValue(value);
-        res.setMeasure(new Measure(measureId));
-        res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
-        res.setVeteranAssessment(new VeteranAssessment(assessmentId));
-        res.setSurvey(new Survey(surveyId));
-        return res;
-    }
-
     @Test
     @Transactional
     public void testRule105() throws InterruptedException
@@ -214,23 +170,6 @@ public class RuleServiceTest {
         
     }
 
-    private VeteranAssessment createTestAssessment() {
-        VeteranAssessment assessment = new VeteranAssessment();
-        assessment.setBattery(new Battery(1));
-        assessment.setClinic(new Clinic(20)); //Observation
-        assessment.setClinician(new User(TEST_USER_ID));
-        assessment.setCreatedByUser(new User(TEST_USER_ID));
-        assessment.setVeteran(new Veteran(TEST_VET_ID));
-        assessment.setDateCreated(Calendar.getInstance().getTime());
-        assessment.setAssessmentStatus(new AssessmentStatus(2));
-        
-        vetAssessmentRepo.create(assessment);
-        //vetAssessmentRepo.commit();
-        
-        assessment = vetAssessmentRepo.findByVeteranId(TEST_VET_ID).get(0);
-        return assessment;
-    }
-    
     @Test
     public void testGenerateQuesAndAnswersSingleSelectMatrix()
     {
@@ -424,8 +363,4 @@ public class RuleServiceTest {
             logger.info(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 56));
         }
     }
-//        
-////        Survey s = surveyRepo.findOne(12);
-////        surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 88);
-////    }
 }

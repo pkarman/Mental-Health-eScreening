@@ -24,19 +24,19 @@
       <div class="col-md-8">
         <div class="col-sm-12 form-group">
           <label>Title</label>
-          <input type="text" class="form-control" ng-model="module.name" placeholder="Enter Module Title">
+          <input type="text" class="form-control" ng-model="selectedSurveyUIObject.name" placeholder="Enter Module Title">
         </div>
         <div class="col-sm-12 form-group pull-right">
           <label>Description</label>
-          <input type="text" class="form-control" ng-model="module.description" placeholder="Enter Module Description">
+          <input type="text" class="form-control" ng-model="selectedSurveyUIObject.description" placeholder="Enter Module Description">
         </div>
       </div>
       <div class="col-md-4">
         <div class="col-sm-12 form-group"><br>
-          <input type="checkbox" id="is_clinical_reminder" ng-model="module.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
+          <input type="checkbox" id="is_clinical_reminder" ng-model="selectedSurveyUIObject.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
           <!--
           <label>VistA Title</label>
-          <textarea class="form-control" ng-model="module.vista_title" placeholder="Enter VistA Title" ng-disabled="!module.clinicalReminder" ></textarea>
+          <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
           //-->
         </div>
       </div>
