@@ -1,18 +1,23 @@
 /**
  * 
  */
-Editors.controller('entryController', ['$rootScope', '$scope', '$state', function($rootScope, $scope, $state){
+Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'MessageHandler', function($rootScope, $scope, $state, MessageHandler){
 			$scope.entryApp = '/escreeningdashboard/';
 			
-			$rootScope.errors = [];
-            $rootScope.messages = [];
-			
-			$rootScope.clearErrors = function(){
-				$rootScope.errors = [];
-			};
+			$rootScope.messageHandler = MessageHandler;
 
-            $rootScope.clearMessages = function () {
-                $rootScope.messages = [];
+            $rootScope.addMessage = function(message) {
+                if(Object.isDefined(message)) {
+                    $rootScope.messageHandler.addMessage(message);
+                }
+            };
+
+            $rootScope.createSuccessMessage = function(message) {
+                return (Object.isDefined(message))? message : new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESS, value: BytePushers.models.Message.SUCCESS_MSG});
+            };
+
+            $rootScope.createErrorMessage = function (message) {
+                return (Object.isDefined(message))? message : new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: BytePushers.models.Message.ERROR_MSG})
             };
 			
             $rootScope.batteries = [];
@@ -62,12 +67,7 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', functio
                 $state.go('sections');
             };
 
-
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-                $rootScope.clearErrors();
-                $rootScope.clearMessages();
+                $rootScope.messageHandler.clearMessages();
             });
-
-
-
         }]);

@@ -163,8 +163,8 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 );
 
             service.save(updateQuestionRequestParameter.question.toJSON(), function (jsonResponse) {
-                var existingQuestion = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
-                deferred.resolve(existingQuestion);
+                var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
+                deferred.resolve(response);
             }, function (reason) {
                 deferred.reject(reason);
             });
@@ -448,27 +448,13 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (response === null) {
                 throw new Error("handleQuestionServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**

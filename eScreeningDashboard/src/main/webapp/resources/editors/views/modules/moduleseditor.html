@@ -2,15 +2,15 @@
 <!-- Alerts and Messages -->
 <div class="row">
   <div class="col-md-12">
-    <div class="alert alert-danger" ng-show="errors.length > 0">
+    <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
         Error Message(s):<br><br>
-        <div ng-repeat="error in errors">
-            {{error}}
+        <div ng-repeat="error in messageHandler.getMessages()| filter:messageHandler.filterByErrorMessage">
+            {{error.getValue()}}
         </div>
     </div>
-    <div class="alert alert-success" ng-show="messages.length > 0">
-        <div ng-repeat="message in messages">
-            {{message}}
+    <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
+        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessMessage">
+            {{message.getValue()}}
         </div>
     </div>
   </div>

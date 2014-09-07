@@ -52,5 +52,4 @@ Editors.run(
             $rootScope.$stateParams = $stateParams;
 
 }]);
-
-Editors.value('MessageHandler', new MessageHandler())
+Editors.value('MessageHandler', new BytePushers.models.MessageHandler());

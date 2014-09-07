@@ -76,16 +76,36 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject),
 
         console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
-        SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
-            $scope.selectedSurveyUIObject = existingSurvey.toUIObject();
+
+        SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+            if(Object.isDefined(response)) {
+                if (response.isSuccessful()) {
+                    $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                    $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                } else {
+                    $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                    console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                }
+            }
+
+
         }, function(responseError) {
-            $rootScope.errors.push(responseError.getMessage());
+            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
             console.log('Update Module Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
         });
-        QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(existingQuestion){
-            $scope.selectedQuestionUIObject = existingQuestion;
+
+        QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
+            if(Object.isDefined(response)) {
+                if (response.isSuccessful()) {
+                    $scope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                    $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                } else {
+                    $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                    console.error("modulesEditController.save() method. Expected successful response object from QuestionService.update() method to be successful.");
+                }
+            }
         }, function(responseError) {
-            $rootScope.errors.push(responseError.getMessage());
+            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
             console.log('Update Question Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
         });
 
@@ -102,12 +122,14 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.deleteQuestion = function(question){
+        $rootScope.messageHandler.clearMessages();
         QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
-            $rootScope.messages.push(response.getMessage()); //Your data has been saved successfully
-            //$state.go('modules.detail.question');
+            $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
         }, function(responseError) {
-            $rootScope.errors.push(responseError.getMessage());
+            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
         });
+
+        $state.go('modules.detail.question');
     };
 
     $scope.sortableOptions = {

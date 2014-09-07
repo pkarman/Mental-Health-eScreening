@@ -42,7 +42,6 @@
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/BytePushersApplication.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Errors.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/DateConverter.js"></script>
-
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Message.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/MessageHandler.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Response.js"></script>
@@ -277,4 +276,3 @@
     </div>
 </body>
 </html>
-

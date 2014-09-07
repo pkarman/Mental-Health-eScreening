@@ -104,8 +104,8 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                 );
 
             service.save(updateSurveyRequestParameter.survey.toJSON(), function (jsonResponse) {
-                var existingSurvey = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
-                deferred.resolve(existingSurvey);
+                var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
+                deferred.resolve(response);
             }, function (reason) {
                 deferred.reject(reason);
             });
@@ -153,8 +153,8 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                 );
 
             service.save(updateSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var existingSurvey = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
-                deferred.resolve(existingSurvey);
+                var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
+                deferred.resolve(response.getPayload());
             }, function (reason) {
                 deferred.reject(reason);
             });
@@ -356,27 +356,13 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (response === null) {
                 throw new Error("handleSurveyServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
