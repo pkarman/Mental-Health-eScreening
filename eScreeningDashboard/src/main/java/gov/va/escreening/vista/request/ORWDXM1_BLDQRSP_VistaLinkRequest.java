@@ -44,11 +44,11 @@ public class ORWDXM1_BLDQRSP_VistaLinkRequest extends VistaLinkBaseRequest imple
 			String[] parsedRpcResponse = super.parseRpcResponseLineWithCarrotDelimiter(r.getBytes());
 
 			Map<String, Object> record = new HashMap<String, Object>();
-			record.put("QuickLevelIEN", Integer.valueOf(parsedRpcResponse[0]));
-			record.put("ResponseID", Integer.valueOf(parsedRpcResponse[1]));
-			record.put("DialogIEN", Integer.valueOf(parsedRpcResponse[2]));
+			record.put("QuickLevelIEN", parsedRpcResponse[0]);
+			record.put("ResponseID", parsedRpcResponse[1]);
+			record.put("DialogIEN", parsedRpcResponse[2]);
 			record.put("Type", parsedRpcResponse[3]);
-			record.put("FormIDIEN", Integer.valueOf(parsedRpcResponse[4]));
+			record.put("FormIDIEN", parsedRpcResponse[4]);
 			record.put("DisplayGroupIEN", Integer.valueOf(parsedRpcResponse[5]));
 
 			resultList.add(record);
