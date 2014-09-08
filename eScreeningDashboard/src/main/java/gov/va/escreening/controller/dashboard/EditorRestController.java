@@ -115,9 +115,14 @@ public class EditorRestController {
 
     @RequestMapping(value = "/services/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
-    public Response deleteQuestion(@PathVariable("surveyId") Integer surveyId, @PathVariable("questionId") Integer questionId, @CurrentUser EscreenUser escreenUser) {
-        //editorsViewDelegate.deleteBattery(questionId);
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Your data has been deleted successfully."), null);
+    public Response deleteQuestion(
+    		@PathVariable("surveyId") Integer surveyId, 
+    		@PathVariable("questionId") Integer questionId, @CurrentUser EscreenUser escreenUser) {
+        
+    	
+    	editorsViewDelegate.removeQuestionFromSurvey(surveyId,questionId);
+        
+    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
     }
 
 

@@ -130,5 +130,10 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public SurveyInfo updateSurvey(SurveyInfo surveyInfo) {
         return surveyService.update(surveyInfo);
     };
+    
+    @Override
+	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
+		surveyService.removeMeasureFromSurvey(surveyId, questionId);
+	}
 }
 

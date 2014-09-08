@@ -100,6 +100,27 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
         return result;
     }
     
+    @Override
+	public SurveyPage getSurveyPageByMeasureId(Integer questionId) {
+		logger.trace("getSurveyPageByMeasureId");
+		        
+		String sql = "select sp.* from survey_page sp join survey_page_measure m on sp.survey_page_id = "
+				+ "m.survey_page_id where m.measure_id = "+questionId.intValue();
+
+        Query query = entityManager.createNativeQuery(sql, SurveyPage.class);
+        
+		List<SurveyPage> surveyPages = query.getResultList();
+		
+		if (surveyPages!=null && surveyPages.size() > 0 )
+		{
+			return surveyPages.get(0);
+		}
+		else 
+		{
+			return null;
+		}
+	} 
+    
     private static final String SKIP_QUERY_FORMAT =
       "SELECT survey_page_measure_count.survey_page_id, (survey_page_measure_count.measure_count <> survey_page_measure_count.respons_count) has_skipped "
       +"FROM ( " 

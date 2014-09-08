@@ -4,17 +4,21 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
+import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.escreening.repository.SurveySectionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -24,9 +28,16 @@ public class SurveyServiceImpl implements SurveyService {
 	private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
 	private SurveyRepository surveyRepository;
+	
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
 
+	@Autowired
+	private MeasureRepository measureRepository;
+	
+	@Autowired
+	private SurveyPageRepository surveyPageRepository;
+	
 	@Autowired
 	public void setSurveyRepository(SurveyRepository surveyRepository) {
 		this.surveyRepository = surveyRepository;
@@ -189,6 +200,36 @@ public class SurveyServiceImpl implements SurveyService {
 	public Survey findOne(int surveyId) {
 
 		return surveyRepository.findOne(surveyId);
+	}
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void removeMeasureFromSurvey(Integer surveyId, Integer questionId) {
+		
+		Measure measure = measureRepository.findOne(questionId);
+		
+		if (measure!=null)
+		{
+			if (measure.getParent()!=null)
+			{
+				measure.setParent(null);
+				measureRepository.update(measure);
+				measureRepository.commit();
+			}
+			else
+			{
+				SurveyPage sp = surveyPageRepository.getSurveyPageByMeasureId(questionId);
+				
+				if (sp!=null)
+				{
+					sp.getMeasures().remove(measure);
+					surveyPageRepository.update(sp);
+					surveyPageRepository.commit();
+				}
+				
+			}
+		}
+		
 	}
 
 }
