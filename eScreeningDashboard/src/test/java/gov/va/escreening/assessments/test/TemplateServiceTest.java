@@ -63,11 +63,11 @@ public class TemplateServiceTest extends AssessmentTestBase {
 				assessment.getVeteranAssessmentId(), 6);
 		assessment.getSurveyMeasureResponseList().add(res);
 
-		res = createResponse(103, 1033, true,
+		res = createResponse(103, 1031, true,
 				assessment.getVeteranAssessmentId(), 6);
 		assessment.getSurveyMeasureResponseList().add(res);
 
-		res = createResponse(104, 1043, true,
+		res = createResponse(104, 1041, true,
 				assessment.getVeteranAssessmentId(), 6);
 		assessment.getSurveyMeasureResponseList().add(res);
 
