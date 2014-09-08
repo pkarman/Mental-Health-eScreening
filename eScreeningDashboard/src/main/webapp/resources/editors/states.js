@@ -59,9 +59,8 @@ angular.module('Editors')
 
                             console.log('VIEW STATE SECTIONS:: Resolve sections');
 
-                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (existingSections){
-                                console.log('Sections:: ' + existingSections);
-                                deferred.resolve(existingSections);
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                deferred.resolve(response.getPayload());
                             }, function(responseError) {
                                 $rootScope.errors.push(responseError.getMessage());
                                 console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
@@ -106,8 +105,7 @@ angular.module('Editors')
 	                                console.log('Sections:: ' + existingSections);
 	                                deferred.resolve(existingSections);
 	                            }, function(responseError) {
-	                                $rootScope.errors.push(responseError.getMessage());
-	                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 	                                deferred.reject(responseError.getMessage());
 	                            });
 	                            return deferred.promise;
@@ -135,8 +133,7 @@ angular.module('Editors')
                                     console.log('Battery:: ' + existingBattery);
                                     deferred.resolve(existingBattery);
                                 }, function (responseError) {
-                                    $rootScope.errors.push(responseError.getMessage());
-                                    console.log('Battery Query Error:: ' + JSON.stringify($rootScope.errors));
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                     deferred.reject(responseError.getMessage());
                                 });
                             } else {
@@ -186,8 +183,7 @@ angular.module('Editors')
                             SurveyService.query(SurveyService.setQuerySurveySearchCriteria(null)).then(function (existingSurveys){
                                 deferred.resolve(existingSurveys);
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
-                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 deferred.reject(responseError.getMessage());
                             });
 
@@ -223,8 +219,7 @@ angular.module('Editors')
                             QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.selectedSurveyId)).then(function (existingSurveys){
                                 deferred.resolve(existingSurveys);
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
-                                console.log('Questions Query Error:: ' + JSON.stringify($rootScope.errors));
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 deferred.reject(responseError.getMessage());
                             });
 

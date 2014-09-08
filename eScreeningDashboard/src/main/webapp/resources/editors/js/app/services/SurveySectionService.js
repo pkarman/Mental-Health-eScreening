@@ -40,8 +40,18 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
                 );
 
             service.query(querySurveySectionSearchCriteria, function (jsonResponse) {
-                var existingSurveySections = handleSurveySectionQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionsTransformer, null);
-                deferred.resolve((existingSurveySections.length === 0)? existingSurveySections[0]: existingSurveySections);
+                var response = handleSurveySectionQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionsTransformer, null),
+                    payload;
+
+                if(response.isSuccessful()){
+                    if(Object.isArray(response.getPayload())){
+                       if(response.getPayload().length === 1){
+                           payload = EScreeningDashboardApp.models.SurveySectionsTransformer.transformJSONPayload(response.getPayload()[0].toJSON(), null);
+                           response = new BytePushers.models.Response(response.getStatus(), payload);
+                       }
+                    }
+                }
+                deferred.resolve(response);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -101,8 +111,8 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
                 );
 
             service.save(updateSurveySectionRequestParameter.surveySection.toJSON(), function (jsonResponse) {
-                var existingSurveySection = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
-                deferred.resolve(existingSurveySection);
+                var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
+                deferred.resolve(response);
             }, function (reason) {
                 deferred.reject(reason);
             });
@@ -150,8 +160,8 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
                 );
 
             service.save(updateSurveySectionRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var existingSurveySection = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
-                deferred.resolve(existingSurveySection);
+                var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
+                deferred.resolve(response);
             }, function (reason) {
                 deferred.reject(reason);
             });
@@ -310,27 +320,13 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (response === null) {
                 throw new Error("handleSurveySectionServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
@@ -353,27 +349,13 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (response === null) {
                 throw new Error("handleSurveySectionServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
@@ -397,23 +379,9 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
              */
         	
         	if (!jsonResponse.status.status == 'succeeded'){
-	            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId),
-	                /**
-	                 * Represents the transformed payload object of a service call request.
-	                 *
-	                 * @private
-	                 * @field
-	                 * @type {Object}
-	                 */
-	                payload = null;
+	            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId);
 	
-	            if (response !== null) {
-	                if (response.isSuccessful()) {
-	                    payload = response.getPayload();
-	                } else {
-	                    throw new Error(response.getMessage());
-	                }
-	            } else {
+	            if (response === null) {
 	                throw new Error("handleSurveySectionServiceQueryResponse() method: Response is null.");
 	            }
         	}
