@@ -82,6 +82,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 if (response.isSuccessful()) {
                     $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
                     $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+
                 } else {
                     $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
                     console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
