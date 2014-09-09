@@ -41,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.common.base.Throwables;
+
 @Controller
 @RequestMapping(value = "/dashboard")
 public class AssessmentSummaryController implements MessageSourceAware {
@@ -224,9 +226,9 @@ public class AssessmentSummaryController implements MessageSourceAware {
 				callResult.setHasError(false);
 				callResult.setUserMessage(messageSource.getMessage("vista.pass.saved", null, null));
 			} catch (IllegalStateException e) {
-				changeAssessmentStatusToError(callResult, "vista.err.data.missing", vaid, e);
+				saveVeteranAssessmentToVistaFailed(callResult, "vista.err.data.missing", vaid, e);
 			} catch (Exception e) {
-				changeAssessmentStatusToError(callResult, "vista.err.fatal", vaid, e);
+				saveVeteranAssessmentToVistaFailed(callResult, "vista.err.fatal", vaid, e);
 			}
 		}
 
@@ -263,16 +265,17 @@ public class AssessmentSummaryController implements MessageSourceAware {
 		return "dashboard/assessmentSummary";
 	}
 
-	private void changeAssessmentStatusToError(CallResult callResult,
+	private void saveVeteranAssessmentToVistaFailed(CallResult callResult,
 			String errMsgKey, int vaid, Exception exception) {
 
 		callResult.setHasError(true);
 		callResult.setUserMessage(messageSource.getMessage(errMsgKey, null, null));
 
-		if (exception != null && exception.getCause() != null) {
-			callResult.setSystemMessage(exception.getCause().getMessage());
+		if (exception != null) {
+			callResult.setSystemMessage(Throwables.getRootCause(exception).getMessage());
 		}
 
+		logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", vaid, callResult.getUserMessage(), callResult.getSystemMessage()));
 		assessmentEngineService.transitionAssessmentStatusTo(vaid, AssessmentStatusEnum.ERROR);
 	}
 
