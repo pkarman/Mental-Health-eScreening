@@ -65,7 +65,7 @@ public class TemplateServiceTest extends AssessmentTestBase {
 
 		res = createResponse(103, 1031, true,
 				assessment.getVeteranAssessmentId(), 6);
-		assessment.getSurveyMeasureResponseList().add(res);
+		//assessment.getSurveyMeasureResponseList().add(res);
 
 		res = createResponse(104, 1041, true,
 				assessment.getVeteranAssessmentId(), 6);
