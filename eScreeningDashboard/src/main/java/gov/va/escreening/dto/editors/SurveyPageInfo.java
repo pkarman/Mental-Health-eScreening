@@ -1,5 +1,10 @@
 package gov.va.escreening.dto.editors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gov.va.escreening.serializer.JsonDateSerializer;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,6 +15,7 @@ public class SurveyPageInfo {
     private String description;
     private int pageNumber;
     private String title;
+    private Date dateCreated;
     private List<QuestionInfo> questions;
 
     public SurveyPageInfo() {}
@@ -46,6 +52,16 @@ public class SurveyPageInfo {
         this.title = title;
     }
 
+    @JsonSerialize(using=JsonDateSerializer.class)
+    @JsonProperty("createdDate")
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public List<QuestionInfo> getQuestions() {
         return questions;
     }
@@ -56,6 +72,7 @@ public class SurveyPageInfo {
 
     @Override
     public String toString() {
-        return "SurveyPageInfo [id=" + id + ", description=" + description + ", pageNumber=" + pageNumber + ", title=" + title + ", questions=" + questions + "]";
+        return "SurveyPageInfo [id=" + id + ", description=" + description + ", pageNumber=" + pageNumber +
+                ", title=" + title + ", dateCreated=" + dateCreated + ", questions=" + questions + "]";
     }
 }
