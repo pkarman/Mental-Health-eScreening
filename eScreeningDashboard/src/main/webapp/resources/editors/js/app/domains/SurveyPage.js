@@ -28,14 +28,32 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         title = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.title))? jsonSurveyPageObject.title : null,
         description = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.description))? jsonSurveyPageObject.description : null,
         pageNumber = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.pageNumber))? jsonSurveyPageObject.pageNumber : null,
-        createdDate = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.createdDate))? (Object.isDate(jsonSurveyPageObject.createdDate)) ? jsonSurveyPageObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonSurveyPageObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
+        createdDate = (Object.isDefined(jsonSurveyPageObject) && Object.isDate(jsonSurveyPageObject.createdDate))? (Object.isDate(jsonSurveyPageObject.createdDate)) ? jsonSurveyPageObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonSurveyPageObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
+        questions = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.questions) && Object.isArray(jsonSurveyPageObject.questions))? EScreeningDashboardApp.models.QuestionsTransformer.transformJSONPayload({"questions": jsonSurveyPageObject.questions}) : [];
 
-    var generateSurveySectionUIObject = function(){
-        if (Object.isDefined(surveySection)){
-            return this.surveySection.toUIObject();
-        } else{
-            return null;
+    var generateJsonStringForQuestions = function () {
+        var questionJson = "[";
+
+        questions.forEach(function (question) {
+            questionJson += question.toJSON() + ",";
+        });
+
+        if (questions.length > 0) questionJson = questionJson.slice(0, questionJson.length-1);
+        questionJson += "]";
+
+        return questionJson;
+    };
+
+    var generateQuestionUIObjects = function(){
+        var questionsUIObjects = [];
+
+        if (Object.isArray(questions)){
+            questions.forEach(function (question) {
+                questionsUIObjects.push(this.questions.toUIObject());
+            });
         }
+
+        return questionsUIObjects;
     };
 
     this.getId = function(){
@@ -54,28 +72,35 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         return pageNumber;
     };
 
-    this.getCreatedDate= function() {
+    this.getCreatedDate = function() {
         return createdDate;
+    };
+
+    this.getQuestions = function () {
+        return questions;
     };
 
     this.toString = function () {
         return "Survey {id: " + id + ", title: " + title + ", description: " + description + ", pageNumber: " + pageNumber +
-            ", createdDate: " + createdDate + "}";
+            ", createdDate: " + createdDate + ", questions[" + questions + "]}";
     };
 
-    this.toJSON = function (serializeUIProperties) {
-        serializeUIProperties = (Object.isDefined(serializeUIProperties) && Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
+    this.toJSON = function (serializeCollections) {
+        serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
+
         var jsonId = (Object.isDefined(id) && id > 0)? id : null,
             jsonTitle = (Object.isDefined(title))? "\"" + title + "\"":  null,
             jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
-            jsonVersion = (Object.isDefined(pageNumber))? pageNumber: null,
+            jsonPageNumber = (Object.isDefined(pageNumber))? pageNumber: null,
             jsonCreatedDate = (Object.isDefined(createdDate))? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
+            jsonQuestions = (serializeCollections)? ",\"questions\": " + generateJsonStringForQuestions() : "",
             json =  "{" +
                 "\"id\": " + jsonId + "," +
-                "\"name\": " + jsonTitle + "," +
+                "\"title\": " + jsonTitle + "," +
                 "\"description\": " +  jsonDescription + "," +
-                "\"version\": " + jsonVersion + "," +
+                "\"pageNumber\": " + jsonPageNumber+ "," +
                 "\"createdDate\": " + jsonCreatedDate +
+                jsonQuestions +
                 "}";
 
         return json;
