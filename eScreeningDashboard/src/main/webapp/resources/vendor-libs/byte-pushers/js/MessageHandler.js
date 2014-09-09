@@ -37,10 +37,33 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
     };
 
     this.filterBySuccessMessage = function(message, index) {
+        var filteredMessage = this.filterBySuccessSaveMessage(message, index);
+
+        if(!Object.isDefined(filteredMessage)) {
+            filteredMessage = filterBySuccessDeleteMessage(message, index);
+        }
+
+        if(Object.isDefined(filteredMessage)) {
+            return filteredMessage;
+        }
+    };
+
+    this.filterBySuccessSaveMessage = function(message, index) {
         if(Object.isDefined(message)) {
             if(message.getType().toLowerCase() === "success") {
                 if(!Object.isDefined(message.getValue())) {
-                    message.setValue(BytePushers.models.Message.SUCCESS_MSG);
+                    message.setValue(BytePushers.models.Message.SUCCESS_SAVE_MSG);
+                }
+                return message;
+            }
+        }
+    };
+
+    this.filterBySuccessDeleteMessage = function(message, index) {
+        if(Object.isDefined(message)) {
+            if(message.getType().toLowerCase() === "success") {
+                if(!Object.isDefined(message.getValue())) {
+                    message.setValue(BytePushers.models.Message.SUCCESS_DELETE_MSG);
                 }
                 return message;
             }

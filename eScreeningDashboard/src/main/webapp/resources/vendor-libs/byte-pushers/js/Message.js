@@ -39,6 +39,7 @@ BytePushers.models.Message = function (jsonMessageObject) {
     };
 };
 BytePushers.models.Message.SUCCESS = "success";
-BytePushers.models.Message.SUCCESS_MSG = "Your data has been saved successfully.";
+BytePushers.models.Message.SUCCESS_SAVE_MSG = "Your data has been saved successfully.";
+BytePushers.models.Message.SUCCESS_DELETE_MSG = "Your data has been deleted successfully.";
 BytePushers.models.Message.ERROR = "error";
 BytePushers.models.Message.ERROR_MSG = "Sorry, we are unable save your data at this time.  Please contact your System Administrator if this continues.";

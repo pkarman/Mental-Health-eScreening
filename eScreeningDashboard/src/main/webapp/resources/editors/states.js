@@ -101,9 +101,8 @@ angular.module('Editors')
 	                	  sections: function($rootScope, $q, SurveySectionService){
 	                            var deferred = $q.defer();
 	                            console.log('VIEW STATE SECTIONS:: Resolve sections');
-	                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (existingSections){
-	                                console.log('Sections:: ' + existingSections);
-	                                deferred.resolve(existingSections);
+	                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+	                                deferred.resolve(response.getPayload());
 	                            }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 	                                deferred.reject(responseError.getMessage());

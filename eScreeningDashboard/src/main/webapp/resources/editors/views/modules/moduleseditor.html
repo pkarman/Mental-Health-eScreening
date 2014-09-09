@@ -9,7 +9,10 @@
         </div>
     </div>
     <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
-        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessMessage">
+        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessSaveMessage">
+            {{message.getValue()}}
+        </div>
+        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessDeleteMessage">
             {{message.getValue()}}
         </div>
     </div>
@@ -59,12 +62,11 @@
     <div class="col-md-4 text-center">
       
       
-      <!-- JH OOOCOMMENT
       <div class="form-inline form-group center-block">
         <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
         <button class="btn btn-success btn-sm" popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."><span class="glyphicon glyphicon-plus"></span> Page Break</button>
       </div>
-      -->
+
       <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
         <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
           <li class="list-group-item text-left" ng-repeat="question in questions">

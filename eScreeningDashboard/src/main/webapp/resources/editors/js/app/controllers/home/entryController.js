@@ -12,8 +12,12 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
                 }
             };
 
-            $rootScope.createSuccessMessage = function(message) {
-                return (Object.isDefined(message))? message : new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESS, value: BytePushers.models.Message.SUCCESS_MSG});
+            $rootScope.createSuccessDeleteMessage = function(message) {
+                return (Object.isDefined(message))? message : new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESS, value: BytePushers.models.Message.SUCCESS_DELETE_MSG});
+            };
+
+            $rootScope.createSuccessSaveMessage = function(message) {
+                return (Object.isDefined(message))? message : new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESS, value: BytePushers.models.Message.SUCCESS_SAVE_MSG});
             };
 
             $rootScope.createErrorMessage = function (message) {

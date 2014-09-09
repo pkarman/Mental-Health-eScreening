@@ -110,7 +110,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                     $scope.editSections[i] = editSection;
                                 }
                             }
-                            $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                         }, function(responseError) {
                             $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                         });
@@ -124,11 +124,11 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                 var existingSections = response.getPayload();
                                 $scope.sections = existingSections;
                                 console.log('Sections:: ' + existingSections);
-                                $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                             }, function(responseError) {
                                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                             });
-                            $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                         }),
                         function(responseError) {
                             $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -151,7 +151,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                         array[index] = editSection;
                                     }
                                 });
-                                $rootScope.addMessage($rootScope.createSuccessMessage(response.getMessage()));
+                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                             }, function(responseError) {
                                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                             }
