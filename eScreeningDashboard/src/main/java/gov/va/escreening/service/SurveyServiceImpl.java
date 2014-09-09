@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.domain.SurveyDto;
+import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
@@ -230,6 +231,19 @@ public class SurveyServiceImpl implements SurveyService {
 			}
 		}
 		
+	}
+
+	@Override
+	public void createSurveyPage(Integer surveyId, Page page) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		SurveyPage surveyPage = new SurveyPage();
+		surveyPage.setPageNumber(page.getPageNumber());
+		surveyPage.setDescription(page.getDescription());
+		surveyPage.setTitle(page.getPageTitle());
+		surveyPage.setSurvey(survey);
+		
+		surveyPageRepository.create(surveyPage);
 	}
 
 }

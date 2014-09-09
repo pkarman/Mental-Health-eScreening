@@ -45,4 +45,6 @@ public interface SurveyPageRepository extends RepositoryInterface<SurveyPage> {
     public List<Object[]> getSurveyPageSkippedStatuses(int veteranAssessmentId);
     
     public SurveyPage getSurveyPageByMeasureId(Integer questionId);
+    
+     
 }

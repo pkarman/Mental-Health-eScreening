@@ -4,6 +4,7 @@ import gov.va.escreening.delegate.EditorsViewDelegate;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.ae.Measure;
+import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.*;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.repository.MeasureRepository;
@@ -18,6 +19,7 @@ import java.util.Map;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import gov.va.escreening.webservice.Response;
 import gov.va.escreening.webservice.ResponseStatus;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,9 +124,17 @@ public class EditorRestController {
     	
     	editorsViewDelegate.removeQuestionFromSurvey(surveyId,questionId);
         
-    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
+    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
     }
 
+    @RequestMapping(value = "/services/survey/{surveyId}", method = RequestMethod.POST, produces="application/json", consumes="application/json")
+    @ResponseBody
+    public Response createSurveyPage(@PathVariable("surveyId") Integer surveyId, @RequestBody Page surveyPage, @CurrentUser EscreenUser escreenUser){
+    	
+    	editorsViewDelegate.createSurveyPage(surveyId, surveyPage);
+    	
+    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is created successfully.");
+    }
 
 
 

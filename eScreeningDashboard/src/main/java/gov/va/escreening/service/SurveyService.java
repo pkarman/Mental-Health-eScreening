@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.domain.SurveyDto;
+import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.entity.Survey;
 
@@ -58,4 +59,6 @@ public interface SurveyService {
 	SurveyInfo convertToSurveyItem(Survey survey);
 	
 	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
+
+	void createSurveyPage(Integer surveyId, Page surveyPage);
 }

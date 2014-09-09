@@ -2,6 +2,7 @@ package gov.va.escreening.delegate;
 
 import gov.va.escreening.dto.SearchDTO;
 import gov.va.escreening.dto.SearchType;
+import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +136,10 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     @Override
 	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
 		surveyService.removeMeasureFromSurvey(surveyId, questionId);
+	}
+	@Override
+	public void createSurveyPage(Integer surveyId, Page surveyPage) {
+		surveyService.createSurveyPage(surveyId, surveyPage);
 	}
 }
 
