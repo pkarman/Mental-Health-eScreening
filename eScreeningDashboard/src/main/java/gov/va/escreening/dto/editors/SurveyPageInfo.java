@@ -6,10 +6,28 @@ import java.util.List;
  * Created by pouncilt on 9/9/14.
  */
 public class SurveyPageInfo {
+    private String description;
+    private int pageNumber;
     private String pageTitle;
-    private List<SurveyInfo> surveys;
+    private List<QuestionInfo> questions;
 
     public SurveyPageInfo() {}
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 
     public String getPageTitle() {
         return pageTitle;
@@ -19,16 +37,16 @@ public class SurveyPageInfo {
         this.pageTitle = pageTitle;
     }
 
-    public List<SurveyInfo> getSurveys() {
-        return surveys;
+    public List<QuestionInfo> getQuestions() {
+        return questions;
     }
 
-    public void setSurveys(List<SurveyInfo> surveys) {
-        this.surveys = surveys;
+    public void setQuestions(List<QuestionInfo> questions) {
+        this.questions = questions;
     }
 
     @Override
     public String toString() {
-        return "SurveyPageInfo [pageTitle=" + pageTitle + ", surveys=" + surveys + "]";
+        return "SurveyPageInfo [description=" + description + ", pageNumber=" + pageNumber + ", pageTitle=" + pageTitle + ", questions=" + questions + "]";
     }
 }
