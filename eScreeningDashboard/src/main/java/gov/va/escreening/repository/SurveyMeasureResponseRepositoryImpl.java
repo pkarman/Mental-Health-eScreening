@@ -81,7 +81,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 
 	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
 		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.fetchCachedSmr();
-		if (smrList == null) {
+		if (smrList == null || smrList.isEmpty()) {
 			veteranAssessmentSmrList.loadSmrFromDb(veteranAssessmentId);
 			smrList = veteranAssessmentSmrList.fetchCachedSmr();
 		}
@@ -147,11 +147,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	}
 
 	@Override
-	public SurveyMeasureResponse find(int veteranAssessmentId,
-			int measureAnswerId, @Nullable Integer tabularRow) {
-
-		logger.trace("find");
-
+	public SurveyMeasureResponse findSmrUsingPreFetch(int veteranAssessmentId, int measureAnswerId) {
 		/**
 		 * <pre>
 		 * String sql = &quot;SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId&quot;;
@@ -177,12 +173,37 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 */
 		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getMeasureAnswer().getMeasureAnswerId().equals(measureAnswerId)) {
-				if (tabularRow == null ? true : smr.getTabularRow().equals(tabularRow)) {
 					return smr;
-				}
 			}
 		}
 		return null;
+
+	}
+
+	@Override
+	public SurveyMeasureResponse find(int veteranAssessmentId,	int measureAnswerId, @Nullable Integer tabularRow) {
+
+		logger.trace("find");
+
+		String sql = "SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId";
+
+		if (tabularRow != null) {
+			sql += " AND smr.tabularRow = :tabularRow";
+		}
+
+		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class).setParameter("veteranAssessmentId", veteranAssessmentId).setParameter("measureAnswerId", measureAnswerId);
+
+		if (tabularRow != null) {
+			query.setParameter("tabularRow", tabularRow);
+		}
+
+		List<SurveyMeasureResponse> surveyMeasureResponseList = query.getResultList();
+
+		if (surveyMeasureResponseList.size() > 0) {
+			return surveyMeasureResponseList.get(0);
+		} else {
+			return null;
+		}
 
 	}
 
