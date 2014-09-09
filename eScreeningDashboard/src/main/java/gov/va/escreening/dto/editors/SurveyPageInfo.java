@@ -8,7 +8,7 @@ import java.util.List;
 public class SurveyPageInfo {
     private String description;
     private int pageNumber;
-    private String pageTitle;
+    private String title;
     private List<QuestionInfo> questions;
 
     public SurveyPageInfo() {}
@@ -29,12 +29,12 @@ public class SurveyPageInfo {
         this.pageNumber = pageNumber;
     }
 
-    public String getPageTitle() {
-        return pageTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<QuestionInfo> getQuestions() {
@@ -47,6 +47,6 @@ public class SurveyPageInfo {
 
     @Override
     public String toString() {
-        return "SurveyPageInfo [description=" + description + ", pageNumber=" + pageNumber + ", pageTitle=" + pageTitle + ", questions=" + questions + "]";
+        return "SurveyPageInfo [description=" + description + ", pageNumber=" + pageNumber + ", title=" + title + ", questions=" + questions + "]";
     }
 }
