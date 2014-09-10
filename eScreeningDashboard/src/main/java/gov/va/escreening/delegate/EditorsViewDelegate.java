@@ -4,6 +4,7 @@ import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 
 import java.util.List;
@@ -28,4 +29,5 @@ public interface EditorsViewDelegate {
    	
    	void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
 	void createSurveyPage(Integer surveyId, Page surveyPage);
+	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 }

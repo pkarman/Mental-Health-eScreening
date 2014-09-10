@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.entity.Survey;
 
 import java.util.List;
@@ -61,4 +62,6 @@ public interface SurveyService {
 	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
 
 	void createSurveyPage(Integer surveyId, Page surveyPage);
+
+	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 }

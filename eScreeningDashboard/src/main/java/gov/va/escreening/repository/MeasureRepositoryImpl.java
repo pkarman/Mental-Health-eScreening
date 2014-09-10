@@ -137,11 +137,56 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 		return dto;
 	}
+	
+	@Override
+	public gov.va.escreening.dto.ae.Measure createMeasure(
+			gov.va.escreening.dto.ae.Measure measureDto) {
+		
+		Measure m = createMeasureEntity(measureDto);
+		
+		gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
+				m, null, null);
+
+		return dto;
+	}
 
 	private Measure updateMeasureEntity(
 			gov.va.escreening.dto.ae.Measure measureDto) {
 		Measure m = findOne(measureDto.getMeasureId());
 
+		copyFromDTO(m, measureDto);
+		
+		update(m);
+
+		if (measureDto.getChildMeasures() != null) {
+			for (gov.va.escreening.dto.ae.Measure child : measureDto
+					.getChildMeasures()) {
+				updateMeasure(child);
+			}
+		}
+		return m;
+	}
+	
+	
+	private Measure createMeasureEntity(
+			gov.va.escreening.dto.ae.Measure measureDto) {
+		Measure m = new Measure();
+
+		copyFromDTO(m, measureDto);
+		
+		create(m);
+
+		if (measureDto.getChildMeasures() != null) {
+			for (gov.va.escreening.dto.ae.Measure child : measureDto
+					.getChildMeasures()) {
+				updateMeasure(child);
+			}
+		}
+		return m;
+	}
+	
+	private void copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto)
+	{
 		m.setIsRequired(measureDto.getIsRequired());
 		m.setIsPatientProtectedInfo(measureDto.getIsPPI());
 		m.setIsMha(measureDto.getIsMha());
@@ -186,14 +231,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 
-		update(m);
-
-		if (measureDto.getChildMeasures() != null) {
-			for (gov.va.escreening.dto.ae.Measure child : measureDto
-					.getChildMeasures()) {
-				updateMeasure(child);
-			}
-		}
-		return m;
 	}
+
+	
 }

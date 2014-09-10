@@ -5,6 +5,7 @@ import gov.va.escreening.dto.SearchType;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.BatterySurvey;
 import gov.va.escreening.service.BatteryService;
@@ -140,6 +141,13 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	@Override
 	public void createSurveyPage(Integer surveyId, Page surveyPage) {
 		surveyService.createSurveyPage(surveyId, surveyPage);
+	}
+	@Override
+	public void updateSurveyPages(Integer surveyId,
+			List<SurveyPageInfo> surveyPageInfo) {
+		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
+		
+		
 	}
 }
 

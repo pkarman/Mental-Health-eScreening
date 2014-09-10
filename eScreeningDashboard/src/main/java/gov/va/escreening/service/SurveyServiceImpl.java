@@ -2,7 +2,9 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
+import gov.va.escreening.dto.editors.QuestionInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.MeasureRepository;
@@ -10,9 +12,11 @@ import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly=true)
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
@@ -244,6 +248,71 @@ public class SurveyServiceImpl implements SurveyService {
 		surveyPage.setSurvey(survey);
 		
 		surveyPageRepository.create(surveyPage);
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public void updateSurveyPages(Integer surveyId,
+			List<SurveyPageInfo> surveyPageInfos) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		List<SurveyPage> surveyPageList = new ArrayList<SurveyPage>();
+		
+		for(SurveyPageInfo surveyPageInfo : surveyPageInfos)
+		{
+			SurveyPage surveyPage = null;
+			
+			if (surveyPageInfo.getId() == null)
+			{
+				surveyPage = new SurveyPage();
+			}
+			else
+			{
+				surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
+			}
+
+			surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
+			surveyPage.setDescription(surveyPageInfo.getDescription());
+			surveyPage.setTitle(surveyPageInfo.getTitle());
+			surveyPage.setSurveyPageId(surveyPageInfo.getId());
+			if (surveyPageInfo.getDateCreated()==null)
+			{
+				surveyPage.setDateCreated(new Date());
+			}
+			else
+			{
+				surveyPage.setDateCreated(surveyPageInfo.getDateCreated());
+			}
+			surveyPage.setSurvey(survey);
+			
+			List<Measure> measures = new ArrayList<Measure>();
+			surveyPage.setMeasures(measures);
+			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
+			{
+				Integer measureId = questionInfo.getId();
+				if (measureId != null)
+				{
+					measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
+					measures.add(measureRepository.findOne(questionInfo.getId()));			
+				}
+				else
+				{
+					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));		
+					measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
+				}
+			}
+			
+			if (surveyPageInfo.getId() == null)
+			{
+				surveyPageRepository.create(surveyPage);
+			}
+			else
+				surveyPageRepository.update(surveyPage);
+			
+			surveyPageList.add(surveyPage);
+		}
+		survey.setSurveyPageList(surveyPageList);
+		surveyRepository.update(survey);
 	}
 
 }
