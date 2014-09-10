@@ -77,7 +77,10 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
         textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1205\""), this.identifiers[2]);
         //textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1701\""), this.identifiers[3]);
 
-
+        identifiers[0]="(1202)="+identifiers[0];
+        identifiers[1]="(1301)="+identifiers[1];
+        identifiers[2]="(1205)="+identifiers[2];
+        
         VistaProgressNote progressNote = null;
         List<Object> requestParams = new ArrayList<Object>();
         requestParams.add(this.patientIEN); // IEN of patient Required
