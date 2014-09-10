@@ -52,6 +52,44 @@ public class EditorRestController {
 
 
 
+
+    @RequestMapping(value = "/services/survey/{surveyId}", method = RequestMethod.POST, consumes="application/json", produces="application/json")
+    @ResponseBody
+    public Response createSurveyPage(@PathVariable("surveyId") Integer surveyId, @RequestBody Page surveyPage, @CurrentUser EscreenUser escreenUser){
+
+        editorsViewDelegate.createSurveyPage(surveyId, surveyPage);
+
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is created successfully.");
+    }
+
+    @RequestMapping(value="/services/surveys/{surveyId}/surveypages", method = RequestMethod.PUT, produces="application/json", consumes="application/json")
+    @ResponseBody
+    public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPageInfo, @CurrentUser EscreenUser escreenUser)
+    {
+        editorsViewDelegate.updateSurveyPages(surveyId, surveyPageInfo);
+
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is saved successfully. ");
+    }
+
+    @RequestMapping(value = "/services/surveys/{surveyId}/surveypages", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Response retrieveSurveyPages(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
+        // Call service class here instead of hard coding it.
+        List<SurveyPageInfo> surveyPages = null; //editorsViewDelegate.getSurveyPages(surveyId);
+        Map surveyPageInfoItems = new HashMap();
+        surveyPageInfoItems.put("surveyPages", surveyPages);
+
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyPageInfoItems);
+    }
+
+
+
+
+
+
+
+
+
     @RequestMapping(value = "/services/question", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Response addQuestion(@RequestBody QuestionInfo question,
@@ -125,15 +163,6 @@ public class EditorRestController {
     	editorsViewDelegate.removeQuestionFromSurvey(surveyId,questionId);
         
     	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
-    }
-
-    @RequestMapping(value = "/services/survey/{surveyId}", method = RequestMethod.POST, produces="application/json", consumes="application/json")
-    @ResponseBody
-    public Response createSurveyPage(@PathVariable("surveyId") Integer surveyId, @RequestBody Page surveyPage, @CurrentUser EscreenUser escreenUser){
-    	
-    	editorsViewDelegate.createSurveyPage(surveyId, surveyPage);
-    	
-    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is created successfully.");
     }
 
 
@@ -226,15 +255,6 @@ public class EditorRestController {
     public Response deleteSurvey(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
         //editorsViewDelegate.deleteBattery(surveyId);
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
-    }
-
-    @RequestMapping(value="/services/surveys/{surveyId}/surveypages", method = RequestMethod.PUT, produces="application/json", consumes="application/json")
-    @ResponseBody
-    public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPageInfo, @CurrentUser EscreenUser escreenUser)
-    {
-    	editorsViewDelegate.updateSurveyPages(surveyId, surveyPageInfo);
-    	
-    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is saved successfully. ");
     }
 
 
