@@ -64,6 +64,11 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     $scope.selectedSurveyUIObject = surveyUIObject;
     $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
 
+
+    $scope.addPageBreak = function(){
+
+    };
+
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
