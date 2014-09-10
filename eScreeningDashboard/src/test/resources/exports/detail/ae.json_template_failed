@@ -1,0 +1,12 @@
+{
+	testName : "Advance Directive ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Advance Directive",
+		smrMap : {
+			vars$demo_language : "1",
+			other$demo_language_otherspec : "klkll",
+			vars$demo_will : "1",
+			vars$demo_will_info : "1"
+		}
+	} ]
+}

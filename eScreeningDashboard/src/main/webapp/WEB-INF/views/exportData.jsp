@@ -68,7 +68,7 @@ $.ajax({
 /*
 $.ajax({
     type: 'POST',
-    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/exportLog',
+    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/exportLog/30',
     data: '{}', // 
     success: function(data) { alert(JSON.stringify(data)); },
     contentType: "application/json",
@@ -254,10 +254,10 @@ $.ajax({
                         	<div class="form-group">
                                 <label class="labelAlign col-md-3 control-label" for="filterId">Filters</label>
                                 <div class="col-md-9">
-                                <select id="filterId" class="form-control" placeholder="Select Program"
+                                <select id="filterId" class="form-control"
                                     name="filterId"
                                     ng-options="filter.stateId as filter.stateName for filter in filterOptionList"
-                                    ng-model="exportDataFormBean.filterId">
+                                    ng-model="filter.stateId" ng-change="callFilters()">
                                     <option value="">Select Export Date</option>
                                 </select>
            
@@ -327,7 +327,7 @@ $.ajax({
         <h4 class="modal-title" id="myModalLabel">Exporting Identified Data Confirmation</h4>
       </div>
       <div class="modal-body">
-        <div class="alert alertType" id="alertType">Your are about exporting <strong id="alertData"> - </strong>, Are you sure you want to processed?</div>        
+        <div class="alert alertType" id="alertType">Your are about exporting <strong id="alertData"> - </strong>, Are you sure you want to proceed?</div>        
         <div class="alert alert-info">Please enter a comment for this export and click ok to download the export file. <br />Please do not do any operations while downland is in progress.</div>
           
 		  <div class="form-group">

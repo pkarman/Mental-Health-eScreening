@@ -21,6 +21,7 @@
     </div>
   </div>
 </div>
+<!--
 <div class="row">
   <div class="col-md-12">
     <div class="form-group">
@@ -29,6 +30,7 @@
     </div>
   </div>
 </div>
+//-->
 <div class="row">
   <div class="col-md-12">
     <form class="form">
@@ -92,6 +94,7 @@
         <label> Export Value </label>
         <input type="text" class="form-control" ng-model="answerUIObject.exportName" ng-disabled="!module.clinicalReminder" placeholder="Enter Export Value">
       </div>
+      <!--
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -100,12 +103,13 @@
           </div>
         </div>
       </div>
+      //-->
       <div class="row">
         <div class="col-md-12">
         
         <div class="checkbox">
             <label>
-            <input type="checkbox" ng-model="answerUIObject.otherResponse" ng-true-value="other" ng-false-value="{{ null }}"> Other
+            <input type="checkbox" ng-model="answerUIObject.type" ng-true-value="other" ng-false-value="{{ null }}"> Other
             </label>
         </div>
   

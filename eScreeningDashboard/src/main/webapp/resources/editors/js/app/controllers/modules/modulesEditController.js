@@ -1,8 +1,9 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', function($rootScope, $scope, $state, SurveyService, QuestionService, questions){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', 'surveyUIObject', function($rootScope, $scope, $state, SurveyService, QuestionService, questions, surveyUIObject){
     var tmpList = [];
+    $scope.selectedSurveyUIObject = surveyUIObject;
     $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
@@ -52,7 +53,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             case 'tableQuestion':
                 $state.go('modules.detail.editTableQuestion');
                 break;
-            case 'instructions':
+            case 'instruction':
                 $state.go('modules.detail.editInstructionQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             default:
@@ -62,12 +63,21 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.save = function () {
-        var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.module),
-            selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+        var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions),
+            selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
+            selectedQuestionDomainObject;
+
+        $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
+            if(index > 0) {
+                childMeasure.answers = firstChildQuestionAnswers;
+            }
+        });
+
+        selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject),
 
         console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
         SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
-            $scope.module = existingSurvey;
+            $scope.selectedSurveyUIObject = existingSurvey.toUIObject();
         }, function(responseError) {
             $rootScope.errors.push(responseError.getMessage());
             console.log('Update Module Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));

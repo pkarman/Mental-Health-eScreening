@@ -126,6 +126,7 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/freeTextReadOnlyQuestionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleQuestionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleMatrixQuestionController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/instructionQuestionController.js"></script>
     
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>

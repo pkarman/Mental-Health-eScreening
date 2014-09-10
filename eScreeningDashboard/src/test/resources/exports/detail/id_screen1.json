@@ -1,0 +1,9 @@
+{
+	testName : "Identification ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Identification",
+		smrMap : {
+			text$demo_lastname : "King"
+		}
+	} ]
+}

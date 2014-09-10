@@ -31,7 +31,7 @@ public class ExportDataFilterOptionsServiceImpl implements ExportDataFilterOptio
 
         List<DropDownObject> dropDownList = new ArrayList<DropDownObject>();
         for (ExportdataFilterOptions option : options) {
-            DropDownObject dropDown = new DropDownObject(String.valueOf(option.getExportdataFilterOptionsId()), option.getName());
+            DropDownObject dropDown = new DropDownObject(String.valueOf(option.getNumDays()), option.getName());
             dropDownList.add(dropDown);
         }
 

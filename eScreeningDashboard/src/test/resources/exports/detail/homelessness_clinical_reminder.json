@@ -1,0 +1,21 @@
+{
+	testName : "Homelessness Clinical Reminder ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Homelessness Clinical Reminder",
+		smrMap : {
+			vars$HomelessCR_stable_house : "0",
+			vars$HomelessCR_stable_worry : "1",
+			vars$HomelessCR_live_2mos : "2",
+			text$HomelessCR_homenogov_spec : "klkl",
+			text$HomelessCR_homewgov_spec : "sws",
+			text$HomelessCR_friendfam_spec : "swws",
+			text$HomelessCR_hotel_spec : "swsws",
+			text$HomelessCR_shortins_spec : "swsw",
+			text$HomelessCR_shel_spec : "wssw",
+			text$HomelessCR_out_spec : "wssw",
+			text$HomelessCR_oth_spec : "ssww",
+			vars$HomelessCR_house_ref : "1",
+			text$HomelessCR_howreach : "sswsw"
+		}
+	} ]
+}

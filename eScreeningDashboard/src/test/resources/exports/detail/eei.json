@@ -1,0 +1,14 @@
+{
+	testName : "Education, Employment & Income ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Education, Employment & Income",
+		smrMap : {
+			vars$demo_income_gi : "1",
+			vars$demo_income_retire : "1",
+			vars$demo_income_other : "1",
+			other$demo_income_spec : "income spec",
+			vars$demo_income_group : "7",
+			vars$demo_relationship : "1"
+		}
+	} ]
+}

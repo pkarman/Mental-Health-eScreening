@@ -51,12 +51,12 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 		mandatoryData.addAll(collectPpi(assessment, identifiedExportType));
 
 		mandatoryData.add(new DataExportCell("assessment_id", getOrMiss(getStrFromInt(assessment.getVeteranAssessmentId()))));
-		mandatoryData.add(new DataExportCell("created_by", getOrMiss(assessment.getCreatedByUser().getUserFullName())));
-		mandatoryData.add(new DataExportCell("battery_name", getOrMiss(assessment.getBattery().getName())));
-		mandatoryData.add(new DataExportCell("program_name", getOrMiss(assessment.getProgram().getName())));
-		mandatoryData.add(new DataExportCell("vista_clinic", getOrMiss(assessment.getClinic().getName())));
-		mandatoryData.add(new DataExportCell("note_title", getOrMiss(assessment.getNoteTitle().getName())));
-		mandatoryData.add(new DataExportCell("clinician_name", getOrMiss(assessment.getClinician().getUserFullName())));
+		mandatoryData.add(new DataExportCell("created_by", getOrMiss(assessment.getCreatedByUser() != null ? assessment.getCreatedByUser().getUserFullName() : null)));
+		mandatoryData.add(new DataExportCell("battery_name", getOrMiss(assessment.getBattery() != null ? assessment.getBattery().getName() : null)));
+		mandatoryData.add(new DataExportCell("program_name", getOrMiss(assessment.getProgram() != null ? assessment.getProgram().getName() : null)));
+		mandatoryData.add(new DataExportCell("vista_clinic", getOrMiss(assessment.getClinic() != null ? assessment.getClinic().getName() : null)));
+		mandatoryData.add(new DataExportCell("note_title", getOrMiss(assessment.getNoteTitle() != null ? assessment.getNoteTitle().getName() : null)));
+		mandatoryData.add(new DataExportCell("clinician_name", getOrMiss(assessment.getClinician() != null ? assessment.getClinician().getUserFullName() : null)));
 		mandatoryData.add(new DataExportCell("date_created", getOrMiss(getDtAsStr(assessment.getDateCreated()))));
 		mandatoryData.add(new DataExportCell("time_created", getOrMiss(getTmAsStr(assessment.getDateCreated()))));
 		mandatoryData.add(new DataExportCell("date_completed", getOrMiss(getDtAsStr(assessment.getDateCompleted()))));

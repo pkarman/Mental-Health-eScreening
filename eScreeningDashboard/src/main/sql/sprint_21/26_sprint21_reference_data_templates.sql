@@ -4,7 +4,7 @@
 
 
 -- /* MEDICATION */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -108,7 +108,7 @@ where template_id = 22;
 
 
 -- /* WHODAS */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1351,7 +1351,7 @@ where template_id = 3;
 
 
 -- /* EDUCATION, EMPLOYMENT AND INCOME      UPDATE*/
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1412,7 +1412,7 @@ where template_id = 5;
 
 
 -- /* DEMOGRAPHICS UPDATE*/
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1488,7 +1488,7 @@ where template_id = 4;
 
 
 -- /* SOCIAL UPDATE */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1558,7 +1558,7 @@ where template_id = 6;
 
 
 -- /* SPIRITUAL HEALTH */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1611,7 +1611,7 @@ where template_id = 11;
 
 
 -- /* WHODAS UPDATE */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -1688,7 +1688,7 @@ where template_id = 24;
 
 
 -- /* ROAS AGGRESSION UPDATE */
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->

@@ -167,3 +167,19 @@ EScreeningDashboardApp.models.Survey.toUIObjects = function(surveys) {
 
     return surveyUIObjects;
 };
+EScreeningDashboardApp.models.Survey.sortByDisplayOrder = function (surveys, sortDirection) {
+    sortDirection = (Object.isDefined(sortDirection) && sortDirection === "-")? "-" : "+";
+    if(Object.isArray(surveys)){
+        if(sortDirection === "+") {
+            surveys.sort(function (a, b) {
+                return a.getDisplayOrder() - b.getDisplayOrder();
+            });
+        } else if(sortDirection === "-") {
+            surveys.sort(function (a, b) {
+                return b.getDisplayOrder() - a.getDisplayOrder();
+            });
+        }
+    }
+
+    return surveys;
+};

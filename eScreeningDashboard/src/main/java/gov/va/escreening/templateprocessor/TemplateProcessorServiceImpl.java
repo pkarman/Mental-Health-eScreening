@@ -1,7 +1,17 @@
 package gov.va.escreening.templateprocessor;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static gov.va.escreening.templateprocessor.TemplateTags.*;
+import static gov.va.escreening.templateprocessor.TemplateTags.BATTERY_FOOTER_END;
+import static gov.va.escreening.templateprocessor.TemplateTags.BATTERY_FOOTER_START;
+import static gov.va.escreening.templateprocessor.TemplateTags.BATTERY_HEADER_END;
+import static gov.va.escreening.templateprocessor.TemplateTags.BATTERY_HEADER_START;
+import static gov.va.escreening.templateprocessor.TemplateTags.MODULE_COMPONENTS_END;
+import static gov.va.escreening.templateprocessor.TemplateTags.MODULE_COMPONENTS_START;
+import static gov.va.escreening.templateprocessor.TemplateTags.SECTION_END;
+import static gov.va.escreening.templateprocessor.TemplateTags.SECTION_START;
+import static gov.va.escreening.templateprocessor.TemplateTags.SECTION_TITLE_END;
+import static gov.va.escreening.templateprocessor.TemplateTags.SECTION_TITLE_START;
+import static gov.va.escreening.templateprocessor.TemplateTags.createTagRegex;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -13,6 +23,7 @@ import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.DocumentType;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
@@ -25,6 +36,7 @@ import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.service.SurveyMeasureResponseService;
+import gov.va.escreening.templateprocessor.TemplateTags.Style;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
@@ -40,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +81,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	@Autowired
 	private SurveyMeasureResponseService surveyMeasureRespSvc;
 
+	@Resource(name="veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
+	
 	private static final String FILE_ENCODING = "UTF-8";
 	private static final Logger logger = LoggerFactory.getLogger(TemplateProcessorServiceImpl.class);
 	
@@ -122,7 +139,10 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 */
 	private String createDocument(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
-
+		
+		// load list of SurveyMeasureResponse for this assessment id
+		smrLister.loadSmrFromDb(veteranAssessmentId);
+		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
 		checkArgument(assessment != null, "Assessment ID is invalid");

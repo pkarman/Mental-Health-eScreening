@@ -7,6 +7,7 @@ import gov.va.med.vistalink.rpc.RpcRequest;
 import gov.va.med.vistalink.rpc.RpcResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,17 +36,19 @@ public class ORWDXM1_BLDQRSP_VistaLinkRequest extends VistaLinkBaseRequest imple
 
 	private List<Map<String, Object>> getResult(RpcResponse response) throws Exception {
 		String[] parsedRpcResponseLines = super.parseRpcSimpleResponseWithNewLineDelimiter(response);
+		
+		logger.debug("ORWDXM1_BLDQRSP_VistaLinkRequest (Results)--> "+Arrays.toString(parsedRpcResponseLines));
 
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		for (String r : parsedRpcResponseLines) {
 			String[] parsedRpcResponse = super.parseRpcResponseLineWithCarrotDelimiter(r.getBytes());
 
 			Map<String, Object> record = new HashMap<String, Object>();
-			record.put("QuickLevelIEN", Integer.valueOf(parsedRpcResponse[0]));
-			record.put("ResponseID", Integer.valueOf(parsedRpcResponse[1]));
-			record.put("DialogIEN", Integer.valueOf(parsedRpcResponse[2]));
+			record.put("QuickLevelIEN", parsedRpcResponse[0]);
+			record.put("ResponseID", parsedRpcResponse[1]);
+			record.put("DialogIEN", parsedRpcResponse[2]);
 			record.put("Type", parsedRpcResponse[3]);
-			record.put("FormIDIEN", Integer.valueOf(parsedRpcResponse[4]));
+			record.put("FormIDIEN", parsedRpcResponse[4]);
 			record.put("DisplayGroupIEN", Integer.valueOf(parsedRpcResponse[5]));
 
 			resultList.add(record);

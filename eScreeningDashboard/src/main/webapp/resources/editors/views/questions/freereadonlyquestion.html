@@ -21,11 +21,13 @@
             <label> Question Text </label>
             <textarea class="form-control" ng-model="selectedQuestionUIObject.text"></textarea>
         </div>
+        <!--
         <div class="form-group">
             <label> VistA Question Text </label>
             <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText"
                       ng-disabled="!module.clinicalReminder"></textarea>
         </div>
+        //-->
     </div>
 </div>
 <div class="row">
@@ -47,10 +49,9 @@
             -->
             <div class="form-group form-inline">
                 <label class="checkbox">
-                    <input ng-model="selectedQuestionUIObject.ppi" type="checkbox" ng-true-value="true"
-                           ng-false-value="false"> PPI </label> &nbsp;&nbsp;
+                    <input type="checkbox" ng-model="selectedQuestionUIObject.ppi"> PPI </label> &nbsp;&nbsp;
                 <label class="checkbox">
-                    <input ng-model="required" type="checkbox" ng-true-value="true" ng-false-value="false"> Required
+                    <input type="checkbox" ng-model="selectedQuestionUIObject.required"> Required
                 </label>
             </div>
             <!-- JH OOOCOMMENT
@@ -59,67 +60,69 @@
         </form>
     </div>
     <div class="col-md-6">
-        <h4> Validations </h4>
+        <div id="validation-container" ng-show="showExactLengthField">
+            <h4> Validations </h4>
 
-        <form class="form">
+            <form class="form">
 
-            <div class="form-group" ng-show="showExactLengthField">
-                <label class="form-label">Exact Length</label>
+                <div class="form-group">
+                    <label class="form-label">Exact Length</label>
 
-                <div class="input-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="checkbox" ng-model="exactLengthField.selected">
+                        </span>
+                        <input type="number" class="form-control" placeholder="0" ng-model="exactLengthField.value" ng-disabled="!exactLengthField.selected">
+                    </div>
+                    <!-- /input-group -->
+                </div>
+
+                <div class="form-group" ng-show="showMinLengthField">
+                    <label class="form-label">Min Length</label>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="checkbox" ng-model="minLengthField.selected">
+                        </span>
+                        <input type="number" class="form-control" placeholder="0" ng-model="minLengthField.value" ng-disabled="!minLengthField.selected">
+                    </div>
+                    <!-- /input-group -->
+                </div>
+                <div class="form-group" ng-show="showMaxLengthField">
+                    <label class="form-label">Max Length</label>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="checkbox" ng-model="maxLengthField.selected">
+                        </span>
+                        <input type="number" class="form-control" placeholder="0" ng-model="maxLengthField.value" ng-disabled="!maxLengthField.selected">
+                    </div>
+                    <!-- /input-group -->
+                </div>
+                <div class="form-group" ng-show="showMinValueField">
+                    <label class="form-label">Min Value</label>
+
+                    <div class="input-group">
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-model="exactLengthField.selected">
+                        <input type="checkbox" ng-model="minValueField.selected">
                     </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="exactLengthField.value" ng-disabled="!exactLengthField.selected">
+                        <input type="text" class="form-control" placeholder="0" ng-model="minValueField.value" ng-disabled="!minValueField.selected">
+                    </div>
+                    <!-- /input-group -->
                 </div>
-                <!-- /input-group -->
-            </div>
+                <div class="form-group" ng-show="showMaxValueField">
+                    <label class="form-label">Max Value</label>
 
-            <div class="form-group" ng-show="showMinLengthField">
-                <label class="form-label">Min Length</label>
-
-                <div class="input-group">
+                    <div class="input-group">
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-model="minLengthField.selected">
+                        <input type="checkbox" ng-model="maxValueField.selected">
                     </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="minLengthField.value" ng-disabled="!minLengthField.selected">
+                        <input type="number" class="form-control" placeholder="0" ng-model="maxValueField.value" ng-disabled="!maxValueField.selected">
+                    </div>
+                    <!-- /input-group -->
                 </div>
-                <!-- /input-group -->
-            </div>
-            <div class="form-group" ng-show="showMaxLengthField">
-                <label class="form-label">Max Length</label>
-
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <input type="checkbox" ng-model="maxLengthField.selected">
-                    </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="maxLengthField.value" ng-disabled="!maxLengthField.selected">
-                </div>
-                <!-- /input-group -->
-            </div>
-            <div class="form-group" ng-show="showMinValueField">
-                <label class="form-label">Min Value</label>
-
-                <div class="input-group">
-                <span class="input-group-addon">
-                    <input type="checkbox" ng-model="minValueField.selected">
-                </span>
-                    <input type="text" class="form-control" placeholder="0" ng-model="minValueField.value" ng-disabled="!minValueField.selected">
-                </div>
-                <!-- /input-group -->
-            </div>
-            <div class="form-group" ng-show="showMaxValueField">
-                <label class="form-label">Max Value</label>
-
-                <div class="input-group">
-                <span class="input-group-addon">
-                    <input type="checkbox" ng-model="maxValueField.selected">
-                </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="maxValueField.value" ng-disabled="!maxValueField.selected">
-                </div>
-                <!-- /input-group -->
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 <hr>

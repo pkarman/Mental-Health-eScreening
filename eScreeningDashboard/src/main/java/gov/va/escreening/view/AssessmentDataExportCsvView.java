@@ -2,12 +2,14 @@ package gov.va.escreening.view;
 
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
+import gov.va.escreening.service.export.ExportLogService;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,65 +25,52 @@ public class AssessmentDataExportCsvView extends AbstractView {
 
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response) {
 
-		BufferedWriter writer = new BufferedWriter(response.getWriter());
-
-		AssessmentDataExport dataExport = (AssessmentDataExport) model.get("dataExportList");
-
-		String csvFileName = dataExport.getFilterOptions().getFilePath();
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + csvFileName + "\"");
-
-
+		BufferedWriter writer = null;
 		try {
-			setCsvHeader(writer, dataExport.getTableContent());
-			setCsvRows(writer, dataExport.getTableContent());
-			// showAsNameValuePairs(writer, dataExport.getTableContent());
+			writer = new BufferedWriter(response.getWriter());
+
+			AssessmentDataExport dataExport = (AssessmentDataExport) model.get("dataExportList");
+
+			String csvFileName = dataExport.getFilterOptions().getFilePath();
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + csvFileName + "\"");
+
+			setCsvHeader(writer, dataExport.getHeader(), csvFileName);
+			setCsvRows(writer, dataExport.getData(), csvFileName);
+
+		} catch (IOException ioe) {
+			throw new IllegalStateException(defaultErrorMsg);
 		} finally {
-			writer.flush();
-			writer.close();
-		}
-	}
-
-	private void showAsNameValuePairs(BufferedWriter writer,
-			List<List<DataExportCell>> tableContent) throws IOException {
-
-		for (List<DataExportCell> row : tableContent) {
-			for (DataExportCell cell : row) {
-				if (!"999".equals(cell.getCellValue())) {
-					writer.write(cell.getColumnName());
-					writer.write(",");
-					writer.write(cell.getCellValue().replaceAll(",", "-"));
-					writer.newLine();
+			if (writer != null) {
+				try {
+					writer.flush();
+					writer.close();
+				} catch (IOException e) {
+					throw new IllegalStateException(defaultErrorMsg);
 				}
 			}
-			writer.newLine();
 		}
-
 	}
 
-	private void setCsvRows(BufferedWriter writer,
-			List<List<DataExportCell>> tableContent) throws IOException {
-
-		for (List<DataExportCell> row : tableContent) {
-			for (DataExportCell cell : row) {
-				writer.write(cell.getCellValue().replaceAll(",", "-"));
-				writer.write(",");
+	private void setCsvRows(BufferedWriter writer, List<String> data,
+			String fileName) throws IOException {
+		for (String row : data) {
+			writer.write(row);
+			writer.newLine();
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("row written for %s [%s]", fileName, row));
 			}
-			writer.newLine();
 		}
 	}
 
-	private void setCsvHeader(BufferedWriter writer,
-			List<List<DataExportCell>> tableContent) throws IOException {
-
-		List<DataExportCell> firstRow = tableContent.iterator().next();
-
-		for (DataExportCell header : firstRow) {
-			writer.write(header.getColumnName().replaceAll(",", "-"));
-			writer.write(",");
-		}
+	private void setCsvHeader(BufferedWriter writer, String header,
+			String fileName) throws IOException {
+		writer.write(header);
 		writer.newLine();
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("header written for %s [%s]", fileName, header));
+		}
 	}
 
 }

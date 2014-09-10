@@ -1,0 +1,13 @@
+{
+	testName : "Promis Emotional Support1 ASSESSMENT",
+	testSurveys : [ {
+		surveyName : "Promis Emotional Support",
+		smrMap : {
+			vars$es1_listen : "1",
+			vars$es2_talk : "2",
+			vars$es3_feel : "2",
+			vars$es4_bad : "3",
+			derive$es_score_promis : "8"
+		}
+	} ]
+}

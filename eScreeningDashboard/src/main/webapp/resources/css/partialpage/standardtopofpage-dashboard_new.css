@@ -201,6 +201,14 @@ h2 {
 	font-weight: bold;
 }
 /* Common */
+
+.font-size-24{
+  font-size:24px;
+}
+
+.font-size-28{
+  font-size:28px;
+}
 .top_header {
 	background-image: url(../../images/bg_header_top.png);
 	background-repeat: no-repeat;

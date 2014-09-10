@@ -5,6 +5,7 @@ import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_EVENT_M
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.context.AssessmentContext;
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.ae.Answer;
@@ -47,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +65,9 @@ import com.google.common.collect.ListMultimap;
 @Transactional
 @Service("assessmentEngineService")
 public class AssessmentEngineServiceImpl implements AssessmentEngineService {
+
+	@Resource(name = "veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
 
 	@Autowired
 	private AssessmentContext assessmentContext;
@@ -131,7 +137,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		} catch (Throwable t) {
 			logger.warn("Error during save of user data for follow-up question visibility update:\n{}", t.getLocalizedMessage());
 		}
-
+		
 		// update visibility for the measures found on the page
 		ruleProcessorService.updateVisibilityForQuestions(assessmentContext.getVeteranAssessmentId(), page.getMeasures());
 
@@ -440,6 +446,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			// user can take an assessment to properly track the person_id
 			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_UPDATED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
+			
+			// refresh list of SurveyMeasureResponses for this current Assessment. 
+			// This will be consumed by Rules
+			smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
+
 		} catch (Exception ex) {
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
