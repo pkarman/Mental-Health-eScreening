@@ -30,23 +30,20 @@
 	<div id="center" class="column contentAreaGrayRadial">
 		<div id="content-controls" class="contentAreaGrayHorizontal">
 			<div id="viewTitle">
-				<span class="pageTitle">Please See A Clerk for Assistance</span>
+				<!--<span class="pageTitle">Please See A Clerk for Assistance</span>-->
 			</div>
 		</div>
 		
 		<div class="exceptionWrapper">
 			<div class="exceptionLabel">
-				For assistance, please contact the Help Desk. 
+			  For further assistance, please contact the Healthcare System Technical Administrator.
 			</div>
 			<div class="exceptionContent">
-				<span class="exceptionContentLabel"> VA San Diego Healthcare System </span>
+				<span class="exceptionContentLabel"> </span>
 				<div class="exceptionAddressDetails">
-					1234  Mission Center Rd <br />
-					San Diego, CA 92108 <br />
-					Mon - Fri: (123) 456-7890 <br />
-					Toll-Free : 1-(855) 123-4567 <br />
-					Email: healthcareVA@vahealthcare.gov
-				</div>
+					<strong>Mon - Fri:</strong> 7:30 - 4:00<br />
+					<strong>Phone:</strong> (858) 552-8585 x5550 <br />
+				  <strong>Email:</strong> <a href="mailto:elizabeth.floto@va.gov">elizabeth.floto@va.gov</a> </div>
 			</div>
 		</div>
 		
