@@ -1,94 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>13</zoom_level>
+  <zoom_level>5</zoom_level>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>364</x>
-      <y>1586</y>
-      <w>143</w>
-      <h>91</h>
+      <x>1720</x>
+      <y>455</y>
+      <w>55</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>center:Formulas</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.State</type>
+    <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1014</x>
-      <y>416</y>
-      <w>169</w>
-      <h>52</h>
+      <x>500</x>
+      <y>250</y>
+      <w>49</w>
+      <h>49</h>
     </coordinates>
-    <panel_attributes>Remove Module
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;40;25;40;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>65</y>
-      <w>117</w>
-      <h>117</h>
+      <x>50</x>
+      <y>495</y>
+      <w>164</w>
+      <h>259</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;104;65;104;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>130</x>
-      <y>845</y>
-      <w>247</w>
-      <h>312</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;156;39;39;299</additional_attributes>
+    <additional_attributes>155;250;130;250;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1001</x>
-      <y>1599</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1965</x>
+      <y>460</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Test Expression
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1508</x>
-      <y>2262</y>
-      <w>234</w>
-      <h>78</h>
-    </coordinates>
-    <panel_attributes>One custom variable
-we need is Program
-bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>819</y>
-      <w>117</w>
-      <h>78</h>
+      <x>500</x>
+      <y>715</y>
+      <w>49</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;65</additional_attributes>
+    <additional_attributes>40;15;15;25</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>962</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>770</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Reorder
 Question
@@ -98,43 +73,43 @@ Question
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>676</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>52</h>
+      <x>1840</x>
+      <y>455</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>689</y>
-      <w>117</w>
-      <h>208</h>
+      <x>500</x>
+      <y>665</y>
+      <w>54</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;65;39;39;195</additional_attributes>
+    <additional_attributes>45;15;25;15;15;75</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>1521</y>
-      <w>104</w>
-      <h>78</h>
+      <x>2015</x>
+      <y>430</y>
+      <w>44</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;65;39;39</additional_attributes>
+    <additional_attributes>35;25;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1001</x>
-      <y>1729</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1965</x>
+      <y>510</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Variable
 Name
@@ -142,72 +117,46 @@ Name
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.State</type>
+    <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1014</x>
-      <y>351</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1005</x>
+      <y>835</y>
+      <w>59</w>
+      <h>24</h>
     </coordinates>
-    <panel_attributes>Add Module 
-
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>50;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2223</x>
-      <y>1131</y>
-      <w>156</w>
-      <h>65</h>
+      <x>500</x>
+      <y>725</y>
+      <w>49</w>
+      <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;39;39</additional_attributes>
+    <additional_attributes>40;30;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>2197</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>255</y>
+      <w>100</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>WYSIWYG Edit 
-Text
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>845</y>
-      <w>117</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;78;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>78</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Add Module
+    <panel_attributes>Add Module To Battery
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>2340</x>
-      <y>728</y>
-      <w>182</w>
-      <h>91</h>
+      <x>1050</x>
+      <y>680</y>
+      <w>70</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>None Option
 Should be added
@@ -218,50 +167,10 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>2548</x>
-      <y>1261</y>
-      <w>182</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>Score defaults
-to zero
-bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>767</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Map to Section
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1664</x>
-      <y>2106</y>
-      <w>234</w>
-      <h>117</h>
-    </coordinates>
-    <panel_attributes>Can this be captured
-in a variable? 
-i.e. Is this used 
-to query templates?
-bg=red</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>2561</x>
-      <y>845</y>
-      <w>182</w>
-      <h>91</h>
+      <x>1135</x>
+      <y>725</y>
+      <w>70</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>Score defaults
 to zero
@@ -271,32 +180,21 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>1118</y>
-      <w>247</w>
-      <h>1053</h>
+      <x>850</x>
+      <y>1090</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;1040;182;1040;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>3029</y>
-      <w>130</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;78;117;39;39</additional_attributes>
+    <additional_attributes>45;45;30;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>2626</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>1005</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Remove
 Condition
@@ -306,10 +204,10 @@ Condition
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>741</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>685</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Update Name
 Name
@@ -319,21 +217,21 @@ Name
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>3029</y>
-      <w>130</w>
-      <h>208</h>
+      <x>850</x>
+      <y>1090</y>
+      <w>54</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;195;78;195;39;39</additional_attributes>
+    <additional_attributes>45;75;30;75;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>1066</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>810</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Description
 Noun
@@ -343,93 +241,54 @@ Noun
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>637</y>
-      <w>156</w>
-      <h>91</h>
+      <x>910</x>
+      <y>645</y>
+      <w>59</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;65;39;39</additional_attributes>
+    <additional_attributes>50;25;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2548</y>
-      <w>142</w>
-      <h>207</h>
+      <x>500</x>
+      <y>975</y>
+      <w>54</w>
+      <h>79</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;182</additional_attributes>
+    <additional_attributes>45;15;15;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>728</y>
-      <w>143</w>
-      <h>117</h>
+      <x>910</x>
+      <y>680</y>
+      <w>54</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;91</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>286</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Edit Title
-</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>45;15;15;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>65</y>
-      <w>247</w>
-      <h>1092</h>
+      <x>50</x>
+      <y>300</y>
+      <w>164</w>
+      <h>219</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;130;39;39;1079</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1326</x>
-      <y>1976</y>
-      <w>234</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>Types include:
-- Clinical Summary Note
-- Veteran Summary Note
-- Program end of 
-assessment message
-bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>845</y>
-      <w>130</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
+    <additional_attributes>155;15;135;15;15;210</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>793</x>
-      <y>52</y>
-      <w>156</w>
-      <h>104</h>
+      <x>455</x>
+      <y>245</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Battery Editor</panel_attributes>
     <additional_attributes/>
@@ -437,32 +296,32 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>845</y>
-      <w>117</w>
-      <h>221</h>
+      <x>500</x>
+      <y>725</y>
+      <w>49</w>
+      <h>89</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;208;65;208;39;39</additional_attributes>
+    <additional_attributes>40;80;25;80;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1352</x>
-      <y>1547</y>
-      <w>156</w>
-      <h>117</h>
+      <x>2100</x>
+      <y>440</y>
+      <w>64</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>143;39;91;39;39;104</additional_attributes>
+    <additional_attributes>55;15;35;15;15;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>936</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>760</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Delete
 Sub-Questions
@@ -472,151 +331,79 @@ Sub-Questions
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1157</x>
-      <y>2119</y>
-      <w>532</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;507;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1326</x>
-      <y>3471</y>
-      <w>299</w>
-      <h>156</h>
-    </coordinates>
-    <panel_attributes>How complex would this be
-to implement
- 
-We can do this manually
-and have the module 
-merged into the battery
-
-bg=red</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1092</x>
-      <y>3211</y>
-      <w>156</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;143;91</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>273</y>
-      <w>117</w>
-      <h>117</h>
+      <x>770</x>
+      <y>775</y>
+      <w>99</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;65;39;39;104</additional_attributes>
+    <additional_attributes>90;15;15;25</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1612</x>
-      <y>975</y>
-      <w>247</w>
-      <h>78</h>
+      <x>675</x>
+      <y>705</y>
+      <w>49</w>
+      <h>59</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;39;65</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>897</x>
-      <y>2119</y>
-      <w>155</w>
-      <h>259</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;234;65;182;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1365</x>
-      <y>793</y>
-      <w>117</w>
-      <h>143</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;78;39;39;130</additional_attributes>
+    <additional_attributes>40;15;30;15;15;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>637</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>645</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Update Name
-Name
+    <panel_attributes>Update Module 
+Title
+
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>2951</y>
-      <w>130</w>
-      <h>130</h>
+      <x>850</x>
+      <y>1060</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;78;39;39;117</additional_attributes>
+    <additional_attributes>45;15;30;15;15;45</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>624</y>
-      <w>130</w>
-      <h>273</h>
+      <x>500</x>
+      <y>640</y>
+      <w>54</w>
+      <h>109</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;65;39;39;260</additional_attributes>
+    <additional_attributes>45;15;25;15;15;100</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2054</y>
-      <w>155</w>
-      <h>129</h>
+      <x>1925</x>
+      <y>455</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;65;39;39;104</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>897</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1287</x>
-      <y>2964</y>
-      <w>182</w>
-      <h>52</h>
+      <x>995</x>
+      <y>1065</y>
+      <w>70</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Lookup and Set
 Health Factor
@@ -626,21 +413,21 @@ Health Factor
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>689</x>
-      <y>845</y>
-      <w>117</w>
-      <h>52</h>
+      <x>245</x>
+      <y>725</y>
+      <w>219</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>210;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>2548</x>
-      <y>1118</y>
-      <w>221</w>
-      <h>117</h>
+      <x>1130</x>
+      <y>830</y>
+      <w>85</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>Option type can be: 
 Regular, 
@@ -652,32 +439,21 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>130</h>
+      <x>1760</x>
+      <y>455</y>
+      <w>49</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;117;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>338</y>
-      <w>117</w>
-      <h>182</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;169;65;169;39;39</additional_attributes>
+    <additional_attributes>40;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>3120</y>
-      <w>182</w>
-      <h>52</h>
+      <x>895</x>
+      <y>1125</y>
+      <w>70</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Create Dashboard
 Alert Event
@@ -687,10 +463,10 @@ Alert Event
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>780</x>
-      <y>1573</y>
-      <w>156</w>
-      <h>104</h>
+      <x>1880</x>
+      <y>450</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Formula Editor</panel_attributes>
     <additional_attributes/>
@@ -698,10 +474,10 @@ Alert Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1248</x>
-      <y>2678</y>
-      <w>169</w>
-      <h>52</h>
+      <x>635</x>
+      <y>1025</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Lookup and
 Add Variable
@@ -711,10 +487,10 @@ Add Variable
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1222</x>
-      <y>1482</y>
-      <w>169</w>
-      <h>52</h>
+      <x>2050</x>
+      <y>415</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Sum
 Operation
@@ -724,21 +500,21 @@ Operation
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>1105</y>
-      <w>247</w>
-      <h>533</h>
+      <x>1685</x>
+      <y>360</y>
+      <w>44</w>
+      <h>119</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;520;182;520;39;39</additional_attributes>
+    <additional_attributes>35;110;20;110;20;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>1209</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>865</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Remove
 Row Header
@@ -746,34 +522,23 @@ Row Header
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1274</x>
-      <y>2236</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>If</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2223</x>
-      <y>845</y>
-      <w>364</w>
-      <h>78</h>
+      <x>1005</x>
+      <y>725</y>
+      <w>139</w>
+      <h>29</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;52;338;39</additional_attributes>
+    <additional_attributes>15;20;130;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>975</x>
-      <y>1313</y>
-      <w>195</w>
-      <h>156</h>
+      <x>1955</x>
+      <y>350</y>
+      <w>75</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>If a set of
 non-numeric 
@@ -787,10 +552,10 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>1599</y>
-      <w>143</w>
-      <h>65</h>
+      <x>1800</x>
+      <y>460</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Pick/Create
 Formula
@@ -800,25 +565,12 @@ Formula
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>429</y>
-      <w>143</w>
-      <h>65</h>
+      <x>205</x>
+      <y>300</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
-    <panel_attributes>Delete
-Section
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>585</x>
-      <y>156</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Delete
+    <panel_attributes>Edit
 Battery
 </panel_attributes>
     <additional_attributes/>
@@ -826,10 +578,10 @@ Battery
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>1144</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>840</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Remove
 Answer Columns
@@ -837,84 +589,23 @@ Answer Columns
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>585</x>
-      <y>507</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Order
-Section
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1157</x>
-      <y>2951</y>
-      <w>143</w>
-      <h>52</h>
+      <x>945</x>
+      <y>1060</y>
+      <w>59</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;39;39</additional_attributes>
+    <additional_attributes>50;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1495</x>
-      <y>2431</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Lookup and
-Add Variable
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>65</y>
-      <w>130</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;78;117;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1209</x>
-      <y>3302</y>
-      <w>234</w>
-      <h>78</h>
-    </coordinates>
-    <panel_attributes>Example Modules: 
-DAST-10 and BTBIS
-bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>793</x>
-      <y>325</y>
-      <w>156</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>center:Section Editor</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1469</x>
-      <y>1144</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>840</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Edit Answer
 Properties
@@ -924,10 +615,10 @@ Properties
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>1079</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>815</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Delete
 Answer
@@ -935,47 +626,25 @@ Answer
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>338</y>
-      <w>117</w>
-      <h>117</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;104;65;104;39;39</additional_attributes>
-  </element>
-  <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>793</x>
-      <y>3016</y>
-      <w>156</w>
-      <h>104</h>
+      <x>805</x>
+      <y>1085</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Event Editor</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>338</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
-  </element>
-  <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>78</y>
-      <w>143</w>
-      <h>65</h>
+      <x>205</x>
+      <y>245</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
-    <panel_attributes>Pick/Create
+    <panel_attributes>New
 Battery
 </panel_attributes>
     <additional_attributes/>
@@ -983,32 +652,32 @@ Battery
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1144</x>
-      <y>884</y>
-      <w>117</w>
-      <h>52</h>
+      <x>590</x>
+      <y>740</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1144</x>
-      <y>2691</y>
-      <w>129</w>
-      <h>103</h>
+      <x>595</x>
+      <y>1030</y>
+      <w>49</w>
+      <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;78;39;39</additional_attributes>
+    <additional_attributes>40;30;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>1001</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>785</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Order
 Sub-Questions
@@ -1018,78 +687,67 @@ Sub-Questions
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1352</x>
-      <y>1547</y>
-      <w>156</w>
-      <h>52</h>
+      <x>2110</x>
+      <y>440</y>
+      <w>54</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>143;39;39;39</additional_attributes>
+    <additional_attributes>45;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2223</x>
-      <y>1261</y>
-      <w>351</w>
-      <h>65</h>
+      <x>735</x>
+      <y>900</y>
+      <w>64</w>
+      <h>79</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;325;39</additional_attributes>
+    <additional_attributes>15;15;55;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>2691</y>
-      <w>117</w>
-      <h>130</h>
+      <x>300</x>
+      <y>1075</y>
+      <w>49</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;117;39;39</additional_attributes>
+    <additional_attributes>40;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>3198</y>
-      <w>182</w>
-      <h>52</h>
+      <x>895</x>
+      <y>1155</y>
+      <w>70</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Add Questions
-to Module
+    <panel_attributes>Create Follow-up 
+Question Event
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1144</x>
-      <y>2665</y>
-      <w>129</w>
-      <h>90</h>
+      <x>595</x>
+      <y>1020</y>
+      <w>49</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;65</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>338</y>
-      <w>130</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;91;117;39;39</additional_attributes>
+    <additional_attributes>40;15;15;25</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>1027</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>795</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Page Break
 </panel_attributes>
@@ -1098,21 +756,21 @@ to Module
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1352</x>
-      <y>1469</y>
-      <w>156</w>
-      <h>130</h>
+      <x>2100</x>
+      <y>410</y>
+      <w>64</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>143;117;91;117;39;39</additional_attributes>
+    <additional_attributes>55;45;35;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>2782</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>1065</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Lookup and Add 
 Event
@@ -1122,10 +780,10 @@ Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>2704</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>1035</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Edit Condition
 </panel_attributes>
@@ -1134,10 +792,10 @@ Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1001</x>
-      <y>1664</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1965</x>
+      <y>485</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Lookup and 
 Add Variable
@@ -1147,67 +805,21 @@ Add Variable
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>481</x>
-      <y>3029</y>
-      <w>117</w>
-      <h>52</h>
+      <x>765</x>
+      <y>1090</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>689</x>
-      <y>338</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>364</x>
-      <y>2119</y>
-      <w>143</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>center:Templates</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>689</x>
-      <y>3029</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>2210</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Delete
-Template
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1287</x>
-      <y>3120</y>
-      <w>182</w>
-      <h>52</h>
+      <x>995</x>
+      <y>1125</y>
+      <w>70</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Alert
 Text
@@ -1215,62 +827,12 @@ Text
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1287</x>
-      <y>572</y>
-      <w>195</w>
-      <h>156</h>
-    </coordinates>
-    <panel_attributes>We might want
-to skip this for 
-now since 
-this functionality
-covered in another 
-editor
-bg=yellow</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>2119</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>3029</y>
-      <w>91</w>
-      <h>468</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>78;455;39;455;39;208;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1157</x>
-      <y>2223</y>
-      <w>142</w>
-      <h>90</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;65</additional_attributes>
-  </element>
-  <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>1846</x>
-      <y>962</y>
-      <w>169</w>
-      <h>91</h>
+      <x>860</x>
+      <y>770</y>
+      <w>65</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>center:Table Properties</panel_attributes>
     <additional_attributes/>
@@ -1278,32 +840,21 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2119</y>
-      <w>155</w>
-      <h>64</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>119</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1365</x>
-      <y>884</y>
-      <w>117</w>
-      <h>299</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;286;78;286;39;39</additional_attributes>
+    <additional_attributes>40;110;30;110;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2106</x>
-      <y>676</y>
-      <w>169</w>
-      <h>52</h>
+      <x>960</x>
+      <y>660</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Data Type
 </panel_attributes>
@@ -1312,10 +863,10 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1248</x>
-      <y>2743</y>
-      <w>169</w>
-      <h>52</h>
+      <x>635</x>
+      <y>1050</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Edit Logical 
 Opterators
@@ -1325,66 +876,43 @@ Opterators
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>65</y>
-      <w>130</w>
-      <h>52</h>
+      <x>50</x>
+      <y>240</y>
+      <w>164</w>
+      <h>279</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1027</x>
-      <y>2067</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Set Type
-</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>155;15;130;15;15;270</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1612</x>
-      <y>637</y>
-      <w>247</w>
-      <h>416</h>
+      <x>770</x>
+      <y>645</y>
+      <w>99</w>
+      <h>164</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;39;403</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>364</x>
-      <y>338</y>
-      <w>143</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>center:Sections</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>90;15;15;155</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>3029</y>
-      <w>130</w>
-      <h>52</h>
+      <x>850</x>
+      <y>1090</y>
+      <w>54</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
+    <additional_attributes>45;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>780</x>
-      <y>2678</y>
-      <w>156</w>
-      <h>104</h>
+      <x>455</x>
+      <y>1025</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Rule Editor</panel_attributes>
     <additional_attributes/>
@@ -1392,10 +920,10 @@ Opterators
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>1209</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>865</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Reorder
 Answer
@@ -1405,10 +933,10 @@ Answer
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1287</x>
-      <y>3042</y>
-      <w>182</w>
-      <h>52</h>
+      <x>995</x>
+      <y>1095</y>
+      <w>70</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Lookup and Set
 Consult
@@ -1418,91 +946,55 @@ Consult
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>338</y>
-      <w>130</w>
-      <h>52</h>
+      <x>500</x>
+      <y>1030</y>
+      <w>54</w>
+      <h>79</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
+    <additional_attributes>45;70;30;70;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2691</y>
-      <w>142</w>
-      <h>207</h>
+      <x>950</x>
+      <y>1120</y>
+      <w>54</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;182;78;182;39;39</additional_attributes>
+    <additional_attributes>45;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>920</x>
+      <y>835</y>
+      <w>44</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>35;15;15;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>858</y>
-      <w>143</w>
-      <h>65</h>
+      <x>185</x>
+      <y>1035</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
-    <panel_attributes>Pick/Create
-Module
+    <panel_attributes>New Rule
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1170</x>
-      <y>3107</y>
-      <w>130</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>2002</x>
-      <y>1131</y>
-      <w>104</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;39;39;78</additional_attributes>
-  </element>
-  <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>2704</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Pick/Create
-Rule
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1157</x>
-      <y>2041</y>
-      <w>194</w>
-      <h>77</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;52;169;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>2106</x>
-      <y>611</y>
-      <w>169</w>
-      <h>52</h>
+      <x>960</x>
+      <y>635</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Remove
 Validation
@@ -1512,98 +1004,55 @@ Validation
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>338</y>
-      <w>247</w>
-      <h>819</h>
+      <x>50</x>
+      <y>80</y>
+      <w>164</w>
+      <h>439</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;169;39;39;806</additional_attributes>
+    <additional_attributes>155;15;120;15;15;430</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>0</y>
-      <w>117</w>
-      <h>117</h>
+      <x>500</x>
+      <y>225</y>
+      <w>49</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;65;39;39;104</additional_attributes>
+    <additional_attributes>40;15;25;15;15;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1547</x>
-      <y>2301</y>
-      <w>64</w>
-      <h>155</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;130;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1599</x>
-      <y>3185</y>
-      <w>364</w>
-      <h>247</h>
-    </coordinates>
-    <panel_attributes>_Questions For Liz:_
-1. Do we delete answers 
-to questions if a rule
-causes them to be 
-removed?
- 
-2. Does this mean that 
-progress has to 
-take into account
-rule-injected questions?
-bg=red</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>2002</x>
-      <y>1170</y>
-      <w>104</w>
-      <h>143</h>
+      <x>1760</x>
+      <y>455</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;130;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>13</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>230</y>
+      <w>100</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Edit Title
+    <panel_attributes>Edit Battery Description
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>702</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>670</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Map Clinical
 Reminder
@@ -1613,10 +1062,10 @@ Reminder
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>806</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>710</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Update Question
 Text
@@ -1626,10 +1075,10 @@ Text
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>3042</y>
-      <w>143</w>
-      <h>65</h>
+      <x>725</x>
+      <y>1095</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Pick/Create
 Event
@@ -1637,23 +1086,12 @@ Event
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>364</x>
-      <y>845</y>
-      <w>143</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>center:Modules</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>2782</y>
-      <w>143</w>
-      <h>65</h>
+      <x>340</x>
+      <y>1110</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Delete
 Rule
@@ -1663,67 +1101,32 @@ Rule
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2002</x>
-      <y>1170</y>
-      <w>104</w>
-      <h>78</h>
+      <x>920</x>
+      <y>850</y>
+      <w>44</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;65;39;39</additional_attributes>
+    <additional_attributes>35;25;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1365</x>
-      <y>884</y>
-      <w>117</w>
-      <h>234</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>94</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;221;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1170</x>
-      <y>3185</y>
-      <w>442</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;429;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>897</x>
-      <y>2119</y>
-      <w>155</w>
-      <h>129</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;104;39;39</additional_attributes>
+    <additional_attributes>40;85;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>2262</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Add
-Condition
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1027</x>
-      <y>3042</y>
-      <w>169</w>
-      <h>52</h>
+      <x>895</x>
+      <y>1095</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Create Consult
 Event
@@ -1733,54 +1136,32 @@ Event
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>910</x>
-      <y>754</y>
-      <w>117</w>
-      <h>143</h>
+      <x>500</x>
+      <y>690</y>
+      <w>49</w>
+      <h>59</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;78;39;39;130</additional_attributes>
+    <additional_attributes>40;15;30;15;15;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1365</x>
-      <y>728</y>
-      <w>117</w>
-      <h>208</h>
+      <x>675</x>
+      <y>680</y>
+      <w>49</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;65;39;39;195</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>767</x>
-      <y>2106</y>
-      <w>169</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>center:Template Editor</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>377</x>
-      <y>3029</y>
-      <w>143</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>center:Rule Events</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>40;15;25;15;15;75</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1222</x>
-      <y>1625</y>
-      <w>169</w>
-      <h>52</h>
+      <x>2050</x>
+      <y>470</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Division
 Operation
@@ -1790,57 +1171,43 @@ Operation
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1612</x>
-      <y>1001</y>
-      <w>247</w>
-      <h>208</h>
+      <x>770</x>
+      <y>785</y>
+      <w>99</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;195;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Note</type>
-    <coordinates>
-      <x>1287</x>
-      <y>325</y>
-      <w>182</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>A module can
-only be associated
-with one section
-bg=yellow</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>90;75;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2691</y>
-      <w>142</w>
-      <h>142</h>
+      <x>500</x>
+      <y>1030</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;78;117;39;39</additional_attributes>
+    <additional_attributes>45;45;30;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>780</y>
-      <w>143</w>
-      <h>78</h>
+      <x>910</x>
+      <y>700</y>
+      <w>54</w>
+      <h>29</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;52;39;39</additional_attributes>
+    <additional_attributes>45;20;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>741</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>685</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add None
 Option
@@ -1851,34 +1218,21 @@ Option
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>845</y>
-      <w>130</w>
-      <h>143</h>
+      <x>50</x>
+      <y>495</y>
+      <w>164</w>
+      <h>304</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;130;65;130;39;39</additional_attributes>
+    <additional_attributes>155;295;135;295;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>1274</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Set Answer
-Score 
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1794</x>
-      <y>1313</y>
-      <w>195</w>
-      <h>65</h>
+      <x>840</x>
+      <y>905</y>
+      <w>75</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Add health factor(s)
 to Answer
@@ -1887,47 +1241,34 @@ bg=orange
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1027</x>
-      <y>2327</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Remove 
-Condition
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>689</x>
-      <y>65</y>
-      <w>117</w>
-      <h>52</h>
+      <x>245</x>
+      <y>245</y>
+      <w>219</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>210;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>1417</y>
-      <w>104</w>
-      <h>91</h>
+      <x>2015</x>
+      <y>390</y>
+      <w>44</w>
+      <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>91;78;39;39</additional_attributes>
+    <additional_attributes>35;30;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1001</x>
-      <y>1534</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1965</x>
+      <y>435</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Edit
 Expression
@@ -1937,10 +1278,10 @@ Expression
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>2847</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>1090</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Remove
 Event
@@ -1950,10 +1291,10 @@ Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1014</x>
-      <y>897</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>745</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Create Question
 </panel_attributes>
@@ -1962,32 +1303,32 @@ Event
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1365</x>
-      <y>858</y>
-      <w>117</w>
-      <h>78</h>
+      <x>675</x>
+      <y>730</y>
+      <w>49</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;65</additional_attributes>
+    <additional_attributes>40;15;15;25</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>117</h>
+      <x>1925</x>
+      <y>455</y>
+      <w>49</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;104;65;104;39;39</additional_attributes>
+    <additional_attributes>40;40;25;40;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2353</x>
-      <y>1144</y>
-      <w>169</w>
-      <h>52</h>
+      <x>1055</x>
+      <y>840</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Option
 Type</panel_attributes>
@@ -1996,21 +1337,21 @@ Type</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>1586</y>
-      <w>117</w>
-      <h>182</h>
+      <x>1925</x>
+      <y>455</y>
+      <w>49</w>
+      <h>74</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;169;65;169;39;39</additional_attributes>
+    <additional_attributes>40;65;25;65;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>871</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>735</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Answer
 Score 
@@ -2020,77 +1361,65 @@ Score
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2691</y>
-      <w>142</w>
-      <h>64</h>
+      <x>500</x>
+      <y>1030</y>
+      <w>54</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;39</additional_attributes>
+    <additional_attributes>45;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>1521</y>
-      <w>104</w>
-      <h>143</h>
+      <x>2015</x>
+      <y>430</y>
+      <w>44</w>
+      <h>59</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;130;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>481</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Reorder Module
-</panel_attributes>
-    <additional_attributes/>
+    <additional_attributes>35;50;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>975</y>
-      <w>143</w>
-      <h>78</h>
+      <x>910</x>
+      <y>775</y>
+      <w>54</w>
+      <h>29</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;52;39;39</additional_attributes>
+    <additional_attributes>45;20;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>923</y>
-      <w>143</w>
-      <h>117</h>
+      <x>910</x>
+      <y>755</y>
+      <w>54</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;91</additional_attributes>
+    <additional_attributes>45;15;15;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>676</x>
-      <y>2691</y>
-      <w>129</w>
-      <h>64</h>
+      <x>225</x>
+      <y>1030</y>
+      <w>239</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>230;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>1846</x>
-      <y>1131</y>
-      <w>195</w>
-      <h>130</h>
+      <x>860</x>
+      <y>835</y>
+      <w>75</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>center:Select One Matrix
 Select Multi Matrix
@@ -2100,21 +1429,21 @@ Properties</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>2223</x>
-      <y>728</y>
-      <w>143</w>
-      <h>65</h>
+      <x>1005</x>
+      <y>680</y>
+      <w>54</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;117;39</additional_attributes>
+    <additional_attributes>15;15;45;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>1248</x>
-      <y>871</y>
-      <w>156</w>
-      <h>104</h>
+      <x>630</x>
+      <y>735</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Question Editor</panel_attributes>
     <additional_attributes/>
@@ -2122,23 +1451,10 @@ Properties</panel_attributes>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>2132</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Pick/Create
-Template
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1027</x>
-      <y>2964</y>
-      <w>169</w>
-      <h>52</h>
+      <x>895</x>
+      <y>1065</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Create Health 
 Factor Event
@@ -2148,10 +1464,10 @@ Factor Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>572</x>
-      <y>1677</y>
-      <w>143</w>
-      <h>65</h>
+      <x>1800</x>
+      <y>490</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Delete
 Formula
@@ -2161,10 +1477,10 @@ Formula
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>1846</x>
-      <y>754</y>
-      <w>169</w>
-      <h>117</h>
+      <x>860</x>
+      <y>690</y>
+      <w>65</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>center:Select One
 Select Multi
@@ -2174,43 +1490,32 @@ Properties</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1144</x>
-      <y>325</y>
-      <w>156</w>
-      <h>65</h>
+      <x>2015</x>
+      <y>415</y>
+      <w>44</w>
+      <h>39</h>
     </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;52;143;39</additional_attributes>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>35;15;15;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>1482</y>
-      <w>104</w>
-      <h>91</h>
+      <x>500</x>
+      <y>725</y>
+      <w>49</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;39;39;78</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>845</y>
-      <w>117</w>
-      <h>156</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;143;65;143;39;39</additional_attributes>
+    <additional_attributes>40;55;25;55;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>1001</y>
-      <w>182</w>
-      <h>65</h>
+      <x>715</x>
+      <y>785</y>
+      <w>70</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Edit Type-Specific
 Properties
@@ -2220,24 +1525,10 @@ Properties
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1716</x>
-      <y>2431</y>
-      <w>195</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Variable-Value
-to Text Mapping 
-(Override text)
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>832</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>720</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add/Delete
 Question
@@ -2247,35 +1538,10 @@ Question
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>988</x>
-      <y>3458</y>
-      <w>182</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Add Module
-to Battery
-bg=orange
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.Systemborder</type>
-    <coordinates>
-      <x>364</x>
-      <y>65</y>
-      <w>143</w>
-      <h>91</h>
-    </coordinates>
-    <panel_attributes>center:Batteries</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>585</x>
-      <y>3120</y>
-      <w>143</w>
-      <h>65</h>
+      <x>725</x>
+      <y>1125</y>
+      <w>55</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Delete
 Event
@@ -2285,21 +1551,21 @@ Event
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1612</x>
-      <y>767</y>
-      <w>247</w>
-      <h>286</h>
+      <x>770</x>
+      <y>695</y>
+      <w>99</w>
+      <h>114</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;39;39;273</additional_attributes>
+    <additional_attributes>90;15;15;105</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>793</x>
-      <y>832</y>
-      <w>156</w>
-      <h>104</h>
+      <x>455</x>
+      <y>720</y>
+      <w>60</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>center:Module Editor</panel_attributes>
     <additional_attributes/>
@@ -2307,59 +1573,22 @@ Event
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1027</x>
-      <y>2132</y>
-      <w>169</w>
-      <h>52</h>
+      <x>540</x>
+      <y>280</y>
+      <w>115</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Associate
-Clinic
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>130</x>
-      <y>1105</y>
-      <w>260</w>
-      <h>1976</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>247;1963;130;1963;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>143</y>
-      <w>169</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>Remove Module
+    <panel_attributes>Remove Module From Battery
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>351</y>
-      <w>143</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>Pick/Create
-Section
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.State</type>
-    <coordinates>
-      <x>1014</x>
-      <y>2561</y>
-      <w>169</w>
-      <h>52</h>
+      <x>545</x>
+      <y>980</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Condition
 </panel_attributes>
@@ -2368,43 +1597,43 @@ Section
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>780</y>
-      <w>143</w>
-      <h>143</h>
+      <x>910</x>
+      <y>700</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;39;39</additional_attributes>
+    <additional_attributes>45;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>130</x>
-      <y>1118</y>
-      <w>247</w>
-      <h>1625</h>
+      <x>50</x>
+      <y>500</y>
+      <w>144</w>
+      <h>554</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>234;1612;169;1612;39;39</additional_attributes>
+    <additional_attributes>135;545;95;545;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>598</y>
-      <w>156</w>
-      <h>104</h>
+      <x>910</x>
+      <y>630</y>
+      <w>59</w>
+      <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;39;78</additional_attributes>
+    <additional_attributes>50;15;15;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1222</x>
-      <y>1560</y>
-      <w>169</w>
-      <h>52</h>
+      <x>2050</x>
+      <y>445</y>
+      <w>75</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Multiplication
 Operation
@@ -2414,54 +1643,32 @@ Operation
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>481</x>
-      <y>3029</y>
-      <w>117</w>
-      <h>130</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>39</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;117;39;39</additional_attributes>
+    <additional_attributes>40;30;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1365</x>
-      <y>884</y>
-      <w>117</w>
-      <h>91</h>
+      <x>500</x>
+      <y>250</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;78;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>468</x>
-      <y>2119</y>
-      <w>117</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;117;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>910</x>
-      <y>65</y>
-      <w>117</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>936</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>760</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Assign Help
 Text
@@ -2471,76 +1678,43 @@ Text
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>2691</y>
-      <w>117</w>
-      <h>52</h>
+      <x>500</x>
+      <y>1000</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;39;39</additional_attributes>
+    <additional_attributes>45;15;15;45</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>2613</y>
-      <w>142</w>
-      <h>142</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;39;39;117</additional_attributes>
+    <additional_attributes>40;135;25;135;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>3458</y>
-      <w>208</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;195;52</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>676</x>
-      <y>2119</y>
-      <w>116</w>
-      <h>64</h>
+      <x>945</x>
+      <y>1090</y>
+      <w>59</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;39;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1365</x>
-      <y>884</y>
-      <w>117</w>
-      <h>364</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;351;65;351;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1157</x>
-      <y>3029</y>
-      <w>143</w>
-      <h>52</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;39;39;39</additional_attributes>
+    <additional_attributes>50;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1469</x>
-      <y>871</y>
-      <w>169</w>
-      <h>52</h>
+      <x>715</x>
+      <y>735</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Set Variable
 Name
@@ -2550,67 +1724,56 @@ Name
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>364</x>
-      <y>2691</y>
-      <w>143</w>
-      <h>91</h>
+      <x>260</x>
+      <y>1075</y>
+      <w>55</w>
+      <h>35</h>
     </coordinates>
-    <panel_attributes>center:Rules</panel_attributes>
+    <panel_attributes>center:Rules List</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>897</x>
-      <y>2119</y>
-      <w>155</w>
-      <h>194</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>130;169;78;117;39;39</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>585</x>
-      <y>949</y>
-      <w>143</w>
-      <h>65</h>
+      <x>205</x>
+      <y>775</y>
+      <w>55</w>
+      <h>30</h>
     </coordinates>
-    <panel_attributes>Delete
-Module
+    <panel_attributes>Edit
+Modules
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>897</x>
-      <y>1521</y>
-      <w>117</w>
-      <h>117</h>
+      <x>1925</x>
+      <y>430</y>
+      <w>49</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;39;65;39;39;104</additional_attributes>
+    <additional_attributes>40;15;25;15;15;40</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1599</x>
-      <y>1131</y>
-      <w>208</w>
-      <h>234</h>
+      <x>765</x>
+      <y>835</y>
+      <w>84</w>
+      <h>94</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>195;221;143;221;39;39</additional_attributes>
+    <additional_attributes>75;85;55;85;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
       <x>0</x>
-      <y>1118</y>
-      <w>169</w>
-      <h>52</h>
+      <y>500</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Forms Editor
 </panel_attributes>
@@ -2619,21 +1782,21 @@ Module
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1976</x>
-      <y>975</y>
-      <w>130</w>
-      <h>130</h>
+      <x>910</x>
+      <y>775</y>
+      <w>54</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;117;39;39</additional_attributes>
+    <additional_attributes>45;45;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1495</x>
-      <y>1560</y>
-      <w>182</w>
-      <h>65</h>
+      <x>2155</x>
+      <y>445</y>
+      <w>70</w>
+      <h>25</h>
     </coordinates>
     <panel_attributes>Lookup and
 Add Variable(s)
@@ -2643,10 +1806,10 @@ Add Variable(s)
   <element>
     <type>com.umlet.element.custom.Systemborder</type>
     <coordinates>
-      <x>1846</x>
-      <y>637</y>
-      <w>169</w>
-      <h>91</h>
+      <x>860</x>
+      <y>645</y>
+      <w>65</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>center:Free Text
 Properties</panel_attributes>
@@ -2655,10 +1818,10 @@ Properties</panel_attributes>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>2093</x>
-      <y>806</y>
-      <w>169</w>
-      <h>52</h>
+      <x>955</x>
+      <y>710</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
     <panel_attributes>Add Other
 Option
@@ -2668,43 +1831,21 @@ Option
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>468</x>
-      <y>338</y>
-      <w>130</w>
-      <h>208</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;195;65;195;39;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1144</x>
-      <y>650</y>
-      <w>156</w>
-      <h>156</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;143;143;39</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>1365</x>
-      <y>884</y>
-      <w>117</w>
-      <h>156</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>104;143;39;39</additional_attributes>
+    <additional_attributes>40;55;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>1313</x>
-      <y>1716</y>
-      <w>416</w>
-      <h>130</h>
+      <x>2085</x>
+      <y>505</y>
+      <w>160</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>Use measure_answer.calculationvalue,
 if available. Otherwise, a user-entered
@@ -2716,127 +1857,1525 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1131</x>
-      <y>1716</y>
-      <w>195</w>
-      <h>78</h>
+      <x>2015</x>
+      <y>505</y>
+      <w>79</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;182;65</additional_attributes>
+    <additional_attributes>15;15;70;25</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1274</x>
-      <y>2301</y>
-      <w>169</w>
-      <h>52</h>
+      <x>365</x>
+      <y>820</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Else</panel_attributes>
+    <panel_attributes>Delete Module
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>245</x>
+      <y>780</y>
+      <w>44</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>35;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>370</x>
+      <y>135</y>
+      <w>65</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Move Module 
+from one section 
+to another
+
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1274</x>
-      <y>2366</y>
-      <w>169</w>
-      <h>52</h>
+      <x>370</x>
+      <y>5</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>If else</panel_attributes>
+    <panel_attributes>Edit Section Title
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>0</y>
+      <w>49</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;95</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>80</y>
+      <w>49</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;110;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>370</x>
+      <y>105</y>
+      <w>65</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Delete Empty
+Section
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>1274</x>
-      <y>2431</y>
-      <w>169</w>
-      <h>52</h>
+      <x>370</x>
+      <y>80</y>
+      <w>65</w>
+      <h>20</h>
     </coordinates>
-    <panel_attributes>Variable helper 
-function</panel_attributes>
+    <panel_attributes>Order Sections
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>285</x>
+      <y>75</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Section Editor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>80</y>
+      <w>49</w>
+      <h>74</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;65;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>80</y>
+      <w>49</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;35;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>245</x>
+      <y>80</y>
+      <w>49</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>475</x>
+      <y>130</y>
+      <w>70</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>A module can
+only be associated
+with one section
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>370</x>
+      <y>175</y>
+      <w>65</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Reorder Modules
+in Section
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>420</x>
+      <y>130</y>
+      <w>64</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>15;15;55;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>205</x>
+      <y>85</y>
+      <w>55</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Edit
+Section
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>75</y>
+      <w>49</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;20</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>605</y>
+      <w>54</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;25;15;15;135</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>545</x>
+      <y>610</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Manage Module 
+Templates
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>600</x>
+      <y>420</y>
+      <w>84</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>75;15;30;15;30;205;15;205</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>675</x>
+      <y>410</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Template List
+Page</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>415</y>
+      <w>54</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;45;30;45;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>415</y>
+      <w>54</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>380</y>
+      <w>54</w>
+      <h>59</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;30;15;15;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>765</x>
+      <y>385</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Create
+New Template
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>765</x>
+      <y>415</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Edit Previously
+Created Templates
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>765</x>
+      <y>450</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Delete Previously
+Created Template
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>540</x>
+      <y>340</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Manage Battery 
+Templates
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>250</y>
+      <w>49</w>
+      <h>109</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;100;25;100;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>595</x>
+      <y>335</y>
+      <w>89</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;95;35;95;35;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>275</y>
+      <w>89</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;125;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>285</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Set If Condition</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1635</x>
+      <y>260</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Filter Variables 
+by Text
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>290</y>
+      <w>49</w>
+      <h>129</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>890</x>
+      <y>390</y>
+      <w>65</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Template Editor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>275</y>
+      <w>89</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;20;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>310</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Add Else Block</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>335</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Add If Else Block</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1570</x>
+      <y>255</y>
+      <w>74</w>
+      <h>59</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>65;15;15;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>845</x>
+      <y>400</y>
+      <w>54</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;15;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>845</x>
+      <y>380</y>
+      <w>54</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;30;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>370</x>
+      <y>30</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Edit Section 
+Description
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>25</y>
+      <w>49</w>
+      <h>79</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>370</x>
+      <y>55</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Add New Section 
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>50</y>
+      <w>49</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;45</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>325</x>
+      <y>295</y>
+      <w>49</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>280</x>
+      <y>290</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Battery List</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>365</x>
+      <y>300</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Select Battery
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>245</x>
+      <y>295</y>
+      <w>44</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>35;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>415</x>
+      <y>255</y>
+      <w>49</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;30;15;30;55;15;55</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>540</x>
+      <y>205</y>
+      <w>100</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Edit Battery Title
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>200</y>
+      <w>49</w>
+      <h>74</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;25;15;15;65</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>540</x>
+      <y>305</y>
+      <w>100</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Disable Battery
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>250</y>
+      <w>49</w>
+      <h>74</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;65;25;65;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>295</y>
+      <w>65</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Add Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>335</y>
+      <w>65</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Delete Text Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>405</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Move Block Up
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>370</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Delete Condition Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>440</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Move Block Down
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>475</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Move Block Into 
+Condition Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>980</x>
+      <y>510</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Move Block Out of 
+Condition Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>1080</x>
+      <y>285</y>
+      <w>65</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Block Editor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1030</x>
+      <y>290</y>
+      <w>59</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>50;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>335</y>
+      <w>49</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;75</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>370</y>
+      <w>49</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>395</y>
+      <w>49</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;20;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>395</y>
+      <w>49</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;55;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>395</y>
+      <w>49</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;95;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>395</y>
+      <w>49</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;125;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>390</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Remove 
+Condition
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1130</x>
+      <y>230</y>
+      <w>54</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;15;75</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>225</y>
+      <w>75</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Insert Variable
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>220</y>
+      <w>89</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;15;15;25</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1175</x>
+      <y>235</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Select Text Block Type
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1175</x>
+      <y>275</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Select Condition
+Block Type
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>250</y>
+      <w>75</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>WYSIWYG Edit 
+Text Block Type
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>235</y>
+      <w>89</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;25;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1130</x>
+      <y>275</y>
+      <w>54</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;15;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1175</x>
+      <y>310</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Insert Block
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1175</x>
+      <y>345</y>
+      <w>95</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Cancel Insert
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>1520</x>
+      <y>285</y>
+      <w>65</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Variable Selector</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1395</x>
+      <y>220</y>
+      <w>134</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>125;75;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1335</x>
+      <y>360</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Add Text Block</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>275</y>
+      <w>89</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;95;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>275</y>
+      <w>89</w>
+      <h>79</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;70;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1255</x>
+      <y>275</y>
+      <w>89</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80;45;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1385</x>
+      <y>280</y>
+      <w>144</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>135;20;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1385</x>
+      <y>290</y>
+      <w>144</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>135;15;15;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1385</x>
+      <y>295</y>
+      <w>144</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>135;15;15;75</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1635</x>
+      <y>285</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Filter Variables 
+by Type
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1635</x>
+      <y>310</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Select Variable
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1635</x>
+      <y>335</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Cancel Selection
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1570</x>
+      <y>280</y>
+      <w>74</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>65;15;15;25</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1570</x>
+      <y>290</y>
+      <w>74</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>65;30;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1570</x>
+      <y>290</y>
+      <w>74</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>65;55;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1685</x>
+      <y>295</y>
+      <w>114</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Depending on type
+lt=&lt;-</panel_attributes>
+    <additional_attributes>105;25;15;25</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>1790</x>
+      <y>300</y>
+      <w>65</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Variable 
+Translation
+Dialog</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1840</x>
+      <y>305</y>
+      <w>49</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1880</x>
+      <y>310</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Pick Translation
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>2040</x>
+      <y>310</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Set Translation
+Parameters
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1930</x>
+      <y>295</y>
+      <w>119</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Depending on type
+lt=&lt;-</panel_attributes>
+    <additional_attributes>110;25;15;25</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1635</x>
+      <y>365</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Create Formula
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1570</x>
+      <y>290</y>
+      <w>74</w>
+      <h>94</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>65;85;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>595</x>
+      <y>1060</y>
+      <w>54</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;40;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>640</x>
+      <y>1080</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Event List</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>685</x>
+      <y>1085</y>
+      <w>49</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;20;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>685</x>
+      <y>1085</y>
+      <w>49</w>
+      <h>59</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;50;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>685</x>
+      <y>305</y>
+      <w>844</w>
+      <h>739</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>835;15;540;730;15;730</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>205</x>
+      <y>730</y>
+      <w>55</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>New
+Module
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>280</x>
+      <y>775</y>
+      <w>60</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>center:Module List</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>365</x>
+      <y>785</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Select Module
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>325</x>
+      <y>780</y>
+      <w>49</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>415</x>
+      <y>735</y>
+      <w>49</w>
+      <h>69</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;15;30;15;30;60;15;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>540</x>
+      <y>695</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Map To Section
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>1326</x>
-      <y>2522</y>
-      <w>364</w>
-      <h>130</h>
+      <x>690</x>
+      <y>615</y>
+      <w>70</w>
+      <h>35</h>
     </coordinates>
-    <panel_attributes>Three categories of funtionsTypes include:
-- General variable functions
-- Answer functions
---Question functions
+    <panel_attributes>This is required
 bg=yellow</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1313</x>
-      <y>2444</y>
-      <w>129</w>
-      <h>103</h>
+      <x>590</x>
+      <y>615</y>
+      <w>109</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>39;39;104;78</additional_attributes>
+    <additional_attributes>15;90;100;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>715</x>
+      <y>895</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Set Question 
+Follow-up rule
+</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1157</x>
-      <y>2249</y>
-      <w>142</w>
-      <h>103</h>
+      <x>675</x>
+      <y>740</y>
+      <w>49</w>
+      <h>174</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;78;39;39</additional_attributes>
+    <additional_attributes>40;165;20;165;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>790</x>
+      <y>950</y>
+      <w>90</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>We should have some 
+way of selecting several 
+questions and to set a 
+rule to shown them
+bg=yellow</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1404</x>
-      <y>2418</y>
-      <w>116</w>
+      <x>920</x>
+      <y>850</y>
+      <w>44</w>
       <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;39;39;39</additional_attributes>
+    <additional_attributes>35;55;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>955</x>
+      <y>895</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Set Calculated
+value
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>185</x>
+      <y>1075</y>
+      <w>55</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>Edit Rule
+</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1625</x>
-      <y>2418</y>
-      <w>116</w>
-      <h>64</h>
+      <x>225</x>
+      <y>1075</y>
+      <w>44</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>91;39;39;39</additional_attributes>
+    <additional_attributes>35;15;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>340</x>
+      <y>1080</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Select Rule
+</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1157</x>
-      <y>2249</y>
-      <w>142</w>
-      <h>168</h>
+      <x>300</x>
+      <y>1075</y>
+      <w>49</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;143;39;39</additional_attributes>
+    <additional_attributes>40;15;15;15</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1157</x>
-      <y>2249</y>
-      <w>142</w>
-      <h>233</h>
+      <x>390</x>
+      <y>1040</y>
+      <w>74</w>
+      <h>59</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>117;208;39;39</additional_attributes>
+    <additional_attributes>65;15;45;15;45;50;15;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>325</x>
+      <y>780</y>
+      <w>49</w>
+      <h>59</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40;50;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>50</x>
+      <y>495</y>
+      <w>144</w>
+      <h>599</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>135;590;75;590;15;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>545</x>
+      <y>955</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>Add Condition
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>950</y>
+      <w>54</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>45;15;30;15;15;95</additional_attributes>
   </element>
 </diagram>
