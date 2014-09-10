@@ -62,7 +62,7 @@ public class EditorRestController {
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is created successfully.");
     }
 
-    @RequestMapping(value="/services/surveys/{surveyId}/surveypages", method = RequestMethod.PUT, produces="application/json", consumes="application/json")
+    @RequestMapping(value="/services/surveys/{surveyId}/pages", method = RequestMethod.PUT, produces="application/json", consumes="application/json")
     @ResponseBody
     public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPageInfo, @CurrentUser EscreenUser escreenUser)
     {
@@ -71,7 +71,7 @@ public class EditorRestController {
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is saved successfully. ");
     }
 
-    @RequestMapping(value = "/services/surveys/{surveyId}/surveypages", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response retrieveSurveyPages(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
         // Call service class here instead of hard coding it.
