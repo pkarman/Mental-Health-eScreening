@@ -64,4 +64,6 @@ public interface SurveyService {
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
+
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 }

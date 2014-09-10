@@ -1,6 +1,5 @@
 package gov.va.escreening.delegate;
 
-import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
@@ -30,4 +29,5 @@ public interface EditorsViewDelegate {
    	void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 }

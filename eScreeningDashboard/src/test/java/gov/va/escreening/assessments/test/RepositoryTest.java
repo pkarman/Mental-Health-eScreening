@@ -20,6 +20,7 @@ import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.service.BatteryService;
+import gov.va.escreening.service.SurveyService;
 
 import javax.annotation.Resource;
 
@@ -48,6 +49,9 @@ public class RepositoryTest {
     
     @Resource(type = BatteryService.class)
     BatteryService bs;
+    
+    @Resource(type=SurveyService.class)
+    SurveyService ss;
     
     @Resource
     MeasureRepository measureRepo;
@@ -162,5 +166,12 @@ public class RepositoryTest {
     	
     	v = veteranRepo.findOne(17);
     	assertTrue(v.getIsSensitive());
+    }
+    
+    @Test
+    public void testSS()
+    {
+    	List a = ss.getSurveyPages(2);
+    	assertEquals(a.size(), 3);
     }
 }

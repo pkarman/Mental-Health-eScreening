@@ -315,4 +315,30 @@ public class SurveyServiceImpl implements SurveyService {
 		surveyRepository.update(survey);
 	}
 
+	@Override
+	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		List<SurveyPage> surveyPages = survey.getSurveyPageList();
+		
+		List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
+		for(SurveyPage surveyPage : surveyPages)
+		{
+			SurveyPageInfo spi = new SurveyPageInfo();
+			spi.setId(surveyPage.getSurveyPageId());
+		    spi.setDescription(surveyPage.getDescription());
+		    spi.setPageNumber(surveyPage.getPageNumber());
+		    spi.setTitle(surveyPage.getTitle());
+		    spi.setDateCreated(surveyPage.getDateCreated());
+		    
+		    spi.setQuestions(new ArrayList<QuestionInfo>());
+		    for(Measure measure : surveyPage.getMeasures())
+		    {
+		    	spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+		    }
+		    surveyPageInfos.add(spi);
+		    
+		}
+		return surveyPageInfos;
+	}
+
 }
