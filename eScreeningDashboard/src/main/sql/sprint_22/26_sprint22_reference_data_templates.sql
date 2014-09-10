@@ -434,7 +434,7 @@ INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2004,
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2005, 100);
 
 /*** #589 Skip logic update for PROMIS EMOTIONAL SUPPORT ***/
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start --> 
@@ -452,7 +452,7 @@ where template_id = 7;
 
 
 -- /* EDUCATION, EMPLOYMENT AND INCOME    UPDATE with skip logic #589*/
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
@@ -493,7 +493,7 @@ ${MODULE_END}
 where template_id = 5;
 
 /**** Deployment history #ticket 586 ************/
-update escreening.template 
+update template 
 set template_file = '
 <#include "clinicalnotefunctions">
  <#-- Template start --> ${MODULE_TITLE_START} MILITARY DEPLOYMENTS AND HISTORY: ${MODULE_TITLE_END} 
