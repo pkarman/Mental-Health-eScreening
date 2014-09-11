@@ -20,21 +20,23 @@
 </div>
 
 
-
+<div class="row">
 <div class="col-md-12">
-  <div class="row">
-    <div class="col-sm-12">
+
+
       
       <!-- JH OOOCOMMENT
+      <div class="col-sm-12">
       <div class="btn-group-sm pull-right"> <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a> <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> <a ui-sref="modules.detail.templatecaptureview" class="btn btn-info" href="#/modules/modules.detail/modules.addedt.templatecaptureview">Add/Edit Template</a> </div>
+      </div>
       -->
-    </div>
+    
   
   <div class="border-radius-main-form gray-lighter">
   <form class="form-inline">
     <div class="row">
       <div class="col-md-8">
-        <div class="col-sm-12 form-group">
+        <div class="col-md-12 form-group">
           <label>Title</label>
           <input type="text" class="form-control" ng-model="selectedSurveyUIObject.name" placeholder="Enter Module Title">
         </div>
@@ -55,16 +57,28 @@
     </div>
   </form>
   </div>
-  </div><br>
+  <br>
   
   <h4>Questions</h4>
+  
   <div class="row">
     <div class="col-md-4 text-center">
-      <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
+      <div class="well well-left-side" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
           <div class="form-inline form-group center-block">
               <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
               <button class="btn btn-success btn-sm" ng-click="addPageBreak();" ><span class="glyphicon glyphicon-plus"></span> Page Break</button> <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
           </div>
+          
+        <!-- page-divider-container Start -->          
+        <div class="page-divider-container">
+          <div class="page-divider-container-row">
+            <div class="page-divider">
+              <button type="button" class="btn btn-default btn-circle">Page 1</button>
+              <p></p>
+            </div>
+          </div>
+        </div>
+        <!-- page-divider-container End -->                   
         <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
           <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems">
             <div class="form-inline">
@@ -85,8 +99,18 @@
     </div>
     <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
       <div class="border-radius-main-form" style="border:1px solid #E8E8E8; min-height:470px; background-color:#FFFFFF;">
-        <div class="col-md-12" ui-view></div>
+        <div class="row"><div class="col-md-12" ui-view></div></div>
       </div>
+    </div>
+  </div>
+</div>
+</div>
+<br>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group pull-right">
+      <button class="btn btn-primary">Save</button>
+      <button class="btn btn-default">Cancel</button>
     </div>
   </div>
 </div>
