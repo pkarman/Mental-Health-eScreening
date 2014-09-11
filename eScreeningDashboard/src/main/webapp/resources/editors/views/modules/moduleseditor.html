@@ -65,7 +65,7 @@
               <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
               <button class="btn btn-success btn-sm" ng-click="addPageBreak();" ><span class="glyphicon glyphicon-plus"></span> Page Break</button> <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
           </div>
-        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
+        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="pageQuestionItems">
           <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems">
             <div class="form-inline">
                 <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;

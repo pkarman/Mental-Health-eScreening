@@ -43,13 +43,13 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                     );
 
                 service.query(querySurveyPageSearchCriteria, function (jsonResponse) {
-                    var response = handleSurveyPageQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveysTransformer, null),
+                    var response = handleSurveyPageQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveyPagesTransformer, null),
                         payload;
 
                     if(response.isSuccessful()){
                         if(Object.isArray(response.getPayload())){
                             if(response.getPayload().length === 1){
-                                payload = EScreeningDashboardApp.models.SurveyTransformer.transformJSONPayload(response.getPayload()[0].toJSON(), null);
+                                payload = EScreeningDashboardApp.models.SurveyPageTransformer.transformJSONPayload({surveyPage: response.getPayload()[0].toJSON()}, null);
                                 response = new BytePushers.models.Response(response.getStatus(), payload);
                             }
                         }
@@ -114,57 +114,8 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                     );
 
                 service.save(updateSurveyPageRequestParameter.survey.toJSON(), function (jsonResponse) {
-                    var response = handleSurveyPageSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
+                    var response = handleSurveyPageUpdateResponse(jsonResponse, EScreeningDashboardApp.models.SurveyPageTransformer, null);
                     deferred.resolve(response);
-                }, function (reason) {
-                    deferred.reject(reason);
-                });
-
-                return deferred.promise;
-            },
-            /**
-             * Convenience method that supports creating a Survey via the SurveyPageService.
-             *
-             * @param {{surveyId: String, survey: EScreeningDashboardApp.models.Survey, surveys: String }}  saveSurveyRequestParameters Represents the save parameters for the request.
-             */
-            create = function (updateSurveyPageRequestParameter) {
-
-                /**
-                 * Represents the angular Defer that is used for asynchronous service calls.
-                 *
-                 * @private
-                 * @field
-                 * @type {Defer}
-                 */
-                var deferred = $q.defer(),
-                    /**
-                     * Represents the angular Resource object that is used for asynchronous service calls.
-                     *
-                     * @private
-                     * @field
-                     * @type {Resource}
-                     */
-                    service = $resource(
-                        "services/:survey",
-                        {},
-                        {
-                            save: {
-                                method: 'PUT',
-                                params: {
-                                    "survey": updateSurveyPageRequestParameter.survey
-                                },
-                                isArray: false,
-                                headers:{
-                                    'Accept': 'application/json',
-                                    'Content-Type':'application/json'
-                                }
-                            }
-                        }
-                    );
-
-                service.save(updateSurveyPageRequestParameter.payload.toJSON(), function (jsonResponse) {
-                    var response = handleSurveyPageSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
-                    deferred.resolve(response.getPayload());
                 }, function (reason) {
                     deferred.reject(reason);
                 });
@@ -194,43 +145,6 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                 saveSurveyPageRequestParameter.surveyPageId = saveSurveyPageRequestParameter.surveyPageId + ".json";
             }
             return saveSurveyPageRequestParameter;
-        };
-
-        /**
-         * Convenience method that sets the request parameter for the survey page remove service request.
-         *
-         * @private
-         * @method
-         * @param {String} surveyPageId Represent the Survey id to save.
-         * @returns {{surveyPageId: *}} A search criteria object.
-         */
-        var setRemoveSurveyPageRequestParameter = function (surveyPageId) {
-            var removeSurveyPageRequestParameter = {
-                "surveyPageId": surveyPageId
-            };
-
-            if (!Object.isDefined(surveyPageId)) {
-                throw new BytePushers.exceptions.NullPointerException("surveyPageId parameter can not be null");
-            }
-
-            return removeSurveyPageRequestParameter;
-        };
-
-        /**
-         * Convenience method that sets the request parameter for the survey page create service request.
-         *
-         * @private
-         * @method
-         * @param {EScreeningDashboardApp.models.SurveyPage} surveyPage Represents the Survey Page domain object to update.
-         * @returns {{payload: EScreeningDashboardApp.models.SurveyPage}} A create parameter request object.
-         */
-        var setCreateSurveyPageRequestParameter = function (surveyPage) {
-            var createSurveyPageRequestParameter = {
-                "payload": surveyPage
-            };
-
-
-            return createSurveyPageRequestParameter;
         };
 
         /**
@@ -275,7 +189,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
              */
             var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
+            if (response === null) {
                 throw new Error("handleSurveyPageServiceQueryResponse() method: Response is null.");
             }
 
@@ -294,7 +208,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          * @returns {*} A transformed Survey payload object.
          * @throws {Error} If the jsonResponse can not be property transformed.
          */
-        var handleSurveyPageSaveResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
+        var handleSurveyPageUpdateResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
             /**
              * Represents the response of a service call request.
              *
@@ -315,8 +229,6 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
         return {
             query: query,
             update: update,
-            create: create,
-            setCreateSurveyPageRequestParameter: setCreateSurveyPageRequestParameter,
             setQuerySurveyPageSearchCriteria: setQuerySurveyPageSearchCriteria,
             setUpdateSurveyPageRequestParameter: setUpdateSurveyPageRequestParameter
         };

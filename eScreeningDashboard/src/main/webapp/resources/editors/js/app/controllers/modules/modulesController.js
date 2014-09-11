@@ -85,10 +85,8 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
 
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
-    	console.log('Transition to Add/Edit Modules');
-        $scope.selectedSurveyUIObject = survey;
-        console.log(JSON.stringify(survey));
-        $state.go('modules.detail.questions.blank', {selectedSurveyId: survey.id});
+    	$scope.selectedSurveyUIObject = survey;
+        $state.go('modules.detail', {selectedSurveyId: survey.id});
     };
 
     $scope.addModule = function(){

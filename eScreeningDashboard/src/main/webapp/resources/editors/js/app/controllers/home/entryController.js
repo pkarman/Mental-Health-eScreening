@@ -50,7 +50,6 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
 
             $scope.goToModuleEdit = function(){
                 //alert('This navigation is not implemented in this demonstrator.');
-            	console.log('ENTRY:: Edit Module Selection View Selected.');
             	$state.go('modules.list');
             };
 

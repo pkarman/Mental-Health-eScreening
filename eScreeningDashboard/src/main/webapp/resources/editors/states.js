@@ -232,10 +232,11 @@ angular.module('Editors')
 
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    /*if(response.isSuccessful() && Object.isArray(response.getPayload())){
-                                        response.getPayload().push($rootScope.addQuestion());
-                                    }*/
-                                    deferred.resolve(response.getPayload());
+                                    var pageQuestionItems = (Object.isArray(response.getPayload()))? response.getPayload() : [];
+                                    if (pageQuestionItems.length === 0) {
+                                        pageQuestionItems.push(response.getPayload());
+                                    }
+                                    deferred.resolve(pageQuestionItems);
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                     deferred.reject(responseError.getMessage());
@@ -263,16 +264,29 @@ angular.module('Editors')
                 .state('modules.detail.questions.blank',{
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false},
+                    data:{displayName:false}/*,
                     resolve: {
+                        surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
+                            var selectedSurveyUIObject = null;
+
+                            if(Object.isArray($rootScope.surveyUIObjects)) {
+                                $rootScope.surveyUIObjects.forEach(function (surveyUIObject) {
+                                    if(surveyUIObject.id === parseInt($stateParams.selectedSurveyId)) {
+                                        selectedSurveyUIObject = surveyUIObject;
+                                    }
+                                });
+                            }
+
+                            return selectedSurveyUIObject;
+                        }],
                         pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
                             var deferred = $q.defer();
 
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    /*if(response.isSuccessful() && Object.isArray(response.getPayload())){
+                                    /if(response.isSuccessful() && Object.isArray(response.getPayload())){
                                         response.getPayload().push($rootScope.addQuestion());
-                                    }*/
+                                    }/
                                     deferred.resolve(response.getPayload());
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -285,7 +299,7 @@ angular.module('Editors')
                             return deferred.promise;
                         }]
                     },
-                    controller: 'addEditModuleController'
+                    controller: 'addEditModuleController'*/
                 })
 
                 .state('modules.detail.questions.editSelectOne',{

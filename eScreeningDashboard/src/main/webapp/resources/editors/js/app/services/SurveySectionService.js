@@ -46,7 +46,7 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
                 if(response.isSuccessful()){
                     if(Object.isArray(response.getPayload())){
                        if(response.getPayload().length === 1){
-                           payload = EScreeningDashboardApp.models.SurveySectionsTransformer.transformJSONPayload(response.getPayload()[0].toJSON(), null);
+                           payload = EScreeningDashboardApp.models.SurveySectionTransformer.transformJSONPayload({surveySection: response.getPayload()[0].toJSON()}, null);
                            response = new BytePushers.models.Response(response.getStatus(), payload);
                        }
                     }

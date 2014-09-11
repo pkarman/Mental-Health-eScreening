@@ -55,7 +55,7 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageTransformer.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/SurveysPagesTransformer.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPagesTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveysTransformer.js"></script>
