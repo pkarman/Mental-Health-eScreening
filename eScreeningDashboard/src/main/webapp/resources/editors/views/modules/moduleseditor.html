@@ -68,6 +68,7 @@
               <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
               <button class="btn btn-success btn-sm" ng-click="addPageBreak();" ><span class="glyphicon glyphicon-plus"></span> Page Break</button> <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
           </div>
+<<<<<<< HEAD
           
         <!-- page-divider-container Start -->          
         <div class="page-divider-container">
@@ -80,11 +81,14 @@
         </div>
         <!-- page-divider-container End -->                   
         <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
+=======
+        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="pageQuestionItems">
+>>>>>>> abd868f0766effc78d410e2d10ae5bcaa564a9ad
           <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems">
             <div class="form-inline">
                 <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;
-                <span class="badge"  ng-show="item.isQuestion()" ng-click="editQuestion(question);">Var: {{item.getDescription()}} | </span>
-                <span style="font-size:12px;">{{item.getType()}} <span ng-show="item.isPage()">{{item.getItem().getPageNumber()}}</span></span>
+                <span class="badge"  ng-show="item.isQuestion()" ng-click="editQuestion(item.getItem().toUIObject());">Var: {{item.getDescription()}}</span>
+                <span style="font-size:12px;"><span ng-show="item.isQuestion()"> | </span>{{item.getType()}} <span ng-show="item.isPage()">{{item.getItem().getPageNumber()}}</span></span>
                 <div class="form-group pull-right">
                     <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deletePageQuestionItem(item);"/>
                 </div>

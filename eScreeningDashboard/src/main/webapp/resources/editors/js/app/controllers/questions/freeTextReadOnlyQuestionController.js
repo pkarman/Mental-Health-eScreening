@@ -10,6 +10,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
     $scope.showMinValueField = (Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) && $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.showMaxValueField = (Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) && $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.parentSave = $scope.save;
+    $scope.parentResetForm = $scope.resetForm;
     var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
     var convertFieldValueToNumber = function (validationUIObject) {
         if (Object.isDefined(validationUIObject) && Object.isDefined(validationUIObject.value)) {
@@ -83,6 +84,26 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
 
         $scope.parentSave();
 	};
+
+    $scope.resetForm = function () {
+        $scope.currentlySelectedTextFormatDropDownMenu = null;
+        $scope.exactLengthField.selected = false;
+        $scope.exactLengthField.value = null;
+        $scope.minLengthField.selected = false;
+        $scope.minLengthField.value = null;
+        $scope.maxLengthField.selected = false;
+        $scope.maxLengthField.value = null;
+        $scope.minValueField.selected = false;
+        $scope.minValueField.value = null;
+        $scope.maxValueField.selected = false;
+        $scope.maxValueField.value = null;
+        $scope.showExactLengthField = false;
+        $scope.showMinLengthField = false;
+        $scope.showMaxLengthField = false;
+        $scope.showMinValueField = false;
+        $scope.showMaxValueField = false;
+        $scope.parentResetForm();
+    };
 	
 	$scope.cancel = function(){
 		// Not sure exactly what we need to be doing here quite yet, either.

@@ -2,8 +2,21 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
-    $rootScope.selectedQuestion = {};
+    var createModule = function(){
+            return new EScreeningDashboardApp.models.Survey({
+                title:'Enter Module Title',
+                description:'Enter Module Description'
+            });
+        },
+        createQuestion = function(){
+            return new EScreeningDashboardApp.models.Question();
+        };
+    //$rootScope.selectedQuestion = {};
     $scope.pageQuestionItems = [];
+    $scope.selectedSurveyUIObject = createModule().toUIObject();
+    $scope.createModule = createModule;
+    $scope.createQuestion = createQuestion;
+    $scope.formReset = false;
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         if (newValue === oldValue) {
@@ -47,16 +60,28 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-    $scope.createModule = function(){
-        return new EScreeningDashboardApp.models.Survey({
-            title:'Enter Module Title',
-            description:'Enter Module Description'
-        });
+    $scope.resetForm = function(stateName, stateParams) {
+        $scope.selectedQuestionUIObject = createQuestion().toUIObject();
+        $scope.formReset = true;
+
+        if(Object.isDefined(stateName)) {
+            if(Object.isDefined(stateParams)) {
+                $state.go(stateName, stateParams);
+            } else {
+                $state.go(stateName);
+            }
+        }
     };
 
-    $rootScope.createQuestion = function(){
-        return new EScreeningDashboardApp.models.Question();
-    };
+
+
+
+
+
+
+
+
+
 
     $rootScope.createBattery = function(){
         return {
@@ -93,8 +118,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         return q;
     };
 
-    $rootScope.battery = $rootScope.createBattery();
-    $scope.selectedSurveyUIObject = $scope.createModule().toUIObject();
+    //$rootScope.battery = $rootScope.createBattery();
+
 
     /*$scope.addQuestion = function(){
         $scope.selectedQuestion = $rootScope.createQuestion();
@@ -102,7 +127,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };*/
 
     $scope.editQuestion = function(q){
-        $scope.selectedQuestion = q;
+        //$scope.selectedQuestion = q;
         $scope.goToQuestions();
     };
 
@@ -112,7 +137,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.goToQuestions = function() {
         //$state.go('modules.detail.questions.editReadOnly');
-        $scope.selectedQuestionUIObject = $rootScope.createQuestion().toUIObject();
+        $scope.selectedQuestionUIObject = createQuestion().toUIObject();
         $state.go('modules.detail.questions.blank');
     };
 
