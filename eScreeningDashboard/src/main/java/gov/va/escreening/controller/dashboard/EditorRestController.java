@@ -75,7 +75,7 @@ public class EditorRestController {
     @ResponseBody
     public Response retrieveSurveyPages(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
         // Call service class here instead of hard coding it.
-        List<SurveyPageInfo> surveyPages = new ArrayList<SurveyPageInfo>(); //editorsViewDelegate.getSurveyPages(surveyId);
+        List<SurveyPageInfo> surveyPages = editorsViewDelegate.getSurveyPages(surveyId);
         Map surveyPageInfoItems = new HashMap();
         surveyPageInfoItems.put("surveyPages", surveyPages);
 
