@@ -3,7 +3,7 @@
         <div class="form-inline form-group pull-right">
             <label for="selType" class="col-sm-5 form-label">Question Type</label>
             <div class="col-sm-5-offset col-sm-7">
-                <select id="selType" ng-model="selectedQuestionUIObject.type" ng-options="option.name for option in questionTypeDropDownMenuOptions track by option.name" name="selType" class="form-control">
+                <select id="selType" ng-model="questionTypeDropDownMenu" ng-options="option.name for option in questionTypeDropDownMenuOptions track by option.name" name="selType" class="form-control">
                     <option value=""> -- Choose Question Type --</option>
                 </select>
             </div>

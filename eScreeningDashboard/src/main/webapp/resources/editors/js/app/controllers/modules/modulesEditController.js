@@ -84,9 +84,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
         };
 
-
-
-
     $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
     $scope.questions = []; //(Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
     $scope.pageQuestionItems = (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems;
@@ -118,7 +115,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     $scope.editQuestion = function(questionUIObject){
         $scope.selectedQuestionUIObject = questionUIObject;
 
-        switch ($scope.selectedQuestionUIObject.type.name){
+        switch ($scope.selectedQuestionUIObject.type){
             case 'freeText':
             case 'readOnly':
                 $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});

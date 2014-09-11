@@ -3,16 +3,16 @@
  */
 Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'questionTypeDropDownMenuOptions', function($rootScope, $scope, $state, questionTypeDropDownMenuOptions){
     var getDefaultQuestionType = function (selectQuestionUIObject, dropDownMenuOptions) {
-            var defaultDropDownMenuOption = null;
+            var defaultDropDownMenuOptionIndex = -1;
 
-            dropDownMenuOptions.some(function(dropDownMenuOption) {
+            dropDownMenuOptions.some(function(dropDownMenuOption, index) {
                 if(dropDownMenuOption.name === selectQuestionUIObject.type){
-                    defaultDropDownMenuOption = dropDownMenuOption.name;
+                    defaultDropDownMenuOptionIndex = index;
                     return true;
                 }
             });
 
-            return defaultDropDownMenuOption;
+            return defaultDropDownMenuOptionIndex;
         },
         getArrayOfNames = function(dropDownMenuOptions) {
             var names = [];
@@ -25,15 +25,17 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
             return names;
         };
 
+    var dropDownMenuOptionIndex = getDefaultQuestionType($scope.selectedQuestionUIObject, questionTypeDropDownMenuOptions);
+    $scope.questionTypeDropDownMenu = (dropDownMenuOptionIndex >= 0)? questionTypeDropDownMenuOptions[dropDownMenuOptionIndex]: null;
     $scope.questionTypeDropDownMenuOptions = questionTypeDropDownMenuOptions;
-    $scope.selectedQuestionUIObject.type = getDefaultQuestionType($scope.selectedQuestionUIObject, $scope.questionTypeDropDownMenuOptions);
 
-    $scope.$watch( 'selectedQuestionUIObject.type', function( newType, oldType ) {
-        if (newType === oldType) {
+
+    $scope.$watch( 'questionTypeDropDownMenu', function( currentlySelectedQuestionType, previouslySelectedQuestionType ) {
+        if (currentlySelectedQuestionType === previouslySelectedQuestionType) {
             return;
         } else {
             var url = 'modules.detail.questions.editReadOnly';
-            switch(newType.name){
+            switch(currentlySelectedQuestionType.display){
                 case "Free/Read-Only Text":
                     url = 'modules.detail.questions.editReadOnly';
                     break;
@@ -56,7 +58,8 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
                     url = 'modules.detail.questions.editInstruction';
                     break;
             }
-            $state.go(url);
+            $scope.selectedQuestionUIObject.type = currentlySelectedQuestionType.name;
+            $state.go(url, {selectedQuestionId: $scope.selectedQuestionUIObject.id});
         }
 
     }, true);

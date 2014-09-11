@@ -263,13 +263,15 @@ angular.module('Editors')
                             //TODO: Need to dynamically pull a unique list of validation type from the
                             //TODO: measure_validation table where measure_validation.validation_id = 1.
                             return [
-                                {id: 0, name: "Free/Read-Only Text"},
-                                {id: 1, name: "Select Single"},
-                                {id: 2, name: "Select Multiple"},
-                                {id: 3, name: "Select Single Matrix"},
-                                {id: 4, name: "Select Multiple Matrix"},
-                                {id: 5, name: "Table Question"},
-                                {id: 6, name: "Instructions"}
+                                {id: 0, name: "freeText", display: "Free/Read-Only Text"},
+                                {id: 1, name: "readOnly", display: "Free/Read-Only Text"},
+                                {id: 2, name: "selectOne", display: "Select Single"},
+                                {id: 3, name: "selectMulti", display: "Select Multiple"},
+                                {id: 4, name: "selectOneMatrix", display: "Select Single Matrix"},
+                                {id: 5, name: "selectMultiMatrix", display: "Select Multiple Matrix"},
+                                {id: 6, name: "tableQuestion", display: "Table Question"},
+                                {id: 7, name: "instruction", display: "Instructions"}
+
                             ];
                         }]
                     },
