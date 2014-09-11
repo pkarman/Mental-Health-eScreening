@@ -232,9 +232,9 @@ angular.module('Editors')
 
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    if(response.isSuccessful() && Object.isArray(response.getPayload())){
+                                    /*if(response.isSuccessful() && Object.isArray(response.getPayload())){
                                         response.getPayload().push($rootScope.addQuestion());
-                                    }
+                                    }*/
                                     deferred.resolve(response.getPayload());
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -270,9 +270,9 @@ angular.module('Editors')
 
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    if(response.isSuccessful() && Object.isArray(response.getPayload())){
+                                    /*if(response.isSuccessful() && Object.isArray(response.getPayload())){
                                         response.getPayload().push($rootScope.addQuestion());
-                                    }
+                                    }*/
                                     deferred.resolve(response.getPayload());
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));

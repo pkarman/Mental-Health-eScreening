@@ -90,7 +90,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
 
     $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
-    $scope.questions = (Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
+    $scope.questions = []; //(Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
     $scope.pageQuestionItems = pageQuestionItems;
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
