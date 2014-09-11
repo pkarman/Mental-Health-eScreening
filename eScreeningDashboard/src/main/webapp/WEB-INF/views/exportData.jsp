@@ -327,7 +327,7 @@ $.ajax({
         <h4 class="modal-title" id="myModalLabel">Exporting Identified Data Confirmation</h4>
       </div>
       <div class="modal-body">
-        <div class="alert alertType" id="alertType">Your are about exporting <strong id="alertData"> - </strong>, Are you sure you want to processed?</div>        
+        <div class="alert alertType" id="alertType">Your are about exporting <strong id="alertData"> - </strong>, Are you sure you want to proceed?</div>        
         <div class="alert alert-info">Please enter a comment for this export and click ok to download the export file. <br />Please do not do any operations while downland is in progress.</div>
           
 		  <div class="form-group">
