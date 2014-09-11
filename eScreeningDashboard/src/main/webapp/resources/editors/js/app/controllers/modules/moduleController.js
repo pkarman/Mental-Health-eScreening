@@ -24,8 +24,11 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $scope.pageQuestionItems.push(pageQuestionItem);
     };
 
-    $scope.addQuestion = function() {
+    $scope.addQuestion = function(someQuestion) {
+        var question = (Object.isDefined(someQuestion))? someQuestion: new EScreeningDashboardApp.models.Question(null),
+            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem(question);
 
+        $scope.pageQuestionItems.push(pageQuestionItem);
     };
 
     $scope.deletePageQuestionItem = function (pageQuestionItem) {

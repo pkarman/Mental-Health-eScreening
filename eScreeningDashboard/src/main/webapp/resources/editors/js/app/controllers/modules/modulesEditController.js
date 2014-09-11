@@ -1,7 +1,7 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', 'surveyUIObject', function($rootScope, $scope, $state, SurveyService, QuestionService, questions, surveyUIObject){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', /*'questions', */'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, /*questions, */surveyUIObject, pageQuestionItems){
     var tmpList = [],
         createSurvey = function(selectedModuleDomainObject) {
             SurveyService.create(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
@@ -90,7 +90,8 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
 
     $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
-    $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
+    $scope.questions = (Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
+    $scope.pageQuestionItems = pageQuestionItems;
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);

@@ -44,7 +44,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
 
             service.query(querySurveySearchCriteria, function (jsonResponse) {
                 var existingSurveys = handleSurveyQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveysTransformer, null);
-                deferred.resolve((existingSurveys.length === 0)? existingSurveys[0]: existingSurveys);
+                deferred.resolve((existingSurveys.length === 1)? existingSurveys[0]: existingSurveys);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 

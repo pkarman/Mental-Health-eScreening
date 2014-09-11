@@ -99,6 +99,7 @@
     
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>

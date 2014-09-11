@@ -14,10 +14,10 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          *
          * @private
          * @method
-         * @param {{userId: *, surveyId: string}} querySurveySearchCriteria Represents the search criteria to query the SurveyPageService.
+         * @param {{userId: *, surveyId: string}} querySurveyPageSearchCriteria Represents the search criteria to query the SurveyPageService.
          * @returns {promise} A promise.
          */
-        var query = function (querySurveySearchCriteria) {
+        var query = function (querySurveyPageSearchCriteria) {
                 /**
                  * Represents the angular Defer that is used for asynchronous service calls.
                  *
@@ -27,7 +27,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                  */
                 var deferred = $q.defer(),
                     service = $resource (
-                        "services/:surveys/:surveyId",
+                        "/services/surveys/:surveyId/pages.json",
                         {},
                         {
                             query: {
@@ -42,9 +42,19 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                         }
                     );
 
-                service.query(querySurveySearchCriteria, function (jsonResponse) {
-                    var existingSurveys = handleSurveyQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveysTransformer, null);
-                    deferred.resolve((existingSurveys.length === 0)? existingSurveys[0]: existingSurveys);
+                service.query(querySurveyPageSearchCriteria, function (jsonResponse) {
+                    var response = handleSurveyPageQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveysTransformer, null),
+                        payload;
+
+                    if(response.isSuccessful()){
+                        if(Object.isArray(response.getPayload())){
+                            if(response.getPayload().length === 1){
+                                payload = EScreeningDashboardApp.models.SurveyTransformer.transformJSONPayload(response.getPayload()[0].toJSON(), null);
+                                response = new BytePushers.models.Response(response.getStatus(), payload);
+                            }
+                        }
+                    }
+                    deferred.resolve(response);
                 }, function (reason) {
                     var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -67,7 +77,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
              *
              * @param {{surveyId: String, survey: EScreeningDashboardApp.models.Survey, surveys: String }}  saveSurveyRequestParameters Represents the save parameters for the request.
              */
-            update = function (updateSurveyRequestParameter) {
+            update = function (updateSurveyPageRequestParameter) {
 
                 /**
                  * Represents the angular Defer that is used for asynchronous service calls.
@@ -85,14 +95,14 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                      * @type {Resource}
                      */
                     service = $resource(
-                        "services/:surveys/:surveyId",
+                        "services/surveys/:surveyId/pages",
                         {},
                         {
                             save: {
                                 method: 'PUT',
                                 params: {
-                                    "surveyId": updateSurveyRequestParameter.surveyId,
-                                    "surveys": updateSurveyRequestParameter.surveys
+                                    /*"surveyId": updateSurveyRequestParameter.surveyId,
+                                    "surveys": updateSurveyRequestParameter.surveys*/
                                 },
                                 isArray: false,
                                 headers:{
@@ -103,8 +113,8 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                         }
                     );
 
-                service.save(updateSurveyRequestParameter.survey.toJSON(), function (jsonResponse) {
-                    var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
+                service.save(updateSurveyPageRequestParameter.survey.toJSON(), function (jsonResponse) {
+                    var response = handleSurveyPageSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
                     deferred.resolve(response);
                 }, function (reason) {
                     deferred.reject(reason);
@@ -117,7 +127,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
              *
              * @param {{surveyId: String, survey: EScreeningDashboardApp.models.Survey, surveys: String }}  saveSurveyRequestParameters Represents the save parameters for the request.
              */
-            create = function (updateSurveyRequestParameter) {
+            create = function (updateSurveyPageRequestParameter) {
 
                 /**
                  * Represents the angular Defer that is used for asynchronous service calls.
@@ -141,7 +151,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                             save: {
                                 method: 'PUT',
                                 params: {
-                                    "survey": updateSurveyRequestParameter.survey
+                                    "survey": updateSurveyPageRequestParameter.survey
                                 },
                                 isArray: false,
                                 headers:{
@@ -152,145 +162,95 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                         }
                     );
 
-                service.save(updateSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
-                    var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
+                service.save(updateSurveyPageRequestParameter.payload.toJSON(), function (jsonResponse) {
+                    var response = handleSurveyPageSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
                     deferred.resolve(response.getPayload());
                 }, function (reason) {
                     deferred.reject(reason);
                 });
 
                 return deferred.promise;
-            },
-            /**
-             * Convenience method that supports removing an Survey via the SurveyPageService.
-             *
-             * @param {{surveyId: string}}  removeSurveyRequestParameters Represents the save parameters for the request.
-             */
-            remove = function (removeSurveyRequestParameters) {
-                /**
-                 * Represents the angular Defer that is used for asynchronous service calls.
-                 *
-                 * @private
-                 * @field
-                 * @type {Defer}
-                 */
-                var deferred = $q.defer(),
-                    /**
-                     * Represents the angular Resource object that is used for asynchronous service calls.
-                     *
-                     * @private
-                     * @field
-                     * @type {Resource}
-                     */
-                    service = $resource(
-                        "services/:surveys/:surveyId",
-                        {},
-                        {
-                            save: {
-                                method: 'DELETE',
-                                params: {
-                                    "surveyId": removeSurveyRequestParameters.surveyId
-                                },
-                                isArray: false
-                            }
-                        }
-                    );
-
-                service.save(removeSurveyRequestParameters, function (jsonResponse) {
-                    var response = handleSurveyRemoveResponse(jsonResponse);
-                    deferred.resolve(response);
-                }, function (reason) {
-                    deferred.reject(reason);
-                });
-
-                return deferred.promise;
             };
 
         /**
-         * Convenience method that sets the request parameter for the survey update service request.
+         * Convenience method that sets the request parameter for the survey page update service request.
          *
          * @private
          * @method
-         * @param {EScreeningDashboardApp.models.Survey} survey Represents the Survey domain object to update.
-         * @returns {{surveyId: *, surveys: String}} A search criteria object.
+         * @param {EScreeningDashboardApp.models.SurveyPage} surveyPage Represents the Survey domain object to update.
+         * @returns {{surveyPageId: *, surveyPage: EScreeningDashboardApp.models.SurveyPage, surveys: String}} A search criteria object.
          */
-        var setUpdateSurveyRequestParameter = function (survey) {
-            var saveSurveyRequestParameter = {
-                "surveyId": survey.getId(),
-                "survey": survey,
+        var setUpdateSurveyPageRequestParameter = function (surveyPage) {
+            var saveSurveyPageRequestParameter = {
+                "surveyPageId": surveyPage.getId(),
+                "surveyPage": surveyPage,
                 "surveys": "surveys"
             };
 
-            if (!Object.isDefined(survey.getId())) {
-                delete saveSurveyRequestParameter.surveyId;
-                saveSurveyRequestParameter.surveys = saveSurveyRequestParameter.surveys + ".json";
+            if (!Object.isDefined(surveyPage.getId())) {
+                delete saveSurveyPageRequestParameter.surveyId;
+                saveSurveyPageRequestParameter.surveys = saveSurveyPageRequestParameter.surveys + ".json";
             } else {
-                saveSurveyRequestParameter.surveyId = saveSurveyRequestParameter.surveyId + ".json";
+                saveSurveyPageRequestParameter.surveyPageId = saveSurveyPageRequestParameter.surveyPageId + ".json";
             }
-            return saveSurveyRequestParameter;
+            return saveSurveyPageRequestParameter;
         };
 
         /**
-         * Convenience method that sets the request parameter for the survey remove service request.
+         * Convenience method that sets the request parameter for the survey page remove service request.
          *
          * @private
          * @method
-         * @param {String} surveyId Represent the Survey id to save.
-         * @returns {{surveyId: *, surveys: String}} A search criteria object.
+         * @param {String} surveyPageId Represent the Survey id to save.
+         * @returns {{surveyPageId: *}} A search criteria object.
          */
-        var setRemoveSurveyRequestParameter = function (surveyId) {
-            var removeSurveyRequestParameter = {
-                "surveyId": surveyId,
-                "surveys": "surveys"
+        var setRemoveSurveyPageRequestParameter = function (surveyPageId) {
+            var removeSurveyPageRequestParameter = {
+                "surveyPageId": surveyPageId
             };
 
-            if (!Object.isDefined(surveyId)) {
-                throw new BytePushers.exceptions.NullPointerException("surveyId parameter can not be null");
+            if (!Object.isDefined(surveyPageId)) {
+                throw new BytePushers.exceptions.NullPointerException("surveyPageId parameter can not be null");
             }
 
-            return removeSurveyRequestParameter;
+            return removeSurveyPageRequestParameter;
         };
 
         /**
-         * Convenience method that sets the request parameter for the survey create service request.
+         * Convenience method that sets the request parameter for the survey page create service request.
          *
          * @private
          * @method
-         * @param {EScreeningDashboardApp.models.Survey} survey Represents the Survey domain object to update.
-         * @returns {{payload: EScreeningDashboardApp.models.Survey, survey: String}} A create parameter request object.
+         * @param {EScreeningDashboardApp.models.SurveyPage} surveyPage Represents the Survey Page domain object to update.
+         * @returns {{payload: EScreeningDashboardApp.models.SurveyPage}} A create parameter request object.
          */
-        var setCreateSurveyRequestParameter = function (survey) {
-            var createSurveyRequestParameter = {
-                "payload": survey,
-                "survey": "survey"
+        var setCreateSurveyPageRequestParameter = function (surveyPage) {
+            var createSurveyPageRequestParameter = {
+                "payload": surveyPage
             };
 
 
-            return createSurveyRequestParameter;
+            return createSurveyPageRequestParameter;
         };
 
         /**
-         * Convenience method that sets the search criteria for the survey search service query request.
+         * Convenience method that sets the search criteria for the survey page search service query request.
          *
          * @private
          * @method
          * @param {String} surveyId Represent the user id to search for.
-         * @returns {{surveyId: *, surveys: String}} A search criteria object.
+         * @returns {{surveyId: *}} A search criteria object.
          */
-        var setQuerySurveySearchCriteria = function (surveyId) {
-            var findSurveySearchCriteria = {
-                "surveyId": surveyId,
-                "surveys": "surveys"
+        var setQuerySurveyPageSearchCriteria = function (surveyId) {
+            var findSurveyPageSearchCriteria = {
+                "surveyId": surveyId
             };
 
             if (!Object.isDefined(surveyId)) {
-                delete findSurveySearchCriteria.surveyId;
-                findSurveySearchCriteria.surveys = findSurveySearchCriteria.surveys + ".json";
-            } else {
-                findSurveySearchCriteria.surveyId = findSurveySearchCriteria.surveyId + ".json";
+                throw new Error("surveyId must be defined.");
             }
 
-            return findSurveySearchCriteria;
+            return findSurveyPageSearchCriteria;
         };
 
         /**
@@ -305,7 +265,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          * @returns {*} A transformed Survey payload object.
          * @throws {Error} If the jsonResponse can not be property transformed.
          */
-        var handleSurveyQueryResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
+        var handleSurveyPageQueryResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
             /**
              * Represents the response of a service call request.
              *
@@ -313,32 +273,18 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
             if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
                 throw new Error("handleSurveyPageServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
          * Convenience method that handles the Survey Service save response by returning a fully
-         * transformed Survey payload object.
+         * transformed Survey Page payload object.
          *
          * @private
          * @method
@@ -348,7 +294,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          * @returns {*} A transformed Survey payload object.
          * @throws {Error} If the jsonResponse can not be property transformed.
          */
-        var handleSurveySaveResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
+        var handleSurveyPageSaveResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
             /**
              * Represents the response of a service call request.
              *
@@ -365,60 +311,13 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
             return response;
         };
 
-        /**
-         * Convenience method that handles the Survey Service save response by returning a fully
-         * transformed Survey payload object.
-         *
-         * @private
-         * @method
-         * @param {String} jsonResponse Represents the Restful Survey Service query response.
-         * @param {String} userId Represents the User who made the service query request.
-         * @returns {*} A transformed Survey payload object.
-         * @throws {Error} If the jsonResponse can not be property transformed.
-         */
-        var handleSurveyRemoveResponse = function (jsonResponse, userId) {
-            /**
-             * Represents the response of a service call request.
-             *
-             * @private
-             * @field
-             * @type {EScreeningDashboardApp.models.Response}
-             */
-
-            if (!jsonResponse.status.status == 'succeeded'){
-                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
-                    /**
-                     * Represents the transformed payload object of a service call request.
-                     *
-                     * @private
-                     * @field
-                     * @type {Object}
-                     */
-                    payload = null;
-
-                if (response !== null) {
-                    if (response.isSuccessful()) {
-                        payload = response.getPayload();
-                    } else {
-                        throw new Error(response.getMessage());
-                    }
-                } else {
-                    throw new Error("handleSurveyPageServiceQueryResponse() method: Response is null.");
-                }
-            }
-
-            return response;
-        };
-
         // Expose the public SurveyPageService API to the rest of the application.
         return {
             query: query,
             update: update,
-            remove: remove,
             create: create,
-            setCreateSurveyRequestParameter: setCreateSurveyRequestParameter,
-            setQuerySurveySearchCriteria: setQuerySurveySearchCriteria,
-            setUpdateSurveyRequestParameter: setUpdateSurveyRequestParameter,
-            setRemoveSurveyRequestParameter: setRemoveSurveyRequestParameter
+            setCreateSurveyPageRequestParameter: setCreateSurveyPageRequestParameter,
+            setQuerySurveyPageSearchCriteria: setQuerySurveyPageSearchCriteria,
+            setUpdateSurveyPageRequestParameter: setUpdateSurveyPageRequestParameter
         };
     }]);

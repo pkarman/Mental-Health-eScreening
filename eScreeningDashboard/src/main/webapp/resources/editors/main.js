@@ -14,6 +14,7 @@ var Editors = angular.module("Editors",
         'angularUtils.directives.uiBreadcrumbs',
         'EscreeningDashboardApp.services.battery',
         'EscreeningDashboardApp.services.survey',
+        'EscreeningDashboardApp.services.surveypage',
         'EscreeningDashboardApp.services.surveysection',
         'EscreeningDashboardApp.services.question'
     ]);

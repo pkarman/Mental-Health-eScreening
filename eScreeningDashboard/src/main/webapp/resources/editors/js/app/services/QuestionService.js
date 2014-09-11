@@ -47,7 +47,7 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
 
             service.query(queryQuestionSearchCriteria, function (jsonResponse) {
                 var existingQuestions = handleQuestionQueryResponse(jsonResponse, EScreeningDashboardApp.models.QuestionsTransformer, null);
-                deferred.resolve((existingQuestions.length === 0)? existingQuestions[0]: existingQuestions);
+                deferred.resolve((existingQuestions.length === 1)? existingQuestions[0]: existingQuestions);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -103,7 +103,7 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
 
             service.query(setQueryBySurveyIdSearchCriteria, function (jsonResponse) {
                 var existingQuestions = handleQuestionQueryResponse(jsonResponse, EScreeningDashboardApp.models.QuestionsTransformer, null);
-                deferred.resolve((existingQuestions.length === 0)? existingQuestions[0]: existingQuestions);
+                deferred.resolve((existingQuestions.length === 1)? existingQuestions[0]: existingQuestions);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -212,8 +212,8 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 );
 
             service.save(updateQuestionRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var existingQuestion = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
-                deferred.resolve(existingQuestion);
+                var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
+                deferred.resolve(resposne);
             }, function (reason) {
                 deferred.reject(reason);
             });

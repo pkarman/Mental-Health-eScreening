@@ -211,15 +211,38 @@ angular.module('Editors')
 
                             return selectedSurveyUIObject;
                         }],
-                        questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
+                        /*questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
                             var deferred = $q.defer();
 
-                            QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.selectedSurveyId)).then(function (existingSurveys){
-                                deferred.resolve(existingSurveys);
-                            }, function(responseError) {
-                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                deferred.reject(responseError.getMessage());
-                            });
+                            if($stateParams.selectedSurveyId > -1) {
+                                QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.selectedSurveyId)).then(function (existingSurveys){
+                                    deferred.resolve(existingSurveys);
+                                }, function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
+                            } else {
+                                deferred.resolve([]);
+                            }
+
+                            return deferred.promise;
+                        }],*/
+                        pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
+                            var deferred = $q.defer();
+
+                            if($stateParams.selectedSurveyId > -1) {
+                                SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
+                                    if(response.isSuccessful() && Object.isArray(response.getPayload())){
+                                        response.getPayload().push($rootScope.addQuestion());
+                                    }
+                                    deferred.resolve(response.getPayload());
+                                }, function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
+                            } else {
+                                deferred.resolve([]);
+                            }
 
                             return deferred.promise;
                         }]
@@ -241,6 +264,27 @@ angular.module('Editors')
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
                     data:{displayName:false},
+                    resolve: {
+                        pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
+                            var deferred = $q.defer();
+
+                            if($stateParams.selectedSurveyId > -1) {
+                                SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
+                                    if(response.isSuccessful() && Object.isArray(response.getPayload())){
+                                        response.getPayload().push($rootScope.addQuestion());
+                                    }
+                                    deferred.resolve(response.getPayload());
+                                }, function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
+                            } else {
+                                deferred.resolve([]);
+                            }
+
+                            return deferred.promise;
+                        }]
+                    },
                     controller: 'addEditModuleController'
                 })
 
