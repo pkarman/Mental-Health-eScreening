@@ -258,6 +258,8 @@ public class SurveyServiceImpl implements SurveyService {
 		
 		List<SurveyPage> surveyPageList = new ArrayList<SurveyPage>();
 		
+		String surveyPageTitle = survey.getSurveySection().getName();
+		
 		for(SurveyPageInfo surveyPageInfo : surveyPageInfos)
 		{
 			SurveyPage surveyPage = null;
@@ -273,7 +275,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 			surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
 			surveyPage.setDescription(surveyPageInfo.getDescription());
-			surveyPage.setTitle(surveyPageInfo.getTitle());
+			surveyPage.setTitle(surveyPageTitle);
 			surveyPage.setSurveyPageId(surveyPageInfo.getId());
 			if (surveyPageInfo.getDateCreated()==null)
 			{
