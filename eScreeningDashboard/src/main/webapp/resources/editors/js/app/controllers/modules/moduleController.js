@@ -28,7 +28,12 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         var question = (Object.isDefined(someQuestion))? someQuestion: new EScreeningDashboardApp.models.Question(null),
             pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem(question);
 
+        if($scope.pageQuestionItems.length === 0) {
+           $scope.addPageBreak();
+        }
+
         $scope.pageQuestionItems.push(pageQuestionItem);
+
     };
 
     $scope.deletePageQuestionItem = function (pageQuestionItem) {
@@ -42,8 +47,6 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-
-
     $scope.createModule = function(){
         return new EScreeningDashboardApp.models.Survey({
             title:'Enter Module Title',
@@ -52,18 +55,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $rootScope.createQuestion = function(){
-        return {
-            measureId:null,
-            displayOrder:-1,
-            measureText:"",
-            measureType:"",
-            vistaVariable: "",
-            helpText:"",
-            ppi:false,
-            mha:false,
-            answers:[],
-            validations:[]
-        };
+        return new EScreeningDashboardApp.models.Question();
     };
 
     $rootScope.createBattery = function(){
@@ -104,10 +96,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $rootScope.battery = $rootScope.createBattery();
     $scope.selectedSurveyUIObject = $scope.createModule().toUIObject();
 
-    $scope.addQuestion = function(){
+    /*$scope.addQuestion = function(){
         $scope.selectedQuestion = $rootScope.createQuestion();
         $scope.goToQuestions();
-    };
+    };*/
 
     $scope.editQuestion = function(q){
         $scope.selectedQuestion = q;
@@ -120,6 +112,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.goToQuestions = function() {
         //$state.go('modules.detail.questions.editReadOnly');
+        $scope.selectedQuestionUIObject = $rootScope.createQuestion().toUIObject();
         $state.go('modules.detail.questions.blank');
     };
 

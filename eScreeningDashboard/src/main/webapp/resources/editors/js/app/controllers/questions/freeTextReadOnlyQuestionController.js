@@ -1,7 +1,7 @@
 /**
  * Created by Bryan Henderson - 08/07/2014
  */
-Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'currentlySelectedTextFormatDropDownMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
+Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'textFormatTypeMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
     $scope.currentlySelectedTextFormatDropDownMenuOptions = textFormatTypeMenuOptions;
     $scope.currentlySelectedTextFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.currentlySelectedTextFormatDropDownMenuOptions);
     $scope.showExactLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) || $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;

@@ -73,9 +73,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             });
         },
         getSelectedQuestionDomainObject = function () {
-            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions),
-                selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
-                selectedQuestionDomainObject;
+            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions);
 
             $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
                 if(index > 0) {
@@ -91,7 +89,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
     $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
     $scope.questions = []; //(Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
-    $scope.pageQuestionItems = pageQuestionItems;
+    $scope.pageQuestionItems = (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems;
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
@@ -120,7 +118,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     $scope.editQuestion = function(questionUIObject){
         $scope.selectedQuestionUIObject = questionUIObject;
 
-        switch ($scope.selectedQuestionUIObject.type){
+        switch ($scope.selectedQuestionUIObject.type.name){
             case 'freeText':
             case 'readOnly':
                 $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
@@ -168,14 +166,21 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         $state.go('modules.detail.questions.blank');
     };
 
+    $scope.addToPageQuestion = function () {
+        var selectedQuestionDomainObject = getSelectedQuestionDomainObject();
+
+        $scope.addQuestion(selectedQuestionDomainObject);
+        $state.go('modules.detail.questions.blank');
+    };
+
     $scope.cancel = function () {
         $state.go('modules.detail.questions.blank');
     };
 
-    $scope.addQuestion = function(){
+    /*$scope.addQuestion = function(){
         $scope.selectedQuestionUIObject = $rootScope.createQuestion();
         $state.go('modules.detail.questions.editReadOnly');
-    };
+    };*/
 
     $scope.deleteQuestion = function(question){
         $rootScope.messageHandler.clearMessages();

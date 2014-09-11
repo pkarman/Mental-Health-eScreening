@@ -52,7 +52,7 @@ EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
         var description;
 
         if(Object.isDefined(page)) {
-            description = page.getTitle();
+            description = ""; // Decided not to show page tiele --> page.getTitle();
         } else if(Object.isDefined(question)){
             description = question.getVariableName();
         }
@@ -65,7 +65,7 @@ EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
         if(Object.isDefined(page)) {
             type = "Page";
         } else if(Object.isDefined(question)){
-            type = question.getType();
+            type = question.getType().name;
         }
 
         return type;

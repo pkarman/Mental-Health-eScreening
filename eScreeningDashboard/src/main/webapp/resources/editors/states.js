@@ -258,6 +258,21 @@ angular.module('Editors')
                     data: {
                         displayName: false
                     },
+                    resolve: {
+                        questionTypeDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: 0, name: "Free/Read-Only Text"},
+                                {id: 1, name: "Select Single"},
+                                {id: 2, name: "Select Multiple"},
+                                {id: 3, name: "Select Single Matrix"},
+                                {id: 4, name: "Select Multiple Matrix"},
+                                {id: 5, name: "Table Question"},
+                                {id: 6, name: "Instructions"}
+                            ];
+                        }]
+                    },
                     controller:'questionsController'
                 })
 
@@ -327,7 +342,7 @@ angular.module('Editors')
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                     },
                     resolve: {
-                        currentlySelectedTextFormatDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
                             //TODO: Need to dynamically pull a unique list of validation type from the
                             //TODO: measure_validation table where measure_validation.validation_id = 1.
                             return [
