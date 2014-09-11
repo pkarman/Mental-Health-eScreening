@@ -60,25 +60,22 @@
   <h4>Questions</h4>
   <div class="row">
     <div class="col-md-4 text-center">
-      
-      
-      <div class="form-inline form-group center-block">
-        <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
-        <button class="btn btn-success btn-sm" ng-click="addPageBreak();" popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."><span class="glyphicon glyphicon-plus"></span> Page Break</button>
-      </div>
-
       <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
+          <div class="form-inline form-group center-block">
+              <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
+              <button class="btn btn-success btn-sm" ng-click="addPageBreak();" ><span class="glyphicon glyphicon-plus"></span> Page Break</button> <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
+          </div>
         <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
-          <li class="list-group-item text-left" ng-repeat="question in questions">
+          <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems">
             <div class="form-inline">
                 <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;
-                <span class="badge" ng-click="editQuestion(question);">Var: {{question.variableName}}</span>
-                <span style="font-size:12px;">| {{question.type}}</span>
+                <span class="badge"  ng-show="item.isQuestion()" ng-click="editQuestion(question);">Var: {{item.getVariableName()}}| </span>
+                <span style="font-size:12px;">{{item.getType()}} <span ng-show="item.isPage()">{{item.getItem().getPageNumber()}}</span></span>
                 <div class="form-group pull-right">
-                    <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deleteQuestion(question);"/>
+                    <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deletePageQuestionItem(item);"/>
                 </div>
-                <div class="form-group pull-right">
-                    <span class="glyphicon glyphicon-edit" ng-click="editQuestion(question);"/>
+                <div class="form-group pull-right" ng-show="item.isQuestion()">
+                    <span class="glyphicon glyphicon-edit" ng-click="editQuestion(item);"/>
                 </div>
             </div>
           </li>

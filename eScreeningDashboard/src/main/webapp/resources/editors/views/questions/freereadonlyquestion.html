@@ -4,8 +4,8 @@
         <form class="form" role="form">
             <div class="form-group">
                 <label for="txtVariableNm" class="form-label"> Variable Name </label>
-                <input type="text" id="txtVariableNm" class="form-control" placeholder="VISTA Variable #"
-                       ng-model="selectedQuestionUIObject.variableName" ng-disabled="!module.clinicalReminder">
+                <input type="text" id="txtVariableNm" class="form-control" placeholder="Variable Name"
+                       ng-model="selectedQuestionUIObject.variableName" ng-disabled="module.id > -1">
             </div>
         </form>
     </div>

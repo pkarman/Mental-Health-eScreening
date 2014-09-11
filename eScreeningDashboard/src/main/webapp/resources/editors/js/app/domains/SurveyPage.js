@@ -72,6 +72,10 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         return pageNumber;
     };
 
+    this.setPageNumber = function(somePageNumber) {
+        pageNumber = somePageNumber;
+    };
+
     this.getCreatedDate = function() {
         return createdDate;
     };
@@ -112,14 +116,14 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         return surveyUIObject;
     };
 };
-EScreeningDashboardApp.models.Survey.toUIObjects = function(surveys) {
-    var surveyUIObjects = [];
+EScreeningDashboardApp.models.SurveyPage.toUIObjects = function(surveyPages) {
+    var surveyPageUIObjects = [];
 
-    if(Object.isDefined(surveys) && Object.isArray(surveys)) {
-        surveys.forEach(function(survey) {
-            surveyUIObjects.push(survey.toUIObject());
+    if(Object.isDefined(surveyPages) && Object.isArray(surveyPages)) {
+        surveyPages.forEach(function(surveyPage) {
+            surveyPageUIObjects.push(surveyPage.toUIObject());
         });
     }
 
-    return surveyUIObjects;
+    return surveyPageUIObjects;
 };

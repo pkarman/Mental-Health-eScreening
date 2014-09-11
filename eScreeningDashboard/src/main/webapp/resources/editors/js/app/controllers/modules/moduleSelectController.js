@@ -71,16 +71,16 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
     $scope.editModule = function(selectedSurveyUIObject){
         $scope.selectedSurveyUIObject = selectedSurveyUIObject;
         selectedSurveyUIObject.questions =  $scope.buildQuestions();
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.questions.blank');
     }
 
     $scope.addModule = function(){
         $scope.selectedSurveyUIObject = $scope.createModule();
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.questions.blank');
     }
 
     $scope.goToAddEdit = function(){
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.questions.blank');
     }
 
     $scope.cancel = function(){

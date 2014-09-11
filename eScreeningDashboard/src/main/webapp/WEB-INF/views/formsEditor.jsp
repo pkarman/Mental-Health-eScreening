@@ -53,6 +53,9 @@
 
     <!-- Domain Object -->
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageTransformer.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveysPagesTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveysTransformer.js"></script>
@@ -64,6 +67,9 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/Question.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
+
+
+    <script type="text/javascript" src="resources/editors/js/app/domains/PageQuestionItem.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Answer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/AnswerTransformer.js"></script>

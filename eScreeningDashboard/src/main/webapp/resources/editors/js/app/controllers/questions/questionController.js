@@ -14,34 +14,38 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', fun
     $scope.qType = $scope.qTypes[0];
 
     $scope.$watch( 'qType', function( qType ) {
-        var url = 'modules.detail.editReadOnlyQuestion';
+        var url = 'modules.detail.questions.editReadOnly';
         switch(qType.name){
-            case 'Free/Read-Only Text':
-                url = 'modules.detail.editReadOnlyQuestion';
+            case "Free/Read-Only Text":
+                url = 'modules.detail.questions.editReadOnly';
                 break;
             case 'Select Single':
-                url = 'modules.detail.editSelectMultipleQuestion';
+                url = 'modules.detail.questions.editSelectOne';
                 break;
             case 'Select Multiple':
-                url = 'modules.detail.editSelectMultipleQuestion';
+                url = 'modules.detail.questions.editSelectMultiple';
                 break;
             case 'Select Single Matrix':
-                url = 'modules.detail.editSelectMultipleMatrixQuestion';
+                url = 'modules.detail.questions.editSelectOneMatrix';
                 break;
             case 'Select Multiple Matrix':
-                url = 'modules.detail.editSelectMultipleMatrixQuestion';
+                url = 'modules.detail.questions.editSelectMultipleMatrix';
                 break;
             case 'Table Question':
-                url = 'modules.detail.editTableQuestion';
+                url = 'modules.detail.questions.editTable';
                 break;
             case 'Instructions':
-                url = 'modules.detail.editInstructionQuestion';
+                url = 'modules.detail.questions.editInstruction';
                 break;
         }
         $state.go(url);
-    });
+    }, true);
 
     $scope.goToAddEdit = function(){
-        $state.go('modules.detail.question');
-    }
+        $state.go('modules.detail.questions.blank');
+    };
+
+    $scope.showQuestionTypeForm = function(questionType) {
+
+    };
 }]);

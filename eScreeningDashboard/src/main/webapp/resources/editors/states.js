@@ -153,7 +153,6 @@ angular.module('Editors')
 	            /* ------ Workflow Frozen until completion of Formulas, Rules/Events, Templates.
 	             * Nothing here should be considered canonical. - JBH
 	             */
-
                 .state('modules',{
                     abstract:true,
                     url:'/modules',
@@ -230,7 +229,7 @@ angular.module('Editors')
 
                 .state('modules.detail.questions',{
                     abstract:true,
-                    url:'questions',
+                    url:'/questions',
                     templateUrl:'resources/editors/views/questions/questionsabstract.html',
                     data: {
                         displayName: false
@@ -238,22 +237,15 @@ angular.module('Editors')
                     controller:'questionsController'
                 })
 
-                .state('modules.detail.question',{
+                .state('modules.detail.questions.blank',{
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
                     data:{displayName:false},
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope, $scope, $state){
-                            $scope.addQuestion = function(){
-                                $state.go('modules.detail.editReadOnlyQuestion');
-                            }
-                        }
-                    ]/*,
-                    controller: 'addEditModuleController'*/
+                    controller: 'addEditModuleController'
                 })
 
-                .state('modules.detail.editSelectOneQuestion',{
-                    url:'/question/:selectedQuestionId',
+                .state('modules.detail.questions.editSelectOne',{
+                    url:'/selectOne/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
@@ -261,8 +253,8 @@ angular.module('Editors')
                     controller: 'addEditModuleController'
                 })
 
-                .state('modules.detail.editSelectOneMatrixQuestion',{
-                    url:'/question/selectOneMatrix/:selectedQuestionId',
+                .state('modules.detail.questions.editSelectOneMatrix',{
+                    url:'/selectOneMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
@@ -270,8 +262,8 @@ angular.module('Editors')
                     controller: 'addEditModuleController'
                 })
 
-                .state('modules.detail.editReadOnlyQuestion',{
-                    url:'/question/readOnly/:selectedQuestionId',
+                .state('modules.detail.questions.editReadOnly',{
+                    url:'/readOnly/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
@@ -290,8 +282,8 @@ angular.module('Editors')
                     controller:'freeTextReadOnlyQuestionController'
                 })
 
-                .state('modules.detail.editSelectMultipleQuestion',{
-                    url:'/question/selectMultiple/:selectedQuestionId',
+                .state('modules.detail.questions.editSelectMultiple',{
+                    url:'/selectMultiple/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple'
@@ -309,8 +301,8 @@ angular.module('Editors')
                     controller:'selectMultipleQuestionController'
                 })
 
-                .state('modules.detail.editSelectMultipleMatrixQuestion',{
-                    url:'/question/selectMultipleMatrix/:selectedQuestionId',
+                .state('modules.detail.questions.editSelectMultipleMatrix',{
+                    url:'/selectMultipleMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple Matrix'
@@ -328,16 +320,16 @@ angular.module('Editors')
                     controller:'selectMultipleMatrixQuestionController'
                 })
 
-                .state('modules.detail.editTableQuestion',{
-                    url:'/question/table/:selectedQuestionId',
+                .state('modules.detail.questions.editTable',{
+                    url:'/table/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/tablequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'
                     }
                 })
 
-                .state('modules.detail.editInstructionQuestion', {
-                    url:'/question/instruction/:selectedQuestionId',
+                .state('modules.detail.questions.editInstruction', {
+                    url:'/instruction/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/questioninstructions.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'

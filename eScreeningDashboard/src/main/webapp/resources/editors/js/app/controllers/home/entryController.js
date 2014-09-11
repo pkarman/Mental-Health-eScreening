@@ -45,9 +45,7 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
 
 
             $scope.goToModuleNew = function(){
-                //alert('This navigation is not implemented in this demonstrator.');
-            	console.log('ENTRY:: New Module View Selected.');
-            	$state.go('modules.detail');
+                $state.go('modules.detail', {selectedSurveyId: -1});
             };
 
             $scope.goToModuleEdit = function(){

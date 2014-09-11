@@ -3,6 +3,21 @@
  */
 Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', 'surveyUIObject', function($rootScope, $scope, $state, SurveyService, QuestionService, questions, surveyUIObject){
     var tmpList = [],
+        createSurvey = function(selectedModuleDomainObject) {
+            SurveyService.create(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        },
         updateSurvey = function (selectedModuleDomainObject) {
             SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
                 if(Object.isDefined(response)) {
@@ -18,7 +33,21 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
             }, function(responseError) {
                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                console.log('Update Module Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
+            });
+        },
+        createQuestion = function(selectedQuestionDomainObject) {
+            QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from QuestionService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
             });
         },
         updateQuestion = function (selectedQuestionDomainObject){
@@ -34,7 +63,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 }
             }, function(responseError) {
                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                console.log('Update Question Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
             });
         },
         setQuestionUIObjects = function () {
@@ -61,13 +89,8 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
 
 
-    $scope.selectedSurveyUIObject = surveyUIObject;
+    $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
     $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
-
-
-    $scope.addPageBreak = function(){
-
-    };
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
@@ -99,28 +122,28 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         switch ($scope.selectedQuestionUIObject.type){
             case 'freeText':
             case 'readOnly':
-                $state.go('modules.detail.editReadOnlyQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             case 'selectOne':
-                $state.go('modules.detail.editSelectOneQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectOne', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             case'selectMulti':
-                $state.go('modules.detail.editSelectMultipleQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectMultiple', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             case 'selectOneMatrix':
-                $state.go('modules.detail.editSelectOneMatrixQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectOneMatrix', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             case 'selectMultiMatrix':
-                $state.go('modules.detail.editSelectMultipleMatrixQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectMultipleMatrix', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             case 'tableQuestion':
-                $state.go('modules.detail.editTableQuestion');
+                $state.go('modules.detail.questions.editTable');
                 break;
             case 'instruction':
-                $state.go('modules.detail.editInstructionQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editInstruction', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
                 break;
             default:
-                $state.go('modules.detail.editReadOnlyQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
         }
 
     };
@@ -129,19 +152,28 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
             selectedQuestionDomainObject = getSelectedQuestionDomainObject();
 
-        updateSurvey(selectedModuleDomainObject);
-        updateQuestion(selectedQuestionDomainObject);
+        if(selectedModuleDomainObject.getId() > -1) {
+            updateSurvey(selectedModuleDomainObject);
+        } else {
+            createSurvey(selectedModuleDomainObject);
+        }
 
-        $state.go('modules.detail.question');
+        if(selectedQuestionDomainObject.getId() > -1) {
+            updateQuestion(selectedQuestionDomainObject);
+        } else {
+            createQuestion(selectedQuestionDomainObject);
+        }
+
+        $state.go('modules.detail.questions.blank');
     };
 
     $scope.cancel = function () {
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.questions.blank');
     };
 
     $scope.addQuestion = function(){
         $scope.selectedQuestionUIObject = $rootScope.createQuestion();
-        $state.go('modules.detail.editReadOnlyQuestion');
+        $state.go('modules.detail.questions.editReadOnly');
     };
 
     $scope.deleteQuestion = function(question){
@@ -153,7 +185,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
         });
 
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.questions.blank');
     };
 
     $scope.sortableOptions = {
