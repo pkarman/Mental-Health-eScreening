@@ -65,7 +65,7 @@ EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
         if(Object.isDefined(page)) {
             type = "Page";
         } else if(Object.isDefined(question)){
-            type = question.getType().name;
+            type = question.getType();
         }
 
         return type;
