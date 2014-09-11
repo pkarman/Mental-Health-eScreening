@@ -63,9 +63,8 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 		mandatoryData.add(new DataExportCell("time_completed", getOrMiss(getTmAsStr(assessment.getDateCompleted()))));
 		mandatoryData.add(new DataExportCell("duration", getOrMiss(getStrFromInt(assessment.getDuration()))));
 
-		if (assessment.getSurveyMap().get(basicDemographicsSurveyId) == null) {
-			mandatoryData.add(new DataExportCell("demo_DOB", getOrMiss(getDtAsStr(assessment.getVeteran().getBirthDate()))));
-		}
+		boolean identified=ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
+		mandatoryData.add(new DataExportCell("veteran_DOB", identified?getOrMiss(getDtAsStr(assessment.getVeteran().getBirthDate())):"999"));
 		return mandatoryData;
 	}
 
@@ -75,17 +74,18 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 
 		List<DataExportCell> mandatoryIdendifiedData = new ArrayList<DataExportCell>();
 
-		if (ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType) {
-			// if veteran has taken the 'Identification' survey then skip this as veteran survey response
-			// will take precedence over the clinician entered data
-			if (assessment.getSurveyMap().get(identificationSurveyId) == null) {
-				mandatoryIdendifiedData.addAll(Arrays.asList(new DataExportCell("demo_lastname", getOrMiss(v.getLastName())),//
-						new DataExportCell("demo_firstname", getOrMiss(v.getFirstName())),//
-						new DataExportCell("demo_midname", getOrMiss(v.getMiddleName())),//
-						new DataExportCell("demo_SSN", getOrMiss(v.getSsnLastFour()))));//
-			}
-			mandatoryIdendifiedData.add(new DataExportCell("veteran_ien", v.getVeteranIen()));
-		}
+		boolean identified=ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
+		
+		// if veteran has taken the 'Identification' survey then skip this as veteran survey response
+		// will take precedence over the clinician entered data
+			
+		mandatoryIdendifiedData.addAll(
+				Arrays.asList(
+						new DataExportCell("veteran_lastname", identified?getOrMiss(v.getLastName()):"999"),//
+						new DataExportCell("veteran_firstname", identified?getOrMiss(v.getFirstName()):"999"),//
+						new DataExportCell("veteran_midname", identified?getOrMiss(v.getMiddleName()):"999"),//
+						new DataExportCell("veteran_SSN", identified?getOrMiss(v.getSsnLastFour()):"999"),
+						new DataExportCell("veteran_ien", v.getVeteranIen())));
 		return mandatoryIdendifiedData;
 	}
 

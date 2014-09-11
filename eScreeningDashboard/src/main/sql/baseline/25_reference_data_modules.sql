@@ -113,7 +113,7 @@ INSERT INTO survey_page_measure (survey_page_id, measure_id, display_order) VALU
 INSERT INTO measure_answer (measure_answer_id, measure_id, display_order, answer_text, answer_value, export_name, calculation_type_id, calculation_value) VALUES (160, 17, 1, 'Male', 0, 'demo_gender', 1, 1);
 INSERT INTO measure_answer (measure_answer_id,measure_id, display_order, answer_text, answer_value, export_name, calculation_type_id, calculation_value) VALUES (161, 17, 2, 'Female', 0, 'demo_gender', 1, 2);
 
-INSERT INTO measure (measure_id, measure_type_id, measure_text, is_required, score_weight) VALUES (18, 1, 'Date of Birth (mm/dd/yyyy)', 1, 0);
+INSERT INTO measure (measure_id, measure_type_id, measure_text, is_required, score_weight, is_patient_protected_info) VALUES (18, 1, 'Date of Birth (mm/dd/yyyy)', 1, 0, 1);
 INSERT INTO survey_page_measure (survey_page_id, measure_id, display_order) VALUES (5, 18, 1);
 INSERT INTO measure_answer (measure_answer_id, measure_id, calculation_type_id, export_name) VALUES (170, 18, 3, 'demo_DOB');
 INSERT INTO measure_validation (measure_id, validation_id, text_value) VALUES (18, 1, 'date');
