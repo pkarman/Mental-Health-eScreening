@@ -27,7 +27,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                  */
                 var deferred = $q.defer(),
                     service = $resource (
-                        "/services/surveys/:surveyId/pages.json",
+                        "services/surveys/:surveyId/pages.json",
                         {},
                         {
                             query: {
