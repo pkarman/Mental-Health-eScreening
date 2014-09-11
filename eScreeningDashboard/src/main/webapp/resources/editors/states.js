@@ -74,11 +74,11 @@ angular.module('Editors')
 	                },
 	                controller: 'sectionsController'
 	            })
-	            
+
 	             /** -------- END SECTIONS WORKFLOW -------- **/
-	            
+
 	             /** -------- BATTERY WORKFLOW -------- **/
-	
+
 	            .state('batteries',{
 	                abstract:true,
 	                url:'/batteries',
@@ -113,16 +113,16 @@ angular.module('Editors')
 	                            return deferred.promise;
 		                	}
 	                	},
-	                
+
 	                controller:'batteryAbstractController'
 	            })
-	
+
 	            .state('batteries.batteryselection',{
 	                url:'',
 	                templateUrl:'resources/editors/views/batteries/batteryselect.html',
 	                controller:'batterySelectionController'
 	            })
-	
+
 	            .state('batteries.detail',{
 	                url:'/details/:batteryId',
 	                templateUrl:'resources/editors/views/batteries/batteryedit.html',
@@ -143,17 +143,17 @@ angular.module('Editors')
                                 deferred.resolve(new EScreeningDashboardApp.models.Battery());
                             }
                             return deferred.promise;
-	                	  } 
+	                	  }
 	                },
 	                controller:'batteryAddEditController'
 	            })
-	            
+
 	            /** -------- END BATTERY WORKFLOW -------- **/
 
                 //////////////////////////
                 // Modules Editor Views //
                 //////////////////////////
-	            
+
 	            /* ------ Workflow Frozen until completion of Formulas, Rules/Events, Templates.
 	             * Nothing here should be considered canonical. - JBH
 	             */
@@ -204,6 +204,19 @@ angular.module('Editors')
                         displayName: 'Modules-Editor: Add/Edit'
                     },
                     resolve: {
+                        surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
+                            var selectedSurveyUIObject = null;
+
+                            if(Object.isArray($rootScope.surveyUIObjects)) {
+                                $rootScope.surveyUIObjects.forEach(function (surveyUIObject) {
+                                    if(surveyUIObject.id === parseInt($stateParams.surveyId)) {
+                                        selectedSurveyUIObject = surveyUIObject;
+                                    }
+                                });
+                            }
+
+                            return selectedSurveyUIObject;
+                        }],
                         questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
                             var deferred = $q.defer();
 
@@ -241,7 +254,8 @@ angular.module('Editors')
                                 $state.go('modules.detail.editReadOnlyQuestion');
                             }
                         }
-                    ]
+                    ]/*,
+                    controller: 'addEditModuleController'*/
                 })
 
                 .state('modules.detail.editSelectOneQuestion',{

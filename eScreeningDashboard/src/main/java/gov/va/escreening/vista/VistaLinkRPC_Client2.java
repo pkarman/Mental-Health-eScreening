@@ -24,10 +24,13 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLinkClient {
-
+	protected static final Logger logger = LoggerFactory.getLogger(VistaLinkRPC_Client2.class);
+	
 	/**
 	 * inline template driven component to abstract rpc call
 	 * 
@@ -49,6 +52,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 		 * @throws VistaLinkClientException
 		 */
 		protected String callRpcWithInputs(Map m) throws VistaLinkClientException {
+			if (logger.isDebugEnabled()){logger.debug("Rpc With Inputs -- {}", m);}
 			VistaLinkConnection vistaLinkConnection = (VistaLinkConnection) m.get("vistaLinkConnection");
 			String rpcName = (String) m.get("rpcName");
 			List<Object> reqParams = (List<Object>) m.get("inputParams");
@@ -68,7 +72,9 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 			} catch (FoundationsException e) {
 				throw new VistaLinkClientException(e);
 			}
+			if (logger.isDebugEnabled()){logger.debug("Raw result for {} -- {}", rpcName, vResp.getRawResponse());}
 			String results = vResp.getResults();
+			if (logger.isDebugEnabled()){logger.debug("Refined result for {} -- {}", rpcName, results);}
 
 			return results;
 		}
@@ -210,7 +216,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 
 		VistaLinkRequest<Map<String, Object>> vistaReq = new ORWDXM1_BLDQRSP_VistaLinkRequest(rCtxt);
 		Map<String, Object> response = vistaReq.sendRequest();
-
+		if (logger.isDebugEnabled()){logger.debug(String.format("TBIConsultDisplayGroupIEN Data %s", response));}
 		return Long.valueOf(response.get("DisplayGroupIEN").toString());
 	}
 

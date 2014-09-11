@@ -85,9 +85,6 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private VeteranAssessmentRepository veteranAssessmentRepository;
 
-    @Resource(name="veteranAssessmentSmrList")
-	VeteranAssessmentSmrList smrLister;
-
     @Override
     public void processRules(Integer veteranAssessmentId, Collection<SurveyMeasureResponse> responses) {
         if(responses.isEmpty()){
@@ -274,8 +271,6 @@ public class RuleServiceImpl implements RuleService {
      */
     @Override
     public boolean evaluate(Integer veteranAssessmentId, Rule rule){
-		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
 
         /* Should support:
         for single select: a particular option was selected (if each value has a calculated value then that would work)
@@ -348,8 +343,12 @@ public class RuleServiceImpl implements RuleService {
                         logger.error(message);
                         throw new IllegalStateException(message);
                     }
-                    logger.debug("Adding health factor {} to assessment {}", healthFactor, veteranAssessmentId );
-                    healthFactorSet.add(healthFactor);
+                    
+                    if(healthFactor.getVistaIen() !=null)
+                    {
+                    	logger.debug("Adding health factor {} to assessment {}", healthFactor, veteranAssessmentId );
+                    	healthFactorSet.add(healthFactor);
+                    }
                     break;
                     
                 case RuleConstants.EVENT_TYPE_DASHBOARD_ALERT:

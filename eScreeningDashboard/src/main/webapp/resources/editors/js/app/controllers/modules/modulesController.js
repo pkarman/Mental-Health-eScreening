@@ -5,7 +5,7 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'SurveyService', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, SurveyService, surveys) {
-    $scope.surveys = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
+    $rootScope.surveyUIObjects = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
     
     $scope.refreshTable = function () {
         console.log('\n\n refreshing table');
@@ -18,10 +18,12 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
         $timeout(setTable, 100);
     };
     //$scope.refreshTable();
-    
+
+
+    //TODO: May need to watch for surveyUIObjects instead of surveys.
     $scope.$watch('surveys', function(newVal, oldVal){
     	console.log('Watch Surveys');
-    	if ($scope.surveys && $scope.surveys.length && $scope.surveys.length > 0){
+    	if ($scope.surveyUIObjects && $scope.surveyUIObjects.length && $scope.surveyUIObjects.length > 0){
     		$timeout($scope.refreshTable, 500);
     	}
     });
@@ -42,16 +44,16 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
                 return {};
             }
         }, {
-            total:$scope.surveys.length,
+            total:$scope.surveyUIObjects.length,
             getData: function ($defer, params) {
                 console.log(
                     '\n\nngTable getData called now');
                 // use build-in angular filter
-                params.total($scope.surveys.length);
+                params.total($scope.surveyUIObjects.length);
                 var filteredData = params.filter() ?
-                    $filter('filter')($scope.surveys, params.filter()) : $scope.surveys;
+                    $filter('filter')($scope.surveyUIObjects, params.filter()) : $scope.surveyUIObjects;
                 var orderedData = params.sorting() ?
-                    $filter('orderBy')(filteredData, params.orderBy()) : $scope.surveys;
+                    $filter('orderBy')(filteredData, params.orderBy()) : $scope.surveyUIObjects;
                 //params.total(orderedData.length); // set total for recalc pagination
                 $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
@@ -68,13 +70,13 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
             title: 'asc'     // initial sorting
         }
     }, {
-        total: $scope.surveys.length, // length of $scope.surveys
+        total: $scope.surveyUIObjects.length, // length of $scope.surveyUIObjects
         getData: function($defer, params) {
             // use build-in angular filter
             var filteredData = params.filter() ?
-                $filter('filter')($scope.surveys, params.filter()) : $scope.surveys;
+                $filter('filter')($scope.surveyUIObjects, params.filter()) : $scope.surveyUIObjects;
             var orderedData = params.sorting() ?
-                $filter('orderBy')(filteredData, params.orderBy()) : $scope.surveys;
+                $filter('orderBy')(filteredData, params.orderBy()) : $scope.surveyUIObjects;
 
             params.total(orderedData.length); // set total for recalc pagination
             $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -84,13 +86,13 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
     	console.log('Transition to Add/Edit Modules');
-        $rootScope.module = survey;
+        $scope.selectedSurveyUIObject = survey;
         console.log(JSON.stringify(survey));
         $state.go('modules.detail.question', {surveyId: survey.id});
     };
 
     $scope.addModule = function(){
-        $rootScope.module = $rootScope.createModule();
+        $scope.selectedSurveyUIObject = $rootScope.createModule();
         $state.go('modules.detail.question');
     };
 

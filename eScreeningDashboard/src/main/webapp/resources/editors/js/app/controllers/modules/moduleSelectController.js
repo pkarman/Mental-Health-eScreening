@@ -68,14 +68,14 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
     }
 
     /* ---- Button Actions ---- */
-    $scope.editModule = function(mod){
-        $rootScope.module = mod;
-        mod.questions =  $scope.buildQuestions();
+    $scope.editModule = function(selectedSurveyUIObject){
+        $scope.selectedSurveyUIObject = selectedSurveyUIObject;
+        selectedSurveyUIObject.questions =  $scope.buildQuestions();
         $state.go('modules.detail.question');
     }
 
     $scope.addModule = function(){
-        $rootScope.module = $rootScope.createModule();
+        $scope.selectedSurveyUIObject = $scope.createModule();
         $state.go('modules.detail.question');
     }
 

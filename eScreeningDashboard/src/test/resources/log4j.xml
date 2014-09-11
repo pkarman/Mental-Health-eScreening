@@ -21,7 +21,7 @@
 
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 
 	<!-- 3rdparty Loggers -->

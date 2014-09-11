@@ -262,7 +262,7 @@ public class VistaRepositoryImpl implements VistaRepository {
 
 		List<VistaVeteranClinicalReminder> resultList = query(division, vpid, duz, appProxyName, "OR CPRS GUI CHART", "ORQQPX REMINDERS LIST", vistaRpcParamList, new OrqqpxRemindersListExtractor());
 
-		filterClinicalReminders(resultList);
+		if (resultList!=null){filterClinicalReminders(resultList);}
 
 		return resultList;
 	}

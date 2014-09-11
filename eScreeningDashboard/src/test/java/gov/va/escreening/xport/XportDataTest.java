@@ -102,6 +102,11 @@ public class XportDataTest {
 				identificationTs.smrMap.remove("demo_email");
 				identificationTs.smrMap.remove("demo_contact");
 			}
+			TestSurvey basicDemoTs = hasBasicDemoSurvey();
+			if (basicDemoTs != null) {
+				basicDemoTs.smrMap.remove("demo_DOB");
+			}
+
 		}
 
 		public TestSurvey hasIdentificationSurvey() {
@@ -359,8 +364,8 @@ public class XportDataTest {
 		// there are some mendatory columns which will always be returned by the system. These columns may or may not be
 		// provided in the user provided json. These columns are as follows:
 		// assessment_id, created_by, battery_name, program_name, vista_clinic, note_title, clinician_name,
-		// date_created, time_created, date_completed, time_completed, duration, demo_lastname, demo_firstname,
-		// demo_midname, demo_SSN, demo_DOB
+		// date_created, time_created, date_completed, time_completed, duration, veteran_lastname, veteran_firstname,
+		// veteran_midname, veteran_SSN, veteran_DOB
 		if (!ignoreThisExportName(dec.getColumnName(), atd, deidentified)) {
 			assertNotNull(String.format("%s => export column name =>%s is not provided in user provided json", atd.testName, dec.getColumnName()), expectedVal);
 			return false;
@@ -371,7 +376,7 @@ public class XportDataTest {
 
 	}
 
-	private static final List<String> mandatoryExportNames = Arrays.asList("assessment_id", "created_by", "battery_name", "program_name", "vista_clinic", "note_title", "clinician_name", "date_created", "time_created", "date_completed", "time_completed", "duration", "veteran_ien");
+	private static final List<String> mandatoryExportNames = Arrays.asList("assessment_id", "created_by", "battery_name", "program_name", "vista_clinic", "note_title", "clinician_name", "date_created", "time_created", "date_completed", "time_completed", "duration", "veteran_ien", "veteran_lastname", "veteran_firstname", "veteran_midname", "veteran_SSN", "veteran_DOB");
 	private static final List<String> identificationSurveyPpiExportNames = Arrays.asList("demo_lastname", "demo_firstname", "demo_midname", "demo_SSN");
 	private static final List<String> basicDemoPpiExportNames = Arrays.asList("demo_DOB");
 
@@ -520,7 +525,7 @@ public class XportDataTest {
 
 		// now we also need to make sure all smr entered by user in the json file were tested and found correct
 		for (TestSurvey ts : atd.testSurveys) {
-			assertTrue(String.format("user provided data =>%s->%s has following export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, ts.smrMap), ts.smrMap.isEmpty());
+			assertTrue(String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), ts.smrMap.isEmpty());
 		}
 
 		return true;
@@ -561,7 +566,7 @@ public class XportDataTest {
 		String name = "testSmrListResponseTimeForVet18";
 		StopWatch sw = new StopWatch(name);
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 2; i++) {
 			sw.start("iter_" + i);
 			smrLister.loadSmrFromDb(18);
 			sw.stop();
@@ -641,9 +646,9 @@ public class XportDataTest {
 	}
 
 	private AssessmentDataExport addExportLogOfProgramOOO() {
-		EscreenUser eUser=new EscreenUser("1pharmacist", "password", Arrays.asList(new SimpleGrantedAuthority("user1")));
+		EscreenUser eUser = new EscreenUser("1pharmacist", "password", Arrays.asList(new SimpleGrantedAuthority("user1")));
 		eUser.setCprsVerified(true);
-		eUser.setProgramIdList(new ArrayList(Arrays.asList(1,2,3,4,5)));
+		eUser.setProgramIdList(new ArrayList(Arrays.asList(1, 2, 3, 4, 5)));
 		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
 		edfb.setExportedByUserId(5);
 		return exportDataService.getAssessmentDataExport(edfb);
@@ -740,7 +745,7 @@ public class XportDataTest {
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
 		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 2; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();

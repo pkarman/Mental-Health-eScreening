@@ -42,4 +42,12 @@ public class ModuleExporterPHQ15 extends ModuleExporterAbstract implements Modul
 				create(usrRespMap, "health_score_phq15", new CveScorePhq15()));
 	}
 
+	// private CellValueExtractor getTotal(VeteranAssessment assessment) {
+	// AssessementVariable assessmentVariable=new AssessmentVariable(1189);
+	// int id = assessmentVariable.getAssessmentVariableId();
+	// variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(assessmentVariable,
+	// veteranAssessmentId, measureAnswerHash);
+	//
+	// }
+
 }
