@@ -66,20 +66,16 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
         return progressNote;
     }
 
-    private VistaProgressNote createProgressNote() throws Exception{
+    public VistaProgressNote createProgressNote() throws Exception{
         if(identifiers.length >= 2 && identifiers[1] != null) {
             identifiers[1] = VistaUtils.convertToVistaDateString((Date) identifiers[1], VistaDateFormat.MMddHHmmss);
         }
 
         HashMap<String, Object> textHashMap = new HashMap<String, Object>();
-        textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1202\""), this.identifiers[0]);
-        textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1301\""), this.identifiers[1]);
-        textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1205\""), this.identifiers[2]);
+        textHashMap.put("1202", this.identifiers[0]);
+        textHashMap.put("1301", this.identifiers[1]);
+        textHashMap.put("1205", this.identifiers[2]);
         //textHashMap.put(RpcRequest.buildMultipleMSubscriptKey("\"1701\""), this.identifiers[3]);
-
-        identifiers[0]="(1202)="+identifiers[0];
-        identifiers[1]="(1301)="+identifiers[1];
-        identifiers[2]="(1205)="+identifiers[2];
         
         VistaProgressNote progressNote = null;
         List<Object> requestParams = new ArrayList<Object>();
@@ -88,7 +84,8 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
         requestParams.add((this.vistaVisitDateTime != null)?VistaUtils.convertToVistaDateString(this.vistaVisitDateTime, VistaDateFormat.MMddHHmmss): "");  // Optional
         requestParams.add(this.locationIEN); // Optional
         requestParams.add((this.visitIEN != null)? this.visitIEN : ""); // Optional IEN of Visit
-        requestParams.add(this.identifiers); // Required  //requestParams.add(textHashMap);
+        //requestParams.add(this.identifiers); // Required  
+        requestParams.add(textHashMap);
         requestParams.add((this.visitString != null)? this.visitString: ""); // Optional
         requestParams.add((this.suppressCommitPostLogic)? "1": "0");  // Optional
         requestParams.add((this.saveTelnetCrossReference)? "1": "0"); // Optional

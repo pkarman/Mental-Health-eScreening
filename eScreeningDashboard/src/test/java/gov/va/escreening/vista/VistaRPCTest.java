@@ -118,13 +118,13 @@ public class VistaRPCTest {
 	@Test
 	public void testVistaLinkCreateProgressNote() throws Exception {
 		VistaNoteTitle progressNoteTitle = client.findProgressNoteTitle("CRISIS NOTE");
-		VistaClinician clinician = client.findClinician("Forty-One", "Pharmacist", null, true);
+		VistaClinician clinician = client.findClinician("One", "Pharmacist", null, true);
 		String visitString = calculateVistaVisitString("PRIMARY CARE", false); // Required
 																				// to
 																				// create
 																				// Progress
 																				// Note.
-		Long patientIEN = 100003L; // Required to create Progress Note.
+		Long patientIEN = 151L; // Required to create Progress Note.
 		Long titleIEN = progressNoteTitle.getNoteTitleIen(); // Required to
 																// create
 																// Progress
@@ -137,7 +137,7 @@ public class VistaRPCTest {
 																						// Note.
 		Long visitIEN = null; // Optional when creating Progress Note.
 		Object[] identifiers = { // Required to create Progress Note.
-		clinician.getIEN(), // Author IEN - Required to create Progress Note.
+				10000000056L, //clinician.getIEN(), // Author IEN - Required to create Progress Note.
 		VistaUtils.convertVistaDate(visitString), // Required to create Progress
 													// Note.
 		locationIEN, // Required to create Progress Note.
