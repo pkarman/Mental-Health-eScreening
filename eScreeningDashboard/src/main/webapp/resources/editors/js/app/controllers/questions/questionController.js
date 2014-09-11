@@ -13,16 +13,6 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
             });
 
             return defaultDropDownMenuOptionIndex;
-        },
-        getArrayOfNames = function(dropDownMenuOptions) {
-            var names = [];
-            if(Object.isArray(dropDownMenuOptions)) {
-                dropDownMenuOptions.forEach(function(option){
-                    names.push(option.name);
-                });
-            }
-
-            return names;
         };
 
     var dropDownMenuOptionIndex = getDefaultQuestionType($scope.selectedQuestionUIObject, questionTypeDropDownMenuOptions);
@@ -30,12 +20,26 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     $scope.questionTypeDropDownMenuOptions = questionTypeDropDownMenuOptions;
 
 
+    $scope.$watch('formReset', function(newFormResetFlag, oldFormResetFlag) {
+        if (newFormResetFlag === oldFormResetFlag) {
+            return;
+        } else {
+            if(newFormResetFlag) {
+                var dropDownMenuOptionIndex = getDefaultQuestionType($scope.selectedQuestionUIObject, questionTypeDropDownMenuOptions);
+                $scope.questionTypeDropDownMenu = (dropDownMenuOptionIndex >= 0)? questionTypeDropDownMenuOptions[dropDownMenuOptionIndex]: null;
+            }
+        }
+    });
+
     $scope.$watch( 'questionTypeDropDownMenu', function( currentlySelectedQuestionType, previouslySelectedQuestionType ) {
         if (currentlySelectedQuestionType === previouslySelectedQuestionType) {
             return;
         } else {
             var url = 'modules.detail.questions.editReadOnly';
-            switch(currentlySelectedQuestionType.display){
+
+            $scope.formReset = false;
+
+            switch(currentlySelectedQuestionType.displayName){
                 case "Free/Read-Only Text":
                     url = 'modules.detail.questions.editReadOnly';
                     break;
@@ -63,6 +67,19 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         }
 
     }, true);
+
+    $scope.disableDropDownMenu = function () {
+        var disableDropDownMenu = false,
+            dropDownMenuOptionIndex = -1;
+
+        if(Object.isDefined($scope.selectedQuestionUIObject) && Object.isDefined($scope.selectedQuestionUIObject.type)){
+            dropDownMenuOptionIndex = getDefaultQuestionType($scope.selectedQuestionUIObject, $scope.questionTypeDropDownMenuOptions);
+            $scope.questionTypeDropDownMenu = (dropDownMenuOptionIndex >= 0)? questionTypeDropDownMenuOptions[dropDownMenuOptionIndex]: null;
+            disableDropDownMenu = true;
+        }
+
+        return disableDropDownMenu;
+    };
 
     $scope.goToAddEdit = function(){
         $state.go('modules.detail.questions.blank');

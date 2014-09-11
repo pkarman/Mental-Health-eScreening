@@ -84,6 +84,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
         };
 
+    $scope.resetFormStatus = false;
     $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
     $scope.questions = []; //(Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
     $scope.pageQuestionItems = (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems;
@@ -163,11 +164,11 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         $state.go('modules.detail.questions.blank');
     };
 
-    $scope.addToPageQuestion = function () {
+    $scope.addToPageQuestion = function (resetFormFunction) {
         var selectedQuestionDomainObject = getSelectedQuestionDomainObject();
 
         $scope.addQuestion(selectedQuestionDomainObject);
-        $state.go('modules.detail.questions.blank');
+        resetFormFunction('modules.detail.questions.blank', {selectedQuestionId: -1});
     };
 
     $scope.cancel = function () {
