@@ -662,7 +662,7 @@ ${MODULE_START}
 
     </div></td>
 
-    <td width="50%" valign="top"><h3 align="center">Appointments</h3>
+    <td width="50%" valign="top"><h3 align="center"  style="color:#1b4164">Appointments</h3>
       
       
         <#if var6?? && (var6.children)?? >
