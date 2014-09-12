@@ -422,7 +422,7 @@
           
 <!-- Modal Review Assessment Preview -->
 <div class="custom_modal" >
-  <div class="modal fade" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
+  <div class="modal fade modal-wide" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header noPrint">
