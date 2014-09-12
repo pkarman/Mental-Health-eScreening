@@ -10,6 +10,7 @@ import gov.va.escreening.dto.SelectVeteranResultDto;
 import gov.va.escreening.dto.VeteranAssessmentNoteDto;
 import gov.va.escreening.entity.ClinicalReminderSurvey;
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.BatteryService;
@@ -280,6 +281,13 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
                 veteranIen);
 
         return veteranAppointmentList;
+    }
+    
+    @Override 
+    public List<VistaVeteranAppointment> getVeteranAppointments(User user, String veteranIen){
+    	return vistaService.getVeteranAppointments(
+    			user.getVistaDivision(), user.getVistaVpid(), user.getVistaDuz(), 
+    			appProxyName, veteranIen);
     }
 
     @Override
