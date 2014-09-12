@@ -214,71 +214,84 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 	
 	private AssessmentVariableDto getVeteranAppointments(Integer veteranAssessmentId){
 		// Get veteran IEN
-		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
-		if(veteranAssessment.getVeteran() == null || veteranAssessment.getVeteran().getVeteranIen() == null
-				|| veteranAssessment.getVeteran().getVeteranIen().isEmpty()){
-			throw new AssessmentVariableInvalidValueException(String.format("Veteran IEN number could not be found. Map veteran to VistA."));
-		}
-		String vetIen = veteranAssessment.getVeteran().getVeteranIen();
-		
-		// Get tech admins
-		List<User> adminList = userRepository.findByRoleId(RoleEnum.TECH_ADMIN);
-		if(adminList.isEmpty()){
-			throw new AssessmentVariableInvalidValueException(String.format("Could not find a registered tech admin to pull appointments"));
-		}
-		
-		// Get appointments
-		List<VistaVeteranAppointment> appointments = null;
-		
-		for(User adminUser : adminList){
-			try{
-				appointments = createAssessmentDelegate.getVeteranAppointments(adminUser, vetIen);
-				break;
-			}
-			catch(Exception e){
-				logger.warn(String.format("Error getting appointments using tech admin %s and veteran IEN %s"),  adminUser, vetIen);
-			}
-		}
-		if(appointments == null){
-			throw new AssessmentVariableInvalidValueException(String.format("Cannot retrieve appointments from VistA."));
-		}
-		
-		// Sort dates from earlier to later and stick nulls at the end.
-		Collections.sort(appointments, new Comparator<VistaVeteranAppointment>(){
-
-			@Override
-			public int compare(VistaVeteranAppointment left, VistaVeteranAppointment right) {
-				if(left.getAppointmentDate() == null){
-					return 1;
-				}
-				if(right.getAppointmentDate() == null){
-					return -1;
-				}
-				return (int)(left.getAppointmentDate().getTime() - right.getAppointmentDate().getTime());
-			}
-			
-		});
-		
+//		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
+//		if(veteranAssessment.getVeteran() == null || veteranAssessment.getVeteran().getVeteranIen() == null
+//				|| veteranAssessment.getVeteran().getVeteranIen().isEmpty()){
+//			throw new AssessmentVariableInvalidValueException(String.format("Veteran IEN number could not be found. Map veteran to VistA."));
+//		}
+//		String vetIen = veteranAssessment.getVeteran().getVeteranIen();
+//		
+//		// Get tech admins
+//		List<User> adminList = userRepository.findByRoleId(RoleEnum.TECH_ADMIN);
+//		if(adminList.isEmpty()){
+//			throw new AssessmentVariableInvalidValueException(String.format("Could not find a registered tech admin to pull appointments"));
+//		}
+//		
+//		// Get appointments
+//		List<VistaVeteranAppointment> appointments = null;
+//		
+//		for(User adminUser : adminList){
+//			try{
+//				appointments = createAssessmentDelegate.getVeteranAppointments(adminUser, vetIen);
+//				break;
+//			}
+//			catch(Exception e){
+//				logger.warn(String.format("Error getting appointments using tech admin %s and veteran IEN %s"),  adminUser, vetIen);
+//			}
+//		}
+//		if(appointments == null){
+//			throw new AssessmentVariableInvalidValueException(String.format("Cannot retrieve appointments from VistA."));
+//		}
+//		
+//		// Sort dates from earlier to later and stick nulls at the end.
+//		Collections.sort(appointments, new Comparator<VistaVeteranAppointment>(){
+//
+//			@Override
+//			public int compare(VistaVeteranAppointment left, VistaVeteranAppointment right) {
+//				if(left.getAppointmentDate() == null){
+//					return 1;
+//				}
+//				if(right.getAppointmentDate() == null){
+//					return -1;
+//				}
+//				return (int)(left.getAppointmentDate().getTime() - right.getAppointmentDate().getTime());
+//			}
+//			
+//		});
 		
 		// Create DTOs
 		String varName = String.format("var%s", CUSTOM_VETERAN_APPOINTMENTS);
 		String displayName = String.format("custom_%s", CUSTOM_VETERAN_APPOINTMENTS);
 		SimpleDateFormat dateFormatWithTime = new SimpleDateFormat("MM-dd-yy@hh:mm");
 		
-		List<AssessmentVariableDto> children = new ArrayList<>(appointments.size());
-		for(VistaVeteranAppointment appointment : appointments){
-			String appointmentText = dateFormatWithTime.format(appointment.getAppointmentDate()) 
-									+ appointment.getClinicName();
-			
-			children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
-							displayName, appointmentText, "Veteran Appointments", null, null,
-							AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
-			
-			//we only want the first 3
-			if(children.size() == 3)
-				break;
-		}
 		
+		//test code because we are having trouble finding a good test vista user
+		List<AssessmentVariableDto> children = new ArrayList<>();
+		children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
+				displayName, dateFormatWithTime.format(new Date()) + " LJ VMRF CESAMH WOMENS ASSESS", "Veteran Appointments", null, null,
+				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
+		children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
+				displayName, dateFormatWithTime.format(new Date()) + " LJ VMRF CESAMH WOMENS ASSESS", "Veteran Appointments", null, null,
+				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
+		children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
+				displayName, dateFormatWithTime.format(new Date()) + " LJ VMRF CESAMH WOMENS ASSESS", "Veteran Appointments", null, null,
+				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
+		//end of test code
+		
+//		List<AssessmentVariableDto> children = new ArrayList<>(3);
+//		for(VistaVeteranAppointment appointment : appointments){
+//			String appointmentText = dateFormatWithTime.format(appointment.getAppointmentDate()) 
+//									+ appointment.getClinicName();
+//			
+//			children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
+//							displayName, appointmentText, "Veteran Appointments", null, null,
+//							AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
+//			
+//			//we only want the first 3
+//			if(children.size() == 3)
+//				break;
+//		}
+//		
 		
 		AssessmentVariableDto variableDto = new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", displayName, 
 				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
