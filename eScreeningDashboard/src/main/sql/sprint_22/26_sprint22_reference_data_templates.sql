@@ -638,28 +638,29 @@ ${MODULE_START}
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td width="50%" valign="middle"><h2>eScreening Summary</h2></td>
-    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"></td>
+    <td width="50%" valign="middle"><h2  style="color:#1b4164"><strong>eScreening Summary</strong></h2></td>
+    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"><br></td>
   </tr>
 </table>
 
-  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 1px dashed #000000; border-top:1px dashed #000000;">
   <tr>
 
-    <td width="50%" valign="top">
-        <p align="center"><h3> ${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</h3>
+    <td width="50%" valign="top" style="border-right: 1px dashed #000000;">
+        <div align="center" style="color:#1b4164"><h3> <strong>${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</strong></h3>
 
         <#if var2??>
-        ${getVariableDisplayText(var2)}, ACSW<br>
+        <strong>${getVariableDisplayText(var2)}, ACSW</strong><br>
         </#if>
 
         <#if var7??>
-        ${getVariableDisplayText(var7)}
+        <strong>${getVariableDisplayText(var7)}</strong>
         <#else>
         Assessment is incomplete
         </#if>
+	<br>
 
-    </p></td>
+    </div></td>
 
     <td width="50%" valign="top"><h3 align="center">Appointments</h3>
       
@@ -671,22 +672,23 @@ ${MODULE_START}
 	            ${delimitChildren(var6 "<li>" "</li>" true)}
 	            </ul>
             <#else>
-                <h4>None scheduled</h4>
+                <div align="center"><h4>None scheduled</h4></div>
             </#if>
         <#else>
-            <h4>Appointments unavailable</h4>
+            <div align="center"><h4>Appointments unavailable</h4><div>
         </#if>
       </td>
 
   </tr>
 
 </table>
+<br>
 
-<p>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</p>
+<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</div><br>
 
-<p style="text-align: center"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></p>
+<div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
 
-<p><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </p>
+<div><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </div>
 ${MODULE_END}'
 where template_id = 200;
 
@@ -708,10 +710,10 @@ ${MODULE_START}
     <tr>
         <td class="justifyCtrTableData">For online information about support services and benefits, visit the VA Center of Excellence resource site:</td>
     </tr>
-    <td class="justifyCtrTableData">
+    <tr>
         <td class="justifyCtrTableData">http://escreening.cesamh.org</td>
     </tr>
-    <td class="justifyCtrTableData">
+    <tr class="justifyCtrTableData">
         <td class="justifyCtrTableData"><img src="resources/images/escreening_cdsmith_QR_code_small.png"></td>
     </tr>
     <tr>
