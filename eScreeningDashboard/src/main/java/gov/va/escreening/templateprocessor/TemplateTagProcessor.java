@@ -58,7 +58,7 @@ public class TemplateTagProcessor {
     	noteText = noteText.replace(MATRIX_TR_END.xml(), "</tr>");
     	noteText = noteText.replace(MATRIX_TD_START.xml(), "<td>");
     	noteText = noteText.replace(MATRIX_TD_END.xml(), "</td>");
-    	noteText = noteText.replace(TABLE_TD_RT_START.xml(), "<td class='justifyRtTableData'>");
+    	//noteText = noteText.replace(TABLE_TD_RT_START.xml(), "<td class='justifyRtTableData'>");
     	noteText = noteText.replace(TABLE_TD_CTR_START.xml(), "<td class='justifyCtrTableData'>"); 
     	noteText = noteText.replace(TABLE_TD_LFT_START.xml(), "<td class='justifyLftTableData'>");
     	noteText = noteText.replace(TABLE_TD_SPACER1_START.xml(), "<td class='spacer1TableData'>");

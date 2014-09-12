@@ -1,11 +1,20 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.entity.User;
 
 import java.util.List;
 
 public interface UserRepository extends RepositoryInterface<User> {
 
+	
+	/**
+	 * Retrieves all active users with the given role
+	 * @param roleId
+	 * @return all the users associated with Program programId and is in a role in 'roleIdList'
+	 */
+	List<User> findByRoleId(RoleEnum role);
+	
     /**
      * Returns all the users associated with Program programId and is in a role in 'roleIdList'
      * @param programId

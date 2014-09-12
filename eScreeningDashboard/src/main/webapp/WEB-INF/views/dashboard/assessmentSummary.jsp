@@ -774,17 +774,20 @@ $(document).ready(function() {
 		   series.forEach(function(s, i) {
 			   text = svg.append('text')
 		          .attr('fill', 'black')
+              .attr('width', 100)
 		          .attr('x', textWidth)
 		          .attr('y', 100)
 		          .attr('font-size', '10')
 		          .text(s);
-			   box = svg.append('rect')
+			   box = svg.append('g').append('rect')
 		          .attr('fill', colors[i])
 		          .attr('width', 10)
 		          .attr('height', 10)
 		          .attr('x', textWidth - 15)
 		          .attr('y', 90);
-		      	  textWidth += parseFloat(text.style("width"))  + 30;
+		      	  textWidth += parseFloat(text.node().getComputedTextLength())  + 30;
+              console.log("Parse 8----");
+              console.log(text.node().getComputedTextLength());
 		  });
 		  
 		  // fix graphic bar issue
