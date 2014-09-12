@@ -684,7 +684,7 @@ ${MODULE_START}
 </table>
 <br>
 
-<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</div><br>
+<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</div>
 
 <div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
 
