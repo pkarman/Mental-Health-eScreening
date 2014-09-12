@@ -281,8 +281,8 @@ angular.module('Editors')
                 .state('modules.detail.questions.blank',{
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false}/*,
-                    resolve: {
+                    data:{displayName:false},
+                    /*resolve: {
                         surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
                             var selectedSurveyUIObject = null;
 
@@ -315,8 +315,8 @@ angular.module('Editors')
 
                             return deferred.promise;
                         }]
-                    },
-                    controller: 'addEditModuleController'*/
+                    },*/
+                    controller: 'questionsController'
                 })
 
                 .state('modules.detail.questions.editSelectOne',{

@@ -13,7 +13,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         };
     //$rootScope.selectedQuestion = {};
     $scope.pageQuestionItems = [];
-    $scope.selectedSurveyUIObject = createModule().toUIObject();
+    $rootScope.selectedSurveyUIObject = createModule().toUIObject();
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
@@ -60,8 +60,9 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-    $scope.resetForm = function(stateName, stateParams) {
-        $scope.selectedQuestionUIObject = createQuestion().toUIObject();
+    $scope.resetForm = function(stateName, stateParams, softReset) {
+        softReset = (Object.isBoolean(softReset))? softReset: false;
+        $rootScope.selectedQuestionUIObject = createQuestion().toUIObject();
         $scope.formReset = true;
 
         if(Object.isDefined(stateName)) {
@@ -137,7 +138,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.goToQuestions = function() {
         //$state.go('modules.detail.questions.editReadOnly');
-        $scope.selectedQuestionUIObject = createQuestion().toUIObject();
+        $rootScope.selectedQuestionUIObject = createQuestion().toUIObject();
         $state.go('modules.detail.questions.blank');
     };
 

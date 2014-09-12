@@ -3,15 +3,16 @@
  */
 Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'textFormatTypeMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
     $scope.currentlySelectedTextFormatDropDownMenuOptions = textFormatTypeMenuOptions;
-    $scope.currentlySelectedTextFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.currentlySelectedTextFormatDropDownMenuOptions);
+    $scope.currentlySelectedTextFormatDropDownMenu = $scope.getDefaultTextFormatType($rootScope.selectedQuestionUIObject, $scope.currentlySelectedTextFormatDropDownMenuOptions);
     $scope.showExactLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) || $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.showMinLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) || $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.showMaxLengthField = (!Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) || $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.showMinValueField = (Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) && $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.showMaxValueField = (Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu) && $scope.currentlySelectedTextFormatDropDownMenu.value === "number")? true : false;
     $scope.parentSave = $scope.save;
+    $scope.parentAddToPageQuestion = $scope.addToPageQuestion;
     $scope.parentResetForm = $scope.resetForm;
-    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($rootScope.selectedQuestionUIObject);
     var convertFieldValueToNumber = function (validationUIObject) {
         if (Object.isDefined(validationUIObject) && Object.isDefined(validationUIObject.value)) {
             validationUIObject.value = parseInt(validationUIObject.value);
@@ -41,51 +42,100 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
     };
 
 	$scope.save = function(){
-        $scope.selectedQuestionUIObject.validations = [];
+        $rootScope.selectedQuestionUIObject.validations = [];
 
         if(Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu)) {
             if ($scope.currentlySelectedTextFormatDropDownMenu.name === "dataType" && Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.currentlySelectedTextFormatDropDownMenu);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.currentlySelectedTextFormatDropDownMenu);
             }
         }
 
         if(Object.isDefined($scope.exactLengthField)) {
             if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.exactLengthField);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.exactLengthField);
             }
         }
 
         if(Object.isDefined($scope.minLengthField)) {
             if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.minLengthField);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.minLengthField);
             }
         }
 
         if(Object.isDefined($scope.maxLengthField)) {
             if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.maxLengthField);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.maxLengthField);
             }
         }
 
         if(Object.isDefined($scope.minValueField)) {
             if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.minValueField);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.minValueField);
             }
         }
 
         if(Object.isDefined($scope.maxValueField)) {
             if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
-                $scope.selectedQuestionUIObject.validations.push($scope.maxValueField);
+                $rootScope.selectedQuestionUIObject.validations.push($scope.maxValueField);
             }
         }
 
-        var updatedSelectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+        var updatedSelectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($rootScope.selectedQuestionUIObject);
         console.info("freeTextReadOnlyQuestionController.save() method:\n" + updatedSelectedQuestionDomainObject);
 
         $scope.parentSave();
 	};
 
-    $scope.resetForm = function () {
+    $scope.addToPageQuestion = function(resetFormFunction, softReset, state){
+        resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
+        /*softReset = (Object.isBoolean(softReset))? softReset : false;
+        state = (Object.isDefined(state))? state: {
+            name: "modules.detail.questions.blank",
+            params: {selectedQuestionId: -1}
+        };*/
+
+        $rootScope.selectedQuestionUIObject.validations = [];
+
+        if(Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu)) {
+            if ($scope.currentlySelectedTextFormatDropDownMenu.name === "dataType" && Object.isDefined($scope.currentlySelectedTextFormatDropDownMenu.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.currentlySelectedTextFormatDropDownMenu);
+            }
+        }
+
+        if(Object.isDefined($scope.exactLengthField)) {
+            if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.exactLengthField);
+            }
+        }
+
+        if(Object.isDefined($scope.minLengthField)) {
+            if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.minLengthField);
+            }
+        }
+
+        if(Object.isDefined($scope.maxLengthField)) {
+            if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.maxLengthField);
+            }
+        }
+
+        if(Object.isDefined($scope.minValueField)) {
+            if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.minValueField);
+            }
+        }
+
+        if(Object.isDefined($scope.maxValueField)) {
+            if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
+                $rootScope.selectedQuestionUIObject.validations.push($scope.maxValueField);
+            }
+        }
+
+        $scope.parentAddToPageQuestion(resetFormFunction, softReset, state);
+    };
+
+    $scope.resetForm = function (softReset, stateName, stateParams) {
         $scope.currentlySelectedTextFormatDropDownMenu = null;
         $scope.exactLengthField.selected = false;
         $scope.exactLengthField.value = null;
@@ -102,7 +152,8 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         $scope.showMaxLengthField = false;
         $scope.showMinValueField = false;
         $scope.showMaxValueField = false;
-        $scope.parentResetForm();
+
+        $scope.parentResetForm(softReset, stateName, stateParams);
     };
 	
 	$scope.cancel = function(){

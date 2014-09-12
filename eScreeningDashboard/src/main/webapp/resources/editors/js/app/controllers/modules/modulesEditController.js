@@ -39,7 +39,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                        $rootScope.selectedQuestionUIObject = response.getPayload().toUIObject();
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -54,7 +54,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                        $rootScope.selectedQuestionUIObject = response.getPayload().toUIObject();
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -73,15 +73,15 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             });
         },
         getSelectedQuestionDomainObject = function () {
-            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions);
+            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($rootScope.selectedQuestionUIObject.childQuestions);
 
-            $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
+            $rootScope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
                 if(index > 0) {
                     childMeasure.answers = firstChildQuestionAnswers;
                 }
             });
 
-            return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+            return new EScreeningDashboardApp.models.Question($rootScope.selectedQuestionUIObject);
         };
 
     $scope.resetFormStatus = false;
@@ -114,33 +114,33 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.editQuestion = function(questionUIObject){
-        $scope.selectedQuestionUIObject = questionUIObject;
+        $rootScope.selectedQuestionUIObject = questionUIObject;
 
-        switch ($scope.selectedQuestionUIObject.type){
+        switch ($rootScope.selectedQuestionUIObject.type){
             case 'freeText':
             case 'readOnly':
-                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             case 'selectOne':
-                $state.go('modules.detail.questions.editSelectOne', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectOne', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             case'selectMulti':
-                $state.go('modules.detail.questions.editSelectMultiple', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectMultiple', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             case 'selectOneMatrix':
-                $state.go('modules.detail.questions.editSelectOneMatrix', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectOneMatrix', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             case 'selectMultiMatrix':
-                $state.go('modules.detail.questions.editSelectMultipleMatrix', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editSelectMultipleMatrix', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             case 'tableQuestion':
                 $state.go('modules.detail.questions.editTable');
                 break;
             case 'instruction':
-                $state.go('modules.detail.questions.editInstruction', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editInstruction', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
                 break;
             default:
-                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
         }
 
     };
@@ -164,19 +164,20 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         $state.go('modules.detail.questions.blank');
     };
 
-    $scope.addToPageQuestion = function (resetFormFunction) {
+    /*$scope.addToPageQuestion = function (resetFormFunction, state, softReset) {
         var selectedQuestionDomainObject = getSelectedQuestionDomainObject();
+        softReset = (Object.isBoolean(softReset))? softReset: false;
 
         $scope.addQuestion(selectedQuestionDomainObject);
-        resetFormFunction('modules.detail.questions.blank', {selectedQuestionId: -1});
-    };
+        resetFormFunction(state.name, state.params, softReset);
+    };*/
 
     $scope.cancel = function () {
         $state.go('modules.detail.questions.blank');
     };
 
     /*$scope.addQuestion = function(){
-        $scope.selectedQuestionUIObject = $rootScope.createQuestion();
+        $rootScope.selectedQuestionUIObject = $rootScope.createQuestion();
         $state.go('modules.detail.questions.editReadOnly');
     };*/
 
