@@ -76,8 +76,7 @@
               <div ng-show="item.isPage()" class="page-divider-container">
                   <div class="page-divider-container-row">
                       <div class="page-divider">
-                          <button type="button" class="btn btn-default btn-circle">{{item.getType()}} {{item.getItem().getPageNumber()}}</button>
-                          <span class="glyphicon glyphicon-remove-circle pull-right" style="margin-left: 10px;color:red;top:8px;" ng-click="deletePageQuestionItem(item);"/>
+                          <button type="button" class="btn btn-default btn-circle">{{item.getType()}} {{item.getItem().getPageNumber()}} <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deletePageQuestionItem(item);"/></button>
                       </div>
                   </div>
               </div>
