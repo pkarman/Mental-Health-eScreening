@@ -35,8 +35,8 @@
         <form class="form">
             <div class="form-group">
                 <label> Text Format </label>
-                <select class="form-control" ng-model="currentlySelectedTextFormatDropDownMenu"
-                        ng-options="textFormatType.value for textFormatType in currentlySelectedTextFormatDropDownMenuOptions"
+                <select class="form-control" ng-model="selectedQuestionUIObject.textFormatDropDownMenu"
+                        ng-options="textFormatType.value for textFormatType in textFormatDropDownMenuOptions"
                         ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()">
                     <option value=""> -- Choose Type --</option>
                 </select>
@@ -106,7 +106,7 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="minValueField.selected">
                     </span>
-                        <input type="text" class="form-control" placeholder="0" ng-model="minValueField.value" ng-disabled="!minValueField.selected">
+                        <input type="number" class="form-control" placeholder="0" ng-model="minValueField.value" ng-disabled="!minValueField.selected">
                     </div>
                     <!-- /input-group -->
                 </div>
@@ -125,11 +125,10 @@
         </div>
     </div>
 </div>
-<hr>
 <div class="row">
     <div class="col-md-12">
         <div class="form-group pull-right">
-            <button class="btn btn-primary" ng-click="addToPageQuestion();">Add To Page</button>
+            <button class="btn btn-primary" ng-click="addToPageQuestion();"><span ng-show="!showUpdateButtons;">Add To Page</span><span ng-show="showUpdateButtons;">Update Question</span></button>
             <button class="btn btn-default" ng-click="resetForm();">Reset</button>
         </div>
     </div>

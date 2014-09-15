@@ -300,7 +300,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
     this.toJSON = function (serializeCollections) {
         serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-        var jsonId = (id != null && id > 0)? id : null,
+        var jsonId = (id != null && id > 0)? id : -1, //null
             jsonText = (Object.isDefined(text))? "\"" + this.escapeTags(text) + "\"": null,
             jsonType = (Object.isDefined(type))? "\"" + type + "\"" : null,
             jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
@@ -347,7 +347,11 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     
     
     this.toUIObject = function(){
-    	var questionUIObject = JSON.parse(this.escapeTags(this.toJSON()));
+    	var questionUIObject = JSON.parse(this.escapeTags(this.toJSON())),
+            existingValidation;
+
+        questionUIObject.textFormatDropDownMenu = null;
+
     	return questionUIObject;
     };
 };

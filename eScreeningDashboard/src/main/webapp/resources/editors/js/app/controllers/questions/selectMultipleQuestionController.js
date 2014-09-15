@@ -3,7 +3,7 @@
  */
 Editors.controller('selectMultipleQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
 	//$scope.question = EScreeningDashboardApp.models.Question.toUIObjects($rootScope.selectedQuestion);
-    //$rootScope.currentlySelectedAnswerTypeDropDownMenu = $scope.getDefaultTextFormatType($rootScope.selectedQuestionUIObject, $rootScope.currentlySelectedTextFormatDropDownMenuOptions);
+    //$rootScope.currentlySelectedAnswerTypeDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $rootScope.textFormatDropDownMenuOptions);
 	$scope.answerTypeMenuOptions = answerTypeMenuOptions;
     $scope.parentSave = $scope.save;
 	$scope.isDirty = false;

@@ -1,7 +1,7 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', /*'questions', */'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, /*questions, */surveyUIObject, pageQuestionItems){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, surveyUIObject, pageQuestionItems){
     var tmpList = [],
         createSurvey = function(selectedModuleDomainObject) {
             SurveyService.create(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
@@ -39,7 +39,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $rootScope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                        $scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -54,7 +54,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $rootScope.selectedQuestionUIObject = response.getPayload().toUIObject();
+                        $scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -73,76 +73,51 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             });
         },
         getSelectedQuestionDomainObject = function () {
-            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($rootScope.selectedQuestionUIObject.childQuestions);
+            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions);
 
-            $rootScope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
+            $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
                 if(index > 0) {
                     childMeasure.answers = firstChildQuestionAnswers;
                 }
             });
 
-            return new EScreeningDashboardApp.models.Question($rootScope.selectedQuestionUIObject);
+            return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
         };
 
-    $scope.resetFormStatus = false;
-    $scope.selectedSurveyUIObject = (Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject();
-    $scope.questions = []; //(Object.isArray(questions))? EScreeningDashboardApp.models.Question.toUIObjects(questions): [];
-    $scope.pageQuestionItems = (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems;
+    $scope.textFormatDropDownMenuOptions = [];
+    $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
+        $scope.textFormatDropDownMenuOptions = textFormatTypeMenuOptions;
+    };
+
+    $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
+    $scope.setPageQuestionItems((Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems);
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
     $scope.getDefaultTextFormatType = function (targetQuestionUIObject, dropDownMenuOptions) {
-        var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation();
+        var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation().toUIObject();
 
         if(Object.isDefined(targetQuestionUIObject)) {
            if(Object.isArray(targetQuestionUIObject.validations)) {
                targetQuestionUIObject.validations.some(function(validation, index) {
                    if(validation.name === "dataType") {
-                       return dropDownMenuOptions.some(function(dropDownMenuOption) {
+                       dropDownMenuOptions.some(function(dropDownMenuOption) {
                             if(dropDownMenuOption.name === validation.name && dropDownMenuOption.value === validation.value){
                                 defaultTextFormatTypeValidation = dropDownMenuOption;
                                 return true;
                             }
                        });
+
+                       if(Object.isDefined(defaultTextFormatTypeValidation)) {
+                           return true;
+                       }
                    }
                });
            }
         }
 
         return defaultTextFormatTypeValidation;
-    };
-
-    $scope.editQuestion = function(questionUIObject){
-        $rootScope.selectedQuestionUIObject = questionUIObject;
-
-        switch ($rootScope.selectedQuestionUIObject.type){
-            case 'freeText':
-            case 'readOnly':
-                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            case 'selectOne':
-                $state.go('modules.detail.questions.editSelectOne', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            case'selectMulti':
-                $state.go('modules.detail.questions.editSelectMultiple', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            case 'selectOneMatrix':
-                $state.go('modules.detail.questions.editSelectOneMatrix', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            case 'selectMultiMatrix':
-                $state.go('modules.detail.questions.editSelectMultipleMatrix', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            case 'tableQuestion':
-                $state.go('modules.detail.questions.editTable');
-                break;
-            case 'instruction':
-                $state.go('modules.detail.questions.editInstruction', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-                break;
-            default:
-                $state.go('modules.detail.questions.editReadOnly', {selectedQuestionId: $rootScope.selectedQuestionUIObject.id});
-        }
-
     };
 
     $scope.save = function () {
@@ -177,9 +152,55 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     /*$scope.addQuestion = function(){
-        $rootScope.selectedQuestionUIObject = $rootScope.createQuestion();
+        $scope.setSelectedQuestionUIObject($rootScope.createQuestion());
         $state.go('modules.detail.questions.editReadOnly');
     };*/
+
+    $scope.editQuestion = function(selectedPageQuestionItem){
+        var stateName,
+            softReset = false,
+            state = {
+                name: undefined,
+                params: {selectedQuestionId: selectedPageQuestionItem.getItem().toUIObject()},
+                doTransition: false
+            };
+
+        $scope.setShowUpdateButtons(true);
+
+        switch (selectedPageQuestionItem.getItem().toUIObject().type){
+            case 'freeText':
+            case 'readOnly':
+                stateName = "modules.detail.questions.editReadOnly";
+                break;
+            case 'selectOne':
+                stateName = "modules.detail.questions.editSelectOne";
+                break;
+            case'selectMulti':
+                stateName = "modules.detail.questions.editSelectMultiple";
+                break;
+            case 'selectOneMatrix':
+                stateName = "modules.detail.questions.editSelectOneMatrix";
+                break;
+            case 'selectMultiMatrix':
+                stateName = "modules.detail.questions.editSelectMultipleMatrix";
+                break;
+            case 'tableQuestion':
+                stateName = "modules.detail.questions.editTable";
+                break;
+            case 'instruction':
+                stateName = "modules.detail.questions.editInstruction";
+                break;
+            default:
+                stateName = "modules.detail.questions.editReadOnly";
+        }
+
+        if(Object.isDefined(stateName)) {
+            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().toUIObject().id});
+            $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
+            $scope.setSelectedQuestionUIObject(selectedPageQuestionItem.getItem().toUIObject());
+            $scope.selectedQuestionUIObject.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
+        }
+    };
 
     $scope.deleteQuestion = function(question){
         $rootScope.messageHandler.clearMessages();

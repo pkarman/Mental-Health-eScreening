@@ -83,13 +83,13 @@
               <!-- ng-show="item.isPage()" page-divider-container End -->
                 <div ng-show="item.isQuestion()" class="form-inline">
                     <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;
-                    <span class="badge" ng-click="editQuestion(item.getItem().toUIObject());">Var: {{item.getDescription()}}</span>
+                    <span class="badge" ng-click="editQuestion(item);">Var: {{item.getDescription()}}</span>
                     <span style="font-size:12px;"> | {{item.getType()}}</span>
                     <div class="form-group pull-right">
                         <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deletePageQuestionItem(item);"/>
                     </div>
                     <div class="form-group pull-right" ng-show="item.isQuestion()">
-                        <span class="glyphicon glyphicon-edit" ng-click="editQuestion(item.getItem().toUIObject());"/>
+                        <span class="glyphicon glyphicon-edit" ng-click="editQuestion(item);"/>
                     </div>
                 </div>
           </li>

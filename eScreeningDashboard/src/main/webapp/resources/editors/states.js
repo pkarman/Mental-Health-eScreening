@@ -211,22 +211,6 @@ angular.module('Editors')
 
                             return selectedSurveyUIObject;
                         }],
-                        /*questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
-                            var deferred = $q.defer();
-
-                            if($stateParams.selectedSurveyId > -1) {
-                                QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.selectedSurveyId)).then(function (existingSurveys){
-                                    deferred.resolve(existingSurveys);
-                                }, function(responseError) {
-                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                    deferred.reject(responseError.getMessage());
-                                });
-                            } else {
-                                deferred.resolve([]);
-                            }
-
-                            return deferred.promise;
-                        }],*/
                         pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
                             var deferred = $q.defer();
 
@@ -271,7 +255,6 @@ angular.module('Editors')
                                 {id: 5, name: "selectMultiMatrix", displayName: "Select Multiple Matrix"},
                                 {id: 6, name: "tableQuestion", displayName: "Table Question"},
                                 {id: 7, name: "instruction", displayName: "Instructions"}
-
                             ];
                         }]
                     },
@@ -281,8 +264,8 @@ angular.module('Editors')
                 .state('modules.detail.questions.blank',{
                     url:'/question',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false},
-                    /*resolve: {
+                    data:{displayName:false}/*,
+                    resolve: {
                         surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
                             var selectedSurveyUIObject = null;
 
@@ -315,8 +298,8 @@ angular.module('Editors')
 
                             return deferred.promise;
                         }]
-                    },*/
-                    controller: 'questionsController'
+                    },
+                    controller: 'questionsController'*/
                 })
 
                 .state('modules.detail.questions.editSelectOne',{

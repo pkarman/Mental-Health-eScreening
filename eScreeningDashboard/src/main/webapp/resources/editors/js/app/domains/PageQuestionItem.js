@@ -24,7 +24,8 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author <a href="mailto:pouncilt.developer@gmail.com">Tont&eacute; Pouncil</a>
  */
 EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
-    var page = (Object.isDefined(targetItem) && typeof targetItem === "object" && targetItem instanceof EScreeningDashboardApp.models.SurveyPage)? targetItem: null,
+    var id = new Date().getTime(),
+        page = (Object.isDefined(targetItem) && typeof targetItem === "object" && targetItem instanceof EScreeningDashboardApp.models.SurveyPage)? targetItem: null,
         question = (Object.isDefined(targetItem) && typeof targetItem === "object" && targetItem instanceof EScreeningDashboardApp.models.Question)? targetItem: null;
 
     if(!Object.isDefined(page) && !Object.isDefined(question)) {
@@ -37,6 +38,10 @@ EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
 
     this.isPage = function() {
         return (Object.isDefined(page))? true : false;
+    };
+
+    this.getId = function () {
+        return id;
     };
 
     this.getItem = function(){

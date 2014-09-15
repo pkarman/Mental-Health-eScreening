@@ -2,21 +2,28 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
-    var createModule = function(){
-            return new EScreeningDashboardApp.models.Survey({
-                title:'Enter Module Title',
-                description:'Enter Module Description'
-            });
+    var createModule = function(jsonModuleObject){
+            if(Object.isDefined(jsonModuleObject)) {
+                return new EScreeningDashboardApp.models.Survey(jsonModuleObject);
+            } else {
+                return new EScreeningDashboardApp.models.Survey({
+                    title:'Enter Module Title',
+                    description:'Enter Module Description'
+                });
+            }
+
         },
-        createQuestion = function(){
-            return new EScreeningDashboardApp.models.Question();
+        createQuestion = function(jsonQuestionObject){
+            return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
         };
-    //$rootScope.selectedQuestion = {};
+
     $scope.pageQuestionItems = [];
-    $rootScope.selectedSurveyUIObject = createModule().toUIObject();
+    $scope.selectedSurveyUIObject = createModule().toUIObject();
+    $scope.selectedPageQuestionItem = {};
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
+    $scope.showUpdateButtons = false;
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         if (newValue === oldValue) {
@@ -29,6 +36,32 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             });
         }
     }, true);
+
+    $scope.setShowUpdateButtons = function(showUpdateButton) {
+        $scope.$apply(function () {
+            $scope.showUpdateButtons = (Object.isArray(showUpdateButton))? showUpdateButton : false;
+        });
+    };
+
+    $scope.setFormReset = function(formReset) {
+        $scope.formReset = formReset;
+    };
+
+    $scope.setSelectedSurveyUIObject = function(someSelectedQuestionUIObject) {
+        $scope.selectedSurveyUIObject = someSelectedQuestionUIObject
+    };
+
+    $scope.setSelectedQuestionUIObject = function (someSelectedQuestionUIObject) {
+        $scope.selectedQuestionUIObject = someSelectedQuestionUIObject;
+    };
+
+    $scope.setSelectedPageQuestionItem = function(someSelectedPageQuestionItem) {
+        $scope.selectedPageQuestionItem = someSelectedPageQuestionItem;
+    };
+
+    $scope.setPageQuestionItems = function(newPageQuestionItems) {
+
+    };
 
     $scope.addPageBreak = function(){
         var surveyPage = new EScreeningDashboardApp.models.SurveyPage(null),
@@ -49,6 +82,18 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     };
 
+    $scope.updatePageQuestionItem = function(somePageQuestionItem) {
+        var foundExistingPageQuestionItem = $scope.pageQuestionItems.find(function (pageQuestionItem) {
+            if(pageQuestionItem.getId() === somePageQuestionItem.getId()){
+                return pageQuestionItem;
+            }
+        });
+
+        if(Object.isDefined(foundExistingPageQuestionItem)) {
+            angular.copey(somePageQuestionItem, foundExistingPageQuestionItem);
+        }
+    };
+
     $scope.deletePageQuestionItem = function (pageQuestionItem) {
         var matchIndex = -1;
         if(Object.isDefined(pageQuestionItem)) {
@@ -60,18 +105,40 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-    $scope.resetForm = function(stateName, stateParams, softReset) {
-        softReset = (Object.isBoolean(softReset))? softReset: false;
-        $rootScope.selectedQuestionUIObject = createQuestion().toUIObject();
-        $scope.formReset = true;
 
-        if(Object.isDefined(stateName)) {
-            if(Object.isDefined(stateParams)) {
-                $state.go(stateName, stateParams);
-            } else {
-                $state.go(stateName);
+    $scope.resetForm = function(softReset, state) {
+        softReset = (Object.isBoolean(softReset))? softReset: false;
+
+        $scope.setSelectedQuestionUIObject(createQuestion().toUIObject());
+
+        if(!softReset) {
+            $scope.setFormReset(true);
+        }
+
+        $scope.selectedPageQuestionItem = null;
+        $scope.setShowUpdateButtons(false);
+
+        if(Object.isDefined(state) && Object.isBoolean(state.doTransition)) {
+            if(state.doTransition) {
+                if (Object.isString(state.name)) {
+                    if (Object.isDefined(state.params)) {
+                        $state.go(state.name, state.params);
+                    } else {
+                        $state.go(state.name);
+                    }
+                }
             }
         }
+    };
+
+    $scope.goToQuestions = function() {
+        var softReset = false,
+            state = {
+                name: "modules.detail.questions.blank",
+                params: {selectedQuestionId: -1},
+                doTransition: true
+            };
+        $scope.resetForm(false, state);
     };
 
 
@@ -134,12 +201,6 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.deleteQuestion = function(q){
         console.info("deleteQuestion() method.");
-    };
-
-    $scope.goToQuestions = function() {
-        //$state.go('modules.detail.questions.editReadOnly');
-        $rootScope.selectedQuestionUIObject = createQuestion().toUIObject();
-        $state.go('modules.detail.questions.blank');
     };
 
     /* ---- Button Actions ---- */
