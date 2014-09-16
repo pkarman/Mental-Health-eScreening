@@ -468,138 +468,83 @@ ${MODULE_END}
 '
 where template_id = 5;
 
-/**** Deployment history #ticket 586 ************/
+/**** GAD-7 Ticket #545  ************/
 update template 
-set template_file = '
-<#include "clinicalnotefunctions">
- <#-- Template start --> ${MODULE_TITLE_START} MILITARY DEPLOYMENTS AND HISTORY: ${MODULE_TITLE_END} 
- ${MODULE_START} <#assign deployments_section>  
- <#assign allComplete = false> 
- <#assign allAnswersNone = false> 
- 
-  <#-- var5000 --> 
-  <#assign Q1_text = ""> <#assign Q1_complete = false> <#assign Q1_isAnswerNone = false>
-  <#if (var5001.value)??> 
-  		<#if var5001.value = "true"> 
-  			<#assign Q1_isAnswerNone = true> 
-  			<#assign Q1_complete = true> 
-  		<#else> 
-  			<#assign Q1_isAnswerNone = false> 
-  		</#if> 
+set template_file =
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+ANXIETY:
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign anxiety_section>
+
+	<#if (var1660.children)?? && (var1670.children)?? && (var1680.children)?? && (var1690.children)?? 
+		&& (var1700.children)?? && (var1710.children)?? && (var1720.children)??
+		&& ((var1660.children)?size > 0) && ((var1670.children)?size > 0) && ((var1680.children)?size > 0)
+		&& ((var1690.children)?size > 0) && ((var1700.children)?size > 0) && ((var1710.children)?size > 0)
+			&& ((var1720.children)?size > 0)>
+        
+		<#assign fragments = []>
+		<#assign resolved_fragments="">
+		<#assign text="notset"> 
+		<#assign score = (getListScore([var1660,var1670,var1680,var1690,var1700,var1710,var1720]))!("-1"?number)>
+		<#assign scoreText ="notset">
+		
+		<#if (getScore(var1660) > 1)>
+			<#assign fragments = fragments + ["feeling nervous"] >
+		</#if>
+	    <#if (getScore(var1670) > 1)>
+			<#assign fragments = fragments + ["can\'t control worrying"]>
+		</#if>
+		<#if (getScore(var1680) > 1)>
+			<#assign fragments = fragments +  ["worrying too much"]>
+		</#if>
+		<#if (getScore(var1690) > 1)>
+			<#assign fragments = fragments +  ["trouble relaxing"]>
+		</#if>
+		<#if (getScore(var1700) > 1)>
+			<#assign fragments = fragments +  ["restlessness"]>
+		</#if>
+		<#if (getScore(var1710) > 1)>
+			<#assign fragments = fragments + ["irritability"]>
+		</#if>
+		<#if (getScore(var1720) > 1)>
+			<#assign fragments = fragments + ["feeling afraid"] >
+		</#if>
+		
+		<#if (fragments?has_content) >
+			<#assign resolved_fragments = createSentence(fragments)>
+		<#else>
+			<#assign resolved_fragments = "None">
+		</#if>
+			
+		<#if score??> 	
+			<#if (score >= 0) && (score <= 9)>
+				<#assign scoreText = "negative">				
+			<#elseif (score >= 10)>
+				<#assign scoreText = "positive">
+			</#if>
+		</#if>
+		
+		<#if (score >=1) && (score <= 21)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			<#if resolved_fragments != "None">
+			The Veteran endorsed the following symptoms were occurring more than half of the days in the past two weeks: ${resolved_fragments}.${NBSP}
+			</#if>
+		<#elseif (score == 0)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			The Veteran reported having no anxiety symptoms in the past 2 weeks.${NBSP}
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+  </#assign>
+  <#if !(anxiety_section = "") >
+     ${anxiety_section}
+  <#else>
+     ${noParagraphData}
   </#if> 
-  
-  <#if !Q1_isAnswerNone && !Q1_complete && (var5000.children)?? && ((var5000.children)?size > 0)> 
-  		<#assign Q1_complete = true> 
-  </#if>  
-  
-  <#-- var5020 --> 
-  <#assign Q2_text = ""> 
-  <#assign Q2_complete = false> 
-  <#assign Q2_isAnswerNone = false>
-   <#if (var5021.value)??> 
-   		<#if var5021.value = "true"> 
-   			<#assign Q2_isAnswerNone = true> <#assign Q2_complete = true> 
-   		<#else> <#assign Q2_isAnswerNone = false> 
-   		</#if> 
-   </#if> 
-   <#if !Q2_isAnswerNone && !Q2_complete && (var5020.children)?? && ((var5020.children)?size > 0)> 
-   		<#assign Q2_complete = true> 
-   </#if>  
-   
-   <#-- var5130 --> 
-   <#assign Q3_text = ""> <#assign Q3_complete = false> <#assign Q3_isAnswerNone = false> 
-   
-   <#if (var5131.value)??>
-        <#assign Q3_complete = true> 
-   		<#if var5131.value = "true"> 
-   			<#assign Q3_isAnswerNone = true>
-   		<#else> 
-   			<#assign Q3_isAnswerNone = false> 
-   		</#if> 
-   </#if>
-    
-   <#assign counter = 0> 
-   <#assign all_rows = "">  
-   <#if !Q3_isAnswerNone && (var5130.children)?? && (var5130.children)?has_content> 
-   		<#assign rows = {}> 
-   
-   		<#list ((var5130.children)![]) as v> 
-   			<#if (v.children)?? > 
-   				<#list v.children as c> 
-   					<#if (c.row)??> 
-   						<#assign beg_months = ["var5061", "var5062", "var5063", "var5064", "var5065", "var5066", "var5067", "var5068", "var5069", "var5070", "var5071", "var5072"]>  
-   						<#assign end_months = ["var5101", "var5102", "var5103", "var5104", "var5105", "var5106", "var5107", "var5108", "var5109", "var5110", "var5111", "var5112"]>  
-   
-   						<#if beg_months?seq_contains(c.key)> <#assign row_key = "var5060"> 
-   						<#elseif end_months?seq_contains(c.key)> 
-   							<#assign row_key = "var5100"> 
-   						<#else> <#assign row_key = (c.key)?string> 
-   						</#if>  
-   						<#assign row_idx = (c.row)?string> 
-   						<#assign row_value = ((c.displayText)!"")?string> 
-   						<#assign r ={}> 
-   						<#assign row_name = ("row" + row_idx + "_" + row_key)?string > 
-   						<#assign rows =  rows + {row_name:row_value}> 
-   					</#if> 
-   				</#list> 
-   			</#if> 
-   		</#list>  
-   		<#assign uniqueRows = []> 
-   		<#assign e = []> 
-   		<#if (rows?keys)??> 
-   			<#list (rows?keys?sort) as k> 
-   				<#assign e = (k?split("_"))> 
-   				<#if !(uniqueRows?seq_contains(e[0]))> 
-   					<#assign uniqueRows = uniqueRows + [e[0]]> 
-   				</#if> 
-   			</#list> 
-   		</#if>  
-   		<#assign outputText = "">  
-   		<#if uniqueRows?has_content>
-    		<#assign innerNextLine = ""> 
-    		<#list uniqueRows as r> 
-    			<#assign loc = (rows[r + "_" + "var5041"])!"">  
-    			<#assign beg_month = (rows[r + "_" + "var5060"])!""> 
-    			<#assign beg_yr = (rows[r + "_" + "var5081"])!"">  
-    			<#assign end_month = (rows[r + "_" + "var5100"])!""> 
-    			<#assign end_yr = (rows[r + "_" + "var5121"])!"">  
-    			<#if (loc?has_content) && (beg_month?has_content) && (beg_yr?has_content) && (end_month?has_content) && (end_yr?has_content)> ${innerNextLine}
-    				<#assign all_rows = all_rows +	beg_month + "/" + beg_yr + "-"  + end_month + "/" + end_yr + ": "  + loc + LINE_BREAK> 
-    				<#assign innerNextLine = "${LINE_BREAK}"> 
-    				<#assign counter = counter + 1>  
-    			<#else> 
-    			<#-- if Q3 is missing any answers, reset everything  and set complete = false--> 
-    				<#assign Q3_complete = false> <#assign all_rows = ""> <#assign counter = 0> 
-    				<#break> 
-    			</#if> 
-    		</#list> 
-    		<#if (counter > 0)> 
-    			<#assign Q3_complete = true> 
-    		</#if> 
-    	</#if> 
-    </#if>  
-    
-    <#if Q1_isAnswerNone && Q2_isAnswerNone && Q3_isAnswerNone> <#assign allAnswersNone = true> 
-    </#if>     
-    <#assign nextLine = ""> 
-   	<#if allAnswersNone> ${getAnsweredNoneAllText("Military Deployments History")} 
-   	<#else> 
-    	<#if Q1_isAnswerNone> The Veteran reported receiving no disciplinary actions. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-    	<#else> The Veteran reported receiving the following disciplinary actions: ${getSelectMultiDisplayText(var5000)}. 
-  			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-   		</#if>  
-    
-   		<#if Q2_isAnswerNone> ${nextLine}The Veteran reported receiving no personal awards or commendations. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">     		<#else> ${nextLine}The Veteran reported receiving the following personal awards or commendations: ${getSelectMultiDisplayText(var5020)}. 
-    			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-    	</#if>   
-    
-   		<#if (counter <= 1)> 
-   			<#assign frag = counter + " time"> <#assign frag2 = "area"> <#assign frag3 = "period"> 
-   		<#else> 
-   			<#assign frag = counter + " times"> <#assign frag2 = "areas"> <#assign frag3 = "periods">     		
-   		</#if> ${nextLine}The Veteran was deployed ${frag} to the following ${frag2} during the following time ${frag3}:${LINE_BREAK}${LINE_BREAK} ${all_rows} 
-    </#if>  
-    </#assign> <#if !(deployments_section = "") > ${deployments_section} <#else> ${noParagraphData} </#if> 
-    ${MODULE_END} 
-    '
-where template_id = 14;
+${MODULE_END}
+'
+where template_id = 34;
