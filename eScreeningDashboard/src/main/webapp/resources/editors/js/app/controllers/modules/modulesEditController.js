@@ -165,7 +165,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 doTransition: false
             };
 
-        $scope.setShowUpdateButtons(true);
+        $scope.changeQuestionSaveButtonLabel("Update Question");
 
         switch (selectedPageQuestionItem.getItem().toUIObject().type){
             case 'freeText':

@@ -24,6 +24,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
     $scope.showUpdateButtons = false;
+    $scope.questionSaveButtonLabelText = "Add To Page"; //Update Question
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         if (newValue === oldValue) {
@@ -37,10 +38,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     }, true);
 
-    $scope.setShowUpdateButtons = function(showUpdateButton) {
-        $scope.$apply(function () {
-            $scope.showUpdateButtons = (Object.isArray(showUpdateButton))? showUpdateButton : false;
-        });
+    $scope.changeQuestionSaveButtonLabel = function(buttonLabelText) {
+        $scope.questionSaveButtonLabelText = buttonLabelText;
     };
 
     $scope.setFormReset = function(formReset) {
@@ -90,7 +89,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         });
 
         if(Object.isDefined(foundExistingPageQuestionItem)) {
-            angular.copey(somePageQuestionItem, foundExistingPageQuestionItem);
+            angular.copy(somePageQuestionItem, foundExistingPageQuestionItem);
         }
     };
 
@@ -116,7 +115,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
 
         $scope.selectedPageQuestionItem = null;
-        $scope.setShowUpdateButtons(false);
+        $scope.changeQuestionSaveButtonLabel("Add To Page");
 
         if(Object.isDefined(state) && Object.isBoolean(state.doTransition)) {
             if(state.doTransition) {

@@ -136,7 +136,6 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         if(Object.isDefined(selectedQuestionDomainObject)){
             if(Object.isDefined($scope.selectedPageQuestionItem)) {
                 angular.copy(selectedQuestionDomainObject, $scope.selectedPageQuestionItem.getItem());
-                $scope.updatePageQuestionItem(selectedQuestionDomainObject);
             } else {
                 $scope.addQuestion(selectedQuestionDomainObject);
             }
