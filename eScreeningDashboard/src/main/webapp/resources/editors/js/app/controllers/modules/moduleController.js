@@ -27,12 +27,13 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.questionSaveButtonLabelText = "Add To Page"; //Update Question
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
+        var pageIndex = 0;
         if (newValue === oldValue) {
             return;
         } else {
-            $scope.pageQuestionItems.forEach(function(pageQuestionItem, index) {
+            $scope.pageQuestionItems.forEach(function(pageQuestionItem) {
                 if(pageQuestionItem.isPage()) {
-                    pageQuestionItem.getItem().setPageNumber(index+1);
+                    pageQuestionItem.getItem().setPageNumber(++pageIndex);
                 }
             });
         }
