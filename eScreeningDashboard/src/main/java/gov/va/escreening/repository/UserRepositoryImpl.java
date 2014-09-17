@@ -1,5 +1,6 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.domain.UserStatusEnum;
 import gov.va.escreening.entity.User;
 
@@ -19,6 +20,17 @@ public class UserRepositoryImpl extends AbstractHibernateRepository<User> implem
         setClazz(User.class);
     }
 
+    @Override
+    public List<User> findByRoleId(RoleEnum role){
+    	String sql = "SELECT u FROM User u WHERE u.role.roleId = :roleId AND u.userStatus.userStatusId= :activeStatus";
+
+    	return entityManager
+        	.createQuery(sql, User.class)
+        	.setParameter("roleId", role.getRoleId())
+        	.setParameter("activeStatus", UserStatusEnum.ACTIVE.getUserStatusId())
+        	.getResultList();
+    }
+    
     @Override
     public List<User> findByProgramIdAndRoleIdList(int programId, List<Integer> roleIdList) {
 

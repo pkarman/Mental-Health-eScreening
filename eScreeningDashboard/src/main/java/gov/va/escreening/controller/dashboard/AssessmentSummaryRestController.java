@@ -76,7 +76,7 @@ public class AssessmentSummaryRestController {
         String progressNoteContent = null;
 
         try {
-            progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
+            progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.CPRS_PREVIEW, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
         }
         catch (Exception e) {
             if(e instanceof ErrorResponseException){
