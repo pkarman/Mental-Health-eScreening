@@ -65,14 +65,14 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.addPageBreak = function(){
         var surveyPage = new EScreeningDashboardApp.models.SurveyPage(null),
-            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem(surveyPage);
+            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem((($scope.pageQuestionItems.length === 0)? {page: surveyPage, enabled: false} : {page: surveyPage}));
 
         $scope.pageQuestionItems.push(pageQuestionItem);
     };
 
     $scope.addQuestion = function(someQuestion) {
         var question = (Object.isDefined(someQuestion))? someQuestion: new EScreeningDashboardApp.models.Question(null),
-            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem(question);
+            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem({question: question});
 
         if($scope.pageQuestionItems.length === 0) {
            $scope.addPageBreak();

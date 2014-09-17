@@ -75,36 +75,37 @@
                             </button>
                             <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
                         </div>
-                        <ul class="list-group app screen first" ui-sortable="sortableOptions"
-                            ng-model="pageQuestionItems">
-                            <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems">
-                                <!-- ng-show="item.isPage()" page-divider-container Start -->
-                                <div ng-show="item.isPage()" class="page-divider-container">
-                                    <div class="page-divider-container-row">
-                                        <div class="page-divider">
-                                            <button type="button" class="btn btn-default btn-circle">
-                                                {{item.getType()}} {{item.getItem().getPageNumber()}}
-                                                <span class="glyphicon glyphicon-remove-circle"
-                                                      style="margin-left: 10px;color:red;"
-                                                      ng-show="item.getItem().getPageNumber() > 1"
-                                                      ng-click="deletePageQuestionItem(item);"/>
-                                            </button>
+                        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="pageQuestionItems">
+
+                            <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems" ng-class="{'unsortable': item.isEnabled() === false}">
+
+                                <div ng-switch on="item.isPage()">
+                                    <div ng-switch-when="true" class="page-divider-container">
+                                        <div class="page-divider-container-row">
+                                            <div class="page-divider">
+                                                <button type="button" class="btn btn-default btn-circle">
+                                                    {{item.getType()}} {{item.getItem().getPageNumber()}}
+                                                    <span class="glyphicon glyphicon-remove-circle"
+                                                          style="margin-left: 10px;color:red;"
+                                                          ng-show="item.getItem().getPageNumber() > 1"
+                                                          ng-click="deletePageQuestionItem(item);"/>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- ng-show="item.isPage()" page-divider-container End -->
-                                <div ng-show="item.isQuestion()" class="form-inline">
-                                    <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp;
-                                    <span class="badge"
-                                          ng-click="editQuestion(item);">Var: {{item.getDescription()}}</span>
-                                    <span style="font-size:12px;"> | {{item.getType()}}</span>
 
-                                    <div class="form-group pull-right">
-                                    <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;"
-                                          ng-click="deletePageQuestionItem(item);"/>
-                                    </div>
-                                    <div class="form-group pull-right" ng-show="item.isQuestion()">
-                                        <span class="glyphicon glyphicon-edit" ng-click="editQuestion(item);"/>
+                                    <div ng-switch-default class="form-inline">
+                                        <span class="glyphicon glyphicon-align-justify pull-left"></span>
+                                        &nbsp;&nbsp;
+                                        <span class="badge" ng-click="editQuestion(item);">Var: {{item.getDescription()}}</span>
+                                        <span style="font-size:12px;"> | {{item.getType()}}</span>
+
+                                        <div class="form-group pull-right">
+                                            <span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" ng-click="deletePageQuestionItem(item);"/>
+                                        </div>
+                                        <div class="form-group pull-right" ng-show="item.isQuestion()">
+                                            <span class="glyphicon glyphicon-edit" ng-click="editQuestion(item);"/>
+                                        </div>
                                     </div>
                                 </div>
                             </li>

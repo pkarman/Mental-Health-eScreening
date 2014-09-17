@@ -215,11 +215,17 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.sortableOptions = {
+        cancel: ".unsortable",
+        items: "li:not(.unsortable)",
+
         update: function(e, ui) {
             var logEntry = tmpList.map(function(i){
                 return i.value;
             }).join(', ');
             // $scope.sortingLog.push('Update: ' + logEntry);
+            if (ui.item.scope().item.isEnabled() === true) {
+
+            }
         },
         stop: function(e, ui) {
             // this callback has the changed model

@@ -23,10 +23,11 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @constructor
  * @author <a href="mailto:pouncilt.developer@gmail.com">Tont&eacute; Pouncil</a>
  */
-EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
+EScreeningDashboardApp.models.PageQuestionItem = function (pageQuestionItem) {
     var id = new Date().getTime(),
-        page = (Object.isDefined(targetItem) && typeof targetItem === "object" && targetItem instanceof EScreeningDashboardApp.models.SurveyPage)? targetItem: null,
-        question = (Object.isDefined(targetItem) && typeof targetItem === "object" && targetItem instanceof EScreeningDashboardApp.models.Question)? targetItem: null;
+        page = (Object.isDefined(pageQuestionItem) && Object.isDefined(pageQuestionItem.page) && typeof pageQuestionItem.page === "object" && pageQuestionItem.page instanceof EScreeningDashboardApp.models.SurveyPage)? pageQuestionItem.page: null,
+        question = (Object.isDefined(pageQuestionItem) && Object.isDefined(pageQuestionItem.question)  && typeof pageQuestionItem.question === "object" && pageQuestionItem.question instanceof EScreeningDashboardApp.models.Question)? pageQuestionItem.question: null,
+        enabled = (Object.isDefined(pageQuestionItem) && Object.isBoolean(pageQuestionItem.enabled))? pageQuestionItem.enabled : true;
 
     if(!Object.isDefined(page) && !Object.isDefined(question)) {
         throw new Error("Either Page or Question has to be defined.");
@@ -42,6 +43,10 @@ EScreeningDashboardApp.models.PageQuestionItem = function (targetItem) {
 
     this.getId = function () {
         return id;
+    };
+
+    this.isEnabled = function () {
+        return enabled;
     };
 
     this.getItem = function(){
