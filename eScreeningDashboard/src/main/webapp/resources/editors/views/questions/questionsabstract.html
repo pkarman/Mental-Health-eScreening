@@ -1,18 +1,16 @@
 <div class="row">
     <div class="col-md-12">
         <div class="form-horizontal">
-            <div class="form-inline form-group">
-                <label for="selType" class="form-label col-md-8 text-right">Question Type</label>
+            <label for="selType" class="control-label col-md-8">Question Type</label>
 
-                <div class="col-md-4">
-                    <select id="selType" ng-model="questionTypeDropDownMenu"
-                            ng-options="option.displayName for option in questionTypeDropDownMenuOptions track by option.displayName"
-                            ng-disabled="disableDropDownMenu()"
-                            name="selType"
-                            class="form-control">
-                        <option value=""> -- Choose Question Type --</option>
-                    </select>
-                </div>
+            <div class="col-md-4">
+                <select id="selType" ng-model="questionTypeDropDownMenu"
+                        ng-options="option.displayName for option in questionTypeDropDownMenuOptions track by option.displayName"
+                        ng-disabled="disableDropDownMenu()"
+                        name="selType"
+                        class="form-control">
+                    <option value=""> -- Choose Question Type --</option>
+                </select>
             </div>
         </div>
     </div>
