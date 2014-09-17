@@ -548,3 +548,126 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 34;
+
+-- /* DEMOGRAPHICS UPDATE*/
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+${LINE_BREAK}
+DEMOGRAPHICS: 
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var30.children)?? || (var40.children)?? || (var20.children)?? || (var143.children)??>
+
+		<#assign age = -1>
+		<#if var143?? && (var143.children)?? && (var143.children?size > 0)>
+			<#assign age = calcAge(var143.children[0].value)>
+		</#if>
+	
+  	
+		<#-- The Veteran is a 28 year-old hispanic. -->
+    
+		The Veteran is a ${NBSP} <#if age != -1> ${age} year-old<#t></#if>
+        <#if var30?? && (var30.children)?? && (var30.children?size > 0)>
+		<#if isSelectedAnswer(var30,var33) >
+          ,  <#t>
+        <#else>
+          ${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)},  <#t> 
+        </#if> 
+        </#if>
+    
+    <#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
+    <#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >
+      <#-- The Veteran reports being<#t>  -->
+      <#if hasValue(getSelectMultiDisplayText(var40)) >
+        ${""?left_pad(1)} ${getSelectMultiDisplayText(var40)}<#t>
+      </#if> 
+      <#if hasValue(getSelectOneDisplayText(var20)) >
+        ${""?left_pad(1)}${getSelectOneDisplayText(var20)}<#t>
+      </#if> 
+      .  <#t>
+    </#if> 
+   
+    <#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
+    <#if hasValue(getFormulaDisplayText(var11))  >
+      <#assign num = getFormulaDisplayText(var11)?number />
+      The Veteran\'s reported BMI is ${num}, indicating that he/she <#t>
+      <#if (num < 18.5) >
+        is below a normal a weight.  <#t>
+      <#elseif (num < 25) && (num >= 18.5) >
+        is at a normal weight.  <#t>
+      <#elseif (num < 30) && (num >= 25) >
+        is overweight.  <#t>
+      <#elseif (num < 40) && (num >= 30) >
+        is obese.  <#t>
+      <#elseif (num >= 40) >
+        is morbid obese.  <#t>
+      </#if>
+    </#if>
+    
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+${MODULE_END}
+'
+where template_id = 4;
+
+-- /* SOCIAL UPDATE */
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SOCIAL: 
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if var110?? || (var90.children)?? || (var160.children)??  || (var130.children)?? || (var131.value)?? >
+    <#--The Veteran lives in a house with spouse or partner, and children.-->
+    <#if hasValue(getSelectOneDisplayText(var110)) && hasValue(getSelectMultiDisplayText(var90)) >
+      The Veteran ${getSelectOneDisplayText(var110)}  
+      <#if wasAnswerNone(var90)>
+        alone.  ${NBSP}
+      <#else> 
+        with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+      </#if>
+    <#elseif hasValue(getSelectOneDisplayText(var110)) && !(hasValue(getSelectMultiDisplayText(var90)))>
+      The Veteran ${getSelectOneDisplayText(var110)}.  ${NBSP}
+    <#elseif !(hasValue(getSelectOneDisplayText(var110))) && hasValue(getSelectMultiDisplayText(var90)) >
+     The Veteran lives with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+    </#if>
+    <#--The Veteran reported not having any children.-->
+    <#if var130?? || var131?? >
+      <#if wasAnswerTrue(var131) >
+        The Veteran reported not having any children. ${NBSP}
+      <#else>
+        <#--The Veteran has 2 child(ren) who are child(ren) are 2,4 years old.-->
+		<#assign rowCount = ((var130.children)?size)!0>
+        <#if (rowCount > 0) >
+          <#if (rowCount == 1) >
+			<#assign text = ((var130.children[0].children[0].displayText)!"")>
+            The Veteran has 1 child who is ${text} years old. ${NBSP}
+          <#elseif (rowCount > 1) >
+            The Veteran has ${getNumberOfTableResponseRows(var130)} children who are ${getTableMeasureDisplayText(var130)} years old. ${NBSP}
+          </#if>
+        </#if>
+      </#if>
+    </#if>
+    
+    <#if hasValue(getSelectMultiDisplayText(var160)) >
+    	${LINE_BREAK}${LINE_BREAK}Source(s) of support is/are: ${getSelectMultiDisplayText(var160)}. ${NBSP}
+    </#if>
+    
+    <#--The Veteran indicated a history of physical violence .-->
+    <#if hasValue(getSelectOneDisplayText(var150)) >
+    	${LINE_BREAK}${LINE_BREAK}The Veteran ${getSelectOneDisplayText(var150)} a history of physical violence or intimidation in a current relationship. ${NBSP}
+    </#if>
+   
+    <#else>
+    	${getNotCompletedText()}
+    </#if>    
+${MODULE_END}
+'
+where template_id = 6;
+
