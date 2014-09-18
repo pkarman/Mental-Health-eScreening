@@ -117,7 +117,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
          *
          * @param {{surveyId: String, survey: EScreeningDashboardApp.models.Survey, surveys: String }}  saveSurveyRequestParameters Represents the save parameters for the request.
          */
-        create = function (updateSurveyRequestParameter) {
+        create = function (createSurveyRequestParameter) {
 
             /**
              * Represents the angular Defer that is used for asynchronous service calls.
@@ -141,7 +141,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                         save: {
                             method: 'PUT',
                             params: {
-                                "survey": updateSurveyRequestParameter.survey
+                                "survey": createSurveyRequestParameter.survey
                             },
                             isArray: false,
                             headers:{
@@ -152,7 +152,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                     }
                 );
 
-            service.save(updateSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
+            service.save(createSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
                 var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
                 deferred.resolve(response.getPayload());
             }, function (reason) {

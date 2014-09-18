@@ -95,14 +95,14 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                      * @type {Resource}
                      */
                     service = $resource(
-                        "services/surveys/:surveyId/pages",
+                        "services/surveys/:surveyId/:pages",
                         {},
                         {
                             save: {
                                 method: 'PUT',
                                 params: {
-                                    /*"surveyId": updateSurveyRequestParameter.surveyId,
-                                    "surveys": updateSurveyRequestParameter.surveys*/
+                                    "surveyId": updateSurveyPageRequestParameter.surveyId,
+                                    "pages": updateSurveyPageRequestParameter.pages
                                 },
                                 isArray: false,
                                 headers:{
@@ -113,7 +113,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                         }
                     );
 
-                service.save(updateSurveyPageRequestParameter.survey.toJSON(), function (jsonResponse) {
+                service.save(EScreeningDashboardApp.models.SurveyPage.toUIObjects(updateSurveyPageRequestParameter.payload), function (jsonResponse) {
                     var response = handleSurveyPageUpdateResponse(jsonResponse, EScreeningDashboardApp.models.SurveyPageTransformer, null);
                     deferred.resolve(response);
                 }, function (reason) {
@@ -128,22 +128,24 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          *
          * @private
          * @method
-         * @param {EScreeningDashboardApp.models.SurveyPage} surveyPage Represents the Survey domain object to update.
-         * @returns {{surveyPageId: *, surveyPage: EScreeningDashboardApp.models.SurveyPage, surveys: String}} A search criteria object.
+         * @param {Number} surveyId Represents the Survey Id to update.
+         * @param {EScreeningDashboardApp.models.SurveyPage[]} surveyPages Represents the Survey Page domain objects to update.
+         * @returns {{surveyId: Number, surveyPages: EScreeningDashboardApp.models.SurveyPage[], pages: String}} A search criteria object.
          */
-        var setUpdateSurveyPageRequestParameter = function (surveyPage) {
+        var setUpdateSurveyPageRequestParameter = function (surveyId, surveyPages) {
             var saveSurveyPageRequestParameter = {
-                "surveyPageId": surveyPage.getId(),
-                "surveyPage": surveyPage,
-                "surveys": "surveys"
+                "surveyId": surveyId,
+                "payload": surveyPages,
+                "pages": "pages"
             };
 
-            if (!Object.isDefined(surveyPage.getId())) {
+            if (!Object.isDefined(surveyId)) {
                 delete saveSurveyPageRequestParameter.surveyId;
-                saveSurveyPageRequestParameter.surveys = saveSurveyPageRequestParameter.surveys + ".json";
+                saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";
             } else {
-                saveSurveyPageRequestParameter.surveyPageId = saveSurveyPageRequestParameter.surveyPageId + ".json";
+                saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";
             }
+
             return saveSurveyPageRequestParameter;
         };
 

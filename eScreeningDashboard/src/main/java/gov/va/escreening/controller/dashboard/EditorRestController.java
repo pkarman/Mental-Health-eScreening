@@ -64,11 +64,13 @@ public class EditorRestController {
 
     @RequestMapping(value="/services/surveys/{surveyId}/pages", method = RequestMethod.PUT, produces="application/json", consumes="application/json")
     @ResponseBody
-    public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPageInfo, @CurrentUser EscreenUser escreenUser)
+    public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPages, @CurrentUser EscreenUser escreenUser)
     {
-        editorsViewDelegate.updateSurveyPages(surveyId, surveyPageInfo);
+        editorsViewDelegate.updateSurveyPages(surveyId, surveyPages);
+        Map surveyPageInfoItems = new HashMap();
+        surveyPageInfoItems.put("surveyPages", surveyPages);
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is saved successfully. ");
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "The data is saved successfully."), surveyPageInfoItems);
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")

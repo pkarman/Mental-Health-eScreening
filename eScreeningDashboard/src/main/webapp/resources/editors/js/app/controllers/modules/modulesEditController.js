@@ -1,10 +1,10 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, surveyUIObject, pageQuestionItems){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, surveyUIObject, pageQuestionItems){
     var tmpList = [],
         createSurvey = function(selectedModuleDomainObject) {
-            SurveyService.create(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+            SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
                         $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
@@ -122,7 +122,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
     $scope.save = function () {
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
-            selectedQuestionDomainObject = getSelectedQuestionDomainObject();
+            organizedPages = $scope.organizePages();
 
         if(selectedModuleDomainObject.getId() > -1) {
             updateSurvey(selectedModuleDomainObject);
@@ -130,11 +130,19 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             createSurvey(selectedModuleDomainObject);
         }
 
-        if(selectedQuestionDomainObject.getId() > -1) {
-            updateQuestion(selectedQuestionDomainObject);
-        } else {
-            createQuestion(selectedQuestionDomainObject);
-        }
+        SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, organizedPages)).then(function(response){
+            if(Object.isDefined(response)) {
+                if (response.isSuccessful()) {
+                    //$scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                    $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                } else {
+                    $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                    console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                }
+            }
+        }, function(responseError){
+            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+        });
 
         $state.go('modules.detail.questions.blank');
     };

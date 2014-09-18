@@ -39,6 +39,19 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     }, true);
 
+    $scope.organizePages = function () {
+        var organizedPages = [];
+        $scope.pageQuestionItems.forEach(function(item) {
+            if(item.isPage()){
+                organizedPages.push(item.getItem());
+            } else if(organizedPages.length > 0){
+                organizedPages[organizedPages.length-1].getQuestions().push(item.getItem());
+            }
+        });
+
+        return organizedPages;
+    };
+
     $scope.changeQuestionSaveButtonLabel = function(buttonLabelText) {
         $scope.questionSaveButtonLabelText = buttonLabelText;
     };
