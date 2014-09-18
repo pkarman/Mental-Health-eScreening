@@ -4,7 +4,6 @@ import gov.va.escreening.entity.Survey;
 
 import java.util.List;
 
-import javax.persistence.FlushModeType;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -83,4 +82,12 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
 
         return query.getResultList();
     }
+
+	@Override
+	public List<Survey> findByTemplateId(Integer templateId) {
+		String sql = "SELECT s From Survey s JOIN s.templates t  where t.templateId = :templateId";
+        TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
+        query.setParameter("templateId", templateId);
+        return query.getResultList();
+	}
 }
