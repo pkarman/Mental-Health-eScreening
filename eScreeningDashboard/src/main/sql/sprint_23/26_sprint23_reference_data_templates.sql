@@ -614,7 +614,7 @@ ${MODULE_END}
 '
 where template_id = 4;
 
--- /* SOCIAL UPDATE */
+-- /*** SOCIAL UPDATE ticket-589 ***/
 update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
@@ -670,4 +670,47 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 6;
+/* Homelessness Clinical Reminder */
+
+UPDATE template SET template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+HOUSING: 
+${MODULE_TITLE_END}
+${MODULE_START}
+
+  	<#if var2000?? && (var2000.children)?? && ((var2000.children)?size > 0)  >
+		<#if (var2000.children[0].key == "var763") >  <#-- declined -->
+				The Veteran declined to discuss their current housing situation.
+		
+		<#elseif (var2000.children[0].key == "var761")>
+				The Veteran ${getSelectOneDisplayText(var2000)} been living in stable housing for the last 2 months.
+				<#if (var2002.children)?? && ((var2002.children)?size > 0)>
+				The Veteran has been living ${getSelectOneDisplayText(var2002)}.</#if>
+				<#if (var2008.children)?? && ((var2008.children)?size > 0)>
+				The Veteran ${getSelectOneDisplayText(var2008)} like a referral to talk more about his/her housing concerns.${NBSP}
+				</#if>
+		
+		<#elseif (var2000.children[0].key == "var762")>
+			The Veteran ${getSelectOneDisplayText(var2000)} been living in stable housing for the last 2 months. 
+			<#if (var2002.children)?? &&  ((var2002.children)?size > 0)>
+				The Veteran has been living ${getSelectOneDisplayText(var2002)}.
+			</#if>
+			<#if var2001?? && var2001.children?? && ((var2001.children)?size > 0)> 
+				The Veteran ${getSelectOneDisplayText(var2001)} concerned about housing in the future.
+			</#if>
+			<#if var2008?? && (var2008.children)?? &&  ((var2008.children)?size > 0)>
+				The Veteran ${getSelectOneDisplayText(var2008)} like a referral to talk more about his/her housing concerns.
+			</#if>
+		
+		<#else>
+				${getNotCompletedText()}.
+		</#if>
+    <#else>
+		${getNotCompletedText()}
+	</#if> 
+${MODULE_END}
+'
+where template_id = 8;
 
