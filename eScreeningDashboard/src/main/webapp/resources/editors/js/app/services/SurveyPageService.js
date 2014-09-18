@@ -134,7 +134,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
          */
         var setUpdateSurveyPageRequestParameter = function (surveyId, surveyPages) {
             var saveSurveyPageRequestParameter = {
-                "surveyId": surveyId,
+                "surveyId": (Object.isDefined(surveyId))? surveyId: 1,
                 "payload": surveyPages,
                 "pages": "pages"
             };

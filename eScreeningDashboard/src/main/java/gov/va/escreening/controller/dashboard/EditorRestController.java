@@ -68,7 +68,7 @@ public class EditorRestController {
     {
         editorsViewDelegate.updateSurveyPages(surveyId, surveyPages);
         Map surveyPageInfoItems = new HashMap();
-        surveyPageInfoItems.put("surveyPages", surveyPages);
+        surveyPageInfoItems.put("surveyPages", new ArrayList<SurveyPageInfo>());
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "The data is saved successfully."), surveyPageInfoItems);
     }
@@ -187,17 +187,17 @@ public class EditorRestController {
                           @CurrentUser EscreenUser escreenUser) {
 		/*logger.debug("addBattery");
 
-		if (battery != null) {
-			logger.debug(battery.toString());
+		if (survey != null) {
+			logger.debug(survey.toString());
 		}
 
 		ErrorResponse errorResponse = new ErrorResponse();
 
 		// Data validation.
-		if (StringUtils.isBlank(battery.getName())) {
+		if (StringUtils.isBlank(survey.getName())) {
 			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
-		} else if (battery.getName().length() > 50) {
+		} else if (survey.getName().length() > 50) {
 			// throw data validation exception
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
 		}
@@ -207,10 +207,10 @@ public class EditorRestController {
 		}
 
 		// Call service class here.
-		Integer batteryId = editorDelegate.createBattery(battery);
+		SurveyInfo survey = editorsViewDelegate.createSurvey(survey);
 		logger.debug("batteryId: " + batteryId);*/
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // surveyInfoList
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // surveyInfo
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
