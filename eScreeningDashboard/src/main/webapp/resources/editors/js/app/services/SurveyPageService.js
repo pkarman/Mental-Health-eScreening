@@ -140,7 +140,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
             };
 
             if (!Object.isDefined(surveyId)) {
-                delete saveSurveyPageRequestParameter.surveyId;
+                //delete saveSurveyPageRequestParameter.surveyId;
                 saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";
             } else {
                 saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";

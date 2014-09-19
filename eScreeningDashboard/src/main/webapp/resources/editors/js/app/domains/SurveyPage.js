@@ -116,6 +116,19 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         return surveyUIObject;
     };
 };
+EScreeningDashboardApp.models.SurveyPage.toJSON = function(surveyPages) {
+    var json = "[";
+
+    if(Object.isArray(surveyPages)) {
+        surveyPages.forEach(function(surveyPage, index) {
+            json += surveyPage.toJSON() + ((index + 1 !== surveyPages.length)? "," : "");
+        });
+    }
+
+    json += "]";
+
+    return json;
+};
 EScreeningDashboardApp.models.SurveyPage.toUIObjects = function(surveyPages) {
     var surveyPageUIObjects = [];
 

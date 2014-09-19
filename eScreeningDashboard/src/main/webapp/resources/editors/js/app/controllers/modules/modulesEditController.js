@@ -124,11 +124,13 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
             organizedPages = $scope.organizePages();
 
-        if(selectedModuleDomainObject.getId() > -1) {
+        console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
+
+        /*if(selectedModuleDomainObject.getId() > -1) {
             updateSurvey(selectedModuleDomainObject);
         } else {
             createSurvey(selectedModuleDomainObject);
-        }
+        }*/
 
         SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, organizedPages)).then(function(response){
             if(Object.isDefined(response)) {

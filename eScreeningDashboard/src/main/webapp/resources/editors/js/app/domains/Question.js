@@ -300,7 +300,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
     this.toJSON = function (serializeCollections) {
         serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-        var jsonId = (id != null && id > 0)? id : -1, //null
+        var jsonId = (Object.isDefined(id) && id > 0)? id : null, //null
             jsonText = (Object.isDefined(text))? "\"" + this.escapeTags(text) + "\"": null,
             jsonType = (Object.isDefined(type))? "\"" + type + "\"" : null,
             jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
@@ -358,7 +358,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
      var surveyUIObjects = [];
 
-     if(Object.isDefined(questions) && Object.isArray(questions)) {
+     if(Object.isArray(questions)) {
          questions.forEach(function(question) {
              surveyUIObjects.push(question.toUIObject());
          });

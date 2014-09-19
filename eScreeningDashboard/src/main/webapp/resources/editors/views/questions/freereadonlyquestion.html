@@ -2,9 +2,9 @@
 <div class="row">
     <div class="col-md-12">
         <div>
-            <label for="txtVariableNm" class="form-label"> Variable Name </label>
-            <input type="text" id="txtVariableNm" class="form-control" placeholder="Variable Name"
-                   ng-model="selectedQuestionUIObject.variableName" ng-disabled="module.id > -1">
+            <label for="inputVariableName" class="form-label"> Variable Name </label>
+            <input id="inputVariableName" name="inputVariableName" type="text" class="form-control" placeholder="Variable Name"
+                   ng-model="selectedQuestionUIObject.variableName" ng-disabled="module.id > -1" required>
         </div>
     </div>
 </div>
@@ -14,8 +14,11 @@
             <div class="col-sm-12"></div>
         </div>
         <div>
-            <label class="form-label"> Question Text </label>
-            <textarea class="form-control" ng-model="selectedQuestionUIObject.text"></textarea>
+            <label for="textAreaText" class="form-label"> Question Text </label>
+            <textarea id="textAreaText" name="textAreaText" class="form-control"
+                      placeholder="Question Text"
+                      ng-model="selectedQuestionUIObject.text"
+                      required></textarea>
         </div>
         <!--
         <div class="form-group">
@@ -32,10 +35,12 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label> Text Format </label>
-            <select class="form-control" ng-model="selectedQuestionUIObject.textFormatDropDownMenu"
+            <label for="selectTextFormat"> Text Format </label>
+            <select id="selectTextFormat" name="selectTextFormat" class="form-control"
+                    ng-model="selectedQuestionUIObject.textFormatDropDownMenu"
                     ng-options="textFormatType.value for textFormatType in textFormatDropDownMenuOptions"
-                    ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()">
+                    ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()"
+                    required>
                 <option value=""> -- Choose Type --</option>
             </select>
         </div>
@@ -46,11 +51,10 @@
         </div>
         -->
         <div class="form-group form-inline">
-            <label class="checkbox">
-                <input type="checkbox" ng-model="selectedQuestionUIObject.ppi"> PPI </label> &nbsp;&nbsp;
-            <label class="checkbox">
-                <input type="checkbox" ng-model="selectedQuestionUIObject.required"> Required
-            </label>
+            <input type="checkbox" id="checkboxPPI" name="checkboxPPI" ng-model="selectedQuestionUIObject.ppi">
+            <label for="checkboxPPI" class="checkbox">PPI </label> &nbsp;&nbsp;
+            <input type="checkbox" id="checkboxRequired" name="checkboxRequired" ng-model="selectedQuestionUIObject.required">
+            <label for="checkboxRequired" class="checkbox">Required</label>
         </div>
         <!-- JH OOOCOMMENT
         <div class="btn-group"> <a href="#" class="btn btn-success">Calculation Value</a> <a href="#" class="btn btn-success">Calculation Type</a> </div>
@@ -62,62 +66,63 @@
 
 
             <div class="form-group">
-                <label class="form-label">Exact Length</label>
+                <label for="inputExactLength" class="form-label">Exact Length</label>
 
                 <div class="input-group">
                         <span class="input-group-addon">
                             <input type="checkbox" ng-model="exactLengthField.selected">
                         </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="exactLengthField.value"
+                    <input type="number" id="inputExactLength" name="inputExactLength"
+                           class="form-control" placeholder="0" ng-model="exactLengthField.value"
                            ng-disabled="!exactLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
 
             <div class="form-group" ng-show="showMinLengthField">
-                <label class="form-label">Min Length</label>
+                <label for="inputMinLength" class="form-label">Min Length</label>
 
                 <div class="input-group">
                         <span class="input-group-addon">
                             <input type="checkbox" ng-model="minLengthField.selected">
                         </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="minLengthField.value"
+                    <input type="number" id="inputMinLength" name="inputMinLength" class="form-control" placeholder="0" ng-model="minLengthField.value"
                            ng-disabled="!minLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
             <div class="form-group" ng-show="showMaxLengthField">
-                <label class="form-label">Max Length</label>
+                <label for="inputMaxLength" class="form-label">Max Length</label>
 
                 <div class="input-group">
                         <span class="input-group-addon">
                             <input type="checkbox" ng-model="maxLengthField.selected">
                         </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="maxLengthField.value"
+                    <input type="number" id="inputMaxLength" name="inputMaxLength" class="form-control" placeholder="0" ng-model="maxLengthField.value"
                            ng-disabled="!maxLengthField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
             <div class="form-group" ng-show="showMinValueField">
-                <label class="form-label">Min Value</label>
+                <label for="inputMinValue" class="form-label">Min Value</label>
 
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="minValueField.selected">
                     </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="minValueField.value"
+                    <input type="number" id="inputMinValue" name="inputMinValue" class="form-control" placeholder="0" ng-model="minValueField.value"
                            ng-disabled="!minValueField.selected">
                 </div>
                 <!-- /input-group -->
             </div>
             <div class="form-group" ng-show="showMaxValueField">
-                <label class="form-label">Max Value</label>
+                <label for="inputMaxValue" class="form-label">Max Value</label>
 
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="maxValueField.selected">
                     </span>
-                    <input type="number" class="form-control" placeholder="0" ng-model="maxValueField.value"
+                    <input type="number" id="inputMaxValue" name="inputMaxValue" class="form-control" placeholder="0" ng-model="maxValueField.value"
                            ng-disabled="!maxValueField.selected">
                 </div>
                 <!-- /input-group -->
@@ -131,8 +136,8 @@
     </div>
     <div class="col-md-12">
         <div class="form-group pull-right">
-            <button class="btn btn-primary" ng-disabled="!moduleDetailsForm.$valid" ng-click="addToPageQuestion();">{{questionSaveButtonLabelText}}</button>
-            <button class="btn btn-default" ng-disabled="!moduleDetailsForm.$valid" ng-click="resetForm();">Reset</button>
+            <button class="btn btn-primary" ng-disabled="!questionDetailsForm.$valid" ng-click="addToPageQuestion();">{{questionSaveButtonLabelText}}</button>
+            <button class="btn btn-default" ng-disabled="!questionDetailsForm.$valid" ng-click="resetForm();">Reset</button>
         </div>
     </div>
 </div>

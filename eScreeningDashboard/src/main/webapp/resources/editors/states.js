@@ -331,9 +331,9 @@ angular.module('Editors')
                             //TODO: Need to dynamically pull a unique list of validation type from the
                             //TODO: measure_validation table where measure_validation.validation_id = 1.
                             return [
-                                {id: 1, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
-                                {id: 1, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
-                                {id: 1, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+                                {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
                             ];
                         }]
                     },
@@ -369,9 +369,9 @@ angular.module('Editors')
                         answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
                             //TODO: Need to dynamically pull a unique list of answer types from the database.
                             return [
-                                {id: -1, name: "Regular"},
-                                {id: -1, name: "Other"},
-                                {id: -1, name: "None"}
+                                {id: null, name: "Regular"},
+                                {id: null, name: "Other"},
+                                {id: null, name: "None"}
                             ];
                         }]
                     },

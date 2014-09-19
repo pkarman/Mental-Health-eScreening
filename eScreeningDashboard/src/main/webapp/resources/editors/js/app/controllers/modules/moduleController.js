@@ -3,15 +3,7 @@
  */
 Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
     var createModule = function(jsonModuleObject){
-            if(Object.isDefined(jsonModuleObject)) {
-                return new EScreeningDashboardApp.models.Survey(jsonModuleObject);
-            } else {
-                return new EScreeningDashboardApp.models.Survey({
-                    title:'Enter Module Title',
-                    description:'Enter Module Description'
-                });
-            }
-
+            return new EScreeningDashboardApp.models.Survey(jsonModuleObject);
         },
         createQuestion = function(jsonQuestionObject){
             return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
