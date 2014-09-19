@@ -103,11 +103,12 @@
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
+
+    <!-- Application filters -->
+    <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
     
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>
-    
-    
     
     <!-- Controllers -->
     

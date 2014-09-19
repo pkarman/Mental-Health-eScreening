@@ -40,7 +40,7 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
         var filteredMessage = this.filterBySuccessSaveMessage(message, index);
 
         if(!Object.isDefined(filteredMessage)) {
-            filteredMessage = filterBySuccessDeleteMessage(message, index);
+            filteredMessage = this.filterBySuccessDeleteMessage(message, index);
         }
 
         if(Object.isDefined(filteredMessage)) {
@@ -50,7 +50,7 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
 
     this.filterBySuccessSaveMessage = function(message, index) {
         if(Object.isDefined(message)) {
-            if(message.getType().toLowerCase() === "success") {
+            if(message.getType().toLowerCase() === BytePushers.models.Message.SUCCESSFUL_SAVE) {
                 if(!Object.isDefined(message.getValue())) {
                     message.setValue(BytePushers.models.Message.SUCCESS_SAVE_MSG);
                 }
@@ -61,7 +61,7 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
 
     this.filterBySuccessDeleteMessage = function(message, index) {
         if(Object.isDefined(message)) {
-            if(message.getType().toLowerCase() === "success") {
+            if(message.getType().toLowerCase() === BytePushers.models.Message.SUCCESSFUL_DELETE) {
                 if(!Object.isDefined(message.getValue())) {
                     message.setValue(BytePushers.models.Message.SUCCESS_DELETE_MSG);
                 }
@@ -82,7 +82,8 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
 
     this.hasSuccessMessages = function() {
         return messages.some( function(message, index) {
-            if(message.getType().toLowerCase() === "success"){
+            if(message.getType().toLowerCase() === BytePushers.models.Message.SUCCESSFUL_SAVE ||
+                message.getType().toLowerCase() === BytePushers.models.Message.SUCCESSFUL_DELETE){
                 return true;
             }
         });

@@ -124,18 +124,17 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
             organizedPages = $scope.organizePages();
 
-        console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
+        //console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
 
-        /*if(selectedModuleDomainObject.getId() > -1) {
+        if(selectedModuleDomainObject.getId() > -1) {
             updateSurvey(selectedModuleDomainObject);
         } else {
             createSurvey(selectedModuleDomainObject);
-        }*/
+        }
 
         SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, organizedPages)).then(function(response){
             if(Object.isDefined(response)) {
                 if (response.isSuccessful()) {
-                    //$scope.selectedSurveyUIObject = response.getPayload().toUIObject();
                     $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                 } else {
                     $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -143,10 +142,14 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 }
             }
         }, function(responseError){
-            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
         });
 
-        $state.go('modules.detail.questions.blank');
+        $scope.resetForm(false, {
+            name: "modules.detail.questions.blank",
+            params: {selectedQuestionId: $scope.selectedSurveyUIObject.id},
+            doTransition: true
+        });
     };
 
     /*$scope.addToPageQuestion = function (resetFormFunction, state, softReset) {

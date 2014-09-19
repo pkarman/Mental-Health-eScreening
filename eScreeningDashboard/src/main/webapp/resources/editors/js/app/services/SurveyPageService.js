@@ -140,7 +140,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
             };
 
             if (!Object.isDefined(surveyId)) {
-                //delete saveSurveyPageRequestParameter.surveyId;
+                delete saveSurveyPageRequestParameter.surveyId;
                 saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";
             } else {
                 saveSurveyPageRequestParameter.pages = saveSurveyPageRequestParameter.pages + ".json";
@@ -218,7 +218,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId, false);
 
             if (response === null) {
                 throw new Error("handleSurveyPageServiceQueryResponse() method: Response is null.");

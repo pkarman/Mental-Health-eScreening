@@ -5,15 +5,12 @@
         <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
             Error Message(s):<br><br>
 
-            <div ng-repeat="error in messageHandler.getMessages()| filter:messageHandler.filterByErrorMessage">
+            <div ng-repeat="error in messageHandler.getMessages()| uniqueMessage">
                 {{error.getValue()}}
             </div>
         </div>
         <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
-            <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessSaveMessage">
-                {{message.getValue()}}
-            </div>
-            <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessDeleteMessage">
+            <div ng-repeat="message in messageHandler.getMessages()| uniqueMessage">
                 {{message.getValue()}}
             </div>
         </div>
