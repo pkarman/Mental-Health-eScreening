@@ -66,6 +66,30 @@ public class EditorRestController {
     @ResponseBody
     public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPages, @CurrentUser EscreenUser escreenUser)
     {
+    	ErrorResponse errorResponse = new ErrorResponse();
+    	
+    	for(SurveyPageInfo surveyPage : surveyPages)
+    	{
+    		for(QuestionInfo q :surveyPage.getQuestions())
+    		{
+    			if (q.getMeasureType()==null)
+    			{
+    				// throw data validation exception
+                    errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Question Type", "Question Type is required.");
+                
+    			} else if (q.getText()==null)
+    			{
+    				// throw data validation exception
+                    errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Question Text", "Question Text is required.");
+                
+    			}
+  
+    		}
+            if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+                throw new AssessmentEngineDataValidationException(errorResponse);
+            }
+    		
+    	}
         editorsViewDelegate.updateSurveyPages(surveyId, surveyPages);
         Map surveyPageInfoItems = new HashMap();
         surveyPageInfoItems.put("surveyPages", new ArrayList<SurveyPageInfo>());
@@ -185,21 +209,20 @@ public class EditorRestController {
     @ResponseBody
     public Response addSurvey(@RequestBody SurveyInfo survey,
                           @CurrentUser EscreenUser escreenUser) {
-		/*logger.debug("addBattery");
-
-		if (survey != null) {
-			logger.debug(survey.toString());
-		}
+		logger.debug("create new survey:"+survey);
 
 		ErrorResponse errorResponse = new ErrorResponse();
 
 		// Data validation.
 		if (StringUtils.isBlank(survey.getName())) {
 			// throw data validation exception
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
-		} else if (survey.getName().length() > 50) {
+			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Name is required.");
+		} else if (survey.getName().length() > 255) {
 			// throw data validation exception
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
+			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Title should be less than 255 characters.");
+		} else if (survey.getDescription()!=null && survey.getDescription().length()> 255)
+		{
+			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Description", "Description should be less than 255 characters.");
 		}
 
 		if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
@@ -207,10 +230,12 @@ public class EditorRestController {
 		}
 
 		// Call service class here.
-		SurveyInfo survey = editorsViewDelegate.createSurvey(survey);
-		logger.debug("batteryId: " + batteryId);*/
+		survey = editorsViewDelegate.createSurvey(survey);
+		
+		Map surveyMap = new HashMap();
+        surveyMap.put("survey", survey);
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // surveyInfo
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // surveyInfoList
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -234,7 +259,7 @@ public class EditorRestController {
         logger.debug("getSurvey");
 
         // Call service class here instead of hard coding it.
-        SurveyInfo surveyInfo = null; //editorsViewDelegate.getSurvey(surveyId);
+       // SurveyInfo surveyInfo = //editorsViewDelegate.getSurvey(surveyId);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
     }
@@ -350,7 +375,7 @@ public class EditorRestController {
 
 		// returns the error response which contains a list of error messages
 		//return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
-        return createRequestFailureResponse(ex.getLocalizedMessage());
+        return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));
 	}
 
     @ExceptionHandler(NotFoundException.class)

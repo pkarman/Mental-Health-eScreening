@@ -254,6 +254,8 @@ public class SurveyServiceImpl implements SurveyService {
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public void updateSurveyPages(Integer surveyId,
 			List<SurveyPageInfo> surveyPageInfos) {
+		
+		
 		Survey survey = surveyRepository.findOne(surveyId);
 		
 		List<SurveyPage> surveyPageList = new ArrayList<SurveyPage>();
@@ -262,6 +264,7 @@ public class SurveyServiceImpl implements SurveyService {
 		
 		for(SurveyPageInfo surveyPageInfo : surveyPageInfos)
 		{
+			
 			SurveyPage surveyPage = null;
 			
 			if (surveyPageInfo.getId() == null)
@@ -272,11 +275,12 @@ public class SurveyServiceImpl implements SurveyService {
 			{
 				surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
 			}
-
+			System.out.println("survapteInfo");
 			surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
 			surveyPage.setDescription(surveyPageInfo.getDescription());
 			surveyPage.setTitle(surveyPageTitle);
 			surveyPage.setSurveyPageId(surveyPageInfo.getId());
+			System.out.println("survapteInfo  1");
 			if (surveyPageInfo.getDateCreated()==null)
 			{
 				surveyPage.setDateCreated(new Date());
@@ -289,9 +293,13 @@ public class SurveyServiceImpl implements SurveyService {
 			
 			List<Measure> measures = new ArrayList<Measure>();
 			surveyPage.setMeasures(measures);
+			
+			System.out.println("survapteInfo  2");
+			
 			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
 			{
 				Integer measureId = questionInfo.getId();
+				System.out.println("survapteInfo  2"+(measureId==null));
 				if (measureId != null)
 				{
 					measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
@@ -300,9 +308,13 @@ public class SurveyServiceImpl implements SurveyService {
 				else
 				{
 					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));		
+					
+					System.out.println("survapteInfo  2"+(measureDTO==null));
 					measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
 				}
 			}
+			
+			System.out.println("survapteInfo  3");
 			
 			if (surveyPageInfo.getId() == null)
 			{
@@ -313,6 +325,8 @@ public class SurveyServiceImpl implements SurveyService {
 			
 			surveyPageList.add(surveyPage);
 		}
+		
+		System.out.println("aaaaaab");
 		survey.setSurveyPageList(surveyPageList);
 		surveyRepository.update(survey);
 	}
@@ -341,6 +355,19 @@ public class SurveyServiceImpl implements SurveyService {
 		    
 		}
 		return surveyPageInfos;
+	}
+
+	@Override
+	public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
+		Survey survey = new Survey();
+		
+		BeanUtils.copyProperties(surveyInfo, survey);
+		
+		
+		
+		surveyRepository.create(survey);
+		
+		return convertToSurveyItem(survey);
 	}
 
 }

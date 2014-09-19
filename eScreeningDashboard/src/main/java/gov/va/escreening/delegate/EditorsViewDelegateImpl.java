@@ -153,5 +153,10 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
 		return surveyService.getSurveyPages(surveyId);
 	}
+	@Override
+	public SurveyInfo createSurvey(SurveyInfo survey) {
+		
+		return surveyService.createSurvey(survey);
+	}
 }
 
