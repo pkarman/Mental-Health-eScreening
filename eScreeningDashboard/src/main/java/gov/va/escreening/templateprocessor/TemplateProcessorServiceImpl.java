@@ -32,6 +32,7 @@ import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
@@ -80,6 +81,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	
 	@Autowired
 	private SurveyMeasureResponseService surveyMeasureRespSvc;
+	
+	@Autowired
+	private SurveyRepository surveyRepository;
 
 	@Resource(name="veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
@@ -124,6 +128,30 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return createDocument(veteranAssessmentId, viewType, DocumentType.CPRS_NOTE, optionalTemplates, true); 
 	}
 	
+	@Override
+	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException {
+		Survey survey = surveyRepository.findOne(surveyId);
+		checkArgument(survey != null, String.format("Module not found with ID %s", surveyId));
+		
+		for(Template t : survey.getTemplates()){
+			if(type.getId() == t.getTemplateType().getTemplateTypeId()){
+				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
+					.appendTemplate(t)
+					.generate();
+				logger.debug("Rendered template:\n{}", text);
+				return text;
+			}
+		}
+		
+		ErrorBuilder
+			.throwing(IllegalSystemStateException.class)
+			.toUser(String.format("No template of type %s is defined for module %s. Please have the technical administrator use the template editor to create one.", type, survey.getName()))
+			.toAdmin(String.format("No template of type %s is defined for module: %s. Please use the template editor to create one.", type, survey))
+			.throwIt();	
+		
+		//since last statement will throw an exception we will never get here
+		return null;
+	}
 	
 	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates

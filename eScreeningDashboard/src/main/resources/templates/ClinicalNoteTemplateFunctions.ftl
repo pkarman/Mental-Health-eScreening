@@ -378,7 +378,7 @@ boolean indicates if the suffix should be appended at the end of the list -->
 
 </#function>
 
-<#function isSet str>
+<#function isSet str='notset'>
 	<#if str?? && (str?has_content) && ( (str?trim) != "notset") &&  ((str?trim) != "notfound")>
 		<#return true>
 	<#else>
