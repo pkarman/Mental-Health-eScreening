@@ -5,6 +5,6 @@
 		</a> 
 	</div>
 	<div class="headerDiv">
-			<img class='csamhImg' src="resources/images/cesamh_new_logo.png">
+			<img class='csamhImg' src="resources/images/cesamh_new_logo.png"  alt="VA CENTER OF EXCELLENCE CESAMH STRESS AND MENTAL HEALTH LOGO">
 	</div>
 </div>

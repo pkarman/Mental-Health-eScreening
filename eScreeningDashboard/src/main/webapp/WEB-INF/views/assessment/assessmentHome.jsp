@@ -43,9 +43,9 @@
                     <a name="skip" > </a >
                     <s:url var="imgUrl"
                             value="/resources/images/assessment_start_screen_capture_logo_01.png" />
-                        <img src="${imgUrl}" name="VA HEALTH CARE | Defining Excellence in the 21st Century" title="VA HEALTH CARE | Defining Excellence in the 21st Century" />
+                        <img src="${imgUrl}" name="VA HEALTH CARE | Defining Excellence in the 21st Century" title="VA HEALTH CARE | Defining Excellence in the 21st Century" alt="VA HEALTH CARE | Defining Excellence in the 21st Century" />
                         
-                      <h2>Welcome to VA San Diego Healthcare System!</h2>
+                      <h1>Welcome to VA San Diego Healthcare System!</h1>
                         <p>We thank you for your service to our country and look forward to assisting in your enrollment for VA healthcare and transition from active duty to Veteran status. </p>
                         <p>The following eScreening Questionnaire will help your VA healthcare team to assess your needs and provide the best health and wellness options available to you. Please take your time and answer all questions as completely as possible. If you have any questions, please ask for assistance.</p>
     
@@ -58,7 +58,7 @@
                     	<br /><br />
                         <s:url var="imgUrl"
                             value="/resources/images/assessment_start_screen_capture_logo_02.png" />
-                        <img src="${imgUrl}" name="" title="" />
+                        <img src="${imgUrl}" name="VA Center of Excellence CESAMH | Stress and Mental Health" title="VA Center of Excellence CESAMH | Stress and Mental Health" alt="VA Center of Excellence CESAMH | Stress and Mental Health" />
                     </div>
                 </div>
             </div>

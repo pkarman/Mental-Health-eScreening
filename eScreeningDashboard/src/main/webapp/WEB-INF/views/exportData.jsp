@@ -331,7 +331,7 @@ $.ajax({
         <div class="alert alert-info">Please enter a comment for this export and click ok to download the export file. <br />Please do not do any operations while downland is in progress.</div>
           
 		  <div class="form-group">
-		    <label for="exampleInputEmail1">Export Comment *</label>
+		    <label for="comment">Export Comment *</label>
 		    <textarea class="form-control" rows="3"  placeholder="Enter a comment" ng-model="exportDataFormBean.comment" id="comment"
             required data-validation-required-message="Please enter a comment" minlength="5" data-validation-minlength-message="Min 5 characters" 
                         maxlength="100"></textarea>
