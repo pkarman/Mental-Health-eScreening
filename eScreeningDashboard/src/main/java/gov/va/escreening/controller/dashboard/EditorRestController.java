@@ -235,7 +235,7 @@ public class EditorRestController {
 		Map surveyMap = new HashMap();
         surveyMap.put("survey", survey);
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // surveyInfoList
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyMap); // surveyInfoList
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
