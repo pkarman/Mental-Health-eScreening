@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -164,16 +163,17 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 
-		m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+		m.getMeasureValidationList().clear();
+	
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
 				gov.va.escreening.entity.Validation v = validationRepo
 						.findValidationByCode(mvdto.getName());
 				MeasureValidation mv = new MeasureValidation();
 				if ("boolean".equalsIgnoreCase(v.getDataType())) {
-					mv.setBooleanValue(Integer.getInteger(mvdto.getValue()));
+					mv.setBooleanValue(Integer.valueOf(mvdto.getValue()));
 				} else if ("number".equalsIgnoreCase(v.getDataType())) {
-					mv.setNumberValue(Integer.getInteger(mvdto.getValue()));
+					mv.setNumberValue(Integer.valueOf(mvdto.getValue()));
 				} else {
 					mv.setTextValue(mvdto.getValue());
 				}
