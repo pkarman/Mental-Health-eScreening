@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.ae.ErrorResponse;

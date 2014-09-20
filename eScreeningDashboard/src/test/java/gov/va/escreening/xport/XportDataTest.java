@@ -467,7 +467,7 @@ public class XportDataTest {
 
 		String name = "templateProcessorService-->templateDataVerifierTypeTxt-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
@@ -484,7 +484,7 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierTypeHtml-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE, TemplateType.VISTA_QA));
 			sw.stop();
@@ -501,7 +501,7 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierVetSummary-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
 			sw.stop();
@@ -566,7 +566,7 @@ public class XportDataTest {
 		String name = "testSmrListResponseTimeForVet18";
 		StopWatch sw = new StopWatch(name);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			smrLister.loadSmrFromDb(18);
 			sw.stop();
@@ -745,7 +745,7 @@ public class XportDataTest {
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
 		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();

@@ -81,8 +81,8 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	@Autowired
 	private SurveyMeasureResponseService surveyMeasureRespSvc;
 
-	@Resource(name="veteranAssessmentSmrList")
-	VeteranAssessmentSmrList smrLister;
+	//@Resource(name="veteranAssessmentSmrList")
+	//VeteranAssessmentSmrList smrLister;
 	
 	private static final String FILE_ENCODING = "UTF-8";
 	private static final Logger logger = LoggerFactory.getLogger(TemplateProcessorServiceImpl.class);
@@ -141,7 +141,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 		
 		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
+		//smrLister.loadSmrFromDb(veteranAssessmentId);
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);

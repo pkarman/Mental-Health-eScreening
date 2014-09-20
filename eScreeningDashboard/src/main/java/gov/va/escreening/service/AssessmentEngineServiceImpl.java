@@ -66,8 +66,8 @@ import com.google.common.collect.ListMultimap;
 @Service("assessmentEngineService")
 public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
-	@Resource(name = "veteranAssessmentSmrList")
-	VeteranAssessmentSmrList smrLister;
+	//@Resource(name = "veteranAssessmentSmrList")
+	//VeteranAssessmentSmrList smrLister;
 
 	@Autowired
 	private AssessmentContext assessmentContext;
@@ -449,7 +449,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			
 			// refresh list of SurveyMeasureResponses for this current Assessment. 
 			// This will be consumed by Rules
-			smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
+			//smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
 
 		} catch (Exception ex) {
 			errorResponse.setCode(10);
