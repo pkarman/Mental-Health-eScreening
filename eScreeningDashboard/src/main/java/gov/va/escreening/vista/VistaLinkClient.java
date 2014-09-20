@@ -72,5 +72,7 @@ public interface VistaLinkClient {
     public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, Map<String, String> tbiexportColumnsMap);
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
+    public boolean savePainScale(VeteranAssessment veteranAssessment);
+    
     void closeConnection();
 }

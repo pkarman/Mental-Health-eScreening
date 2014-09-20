@@ -1,5 +1,6 @@
 package gov.va.escreening.vista;
 
+import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_RequestParameters;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_VistaLinkRequest;
@@ -387,5 +388,44 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 		};
 
 		return rpcInvoker.invokeRpc(getConnection(), getRequest(), "ORWDCN32 DEF");
+	}
+
+	@Override
+	public boolean savePainScale(VeteranAssessment veteranAssessment) {
+		final int basicPainSurveyID = 20;
+		Integer painScale = -1;
+		if(veteranAssessment.getSurveyMap().containsKey(basicPainSurveyID))
+		{
+			List<SurveyMeasureResponse> respList = veteranAssessment.getSurveyMeasureResponseList();
+			for(SurveyMeasureResponse smr : respList)
+			{
+				if(220 == smr.getMeasure().getMeasureId() && smr.getBooleanValue())
+				{
+					painScale = Integer.valueOf(smr.getMeasureAnswer().getCalculationValue());
+					break;
+				}
+			}
+		}
+		
+		if (painScale >= 0 )
+		{
+			RpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {			
+
+				@Override
+				protected List<Object> prepareReqParams() {
+					List<Object> params = new ArrayList<Object>();
+					
+					
+					return params;
+				}
+
+				@Override
+				protected String prepareResponse(String rawReponse) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+		}
+		return false;
 	}
 }
