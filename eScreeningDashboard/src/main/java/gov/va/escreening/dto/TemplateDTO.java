@@ -10,7 +10,6 @@ public class TemplateDTO {
     
     private String templateFile;
     private Date dateCreated;
-    private List<VariableTemplateDTO> variableTemplateList;
     private Integer templateTypeId;
     private boolean isGraphical;
     
@@ -43,12 +42,6 @@ public class TemplateDTO {
 	}
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-	public List<VariableTemplateDTO> getVariableTemplateList() {
-		return variableTemplateList;
-	}
-	public void setVariableTemplateList(List<VariableTemplateDTO> variableTemplateList) {
-		this.variableTemplateList = variableTemplateList;
 	}
 	public Integer getTemplateTypeId() {
 		return templateTypeId;

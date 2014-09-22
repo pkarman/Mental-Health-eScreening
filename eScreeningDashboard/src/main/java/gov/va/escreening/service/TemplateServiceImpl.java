@@ -1,22 +1,24 @@
 package gov.va.escreening.service;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
+import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
+import gov.va.escreening.repository.VariableTemplateRepository;
 import gov.va.escreening.transformer.TemplateTransformer;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +35,16 @@ public class TemplateServiceImpl implements TemplateService {
 	private TemplateTypeRepository templateTypeRepository;
 	
 	@Autowired
+	private VariableTemplateRepository variableTemplateRepository;
+	
+	@Autowired
 	private SurveyRepository surveyRepository;
 	
 	@Autowired
 	private BatteryRepository batteryRepository;
 	
 
+	@SuppressWarnings("serial")
 	private static List<TemplateType> surveyTemplates = new ArrayList<TemplateType>() {{
 		add(TemplateType.CPRS_ENTRY);
 		add(TemplateType.VET_SUMMARY_ENTRY);
@@ -46,6 +52,7 @@ public class TemplateServiceImpl implements TemplateService {
 		
 	}};
 	
+	@SuppressWarnings("serial")
 	private static List<TemplateType> batteryTemplates = new ArrayList<TemplateType>() {{
 		add(TemplateType.CPRS_HEADER);
 		add(TemplateType.CPRS_FOOTER);
@@ -104,7 +111,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public TemplateDTO readTemplate(Integer templateId)
+	public TemplateDTO getTemplate(Integer templateId)
 	{
 		Template template = templateRepository.findOne(templateId);
 		
@@ -121,17 +128,18 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public void updateTemplate(TemplateDTO templateDTO)
+	public TemplateDTO updateTemplate(TemplateDTO templateDTO)
 	{
 
 		Template template = templateRepository.findOne(templateDTO.getTemplateId());
 		TemplateTransformer.copyToTemplate(templateDTO, template);
 		templateRepository.update(template);
+		return TemplateTransformer.copyToTemplateDTO(template, null);
 	}
 	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public void createTemplate(TemplateDTO templateDTO, Integer parentId, boolean isSurvey)
+	public TemplateDTO createTemplate(TemplateDTO templateDTO, Integer parentId, boolean isSurvey)
 	{
 		Template template = TemplateTransformer.copyToTemplate(templateDTO, null);
 		
@@ -159,8 +167,59 @@ public class TemplateServiceImpl implements TemplateService {
 			}
 		}
 		
+		return TemplateTransformer.copyToTemplateDTO(template, null);
+		
 	}
 	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void addVariableTemplate(Integer templateId, Integer variableTemplateId)
+	{
+		Template template = templateRepository.findOne(templateId);		
+		VariableTemplate variableTemplate = variableTemplateRepository.findOne(variableTemplateId);
+		template.getVariableTemplateList().add(variableTemplate);
+		templateRepository.update(template);
+	}
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void addVariableTemplates(Integer templateId, List<Integer> variableTemplateIds)
+	{
+		Template template = templateRepository.findOne(templateId);		
+		List<VariableTemplate> variableTemplates = variableTemplateRepository.findByIds(variableTemplateIds);
+		template.getVariableTemplateList().addAll(variableTemplates);
+		templateRepository.update(template);
+	}
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void removeVariableTemplateFromTemplate(Integer templateId, Integer variableTemplateId)
+	{
+		Template template = templateRepository.findOne(templateId);		
+		VariableTemplate variableTemplate = variableTemplateRepository.findOne(variableTemplateId);
+		template.getVariableTemplateList().remove(variableTemplate);
+		templateRepository.update(template);
+	}
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void removeVariableTemplatesFromTemplate(Integer templateId, List<Integer> variableTemplateIds)
+	{
+		Template template = templateRepository.findOne(templateId);		
+		List<VariableTemplate> variableTemplates = variableTemplateRepository.findByIds(variableTemplateIds);
+		template.getVariableTemplateList().removeAll(variableTemplates);
+		templateRepository.update(template);
+	}
+
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void setVariableTemplatesToTemplate(Integer templateId, List<Integer> variableTemplateIds)
+	{
+		Template template = templateRepository.findOne(templateId);		
+		List<VariableTemplate> variableTemplates = variableTemplateRepository.findByIds(variableTemplateIds);
+		template.setVariableTemplateList(variableTemplates);
+		templateRepository.update(template);
+	}
 	/**
 	 * 
 	 * Ensure the uniqueness of the template in either survey or battery
@@ -208,7 +267,6 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		return templateSet;
 	}
-	
-	
 
+	
 }

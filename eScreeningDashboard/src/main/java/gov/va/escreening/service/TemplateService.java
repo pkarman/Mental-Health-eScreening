@@ -1,16 +1,34 @@
 package gov.va.escreening.service;
 
+import java.util.List;
+
 import gov.va.escreening.dto.TemplateDTO;
 
 public interface TemplateService {
 
 	void deleteTemplate(Integer templateId);
 
-	TemplateDTO readTemplate(Integer templateId);
+	TemplateDTO getTemplate(Integer templateId);
 
-	void updateTemplate(TemplateDTO templateDTO);
+	TemplateDTO updateTemplate(TemplateDTO templateDTO);
 
-	void createTemplate(TemplateDTO templateDTO, Integer parentId,
+	TemplateDTO createTemplate(TemplateDTO templateDTO, Integer parentId,
 			boolean isSurvey);
+
+	void addVariableTemplate(Integer templateId, Integer variableTemplateId);
+
+	void addVariableTemplates(Integer templateId,
+			List<Integer> variableTemplateIds);
+
+	void removeVariableTemplateFromTemplate(Integer templateId,
+			Integer variableTemplateId);
+
+	void removeVariableTemplatesFromTemplate(Integer templateId,
+			List<Integer> variableTemplateIds);
+
+	void setVariableTemplatesToTemplate(Integer templateId,
+			List<Integer> variableTemplateIds);
+
+	
 
 }

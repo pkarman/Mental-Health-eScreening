@@ -17,6 +17,7 @@ import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
+import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 
 import javax.annotation.Resource;
@@ -37,6 +38,9 @@ public class TemplateServiceTest extends AssessmentTestBase {
 	private static Logger logger = Logger.getLogger(TemplateServiceTest.class);
 	@Resource
 	TemplateProcessorService templateSvc;
+	
+	@Resource
+	TemplateService templateService;
 
 	@Resource
 	TemplateRepository templateRepo;

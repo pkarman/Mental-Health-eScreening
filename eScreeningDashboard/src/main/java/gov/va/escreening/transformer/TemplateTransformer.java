@@ -39,6 +39,7 @@ public class TemplateTransformer {
 		templateDTO.setName(template.getName());
 		templateDTO.setTemplateFile(template.getTemplateFile());
 		templateDTO.setTemplateId(template.getTemplateId());
+		templateDTO.setTemplateType(template.getTemplateType().getTemplateTypeId());
 
 		return templateDTO;
 	}
