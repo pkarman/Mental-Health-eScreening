@@ -2,10 +2,12 @@ package gov.va.escreening.controller;
 
 import java.util.List;
 
+import gov.va.escreening.dto.ModuleTemplateTypeDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
+import gov.va.escreening.service.TemplateTypeService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/dashboard")
 public class TemplateRestController {
 
 	private static final Logger logger = LoggerFactory
@@ -25,7 +28,18 @@ public class TemplateRestController {
 
 	@Autowired
 	private TemplateService templateService;
-
+	
+	@Autowired
+	private TemplateTypeService templateTypeService;
+	
+	@RequestMapping(value ="/services/templateType/{templateId}")
+	@ResponseBody
+	public List<ModuleTemplateTypeDTO> getModuleTemplateTypes(@PathVariable Integer templateId, @CurrentUser EscreenUser escreenUser)
+	{
+		return templateTypeService.getModuleTemplateTypes(templateId);
+	}
+	
+	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public boolean deleteTemplate(
