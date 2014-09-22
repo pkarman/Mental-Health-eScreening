@@ -48,10 +48,9 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
 		Table<Integer, String, String> t = HashBasedTable.create();
 
-		Random nd=new Random(System.nanoTime());
 		
 		// test code
-		for (int validMsrId = 0; validMsrId < nd.nextInt(5); validMsrId++) {
+		for (int validMsrId = 0; validMsrId < 3; validMsrId++) {
 			t.put(validMsrId, msgSrc.getMessage("data.dict.column.part", null, null), "part" + validMsrId);
 			t.put(validMsrId, msgSrc.getMessage("data.dict.column.ques.type", null, null), "type" + validMsrId);
 			t.put(validMsrId, msgSrc.getMessage("data.dict.column.ques.desc", null, null), "desc" + validMsrId);

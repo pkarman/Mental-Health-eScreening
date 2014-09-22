@@ -59,14 +59,14 @@ public class AssessmentDataExportCsvView extends AbstractView implements Message
 	private void writeExportDataToCsvFile(BufferedWriter writer,
 			AssessmentDataExport dataExport, String csvFileName) throws IOException {
 
-		if (!dataExport.getHeader().isEmpty()) {
+		if (dataExport.getHeader() != null && !dataExport.getHeader().isEmpty()) {
 			setCsvHeader(writer, dataExport.getHeader(), csvFileName);
 			setCsvRows(writer, dataExport.getData(), csvFileName);
 		} else {
 			String missingDataMsg = messageSource.getMessage("export.data.assessments.missing", null, null);
-			String displayMsg = String.format("%s for search criteria %s", missingDataMsg, dataExport.getFilterOptions());
-			setCsvHeader(writer, displayMsg, csvFileName);
-			logger.warn(displayMsg);
+			String displableMissingDataMsg = String.format("%s for Search Criteria as follows \n%s", missingDataMsg, dataExport.getFilterOptions());
+			setCsvHeader(writer, displableMissingDataMsg, csvFileName);
+			logger.warn(displableMissingDataMsg);
 		}
 
 	}

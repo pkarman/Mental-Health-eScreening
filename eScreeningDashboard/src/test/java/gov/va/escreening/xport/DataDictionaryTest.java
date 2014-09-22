@@ -1,21 +1,36 @@
 package gov.va.escreening.xport;
 
 import gov.va.escreening.service.DataDictionaryService;
+import gov.va.escreening.view.DataDictionaryExcelView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
+import junit.framework.Assert;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.support.StaticWebApplicationContext;
+import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import com.google.common.io.Files;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -27,16 +42,57 @@ public class DataDictionaryTest {
 	@Resource(type = DataDictionaryService.class)
 	DataDictionaryService dds;
 
+	private MockServletContext servletCtx;
+	private MockHttpServletRequest request;
+	private MockHttpServletResponse response;
+	private StaticWebApplicationContext webAppCtx;
+
+	@Before
+	public void setUp() {
+		servletCtx = new MockServletContext("org/springframework/web/servlet/view/document");
+		request = new MockHttpServletRequest(servletCtx);
+		response = new MockHttpServletResponse();
+		webAppCtx = new StaticWebApplicationContext();
+		webAppCtx.setServletContext(servletCtx);
+	}
+
 	@Test
-	public void createDataDictionary() {
+	public void createDataDictionary() throws Exception {
 		Map<String, Table<Integer, String, String>> dataDictionary = dds.createDataDictionary();
+
 		logDataDictionary(dataDictionary);
+
 		viewDataDictionaryAsExcel(dataDictionary);
 	}
 
 	private void viewDataDictionaryAsExcel(
-			Map<String, Table<Integer, String, String>> dataDictionary) {
+			Map<String, Table<Integer, String, String>> dataDictionary) throws Exception {
 
+		AbstractExcelView excelView = new DataDictionaryExcelView();
+
+		Map<String, Map<String, Table<Integer, String, String>>> model = Maps.newHashMap();
+		model.put("dataDictionary", dataDictionary);
+		excelView.render(model, request, response);
+
+		// POIFSFileSystem poiFs = new POIFSFileSystem(new ByteArrayInputStream(response.getContentAsByteArray()));
+		// HSSFWorkbook wb = new HSSFWorkbook(poiFs);
+		// Assert.assertEquals("Test Sheet", wb.getSheetName(0));
+		// HSSFSheet sheet = wb.getSheet("Test Sheet");
+		// HSSFRow row = sheet.getRow(2);
+		// HSSFCell cell = row.getCell((short) 4);
+		// Assert.assertEquals("Test Value", cell.getStringCellValue());
+
+		writeAsExcelFile("/Users/munnoo/myData/tmp/data_dict.xls", response);
+	}
+
+	private void writeAsExcelFile(String excelFile,
+			MockHttpServletResponse response) throws IOException {
+		File dest = new File(excelFile);
+		FileOutputStream byteSink = new FileOutputStream(dest);
+		byteSink.write(response.getContentAsByteArray());
+		byteSink.flush();
+		byteSink.close();
+		Assert.assertEquals(Files.toByteArray(dest), response.getContentAsByteArray());
 	}
 
 	private void logDataDictionary(

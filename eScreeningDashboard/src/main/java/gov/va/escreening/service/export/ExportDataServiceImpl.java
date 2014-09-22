@@ -4,7 +4,6 @@ import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.dto.dashboard.DataExportFilterOptions;
 import gov.va.escreening.entity.ExportLog;
-import gov.va.escreening.entity.ExportLogData;
 import gov.va.escreening.entity.ExportType;
 import gov.va.escreening.entity.Program;
 import gov.va.escreening.entity.User;
@@ -34,11 +33,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
 
-@Transactional
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAware {
 	private static final Logger logger = LoggerFactory.getLogger(ExportDataServiceImpl.class);
@@ -70,6 +69,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	private VeteranRepository veteranRepository;
 
 	@Override
+	@Transactional
 	public AssessmentDataExport getAssessmentDataExport(
 			ExportDataFormBean exportDataFormBean) {
 
@@ -87,7 +87,9 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 			// 3) log this activity
 			ExportLog exportLog = logDataExport(assessmentDataExport);
 
-			assessmentDataExport.setExportLogId(exportLog.getExportLogId());
+			if (exportLog!=null){
+				assessmentDataExport.setExportLogId(exportLog.getExportLogId());
+			}
 		}
 
 		return assessmentDataExport;
@@ -135,27 +137,28 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	}
 
 	@Override
+    @Transactional
 	public ExportLog logDataExport(AssessmentDataExport dataExport) {
 
 		// Add an entry to the exportLog table
 		ExportLog exportLog = createExportLogFromOptions(dataExport.getFilterOptions());
 
-		addExportLogDataToExportLog(exportLog, dataExport);
-
-		exportLogRepository.create(exportLog);
-		return exportLog;
+		if (addExportLogDataToExportLog(exportLog, dataExport)){
+			exportLogRepository.create(exportLog);
+			return exportLog;
+		}
+		return null;
 	}
 
-	private void addExportLogDataToExportLog(ExportLog exportLog, AssessmentDataExport dataExport) {
-
+	private boolean addExportLogDataToExportLog(ExportLog exportLog, AssessmentDataExport dataExport) {
 		String header = createHeaderFromDataExport(dataExport);
 		if (header != null) {
 			List<String> data = createDataFromDataExport(dataExport);
 			dataExport.setHeaderAndData(header, data);
+			exportLog.setExportLogData(dataExport.getHeader(), dataExport.getData());
+			return true;
 		}
-
-		exportLog.setExportLogData(dataExport.getHeader(), dataExport.getData());
-
+		return false;
 	}
 
 	private List<String> createDataFromDataExport(
@@ -172,7 +175,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 					sb.append(",");
 				}
 				if (logger.isDebugEnabled()) {
-					logger.debug(String.format("row of length %s is being added [%s]", sb.length(), sb));
+					if (logger.isDebugEnabled()) logger.debug(String.format("row of length %s is being added [%s]", sb.length(), sb));
 				}
 				rows.add(sb.toString());
 			}
@@ -202,7 +205,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 			header = dataExport.getHeader();
 		}
 		if (header != null && logger.isDebugEnabled()) {
-			logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
+			if (logger.isDebugEnabled()) logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
 		}
 		return header;
 	}
@@ -302,6 +305,7 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	}
 
 	@Override
+    @Transactional
 	public AssessmentDataExport downloadExportData(Integer userId,
 			int exportLogId, String comment) {
 

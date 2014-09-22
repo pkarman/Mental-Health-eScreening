@@ -96,7 +96,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
 
 		if (dataExport != null) {
-			modelAndView.setViewName("DataExportCsvView");
+			modelAndView.setViewName("dataExportCsvView");
 			modelAndView.addObject("dataExportList", dataExport);
 		} else if (errors.size() > 0) {
 			modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
