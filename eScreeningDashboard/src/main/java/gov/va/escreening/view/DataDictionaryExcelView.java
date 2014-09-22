@@ -69,48 +69,17 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 			StringBuilder debugString = new StringBuilder();
 			int columnIndex = 0;
 			HSSFRow excelRow = excelSheet.createRow(row++);
-			
+
 			for (Entry<String, String> rowData : measuresTable.row(measureRowNum).entrySet()) {
 				debugString.append(String.format("%s:%s$", rowData.getKey(), rowData.getValue()));
-				
+
 				excelRow.createCell(columnIndex).setCellValue(rowData.getValue());
 				columnIndex++;
 			}
-			
+
 			if (logger.isDebugEnabled()) {
 				logger.debug(debugString.toString());
 			}
 		}
 	}
-
-	// private void replaceSpreadSheetContentWithMessage(HSSFWorkbook workbook,
-	// String message) {
-	//
-	// // remove any existing sheets
-	// int numSheets = workbook.getNumberOfSheets();
-	// if (numSheets > 0) {
-	// for (int index = 0; index < numSheets; index++) {
-	// workbook.removeSheetAt(index);
-	// }
-	// }
-	//
-	// HSSFSheet excelSheet = workbook.createSheet("Assessment Data Export");
-	// HSSFRow excelRow = excelSheet.createRow(0);
-	// excelRow.createCell(0).setCellValue(message);
-	// }
-	//
-	// private boolean validateCellMatchesColumn(int columnIndex,
-	// DataExportCell cell, HSSFRow header) {
-	// if (header.getCell(columnIndex) == null)
-	// throw new DataExportException(String.format("A column does not exist for the referenced index of: %s",
-	// columnIndex));
-	//
-	// HSSFCell headerColumn = header.getCell(columnIndex);
-	// String headerName = headerColumn.getStringCellValue().toLowerCase();
-	// if (!cell.getColumnName().equalsIgnoreCase(headerName))
-	// throw new DataExportException(String.format("The cell name of: %s did not match the column name of: %s.",
-	// cell.getColumnName().toLowerCase(), headerName.toLowerCase()));
-	//
-	// return true;
-	// }
 }
