@@ -27,7 +27,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLinkClient {
 	protected static final Logger logger = LoggerFactory.getLogger(VistaLinkRPC_Client2.class);
@@ -391,7 +390,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 	}
 
 	@Override
-	public boolean savePainScale(VeteranAssessment veteranAssessment) {
+	public boolean savePainScale(final VeteranAssessment veteranAssessment, final String visitDate) {
 		final int basicPainSurveyID = 20;
 		Integer painScale = -1;
 		if(veteranAssessment.getSurveyMap().containsKey(basicPainSurveyID))
@@ -409,12 +408,24 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 		
 		if (painScale >= 0 )
 		{
-			RpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {			
+			final int pain = painScale;
+			VistaLinkRpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {			
 
 				@Override
 				protected List<Object> prepareReqParams() {
 					List<Object> params = new ArrayList<Object>();
+					String dateParam = "VST^DT^"+visitDate;
 					
+					String patientParam = "VST^PT^"+ veteranAssessment.getVeteran().getVeteranIen();
+					
+					String locationParam = "VST^HL^"+veteranAssessment.getClinic().getVistaIen();
+					
+					String painScale = "VIT^PN^^^" + pain +"^" + veteranAssessment.getClinician().getVistaDuz() + "^^^"+ visitDate;
+					
+					params.add(dateParam);
+					params.add(patientParam);
+					params.add(locationParam);
+					params.add(painScale);
 					
 					return params;
 				}
@@ -422,9 +433,23 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				@Override
 				protected String prepareResponse(String rawReponse) {
 					// TODO Auto-generated method stub
-					return null;
+					return rawReponse;
 				}
 			};
+			
+			try
+			{
+			
+			String result = rpcInvolker.invokeRpc(getConnection(), getRequest(), "ORQQVI2 VITALS VAL & STORE");
+			
+			if(!result.equals("1"))
+			{
+				logger.error("Save vitals failed");
+			}
+			}catch(VistaLinkClientException ex)
+			{
+				return false;
+			}
 		}
 		return false;
 	}

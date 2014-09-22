@@ -131,6 +131,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
 			// save TBI Consult request
 			saveTbiConsultRequest(veteranAssessment, vistaLinkClient);
+			
+			vistaLinkClient.savePainScale(veteranAssessment, visitDate);
 
 			// save this activity in audit log
 			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
