@@ -614,7 +614,7 @@ ${MODULE_END}
 '
 where template_id = 4;
 
--- /* SOCIAL UPDATE */
+-- /*** SOCIAL UPDATE ticket-589 ***/
 update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
@@ -670,4 +670,318 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 6;
+/* Homelessness Clinical Reminder */
+
+UPDATE template SET template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+HOUSING: 
+${MODULE_TITLE_END}
+${MODULE_START}
+
+  	<#if var2000?? && (var2000.children)?? && ((var2000.children)?size > 0)  >
+		<#if (var2000.children[0].key == "var763") >  <#-- declined -->
+				The Veteran declined to discuss their current housing situation.
+		
+		<#elseif (var2000.children[0].key == "var761")>
+				The Veteran ${getSelectOneDisplayText(var2000)} been living in stable housing for the last 2 months.
+				<#if (var2002.children)?? && ((var2002.children)?size > 0)>
+				The Veteran has been living ${getSelectOneDisplayText(var2002)}.</#if>
+				<#if (var2008.children)?? && ((var2008.children)?size > 0)>
+				The Veteran ${getSelectOneDisplayText(var2008)} like a referral to talk more about his/her housing concerns.${NBSP}
+				</#if>
+		
+		<#elseif (var2000.children[0].key == "var762")>
+			The Veteran ${getSelectOneDisplayText(var2000)} been living in stable housing for the last 2 months. 
+			<#if (var2002.children)?? &&  ((var2002.children)?size > 0)>
+				The Veteran has been living ${getSelectOneDisplayText(var2002)}.
+			</#if>
+			<#if var2001?? && var2001.children?? && ((var2001.children)?size > 0)> 
+				The Veteran ${getSelectOneDisplayText(var2001)} concerned about housing in the future.
+			</#if>
+			<#if var2008?? && (var2008.children)?? &&  ((var2008.children)?size > 0)>
+				The Veteran ${getSelectOneDisplayText(var2008)} like a referral to talk more about his/her housing concerns.
+			</#if>
+		
+		<#else>
+				${getNotCompletedText()}.
+		</#if>
+    <#else>
+		${getNotCompletedText()}
+	</#if> 
+${MODULE_END}
+'
+where template_id = 8;
+
+UPDATE template SET template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+ADVANCE DIRECTIVE:
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#-- var800: ${var800}<br><br>var820: ${var820}<br><br> var826: ${var826}<br><br> --> <#-- test objs -->
+  <#assign nextLine = "">
+  	<#if (var800.children)?? && (var800.children)?? && (var800.children)??  
+			&& (var800.children?size > 0) && (var820.children?size > 0) && (var826.children?size > 0)>
+    <#if (var800.children)?? && (var800.children?size > 0) && hasValue(getSelectMultiDisplayText(var800)) >
+    	<#-- In what language do you prefer to get your health information? -->
+      ${nextLine}The Veteran requests to receive information in ${getSelectMultiDisplayText(var800)}.
+      <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+    </#if>
+    <#if (var820.children)?? && (var820.children?size > 0) && hasValue(getSelectMultiDisplayText(var820)) >
+      <#-- Do you have and Advance Directive or Durable Power of Attorney for Healthcare?  -->
+      ${nextLine}The Veteran reported ${getSelectMultiDisplayText(var820)} an Advance Directive or Durable Power of Attorney for Healthcare.
+      <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+    </#if>
+     <#if (var826.children)?? && (var826.children?size > 0) && hasValue(getSelectMultiDisplayText(var826)) >
+      	<#-- If no, would like information about this document? -->
+      	${nextLine}The Veteran ${getSelectMultiDisplayText(var826)} like information about an Advance Directive.
+    </#if>     
+    
+    <#else>
+    	${getNotCompletedText()}
+    </#if>    
+${MODULE_END}'
+where template_id = 10;
+
+UPDATE template SET template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SPIRITUAL HEALTH: 
+${MODULE_TITLE_END}
+${MODULE_START}
+  	<#-- The Veteran reported that spirituality is important.  --> 
+  	<#if (var400.children)?? || ((var420.children)?? && ((var420.children)?size > 0)) || ((var430.children)?? && ((var430.children)?size > 0)) || ((var440.children)?? && ((var440.children)?size > 0))>
+	<#if (var400.children)?? && ((var400.children)?size > 0) && hasValue(getSelectOneDisplayText(var400)) >
+		The Veteran reported that spirituality and/or religion ${getSelectOneDisplayText(var400)} important to him/her.  ${LINE_BREAK}
+     </#if>
+
+	<#if (var420.children)?? && ((var420.children)?size > 0)>
+	  <#if isSelectedAnswer(var420,var423)>
+		<#assign text2 = "is not connected to a faith community but would like to be part of one">
+	  <#else>
+		<#assign text2 = getSelectOneDisplayText(var420) + " connected to a faith community">
+	  </#if>	
+	  The Veteran ${text2} 
+	</#if>
+	
+	<#if (var430.children)?? && ((var430.children)?size > 0)>
+	  and ${getSelectOneDisplayText(var430)} a referral to see a chaplain at the time of screening. ${LINE_BREAK}
+	<#else>
+		.${LINE_BREAK}
+	</#if>
+	
+	<#-- The Veteran feels that combat or military service affected his/her religious views in the following way: god. -->
+  	<#if (var440.children)?? && ((var440.children)?size > 0) && hasValue(getSelectOneDisplayText(var440)) >
+		<#if isSelectedAnswer(var440,var443)>
+			The Veteran does not know how combat or military service has affected his/her religious views.  ${NBSP}
+		<#else>
+			The Veteran feels that combat or military service ${getSelectOneDisplayText(var440)} have an affect on his/her religious views.${NBSP}
+		</#if>
+    </#if>  	
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+${MODULE_END}'
+where template_id = 11;
+
+UPDATE template SET template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SERVICE HISTORY: 
+${MODULE_TITLE_END}
+${MODULE_START}
+        <#assign nextLine = "">
+		<#if (var3180.children)??  && (var3180.children?size>0) && ((var3160.children)?? && (var3160.children)?has_content)>
+			<#-- var3180: ${var3180}<Br><br>  -->
+		
+			<#assign allAnswersPresent = false>
+			<#assign allAnswersNone = false>
+			<#assign outputText = "">
+			<#assign rows = {}>
+
+			<#list ((var3180.children)![]) as v>
+				<#list v.children as c>
+					<#if (c.row)?? >
+						<#assign row_idx = (c.row)?string>
+						<#assign row_key = (c.key)?string>
+						<#assign row_value = (c.displayText)?string>
+						<#assign r ={}>
+						<#assign row_name = ("row" + row_idx + "_" + row_key)?string >
+						<#assign rows =  rows + {row_name:row_value}>
+					</#if>
+				</#list>
+			</#list>
+
+			<#assign uniqueRows = []>
+			<#assign e = []>
+			<#if (rows?keys)??>
+				<#list (rows?keys?sort) as k>
+					<#assign e = (k?split("_"))>
+					<#if !(uniqueRows?seq_contains(e[0]))>
+						<#assign uniqueRows = uniqueRows + [e[0]]>
+					</#if>
+				</#list>
+			</#if>
+
+			<#list uniqueRows as ur>
+				
+				<#assign group = {}>
+				<#assign group_keys = []>
+				<#list rows?keys as rk>
+					<#if rk?starts_with(ur)>
+						<#assign group = group + {rk:rows[rk]}> 
+						<#assign group_keys = group_keys + [rk]>
+					</#if>
+				</#list>
+			
+				<#assign type = "">
+				<#assign branch = "">
+				<#assign beg_yr = "">
+				<#assign end_yr = "">
+				<#assign dischargeType = "">
+				<#assign rank = "">
+				<#assign job = "">
+				
+				<#assign typeIsComplete = false>
+				<#assign branchIsComplete = false>
+				<#assign beg_yrIsComplete = false>
+				<#assign end_yrIsComplete = false>
+				<#assign dischargeTypeIsComplete = false>
+				<#assign rankIsComplete = false>
+				<#assign jobIsComplete = false>
+
+				<#-- build a row -->
+				<#list group_keys as gk>
+			
+					<#assign var = ((gk?split("_"))[1])!"">
+					
+					<#-- check if TYPE answer is present -->
+					<#if (["var3071", "var3072", "var3073"])?seq_contains(var)>
+						<#assign type =  ((group[gk])!"")>
+						<#if (type?length > 0)>
+							<#assign typeIsComplete = true>
+						</#if>
+					
+						
+					</#if>
+
+					<#-- check if BRANCH answer is present -->
+					<#if (["var3081", "var3082", "var3083", "var3084", "var3085", "var3086"])?seq_contains(var)>
+						<#assign branch =  ((group[gk])!"")>
+						<#if (branch?length > 0)>
+							<#assign branchIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+
+					<#-- check if BEGINNING YEAR answer is present -->
+					<#if (["var3091"])?seq_contains(var)>
+						<#assign beg_yr =  ((group[gk])!"")>
+						<#if (beg_yr?length > 0)>
+							<#assign beg_yrIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+
+
+					<#-- check if ENDING YEAR answer is present -->
+					<#if (["var3101"])?seq_contains(var)>
+						<#assign end_yr =  ((group[gk])!"")>
+						<#if (end_yr?length > 0)>
+							<#assign end_yrIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+
+
+					<#-- check if DISCHARGE TYPE answer is present -->
+					<#if (["var3111", "var3112", "var3113", "var3114", "var3115", "var3116", "var3117"])?seq_contains(var)>
+						<#assign dischargeType =  ((group[gk])!"")>
+						<#if (dischargeType?length > 0)>
+							<#assign dischargeTypeIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+
+
+					<#-- check if RANK answer is present -->
+					<#if (["var3121", "var3122", "var3123", "var3124", "var3125", "var3126", "var3127",
+							"var3128", "var3129", "var3130", "var3131", "var3132", "var3133", "var3134",
+							"var3135", "var3136", "var3137", "var3138", "var3139", "var3140"])?seq_contains(var)>
+						<#assign rank =  ((group[gk])!"")>
+						<#if (rank?length > 0)>
+							<#assign rankIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+
+					<#-- check if JOB answer is present -->
+					<#if (["var3151"])?seq_contains(var)>
+						<#assign job =  ((group[gk])!"")>
+						<#if (job?length > 0)>
+							<#assign jobIsComplete = true>
+						</#if>
+						
+						
+					</#if>
+			</#list>
+
+			<#if typeIsComplete && branchIsComplete && beg_yrIsComplete && end_yrIsComplete 
+										&& dischargeTypeIsComplete && rankIsComplete && jobIsComplete>
+				<#assign allAnswersPresent =true>
+					
+				<#if ((outputText?trim?length) > 0)>
+					<#assign outputText = 
+						("The Veteran reported previous enlistment in the " + type + " " + branch + " in " + beg_yr 
+						+ ", received an " + dischargeType + " discharge in " + end_yr + " at the rank of " + rank + ".")>
+				<#else>
+					<#assign outputText = ("The Veteran reported entering the " + type + " " + branch + " in " + beg_yr 
+						+ ", received an " + dischargeType + " discharge in " + end_yr + " at the rank of " + rank + ".")>
+				</#if>
+			<#else>
+				<#assign allAnswersPresent =false>
+			</#if>
+
+
+			<#-- clear our vars for the next row\'s processing -->
+			<#assign type = "">
+			<#assign branch = "">
+			<#assign beg_yr = "">
+			<#assign end_yr = "">
+			<#assign dischargeType = "">
+			<#assign rank = "">
+			<#assign job = "">
+
+			<#-- after processing a row , if a var is missing then it is not complete therefore "all" questions were not answered -->
+			<#if !allAnswersPresent>
+					${nextLine}${getNotCompletedText()}.
+                    <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+					<#-- no need to continue if we are finished processing a row and a var is missing -->
+					<#break>
+			<#else>
+					${nextLine}${outputText} 
+                    <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">		
+			</#if>
+		  </#list>
+			
+		  <#if allAnswersPresent>
+			${nextLine}The Veteran also served in the following operations or combat zones: ${getSelectMultiDisplayText(var3160)}.
+            <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		  </#if>
+		<#else>	 
+			${getNotCompletedText()}. ${NBSP}
+		</#if>
+${MODULE_END}
+'
+where template_id = 12;
 
