@@ -117,7 +117,18 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                     var response = handleSurveyPageUpdateResponse(jsonResponse, EScreeningDashboardApp.models.SurveyPageTransformer, null);
                     deferred.resolve(response);
                 }, function (reason) {
-                    deferred.reject(reason);
+                    var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                    if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                        errorMessage = HttpRejectionProcessor.processRejection(reason);
+                    }
+
+                    deferred.reject(new BytePushers.models.ResponseStatus(
+                        {
+                            "message": errorMessage,
+                            "status": "failed"
+                        }
+                    ));
                 });
 
                 return deferred.promise;

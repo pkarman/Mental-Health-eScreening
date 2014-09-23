@@ -166,7 +166,18 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
                 deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -215,7 +226,18 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
                 deferred.resolve(resposne);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -259,7 +281,18 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 var response = handleQuestionRemoveResponse(jsonResponse);
                 deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
