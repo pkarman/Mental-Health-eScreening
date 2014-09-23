@@ -62,7 +62,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
 		Table<String, String, String> t = TreeBasedTable.create();
 		for (Measure m : surveyMeasures) {
-			ddh.addDictionaryRows(s, m, t);
+			ddh.buildDataDictionary(s, m, t);
 		}
 		
 		return t;
