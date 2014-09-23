@@ -50,6 +50,7 @@ public class TemplateRestController {
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	@ResponseBody
 	public TemplateDTO getTemplate(
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
