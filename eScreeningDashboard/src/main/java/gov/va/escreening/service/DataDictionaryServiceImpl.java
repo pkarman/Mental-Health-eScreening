@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
@@ -15,28 +16,33 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 
 @Service("dataDictionaryService")
 public class DataDictionaryServiceImpl implements DataDictionaryService, MessageSourceAware {
 
 	private MessageSource msgSrc;
 
+	@Resource(name = "dataDictionaryHelper")
+	DataDictionaryHelper ddh;
+
 	@Resource(type = SurveyPageMeasureRepository.class)
 	SurveyPageMeasureRepository spmr;
 
-	public Map<String, Table<Integer, String, String>> createDataDictionary() {
+	@Override
+	public Map<String, Table<String, String, String>> createDataDictionary() {
 
 		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
 
-		Map<String, Table<Integer, String, String>> dataDictionary = Maps.newHashMap();
+		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
 
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<Integer, String, String> table = buildTable(s, surveyMeasuresMap.get(s));
+			Table<String, String, String> table = buildSurveyTable(s, surveyMeasuresMap.get(s));
 			dataDictionary.put(s.getName(), table);
 		}
 		return dataDictionary;
@@ -51,25 +57,14 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		return smMap;
 	}
 
-	private Table<Integer, String, String> buildTable(Survey s,
+	private Table<String, String, String> buildSurveyTable(Survey s,
 			Collection<Measure> surveyMeasures) {
 
-		Table<Integer, String, String> t = HashBasedTable.create();
-
-		// test code
+		Table<String, String, String> t = TreeBasedTable.create();
 		for (Measure m : surveyMeasures) {
-			int mId = m.getMeasureId();
-			t.put(mId, msgSrc.getMessage("data.dict.column.part", null, null), "todo");
-			t.put(mId, msgSrc.getMessage("data.dict.column.ques.type", null, null), m.getMeasureType().getName());
-			t.put(mId, msgSrc.getMessage("data.dict.column.ques.desc", null, null), m.getMeasureText());
-			t.put(mId, msgSrc.getMessage("data.dict.column.var.name", null, null), m.getVariableName()==null?"exportName":m.getVariableName());
-			t.put(mId, msgSrc.getMessage("data.dict.column.vals.range", null, null), "todo");
-			t.put(mId, msgSrc.getMessage("data.dict.column.vals.desc", null, null), "todo");
-			t.put(mId, msgSrc.getMessage("data.dict.column.data.val", null, null), "todo");
-			t.put(mId, msgSrc.getMessage("data.dict.column.followup", null, null), "todo");
-			t.put(mId, msgSrc.getMessage("data.dict.column.skiplevel", null, null), "todo");
+			ddh.addDictionaryRows(s, m, t);
 		}
-
+		
 		return t;
 	}
 
@@ -77,5 +72,4 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	public void setMessageSource(MessageSource messageSource) {
 		this.msgSrc = messageSource;
 	}
-
 }

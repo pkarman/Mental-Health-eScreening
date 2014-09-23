@@ -6,6 +6,6 @@ import com.google.common.collect.Table;
 
 public interface DataDictionaryService {
 
-	public Map<String, Table<Integer, String, String>> createDataDictionary();
+	public Map<String, Table<String, String, String>> createDataDictionary();
 
 }

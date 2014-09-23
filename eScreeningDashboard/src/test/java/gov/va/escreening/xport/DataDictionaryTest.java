@@ -58,7 +58,7 @@ public class DataDictionaryTest {
 
 	@Test
 	public void createDataDictionary() throws Exception {
-		Map<String, Table<Integer, String, String>> dataDictionary = dds.createDataDictionary();
+		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
 
 		logDataDictionary(dataDictionary);
 
@@ -66,11 +66,11 @@ public class DataDictionaryTest {
 	}
 
 	private void viewDataDictionaryAsExcel(
-			Map<String, Table<Integer, String, String>> dataDictionary) throws Exception {
+			Map<String, Table<String, String, String>> dataDictionary) throws Exception {
 
 		AbstractExcelView excelView = new DataDictionaryExcelView();
 
-		Map<String, Map<String, Table<Integer, String, String>>> model = Maps.newHashMap();
+		Map<String, Map<String, Table<String, String, String>>> model = Maps.newHashMap();
 		model.put("dataDictionary", dataDictionary);
 		excelView.render(model, request, response);
 
@@ -96,12 +96,12 @@ public class DataDictionaryTest {
 	}
 
 	private void logDataDictionary(
-			Map<String, Table<Integer, String, String>> dataDictionary) {
+			Map<String, Table<String, String, String>> dataDictionary) {
 		// for each row key
 		for (String surveyName : dataDictionary.keySet()) {
 			logger.info("Survey name:" + surveyName);
-			Table<Integer, String, String> measuresTable = dataDictionary.get(surveyName);
-			for (Integer measureRowNum : measuresTable.rowKeySet()) {
+			Table<String, String, String> measuresTable = dataDictionary.get(surveyName);
+			for (String measureRowNum : measuresTable.rowKeySet()) {
 				StringBuilder measureColumns = new StringBuilder();
 				for (Entry<String, String> rowData : measuresTable.row(measureRowNum).entrySet()) {
 					measureColumns.append(String.format("%s:%s$", rowData.getKey(), rowData.getValue()));
