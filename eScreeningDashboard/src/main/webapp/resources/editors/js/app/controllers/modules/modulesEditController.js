@@ -3,36 +3,18 @@
  */
 Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, surveyUIObject, pageQuestionItems){
     var tmpList = [],
-        createSurvey = function(selectedModuleDomainObject) {
-            SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+        updateSurveyPages = function (selectedSurveyId, surveyPages) {
+            SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
                         console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
                     }
                 }
-            }, function(responseError) {
-                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-            });
-        },
-        updateSurvey = function (selectedModuleDomainObject) {
-            SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
-                if(Object.isDefined(response)) {
-                    if (response.isSuccessful()) {
-                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
-                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                    } else {
-                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
-                    }
-                }
-
-
-            }, function(responseError) {
-                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            }, function(responseError){
+                $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
             });
         },
         createQuestion = function(selectedQuestionDomainObject) {
@@ -127,23 +109,40 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         //console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
 
         if(selectedModuleDomainObject.getId() > -1) {
-            updateSurvey(selectedModuleDomainObject);
-        } else {
-            createSurvey(selectedModuleDomainObject);
-        }
+            SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
 
-        SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, organizedPages)).then(function(response){
-            if(Object.isDefined(response)) {
-                if (response.isSuccessful()) {
-                    $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                } else {
-                    $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                    console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                        updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                    }
                 }
-            }
-        }, function(responseError){
-            $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-        });
+
+
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        } else {
+            SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+
+                        updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        }
 
         $scope.resetForm(false, {
             name: "modules.detail.questions.blank",
