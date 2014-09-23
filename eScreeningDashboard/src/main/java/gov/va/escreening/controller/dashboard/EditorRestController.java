@@ -12,6 +12,7 @@ import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +224,10 @@ public class EditorRestController {
 		} else if (survey.getDescription()!=null && survey.getDescription().length()> 255)
 		{
 			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Description", "Description should be less than 255 characters.");
+		}
+		else if (survey.getSurveySectionInfo() == null || survey.getSurveySectionInfo().getSurveySectionId() == null)
+		{
+			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Survey Section", "Survey Section can not be empty");
 		}
 
 		if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {

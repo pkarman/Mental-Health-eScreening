@@ -15,6 +15,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 
@@ -363,10 +373,13 @@ public class SurveyServiceImpl implements SurveyService {
 		
 		BeanUtils.copyProperties(surveyInfo, survey);
 		
+		SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
 		
-		
+		survey.setSurveySection(surveySection);
+		//surveySection.getSurveyList().add(survey);
 		surveyRepository.create(survey);
-		
+		//surveySectionRepository.update(surveySection);
+				
 		return convertToSurveyItem(survey);
 	}
 
