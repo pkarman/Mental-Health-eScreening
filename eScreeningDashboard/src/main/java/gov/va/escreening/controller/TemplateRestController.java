@@ -1,9 +1,14 @@
 package gov.va.escreening.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.NotFoundException;
 
 import gov.va.escreening.dto.ModuleTemplateTypeDTO;
 import gov.va.escreening.dto.TemplateDTO;
+import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
@@ -12,7 +17,9 @@ import gov.va.escreening.service.TemplateTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +52,14 @@ public class TemplateRestController {
 	public boolean deleteTemplate(
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
-		templateService.deleteTemplate(templateId);
+		try
+		{
+			templateService.deleteTemplate(templateId);
+		}
+		catch(IllegalArgumentException e)
+		{
+			throw new NotFoundException("Could not find the template");
+		}
 		return true;
 	}
 
@@ -54,7 +68,10 @@ public class TemplateRestController {
 	public TemplateDTO getTemplate(
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
-		return templateService.getTemplate(templateId);
+		TemplateDTO dto = templateService.getTemplate(templateId);
+		if (dto == null)
+			throw new NotFoundException("Could not find the template.");
+		return dto;
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -62,7 +79,14 @@ public class TemplateRestController {
 	public TemplateDTO updateTemplate(@PathVariable("templateId") Integer templateId,
 			@RequestBody TemplateDTO templateDTO,
 			@CurrentUser EscreenUser escreenUser) {
-		return templateService.updateTemplate(templateDTO);
+		try
+		{
+			return templateService.updateTemplate(templateDTO);
+		}
+		catch(IllegalArgumentException e)
+		{
+			throw new NotFoundException("Could not find the template");
+		}
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}/surveyId/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -127,5 +151,14 @@ public class TemplateRestController {
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return true;
 	}
+	
+	@ExceptionHandler(NotFoundException.class)
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Map handleException(NotFoundException e) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("message", e.getMessage());
+        return map;
+    }
 
 }

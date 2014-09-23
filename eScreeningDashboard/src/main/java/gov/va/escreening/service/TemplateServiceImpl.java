@@ -70,7 +70,7 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		if (template == null)
 		{
-			return;
+			throw new IllegalArgumentException();
 		}
 		
 		if (surveyTemplates.contains(TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId())))
@@ -104,8 +104,6 @@ public class TemplateServiceImpl implements TemplateService {
 			}			
 		}
 		
-		
-		
 		templateRepository.deleteById(templateId);
 	}
 	
@@ -132,6 +130,10 @@ public class TemplateServiceImpl implements TemplateService {
 	{
 
 		Template template = templateRepository.findOne(templateDTO.getTemplateId());
+		if (template == null)
+		{
+			throw new IllegalArgumentException("Could not find template");
+		}
 		TemplateTransformer.copyToTemplate(templateDTO, template);
 		templateRepository.update(template);
 		return TemplateTransformer.copyToTemplateDTO(template, null);
