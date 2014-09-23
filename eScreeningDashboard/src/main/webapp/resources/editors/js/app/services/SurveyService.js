@@ -165,9 +165,8 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
 
             service.save(createSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
                 var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
-                deferred.resolve(response.getPayload());
+                deferred.resolve(response);
             }, function (reason) {
-                var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
                 if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
