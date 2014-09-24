@@ -40,8 +40,6 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String description;
     @Column(name = "version")
     private Integer version;
-    @Column(name = "display_order")
-    private Integer displayOrder;
     @Basic(optional = false)
     @Column(name = "has_mha")
     private boolean hasMha;
@@ -124,14 +122,6 @@ public class Survey implements Serializable, SurveyBaseProperties{
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
     }
 
     public boolean isMha() {
