@@ -633,7 +633,7 @@
 				<finalName>${project.artifactId}-sdtest</finalName>
 			</build>
 			<properties>
-				<jdbc.url>jdbc:mysql://localhost/escreening</jdbc.url>
+				<jdbc.url>jdbc:mysql://localhost/escreening-test</jdbc.url>
 				<jdbc.db>escreening-test</jdbc.db>
 				<log.suffix>test</log.suffix>
 				<vista.connector>vljsdconnector</vista.connector>
