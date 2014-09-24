@@ -1,7 +1,6 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
@@ -15,8 +14,8 @@ import javax.annotation.Resource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -35,6 +34,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	SurveyPageMeasureRepository spmr;
 
 	@Override
+	@Transactional(readOnly=true)
 	public Map<String, Table<String, String, String>> createDataDictionary() {
 
 		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
