@@ -433,6 +433,10 @@ INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2003,
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2004, 100);
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2005, 100);
 
+/**** ticket 555 fix GAD-7 score *********/
+update assessment_variable set formula_template='([1660] + [1670] + [1680] + [1690] + [1700] + [1710] + [1720])' where assessment_variable_id=1749;
+
+
 /*** #589 Skip logic update for PROMIS EMOTIONAL SUPPORT ***/
 update template 
 set template_file = '
