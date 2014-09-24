@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TemplateConstants {
 	
-    public enum ViewType {HTML, TEXT}
+    public enum ViewType {HTML, TEXT, CPRS_PREVIEW}
     
     /**
      * Each template type found in DB lookup

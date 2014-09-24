@@ -64,7 +64,7 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 		mandatoryData.add(new DataExportCell("duration", getOrMiss(getStrFromInt(assessment.getDuration()))));
 
 		boolean identified=ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
-		mandatoryData.add(new DataExportCell("veteran_DOB", identified?getOrMiss(getDtAsStr(assessment.getVeteran().getBirthDate())):"999"));
+		mandatoryData.add(new DataExportCell("vista_DOB", identified?getOrMiss(getDtAsStr(assessment.getVeteran().getBirthDate())):"999"));
 		return mandatoryData;
 	}
 
@@ -81,11 +81,11 @@ public class ModuleExporterMandatory extends ModuleExporterAbstract implements M
 			
 		mandatoryIdendifiedData.addAll(
 				Arrays.asList(
-						new DataExportCell("veteran_lastname", identified?getOrMiss(v.getLastName()):"999"),//
-						new DataExportCell("veteran_firstname", identified?getOrMiss(v.getFirstName()):"999"),//
-						new DataExportCell("veteran_midname", identified?getOrMiss(v.getMiddleName()):"999"),//
-						new DataExportCell("veteran_SSN", identified?getOrMiss(v.getSsnLastFour()):"999"),
-						new DataExportCell("veteran_ien", v.getVeteranIen())));
+						new DataExportCell("vista_lastname", identified?getOrMiss(v.getLastName()):"999"),//
+						new DataExportCell("vista_firstname", identified?getOrMiss(v.getFirstName()):"999"),//
+						new DataExportCell("vista_midname", identified?getOrMiss(v.getMiddleName()):"999"),//
+						new DataExportCell("vista_SSN", identified?getOrMiss(v.getSsnLastFour()):"999"),
+						new DataExportCell("vista_ien", v.getVeteranIen())));
 		return mandatoryIdendifiedData;
 	}
 
