@@ -2,32 +2,44 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.Validation;
 import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.ValidationRepository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
-@Component("dataDictionaryHelper")
+@Service("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
 
-	private MessageSource messageSource;
+	MessageSource msgSrc;
+
 	@Resource(type = MeasureRepository.class)
 	MeasureRepository mr;
 
+	@Resource(type = ValidationRepository.class)
+	ValidationRepository vr;
+
 	Map<Integer, Resolver> resolverMap;
+
+	Multimap<Integer, String> measureValidationsMap;
 
 	private Resolver findResolver(Measure m) {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
@@ -40,8 +52,37 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
+		this.msgSrc = messageSource;
 		registerResolversNow();
+	}
+
+	public void buildAndCacheMeasureValidationMap() {
+		List<Validation> validations = vr.findAll();
+
+		this.measureValidationsMap = LinkedHashMultimap.create();
+
+		for (Validation v : validations) {
+			for (MeasureValidation mv : v.getMeasureValidationList()) {
+				this.measureValidationsMap.put(mv.getMeasure().getMeasureId(), buildMeasureValidation(mv));
+			}
+		}
+	}
+
+	private String buildMeasureValidation(MeasureValidation mv) {
+		Validation v = mv.getValidation();
+		String mvStr = null;
+		switch (v.getDataType()) {
+		case "string":
+			mvStr = String.format("%s=%s", v.getDescription(), mv.getTextValue());
+			break;
+		case "number":
+			mvStr = String.format("%s=%s", v.getDescription(), mv.getNumberValue());
+			break;
+		default:
+			mvStr = "";
+			break;
+		}
+		return mvStr;
 	}
 
 	private void registerResolversNow() {
@@ -55,18 +96,13 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(7, new SelectOneMatrixResolver(this));
 		this.resolverMap.put(8, new InstructionResolver(this));
 	}
-
-	public MessageSource getMsgSrc() {
-		Preconditions.checkNotNull(messageSource, "The message source cannot be null. Please check Spring configuraion");
-		return messageSource;
-	}
 }
 
 abstract class Resolver {
-	protected final DataDictionaryHelper ddr;
+	protected final DataDictionaryHelper ddh;
 
-	protected Resolver(DataDictionaryHelper ddr) {
-		this.ddr = ddr;
+	protected Resolver(DataDictionaryHelper ddh) {
+		this.ddh = ddh;
 	}
 
 	String getValuesRange(Measure m, MeasureAnswer ma) {
@@ -77,34 +113,43 @@ abstract class Resolver {
 		return "";
 	}
 
+	String getValidationDescription(Measure m) {
+		return "";
+	}
+
 	void addDictionaryRows(Survey s, Measure m, Table<String, String, String> t) {
 		addSingleRow(s, m, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
 	}
 
 	Collection<Measure> findChildren(Measure m) {
-		return ddr.mr.getChildMeasures(m);
+		return ddh.mr.getChildMeasures(m);
 	}
 
-	void addSingleRow(Survey s, Measure m, Table<String, String, String> t,
-			MeasureAnswer ma, int index, boolean other) {
+	protected final void addSingleRow(Survey s, Measure m,
+			Table<String, String, String> t, MeasureAnswer ma, int index,
+			boolean other) {
 		int mId = m.getMeasureId();
 		String indexAsStr = String.valueOf(mId) + "_" + index;
 
-		t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.ques.type", null, null), index == 0 ? m.getMeasureType().getName() : "");
-		t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.ques.desc", null, null), index == 0 ? m.getMeasureText() : ma.getAnswerText());
+		t.put(indexAsStr, msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
+		t.put(indexAsStr, msg("ques.desc"), index == 0 ? m.getMeasureText() : ma.getAnswerText());
 
 		if (ma != null) {
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.var.name", null, null), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.vals.range", null, null), getValuesRange(m, ma));
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.vals.desc", null, null), getValuesDescription(m, ma));
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.data.val", null, null), "todo");
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.followup", null, null), "todo");
-			t.put(indexAsStr, ddr.getMsgSrc().getMessage("data.dict.column.skiplevel", null, null), getSkipLevel(m));
+			t.put(indexAsStr, msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
+			t.put(indexAsStr, msg("vals.range"), getValuesRange(m, ma));
+			t.put(indexAsStr, msg("vals.desc"), getValuesDescription(m, ma));
+			t.put(indexAsStr, msg("data.val"), getValidationDescription(m));
+			t.put(indexAsStr, msg("followup"), "todo");
+			t.put(indexAsStr, msg("skiplevel"), getSkipLevel(m));
 		}
 	}
 
+	private String msg(String propertySuffix) {
+		return ddh.msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
+	}
+
 	private String getSkipLevel(Measure m) {
-		return m.getIsRequired() ? "Compulsory" : "Allow skip after confirmation";
+		return m.getIsRequired() ? msg("skip.no") : msg("skip.yes");
 	}
 }
 
@@ -191,6 +236,25 @@ class FreeTextResolver extends Resolver {
 	public String getValuesDescription(Measure m, MeasureAnswer ma) {
 		return "text, 999= missing";
 	}
+
+	@Override
+	String getValidationDescription(Measure m) {
+		// the measureValidationsMap should have been initialized inside DataDictionayHelper class, but using
+		// @PostContruct or calling this from setMeasureSource which spring calls we get Hibernate Lazy Initialization
+		// error
+		if (ddh.measureValidationsMap == null) {
+			ddh.buildAndCacheMeasureValidationMap();
+		}
+
+		Collection<String> validations = ddh.measureValidationsMap.get(m.getMeasureId());
+		String description = "";
+		if (validations != null) {
+			for (String s : validations) {
+				description += s + " ";
+			}
+		}
+		return description;
+	}
 }
 
 class InstructionResolver extends Resolver {
@@ -211,12 +275,12 @@ class SelectOneMatrixResolver extends Resolver {
 		// collect all children here. find all measures whose parent is pointing to this measure (m)
 		Collection<Measure> children = findChildren(m);
 		for (Measure cm : children) {
-			ddr.buildDataDictionary(s, cm, t);
+			ddh.buildDataDictionary(s, cm, t);
 		}
 	}
 }
 
-class TableQuestionResolver extends Resolver {
+class TableQuestionResolver extends SelectOneMatrixResolver {
 	protected TableQuestionResolver(DataDictionaryHelper ddr) {
 		super(ddr);
 	}

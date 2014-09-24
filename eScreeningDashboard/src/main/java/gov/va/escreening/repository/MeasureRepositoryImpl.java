@@ -71,7 +71,6 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 	}
 
 	@Override
-	@Transactional(readOnly=true)
 	public List<Measure> getChildMeasures(Measure parentMeasure) {
 		String sql = "SELECT m FROM Measure m  "
 				+ "WHERE m.parent = :parentMeasure";
