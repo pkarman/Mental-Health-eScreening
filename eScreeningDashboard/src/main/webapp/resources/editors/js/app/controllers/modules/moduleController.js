@@ -72,8 +72,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $scope.pageQuestionItems = newPageQuestionItems;
     };
 
-    $scope.addPageBreak = function(){
-        var surveyPage = new EScreeningDashboardApp.models.SurveyPage(null),
+    $scope.addPageBreak = function(pageConfig){
+        var surveyPage = new EScreeningDashboardApp.models.SurveyPage(pageConfig),
             pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem((($scope.pageQuestionItems.length === 0)? {page: surveyPage, enabled: false} : {page: surveyPage}));
 
         $scope.pageQuestionItems.push(pageQuestionItem);

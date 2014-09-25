@@ -92,7 +92,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     if (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0) {
         $scope.setPageQuestionItems(pageQuestionItems);
     } else {
-        $scope.addPageBreak();
+        $scope.addPageBreak({pageNumber: 1});
     }
 
     $scope.surveySectionDropDownMenuOptions = surveySectionDropDownMenuOptions;
