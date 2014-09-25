@@ -112,33 +112,13 @@ app.factory('filterOptionService', function($http) {
 	};
 });
 
-
-/* Program List Service*/
-app.factory('dataDataDictionaryService', function($http) {
-	return {
-		getDataDictionaryList : function() {
-			return $http({
-				method : "GET",
-				url : "exportData/services/exports/dataDictionary",
-				responseType : "json"
-			}).then(function(result) {
-				 console.log(">>>>>>> DATA >>> ");
-				return result.data;
-				
-			});
-		}
-	};
-});
-
-
-
 /**
  * Controller for the page.
  * @param $scope
  * @param $element
  * @param $http
  */
-function exportDataController($scope,$element,$http,$window, programListService, filterOptionService, dataDataDictionaryService) {	
+function exportDataController($scope,$element,$http,$window, programListService, filterOptionService) {	
 	/*
 		Modal view button for Identified Data
 		Call different alert type and change the text
@@ -165,16 +145,19 @@ function exportDataController($scope,$element,$http,$window, programListService,
     
 
 	$scope.launchDataDictionaryButton = function(){
-    $http({method: 'GET', url: 'exportData/services/exports/dataDictionary'}).
-      success(function(data, status, headers, config) {
-        $('#modal_progress').modal('hide');
-         window.location = 'exportData/services/exports/dataDictionary';
-      }).
-      error(function(data, status, headers, config) {
-        //$("#progressMessages").text("Error");
-        //$("#modal_progress .progress").hide();
-      });
-  };
+		
+	    $http({method: 'GET', url: 'exportData/services/exports/dataDictionary'}).
+	      success(function(data, status, headers, config) {
+	    	
+	        window.open("exportData/services/exports/dataDictionary", "_self");
+	        $('#modal_progress').modal('hide');
+	        $("#progressMessages").html("");
+	      }).
+	      error(function(data, status, headers, config) {
+	    	  $("#progressMessages").html("<div class='alert alert-danger' role='alert'>Error occurred.</div>");
+	        //$("#modal_progress .progress").hide();
+	      });
+	};
 	
 	 
 	//console.log("inside the controller");
@@ -284,7 +267,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		
 		// Null out current selected item and clear list.
 		$scope.exportDataFormBean.clinicianId = "";
-		console.log(">> "+ $scope.exportDataFormBean.clinicianId);
+		//console.log(">> "+ $scope.exportDataFormBean.clinicianId);
 		$scope.clinicanList = [];
 
 		// Create the request parameters we will post.
@@ -345,8 +328,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 				});
 	}
   
-  
-  
 
 	/**
 	 * Initializes the model with any parameters initially passed to the controller. 
@@ -354,7 +335,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	function initializeModel() {
 		$scope.exportDataFormBean = {};
 	}
-
 
 
 	programListService.getProgramList().then(function(data) {
