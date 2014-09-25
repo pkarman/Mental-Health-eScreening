@@ -140,12 +140,12 @@ ${MODULE_START}
 		<#assign score = empty>
 		<#assign cutoff = empty>
 		
-		<#if var2000?? >
-			<#if isSelectedAnswer(var2000, var762)>
+		<#if (var2000?? && var2000.children?? && var2000.children?size>0) >
+			<#if (var2000.children[0].key == "var762")>
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Positive">
-			<#elseif isSelectedAnswer(var2000, var761) >
+			<#elseif (var2000.children[0].key == "var761") >
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Negative">
