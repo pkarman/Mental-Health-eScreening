@@ -33,7 +33,7 @@
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
-
+	
 <script type="text/javascript">	
    
     
@@ -230,8 +230,9 @@ $.ajax({
 	                  <div class="col-md-12">
 	                    <div>
 	                      <button ng-click="exportIdentifiedDataButton()" ng-model="exportIdentifiedDataButton" id="exportIdentifiedDataButton" name="exportIdentifiedDataButton" type="button" class="submitButton btn btn-primary" data-toggle="modal" data-target="#modal_confirmation"><span class="glyphicon glyphicon-circle-arrow-down"></span> Export Identified Data</button>
-                          <button ng-click="exportDeidentifiedDataButton()"  ng-model="exportDeidentifiedDataButton" id="exportDeidentifiedDataButton" name="exportDeidentifiedDataButton" type="button" class="submitButton btn btn-primary" data-toggle="modal" data-target="#modal_confirmation"><span class="glyphicon glyphicon-circle-arrow-down" ></span> Export De-identified Data</button>
-	                    </div>
+                        <button ng-click="exportDeidentifiedDataButton()"  ng-model="exportDeidentifiedDataButton" id="exportDeidentifiedDataButton" name="exportDeidentifiedDataButton" type="button" class="submitButton btn btn-primary" data-toggle="modal" data-target="#modal_confirmation"><span class="glyphicon glyphicon-circle-arrow-down" ></span> Export De-identified Data</button>
+                        <button ng-click="launchDataDictionaryButton()"  ng-model="launchDataDictionaryButton" id="launchDataDictionaryButton" name="launchDataDictionaryButton" type="button" class="submitButton btn btn-primary" data-toggle="modal"  data-target="#modal_progress"><span class="glyphicon glyphicon-book" ></span> Launch Data Dictionary</button>
+                      </div>
 
 	                  </div>
 	                </div>
@@ -318,6 +319,9 @@ $.ajax({
 
 
 
+    
+    
+    
 <!-- Modal -->
 <div class="modal fade" id="modal_confirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -349,6 +353,29 @@ $.ajax({
   </div>
   
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_progress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Loading...</h4>
+      </div>
+      <div class="modal-body">
+        <strong id="progressMessages"></strong>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            <span class="sr-only">100% Complete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
 </form>
 
 </div>

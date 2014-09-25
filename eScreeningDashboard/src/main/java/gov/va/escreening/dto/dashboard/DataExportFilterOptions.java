@@ -109,7 +109,7 @@ public class DataExportFilterOptions implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DataExportFilterOptions [exportLogId=" + exportLogId + ", exportedByUserId=" + exportedByUserId + ", clinicianUserId=" + clinicianUserId + ", createdByUserId=" + createdByUserId + ", exportTypeId=" + exportTypeId + ", assessmentStart=" + assessmentStart + ", assessmentEnd=" + assessmentEnd + ", programId=" + programId + ", veteranId=" + veteranId + ", comment=" + comment + ", filePath=" + filePath + "]";
+		return String.format("Requested 'Clinician' was %s - Requested 'Created By' was %s - Requested 'Assessment Start Date' was %s - Requested 'Assessment End Date' was %s - Requested 'Program Id' was %s - Requested 'Veteran Id' was %s", clinicianUserId == null ? "Missing" : clinicianUserId, createdByUserId == null ? "Missing" : createdByUserId, assessmentStart == null ? "Missing" : assessmentStart, assessmentEnd == null ? "Missing" : assessmentEnd, programId == null ? "Missing" : programId, veteranId == null ? "Missing" : veteranId);
 	}
 
 	@Override
