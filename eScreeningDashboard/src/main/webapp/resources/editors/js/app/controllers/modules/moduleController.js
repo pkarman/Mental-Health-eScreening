@@ -65,7 +65,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.setPageQuestionItems = function(newPageQuestionItems) {
-
+        $scope.pageQuestionItems = newPageQuestionItems;
     };
 
     $scope.addPageBreak = function(){

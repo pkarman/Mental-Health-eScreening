@@ -76,9 +76,6 @@
                 <div class="well well-left-side"
                      style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
                     <div class="form-inline form-group center-block">
-                        <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span
-                                class="glyphicon glyphicon-plus"></span> Question
-                        </button>
                         <button class="btn btn-success btn-sm" ng-click="addPageBreak();"><span
                                 class="glyphicon glyphicon-plus"></span> Page Break
                         </button>
@@ -99,6 +96,9 @@
                                                           style="margin-left: 10px;color:red;"
                                                           ng-show="item.getItem().getPageNumber() > 1"
                                                           ng-click="deletePageQuestionItem(item);"/>
+                                            </button>
+                                            <button class="btn btn-success btn-sm" ng-click="goToQuestions();"><span
+                                                    class="glyphicon glyphicon-plus"></span> Add Item
                                             </button>
                                         </div>
                                     </div>

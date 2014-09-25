@@ -225,7 +225,9 @@ angular.module('Editors')
                                     deferred.reject(responseError.getMessage());
                                 });
                             } else {
-                                deferred.resolve([]);
+                                var page = new EScreeningDashboardApp.models.SurveyPage(),
+                                    pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem({page: page, disabled: false});
+                                deferred.resolve([pageQuestionItem]);
                             }
 
                             return deferred.promise;
