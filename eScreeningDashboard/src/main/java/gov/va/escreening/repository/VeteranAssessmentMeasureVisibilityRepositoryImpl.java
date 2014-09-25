@@ -1,13 +1,16 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.google.common.collect.Maps;
@@ -16,6 +19,12 @@ import com.google.common.collect.Maps;
 public class VeteranAssessmentMeasureVisibilityRepositoryImpl extends AbstractHibernateRepository<VeteranAssessmentMeasureVisibility> 
     implements VeteranAssessmentMeasureVisibilityRepository{
     
+	@Autowired
+	private MeasureRepository measureRepository;
+	
+	@Autowired 
+	private VeteranAssessmentRepository veteranAssessmentRepository;
+	
     private static final Logger logger = LoggerFactory.getLogger(VeteranAssessmentMeasureVisibilityRepositoryImpl.class);
 
     public VeteranAssessmentMeasureVisibilityRepositoryImpl() {
@@ -45,6 +54,45 @@ public class VeteranAssessmentMeasureVisibilityRepositoryImpl extends AbstractHi
             }
             if(measureVisibilityMap.isEmpty())
                 break;
+        }
+        if (!measureVisibilityMap.isEmpty())
+        {
+        	VeteranAssessment va = veteranAssessmentRepository.findOne(veteranAssessmentId);
+        	for(Integer id : measureVisibilityMap.keySet())
+        	{
+	        	VeteranAssessmentMeasureVisibility vis = new VeteranAssessmentMeasureVisibility(va,measureRepository.findOne(id));
+	        	vis.setIsVisible(measureVisibilityMap.get(id));
+	        	create(vis);
+        	}
+        	
+        }
+        
+        boolean changes = true;
+        Set<Integer> hiddleMeasureId = new HashSet<Integer>();
+        
+        while(changes)
+        {
+        	List<VeteranAssessmentMeasureVisibility> viss = getVisibilityListFor(veteranAssessmentId);
+        	changes = false;
+        	for(VeteranAssessmentMeasureVisibility vis : viss)
+        	{
+        		if (!vis.getIsVisible())
+        		{
+        			if (!hiddleMeasureId.contains(vis.getMeasure().getMeasureId()))
+        			{
+        				changes = true;
+        				hiddleMeasureId.add(vis.getMeasure().getMeasureId());
+        			}
+        			else
+        			{
+        				if (vis.getMeasure().getParent()!=null && hiddleMeasureId.contains(vis.getMeasure().getParent().getMeasureId()))
+        				{
+        					vis.setIsVisible(false);
+        					changes = true;
+        				}
+        			}
+        		}
+        	}
         }
         return measureVisibilityMap.keySet();
     }
