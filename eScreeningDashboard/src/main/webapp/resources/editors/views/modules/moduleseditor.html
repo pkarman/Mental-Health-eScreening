@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="col-md-12 form-group">
-                            <label>Title</label>
+                            <label>Title *</label>
                             <input name="inputTitle" id="inputTitle" type="text" class="form-control"
                                    ng-model="selectedSurveyUIObject.name"
                                    placeholder="Enter Module Title" requried>
@@ -40,7 +40,7 @@
                             <label>Description</label>
                             <input name="inputDescription" id="inputDescription" type="text" class="form-control"
                                    ng-model="selectedSurveyUIObject.description"
-                                   placeholder="Enter Module Description" required>
+                                   placeholder="Enter Module Description">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -53,7 +53,7 @@
                             <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
                             //-->
                             <div class="col-sm-12 form-group pull-right">
-                                <label for="selectSurveySection">Sections</label>
+                                <label for="selectSurveySection">Section *</label>
                                 <select id="selectSurveySection" name="selectSurveySection" class="form-control"
                                         ng-model="selectedSurveyUIObject.surveySection"
                                         ng-options="surveySectionDropDownMenuOption.item as surveySectionDropDownMenuOption.name for surveySectionDropDownMenuOption in surveySectionDropDownMenuOptions"

@@ -41,6 +41,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             }
         });
 
+        if(organizedPages.length == 1){
+            organizedPages = [];
+        }
+
         return organizedPages;
     };
 
@@ -139,7 +143,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.goToQuestions = function() {
         var softReset = false,
             state = {
-                name: "modules.detail.questions.blank",
+                name: "modules.detail.selectQuestionType",
                 params: {selectedQuestionId: -1},
                 doTransition: true
             };

@@ -155,8 +155,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                         console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
                     }
                 }
-
-
             }, function(responseError) {
                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
             });
@@ -179,7 +177,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         }
 
         $scope.resetForm(false, {
-            name: "modules.detail.questions.blank",
+            name: "modules.detail.empty",
             params: {selectedQuestionId: $scope.selectedSurveyUIObject.id},
             doTransition: true
         });
@@ -194,12 +192,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };*/
 
     $scope.cancel = function () {
-        $state.go('modules.detail.questions.blank');
+        $state.go('modules.detail.selectQuestionType');
     };
 
     /*$scope.addQuestion = function(){
         $scope.setSelectedQuestionUIObject($rootScope.createQuestion());
-        $state.go('modules.detail.questions.editReadOnly');
+        $state.go('modules.detail.editReadOnlyQuestionType');
     };*/
 
     $scope.editQuestion = function(selectedPageQuestionItem){
@@ -216,28 +214,28 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         switch (selectedPageQuestionItem.getItem().toUIObject().type){
             case 'freeText':
             case 'readOnly':
-                stateName = "modules.detail.questions.editReadOnly";
+                stateName = "modules.detail.editReadOnlyQuestionType";
                 break;
             case 'selectOne':
-                stateName = "modules.detail.questions.editSelectOne";
+                stateName = "modules.detail.editSelectOneQuestionType";
                 break;
             case'selectMulti':
-                stateName = "modules.detail.questions.editSelectMultiple";
+                stateName = "modules.detail.editSelectMultipleQuestionType";
                 break;
             case 'selectOneMatrix':
-                stateName = "modules.detail.questions.editSelectOneMatrix";
+                stateName = "modules.detail.editSelectOneMatrixQuestionType";
                 break;
             case 'selectMultiMatrix':
-                stateName = "modules.detail.questions.editSelectMultipleMatrix";
+                stateName = "modules.detail.editSelectMultipleMatrixQuestionType";
                 break;
             case 'tableQuestion':
-                stateName = "modules.detail.questions.editTable";
+                stateName = "modules.detail.editTableQuestionType";
                 break;
             case 'instruction':
-                stateName = "modules.detail.questions.editInstruction";
+                stateName = "modules.detail.editInstructionQuestionType";
                 break;
             default:
-                stateName = "modules.detail.questions.editReadOnly";
+                stateName = "modules.detail.editReadOnlyQuestionType";
         }
 
         if(Object.isDefined(stateName)) {
@@ -257,7 +255,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
         });
 
-        $state.go('modules.detail.questions.blank');
+        $state.go('modules.detail.selectQuestionType');
     };
 
     $scope.sortableOptions = {

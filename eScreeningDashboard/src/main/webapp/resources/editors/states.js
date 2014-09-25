@@ -216,9 +216,11 @@ angular.module('Editors')
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
                                     var pageQuestionItems = (Object.isArray(response.getPayload()))? response.getPayload() : [];
-                                    if (pageQuestionItems.length === 0) {
+
+                                    /*if (pageQuestionItems.length === 0) {
                                         pageQuestionItems.push(response.getPayload());
-                                    }
+                                    }*/
+
                                     deferred.resolve(pageQuestionItems);
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -256,7 +258,7 @@ angular.module('Editors')
                     controller:'addEditModuleController'
                 })
 
-                .state('modules.detail.questions',{
+                /*.state('modules.detail.questions',{
                     abstract:true,
                     url:'/questions',
                     templateUrl:'resources/editors/views/questions/questionsabstract.html',
@@ -280,50 +282,38 @@ angular.module('Editors')
                         }]
                     },
                     controller:'questionsController'
+                })*/
+
+                .state('modules.detail.empty',{
+                    url:'/question/empty',
+                    templateUrl:'resources/editors/views/questions/questionnull.html',
+                    data:{displayName:false}
                 })
 
-                .state('modules.detail.questions.blank',{
+                .state('modules.detail.selectQuestionType',{
                     url:'/question',
-                    templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false}/*,
+                    templateUrl:'resources/editors/views/questions/selectQuestionTypes.html',
+                    data:{displayName:false},
                     resolve: {
-                        surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
-                            var selectedSurveyUIObject = null;
-
-                            if(Object.isArray($rootScope.surveyUIObjects)) {
-                                $rootScope.surveyUIObjects.forEach(function (surveyUIObject) {
-                                    if(surveyUIObject.id === parseInt($stateParams.selectedSurveyId)) {
-                                        selectedSurveyUIObject = surveyUIObject;
-                                    }
-                                });
-                            }
-
-                            return selectedSurveyUIObject;
-                        }],
-                        pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
-                            var deferred = $q.defer();
-
-                            if($stateParams.selectedSurveyId > -1) {
-                                SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    /if(response.isSuccessful() && Object.isArray(response.getPayload())){
-                                        response.getPayload().push($rootScope.addQuestion());
-                                    }/
-                                    deferred.resolve(response.getPayload());
-                                }, function(responseError) {
-                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                    deferred.reject(responseError.getMessage());
-                                });
-                            } else {
-                                deferred.resolve([]);
-                            }
-
-                            return deferred.promise;
+                        questionTypeDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: 0, name: "freeText", displayName: "Free/Read-Only Text"},
+                                /*{id: 1, name: "readOnly", displayName: "Free/Read-Only Text"},*/
+                                {id: 1, name: "selectOne", displayName: "Select Single"},
+                                {id: 2, name: "selectMulti", displayName: "Select Multiple"},
+                                {id: 3, name: "selectOneMatrix", displayName: "Select Single Matrix"},
+                                {id: 4, name: "selectMultiMatrix", displayName: "Select Multiple Matrix"},
+                                {id: 5, name: "tableQuestion", displayName: "Table Question"},
+                                {id: 6, name: "instruction", displayName: "Instructions"}
+                            ];
                         }]
                     },
-                    controller: 'questionsController'*/
+                    controller:'questionsController'
                 })
 
-                .state('modules.detail.questions.editSelectOne',{
+                .state('modules.detail.editSelectOneQuestionType',{
                     url:'/selectOne/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglequestion.html',
                     data: {
@@ -332,7 +322,7 @@ angular.module('Editors')
                     controller: 'addEditModuleController'
                 })
 
-                .state('modules.detail.questions.editSelectOneMatrix',{
+                .state('modules.detail.editSelectOneMatrixQuestionType',{
                     url:'/selectOneMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglematrixquestion.html',
                     data: {
@@ -341,7 +331,7 @@ angular.module('Editors')
                     controller: 'addEditModuleController'
                 })
 
-                .state('modules.detail.questions.editReadOnly',{
+                .state('modules.detail.editReadOnlyQuestionType',{
                     url:'/readOnly/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
                     data: {
@@ -361,7 +351,7 @@ angular.module('Editors')
                     controller:'freeTextReadOnlyQuestionController'
                 })
 
-                .state('modules.detail.questions.editSelectMultiple',{
+                .state('modules.detail.editSelectMultipleQuestionType',{
                     url:'/selectMultiple/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplequestion.html',
                     data: {
@@ -380,7 +370,7 @@ angular.module('Editors')
                     controller:'selectMultipleQuestionController'
                 })
 
-                .state('modules.detail.questions.editSelectMultipleMatrix',{
+                .state('modules.detail.editSelectMultipleMatrixQuestionType',{
                     url:'/selectMultipleMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplematrixquestion.html',
                     data: {
@@ -399,7 +389,7 @@ angular.module('Editors')
                     controller:'selectMultipleMatrixQuestionController'
                 })
 
-                .state('modules.detail.questions.editTable',{
+                .state('modules.detail.editTableQuestionType',{
                     url:'/table/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/tablequestion.html',
                     data: {
@@ -407,7 +397,7 @@ angular.module('Editors')
                     }
                 })
 
-                .state('modules.detail.questions.editInstruction', {
+                .state('modules.detail.editInstructionQuestionType', {
                     url:'/instruction/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/questioninstructions.html',
                     data: {

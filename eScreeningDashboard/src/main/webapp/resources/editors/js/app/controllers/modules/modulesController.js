@@ -91,12 +91,12 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
 
     $scope.addModule = function(){
         $scope.selectedSurveyUIObject = $scope.createModule();
-        $state.go('modules.detail.questions.blank');
+        $state.go('modules.detail.selectQuestionType');
     };
 
     $scope.goToAddEdit = function(){
     	console.log('Transition to Add/Edit Modules');
-        $state.go('modules.detail.questions.blank');
+        $state.go('modules.detail.selectQuestionType');
     };
 
     $scope.cancel = function(){

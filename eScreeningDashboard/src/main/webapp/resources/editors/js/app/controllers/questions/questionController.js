@@ -62,7 +62,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         if (currentlySelectedQuestionType === previouslySelectedQuestionType) {
             return;
         } else {
-            var url = 'modules.detail.questions.editReadOnly',
+            var url = 'modules.detail.editReadOnlyQuestionType',
                 goToState = false;
 
             $scope.setFormReset(false);
@@ -70,31 +70,31 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
             if(Object.isDefined(currentlySelectedQuestionType) && Object.isDefined(currentlySelectedQuestionType.displayName)){
                 switch(currentlySelectedQuestionType.displayName){
                     case "Free/Read-Only Text":
-                        url = 'modules.detail.questions.editReadOnly';
+                        url = 'modules.detail.editReadOnlyQuestionType';
                         goToState = true;
                         break;
                     case 'Select Single':
-                        url = 'modules.detail.questions.editSelectOne';
+                        url = 'modules.detail.editSelectOneQuestionType';
                         goToState = true;
                         break;
                     case 'Select Multiple':
-                        url = 'modules.detail.questions.editSelectMultiple';
+                        url = 'modules.detail.editSelectMultipleQuestionType';
                         goToState = true;
                         break;
                     case 'Select Single Matrix':
-                        url = 'modules.detail.questions.editSelectOneMatrix';
+                        url = 'modules.detail.editSelectOneMatrixQuestionType';
                         goToState = true;
                         break;
                     case 'Select Multiple Matrix':
-                        url = 'modules.detail.questions.editSelectMultipleMatrix';
+                        url = 'modules.detail.editSelectMultipleMatrixQuestionType';
                         goToState = true;
                         break;
                     case 'Table Question':
-                        url = 'modules.detail.questions.editTable';
+                        url = 'modules.detail.editTableQuestionType';
                         goToState = true;
                         break;
                     case 'Instructions':
-                        url = 'modules.detail.questions.editInstruction';
+                        url = 'modules.detail.editInstructionQuestionType';
                         goToState = true;
                         break;
                 }
@@ -125,7 +125,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
         softReset = (Object.isBoolean(softReset))? softReset : true;
         state = (Object.isDefined(state))? state: {
-            name: "modules.detail.questions.blank",
+            name: "modules.detail.selectQuestionType",
             params: {selectedQuestionId: -1},
             doTransition: false
         };
@@ -147,7 +147,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     $scope.resetForm = function (softReset, state){
         softReset = (Object.isBoolean(softReset))? softReset : false;
         state = (Object.isDefined(state))? state: {
-            name: "modules.detail.questions.blank",
+            name: "modules.detail.selectQuestionType",
             params: {selectedQuestionId: -1},
             doTransition: false
         };
@@ -161,6 +161,6 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     };
 
     $scope.goToAddEdit = function(){
-        $state.go('modules.detail.questions.blank');
+        $state.go('modules.detail.selectQuestionType');
     };
 }]);

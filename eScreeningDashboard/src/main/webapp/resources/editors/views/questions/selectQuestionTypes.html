@@ -1,0 +1,26 @@
+<form name="selectedQuestionTypeForm" novalidate>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-horizontal">
+                <div>Select Question Type</div>
+                <div ng-repeat="questionTypeDropDownMenuOption in questionTypeDropDownMenuOptions">
+                    <input id="selectedQuestionType" name="selectedQuestionType" type="radio"
+                           ng-model="selectedQuestionType"
+                           value="{{questionTypeDropDownMenuOption.name}}"> {{questionTypeDropDownMenuOption.displayName}}
+                </div>
+                <button class="btn btn-success btn-sm" ng-click="goToQuestionTypeForm();"><span
+                        class="glyphicon glyphicon-plus"></span> Next
+                </button>
+                <!--div class="col-md-4">
+                    <select id="selectQuestionType" name="selectQuestionType" class="form-control"
+                            ng-model="questionTypeDropDownMenu"
+                            ng-options="option.displayName for option in questionTypeDropDownMenuOptions track by option.displayName"
+                            ng-disabled="disableDropDownMenu()" required>
+                        <option value=""> -- Choose Question Type --</option>
+                    </select>
+                </div-->
+            </div>
+        </div>
+    </div>
+</form>

@@ -118,7 +118,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
         /*softReset = (Object.isBoolean(softReset))? softReset : true;
         state = (Object.isDefined(state))? state: {
-            name: "modules.detail.questions.blank",
+            name: "modules.detail.selectQuestionType",
             params: {selectedQuestionId: -1},
             doTransition: false
         };*/
