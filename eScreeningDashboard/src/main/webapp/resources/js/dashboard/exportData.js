@@ -18,7 +18,7 @@ app.directive('reportTable', function() {
 			}
 		}
         
-        var dataTable;
+    var dataTable;
 		var sourceURL = "exportData/services/exports/exportLog";
 		
 		exportDataTable(sourceURL);
@@ -105,10 +105,24 @@ app.factory('filterOptionService', function($http) {
 			}).then(function(result) {
 				// console.log(">>>>>>> DATA >>> ");
 				// console.log(result.data.stateId);
+				return result.data;
 				
-			
-				
-				
+			});
+		}
+	};
+});
+
+
+/* Program List Service*/
+app.factory('dataDataDictionaryService', function($http) {
+	return {
+		getDataDictionaryList : function() {
+			return $http({
+				method : "GET",
+				url : "exportData/services/exports/dataDictionary",
+				responseType : "json"
+			}).then(function(result) {
+				 console.log(">>>>>>> DATA >>> ");
 				return result.data;
 				
 			});
@@ -118,16 +132,13 @@ app.factory('filterOptionService', function($http) {
 
 
 
-
-
-
 /**
  * Controller for the page.
  * @param $scope
  * @param $element
  * @param $http
  */
-function exportDataController($scope,$element,$http,$window, programListService, filterOptionService) {	
+function exportDataController($scope,$element,$http,$window, programListService, filterOptionService, dataDataDictionaryService) {	
 	/*
 		Modal view button for Identified Data
 		Call different alert type and change the text
@@ -151,6 +162,19 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
+    
+
+	$scope.launchDataDictionaryButton = function(){
+    $http({method: 'GET', url: 'exportData/services/exports/dataDictionary'}).
+      success(function(data, status, headers, config) {
+        $('#modal_progress').modal('hide');
+         window.location = 'exportData/services/exports/dataDictionary';
+      }).
+      error(function(data, status, headers, config) {
+        //$("#progressMessages").text("Error");
+        //$("#modal_progress .progress").hide();
+      });
+  };
 	
 	 
 	//console.log("inside the controller");
@@ -320,6 +344,9 @@ function exportDataController($scope,$element,$http,$window, programListService,
 					//
 				});
 	}
+  
+  
+  
 
 	/**
 	 * Initializes the model with any parameters initially passed to the controller. 
