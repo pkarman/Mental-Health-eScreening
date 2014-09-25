@@ -12,14 +12,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
@@ -105,6 +104,16 @@ abstract class Resolver {
 		this.ddh = ddh;
 	}
 
+	public void addDictionaryRows(Survey s, Measure m,
+			Table<String, String, String> t) {
+		addDictionaryRowsNow(s, m, t);
+		addFormulaeToSurvey(s, t);
+	}
+
+	private final void addFormulaeToSurvey(Survey s,
+			Table<String, String, String> t) {
+	}
+
 	String getValuesRange(Measure m, MeasureAnswer ma) {
 		return "";
 	}
@@ -117,7 +126,8 @@ abstract class Resolver {
 		return "";
 	}
 
-	void addDictionaryRows(Survey s, Measure m, Table<String, String, String> t) {
+	protected void addDictionaryRowsNow(Survey s, Measure m,
+			Table<String, String, String> t) {
 		addSingleRow(s, m, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
 	}
 
@@ -169,7 +179,7 @@ class MultiSelectResolver extends Resolver {
 	}
 
 	@Override
-	public void addDictionaryRows(Survey s, Measure m,
+	protected void addDictionaryRowsNow(Survey s, Measure m,
 			Table<String, String, String> t) {
 
 		int index = 0;
@@ -247,12 +257,7 @@ class FreeTextResolver extends Resolver {
 		}
 
 		Collection<String> validations = ddh.measureValidationsMap.get(m.getMeasureId());
-		String description = "";
-		if (validations != null) {
-			for (String s : validations) {
-				description += s + " ";
-			}
-		}
+		String description = Joiner.on(", ").skipNulls().join(validations);
 		return description;
 	}
 }
@@ -269,11 +274,14 @@ class SelectOneMatrixResolver extends Resolver {
 	}
 
 	@Override
-	public void addDictionaryRows(Survey s, Measure m,
+	protected void addDictionaryRowsNow(Survey s, Measure m,
 			Table<String, String, String> t) {
-		super.addDictionaryRows(s, m, t);
+
+		super.addDictionaryRowsNow(s, m, t);
+
 		// collect all children here. find all measures whose parent is pointing to this measure (m)
 		Collection<Measure> children = findChildren(m);
+
 		for (Measure cm : children) {
 			ddh.buildDataDictionary(s, cm, t);
 		}

@@ -34,17 +34,34 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	SurveyPageMeasureRepository spmr;
 
 	@Override
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	public Map<String, Table<String, String, String>> createDataDictionary() {
 
 		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
 
+		/**
+		 * <pre>
+		 * 
+		 * 	pt#1: each survey will have its own table 
+		 * 	pt#2: each table has rows 
+		 * 	pt#3: each row has columns 
+		 * 	pt#4: and each column has values
+		 * 
+		 * 	[survey]
+		 * 		[Table]
+		 * 	  		==> row column=value
+		 * 	  		==> row column=value
+		 * 	  		==> row column=value
+		 * 
+		 * </pre>
+		 */
 		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
 
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<String, String, String> table = buildSurveyTable(s, surveyMeasuresMap.get(s));
-			dataDictionary.put(s.getName(), table);
+			Table<String, String, String> surveyTable = buildSurveyTable(s, surveyMeasuresMap.get(s));
+			dataDictionary.put(s.getName(), surveyTable);
 		}
+
 		return dataDictionary;
 	}
 
@@ -57,14 +74,13 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		return smMap;
 	}
 
-	private Table<String, String, String> buildSurveyTable(Survey s,
-			Collection<Measure> surveyMeasures) {
+	private Table<String, String, String> buildSurveyTable(Survey s, Collection<Measure> surveyMeasures) {
 
 		Table<String, String, String> t = TreeBasedTable.create();
 		for (Measure m : surveyMeasures) {
 			ddh.buildDataDictionary(s, m, t);
 		}
-		
+
 		return t;
 	}
 

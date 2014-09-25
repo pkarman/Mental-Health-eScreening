@@ -8,9 +8,13 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +25,15 @@ import com.google.common.collect.Table;
 public class DataDictionaryExcelView extends AbstractExcelView {
 
 	private static final Logger logger = LoggerFactory.getLogger(DataDictionaryExcelView.class);
-	
+
 	@Override
 	protected void buildExcelDocument(Map model, HSSFWorkbook workbook,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) model.get("dataDictionary");
+
+		CellStyle cs = workbook.createCellStyle();
+		cs.setWrapText(true);
 
 		for (String surveyName : dataDictionary.keySet()) {
 			if (logger.isDebugEnabled()) {
@@ -36,30 +43,48 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 			HSSFSheet sheet = workbook.createSheet(surveyName);
 
 			Table<String, String, String> measuresTable = dataDictionary.get(surveyName);
-			setExcelHeader(surveyName, sheet, measuresTable.columnKeySet());
-			setExcelRows(surveyName, sheet, measuresTable);
+			setExcelHeader(workbook, surveyName, sheet, measuresTable.columnKeySet());
+			setExcelRows(workbook, surveyName, sheet, measuresTable, cs);
 		}
-
 	}
 
-	private void setExcelHeader(String surveyName, HSSFSheet excelSheet,
-			Set<String> headerColumns) {
+	private void setExcelHeader(HSSFWorkbook workbook, String surveyName,
+			HSSFSheet excelSheet, Set<String> headerColumns) {
 
 		int row = 0;
-		HSSFRow excelHeader = excelSheet.createRow(row);
-		excelHeader.createCell(0).setCellValue(String.format("%s as of %s",surveyName, new LocalDate().toString("dd-MMM-yyyy", Locale.US)));
+		HSSFRow surveyRow = createRow_SurveyName(workbook, surveyName, excelSheet, row);
 
-		excelHeader = excelSheet.createRow(row + 2);
+		HSSFRow headerRow = createRow_Header(workbook, excelSheet, headerColumns, row++);
+	}
+
+	private HSSFRow createRow_Header(HSSFWorkbook workbook,
+			HSSFSheet excelSheet, Set<String> headerColumns, int row) {
+
+		HSSFRow headerRow = excelSheet.createRow(row + 2);
 
 		int columnIndex = 0;
 		for (String header : headerColumns) {
-			excelHeader.createCell(columnIndex).setCellValue(header.substring(2));
+			HSSFCell cell = headerRow.createCell(columnIndex);
+			cell.setCellValue(header.substring(2));
 			columnIndex++;
 		}
+		return headerRow;
 	}
 
-	private void setExcelRows(String surveyName, HSSFSheet excelSheet,
-			Table<String, String, String> measuresTable) {
+	private HSSFRow createRow_SurveyName(HSSFWorkbook workbook,
+			String surveyName, HSSFSheet excelSheet, int row) {
+
+		HSSFRow surveyNameWithDateRow = excelSheet.createRow(row);
+
+		HSSFCell cell = surveyNameWithDateRow.createCell(0);
+		cell.setCellValue(String.format("%s as of %s", surveyName, new LocalDate().toString("dd-MMM-yyyy", Locale.US)));
+
+		return surveyNameWithDateRow;
+	}
+
+	
+	private void setExcelRows(HSSFWorkbook workbook, String surveyName,
+			HSSFSheet excelSheet, Table<String, String, String> measuresTable, CellStyle cs) {
 
 		int row = 4;
 		for (String rowId : measuresTable.rowKeySet()) {
@@ -68,9 +93,17 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 
 			StringBuilder debugString = new StringBuilder();
 			for (Entry<String, String> rowData : measuresTable.row(rowId).entrySet()) {
-				debugString.append(String.format("%s:%s:%s$", rowId, rowData.getKey(), rowData.getValue()));
+				if (logger.isDebugEnabled()) {
+					debugString.append(String.format("%s:%s:%s$", rowId, rowData.getKey(), rowData.getValue()));
+				}
 
-				excelRow.createCell(columnIndex).setCellValue(rowData.getValue());
+				HSSFCell aCell = excelRow.createCell(columnIndex);
+				aCell.setCellValue(rowData.getValue());
+
+				if (columnIndex == 1) {
+					aCell.setCellStyle(cs);
+				}
+				
 				columnIndex++;
 			}
 
