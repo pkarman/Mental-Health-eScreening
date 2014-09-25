@@ -88,7 +88,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
     $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
-    $scope.setPageQuestionItems((Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems);
+
+    if (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0) {
+        $scope.setPageQuestionItems(pageQuestionItems);
+    } else {
+        $scope.addPageBreak();
+    }
 
     $scope.surveySectionDropDownMenuOptions = surveySectionDropDownMenuOptions;
     var surveySectionDropDownMenuOptionIndex = (Object.isDefined($scope.selectedSurveyUIObject.surveySection))? selectedMenuItemIndex(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper($scope.selectedSurveyUIObject.surveySection), surveySectionDropDownMenuOptions) : -1;
@@ -244,6 +249,40 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             $scope.setSelectedQuestionUIObject(selectedPageQuestionItem.getItem().toUIObject());
             $scope.selectedQuestionUIObject.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
         }
+    };
+
+    $scope.getStateName = function(selectedStateName){
+        var stateName;
+
+        switch (selectedStateName){
+            case 'freeText':
+                stateName = "modules.detail.editFreeTextQuestionType";
+            case 'readOnly':
+                stateName = "modules.detail.editReadOnlyQuestionType";
+                break;
+            case 'selectOne':
+                stateName = "modules.detail.editSelectOneQuestionType";
+                break;
+            case'selectMulti':
+                stateName = "modules.detail.editSelectMultipleQuestionType";
+                break;
+            case 'selectOneMatrix':
+                stateName = "modules.detail.editSelectOneMatrixQuestionType";
+                break;
+            case 'selectMultiMatrix':
+                stateName = "modules.detail.editSelectMultipleMatrixQuestionType";
+                break;
+            case 'tableQuestion':
+                stateName = "modules.detail.editTableQuestionType";
+                break;
+            case 'instruction':
+                stateName = "modules.detail.editInstructionQuestionType";
+                break;
+            default:
+                stateName = "modules.detail.editFreeTextQuestionType";
+        }
+
+        return stateName;
     };
 
     $scope.deleteQuestion = function(question){
