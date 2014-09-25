@@ -1,17 +1,27 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.delegate.CreateAssessmentDelegate;
+import gov.va.escreening.domain.RoleEnum;
+import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.SystemProperty;
+import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
+import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -21,7 +31,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVariableResolver {
+	public static final int CUSTOM_PACKET_VERSION_VARIABLE_ID = 1;
+	public static final int CUSTOM_ASSIGNED_CLINICIAN_VARIABLE_ID = 2;
+	public static final int CUSTOM_SIGNING_CLINICIAN_VARIABLE_ID = 3;
+	public static final int CUSTOM_TODAYS_DATE = 4;
+	public static final int CUSTOM_ASSESSMENT_DURATION = 5;
+	public static final int CUSTOM_VETERAN_APPOINTMENTS = 6;
+	public static final int CUSTOM_ASSESSMENT_LAST_MODIFIED = 7;
 	
+	public static final int SYSTEM_PROPERTIES_ESCREENING_PACKET_VERSION_ID = 1;
+	
+    private static final Logger logger = LoggerFactory.getLogger(CustomAssessmentVariableResolverImpl.class);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
+    
     @Autowired
     private SystemPropertyService systemPropertyService;
     @Autowired
@@ -29,15 +51,19 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
     @Autowired
     private VeteranAssessmentService veteranAssessmentService;
     
-	public static final int CUSTOM_PACKET_VERSION_VARIABLE_ID = 1;
-	public static final int CUSTOM_ASSIGNED_CLINICIAN_VARIABLE_ID = 2;
-	public static final int CUSTOM_SIGNING_CLINICIAN_VARIABLE_ID = 3;
-	public static final int CUSTOM_TODAYS_DATE = 4;
-	public static final int CUSTOM_ASSESSMENT_DURATION = 5;
-	
-	public static final int SYSTEM_PROPERTIES_ESCREENING_PACKET_VERSION_ID = 1;
-	
-    private static final Logger logger = LoggerFactory.getLogger(CustomAssessmentVariableResolverImpl.class);
+    private UserRepository userRepository;
+    
+    @Autowired
+    public void setUserRepository(UserRepository UserRepository) {
+        this.userRepository = UserRepository;
+    }
+    
+    private CreateAssessmentDelegate createAssessmentDelegate;
+
+    @Autowired
+    public void setcreateAssessmentDelegate(CreateAssessmentDelegate createAssessmentDelegate) {
+        this.createAssessmentDelegate = createAssessmentDelegate;
+    }
 
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId) {
@@ -59,6 +85,12 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 				break;
 			case CUSTOM_ASSESSMENT_DURATION:
 				variableDto = getAssessmentDuration(veteranAssessmentId);
+				break;
+			case CUSTOM_VETERAN_APPOINTMENTS:
+				variableDto = getVeteranAppointments(veteranAssessmentId);
+				break;
+			case CUSTOM_ASSESSMENT_LAST_MODIFIED:
+				variableDto = getAssessmentLastModified(veteranAssessmentId);
 				break;
 			default:
 				throw new UnsupportedOperationException(
@@ -97,10 +129,8 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 
 		AssessmentVariableDto variableDto = null;
 		
-		VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
-		if(veteranAssessment == null) {
-			throw new AssessmentVariableInvalidValueException(String.format("Could not find requested VeteranAssessment with id of: %s", veteranAssessmentId));
-		}
+		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
+		
 		if(veteranAssessment.getClinician() == null ) {
 			throw new CouldNotResolveVariableException(String.format("Clinician was null for VeteranAssessment with id of: %s", veteranAssessmentId));
 		}
@@ -121,10 +151,7 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 
 		AssessmentVariableDto variableDto = null;
 		
-		VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
-		if(veteranAssessment == null) {
-			throw new AssessmentVariableInvalidValueException(String.format("Could not find requested VeteranAssessment with id of: %s", veteranAssessmentId));
-		}
+		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
 		if(veteranAssessment.getSignedByUser() == null ) {
 			throw new CouldNotResolveVariableException(String.format("SignedByUser was null for VeteranAssessment with id of: %s", veteranAssessmentId));
 		}
@@ -143,9 +170,8 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 	//TODO need to add export_name of "demo_date"
 	/* new AssessmentVariable(4, "var4", "string", "custom_4", "05-14-2014", "05-14-2014", null, null) */
 	private AssessmentVariableDto getCurrentDate() {
-	    SimpleDateFormat sdfDate = new SimpleDateFormat("MM-dd-yyyy");
 	    Date now = new Date();
-	    String strDate = sdfDate.format(now);
+	    String strDate = DATE_FORMAT.format(now);
 		
 		String varName = String.format("var%s", CUSTOM_TODAYS_DATE);
 		String displayName = String.format("custom_%s", CUSTOM_TODAYS_DATE);
@@ -161,10 +187,8 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 		
 		AssessmentVariableDto variableDto = null;
 		
-		VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
-		if(veteranAssessment == null) {
-			throw new AssessmentVariableInvalidValueException(String.format("Could not find requested VeteranAssessment with id of: %s", veteranAssessmentId));
-		}
+		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
+		
 		if(veteranAssessment.getDuration() == null ) {
 			throw new CouldNotResolveVariableException(String.format("Duration was null for VeteranAssessment with id of: %s", veteranAssessmentId));
 		}
@@ -186,5 +210,111 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 		}
 		
 		return variableDto;
+	}
+	
+	private AssessmentVariableDto getVeteranAppointments(Integer veteranAssessmentId){
+		// Get veteran IEN
+		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
+		if(veteranAssessment.getVeteran() == null || veteranAssessment.getVeteran().getVeteranIen() == null
+				|| veteranAssessment.getVeteran().getVeteranIen().isEmpty()){
+			throw new AssessmentVariableInvalidValueException(String.format("Veteran IEN number could not be found. Map veteran to VistA."));
+		}
+		String vetIen = veteranAssessment.getVeteran().getVeteranIen();
+		
+		// Get tech admins
+		List<User> adminList = userRepository.findByRoleId(RoleEnum.TECH_ADMIN);
+		if(adminList.isEmpty()){
+			throw new AssessmentVariableInvalidValueException(String.format("Could not find a registered tech admin to pull appointments"));
+		}
+		
+		// Get appointments
+		List<VistaVeteranAppointment> appointments = null;
+		for(User adminUser : adminList){
+			try{
+				appointments = createAssessmentDelegate.getVeteranAppointments(adminUser, vetIen);
+				break;
+			}
+			catch(Exception e){
+				logger.warn(String.format("Error getting appointments using tech admin %s and veteran IEN %s"),  adminUser, vetIen);
+			}
+		}
+		if(appointments == null){
+			throw new AssessmentVariableInvalidValueException(String.format("Cannot retrieve appointments from VistA."));
+		}
+		
+		// Sort dates from earlier to later and stick nulls at the end.
+		Collections.sort(appointments, new Comparator<VistaVeteranAppointment>(){
+
+			@Override
+			public int compare(VistaVeteranAppointment left, VistaVeteranAppointment right) {
+				if(left.getAppointmentDate() == null){
+					return 1;
+				}
+				if(right.getAppointmentDate() == null){
+					return -1;
+				}
+				return (int)(left.getAppointmentDate().getTime() - right.getAppointmentDate().getTime());
+			}
+			
+		});
+		
+		// Create DTOs
+		String varName = String.format("var%s", CUSTOM_VETERAN_APPOINTMENTS);
+		String displayName = String.format("custom_%s", CUSTOM_VETERAN_APPOINTMENTS);
+		SimpleDateFormat dateFormatWithTime = new SimpleDateFormat("MM-dd-yy@hh:mm");
+		
+		List<AssessmentVariableDto> children = new ArrayList<>(3);
+		for(VistaVeteranAppointment appointment : appointments){
+			String appointmentText = dateFormatWithTime.format(appointment.getAppointmentDate()) 
+									+ appointment.getClinicName();
+			
+			children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
+							displayName, appointmentText, "Veteran Appointments", null, null,
+							AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN));
+			
+			//we only want the first 3
+			if(children.size() == 3)
+				break;
+		}
+		
+		AssessmentVariableDto variableDto = new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", displayName, 
+				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
+		
+		variableDto.setChildren(children);
+		
+        //create an assessment variable dto with one child per appointment 
+        return variableDto;
+	}
+	
+	/**
+	 * Gets the completion date for the given assessment.
+	 * 
+	 * @param veteranAssessmentId
+	 * @return
+	 */
+	private AssessmentVariableDto getAssessmentLastModified(Integer veteranAssessmentId){
+		
+		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
+		
+		if(veteranAssessment.getDateUpdated() == null ) {
+			throw new CouldNotResolveVariableException(String.format("Assessment last update date was null for VeteranAssessment with id of: %s", veteranAssessmentId));
+		}
+		
+		String strDate = DATE_FORMAT.format(veteranAssessment.getDateUpdated());
+		
+		String varName = String.format("var%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
+		String displayName = String.format("custom_%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
+		AssessmentVariableDto variableDto = new AssessmentVariableDto(CUSTOM_ASSESSMENT_LAST_MODIFIED, varName, "string", displayName, 
+				strDate, strDate, null, null, AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
+		    
+		return variableDto;
+	}
+	
+	private VeteranAssessment getAssessment(Integer veteranAssessmentId){
+		VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
+		if(veteranAssessment == null) {
+			throw new AssessmentVariableInvalidValueException(String.format("Could not find requested VeteranAssessment with id of: %s", veteranAssessmentId));
+		}
+		return veteranAssessment;
 	}
 }

@@ -247,16 +247,17 @@
                     	<div class="col-md-12">
                         	<h2><span class="acc_lastName"></span>, <span class="acc_firstName"></span> <span class="acc_middleName"></span></h2><br>
 							
-                            <label>CPRS Verified</label>
+                            <div class="title_label">CPRS Verified</div>
                             <div><span class="acc_cprsVerified"></span> <span class="user_verification_link hide"><a href="#"  data-toggle="modal" data-target="#verify_modal" data-controls-modal="#verify_modal"  data-backdrop="static"  data-keyboard="false"> (Click here to verify your account)</a></span></div><br>
-							<label>Email Address</label>
+							              
+                            <div class="title_label">Email Address</div>
                             <div><span class="acc_emailAddress"></span></div><br>
                             
-                            <label>Phone Number</label>
+                            <div class="title_label">Phone Number</div>
                             <div><span class="acc_phoneNumber"></span></div><br>
                             
                             
-                            <label>User Role</label>
+                            <div class="title_label">User Role</div>
                             <div><span class="acc_roleName"></span></div><br>
                             
                         </div>

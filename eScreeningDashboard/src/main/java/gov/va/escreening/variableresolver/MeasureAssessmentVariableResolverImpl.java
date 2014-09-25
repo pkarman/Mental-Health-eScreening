@@ -127,6 +127,7 @@ public class MeasureAssessmentVariableResolverImpl implements MeasureAssessmentV
     	
 		switch(measureTypeId) {
 			case MEASURE_TYPE_ID_FREETEXT:
+			case MEASURE_TYPE_ID_READONETEXT:
 				variableDto = resolveFreeTextAssessmentVariableQuestion(assessmentVariable, measureId, veteranAssessmentId, responses, measureAnswerHash);
 				break;
 			case MEASURE_TYPE_ID_SELECTONE:
@@ -145,7 +146,6 @@ public class MeasureAssessmentVariableResolverImpl implements MeasureAssessmentV
 			case MEASURE_TYPE_ID_SELECTONEMATRIX:
 				variableDto = resolveSelectOneAssessmentVariableQuestion(assessmentVariable, measureId, veteranAssessmentId, responses, measureAnswerHash);
 				break;
-			case MEASURE_TYPE_ID_READONETEXT:
 			case MEASURE_TYPE_ID_INSTRUCTION:
 			default:
 				throw new UnsupportedOperationException(String.format("Resolve assessment variable for measure type of: %s is not supported.", measureTypeId));

@@ -320,7 +320,6 @@
 			<artifactId>guava</artifactId>
 			<version>12.0</version>
 		</dependency>
-
 		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
@@ -503,6 +502,19 @@
 							<orderFile>ascending</orderFile>
 							<fileset> 
 								<basedir>src/main/sql/sprint_22</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-23-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<orderFile>ascending</orderFile>
+							<fileset> 
+								<basedir>src/main/sql/sprint_23</basedir>
 							</fileset>
 						</configuration>
 					</execution>

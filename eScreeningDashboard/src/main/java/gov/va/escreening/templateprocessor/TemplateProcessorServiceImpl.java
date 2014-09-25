@@ -126,6 +126,25 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	
 	
 	/**
+	 * method to reset the {@link ThreadLocal} of VeteranAssessmentSmrList#clearSmrFromCache()}, as threads are not created here but served from the thread pool
+	 * @param veteranAssessmentId
+	 * @param viewType
+	 * @param cprsNote
+	 * @param optionalTemplates
+	 * @param includeSections
+	 * @return
+	 * @throws IllegalSystemStateException
+	 */
+	private String createDocument(int veteranAssessmentId, ViewType viewType,
+			DocumentType cprsNote, EnumSet<TemplateType> optionalTemplates,
+			boolean includeSections) throws IllegalSystemStateException {
+		smrLister.clearSmrFromCache();
+		String docAsString=createDocumentNow(veteranAssessmentId, viewType, cprsNote, optionalTemplates, includeSections);
+		smrLister.clearSmrFromCache();
+		return docAsString;
+	}
+
+	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates
 	 * @param assessment the assessment the document is being created for
 	 * @param viewType the type of rendering
@@ -137,11 +156,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @return the rendered document
 	 * @throws IllegalSystemStateException
 	 */
-	private String createDocument(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
+	private String createDocumentNow(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 		
 		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
+		//smrLister.loadSmrFromDb(veteranAssessmentId);
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
@@ -162,15 +181,22 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
 		List<Template> graphicalTemplates = new LinkedList();
 		for (SurveySection section : sections) {
-
+			boolean sectionStarted = false;
+			
 			// start section
-			if(includeSections)
-				evaluator.startSection(section);
+//			if(includeSections)
+//				evaluator.startSection(section);
 			
 			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
 				if (surveysTaken.containsKey(survey.getSurveyId())) {
 					for (Template template : survey.getTemplates()) {
+						if(!sectionStarted)
+						{
+							if(includeSections)
+								evaluator.startSection(section);
+							sectionStarted = true;
+						}
 						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
 						if(type.equals(documentType.getEntryType())) {
 							if(template.getIsGraphical()){
@@ -493,10 +519,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
 			String templateText = processTemplate(moduleTemplate, assessmentId);
-			if(!templateText.trim().isEmpty()) // only append if there is content
+			if(!templateText.trim().isEmpty()){ // only append if there is content
+				logger.debug("Appending module template {}", moduleTemplate);
 				text.append(MODULE_COMPONENTS_START.xml())
 					.append(templateText)
 					.append(MODULE_COMPONENTS_END.xml());
+			}
 			return this;
 		}
 

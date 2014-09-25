@@ -9,6 +9,7 @@ import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.dto.SelectVeteranResultDto;
 import gov.va.escreening.dto.VeteranAssessmentNoteDto;
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
@@ -65,6 +66,16 @@ public interface CreateAssessmentDelegate {
 	List<VistaVeteranAppointment> getVeteranAppointments(
 			EscreenUser escreenUser, String veteranIen);
 
+	/**
+	 * Retrieves the appointments for the veteran.
+	 * 
+	 * @param User
+	 * @param veteranIen
+	 */
+	List<VistaVeteranAppointment> getVeteranAppointments(
+			User user, String veteranIen);
+
+	
 	/**
 	 * Retrieves the clinical reminders for the veteran.
 	 * 

@@ -429,32 +429,6 @@ ${MODULE_START}
 ${MODULE_END}'
  WHERE template_id = 100;
 
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2003, 100);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2004, 100);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2005, 100);
-
-/**** ticket 555 fix GAD-7 score *********/
-update assessment_variable set formula_template='([1660] + [1670] + [1680] + [1690] + [1700] + [1710] + [1720])' where assessment_variable_id=1749;
-
-
-/*** #589 Skip logic update for PROMIS EMOTIONAL SUPPORT ***/
-update template 
-set template_file = '
-<#include "clinicalnotefunctions"> 
-<#-- Template start --> 
-<#if var739??>
-${MODULE_TITLE_START} PROMIS EMOTIONAL SUPPORT: ${MODULE_TITLE_END} 
-${MODULE_START}
-<#if var739??> The Veteran had a score of ${getCustomVariableDisplayText(var739)?number}, indicating that they currently have ${NBSP} <#if (var739.value?number>=0) && (var739.value?number <= 11)>	lower than average  
-<#elseif (var739.value?number <= 19)> average  	<#else> above average  </#if>${NBSP} emotional support.${NBSP}
- <#else>${getNotCompletedText()} 
-</#if> 
- ${MODULE_END}
-</#if>
-'
-where template_id = 7;
-
-
 -- /* EDUCATION, EMPLOYMENT AND INCOME    UPDATE with skip logic #589*/
 update template 
 set template_file = '
@@ -470,14 +444,12 @@ ${MODULE_START}
       The Veteran reported completing ${getSelectOneDisplayText(var50)}. ${NBSP}
     </#if> 
     <#-- The Veteran reported being currently an employed, who usually works as retail. -->
-    <#if var60?? && var70??>
-    <#if hasValue(getSelectOneDisplayText(var60)) && hasValue(getSelectOneDisplayText(var70)) >
+    <#if var60?? && hasValue(getSelectOneDisplayText(var60)) && var70?? && hasValue(getSelectOneDisplayText(var70)) >
       The Veteran reported being currently ${getSelectOneDisplayText(var60)}, who usually works as a ${getFreeformDisplayText(var70)}.  ${NBSP}
-    <#elseif hasValue(getSelectOneDisplayText(var60)) && !(hasValue(getFreeformDisplayText(var70)))>
+    <#elseif var60?? && hasValue(getSelectOneDisplayText(var60)) && !(var70?? && hasValue(getFreeformDisplayText(var70)))>
       The Veteran reported being currently ${getSelectOneDisplayText(var60)}.  ${NBSP}
-    <#elseif !(hasValue(getSelectOneDisplayText(var60))) && hasValue(getFreeformDisplayText(var70)) >
+    <#elseif !(var60?? && hasValue(getSelectOneDisplayText(var60))) && var70?? && hasValue(getFreeformDisplayText(var70)) >
       The Veteran reported usually working as a ${getFreeformDisplayText(var70)}.  ${NBSP}
-    </#if>
     </#if>
     <#--The Veteran reported that the primary source of income is work, and disability.  -->
     <#if var80?? >
@@ -496,240 +468,206 @@ ${MODULE_END}
 '
 where template_id = 5;
 
-/**** Deployment history #ticket 586 ************/
+/**** GAD-7 Ticket #545  ************/
 update template 
-set template_file = '
-<#include "clinicalnotefunctions">
- <#-- Template start --> ${MODULE_TITLE_START} MILITARY DEPLOYMENTS AND HISTORY: ${MODULE_TITLE_END} 
- ${MODULE_START} <#assign deployments_section>  
- <#assign allComplete = false> 
- <#assign allAnswersNone = false> 
- 
-  <#-- var5000 --> 
-  <#assign Q1_text = ""> <#assign Q1_complete = false> <#assign Q1_isAnswerNone = false>
-  <#if (var5001.value)??> 
-  		<#if var5001.value = "true"> 
-  			<#assign Q1_isAnswerNone = true> 
-  			<#assign Q1_complete = true> 
-  		<#else> 
-  			<#assign Q1_isAnswerNone = false> 
-  		</#if> 
+set template_file =
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+ANXIETY:
+${MODULE_TITLE_END}
+${MODULE_START}
+  <#assign anxiety_section>
+
+	<#if (var1660.children)?? && (var1670.children)?? && (var1680.children)?? && (var1690.children)?? 
+		&& (var1700.children)?? && (var1710.children)?? && (var1720.children)??
+		&& ((var1660.children)?size > 0) && ((var1670.children)?size > 0) && ((var1680.children)?size > 0)
+		&& ((var1690.children)?size > 0) && ((var1700.children)?size > 0) && ((var1710.children)?size > 0)
+			&& ((var1720.children)?size > 0)>
+        
+		<#assign fragments = []>
+		<#assign resolved_fragments="">
+		<#assign text="notset"> 
+		<#assign score = (getListScore([var1660,var1670,var1680,var1690,var1700,var1710,var1720]))!("-1"?number)>
+		<#assign scoreText ="notset">
+		
+		<#if (getScore(var1660) > 1)>
+			<#assign fragments = fragments + ["feeling nervous"] >
+		</#if>
+	    <#if (getScore(var1670) > 1)>
+			<#assign fragments = fragments + ["can\'t control worrying"]>
+		</#if>
+		<#if (getScore(var1680) > 1)>
+			<#assign fragments = fragments +  ["worrying too much"]>
+		</#if>
+		<#if (getScore(var1690) > 1)>
+			<#assign fragments = fragments +  ["trouble relaxing"]>
+		</#if>
+		<#if (getScore(var1700) > 1)>
+			<#assign fragments = fragments +  ["restlessness"]>
+		</#if>
+		<#if (getScore(var1710) > 1)>
+			<#assign fragments = fragments + ["irritability"]>
+		</#if>
+		<#if (getScore(var1720) > 1)>
+			<#assign fragments = fragments + ["feeling afraid"] >
+		</#if>
+		
+		<#if (fragments?has_content) >
+			<#assign resolved_fragments = createSentence(fragments)>
+		<#else>
+			<#assign resolved_fragments = "None">
+		</#if>
+			
+		<#if score??> 	
+			<#if (score >= 0) && (score <= 9)>
+				<#assign scoreText = "negative">				
+			<#elseif (score >= 10)>
+				<#assign scoreText = "positive">
+			</#if>
+		</#if>
+		
+		<#if (score >=1) && (score <= 21)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			<#if resolved_fragments != "None">
+			The Veteran endorsed the following symptoms were occurring more than half of the days in the past two weeks: ${resolved_fragments}.${NBSP}
+			</#if>
+		<#elseif (score == 0)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			The Veteran reported having no anxiety symptoms in the past 2 weeks.${NBSP}
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+  </#assign>
+  <#if !(anxiety_section = "") >
+     ${anxiety_section}
+  <#else>
+     ${noParagraphData}
   </#if> 
-  
-  <#if !Q1_isAnswerNone && !Q1_complete && (var5000.children)?? && ((var5000.children)?size > 0)> 
-  		<#assign Q1_complete = true> 
-  </#if>  
-  
-  <#-- var5020 --> 
-  <#assign Q2_text = ""> 
-  <#assign Q2_complete = false> 
-  <#assign Q2_isAnswerNone = false>
-   <#if (var5021.value)??> 
-   		<#if var5021.value = "true"> 
-   			<#assign Q2_isAnswerNone = true> <#assign Q2_complete = true> 
-   		<#else> <#assign Q2_isAnswerNone = false> 
-   		</#if> 
-   </#if> 
-   <#if !Q2_isAnswerNone && !Q2_complete && (var5020.children)?? && ((var5020.children)?size > 0)> 
-   		<#assign Q2_complete = true> 
-   </#if>  
-   
-   <#-- var5130 --> 
-   <#assign Q3_text = ""> <#assign Q3_complete = false> <#assign Q3_isAnswerNone = false> 
-   
-   <#if (var5131.value)??>
-        <#assign Q3_complete = true> 
-   		<#if var5131.value = "true"> 
-   			<#assign Q3_isAnswerNone = true>
-   		<#else> 
-   			<#assign Q3_isAnswerNone = false> 
-   		</#if> 
-   </#if>
-    
-   <#assign counter = 0> 
-   <#assign all_rows = "">  
-   <#if !Q3_isAnswerNone && (var5130.children)?? && (var5130.children)?has_content> 
-   		<#assign rows = {}> 
-   
-   		<#list ((var5130.children)![]) as v> 
-   			<#if (v.children)?? > 
-   				<#list v.children as c> 
-   					<#if (c.row)??> 
-   						<#assign beg_months = ["var5061", "var5062", "var5063", "var5064", "var5065", "var5066", "var5067", "var5068", "var5069", "var5070", "var5071", "var5072"]>  
-   						<#assign end_months = ["var5101", "var5102", "var5103", "var5104", "var5105", "var5106", "var5107", "var5108", "var5109", "var5110", "var5111", "var5112"]>  
-   
-   						<#if beg_months?seq_contains(c.key)> <#assign row_key = "var5060"> 
-   						<#elseif end_months?seq_contains(c.key)> 
-   							<#assign row_key = "var5100"> 
-   						<#else> <#assign row_key = (c.key)?string> 
-   						</#if>  
-   						<#assign row_idx = (c.row)?string> 
-   						<#assign row_value = ((c.displayText)!"")?string> 
-   						<#assign r ={}> 
-   						<#assign row_name = ("row" + row_idx + "_" + row_key)?string > 
-   						<#assign rows =  rows + {row_name:row_value}> 
-   					</#if> 
-   				</#list> 
-   			</#if> 
-   		</#list>  
-   		<#assign uniqueRows = []> 
-   		<#assign e = []> 
-   		<#if (rows?keys)??> 
-   			<#list (rows?keys?sort) as k> 
-   				<#assign e = (k?split("_"))> 
-   				<#if !(uniqueRows?seq_contains(e[0]))> 
-   					<#assign uniqueRows = uniqueRows + [e[0]]> 
-   				</#if> 
-   			</#list> 
-   		</#if>  
-   		<#assign outputText = "">  
-   		<#if uniqueRows?has_content>
-    		<#assign innerNextLine = ""> 
-    		<#list uniqueRows as r> 
-    			<#assign loc = (rows[r + "_" + "var5041"])!"">  
-    			<#assign beg_month = (rows[r + "_" + "var5060"])!""> 
-    			<#assign beg_yr = (rows[r + "_" + "var5081"])!"">  
-    			<#assign end_month = (rows[r + "_" + "var5100"])!""> 
-    			<#assign end_yr = (rows[r + "_" + "var5121"])!"">  
-    			<#if (loc?has_content) && (beg_month?has_content) && (beg_yr?has_content) && (end_month?has_content) && (end_yr?has_content)> ${innerNextLine}
-    				<#assign all_rows = all_rows +	beg_month + "/" + beg_yr + "-"  + end_month + "/" + end_yr + ": "  + loc + LINE_BREAK> 
-    				<#assign innerNextLine = "${LINE_BREAK}"> 
-    				<#assign counter = counter + 1>  
-    			<#else> 
-    			<#-- if Q3 is missing any answers, reset everything  and set complete = false--> 
-    				<#assign Q3_complete = false> <#assign all_rows = ""> <#assign counter = 0> 
-    				<#break> 
-    			</#if> 
-    		</#list> 
-    		<#if (counter > 0)> 
-    			<#assign Q3_complete = true> 
-    		</#if> 
-    	</#if> 
-    </#if>  
-    
-    <#if Q1_isAnswerNone && Q2_isAnswerNone && Q3_isAnswerNone> <#assign allAnswersNone = true> 
-    </#if>     
-    <#assign nextLine = ""> 
-   	<#if allAnswersNone> ${getAnsweredNoneAllText("Military Deployments History")} 
-   	<#else> 
-    	<#if Q1_isAnswerNone> The Veteran reported receiving no disciplinary actions. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-    	<#else> The Veteran reported receiving the following disciplinary actions: ${getSelectMultiDisplayText(var5000)}. 
-  			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-   		</#if>  
-    
-   		<#if Q2_isAnswerNone> ${nextLine}The Veteran reported receiving no personal awards or commendations. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">     		<#else> ${nextLine}The Veteran reported receiving the following personal awards or commendations: ${getSelectMultiDisplayText(var5020)}. 
-    			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
-    	</#if>   
-    
-   		<#if (counter <= 1)> 
-   			<#assign frag = counter + " time"> <#assign frag2 = "area"> <#assign frag3 = "period"> 
-   		<#else> 
-   			<#assign frag = counter + " times"> <#assign frag2 = "areas"> <#assign frag3 = "periods">     		
-   		</#if> ${nextLine}The Veteran was deployed ${frag} to the following ${frag2} during the following time ${frag3}:${LINE_BREAK}${LINE_BREAK} ${all_rows} 
-    </#if>  
-    </#assign> <#if !(deployments_section = "") > ${deployments_section} <#else> ${noParagraphData} </#if> 
-    ${MODULE_END} 
-    '
-where template_id = 14;
+${MODULE_END}
+'
+where template_id = 34;
 
-
-/**** Veteran Summary header #ticket 230 ************/
+-- /* DEMOGRAPHICS UPDATE*/
 update template 
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
+${MODULE_TITLE_START}
+${LINE_BREAK}
+DEMOGRAPHICS: 
+${MODULE_TITLE_END}
 ${MODULE_START}
+	<#if (var30.children)?? || (var40.children)?? || (var20.children)?? || (var143.children)??>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="50%" valign="middle"><h2  style="color:#1b4164"><strong>eScreening Summary</strong></h2></td>
-    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"><br></td>
-  </tr>
-</table>
-
-  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 1px dashed #000000; border-top:1px dashed #000000;">
-  <tr>
-
-    <td width="50%" valign="top" style="border-right: 1px dashed #000000;">
-        <div align="center" style="color:#1b4164"><h3> <strong>${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</strong></h3>
-
-        <#if var2??>
-        <strong>${getVariableDisplayText(var2)}, ACSW</strong><br>
-        </#if>
-
-        <#if var7??>
-        <strong>${getVariableDisplayText(var7)}</strong>
+		<#assign age = -1>
+		<#if var143?? && (var143.children)?? && (var143.children?size > 0)>
+			<#assign age = calcAge(var143.children[0].value)>
+		</#if>
+	
+  	
+		<#-- The Veteran is a 28 year-old hispanic. -->
+    
+		The Veteran is a ${NBSP} <#if age != -1> ${age} year-old<#t></#if>
+        <#if var30?? && (var30.children)?? && (var30.children?size > 0)>
+		<#if isSelectedAnswer(var30,var33) >
+          ,  <#t>
         <#else>
-        Assessment is incomplete
+          ${""?left_pad(1)}whom is ${getSelectOneDisplayText(var30)},  <#t> 
+        </#if> 
         </#if>
-	<br>
+    
+    <#-- The Veteran reports being a White/Caucasian, American Indian or Alaskan Native male. -->
+    <#if hasValue(getSelectMultiDisplayText(var40)) || hasValue(getSelectOneDisplayText(var20)) >
+      <#-- The Veteran reports being<#t>  -->
+      <#if hasValue(getSelectMultiDisplayText(var40)) >
+        ${""?left_pad(1)} ${getSelectMultiDisplayText(var40)}<#t>
+      </#if> 
+      <#if hasValue(getSelectOneDisplayText(var20)) >
+        ${""?left_pad(1)}${getSelectOneDisplayText(var20)}<#t>
+      </#if> 
+      .  <#t>
+    </#if> 
+   
+    <#--The Veteran reported BMI is 27, indicating that he/she may be is overweight.-->
+    <#if hasValue(getFormulaDisplayText(var11))  >
+      <#assign num = getFormulaDisplayText(var11)?number />
+      The Veteran\'s reported BMI is ${num}, indicating that he/she <#t>
+      <#if (num < 18.5) >
+        is below a normal a weight.  <#t>
+      <#elseif (num < 25) && (num >= 18.5) >
+        is at a normal weight.  <#t>
+      <#elseif (num < 30) && (num >= 25) >
+        is overweight.  <#t>
+      <#elseif (num < 40) && (num >= 30) >
+        is obese.  <#t>
+      <#elseif (num >= 40) >
+        is morbid obese.  <#t>
+      </#if>
+    </#if>
+    
+    <#else>
+    	${getNotCompletedText()}
+    </#if>
+${MODULE_END}
+'
+where template_id = 4;
 
-    </div></td>
-
-    <td width="50%" valign="top"><h3 align="center"  style="color:#1b4164">Appointments</h3>
-      
-      
-        <#if var6?? && (var6.children)?? >
-
-            <#if ((var6.children)?size > 0) >
-	            <ul>
-	            ${delimitChildren(var6 "<li>" "</li>" true)}
-	            </ul>
-            <#else>
-                <div align="center"><h4>None scheduled</h4></div>
-            </#if>
-        <#else>
-            <div align="center"><h4>Appointments unavailable</h4><div>
-        </#if>
-      </td>
-
-  </tr>
-
-</table>
-<br>
-
-<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</div>
-
-<div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
-
-<div><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </div>
-${MODULE_END}'
-where template_id = 200;
-
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description) VALUES (6, 3, 'Veteran Appointments', 'Veteran appointments from VistA');
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description) VALUES (7, 3, 'Assessment Completion', 'Veteran\'s assessment completion date');
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (630, 200);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (632, 200);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (634, 200);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2, 200);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (7, 200);
-INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (6, 200);
-
-/**** Veteran Summary footer #ticket 230 ************/
-UPDATE template 
-set template_file = '<#include "clinicalnotefunctions"> 
+-- /* SOCIAL UPDATE */
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
 <#-- Template start -->
+${MODULE_TITLE_START}
+SOCIAL: 
+${MODULE_TITLE_END}
 ${MODULE_START}
-<table>
-    <tr>
-        <td class="justifyCtrTableData">For online information about support services and benefits, visit the VA Center of Excellence resource site:</td>
-    </tr>
-    <tr>
-        <td class="justifyCtrTableData">http://escreening.cesamh.org</td>
-    </tr>
-    <tr class="justifyCtrTableData">
-        <td class="justifyCtrTableData"><img src="resources/images/escreening_cdsmith_QR_code_small.png"></td>
-    </tr>
-    <tr>
-        <td class="justifyLftTableData">For confidential help and support any time, call the Veteran\'s Suicide Prevention/Crisis Hotline at 
-(800) 273-8255. The Hotline is never closed; someone is always there to take your call, even on holidays and in the middle of the night. 
-</td>
-    </tr>
-</table>
-<br/>
-<br/>
-<div style="text-align: center;"><span style="font-size:11px;"><span style="font-family:arial,helvetica,sans-serif;">DEPARTMENT OF VETERANS AFFAIRS</span></span></div>
-<div style="text-align: center;"><span style="font-size:11px;"><span style="font-family:arial,helvetica,sans-serif;">VA San Diego Healthcare System I 3350 La Jolla Village Dr. I San Diego, CA 92161</span></span></div>
-${MODULE_END}'
-where template_id = 220;
+	<#if var110?? || (var90.children)?? || (var160.children)??  || (var130.children)?? || (var131.value)?? >
+    <#--The Veteran lives in a house with spouse or partner, and children.-->
+    <#if hasValue(getSelectOneDisplayText(var110)) && hasValue(getSelectMultiDisplayText(var90)) >
+      The Veteran ${getSelectOneDisplayText(var110)}  
+      <#if wasAnswerNone(var90)>
+        alone.  ${NBSP}
+      <#else> 
+        with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+      </#if>
+    <#elseif hasValue(getSelectOneDisplayText(var110)) && !(hasValue(getSelectMultiDisplayText(var90)))>
+      The Veteran ${getSelectOneDisplayText(var110)}.  ${NBSP}
+    <#elseif !(hasValue(getSelectOneDisplayText(var110))) && hasValue(getSelectMultiDisplayText(var90)) >
+     The Veteran lives with ${getSelectMultiDisplayText(var90)}. ${NBSP}
+    </#if>
+    <#--The Veteran reported not having any children.-->
+    <#if var130?? || var131?? >
+      <#if wasAnswerTrue(var131) >
+        The Veteran reported not having any children. ${NBSP}
+      <#else>
+        <#--The Veteran has 2 child(ren) who are child(ren) are 2,4 years old.-->
+		<#assign rowCount = ((var130.children)?size)!0>
+        <#if (rowCount > 0) >
+          <#if (rowCount == 1) >
+			<#assign text = ((var130.children[0].children[0].displayText)!"")>
+            The Veteran has 1 child who is ${text} years old. ${NBSP}
+          <#elseif (rowCount > 1) >
+            The Veteran has ${getNumberOfTableResponseRows(var130)} children who are ${getTableMeasureDisplayText(var130)} years old. ${NBSP}
+          </#if>
+        </#if>
+      </#if>
+    </#if>
+    
+    <#if hasValue(getSelectMultiDisplayText(var160)) >
+    	${LINE_BREAK}${LINE_BREAK}Source(s) of support is/are: ${getSelectMultiDisplayText(var160)}. ${NBSP}
+    </#if>
+    
+    <#--The Veteran indicated a history of physical violence .-->
+    <#if hasValue(getSelectOneDisplayText(var150)) >
+    	${LINE_BREAK}${LINE_BREAK}The Veteran ${getSelectOneDisplayText(var150)} a history of physical violence or intimidation in a current relationship. ${NBSP}
+    </#if>
+   
+    <#else>
+    	${getNotCompletedText()}
+    </#if>    
+${MODULE_END}
+'
+where template_id = 6;
 

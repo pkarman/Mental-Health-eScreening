@@ -8,6 +8,7 @@ import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
@@ -114,16 +115,22 @@ public class RepositoryTest {
     	
     	List<gov.va.escreening.dto.ae.Validation> vdtoList = mdto.getValidations();
     	
+    	vdtoList.clear();
     	gov.va.escreening.dto.ae.Validation newValidation = new gov.va.escreening.dto.ae.Validation();
     	newValidation.setName("minLength");
     	newValidation.setValue("6");
+    	
     	
     	vdtoList.add(newValidation);
     	
     	measureRepo.updateMeasure(mdto);
     	
     	m = measureRepo.findOne(1);
-    	assertEquals(2, m.getMeasureValidationList().size());
+    	assertEquals(1, m.getMeasureValidationList().size());
+    	
+    	MeasureValidation mv = m.getMeasureValidationList().get(0);
+    	assertEquals(new Integer(6), mv.getNumberValue());
+    	
     }
     
     @Test

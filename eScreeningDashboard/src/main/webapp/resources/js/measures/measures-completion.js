@@ -98,8 +98,8 @@ function showCongratsPage(data) {
 	
 	var congratsString = "<div id='congratsLabel'>"+textCongrats+"</div>";
 	var graphicImages = "<div id='graphicImages'> " +
-						"<div class='imageContainer'><img src='resources/images/final_cesamh.png'></div>" +
-						"<div class='imageContainer'><img src='resources/images/final_va.png'></div>" +"</div>";
+						"<div class='imageContainer'><img src='resources/images/final_cesamh.png' alt='VA Center of Excellence CESAMH | Stress and Mental Health'></div>" +
+						"<div class='imageContainer'><img src='resources/images/final_va.png' alt='VA HEALTH CARE | Defining Excellence in the 21st Century'></div>" +"</div>";
 	var completionText = "<div id='completionText'>"+data.completionText+"</div>";
 	
 	var summaryNotes = $("<div id='summaryNotes'>");
