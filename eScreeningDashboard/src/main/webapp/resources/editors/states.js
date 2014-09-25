@@ -85,7 +85,7 @@ angular.module('Editors')
 	                            '   <div class="col-md-12" ui-view></div>'+
 	                           '</div>',
 	                resolve:{
-	                	batteries:function($rootScope,$q,BatteryService,SurveySectionService){
+	                	batteries:function($rootScope,$q,BatteryService){
 	                		var deferred = $q.defer();
 	                		console.log('VIEW STATE Battery:: Resolve Batteries');
 	                		BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
@@ -97,19 +97,18 @@ angular.module('Editors')
 	                			deferred.reject(responseError.getMessage());
 	                		});
 	                		return deferred.promise;
-	                	  },
-	                	  sections: function($rootScope, $q, SurveySectionService){
-	                            var deferred = $q.defer();
-	                            console.log('VIEW STATE SECTIONS:: Resolve sections');
-	                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-	                                deferred.resolve(response.getPayload());
-	                            }, function(responseError) {
-                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-	                                deferred.reject(responseError.getMessage());
-	                            });
-	                            return deferred.promise;
-		                	}
 	                	},
+                        sections: function($rootScope, $q, SurveySectionService){
+                            var deferred = $q.defer();
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                deferred.resolve(response.getPayload());
+                            }, function(responseError) {
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                deferred.reject(responseError.getMessage());
+                            });
+                            return deferred.promise;
+                        }
+	                },
 
 	                controller:'batteryAbstractController'
 	            })
@@ -228,6 +227,26 @@ angular.module('Editors')
                             } else {
                                 deferred.resolve([]);
                             }
+
+                            return deferred.promise;
+                        }],
+                        surveySectionDropDownMenuOptions: ['$rootScope', '$q', 'SurveySectionService',  function($rootScope, $q, SurveySectionService) {
+                            var deferred = $q.defer();
+
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                var surveySectionDropDownMenuOptions = [];
+
+                                response.getPayload().forEach(function (surveySection){
+                                    if(Object.isDefined(surveySection)) {
+                                        surveySectionDropDownMenuOptions.push(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper(surveySection.toUIObject()));
+                                    }
+                                });
+
+                                deferred.resolve(surveySectionDropDownMenuOptions);
+                            }, function(responseError) {
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                deferred.reject(responseError.getMessage());
+                            });
 
                             return deferred.promise;
                         }]

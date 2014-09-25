@@ -52,6 +52,15 @@
                             <label>VistA Title</label>
                             <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
                             //-->
+                            <div class="col-sm-12 form-group pull-right">
+                                <label for="selectSurveySection">Sections</label>
+                                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
+                                        ng-model="selectedSurveyUIObject.surveySection"
+                                        ng-options="surveySectionDropDownMenuOption.item as surveySectionDropDownMenuOption.name for surveySectionDropDownMenuOption in surveySectionDropDownMenuOptions"
+                                        required>
+                                    <option value=""> -- Choose Section --</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

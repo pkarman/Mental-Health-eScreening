@@ -15,7 +15,7 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
         {id:9, title:'OEF/OIF Something 1', status:'Published', description:'I\'m your friendly, neighborhood description!', questions:[]},
         {id:10, title:'OEF/OIF Something 2', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]},
         {id:11, title:'OEF/OIF Something 3', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]}
-    ]
+    ];
 
     var data = $scope.modules;
 

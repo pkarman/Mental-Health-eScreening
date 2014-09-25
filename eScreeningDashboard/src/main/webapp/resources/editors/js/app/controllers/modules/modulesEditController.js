@@ -1,21 +1,23 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'surveyUIObject', 'pageQuestionItems', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, surveyUIObject, pageQuestionItems){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'surveyUIObject', 'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, surveyUIObject, pageQuestionItems, surveySectionDropDownMenuOptions){
     var tmpList = [],
         updateSurveyPages = function (selectedSurveyId, surveyPages) {
-            SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function(response){
-                if(Object.isDefined(response)) {
-                    if (response.isSuccessful()) {
-                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                    } else {
-                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+            if(Object.isNumber(selectedSurveyId) && Object.isArray(surveyPages) && surveyPages.length > 0) {
+                SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function (response) {
+                    if (Object.isDefined(response)) {
+                        if (response.isSuccessful()) {
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                        } else {
+                            $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                            console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                        }
                     }
-                }
-            }, function(responseError){
-                $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-            });
+                }, function (responseError) {
+                    $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                });
+            }
         },
         createQuestion = function(selectedQuestionDomainObject) {
             QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
@@ -64,6 +66,20 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             });
 
             return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+        },
+        selectedMenuItemIndex = function (menuItem, menuItemOptions) {
+            var selectedMenuOptionIndex = -1;
+
+            if(Object.isArray(menuItemOptions)) {
+                menuItemOptions.some(function (menuOption, index) {
+                    if (menuOption.name === menuItem.name) {
+                        selectedMenuOptionIndex = index;
+                        return true;
+                    }
+                });
+            }
+
+            return selectedMenuOptionIndex;
         };
 
     $scope.textFormatDropDownMenuOptions = [];
@@ -73,6 +89,23 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
     $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
     $scope.setPageQuestionItems((Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0)? pageQuestionItems : $scope.pageQuestionItems);
+
+    $scope.surveySectionDropDownMenuOptions = surveySectionDropDownMenuOptions;
+    var surveySectionDropDownMenuOptionIndex = (Object.isDefined($scope.selectedSurveyUIObject.surveySection))? selectedMenuItemIndex(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper($scope.selectedSurveyUIObject.surveySection), surveySectionDropDownMenuOptions) : -1;
+    $scope.selectedSurveyUIObject.surveySection = (surveySectionDropDownMenuOptionIndex >= 0)? surveySectionDropDownMenuOptions[surveySectionDropDownMenuOptionIndex].item: null;
+
+
+
+    $scope.$watch('selectedSurveyUIObject.surveySection', function (currentlySelectedSurveySectionItem, previouslySelectedSurveySectionItem) {
+        if (currentlySelectedSurveySectionItem === previouslySelectedSurveySectionItem) {
+            return;
+        } else {
+            if(Object.isDefined(currentlySelectedSurveySectionItem)) {
+                var dropDownMenuOptionIndex = selectedMenuItemIndex(currentlySelectedSurveySectionItem, $scope.surveySectionDropDownMenuOptions);
+                $scope.selectedSurveyUIObject.surveySection = (dropDownMenuOptionIndex >= 0)? $scope.surveySectionDropDownMenuOptions[dropDownMenuOptionIndex].item: null;
+            }
+        }
+    }, true);
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
@@ -106,13 +139,14 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
             organizedPages = $scope.organizePages();
 
+
         //console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
 
         if(selectedModuleDomainObject.getId() > -1) {
             SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                        $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
 
                         updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
@@ -130,7 +164,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.selectedSurveyUIObject = response.getPayload().toUIObject();
+                        $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
 
                         updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);

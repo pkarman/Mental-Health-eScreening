@@ -69,6 +69,8 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
 
 
+    <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionUIObjectWrapper.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/PageQuestionItem.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Answer.js"></script>
