@@ -140,12 +140,12 @@ ${MODULE_START}
 		<#assign score = empty>
 		<#assign cutoff = empty>
 		
-		<#if var2008?? >
-			<#if isSelectedAnswer(var2008, var792)>
+		<#if (var2000?? && var2000.children?? && var2000.children?size>0) >
+			<#if (var2000.children[0].key == "var762")>
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Positive">
-			<#elseif isSelectedAnswer(var2008, var791) >
+			<#elseif (var2000.children[0].key == "var761") >
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Negative">
@@ -428,6 +428,10 @@ ${MODULE_START}
   </#if> 
 ${MODULE_END}'
  WHERE template_id = 100;
+ 
+ INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2000, 100);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (761, 100);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (762, 100);
 
 -- /* EDUCATION, EMPLOYMENT AND INCOME    UPDATE with skip logic #589*/
 update template 
