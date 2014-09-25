@@ -156,7 +156,7 @@
   border-right: 1px dashed #000000;
 }
 #VeteranSummaryModal .moduleTemplate:nth-of-type(odd) {
-  border-left: 1px dashed #000000;
+  /* border-left: 1px dashed #000000; */
 }
 #VeteranSummaryModal .justifyRtTableData {
   text-align: right;

@@ -30,7 +30,6 @@
 <#assign MATRIX_TD_END = '<MATRIX_TD_END>'/>
 <#assign MATRIX_TH_START = '<MATRIX_TH_START>'/>
 <#assign MATRIX_TH_END = '<MATRIX_TH_END>'/>
-<#assign TABLE_TD_RT_START = '<TABLE_TD_RT_START>'/>
 <#assign TABLE_TD_CTR_START = '<TABLE_TD_CTR_START>'/>
 <#assign TABLE_TD_LFT_START = '<TABLE_TD_LFT_START>'/>
 <#assign TABLE_TD_SPACER1_START = '<TABLE_TD_SPACER1_START>'/>
@@ -44,6 +43,8 @@
 <#assign GRAPH_SECTION_END = '<GRAPH_SECTION_END>'/> 
 <#assign GRAPH_BODY_START = '<GRAPH_BODY_START>'/>  
 <#assign GRAPH_BODY_END = '<GRAPH_BODY_END>'/>
+
+<#assign DEFAULT_VALUE = 'notset' />
 
 <#-- String functions -->
 <#function hasValue stringValue>
@@ -83,6 +84,21 @@
 	<#return false>
 </#function>
 
+
+<#-- delimits the children of a variable using the prefix and suffix given, 
+boolean indicates if the suffix should be appended at the end of the list --> 
+<#function delimitChildren variableObj=DEFAULT_VALUE prefix='' suffix='' includeSuffixAtEnd=true > 
+    <#assign result = ''>
+    <#if (variableObj != DEFAULT_VALUE) && (variableObj.children)??> 
+    <#list variableObj.children as child>
+        <#assign result = result + prefix + child.value>
+        <#if child_has_next || includeSuffixAtEnd>
+            <#assign result = result + suffix>
+        </#if>
+    </#list>
+    </#if>
+    <#return result>
+</#function>
 
 <#-- get a question's score -->
 <#-- example: "getScore(var1)"-->
@@ -152,6 +168,27 @@
      </#list>
      <#return false>
   </#if>
+</#function>
+
+<#function getFreeTextAnswer variableObj='notset' deflt=''>
+    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
+        <#-- The object was not found -->
+        <#return deflt>
+    </#if>
+    
+    <#assign answer = variableObj.children[0]>
+    
+    <#assign result = getVariableDisplayText(answer)>
+    <#if result != 'notfound'>
+        <#return result>
+    </#if>
+    
+    <#if (answer.value)?? >
+        <#return answer.value>
+    </#if>
+    
+    <#return deflt>
+    
 </#function>
 
 <#function getVariableDisplayText variableObj='notset'>

@@ -162,15 +162,22 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
 		List<Template> graphicalTemplates = new LinkedList();
 		for (SurveySection section : sections) {
-
+			boolean sectionStarted = false;
+			
 			// start section
-			if(includeSections)
-				evaluator.startSection(section);
+//			if(includeSections)
+//				evaluator.startSection(section);
 			
 			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
 				if (surveysTaken.containsKey(survey.getSurveyId())) {
 					for (Template template : survey.getTemplates()) {
+						if(!sectionStarted)
+						{
+							if(includeSections)
+								evaluator.startSection(section);
+							sectionStarted = true;
+						}
 						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
 						if(type.equals(documentType.getEntryType())) {
 							if(template.getIsGraphical()){
@@ -493,10 +500,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
 			String templateText = processTemplate(moduleTemplate, assessmentId);
-			if(!templateText.trim().isEmpty()) // only append if there is content
+			if(!templateText.trim().isEmpty()){ // only append if there is content
+				logger.debug("Appending module template {}", moduleTemplate);
 				text.append(MODULE_COMPONENTS_START.xml())
 					.append(templateText)
 					.append(MODULE_COMPONENTS_END.xml());
+			}
 			return this;
 		}
 
