@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureValidation;
@@ -9,6 +10,7 @@ import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +19,10 @@ import javax.annotation.Resource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
@@ -38,7 +42,25 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	Map<Integer, Resolver> resolverMap;
 
+	/**
+	 * on 'first touch' cache of measure with a list of validation
+	 * 
+	 * Validations for a free text measure (only) are defined in measure_validation table which relate a measure to a
+	 * validation. A measure can have more than one validation which is applied.
+	 * 
+	 * The way validations work is there is a type id (taken from the validation table), combined with some value in the
+	 * measure_validation table. Each type only has one valid value in measure_validation table.
+	 * 
+	 * For example minValue will have an entry in measure_validation.number_value to indicate the minimum allowable
+	 * value.
+	 * 
+	 * the property this{@link #measureValidationsMap} will keep a map of measure id with a list of validation in the
+	 * form 'Min Value=1970, Max Value=2020, Exact Number=4' would mean that the measure answer is a date and it should
+	 * be between 1970 and 2020 and must contain century too
+	 * */
 	Multimap<Integer, String> measureValidationsMap;
+
+	Multimap<Integer, String> surveyFormulaeMap;
 
 	private Resolver findResolver(Measure m) {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
@@ -95,6 +117,18 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(7, new SelectOneMatrixResolver(this));
 		this.resolverMap.put(8, new InstructionResolver(this));
 	}
+
+	public void buildAndCacheSurveyFormulaeMap() {
+		this.surveyFormulaeMap = LinkedHashMultimap.create();
+		
+		// get all assessment variables
+		//List<AssessmentVariable> avList=avr.findAll();
+		// get all surveys
+		//List<String> sList=sr.findAll();
+		
+		
+		
+	}
 }
 
 abstract class Resolver {
@@ -104,14 +138,38 @@ abstract class Resolver {
 		this.ddh = ddh;
 	}
 
-	public void addDictionaryRows(Survey s, Measure m,
+	public final void addDictionaryRows(Survey s, Measure m,
 			Table<String, String, String> t) {
 		addDictionaryRowsNow(s, m, t);
 		addFormulaeToSurvey(s, t);
 	}
 
-	private final void addFormulaeToSurvey(Survey s,
-			Table<String, String, String> t) {
+	protected void addFormulaeToSurvey(Survey s, Table<String, String, String> t) {
+		if (ddh.surveyFormulaeMap == null) {
+			ddh.buildAndCacheSurveyFormulaeMap();
+		}
+
+		Collection<String> formulae = ddh.surveyFormulaeMap.get(s.getSurveyId());
+
+		if (formulae != null) {
+			int i = 0;
+			for (String formula : formulae) {
+				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
+				String indexAsStr = String.valueOf(s.getSurveyId()) + "_" + i++;
+
+				t.put(indexAsStr, msg("ques.type"), "formula");
+				t.put(indexAsStr, msg("ques.desc"), formulaTokens.next());
+				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
+
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
+				}
+
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("vals.desc"), formulaTokens.next());
+				}
+			}
+		}
 	}
 
 	String getValuesRange(Measure m, MeasureAnswer ma) {
@@ -279,10 +337,11 @@ class SelectOneMatrixResolver extends Resolver {
 
 		super.addDictionaryRowsNow(s, m, t);
 
-		// collect all children here. find all measures whose parent is pointing to this measure (m)
+		// collect all children here. find all measures which (whose parent_id)  points to this measure (m)
 		Collection<Measure> children = findChildren(m);
 
 		for (Measure cm : children) {
+			// let the framework take care of rest
 			ddh.buildDataDictionary(s, cm, t);
 		}
 	}
