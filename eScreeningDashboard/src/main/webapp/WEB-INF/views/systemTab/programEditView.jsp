@@ -82,7 +82,7 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-              	<div><label>&nbsp</label></div>
+              	<div class="label_margin"></div>
                 <div class="margin_top_10">
                 <form:checkbox path="isDisabled" label=" Mark this Program as Disabled" />
                 <!-- <p class="help-block">By checking disabled this program will not populate in the program list</p> -->
@@ -97,7 +97,7 @@
             <div class="col-md-4">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title"><form:label path="selectedBatteryIdList">Battery</form:label></h3>
+						<h2 class="panel-title"><strong>Battery</strong><!--<form:label path="selectedBatteryIdList"></form:label>--></h2>
 						<div class="pull-right">
 							<span class="clickable filter" data-toggle="tooltip" title="Toggle Filter" data-container="body">
 								<span class="label label-info"><i class="glyphicon glyphicon-filter"></i> Filters</span>
@@ -127,7 +127,7 @@
             <div class="col-md-4">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title"><form:label path="selectedClinicIdList">VistA Clinic</form:label></h3>
+						<h2 class="panel-title"><strong>VistA Clinic</strong><!-- <form:label path="selectedClinicIdList"></form:label>--></h2>
 						<div class="pull-right">
 							<span class="clickable filter" data-toggle="tooltip" title="Toggle Filter" data-container="body">
 								<span class="label label-info"><i class="glyphicon glyphicon-filter"></i> Filters</span>
@@ -157,7 +157,7 @@
 
             	<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title"><form:label path="selectedClinicIdList">Note List</form:label></h3>
+						<h2 class="panel-title"><strong>Note List</strong><!-- <form:label path="selectedClinicIdList"></form:label>--></h2>
 						<div class="pull-right">
 							<span class="clickable filter" data-toggle="tooltip" title="Toggle Filter" data-container="body">
 								<span class="label label-info"><i class="glyphicon glyphicon-filter"></i> Filters</span>

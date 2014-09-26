@@ -8,6 +8,7 @@ import gov.va.escreening.dto.dashboard.ExportDataSearchResult;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.DataDictionaryService;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
@@ -20,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -33,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.common.collect.Table;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -55,6 +60,9 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	private UserService userService;
 	@Autowired
 	private VeteranAssessmentService veteranAssessmentService;
+	
+	@Resource(type = DataDictionaryService.class)
+	DataDictionaryService dds;
 
 	@RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
 	@ResponseBody
@@ -96,7 +104,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
 
 		if (dataExport != null) {
-			modelAndView.setViewName("DataExportCsvView");
+			modelAndView.setViewName("dataExportCsvView");
 			modelAndView.addObject("dataExportList", dataExport);
 		} else if (errors.size() > 0) {
 			modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
@@ -114,9 +122,21 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
 		AssessmentDataExport dataExport = exportDataService.downloadExportData(escreenUser.getUserId(), exportLogId, comment);
 
-		modelAndView.setViewName("DataExportCsvView");
+		modelAndView.setViewName("dataExportCsvView");
 		modelAndView.addObject("dataExportList", dataExport);
 
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
+	public ModelAndView downloadAgain(ModelAndView modelAndView,
+			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+		
+		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+		
+		modelAndView.setViewName("dataDictionaryExcelView");
+		modelAndView.addObject("dataDictionary", dataDictionary);
+		
 		return modelAndView;
 	}
 
