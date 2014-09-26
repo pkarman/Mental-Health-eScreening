@@ -176,7 +176,7 @@
 						<s:url var="mapVeteranToVistaUrl" value="/dashboard/mapVeteranToVistaRecord" htmlEscape="true">
 							<s:param name="vid" value="${veteranAssessmentInfo.veteranId}" />
 						</s:url>
-						<div class="text-left">
+						<div class="text-right">
 							<a href="${mapVeteranToVistaUrl}">Map to VistA Record</a>
 						</div>
 					</c:if>
