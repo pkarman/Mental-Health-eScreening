@@ -639,6 +639,8 @@
 				<vista.connector>vljsdconnector</vista.connector>
 				<quick.order.ien>16267</quick.order.ien>
 				<vista.primaryStation>664</vista.primaryStation>
+				<jdbc.username>escrapp-test</jdbc.username>
+		        <jdbc.password>escreeningTest</jdbc.password>
 			</properties>
 		</profile>
 	</profiles>
