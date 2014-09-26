@@ -208,19 +208,19 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };*/
 
     $scope.editQuestion = function(selectedPageQuestionItem){
-        var stateName = $scope.getStateName(selectedPageQuestionItem.getItem().getType()),
+        var stateName = $scope.getStateName(selectedPageQuestionItem.getItem().type),
             softReset = false,
             state = {
                 name: undefined,
-                params: {selectedQuestionId: selectedPageQuestionItem.getItem().getId()},
+                params: {selectedQuestionId: selectedPageQuestionItem.getItem().id},
                 doTransition: false
             };
 
         if(Object.isDefined(stateName)) {
-            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().getId()});
+            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});
             $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
             //TODO: Need to re-factor the way we populated the text format drop down menu.
-            //$scope.selectedQuestionUIObject.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
+            $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem.getItem(), $scope.textFormatDropDownMenuOptions);
         }
     };
 

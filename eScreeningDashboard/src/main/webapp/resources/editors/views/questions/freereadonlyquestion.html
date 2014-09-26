@@ -40,7 +40,7 @@
             <select id="selectTextFormat" name="selectTextFormat" class="form-control"
                     ng-model="selectedPageQuestionItem.getItem().textFormatDropDownMenu"
                     ng-options="textFormatType.value for textFormatType in textFormatDropDownMenuOptions"
-                    ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()"
+                    ng-disabled="vistaDisable" ng-blur="blur();" ng-change="setTextFormatValidation();showValidation();"
                     required>
                 <option value=""> -- Choose Type --</option>
             </select>
@@ -75,6 +75,7 @@
                         </span>
                     <input type="number" id="inputExactLength" name="inputExactLength"
                            class="form-control" placeholder="0" ng-model="exactLengthField.value"
+                           ng-change="setExactLengthValidation()"
                            ng-disabled="!exactLengthField.selected">
                 </div>
                 <!-- /input-group -->
@@ -87,7 +88,9 @@
                         <span class="input-group-addon">
                             <input type="checkbox" ng-model="minLengthField.selected">
                         </span>
-                    <input type="number" id="inputMinLength" name="inputMinLength" class="form-control" placeholder="0" ng-model="minLengthField.value"
+                    <input type="number" id="inputMinLength" name="inputMinLength" class="form-control" placeholder="0"
+                           ng-change="setMinLengthValidation()"
+                           ng-model="minLengthField.value"
                            ng-disabled="!minLengthField.selected">
                 </div>
                 <!-- /input-group -->
@@ -99,7 +102,9 @@
                         <span class="input-group-addon">
                             <input type="checkbox" ng-model="maxLengthField.selected">
                         </span>
-                    <input type="number" id="inputMaxLength" name="inputMaxLength" class="form-control" placeholder="0" ng-model="maxLengthField.value"
+                    <input type="number" id="inputMaxLength" name="inputMaxLength" class="form-control" placeholder="0"
+                           ng-change="setMaxLengthValidation()"
+                           ng-model="maxLengthField.value"
                            ng-disabled="!maxLengthField.selected">
                 </div>
                 <!-- /input-group -->
@@ -111,7 +116,9 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="minValueField.selected">
                     </span>
-                    <input type="number" id="inputMinValue" name="inputMinValue" class="form-control" placeholder="0" ng-model="minValueField.value"
+                    <input type="number" id="inputMinValue" name="inputMinValue" class="form-control" placeholder="0"
+                           ng-change="setMinValueValidation()"
+                           ng-model="minValueField.value"
                            ng-disabled="!minValueField.selected">
                 </div>
                 <!-- /input-group -->
@@ -123,7 +130,9 @@
                     <span class="input-group-addon">
                         <input type="checkbox" ng-model="maxValueField.selected">
                     </span>
-                    <input type="number" id="inputMaxValue" name="inputMaxValue" class="form-control" placeholder="0" ng-model="maxValueField.value"
+                    <input type="number" id="inputMaxValue" name="inputMaxValue" class="form-control" placeholder="0"
+                           ng-change="setMaxValueValidation()"
+                           ng-model="maxValueField.value"
                            ng-disabled="!maxValueField.selected">
                 </div>
                 <!-- /input-group -->
@@ -131,7 +140,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<!--div class="row">
     <div class="form-group">
         <div class="col-sm-12"></div>
     </div>
@@ -141,5 +150,5 @@
             <button class="btn btn-default" ng-disabled="!questionDetailsForm.$valid" ng-click="resetForm();">Reset</button>
         </div>
     </div>
-</div>
+</div-->
     </form>

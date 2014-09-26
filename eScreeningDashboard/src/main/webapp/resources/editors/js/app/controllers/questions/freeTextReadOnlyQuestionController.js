@@ -4,13 +4,11 @@
 Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'textFormatTypeMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
     $scope.setTextFormatDropDownMenuOptions(textFormatTypeMenuOptions);
     $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem, $scope.textFormatDropDownMenuOptions);
-    $scope.showExactLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
-    $scope.showMinLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
-    $scope.showMaxLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+    $scope.showExactLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+    $scope.showMinLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+    $scope.showMaxLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
     $scope.showMinValueField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
     $scope.showMaxValueField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
-    $scope.parentSave = $scope.save;
-    $scope.parentAddToPageQuestion = $scope.addToPageQuestion;
     $scope.parentResetForm = $scope.resetForm;
     $scope.parentEditQuestion = $scope.editQuestion;
 
@@ -30,33 +28,29 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
 
 	$scope.isDirty = false;
 
-    $scope.$watch('selectedPageQuestionItem.textFormatDropDownMenu', function (currentlySelectedTextFormatItem, previouslySelectedTextFormatItem) {
+    $scope.$watch('selectedPageQuestionItem.getItem().textFormatDropDownMenu', function (currentlySelectedTextFormatItem, previouslySelectedTextFormatItem) {
         if (currentlySelectedTextFormatItem === previouslySelectedTextFormatItem) {
             return;
         } else {
             if(Object.isDefined(currentlySelectedTextFormatItem) && currentlySelectedTextFormatItem.value === "number") {
                 $scope.showValidation();
                 if(Object.isDefined($scope.selectedPageQuestionItem) && Object.isDefined($scope.selectedPageQuestionItem.getItem())) {
-                    $scope.exactLengthField = convertFieldValueToNumber($scope.selectedPageQuestionItem.getItem().findValidation("name", "exactLength").toUIObject());
-                    $scope.minLengthField = convertFieldValueToNumber($scope.selectedPageQuestionItem.getItem().findValidation("name", "minLength").toUIObject());
-                    $scope.maxLengthField = convertFieldValueToNumber($scope.selectedPageQuestionItem.getItem().findValidation("name", "maxLength").toUIObject());
-                    $scope.minValueField = convertFieldValueToNumber($scope.selectedPageQuestionItem.getItem().findValidation("name", "minValue").toUIObject());
-                    $scope.maxValueField = convertFieldValueToNumber($scope.selectedPageQuestionItem.getItem().findValidation("name", "maxValue").toUIObject());
+                    $scope.exactLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "exactLength", $scope.selectedPageQuestionItem.getItem().validations).toUIObject());
+                    $scope.minLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minLength", $scope.selectedPageQuestionItem.getItem().validations).toUIObject());
+                    $scope.maxLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxLength", $scope.selectedPageQuestionItem.getItem().validations).toUIObject());
+                    $scope.minValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minValue", $scope.selectedPageQuestionItem.getItem().validations).toUIObject());
+                    $scope.maxValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxValue", $scope.selectedPageQuestionItem.getItem().validations).toUIObject());
                 }
             } else {
                 $scope.hideValidation();
             }
         }
     }, true);
-	
-	$scope.blur = function(){
-		$scope.isDirty = true;
-	};
 
     $scope.showValidation = function() {
-        $scope.showExactLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
-        $scope.showMinLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
-        $scope.showMaxLengthField = (!Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) || $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+        $scope.showExactLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+        $scope.showMinLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
+        $scope.showMaxLengthField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
         $scope.showMinValueField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
         $scope.showMaxValueField = (Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu) && $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value === "number")? true : false;
     };
@@ -69,127 +63,127 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         $scope.showMaxValueField = false;
     };
 
-	$scope.save = function(){
-        $scope.selectedPageQuestionItem.getItem().validations.splice(0, $scope.selectedPageQuestionItem.getItem().validations.length);
+    //TODO: SEEM TO BE A PROBLEM SAVING OR RETRIVING AND SETTING TEXT FORMAT DROPDOWN MENU.
+    $scope.setTextFormatValidation = function () {
+        if(Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu)) {
+            if ($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name === "dataType" && Object.isDefined($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
 
-        if(Object.isDefined($scope.selectedTextFormat)) {
-            if ($scope.selectedTextFormat.name === "dataType" && Object.isDefined($scope.selectedTextFormat.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.selectedTextFormat);
+                    return false;
+                });
+
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu);
+                }
             }
+        } else {
+            //TODO: REMOVE ANY EXISTING TEXT FORMAT VALIDATION FORM VALIDATIONS ARRAY.
+            /*var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                if(validation.name === "dataType" && (validation.value === "email" || validation.value === "date" || validation.value === "number"){
+                    return true;
+                }
+
+                return false;
+            });*/
         }
-
-        if(Object.isDefined($scope.exactLengthField)) {
-            if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.exactLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.minLengthField)) {
-            if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.minLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.maxLengthField)) {
-            if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.minValueField)) {
-            if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.minValueField);
-            }
-        }
-
-        if(Object.isDefined($scope.maxValueField)) {
-            if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxValueField);
-            }
-        }
-
-        /*var updatedSelectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedPageQuestionItem.getItem());
-        console.info("freeTextReadOnlyQuestionController.save() method:\n" + updatedSelectedQuestionDomainObject);*/
-        
-        $scope.parentSave();
-	};
-
-    $scope.addToPageQuestion = function(state, resetFormFunction, softReset){
-        state = (Object.isDefined(state))? state: {
-            name: "modules.detail.selectQuestionType",
-            params: {selectedQuestionId: -1},
-            doTransition: true
-        };
-        resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
-        softReset = (Object.isBoolean(softReset))? softReset : true;
-
-
-        $scope.selectedPageQuestionItem.getItem().validations.splice(0, $scope.selectedPageQuestionItem.getItem().validations.length);
-
-        if(Object.isDefined($scope.selectedTextFormat)) {
-            if ($scope.selectedTextFormat.name === "dataType" && Object.isDefined($scope.selectedTextFormat.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.selectedTextFormat);
-            }
-        }
-
-        if(Object.isDefined($scope.exactLengthField)) {
-            if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.exactLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.minLengthField)) {
-            if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.minLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.maxLengthField)) {
-            if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxLengthField);
-            }
-        }
-
-        if(Object.isDefined($scope.minValueField)) {
-            if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.minValueField);
-            }
-        }
-
-        if(Object.isDefined($scope.maxValueField)) {
-            if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
-                $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxValueField);
-            }
-        }
-
-        $scope.parentAddToPageQuestion(state, resetFormFunction, softReset);
     };
 
-    $scope.resetForm = function (softReset, state) {
-        softReset = (Object.isBoolean(softReset))? softReset : false;
+    $scope.setExactLengthValidation = function (){
+        if(Object.isDefined($scope.exactLengthField)) {
+            if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
 
-        $scope.selectedTextFormat = null;
-        $scope.exactLengthField.selected = false;
-        $scope.exactLengthField.value = null;
-        $scope.minLengthField.selected = false;
-        $scope.minLengthField.value = null;
-        $scope.maxLengthField.selected = false;
-        $scope.maxLengthField.value = null;
-        $scope.minValueField.selected = false;
-        $scope.minValueField.value = null;
-        $scope.maxValueField.selected = false;
-        $scope.maxValueField.value = null;
-        $scope.showExactLengthField = false;
-        $scope.showMinLengthField = false;
-        $scope.showMaxLengthField = false;
-        $scope.showMinValueField = false;
-        $scope.showMaxValueField = false;
+                    return false;
+                });
 
-        $scope.parentResetForm(softReset, state);
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.exactLengthField);
+                }
+            }
+        }
     };
-	
-	$scope.cancel = function(){
-		// Not sure exactly what we need to be doing here quite yet, either.
-		$state.go('^');
-	};
+
+    $scope.setMinLengthValidation = function() {
+        if (Object.isDefined($scope.minLengthField)) {
+            if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.minLengthField);
+                }
+            }
+        }
+    };
+
+    $scope.setMaxLengthValidation = function (){
+        if(Object.isDefined($scope.maxLengthField)) {
+            if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxLengthField);
+                }
+            }
+        }
+    };
+
+    $scope.setMinValueValidation = function () {
+        if(Object.isDefined($scope.minValueField)) {
+            if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.minValueField);
+                }
+            }
+        }
+    };
+
+    $scope.setMaxValueValidation = function() {
+        if(Object.isDefined($scope.maxValueField)) {
+            if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
+                var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
+                    if(validation.name === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.name &&
+                        validation.value === $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu.value) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if(!Object.isDefined(existingValidation)) {
+                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxValueField);
+                }
+            }
+        }
+    };
 }]);

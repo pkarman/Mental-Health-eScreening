@@ -366,7 +366,7 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
 
      return surveyUIObjects;
  };
- EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers = function (childQuestions) {
+EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers = function (childQuestions) {
      var firstChildMeasureAnswers = [];
 
      if(Object.isDefined(childQuestions) && childQuestions.length > 0) {
@@ -385,4 +385,51 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
      }
 
      return firstChildMeasureAnswers;
+ };
+
+EScreeningDashboardApp.models.Question.filterValidations = function (targetPropertyName, targetPropertyValue, validations) {
+    var isPropertyName =  "is"  + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        hasPropertyName = "has" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        getPropertyName = "get" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        propertyNameValue = false,
+        filteredValidations = [];
+
+    validations.forEach(function (validation) {
+        if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
+            validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
+            if(typeof validation[isPropertyName] === 'function'){
+                 propertyNameValue = validation[isPropertyName]();
+            } else if(typeof validation[hasPropertyName] === 'function') {
+                propertyNameValue = validation[hasPropertyName]();
+            } else if(typeof validation[getPropertyName] === 'function') {
+                propertyNameValue = validation[getPropertyName]();
+            } else {
+                propertyNameValue = validation[targetPropertyName];
+            }
+
+            if(propertyNameValue === targetPropertyValue) {
+                filteredValidations.push(validation);
+            }
+        }
+    });
+
+    return filteredValidations;
+};
+EScreeningDashboardApp.models.Question.findValidation = function (targetPropertyName, targetPropertyValue, validations) {
+
+    var filteredValidations = EScreeningDashboardApp.models.Question.filterValidations(targetPropertyName, targetPropertyValue, validations),
+        filteredValidation = null,
+        filteredValidationConstructorParameters;
+
+     if (Object.isArray(filteredValidations) && filteredValidations.length > 0) {
+         filteredValidation = filteredValidations[0];
+     } else {
+         filteredValidationConstructorParameters = {} ;
+         filteredValidationConstructorParameters[targetPropertyName] = targetPropertyValue;
+         filteredValidationConstructorParameters["selected"] = false;
+
+         filteredValidation = new EScreeningDashboardApp.models.Validation(filteredValidationConstructorParameters);
+     }
+
+     return filteredValidation;
  };
