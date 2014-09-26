@@ -15,8 +15,6 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
-    $scope.showUpdateButtons = false;
-    $scope.questionSaveButtonLabelText = "Add To Page"; //Update Question
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         var pageIndex = 0;
@@ -25,7 +23,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         } else {
             $scope.pageQuestionItems.forEach(function(pageQuestionItem) {
                 if(pageQuestionItem.isPage()) {
-                    pageQuestionItem.getItem().setPageNumber(++pageIndex);
+                    pageQuestionItem.getItem().pageNumber = ++pageIndex;
                 }
             });
         }
@@ -48,20 +46,12 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         return organizedPages;
     };
 
-    $scope.changeQuestionSaveButtonLabel = function(buttonLabelText) {
-        $scope.questionSaveButtonLabelText = buttonLabelText;
-    };
-
     $scope.setFormReset = function(formReset) {
         $scope.formReset = formReset;
     };
 
     $scope.setSelectedSurveyUIObject = function(someSelectedQuestionUIObject) {
         $scope.selectedSurveyUIObject = someSelectedQuestionUIObject
-    };
-
-    $scope.setSelectedQuestionUIObject = function (someSelectedQuestionUIObject) {
-        $scope.selectedQuestionUIObject = someSelectedQuestionUIObject;
     };
 
     $scope.setSelectedPageQuestionItem = function(someSelectedPageQuestionItem) {
@@ -72,23 +62,24 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $scope.pageQuestionItems = newPageQuestionItems;
     };
 
-    $scope.addPageBreak = function(pageConfig){
-        var surveyPage = new EScreeningDashboardApp.models.SurveyPage(pageConfig),
-            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem((($scope.pageQuestionItems.length === 0)? {page: surveyPage, enabled: false} : {page: surveyPage}));
+    $scope.addPageBreak = function(surveyPageUIObject){
+        var surveyPageUIObject = new EScreeningDashboardApp.models.SurveyPage(surveyPageUIObject).toUIObject,
+            pageQuestionItem = new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper((($scope.pageQuestionItems.length === 0)? {surveyPageUIObject: surveyPageUIObject, enabled: false} : {surveyPageUIObject: surveyPageUIObject}));
 
         $scope.pageQuestionItems.push(pageQuestionItem);
+        return pageQuestionItem;
     };
 
-    $scope.addQuestion = function(someQuestion) {
-        var question = (Object.isDefined(someQuestion))? someQuestion: new EScreeningDashboardApp.models.Question(null),
-            pageQuestionItem = new EScreeningDashboardApp.models.PageQuestionItem({question: question});
+    $scope.addQuestion = function(someQuestionUIObject) {
+        var questionUIObject = (Object.isDefined(someQuestionUIObject))? someQuestionUIObject: new EScreeningDashboardApp.models.Question(null).toUIObject,
+            pageQuestionItem = new EScreeningDashboardApp.models.QuestionUIObjectItemWrapper({questionIUObject: questionUIObject});
 
         if($scope.pageQuestionItems.length === 0) {
            $scope.addPageBreak();
         }
 
         $scope.pageQuestionItems.push(pageQuestionItem);
-
+        return pageQuestionItem;
     };
 
     $scope.updatePageQuestionItem = function(somePageQuestionItem) {
@@ -118,14 +109,11 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.resetForm = function(softReset, state) {
         softReset = (Object.isBoolean(softReset))? softReset: false;
 
-        $scope.setSelectedQuestionUIObject(createQuestion().toUIObject());
-
         if(!softReset) {
             $scope.setFormReset(true);
         }
 
         $scope.selectedPageQuestionItem = null;
-        $scope.changeQuestionSaveButtonLabel("Add To Page");
 
         if(Object.isDefined(state) && Object.isBoolean(state.doTransition)) {
             if(state.doTransition) {

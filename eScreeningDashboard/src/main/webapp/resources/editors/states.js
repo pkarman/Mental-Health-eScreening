@@ -256,32 +256,6 @@ angular.module('Editors')
                     controller:'addEditModuleController'
                 })
 
-                /*.state('modules.detail.questions',{
-                    abstract:true,
-                    url:'/questions',
-                    templateUrl:'resources/editors/views/questions/questionsabstract.html',
-                    data: {
-                        displayName: false
-                    },
-                    resolve: {
-                        questionTypeDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
-                            //TODO: Need to dynamically pull a unique list of validation type from the
-                            //TODO: measure_validation table where measure_validation.validation_id = 1.
-                            return [
-                                {id: 0, name: "freeText", displayName: "Free/Read-Only Text"},
-                                {id: 1, name: "readOnly", displayName: "Free/Read-Only Text"},
-                                {id: 2, name: "selectOne", displayName: "Select Single"},
-                                {id: 3, name: "selectMulti", displayName: "Select Multiple"},
-                                {id: 4, name: "selectOneMatrix", displayName: "Select Single Matrix"},
-                                {id: 5, name: "selectMultiMatrix", displayName: "Select Multiple Matrix"},
-                                {id: 6, name: "tableQuestion", displayName: "Table Question"},
-                                {id: 7, name: "instruction", displayName: "Instructions"}
-                            ];
-                        }]
-                    },
-                    controller:'questionsController'
-                })*/
-
                 .state('modules.detail.empty',{
                     url:'/question/empty',
                     templateUrl:'resources/editors/views/questions/questionnull.html',
@@ -329,6 +303,26 @@ angular.module('Editors')
                     controller: 'addEditModuleController'
                 })
 
+                .state('modules.detail.editFreeTextQuestionType', {
+                    url:'/freeText/:selectedQuestionId',
+                    templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
+                    data: {
+                        displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
+                    },
+                    resolve: {
+                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+                            ];
+                        }]
+                    },
+                    controller:'freeTextReadOnlyQuestionController'
+                })
+
                 .state('modules.detail.editReadOnlyQuestionType',{
                     url:'/readOnly/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
@@ -346,7 +340,7 @@ angular.module('Editors')
                             ];
                         }]
                     },
-                    controller:'freeTextReadOnlyQuestionController'
+                    controller:'readOnlyQuestionController'
                 })
 
                 .state('modules.detail.editSelectMultipleQuestionType',{

@@ -80,4 +80,5 @@ EScreeningDashboardApp.models.PageQuestionItem = function (pageQuestionItem) {
 
         return type;
     };
+    this.description = question.getVariableName();
 };

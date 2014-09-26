@@ -23,7 +23,8 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
+                        //TODO: Need to update surveyPageQuestion list.
+                        //$scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -38,7 +39,8 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
-                        $scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
+                        //TODO: Need to update surveyPageQuestion list.
+                        //$scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
                         $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                     } else {
                         $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
@@ -115,12 +117,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
-    $scope.getDefaultTextFormatType = function (targetQuestionUIObject, dropDownMenuOptions) {
+    $scope.getDefaultTextFormatType = function (targetQuestion, dropDownMenuOptions) {
         var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation().toUIObject();
 
-        if(Object.isDefined(targetQuestionUIObject)) {
-           if(Object.isArray(targetQuestionUIObject.validations)) {
-               targetQuestionUIObject.validations.some(function(validation, index) {
+        if(Object.isDefined(targetQuestion)) {
+           if(Object.isArray(targetQuestion.validations)) {
+               targetQuestion.validations.some(function(validation, index) {
                    if(validation.name === "dataType") {
                        dropDownMenuOptions.some(function(dropDownMenuOption) {
                             if(dropDownMenuOption.name === validation.name && dropDownMenuOption.value === validation.value){
@@ -197,7 +199,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };*/
 
     $scope.cancel = function () {
-        $state.go('modules.detail.selectQuestionType');
+        $state.go('modules.detail.emtpy');
     };
 
     /*$scope.addQuestion = function(){
@@ -206,48 +208,19 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };*/
 
     $scope.editQuestion = function(selectedPageQuestionItem){
-        var stateName,
+        var stateName = $scope.getStateName(selectedPageQuestionItem.getItem().getType()),
             softReset = false,
             state = {
                 name: undefined,
-                params: {selectedQuestionId: selectedPageQuestionItem.getItem().toUIObject()},
+                params: {selectedQuestionId: selectedPageQuestionItem.getItem().getId()},
                 doTransition: false
             };
 
-        $scope.changeQuestionSaveButtonLabel("Update Question");
-
-        switch (selectedPageQuestionItem.getItem().toUIObject().type){
-            case 'freeText':
-            case 'readOnly':
-                stateName = "modules.detail.editReadOnlyQuestionType";
-                break;
-            case 'selectOne':
-                stateName = "modules.detail.editSelectOneQuestionType";
-                break;
-            case'selectMulti':
-                stateName = "modules.detail.editSelectMultipleQuestionType";
-                break;
-            case 'selectOneMatrix':
-                stateName = "modules.detail.editSelectOneMatrixQuestionType";
-                break;
-            case 'selectMultiMatrix':
-                stateName = "modules.detail.editSelectMultipleMatrixQuestionType";
-                break;
-            case 'tableQuestion':
-                stateName = "modules.detail.editTableQuestionType";
-                break;
-            case 'instruction':
-                stateName = "modules.detail.editInstructionQuestionType";
-                break;
-            default:
-                stateName = "modules.detail.editReadOnlyQuestionType";
-        }
-
         if(Object.isDefined(stateName)) {
-            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().toUIObject().id});
+            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().getId()});
             $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
-            $scope.setSelectedQuestionUIObject(selectedPageQuestionItem.getItem().toUIObject());
-            $scope.selectedQuestionUIObject.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
+            //TODO: Need to re-factor the way we populated the text format drop down menu.
+            //$scope.selectedQuestionUIObject.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
         }
     };
 
@@ -257,6 +230,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         switch (selectedStateName){
             case 'freeText':
                 stateName = "modules.detail.editFreeTextQuestionType";
+                break;
             case 'readOnly':
                 stateName = "modules.detail.editReadOnlyQuestionType";
                 break;
@@ -285,7 +259,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return stateName;
     };
 
-    $scope.deleteQuestion = function(question){
+    /*$scope.deleteQuestion = function(question){
         $rootScope.messageHandler.clearMessages();
         QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
             setQuestionUIObjects();
@@ -295,7 +269,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         });
 
         $state.go('modules.detail.selectQuestionType');
-    };
+    };*/
 
     $scope.sortableOptions = {
         cancel: ".unsortable",

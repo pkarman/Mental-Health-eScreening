@@ -2,19 +2,7 @@
  * Created by pouncilt on 8/6/14.
  */
 Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'questionTypeDropDownMenuOptions', function($rootScope, $scope, $state, questionTypeDropDownMenuOptions){
-    var getDefaultQuestionType = function (selectQuestionUIObject, dropDownMenuOptions) {
-            var defaultDropDownMenuOptionIndex = -1;
-
-            dropDownMenuOptions.some(function(dropDownMenuOption, index) {
-                if(dropDownMenuOption.name === selectQuestionUIObject.type){
-                    defaultDropDownMenuOptionIndex = index;
-                    return true;
-                }
-            });
-
-            return defaultDropDownMenuOptionIndex;
-        },
-        getSelectedQuestionDomainObject = function () {
+    var getSelectedQuestionDomainObject = function () {
             var firstChildQuestionAnswers = (Object.isDefined($scope.selectedQuestionUIObject))?
                 $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions): [],
                 selectedQuestionDomainObject = null;
@@ -32,22 +20,11 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
             return selectedQuestionDomainObject;
         };
 
-    var dropDownMenuOptionIndex = getDefaultQuestionType($scope.selectedQuestionUIObject, questionTypeDropDownMenuOptions);
-    $scope.questionTypeDropDownMenu = (dropDownMenuOptionIndex >= 0)? questionTypeDropDownMenuOptions[dropDownMenuOptionIndex]: null;
     $scope.questionTypeDropDownMenuOptions = questionTypeDropDownMenuOptions;
     $scope.partentAddToPageQuestion = $scope.addToPageQuestion;
     $scope.parentResetForm = $scope.resetForm;
+    $scope.questionTypeSelection = {type: null};
 
-    $scope.$watch('selectedPageQuestionItem', function (currentlySelectedPageQuestionItem, previouslySelectedPageQuestionItem) {
-        if (currentlySelectedPageQuestionItem === previouslySelectedPageQuestionItem) {
-            return;
-        } else {
-            if(Object.isDefined(currentlySelectedPageQuestionItem)) {
-                var dropDownMenuOptionIndex = getDefaultQuestionType(currentlySelectedPageQuestionItem.getItem().toUIObject(), questionTypeDropDownMenuOptions);
-                $scope.questionTypeDropDownMenu = (dropDownMenuOptionIndex >= 0)? questionTypeDropDownMenuOptions[dropDownMenuOptionIndex]: null;
-            }
-        }
-    }, true);
     $scope.$watch('formReset', function(newFormResetFlag, oldFormResetFlag) {
         if (newFormResetFlag === oldFormResetFlag) {
             return;
@@ -58,54 +35,15 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         }
     });
 
-    $scope.$watch( 'questionTypeDropDownMenu', function( currentlySelectedQuestionType, previouslySelectedQuestionType ) {
-        if (currentlySelectedQuestionType === previouslySelectedQuestionType) {
-            return;
-        } else {
-            var url = 'modules.detail.editReadOnlyQuestionType',
-                goToState = false;
+    $scope.goToQuestionTypeForm = function() {
+        var stateName = $scope.getStateName($scope.questionTypeSelection.type),
+            newQuestionUIObject = new EScreeningDashboardApp.models.Question({
+                type: $scope.questionTypeSelection.type
+            }).toUIObject();
 
-            $scope.setFormReset(false);
-
-            if(Object.isDefined(currentlySelectedQuestionType) && Object.isDefined(currentlySelectedQuestionType.displayName)){
-                switch(currentlySelectedQuestionType.displayName){
-                    case "Free/Read-Only Text":
-                        url = 'modules.detail.editReadOnlyQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Select Single':
-                        url = 'modules.detail.editSelectOneQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Select Multiple':
-                        url = 'modules.detail.editSelectMultipleQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Select Single Matrix':
-                        url = 'modules.detail.editSelectOneMatrixQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Select Multiple Matrix':
-                        url = 'modules.detail.editSelectMultipleMatrixQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Table Question':
-                        url = 'modules.detail.editTableQuestionType';
-                        goToState = true;
-                        break;
-                    case 'Instructions':
-                        url = 'modules.detail.editInstructionQuestionType';
-                        goToState = true;
-                        break;
-                }
-
-                if(goToState) {
-                    $state.go(url, {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                }
-            }
-        }
-
-    }, true);
+        $scope.setSelectedPageQuestionItem($scope.addQuestion(newQuestionUIObject));
+        $state.go(stateName, {selectedQuestionId: -1});
+    };/*
 
     $scope.disableDropDownMenu = function () {
         var disableDropDownMenu = false;
@@ -117,27 +55,28 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         }
 
         return disableDropDownMenu;
-    };
+    };*/
 
-    $scope.addToPageQuestion = function (resetFormFunction, softReset, state) {
+    $scope.addToPageQuestion = function (state, resetFormFunction, softReset) {
         var selectedQuestionDomainObject;
 
-        resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
-        softReset = (Object.isBoolean(softReset))? softReset : true;
         state = (Object.isDefined(state))? state: {
             name: "modules.detail.selectQuestionType",
             params: {selectedQuestionId: -1},
             doTransition: false
         };
+        resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
+        softReset = (Object.isBoolean(softReset))? softReset : false;
 
-        $scope.selectedQuestionUIObject.type = $scope.questionTypeDropDownMenu.name;
+        //TODO: Get selected question from SurveyPageItems.
         selectedQuestionDomainObject = getSelectedQuestionDomainObject();
 
         if(Object.isDefined(selectedQuestionDomainObject)){
             if(Object.isDefined($scope.selectedPageQuestionItem)) {
-                angular.copy(selectedQuestionDomainObject, $scope.selectedPageQuestionItem.getItem());
+                //TODO: Need to update the original values saved in the page quesiton items.
+                angular.copy(selectedQuestionDomainObject.toUIObject(), $scope.selectedPageQuestionItem.getItem());
             } else {
-                $scope.addQuestion(selectedQuestionDomainObject);
+                $scope.addQuestion(selectedQuestionDomainObject.toUIObject());
             }
         }
 

@@ -5,11 +5,13 @@
             <div class="form-horizontal">
                 <div>Select Question Type</div>
                 <div ng-repeat="questionTypeDropDownMenuOption in questionTypeDropDownMenuOptions">
-                    <input id="selectedQuestionType" name="selectedQuestionType" type="radio"
-                           ng-model="selectedQuestionType"
+                    <input type="radio" name="questionTypes" ng-required="true"
+                           ng-model="questionTypeSelection.type"
                            value="{{questionTypeDropDownMenuOption.name}}"> {{questionTypeDropDownMenuOption.displayName}}
                 </div>
-                <button class="btn btn-success btn-sm" ng-click="goToQuestionTypeForm();"><span
+                <button class="btn btn-success btn-sm"
+                        ng-disabled="selectedQuestionTypeForm.$invalid"
+                        ng-click="goToQuestionTypeForm();"><span
                         class="glyphicon glyphicon-plus"></span> Next
                 </button>
                 <!--div class="col-md-4">

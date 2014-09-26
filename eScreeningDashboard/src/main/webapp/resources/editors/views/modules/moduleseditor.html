@@ -91,10 +91,10 @@
                                     <div class="page-divider-container-row">
                                         <div class="page-divider">
                                             <button type="button" class="btn btn-default btn-circle">
-                                                {{item.getType()}} {{item.getItem().getPageNumber()}}
+                                                {{item.getType()}} {{item.getItem().pageNumber}}
                                                     <span class="glyphicon glyphicon-remove-circle"
                                                           style="margin-left: 10px;color:red;"
-                                                          ng-show="item.getItem().getPageNumber() > 1"
+                                                          ng-show="item.getItem().pageNumber > 1"
                                                           ng-click="deletePageQuestionItem(item);"/>
                                             </button>
                                             <button class="btn btn-success btn-sm" ng-click="goToQuestions();"><span
@@ -107,9 +107,8 @@
                                 <div ng-switch-default class="form-inline">
                                     <span class="glyphicon glyphicon-align-justify pull-left"></span>
                                     &nbsp;&nbsp;
-                                    <span class="badge"
-                                          ng-click="editQuestion(item);">Var: {{item.getDescription()}}</span>
-                                    <span style="font-size:12px;"> | {{item.getType()}}</span>
+                                    <span class="badge" ng-click="editQuestion(item);">Var: {{item.getItem().variableName}}</span>
+                                    <span style="font-size:12px;"> | {{item.getItem().type}}</span>
 
                                     <div class="form-group pull-right">
                                         <span class="glyphicon glyphicon-remove-circle"

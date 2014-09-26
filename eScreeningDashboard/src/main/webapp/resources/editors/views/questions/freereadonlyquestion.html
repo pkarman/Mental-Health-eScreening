@@ -4,7 +4,7 @@
         <div>
             <label for="inputVariableName" class="form-label"> Variable Name </label>
             <input id="inputVariableName" name="inputVariableName" type="text" class="form-control" placeholder="Variable Name"
-                   ng-model="selectedQuestionUIObject.variableName" ng-disabled="module.id > -1" required>
+                   ng-model="selectedPageQuestionItem.getItem().variableName" ng-disabled="module.id > -1" required>
         </div>
     </div>
 </div>
@@ -17,13 +17,13 @@
             <label for="textAreaText" class="form-label"> Question Text </label>
             <textarea id="textAreaText" name="textAreaText" class="form-control"
                       placeholder="Question Text"
-                      ng-model="selectedQuestionUIObject.text"
+                      ng-model="selectedPageQuestionItem.getItem().text"
                       required></textarea>
         </div>
         <!--
         <div class="form-group">
             <label> VistA Question Text </label>
-            <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText"
+            <textarea class="form-control" ng-model="selectedPageQuestionItem.getItem().vistaText"
                       ng-disabled="!module.clinicalReminder"></textarea>
         </div>
         //-->
@@ -38,7 +38,7 @@
         <div class="form-group">
             <label for="selectTextFormat"> Text Format </label>
             <select id="selectTextFormat" name="selectTextFormat" class="form-control"
-                    ng-model="selectedQuestionUIObject.textFormatDropDownMenu"
+                    ng-model="selectedPageQuestionItem.getItem().textFormatDropDownMenu"
                     ng-options="textFormatType.value for textFormatType in textFormatDropDownMenuOptions"
                     ng-disabled="vistaDisable" ng-blur="blur();" ng-change="showValidation()"
                     required>
@@ -48,13 +48,13 @@
         <!-- JH OOOCOMMENT
         <div class="form-group">
           <label> Help Text </label>
-          <input type="text" class="form-control" ng-model="selectedQuestionUIObject.helpText">
+          <input type="text" class="form-control" ng-model="selectedPageQuestionItem.getItem().helpText">
         </div>
         -->
         <div class="form-group form-inline">
-            <input type="checkbox" id="checkboxPPI" name="checkboxPPI" ng-model="selectedQuestionUIObject.ppi">
+            <input type="checkbox" id="checkboxPPI" name="checkboxPPI" ng-model="selectedPageQuestionItem.getItem().ppi">
             <label for="checkboxPPI" class="checkbox">PPI </label> &nbsp;&nbsp;
-            <input type="checkbox" id="checkboxRequired" name="checkboxRequired" ng-model="selectedQuestionUIObject.required">
+            <input type="checkbox" id="checkboxRequired" name="checkboxRequired" ng-model="selectedPageQuestionItem.getItem().required">
             <label for="checkboxRequired" class="checkbox">Required</label>
         </div>
         <!-- JH OOOCOMMENT
