@@ -174,6 +174,7 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public SurveyInfo update(SurveyInfo surveyInfo) {
 		Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
 		SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
