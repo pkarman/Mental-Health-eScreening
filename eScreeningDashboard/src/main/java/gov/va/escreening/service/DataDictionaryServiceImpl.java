@@ -1,8 +1,10 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 
 import java.util.Collection;
@@ -33,6 +35,9 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	@Resource(type = SurveyPageMeasureRepository.class)
 	SurveyPageMeasureRepository spmr;
 
+	@Resource(type = AssessmentVariableRepository.class)
+	AssessmentVariableRepository avr;
+
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Table<String, String, String>> createDataDictionary() {
@@ -57,8 +62,10 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		 */
 		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
 
+		Collection<AssessmentVariable> avList = avr.findAllFormulae();
+
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<String, String, String> surveyTable = buildSurveyTable(s, surveyMeasuresMap.get(s));
+			Table<String, String, String> surveyTable = buildSurveyTable(s, surveyMeasuresMap.get(s), avList);
 			dataDictionary.put(s.getName(), surveyTable);
 		}
 
@@ -74,12 +81,12 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		return smMap;
 	}
 
-	private Table<String, String, String> buildSurveyTable(Survey s, Collection<Measure> surveyMeasures) {
+	private Table<String, String, String> buildSurveyTable(Survey s,
+			Collection<Measure> surveyMeasures,
+			Collection<AssessmentVariable> avList) {
 
 		Table<String, String, String> t = TreeBasedTable.create();
-		for (Measure m : surveyMeasures) {
-			ddh.buildDataDictionary(s, m, t);
-		}
+		ddh.buildDataDictionary(s, t, surveyMeasures, avList);
 
 		return t;
 	}

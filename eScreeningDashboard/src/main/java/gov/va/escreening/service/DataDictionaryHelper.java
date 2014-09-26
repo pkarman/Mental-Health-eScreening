@@ -1,25 +1,26 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Validation;
-import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -27,6 +28,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
 @Service("dataDictionaryHelper")
@@ -34,8 +36,8 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	MessageSource msgSrc;
 
-	@Resource(type = MeasureRepository.class)
-	MeasureRepository mr;
+	// @Resource(type = MeasureRepository.class)
+	// MeasureRepository mr;
 
 	@Resource(type = ValidationRepository.class)
 	ValidationRepository vr;
@@ -60,15 +62,49 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	 * */
 	Multimap<Integer, String> measureValidationsMap;
 
-	Multimap<Integer, String> surveyFormulaeMap;
-
 	private Resolver findResolver(Measure m) {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
 	}
 
-	public void buildDataDictionary(Survey s, Measure m,
+	public void buildDataDictionary(Survey s, Table<String, String, String> t,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+		for (Measure m : smList) {
+			addDictionaryRowsForMeasure(s, m, t);
+		}
+
+		addFormulaeToSurvey(s, t, smList, avList);
+	}
+
+	public void addDictionaryRowsForMeasure(Survey s, Measure m,
 			Table<String, String, String> t) {
 		findResolver(m).addDictionaryRows(s, m, t);
+	}
+
+	private void addFormulaeToSurvey(Survey s, Table<String, String, String> t,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+
+		Set<String> formulae = Sets.newLinkedHashSet();
+		buildSurveyFormulae(formulae, s, smList, avList);
+
+		if (formulae != null) {
+			int i = 0;
+			for (String formula : formulae) {
+				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
+				String indexAsStr = String.valueOf("surveyId_" + s.getSurveyId()) + "_" + i++;
+
+				t.put(indexAsStr, msg("ques.type"), "formula");
+				t.put(indexAsStr, msg("ques.desc"), formulaTokens.next());
+				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
+
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
+				}
+
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("vals.desc"), formulaTokens.next());
+				}
+			}
+		}
 	}
 
 	@Override
@@ -118,17 +154,50 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this));
 	}
 
-	public void buildAndCacheSurveyFormulaeMap() {
-		this.surveyFormulaeMap = LinkedHashMultimap.create();
-		
-		// get all assessment variables
-		//List<AssessmentVariable> avList=avr.findAll();
-		// get all surveys
-		//List<String> sList=sr.findAll();
-		
-		
-		
+	void buildSurveyFormulae(Set<String> surveyFormulae, Survey s,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+
+		// find AssessVariable with any AssessmentVarChild whose Measure matches with any of Measure in this Survey
+		for (AssessmentVariable av : avList) {
+			boolean found = false;
+			for (Measure m : smList) {
+				for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+					if (m.equals(avc.getVariableChild().getMeasure())) {
+						surveyFormulae.add(extractFormulaPlusExportName(av));
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					break;
+				}
+				if (!m.getChildren().isEmpty()) {
+					buildSurveyFormulae(surveyFormulae, s, m.getChildren(), avList);
+				}
+			}
+		}
 	}
+
+	private String extractFormulaPlusExportName(AssessmentVariable av) {
+		String formula = extractFormula(av);
+		return String.format("%s, %s", formula, av.getDisplayName());
+	}
+
+	private String extractFormula(AssessmentVariable av) {
+		String formula = av.getFormulaTemplate();
+		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+			Measure m = avc.getVariableChild().getMeasure();
+			String exportName = m != null ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
+			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
+			formula = formula.replaceAll(toBeReplaced, exportName);
+		}
+		return formula.replaceAll("$", "");
+	}
+
+	public String msg(String propertySuffix) {
+		return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
+	}
+
 }
 
 abstract class Resolver {
@@ -141,35 +210,6 @@ abstract class Resolver {
 	public final void addDictionaryRows(Survey s, Measure m,
 			Table<String, String, String> t) {
 		addDictionaryRowsNow(s, m, t);
-		addFormulaeToSurvey(s, t);
-	}
-
-	protected void addFormulaeToSurvey(Survey s, Table<String, String, String> t) {
-		if (ddh.surveyFormulaeMap == null) {
-			ddh.buildAndCacheSurveyFormulaeMap();
-		}
-
-		Collection<String> formulae = ddh.surveyFormulaeMap.get(s.getSurveyId());
-
-		if (formulae != null) {
-			int i = 0;
-			for (String formula : formulae) {
-				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
-				String indexAsStr = String.valueOf(s.getSurveyId()) + "_" + i++;
-
-				t.put(indexAsStr, msg("ques.type"), "formula");
-				t.put(indexAsStr, msg("ques.desc"), formulaTokens.next());
-				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
-
-				if (formulaTokens.hasNext()) {
-					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
-				}
-
-				if (formulaTokens.hasNext()) {
-					t.put(indexAsStr, msg("vals.desc"), formulaTokens.next());
-				}
-			}
-		}
 	}
 
 	String getValuesRange(Measure m, MeasureAnswer ma) {
@@ -189,35 +229,31 @@ abstract class Resolver {
 		addSingleRow(s, m, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
 	}
 
-	Collection<Measure> findChildren(Measure m) {
-		return ddh.mr.getChildMeasures(m);
-	}
+	// Collection<Measure> findChildren(Measure m) {
+	// return ddh.mr.getChildMeasures(m);
+	// }
 
 	protected final void addSingleRow(Survey s, Measure m,
 			Table<String, String, String> t, MeasureAnswer ma, int index,
 			boolean other) {
 		int mId = m.getMeasureId();
-		String indexAsStr = String.valueOf(mId) + "_" + index;
+		String indexAsStr = String.valueOf("mId_" + mId) + "_" + index;
 
-		t.put(indexAsStr, msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
-		t.put(indexAsStr, msg("ques.desc"), index == 0 ? m.getMeasureText() : ma.getAnswerText());
+		t.put(indexAsStr, ddh.msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
+		t.put(indexAsStr, ddh.msg("ques.desc"), index == 0 ? m.getMeasureText() : ma.getAnswerText());
 
 		if (ma != null) {
-			t.put(indexAsStr, msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
-			t.put(indexAsStr, msg("vals.range"), getValuesRange(m, ma));
-			t.put(indexAsStr, msg("vals.desc"), getValuesDescription(m, ma));
-			t.put(indexAsStr, msg("data.val"), getValidationDescription(m));
-			t.put(indexAsStr, msg("followup"), "todo");
-			t.put(indexAsStr, msg("skiplevel"), getSkipLevel(m));
+			t.put(indexAsStr, ddh.msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
+			t.put(indexAsStr, ddh.msg("vals.range"), getValuesRange(m, ma));
+			t.put(indexAsStr, ddh.msg("vals.desc"), getValuesDescription(m, ma));
+			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(m));
+			t.put(indexAsStr, ddh.msg("followup"), "todo");
+			t.put(indexAsStr, ddh.msg("skiplevel"), getSkipLevel(m));
 		}
 	}
 
-	private String msg(String propertySuffix) {
-		return ddh.msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
-	}
-
 	private String getSkipLevel(Measure m) {
-		return m.getIsRequired() ? msg("skip.no") : msg("skip.yes");
+		return m.getIsRequired() ? ddh.msg("skip.no") : ddh.msg("skip.yes");
 	}
 }
 
@@ -337,12 +373,13 @@ class SelectOneMatrixResolver extends Resolver {
 
 		super.addDictionaryRowsNow(s, m, t);
 
-		// collect all children here. find all measures which (whose parent_id)  points to this measure (m)
-		Collection<Measure> children = findChildren(m);
+		// collect all children here. find all measures which (whose parent_id) points to this measure (m)
+		// Collection<Measure> children = findChildren(m);
+		Collection<Measure> mc = m.getChildren();
 
-		for (Measure cm : children) {
+		for (Measure cm : mc) {
 			// let the framework take care of rest
-			ddh.buildDataDictionary(s, cm, t);
+			ddh.addDictionaryRowsForMeasure(s, cm, t);
 		}
 	}
 }
