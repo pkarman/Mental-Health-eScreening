@@ -1,13 +1,16 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.google.common.collect.Maps;
@@ -46,6 +49,7 @@ public class VeteranAssessmentMeasureVisibilityRepositoryImpl extends AbstractHi
             if(measureVisibilityMap.isEmpty())
                 break;
         }
+        
         return measureVisibilityMap.keySet();
     }
     
