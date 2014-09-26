@@ -159,8 +159,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	private String createDocumentNow(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 		
-		// load list of SurveyMeasureResponse for this assessment id
-		//smrLister.loadSmrFromDb(veteranAssessmentId);
+		smrLister.clearSmrFromCache();
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);

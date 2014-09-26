@@ -66,8 +66,8 @@ import com.google.common.collect.ListMultimap;
 @Service("assessmentEngineService")
 public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
-	//@Resource(name = "veteranAssessmentSmrList")
-	//VeteranAssessmentSmrList smrLister;
+	@Resource(name = "veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
 
 	@Autowired
 	private AssessmentContext assessmentContext;
@@ -447,9 +447,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_UPDATED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
 			
-			// refresh list of SurveyMeasureResponses for this current Assessment. 
-			// This will be consumed by Rules
-			//smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
+			// clear the threadlocal cache
+			smrLister.clearSmrFromCache();
 
 		} catch (Exception ex) {
 			errorResponse.setCode(10);
