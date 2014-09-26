@@ -31,9 +31,15 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) model.get("dataDictionary");
-
-		CellStyle cs = workbook.createCellStyle();
-		cs.setWrapText(true);
+		
+//		CellStyle cellStyle = workbook.createCellStyle();
+//        HSSFFont hSSFFont = workbook.createFont();
+//        hSSFFont.setFontName(HSSFFont.FONT_ARIAL);
+//        hSSFFont.setFontHeightInPoints((short) 16);
+//        cellStyle.setFont(hSSFFont);
+        
+		CellStyle csWrapText = workbook.createCellStyle();
+		csWrapText.setWrapText(true);
 
 		for (String surveyName : dataDictionary.keySet()) {
 			if (logger.isDebugEnabled()) {
@@ -44,7 +50,16 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 
 			Table<String, String, String> measuresTable = dataDictionary.get(surveyName);
 			setExcelHeader(workbook, surveyName, sheet, measuresTable.columnKeySet());
-			setExcelRows(workbook, surveyName, sheet, measuresTable, cs);
+			setExcelRows(workbook, surveyName, sheet, measuresTable, csWrapText);
+
+			sheet.autoSizeColumn(0, true);
+			sheet.setColumnWidth(1, 256 * 40);
+			sheet.autoSizeColumn(2, true);
+			sheet.autoSizeColumn(3, true);
+			sheet.setColumnWidth(4, 256 * 20);
+			sheet.autoSizeColumn(5, true);
+			sheet.autoSizeColumn(6, true);
+			sheet.autoSizeColumn(7, true);
 		}
 	}
 
@@ -82,9 +97,9 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 		return surveyNameWithDateRow;
 	}
 
-	
 	private void setExcelRows(HSSFWorkbook workbook, String surveyName,
-			HSSFSheet excelSheet, Table<String, String, String> measuresTable, CellStyle cs) {
+			HSSFSheet excelSheet, Table<String, String, String> measuresTable,
+			CellStyle cs) {
 
 		int row = 4;
 		for (String rowId : measuresTable.rowKeySet()) {
@@ -100,10 +115,10 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 				HSSFCell aCell = excelRow.createCell(columnIndex);
 				aCell.setCellValue(rowData.getValue());
 
-				if (columnIndex == 1) {
+				if (columnIndex == 1 || columnIndex == 4) {
 					aCell.setCellStyle(cs);
 				}
-				
+
 				columnIndex++;
 			}
 
