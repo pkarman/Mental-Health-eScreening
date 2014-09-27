@@ -118,7 +118,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
     $scope.getDefaultTextFormatType = function (targetQuestion, dropDownMenuOptions) {
-        var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation().toUIObject();
+        var defaultTextFormatTypeValidation = null; //new EScreeningDashboardApp.models.Validation().toUIObject();
 
         if(Object.isDefined(targetQuestion)) {
            if(Object.isArray(targetQuestion.validations)) {
@@ -217,10 +217,8 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             };
 
         if(Object.isDefined(stateName)) {
-            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});
             $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
-            //TODO: Need to re-factor the way we populated the text format drop down menu.
-            $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem.getItem(), $scope.textFormatDropDownMenuOptions);
+            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});
         }
     };
 

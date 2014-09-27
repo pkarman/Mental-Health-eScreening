@@ -38,7 +38,7 @@
         <div class="form-group">
             <label for="selectTextFormat"> Text Format </label>
             <select id="selectTextFormat" name="selectTextFormat" class="form-control"
-                    ng-model="selectedPageQuestionItem.getItem().textFormatDropDownMenu"
+                    ng-model="textFormatDropDownMenu"
                     ng-options="textFormatType.value for textFormatType in textFormatDropDownMenuOptions"
                     ng-disabled="vistaDisable" ng-blur="blur();" ng-change="setTextFormatValidation();showValidation();"
                     required>
