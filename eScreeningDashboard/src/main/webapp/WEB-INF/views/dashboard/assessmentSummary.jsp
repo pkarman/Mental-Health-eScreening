@@ -44,8 +44,9 @@
     </style>
 </head>
 <body>
+<div class="nonPrintableArea">
 <a href="#skip" class="offscreen">Skip to main content</a>
-<div id="outerPageDiv" class="noPrint">
+<div id="outerPageDiv" class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
   <div class="navbar navbar-default navbar-update" role="navigation">
     <div class="container bg_transparent">
@@ -60,7 +61,7 @@
     </div>
   </div>
 </div>
-<div class="container left-right-shadow noPrint">
+<div class="container left-right-shadow nonPrintableArea">
   <form:form modelAttribute="assessmentSummaryFormBean" autocomplete="off" method="post">
     <div class="row">
       <div class="col-md-5">
@@ -395,24 +396,19 @@
 </div>
 
 <!-- Modal Veteran Summary  -->
-<div class="custom_modal" >
+<div class="custom_modal veteran_summary_modal" >
   <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header noPrint">
+        <div class="modal-header nonPrintableArea">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
         </div>
-        <div class="modal-body yesPrint">
-            <div align="right" class="non-printable">
-              <button class="btn btn-primary" onClick="window.print();"><span class=" glyphicon glyphicon-print"></span> Print </button>
-              
-		
-                      
+        <div class="modal-body printableArea">
+            <div align="right" class="nonPrintableArea">
+              <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
             </div>
-          <div class="modal_contents">Loading...</div>
-          
-          <div class="page_foot">DEPARTMENT OF VETERANS AFFAIRS <br>VA San Diego Healthcare System   I   3350 La Jolla Village Dr.  I  San Diego, CA  92161</div>
+            <div class="modal_contents">Loading...</div>
         </div>
       </div>
     </div>
@@ -425,11 +421,11 @@
   <div class="modal fade" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header noPrint">
+        <div class="modal-header nonPrintableArea">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
         </div>
-        <div class="modal-body yesPrint">
+        <div class="modal-body printableArea">
           <div class="modal_contents">Loading...</div>
         </div>
       </div>
@@ -442,23 +438,25 @@
 <div class="modal fade" id="healthFactorTitles" tabindex="-1" role="dialog" aria-labelledby="healthFactorTitles" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header noPrint">
+      <div class="modal-header nonPrintableArea">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="healthFactorTitlesLabel">View Health Factors</h4>
       </div>
-      <div class="modal-body yesPrint">
+      <div class="modal-body printableArea">
         <div class="modal_contents">Loading...</div>
       </div>
     </div>
   </div>
 </div>
 <div class="clear-fix"></div>
-<div  class="noPrint">
+<div class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </div>
 
-<!--  Work arounf to Solve Print Problem in Chrome  -->
-<div>-</div>
+  <!--  Work arounf to Solve Print Problem in Chrome  -->
+  <div>-</div>
+</div>
+<div class="printable"></div>
 </body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/assessmentSummary.js" />"></script>
@@ -540,13 +538,13 @@ $(document).ready(function() {
    	});
 	   	
 	   	
-	   	
+	   // Todo - Need to check if that's used anywhere 	
    	function printElement(elem, append, delimiter) {
    		var domClone = elem.cloneNode(true);
-   		var $printSection = document.getElementById("yesPrint");
+   		var $printSection = document.getElementById("printableArea");
    		if (!$printSection) {
           var $printSection = document.createElement("div");
-            $printSection.id = "yesPrint";
+            $printSection.id = "printableArea";
             document.body.appendChild($printSection);
         }
           if (append !== true) {
@@ -569,7 +567,7 @@ $(document).ready(function() {
         
         
 <script>
-      //TODO:
+    //TODO:
 	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
 	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
 	  // 2. the y axis label should not be given 
@@ -706,21 +704,7 @@ $(document).ready(function() {
 			            .attr('width', function(d) { return xScale(d.x); });
 
 		var xPos = parseFloat(width / xMax) * xCurrent;
-		//var yPos = parseFloat(xCurrent) + yScale.rangeBand() /7;
 		var yPos = 0;
-		
-	    //alert("yPos"+yPos);
-		/*
-	    d3.select('.tooltip')
-		 	.attr('fill', 'red')
-		    .style('margin-left', xPos + 'px')
-		    .style('margin-top', 0 + 'px')
-		    .style('position', 'absolute')
-		    .style('z-index', '1000000000000')
-		    .select('.value')
-		    .text(xCurrent);
-		*/
-		  
 		
 		pointer = svg.append('rect')
         .attr('fill', pointerColor)
@@ -790,15 +774,13 @@ $(document).ready(function() {
               console.log(text.node().getComputedTextLength());
 		  });
 		  
-		  // fix graphic bar issue
+		  // Fix graphic bar issue
 		  $(graphSelector).find('.bars > g')
 		      .each(function() {
 		          $(this).prependTo(this.parentNode);
 		  });
 		 
-		  
-		  
-		  //add footer if we were given one
+		  //Add footer if we were given one
 		  if(graphObj.footer != null && graphObj.footer != ""){
 			  
 		      graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
