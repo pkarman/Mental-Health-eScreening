@@ -126,6 +126,25 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	
 	
 	/**
+	 * method to reset the {@link ThreadLocal} of VeteranAssessmentSmrList#clearSmrFromCache()}, as threads are not created here but served from the thread pool
+	 * @param veteranAssessmentId
+	 * @param viewType
+	 * @param cprsNote
+	 * @param optionalTemplates
+	 * @param includeSections
+	 * @return
+	 * @throws IllegalSystemStateException
+	 */
+	private String createDocument(int veteranAssessmentId, ViewType viewType,
+			DocumentType cprsNote, EnumSet<TemplateType> optionalTemplates,
+			boolean includeSections) throws IllegalSystemStateException {
+		smrLister.clearSmrFromCache();
+		String docAsString=createDocumentNow(veteranAssessmentId, viewType, cprsNote, optionalTemplates, includeSections);
+		smrLister.clearSmrFromCache();
+		return docAsString;
+	}
+
+	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates
 	 * @param assessment the assessment the document is being created for
 	 * @param viewType the type of rendering
@@ -137,11 +156,10 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @return the rendered document
 	 * @throws IllegalSystemStateException
 	 */
-	private String createDocument(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
+	private String createDocumentNow(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
 		
-		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
+		smrLister.clearSmrFromCache();
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);

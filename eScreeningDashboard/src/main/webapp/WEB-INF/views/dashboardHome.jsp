@@ -53,7 +53,7 @@
   <div id="bodyDiv" class="bgImgMiddle" align="center">
     <div class="container left-right-shadow main-container">
       <div class="row">
-        <div class="col-md-12"> <img  src="resources/images/landing_bg.gif" class="img-responsive" /> </div>
+        <div class="col-md-12"> <img  src="resources/images/landing_bg.gif" class="img-responsive" alt="VA CENTER OF EXCELLENCE CESAMH STRESS AND MENTAL HEALTH LOGO" /> </div>
       </div>
     </div>
   </div >

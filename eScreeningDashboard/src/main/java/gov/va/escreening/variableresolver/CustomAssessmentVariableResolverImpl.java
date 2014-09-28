@@ -217,14 +217,14 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
 		if(veteranAssessment.getVeteran() == null || veteranAssessment.getVeteran().getVeteranIen() == null
 				|| veteranAssessment.getVeteran().getVeteranIen().isEmpty()){
-			throw new AssessmentVariableInvalidValueException(String.format("Veteran IEN number could not be found. Map veteran to VistA."));
+			throw new AssessmentVariableInvalidValueException("Veteran IEN number could not be found. Map veteran to VistA.");
 		}
 		String vetIen = veteranAssessment.getVeteran().getVeteranIen();
 		
 		// Get tech admins
 		List<User> adminList = userRepository.findByRoleId(RoleEnum.TECH_ADMIN);
 		if(adminList.isEmpty()){
-			throw new AssessmentVariableInvalidValueException(String.format("Could not find a registered tech admin to pull appointments"));
+			throw new AssessmentVariableInvalidValueException("Could not find a registered tech admin to pull appointments");
 		}
 		
 		// Get appointments
@@ -235,11 +235,11 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 				break;
 			}
 			catch(Exception e){
-				logger.warn(String.format("Error getting appointments using tech admin %s and veteran IEN %s"),  adminUser, vetIen);
+				logger.warn("Error getting appointments using tech admin {} and veteran IEN {}",  adminUser, vetIen);
 			}
 		}
 		if(appointments == null){
-			throw new AssessmentVariableInvalidValueException(String.format("Cannot retrieve appointments from VistA."));
+			throw new AssessmentVariableInvalidValueException("Cannot retrieve appointments from VistA.");
 		}
 		
 		// Sort dates from earlier to later and stick nulls at the end.

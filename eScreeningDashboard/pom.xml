@@ -320,7 +320,6 @@
 			<artifactId>guava</artifactId>
 			<version>12.0</version>
 		</dependency>
-
 		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>

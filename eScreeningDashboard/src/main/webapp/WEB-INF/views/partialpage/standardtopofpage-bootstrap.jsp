@@ -15,7 +15,7 @@
 				</span>
             </div>
         <p class="navbar-text pull-right">
-        	<img class='csamhImg' src="resources/images/cesamh_new_logo.png"><br/>
+        	<img class='csamhImg' src="resources/images/cesamh_new_logo.png"  alt="VA CENTER OF EXCELLENCE CESAMH STRESS AND MENTAL HEALTH LOGO"><br/>
         </p>
     </div></div>
 </div>
