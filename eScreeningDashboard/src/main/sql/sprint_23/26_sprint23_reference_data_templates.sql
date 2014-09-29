@@ -1281,8 +1281,6 @@ UPDATE template set template_file = '
 </#if>
 ' where template_id=306;
 
-
 -- fix for 230 where the veteran summary template for the PCL-C module module was mapped to another module
 update survey_template st set survey_id=34 
 where st.survey_id=35 and st.template_id=310;
-
