@@ -550,7 +550,7 @@ public class VistaTestController {
 
         String vpid = null;
         String duz = "10000000056";
-        String rpcName = "ORWPT APPTLST";
+        String rpcName = "ORWCV VST";
 
         List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();
         vistaRpcParamList.add(new VistaRpcParam("string", veteranIen));
