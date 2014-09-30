@@ -88,15 +88,14 @@
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <label for="searchAssessmentButton">&nbsp; </label>
+                              <div class="label_margin"></div>
                               <button class="btn btn-primary  form-control" name="searchAssessmentButton" type="submit">Search</button>
                             </div>
                           </div>
                           <div class="col-md-6">
                             <div class="checkbox pull-right"> <br>
-                              <label>
-                                <input type="checkbox">
-                                Auto-refresh </label>
+                              <label for="auto-refresh">
+                                <input type="checkbox" id="auto-refresh">Auto-refresh </label>
                             </div>
                           </div>
                         </div>
@@ -141,16 +140,16 @@
                         <div class="row">
                           <div class="col-md-4">
                             <div class="form-group">
-                              <label for="programId">Program</label>
-                              <select id="programId" class="fieldAlign form-control col-md-4" name="programId" ng-options="program.stateId as program.stateName for program in programList" ng-model="assessmentDashboardFormBean.programId" >
+                              <label for="programIdChart">Program</label>
+                              <select id="programIdChart" class="fieldAlign form-control col-md-4" name="programId" ng-options="program.stateId as program.stateName for program in programList" ng-model="assessmentDashboardFormBean.programId" >
                                 <option value="">All Program</option>
                               </select>
                             </div>
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <label for="searchAssessmentButton">&nbsp; </label>
-                              <button class="btn btn-primary  form-control" name="searchAssessmentButton" type="submit">Search</button>
+                              <div class="label_margin"></div>
+                              <button class="btn btn-primary  form-control" name="searchAssessmentButtonChart" type="submit">Search</button>
                             </div>
                           </div>
                           <div class="col-md-6">

@@ -116,7 +116,7 @@
 									</div>
 									<div class="col-md-2">
 										<div class="form-group">
-											<label for="searchButton">&nbsp;</label>
+											<div class="label_margin"></div>
 											<button type="submit"
 												class="submitButton_delete  btn btn-primary form-control">Search
 												Veteran</button>

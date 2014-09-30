@@ -18,7 +18,7 @@ app.directive('reportTable', function() {
 			}
 		}
         
-        var dataTable;
+    var dataTable;
 		var sourceURL = "exportData/services/exports/exportLog";
 		
 		exportDataTable(sourceURL);
@@ -105,21 +105,12 @@ app.factory('filterOptionService', function($http) {
 			}).then(function(result) {
 				// console.log(">>>>>>> DATA >>> ");
 				// console.log(result.data.stateId);
-				
-			
-				
-				
 				return result.data;
 				
 			});
 		}
 	};
 });
-
-
-
-
-
 
 /**
  * Controller for the page.
@@ -151,6 +142,22 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
+    
+
+	$scope.launchDataDictionaryButton = function(){
+		
+	    $http({method: 'GET', url: 'exportData/services/exports/dataDictionary'}).
+	      success(function(data, status, headers, config) {
+	    	
+	        window.open("exportData/services/exports/dataDictionary", "_self");
+	        $('#modal_progress').modal('hide');
+	        $("#progressMessages").html("");
+	      }).
+	      error(function(data, status, headers, config) {
+	    	  $("#progressMessages").html("<div class='alert alert-danger' role='alert'>Error occurred.</div>");
+	        //$("#modal_progress .progress").hide();
+	      });
+	};
 	
 	 
 	//console.log("inside the controller");
@@ -260,7 +267,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		
 		// Null out current selected item and clear list.
 		$scope.exportDataFormBean.clinicianId = "";
-		console.log(">> "+ $scope.exportDataFormBean.clinicianId);
+		//console.log(">> "+ $scope.exportDataFormBean.clinicianId);
 		$scope.clinicanList = [];
 
 		// Create the request parameters we will post.
@@ -320,6 +327,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 					//
 				});
 	}
+  
 
 	/**
 	 * Initializes the model with any parameters initially passed to the controller. 
@@ -327,7 +335,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	function initializeModel() {
 		$scope.exportDataFormBean = {};
 	}
-
 
 
 	programListService.getProgramList().then(function(data) {

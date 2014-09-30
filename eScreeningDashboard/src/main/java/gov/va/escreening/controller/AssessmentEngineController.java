@@ -1,5 +1,6 @@
 package gov.va.escreening.controller;
 
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.ae.AssessmentRequest;
@@ -12,6 +13,7 @@ import gov.va.escreening.service.AssessmentEngineService;
 
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -34,6 +36,9 @@ public class AssessmentEngineController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AssessmentEngineController.class);
 
+	@Resource(type=VeteranAssessmentSmrList.class)
+	VeteranAssessmentSmrList smrLister;
+	
 	@Autowired
 	private AssessmentDelegate assessmentDelegate;
 	@Autowired
@@ -76,7 +81,9 @@ public class AssessmentEngineController {
 		}
 
 		assessmentRequest.setStartTime(startTime);
+		smrLister.clearSmrFromCache();
 		AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
+		smrLister.clearSmrFromCache();
 		
 		session.setAttribute("start_time", System.currentTimeMillis());
 
