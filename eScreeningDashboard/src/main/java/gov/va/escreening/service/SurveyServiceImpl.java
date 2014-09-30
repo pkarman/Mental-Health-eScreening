@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.QuestionInfo;
@@ -7,6 +8,7 @@ import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -52,6 +54,9 @@ public class SurveyServiceImpl implements SurveyService {
 	
 	@Autowired
 	private SurveyPageRepository surveyPageRepository;
+	
+	@Autowired
+	private AssessmentVariableRepository assessmentVariableRepository;
 	
 	@Autowired
 	public void setSurveyRepository(SurveyRepository surveyRepository) {
@@ -305,12 +310,9 @@ public class SurveyServiceImpl implements SurveyService {
 			List<Measure> measures = new ArrayList<Measure>();
 			surveyPage.setMeasures(measures);
 			
-			System.out.println("survapteInfo  2");
-			
 			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
 			{
 				Integer measureId = questionInfo.getId();
-				System.out.println("survapteInfo  2"+(measureId==null));
 				if (measureId != null)
 				{
 					measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
@@ -318,14 +320,22 @@ public class SurveyServiceImpl implements SurveyService {
 				}
 				else
 				{
-					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));		
+					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));	
 					
-					System.out.println("survapteInfo  2"+(measureDTO==null));
-					measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
+					Measure measure = measureRepository.findOne(measureDTO.getMeasureId());
+					
+					AssessmentVariable av = new AssessmentVariable();
+					av.setMeasure(measure);
+					av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
+					av.setDisplayName(measure.getMeasureText());
+					assessmentVariableRepository.create(av);
+					List<AssessmentVariable> assessmentVariableList = new ArrayList<AssessmentVariable>();
+					assessmentVariableList.add(av);
+					measure.setAssessmentVariableList(assessmentVariableList);
+					measureRepository.update(measure);
+					measures.add(measure);
 				}
 			}
-			
-			System.out.println("survapteInfo  3");
 			
 			if (surveyPageInfo.getId() == null)
 			{
