@@ -829,6 +829,7 @@ ${MODULE_START}
 				</#list>
 			</#if>
 
+			<#assign isFirst = true>
 			<#list uniqueRows as ur>
 				
 				<#assign group = {}>
@@ -847,7 +848,6 @@ ${MODULE_START}
 				<#assign dischargeType = "">
 				<#assign rank = "">
 				<#assign job = "">
-				<#assign isFirst = true>
 				
 				<#assign typeIsComplete = false>
 				<#assign branchIsComplete = false>
@@ -929,7 +929,7 @@ ${MODULE_START}
 					<#assign isFirst=false>	
 					The Veteran reported previous enlistment in the ${type} 
 				<#else>
-					The Veteran reported entering the ${type} 
+					${nextLine}The Veteran reported entering the ${type} 
 				</#if>
 				<#if branchIsComplete> ${NBSP}${branch}</#if>
 				<#if beg_yrIsComplete> ${NBSP}in ${beg_yr}</#if>
