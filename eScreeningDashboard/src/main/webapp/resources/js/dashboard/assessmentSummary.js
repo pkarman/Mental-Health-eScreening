@@ -1,4 +1,24 @@
 $(document).ready(function() {
+  // Print Report
+  var veteran_summary_modal       = ".veteran_summary_modal";
+  var veteran_summary_modal_body  = ".veteran_summary_modal .modal-body";
+  var printable                   = ".printable";
+  var print                       = ".print";
+    
+  $(veteran_summary_modal).on("click", print, function(){
+     //get the modal box content and load it into the printable div
+     $(printable).show();        
+     $(printable).html($(veteran_summary_modal_body).html());
+  
+     // Work around to solve Chrome image loading
+      setTimeout(function() {
+          window.print();
+          $(printable).hide();
+      }, 1000);
+  });
+
+
+        
 	/*
 	setTimeout(function() {
       // Do something after 5 seconds

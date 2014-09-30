@@ -989,3 +989,298 @@ ${MODULE_END}
 '
 where template_id = 12;
 
+/**** Veteran Summary header #ticket 230 ************/
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_START}
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="50%" valign="middle"><h2  style="color:#1b4164"><strong>eScreening Summary</strong></h2></td>
+    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"><br></td>
+  </tr>
+</table>
+
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 1px dashed #000000; border-top:1px dashed #000000;">
+  <tr>
+
+    <td width="50%" valign="top" style="border-right: 1px dashed #000000;">
+        <div align="center" style="color:#1b4164"><h3> <strong>${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</strong></h3>
+
+        <#if var2??>
+        <strong>${getVariableDisplayText(var2)}, ACSW</strong><br>
+        </#if>
+
+        <#if var7??>
+        <strong>${getVariableDisplayText(var7)}</strong>
+        <#else>
+        Assessment is incomplete
+        </#if>
+    <br>
+
+    </div></td>
+
+    <td width="50%" valign="top"><h3 align="center"  style="color:#1b4164">Appointments</h3>
+      
+      
+        <#if var6?? && (var6.children)?? >
+
+            <#if ((var6.children)?size > 0) >
+                <ul>
+                ${delimitChildren(var6 "<li>" "</li>" true)}
+                </ul>
+            <#else>
+                <div align="center"><h4>None scheduled</h4></div>
+            </#if>
+        <#else>
+            <div align="center"><h4>Appointments unavailable</h4><div>
+        </#if>
+      </td>
+
+  </tr>
+
+</table>
+<br>
+
+<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz, ACSW, at (858) 642-3615.</div>
+
+<div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
+
+<div><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </div>
+${MODULE_END}'
+where template_id = 200;
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description) VALUES (6, 3, 'Veteran Appointments', 'Veteran appointments from VistA');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description) VALUES (7, 3, 'Assessment Completion', 'Veteran\'s assessment completion date');
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (630, 200);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (632, 200);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (634, 200);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2, 200);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (7, 200);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (6, 200);
+
+/**** Veteran Summary footer #ticket 230 ************/
+UPDATE template 
+set template_file = '<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_START}
+<table>
+    <tr>
+        <td class="justifyCtrTableData">For online information about support services and benefits, visit the VA Center of Excellence resource site:</td>
+    </tr>
+    <tr>
+        <td class="justifyCtrTableData">http://escreening.cesamh.org</td>
+    </tr>
+    <tr class="justifyCtrTableData">
+        <td class="justifyCtrTableData"><img src="resources/images/escreening_cdsmith_QR_code_small.png"></td>
+    </tr>
+    <tr>
+        <td class="justifyLftTableData">For confidential help and support any time, call the Veteran\'s Suicide Prevention/Crisis Hotline at 
+(800) 273-8255. The Hotline is never closed; someone is always there to take your call, even on holidays and in the middle of the night. 
+</td>
+    </tr>
+</table>
+<br/>
+<br/>
+<div style="text-align: center;"><span style="font-size:11px;"><span style="font-family:arial,helvetica,sans-serif;">DEPARTMENT OF VETERANS AFFAIRS</span></span></div>
+<div style="text-align: center;"><span style="font-size:11px;"><span style="font-family:arial,helvetica,sans-serif;">VA San Diego Healthcare System I 3350 La Jolla Village Dr. I San Diego, CA 92161</span></span></div>
+${MODULE_END}'
+where template_id = 220;
+
+/**** Veteran advanced directive update ticket #230 ************/
+UPDATE template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+    ${MODULE_TITLE_START}
+    Advance Directive
+    ${MODULE_TITLE_END}
+    ${MODULE_START}                 
+
+    This is a legal paper that tells your wishes for treatment if you become too sick to talk, and if needed, can help your doctors and family to make decisions about your care. 
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP}
+    <#if !(var820.children)?? || ((var820.children)?size == 0)>
+        Declined
+        ${LINE_BREAK}
+        <b>Recommendations:</b> Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive.
+    <#elseif isSelectedAnswer(var820,var821)>
+        Incomplete
+        ${LINE_BREAK}
+        <b>Recommendations:</b> Call VA Social Work Service at (858) 552-8585 ext. 3500, and ask for help in creating and filing an advance directive.
+    <#elseif isSelectedAnswer(var820,var822)>
+        Complete
+    </#if>
+    ${MODULE_END}'
+where template_id = 300;
+
+
+-- /* VETERAN SUMMARY - Homelessness  Update #230 */
+UPDATE template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Homelessness
+    ${MODULE_TITLE_END}
+    ${MODULE_START}
+    This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. 
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP}
+    <#if isSelectedAnswer(var2000,var761)>
+        unstable housing/at risk
+        ${LINE_BREAK}
+        <b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call.
+    <#elseif isSelectedAnswer(var2000,var762)>
+        stable housing
+    </#if>
+
+    ${MODULE_END}
+</#if>'
+where template_id=301;
+
+
+-- /* VETERAN SUMMARY - Alcohol Use  Update #230*/
+UPDATE template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var1229??) &&  getFormulaDisplayText(var1229) != "notfound">
+    ${MODULE_TITLE_START}
+    Alcohol Use
+    ${MODULE_TITLE_END}
+    ${MODULE_START}
+    Drinking too much, too often, or both, causes serious problems. Abuse can have negative effects on school, work, and relationships, and can cause liver disease and cirrhosis, congestive heart failure, seizures, falls, hypertension, and other serious health risks.
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b> ${NBSP}
+    <#if (getFormulaDisplayText(var1229)?number >= 0) && (getFormulaDisplayText(var1229)?number <= 2)>
+        negative screen
+    <#elseif (getFormulaDisplayText(var1229)?number == 3) >
+        at risk
+    <#elseif (getFormulaDisplayText(var1229)?number >= 4) && (getFormulaDisplayText(var1229)?number <= 12)>
+        at risk
+    </#if>
+    ${LINE_BREAK}
+    <b>Recommendation:</b> If female, limit yourself to one drink a day; if male, limit yourself to 2 drinks a day. If this is difficult, ask your clinician for help with managing your drinking.  
+    ${MODULE_END}
+</#if>
+' where template_id = 302;
+
+
+-- /* VETERAN SUMMARY - Insomnia Update #230 */
+UPDATE template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var2189?? && getFormulaDisplayText(var2189) != "notfound">
+    ${MODULE_TITLE_START}
+    Insomnia
+    ${MODULE_TITLE_END}
+    ${MODULE_START}
+    Insomnia is having trouble sleeping that lasts longer than a few weeks. Some causes are: medical (like depression or pain), lifestyle factors (such as too much caffeine), or even stress. 
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP}
+    <#if (getFormulaDisplayText(var2189)?number >= 0) && (getFormulaDisplayText(var2189)?number <= 7)>
+        negative screen
+    <#elseif (getFormulaDisplayText(var2189)?number >= 8) && (getFormulaDisplayText(var2189)?number <= 14)>
+        subthreshold insomnia
+    <#elseif (getFormulaDisplayText(var2189)?number >= 15) && (getFormulaDisplayText(var2189)?number <= 21)>
+        moderate insomnia
+    <#elseif (getFormulaDisplayText(var2189)?number >= 22) && (getFormulaDisplayText(var2189)?number <= 28)>
+        severe insomnia
+    </#if>
+    <#if (getFormulaDisplayText(var2189)?number >= 15)>
+        ${LINE_BREAK}
+        <b>Recommendation:</b> Describe your sleeping problems to your clinician, or learn more about insomnia at the  CESAMH site at: http://escreening.cesamh.org 
+    </#if>
+    ${MODULE_END}
+</#if>
+' where template_id = 303;
+
+
+-- /* VETERAN SUMMARY - Environmental Exposure Update #230 */
+UPDATE template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var10540.children)??  && ((var10540.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Environmental Exposure
+    ${MODULE_TITLE_END}
+    ${MODULE_START}      
+    This is when you have been exposed to a hazard that may have potential health risks.
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b> ${NBSP}
+    <#if isSelectedAnswer(var10540,var10541)>
+        none reported
+    <#elseif isSelectedAnswer(var10540,var10542)>
+        at risk
+        ${LINE_BREAK}
+        <b>Recommendation:</b> Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm.
+    </#if>
+    ${MODULE_END}
+</#if>
+' where template_id=304;
+
+
+-- /* VETERAN SUMMARY - Military Sexual Trauma (MST) update #230 */
+UPDATE template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var2003.children)?? && ((var2003.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Military Sexual Trauma (MST)
+    ${MODULE_TITLE_END}
+    ${MODULE_START}
+    MST is sexual assault or repeated, threatening sexual harassment that occurred while the Veteran was in the military. MST can happen any time or anywhere, to men and women. MST can affect your physical and mental health, even years later.
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP} 
+    <#if isSelectedAnswer(var2003,var2004)>
+        negative screen
+        ${LINE_BREAK}
+        <b>Recommendation:</b> none
+    <#elseif isSelectedAnswer(var2003,var2005)>
+        postive screen
+        ${LINE_BREAK}
+        <b>Recommendation:</b> Ask your clinician for help managing your MST. 
+    <#elseif isSelectedAnswer(var2003,var2006)>
+        declined to answer
+    </#if>
+    ${MODULE_END}
+</#if>
+' where template_id=305;
+
+
+-- /* VETERAN SUMMARY - Tobacco Use  update #230*/
+UPDATE template set template_file = ' 
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var600.children)?? && ((var600.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Tobacco Use
+    ${MODULE_TITLE_END}
+    ${MODULE_START}
+
+    The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications.
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP} 
+    <#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)>
+        negative screen
+    <#elseif isSelectedAnswer(var600,var603)>
+        current user
+        ${LINE_BREAK}
+        <b>Recommendations:</b> Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed.
+    </#if>
+    ${MODULE_END}
+</#if>
+' where template_id=306;
+
+-- fix for 230 where the veteran summary template for the PCL-C module module was mapped to another module
+update survey_template st set survey_id=34 
+where st.survey_id=35 and st.template_id=310;

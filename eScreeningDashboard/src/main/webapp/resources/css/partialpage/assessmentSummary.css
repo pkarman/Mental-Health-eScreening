@@ -133,6 +133,16 @@
 .spacer1TableData {
   width: 500px;
 }
+
+.modal.modal-wide .modal-dialog {
+  width: 1000px;
+}
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+
+
+
 #VeteranSummaryModal .moduleTemplateTitle {
   font-weight: bold;
   margin: 10px 10px 20px 10px;
@@ -164,12 +174,7 @@
 #VeteranSummaryModal .justifyLftTableData {
   text-align: left;
 }
-.modal.modal-wide .modal-dialog {
-  width: 1000px;
-}
-.modal-wide .modal-body {
-  overflow-y: auto;
-}
+
 #VeteranSummaryModal .modal-body p {
   margin-bottom: 900px;
 }
@@ -204,6 +209,76 @@
   font-weight: bold;
   text-align: center;
 }
+
+
+/* Printable */
+.printable .moduleTemplateTitle {
+  font-weight: bold;
+  margin: 10px 10px 20px 10px;
+  text-decoration: underline;
+}
+.printable .moduleTemplateText {
+  margin: 10px 10px 20px 10px;
+}
+.printable .moduleTemplateText:first-line {
+/* font-weight: bold; */
+}
+.printable .matrixTableHeader {
+  width: 200px;
+}
+.printable .moduleTemplate {
+  display: inline-table;
+  width: 48%;
+  border-top: 1px dashed #000000;
+}
+.printable .moduleTemplate:nth-of-type(even) {
+  border-right: 1px dashed #000000;
+}
+.printable .moduleTemplate:nth-of-type(odd) {
+  /* border-left: 1px dashed #000000; */
+}
+.printable .justifyRtTableData {
+  text-align: right;
+}
+.printable .justifyLftTableData {
+  text-align: left;
+}
+
+.printable .modal-body p {
+  margin-bottom: 900px;
+}
+.printable .moduleTemplateHeader h5 {
+  font-size: 22px !important;
+  font-weight: bold !important;
+  line-height: 35px;
+}
+.printable .graphicBlock {
+  width: 100% !important;
+  border: none !important;
+  border-top: 1px dashed #000000 !important;
+}
+.printable .graphicBlock .scoreBlock {
+  border: none !important;
+  display: inline-table;
+  width: 150px;
+  border-right: 1px dashed #000 !important;
+  padding-right: 5px;
+}
+.printable .graphicBlock .moduleTemplateText {
+  display: inline-table;
+  width: 300px;
+  border-left: 1px dashed #000000 !important;
+  padding-left: 10px;
+}
+.printable .graphicBlock .graphSection {
+  display: inline-table;
+  width: 450px;
+}
+.printable .graphicBlock .graphHeader {
+  font-weight: bold;
+  text-align: center;
+}
+
 .graphicBody{ 
   font-size:10px;
 }
@@ -211,21 +286,25 @@
 display:none;
 }
 @media print {
+/*
 * {
   overflow: visible;
 }
+
 body * {
   visibility: hidden;
   overflow: visible !important;
   font-size: 11px;
 }
-.yesPrint, .yesPrint * {
+
+.printableArea, .printableArea * {
   visibility: visible !important;
   min-height: none !important;
   max-height: none !important;
   height: auto !important;
 }
-.non-printable {
+*/
+.nonPrintableArea {
   display: none;
 }
 .custom_modal .modal-wide .modal-body {
@@ -272,8 +351,6 @@ body * {
   margin: 5px;
   padding: 0px;
 }
-
-
 #VeteranSummaryModal .graphicBlock .scoreBlock {
   border: none !important;
   display: inline-table;
@@ -296,11 +373,49 @@ body * {
   text-align: center;
 }
 
+/*Printable */
+.printable{
+  padding:0 20px;
+  font-size:12px;
+}
+
+.printable img{
+  visibility:visible;
+}
+.printable .moduleTemplateTitle {
+  margin: 5px;
+  padding: 0px;
+  text-decoration: underline;
+}
+.printable .moduleTemplateText {
+  margin: 5px;
+  padding: 0px;
+}
+.printable .graphicBlock .scoreBlock {
+  border: none !important;
+  display: inline-table;
+  width: 100px;
+  border-right: 1px dashed #000 !important;
+  padding-right: 5px;
+}
+.printable .graphicBlock .moduleTemplateText {
+  display: inline-table;
+  width: 150px;
+  border-left: 1px dashed #000000 !important;
+  padding-left: 10px;
+}
+.printable .graphicBlock .graphSection {
+  display: inline-table;
+
+  width: 450px;
+}
+.printable .graphicBlock .graphHeader {
+  font-weight: bold;
+  text-align: center;
+}
+
 .page_foot{
-  /*
-  display:block;
-  position:fixed;
-  */
+
 }
 
 .circle_progress_wrapper{
