@@ -243,7 +243,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
             propertyNameValue = false,
             filteredValidations = [];
 
-        validations.forEach(function (validation) {
+        validations.some(function (validation) {
             if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
                 validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
                 if(typeof validation[isPropertyName] === 'function'){
@@ -258,7 +258,10 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
                 if(propertyNameValue === targetPropertyValue) {
                     filteredValidations.push(validation);
+                    return true;
                 }
+
+                return false;
             }
         });
 
@@ -394,7 +397,7 @@ EScreeningDashboardApp.models.Question.filterValidations = function (targetPrope
         propertyNameValue = false,
         filteredValidations = [];
 
-    validations.forEach(function (validation) {
+    validations.some(function (validation) {
         if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
             validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
             if(typeof validation[isPropertyName] === 'function'){
@@ -409,7 +412,10 @@ EScreeningDashboardApp.models.Question.filterValidations = function (targetPrope
 
             if(propertyNameValue === targetPropertyValue) {
                 filteredValidations.push(validation);
+                return true;
             }
+
+            return false;
         }
     });
 

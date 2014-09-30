@@ -12,7 +12,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
     $scope.parentResetForm = $scope.resetForm;
     var parentEditQuestion = $scope.editQuestion;
 
-    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedPageQuestionItem);
+    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedPageQuestionItem.getItem());
     var convertFieldValueToNumber = function (validationUIObject) {
         if (Object.isDefined(validationUIObject) && Object.isDefined(validationUIObject.value)) {
             validationUIObject.value = parseInt(validationUIObject.value);
@@ -42,22 +42,31 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         } else {
             if(Object.isDefined(currentlySelectedTextFormatMenuItem) && $scope.selectedPageQuestionItem.isQuestion()) {
                 var selectedQuestionUIObject = $scope.selectedPageQuestionItem.getItem(),
+                    validationDomainObjects = [],
                     textFormatValidation = selectedQuestionUIObject.textFormatDropDownMenu;
+
+                selectedQuestionUIObject.validations.forEach(function(validationUIObject, index, array){
+                    if(Object.isDefined(validationUIObject)){
+                        validationDomainObjects.push(new EScreeningDashboardApp.models.Validation(validationUIObject));
+                    }
+                });
 
                 if (Object.isDefined(selectedQuestionUIObject) && ((Object.isDefined(textFormatValidation) && textFormatValidation.value === "number"))) {
                     $scope.showValidation();
-                    if (Object.isDefined(selectedQuestionUIObject)) {
-                        $scope.exactLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "exactLength", selectedQuestionUIObject.validations).toUIObject());
-                        $scope.minLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minLength", selectedQuestionUIObject.validations).toUIObject());
-                        $scope.maxLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxLength", selectedQuestionUIObject.validations).toUIObject());
-                        $scope.minValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minValue", selectedQuestionUIObject.validations).toUIObject());
-                        $scope.maxValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxValue", selectedQuestionUIObject.validations).toUIObject());
-                    }
+
+                    $scope.exactLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "exactLength", validationDomainObjects).toUIObject());
+                    $scope.minLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minLength", validationDomainObjects).toUIObject());
+                    $scope.maxLengthField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxLength", validationDomainObjects).toUIObject());
+                    $scope.minValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "minValue", validationDomainObjects).toUIObject());
+                    $scope.maxValueField = convertFieldValueToNumber(EScreeningDashboardApp.models.Question.findValidation("name", "maxValue", validationDomainObjects).toUIObject());
+
                 } else {
                     $scope.hideValidation();
+                    //TODO: Remove validations from validation array.
                 }
             } else {
                 $scope.hideValidation();
+                //TODO: Remove validations from validation array.
             }
         }
     }, true);
@@ -78,34 +87,25 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         $scope.showMaxValueField = false;
     };
 
-    /*$scope.editQuestion = function(selectedPageQuestionItem){
-        var selectedQuestionUIObject = selectedPageQuestionItem.getItem(),
-            textFormatValidationMenuItem = $scope.textFormatDropDownMenu;
-
-        $scope.textFormatDropDownMenu = $scope.getDefaultTextFormatType(selectedQuestionUIObject, $scope.textFormatDropDownMenuOptions);
-        parentEditQuestion(selectedPageQuestionItem);
-    };*/
-
     $scope.setTextFormatValidation = function () {
         var selectedQuestionUIObject = $scope.selectedPageQuestionItem.getItem(),
-            textFormatValidationMenuItem = $scope.textFormatDropDownMenu;
+            selectTextFormatValidationMenuItem = $scope.textFormatDropDownMenu;
 
-        if(Object.isDefined(textFormatValidationMenuItem)) {
-            if (textFormatValidationMenuItem.name === "dataType") {
+        if(Object.isDefined(selectTextFormatValidationMenuItem)) {
+            if (selectTextFormatValidationMenuItem.name === "dataType") {
                 var existingValidation = selectedQuestionUIObject.validations.find(function (validation, index, array) {
-                    if(validation.name === textFormatValidationMenuItem.name && validation.value === textFormatValidationMenuItem.value) {
+                    if(validation.name === selectTextFormatValidationMenuItem.name && validation.value === selectTextFormatValidationMenuItem.value) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(Object.isDefined(existingValidation)) {
-
-                } else {
-                    $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu = textFormatValidationMenuItem;
-                    $scope.selectedPageQuestionItem.getItem().validations.push(textFormatValidationMenuItem);
+                if(!Object.isDefined(existingValidation)) {
+                    selectedQuestionUIObject.validations.push(selectTextFormatValidationMenuItem);
                 }
+
+                selectedQuestionUIObject.textFormatDropDownMenu = selectTextFormatValidationMenuItem;
             }
         } else {
             $scope.textFormatDropDownMenu = null;
@@ -121,95 +121,110 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
     };
 
     $scope.setExactLengthValidation = function (){
+        var validation;
         if(Object.isDefined($scope.exactLengthField)) {
-            if ($scope.exactLengthField.selected && Object.isDefined($scope.exactLengthField.value)) {
+            if ($scope.exactLengthField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.textFormatDropDownMenu.name &&
-                        validation.value === $scope.textFormatDropDownMenu.value) {
+                    if(validation.name === $scope.exactLengthField.name) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(!Object.isDefined(existingValidation)) {
-                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.exactLengthField);
+                if(Object.isDefined(existingValidation)) {
+                    existingValidation.value = $scope.exactLengthField.value;
+                } else {
+                    validation = new EScreeningDashboardApp.models.Validation($scope.exactLengthField);
+                    $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
             }
         }
     };
 
     $scope.setMinLengthValidation = function() {
+        var validation;
         if (Object.isDefined($scope.minLengthField)) {
-            if ($scope.minLengthField.selected && Object.isNumber($scope.minLengthField.value)) {
+            if ($scope.minLengthField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.textFormatDropDownMenu.name &&
-                        validation.value === $scope.textFormatDropDownMenu.value) {
+                    if(validation.name === $scope.minValueField.name) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(!Object.isDefined(existingValidation)) {
-                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.minLengthField);
+                if(Object.isDefined(existingValidation)) {
+                    existingValidation.value = $scope.minValueField.value;
+                } else {
+                    validation = new EScreeningDashboardApp.models.Validation($scope.minLengthField);
+                    $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
             }
         }
     };
 
     $scope.setMaxLengthValidation = function (){
+        var validation;
         if(Object.isDefined($scope.maxLengthField)) {
-            if ($scope.maxLengthField.selected && Object.isNumber($scope.maxLengthField.value)) {
+            if ($scope.maxLengthField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.textFormatDropDownMenu.name &&
-                        validation.value === $scope.textFormatDropDownMenu.value) {
+                    if(validation.name === $scope.minValueField.name) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(!Object.isDefined(existingValidation)) {
-                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxLengthField);
+                if(Object.isDefined(existingValidation)) {
+                    existingValidation.value = $scope.minValueField.value;
+                } else {
+                    validation = new EScreeningDashboardApp.models.Validation($scope.maxLengthField);
+                    $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
             }
         }
     };
 
     $scope.setMinValueValidation = function () {
+        var validation;
         if(Object.isDefined($scope.minValueField)) {
-            if ($scope.minValueField.selected && Object.isNumber($scope.minValueField.value)) {
+            if ($scope.minValueField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.textFormatDropDownMenu.name &&
-                        validation.value === $scope.textFormatDropDownMenu.value) {
+                    if(validation.name === $scope.minValueField.name) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(!Object.isDefined(existingValidation)) {
-                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.minValueField);
+                if(Object.isDefined(existingValidation)) {
+                    existingValidation.value = $scope.minValueField.value;
+                } else {
+                    validation = new EScreeningDashboardApp.models.Validation($scope.minValueField);
+                    $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
             }
         }
     };
 
     $scope.setMaxValueValidation = function() {
+        var validation;
         if(Object.isDefined($scope.maxValueField)) {
-            if ($scope.maxValueField.selected && Object.isNumber($scope.maxValueField.value)) {
+            if ($scope.maxValueField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.textFormatDropDownMenu.name &&
-                        validation.value === $scopeestionItem.getItem().textFormatDropDownMenu.value) {
+                    if(validation.name === $scope.maxValueField.name) {
                         return true;
                     }
 
                     return false;
                 });
 
-                if(!Object.isDefined(existingValidation)) {
-                    $scope.selectedPageQuestionItem.getItem().validations.push($scope.maxValueField);
+                if(Object.isDefined(existingValidation)) {
+                    existingValidation.value = $scope.maxValueField.value;
+                } else {
+                    validation = new EScreeningDashboardApp.models.Validation($scope.maxValueField);
+                    $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
             }
         }

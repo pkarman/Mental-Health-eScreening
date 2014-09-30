@@ -35,7 +35,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             if(item.isPage()){
                 organizedPages.push(item.getItem());
             } else if(organizedPages.length > 0){
-                organizedPages[organizedPages.length-1].getQuestions().push(item.getItem());
+                organizedPages[organizedPages.length-1].questions.push(item.getItem());
             }
         });
 
@@ -63,7 +63,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.addPageBreak = function(surveyPageUIObject){
-        var surveyPageUIObject = new EScreeningDashboardApp.models.SurveyPage(surveyPageUIObject).toUIObject,
+        var surveyPageUIObject = new EScreeningDashboardApp.models.SurveyPage(surveyPageUIObject).toUIObject(),
             pageQuestionItem = new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper((($scope.pageQuestionItems.length === 0)? {surveyPageUIObject: surveyPageUIObject, enabled: false} : {surveyPageUIObject: surveyPageUIObject}));
 
         $scope.pageQuestionItems.push(pageQuestionItem);
