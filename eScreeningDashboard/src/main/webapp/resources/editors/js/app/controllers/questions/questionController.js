@@ -40,7 +40,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
             newQuestionUIObject = new EScreeningDashboardApp.models.Question({
                 type: $scope.questionTypeSelection.type
             }).toUIObject();
-
+        $scope.setEditorMode("create");
         $scope.setSelectedPageQuestionItem($scope.addQuestion(newQuestionUIObject));
         $state.go(stateName, {selectedQuestionId: -1});
     };/*

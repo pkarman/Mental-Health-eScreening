@@ -15,6 +15,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
+    $scope.editorMode = null;
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         var pageIndex = 0;
@@ -31,6 +32,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.organizePages = function () {
         var organizedPages = [];
+
         $scope.pageQuestionItems.forEach(function(item) {
             if(item.isPage()){
                 organizedPages.push(item.getItem());
@@ -39,7 +41,9 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             }
         });
 
-        if(organizedPages.length == 1){
+        if(organizedPages.length === 1 &&
+            Object.isArray(organizedPages[0].questions) &&
+            organizedPages[0].questions.length === 0) {
             organizedPages = [];
         }
 
@@ -48,6 +52,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.setFormReset = function(formReset) {
         $scope.formReset = formReset;
+    };
+
+    $scope.setEditorMode = function(editorMode){
+        $scope.editorMode = editorMode;
     };
 
     $scope.setSelectedSurveyUIObject = function(someSelectedQuestionUIObject) {

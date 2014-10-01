@@ -216,6 +216,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 doTransition: false
             };
 
+        $scope.setEditorMode("edit");
         if(Object.isDefined(stateName)) {
             $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
             $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});

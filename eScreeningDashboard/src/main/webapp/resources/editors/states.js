@@ -215,11 +215,20 @@ angular.module('Editors')
 
                             if($stateParams.selectedSurveyId > -1) {
                                 SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
-                                    var pageQuestionItems = (Object.isArray(response.getPayload()))? response.getPayload() : [];
+                                    var surveyPages = (Object.isArray(response.getPayload()))? response.getPayload() : Object.isDefined(response.getPayload())? [response.getPayload()] : [],
+                                        pageQuestionItems = [],
+                                        surveyPageConfig;
 
-                                    /*if (pageQuestionItems.length === 0) {
-                                        pageQuestionItems.push(response.getPayload());
-                                    }*/
+                                    surveyPages.forEach(function(surveyPage){
+                                        surveyPageConfig = surveyPage.toUIObject();
+                                        surveyPageConfig.questions = [];
+                                        pageQuestionItems.push(new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper({surveyPageUIObject: surveyPageConfig}));
+
+                                        surveyPage.getQuestions().forEach(function(question){
+                                             pageQuestionItems.push(new EScreeningDashboardApp.models.QuestionUIObjectItemWrapper({questionIUObject: question.toUIObject()}));
+                                        });
+
+                                    });
 
                                     deferred.resolve(pageQuestionItems);
                                 }, function(responseError) {
@@ -290,8 +299,7 @@ angular.module('Editors')
                     templateUrl:'resources/editors/views/questions/selectsinglequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
-                    },
-                    controller: 'addEditModuleController'
+                    }
                 })
 
                 .state('modules.detail.editSelectOneMatrixQuestionType',{
@@ -299,8 +307,7 @@ angular.module('Editors')
                     templateUrl:'resources/editors/views/questions/selectsinglematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
-                    },
-                    controller: 'addEditModuleController'
+                    }
                 })
 
                 .state('modules.detail.editFreeTextQuestionType', {

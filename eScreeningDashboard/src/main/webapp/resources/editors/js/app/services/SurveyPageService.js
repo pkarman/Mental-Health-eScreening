@@ -49,7 +49,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                     if(response.isSuccessful()){
                         if(Object.isArray(response.getPayload())){
                             if(response.getPayload().length === 1){
-                                payload = EScreeningDashboardApp.models.SurveyPageTransformer.transformJSONPayload({surveyPage: response.getPayload()[0].toJSON()}, null);
+                                payload = EScreeningDashboardApp.models.SurveyPageTransformer.transformJSONPayload({surveyPage: JSON.parse(response.getPayload()[0].toJSON())}, null);
                                 response = new BytePushers.models.Response(response.getStatus(), payload);
                             }
                         }
@@ -113,7 +113,7 @@ angular.module('EscreeningDashboardApp.services.surveypage', ['ngResource'])
                         }
                     );
 
-                service.save(EScreeningDashboardApp.models.SurveyPage.toUIObjects(updateSurveyPageRequestParameter.payload), function (jsonResponse) {
+                service.save(updateSurveyPageRequestParameter.payload, function (jsonResponse) {
                     var response = handleSurveyPageUpdateResponse(jsonResponse, EScreeningDashboardApp.models.SurveyPageTransformer, null);
                     deferred.resolve(response);
                 }, function (reason) {
