@@ -34,7 +34,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 		
 		int theTemplateTypeId = template.getTemplateType().getTemplateTypeId().intValue();
 		
-		List<TemplateType> templateTypes = templateTypeRepository.findAllOrderByName();
+		List<TemplateType> templateTypes = templateTypeRepository.findAllModuleTypeOrderByName();
 		List<ModuleTemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
 		
 		for(TemplateType templateType : templateTypes)
