@@ -11,8 +11,8 @@
   
   <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
-  <script type="text/javascript" src="resources/js/dashboard/myAccount.js"></script>
   <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+  <script type="text/javascript" src="resources/js/dashboard/myAccount.js"></script>
   
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
   <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" />
@@ -23,128 +23,6 @@
   
   <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
   <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript">
-  // ---------------------------
-  // JH Comment - TODO:  
-  // - Refactor all the JS code 
-  // - Move to external file
-  // - Cache all classes to var
-  // ---------------------------
-  
-  $(document).ready(function() {
-    tabsLoad("myAccount");
-    
-    /* The following code is  show and hide the angularjs validations for all  browsers. */
-    $("#currentPassword").click(function(){
-      $(this).removeClass("ng-pristine");
-      $("#newPassword").addClass("ng-pristine");
-      $("#confirmedPassword").addClass("ng-pristine")
-      
-    });
-    $("#newPassword").click(function(){
-      $(this).removeClass("ng-pristine");
-      $("#currentPassword").addClass("ng-pristine");
-      $("#confirmedPassword").addClass("ng-pristine");
-    });
-    $("#confirmedPassword").click(function(){
-        $(this).removeClass("ng-pristine");
-        $("#currentPassword").addClass("ng-pristine");
-        $("#newPassword").addClass("ng-pristine")
-    });
-  });
-  </script>
-
-
-  <script type="text/javascript">
-  $(document).ready(function() {
-    
-      // Load my info call
-      $.ajax({
-      type : 'get',
-      url : 'myAccount/services/users/active/myInfo', // in here you should put your query 
-      data :  '',
-      success : function(data)
-         {								
-           $('.acc_firstName').empty().html(data['firstName']);
-           $('.acc_middleName').empty().html(data['middleName']);
-           $('.acc_lastName').empty().html(data['lastName']);
-           $('.acc_phoneNumber').empty().html(data['phoneNumber']);
-           $('.acc_emailAddress').empty().html(data['emailAddress']);
-           
-           $('.acc_roleName').empty().html(data['roleName']);
-           
-           var cprsVerified = data['cprsVerified'];
-           if(cprsVerified == "false"){
-             $('.acc_cprsVerified').empty().html("Not Verified");
-             $(".user_verification_link").removeClass("hide");
-           }else{
-             $('.acc_cprsVerified').empty().html("Verified");
-             $(".user_verification_link").addClass("hide");
-           }
-         }
-      });
-		       
-      $('#verifyForm').submit(function(){  
-        var accessCode = $('#cprsAccessCode').val();
-        var verifyCode = $('#cprsVerifyCode').val();
-
-        $('#btn_verify').button();
-        $("#btn_verify").button('loading');
-              
-        $.ajax({
-            type : 'post',
-             url : 'myAccount/services/users/active/verifyVistaAccount', // in here you should put your query 
-             data :  'accessCode='+ accessCode + '&verifyCode=' + verifyCode, // here you pass your id via ajax . vid & vien
-             // in php you should use $_POST['post_id'] to get this value 
-             success : function(r){
-             var isSuccessful = r['isSuccessful'];
-             var userMessage = r['userMessage'];
-            
-            //isSuccessful = "true";
-            if(isSuccessful == "true"){
-              $("#verification_message").removeClass("hide");
-              $("#verification_message").addClass("alert-success");
-              $("#verification_message").removeClass("alert-danger");
-              $('#verification_message').empty().html(userMessage);
-              $('.acc_cprsVerified').empty().html("Verified");
-              $(".user_verification_link, #btn_verify").addClass("hide");
-              $('#btn_close').text("Continue");
-          $(':input','#verifyForm')
-            .not(':button, :submit, :reset, :hidden')
-            .val('');
-            }else{
-              $("#verification_message").removeClass("hide");
-              $("#verification_message").addClass("alert-danger");
-              $("#verification_message").removeClass("alert-success");
-              $('#verification_message').empty().html(userMessage);
-              $("#btn_verify").removeAttr('disabled');
-              $("#btn_verify").removeClass('disabled');
-              $("#btn_verify").text('Verify Now');
-              $(':input','#verifyForm')
-                .not(':button, :submit, :reset, :hidden')
-                .val('');
-            }
-          }
-      });
-      
-    });
-       
-     // Call verify from outside links ...
-     var hash = window.location.hash;
-     if (hash == "#verify") {
-        $('#verify_modal').modal({
-         keyboard: false,
-         backdrop: 'static'
-        });
-     }    
-      // Handle close event
-      $("#verify_modal").on('hidden.bs.modal', function () {	
-        $("#cprsAccessCode").val("");
-        $("#cprsVerifyCode").val("");
-        $("#verification_message").addClass("hide");
-      }); 
-   });
-  </script>
 
   <!-- Bootstrap -->
   <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
@@ -214,7 +92,7 @@
                         <h2><span class="acc_lastName"></span>, <span class="acc_firstName"></span> <span class="acc_middleName"></span></h2>
                         <br>
                         <div class="title_label">CPRS Verified</div>
-                        <div><span class="acc_cprsVerified"></span> <span class="user_verification_link hide"><a href="#"  data-toggle="modal" data-target="#verify_modal" data-controls-modal="#verify_modal"  data-backdrop="static"  data-keyboard="false"> (Click here to verify your account)</a></span></div>
+                        <div><span class="acc_cprsVerified"></span> <span class="user_verification_link hide"  aria-hidden="true"><a href="#"  data-toggle="modal" data-target="#verify_modal" data-controls-modal="#verify_modal"  data-backdrop="static"  data-keyboard="false"> (Click here to verify your account)</a></span></div>
                         <br>
                         <div class="title_label">Email Address</div>
                         <div><span class="acc_emailAddress"></span></div>
@@ -252,14 +130,14 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group">
-                            <label>Access Code:</label>
+                            <label for="cprsAccessCode">Access Code:</label>
                             <input type="password" id="cprsAccessCode" class="form-control" placeholder="Enter Access Code" maxlength="30"  required="required" />
                             <div id="cprsVerifyCodeError" style="padding-left:231px;display:none;"></div>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
-                            <label>Verify Code:</label>
+                            <label for="cprsVerifyCode">Verify Code:</label>
                             <input type="password" id="cprsVerifyCode" class="form-control" placeholder="Enter Verify Code"  maxlength="30" required/>
                             <div id="errorDiv" align="center" style="color:red;"></div>
                           </div>
