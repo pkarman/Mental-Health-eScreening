@@ -73,6 +73,17 @@ public class TemplateRestController {
 			throw new NotFoundException("Could not find the template.");
 		return dto;
 	}
+	
+	@RequestMapping(value="/services/template/{surveyId}/{templateTypeId}")
+	@ResponseBody
+	public TemplateDTO getTemplate(@PathVariable("templateTypeId") Integer templateTypeId, @PathVariable("surveyId") Integer surveyId,
+			@CurrentUser EscreenUser screenUser)
+	{
+		TemplateDTO dto = templateService.getTemplateBySurveyAndTemplateType(surveyId, templateTypeId);
+		if (dto == null)
+			throw new NotFoundException("Could not find the template.");
+		return dto;
+	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody

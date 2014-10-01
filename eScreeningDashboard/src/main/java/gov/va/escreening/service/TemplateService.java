@@ -29,6 +29,9 @@ public interface TemplateService {
 	void setVariableTemplatesToTemplate(Integer templateId,
 			List<Integer> variableTemplateIds);
 
+	 TemplateDTO getTemplateBySurveyAndTemplateType(Integer surveyId,
+			Integer templateTypeId);
+
 	
 
 }

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -268,6 +269,26 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		
 		return templateSet;
+	}
+
+	@Override
+	public TemplateDTO getTemplateBySurveyAndTemplateType(Integer surveyId,
+			Integer templateTypeId) {
+		
+		Template t =  templateRepository.getTemplateByIdAndTemplateType(surveyId, templateTypeId);
+		TemplateDTO dto = null;
+		if (t != null)
+		{
+			dto = new TemplateDTO();			
+			dto.setTemplateId(t.getTemplateId());
+			dto.setName(t.getName());
+			dto.setDateCreated(t.getDateCreated());
+			dto.setDescription(t.getDescription());
+			dto.setGraphical(t.getIsGraphical());
+			dto.setTemplateFile(t.getTemplateFile());
+			dto.setTemplateType(templateTypeId);
+		}
+		return dto;
 	}
 
 	
