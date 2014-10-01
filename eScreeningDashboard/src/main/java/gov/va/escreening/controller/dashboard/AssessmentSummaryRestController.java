@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -76,7 +75,7 @@ public class AssessmentSummaryRestController {
         String progressNoteContent = null;
 
         try {
-            progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
+            progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.CPRS_PREVIEW, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE));
         }
         catch (Exception e) {
             if(e instanceof ErrorResponseException){

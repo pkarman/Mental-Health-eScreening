@@ -364,8 +364,8 @@ public class XportDataTest {
 		// there are some mendatory columns which will always be returned by the system. These columns may or may not be
 		// provided in the user provided json. These columns are as follows:
 		// assessment_id, created_by, battery_name, program_name, vista_clinic, note_title, clinician_name,
-		// date_created, time_created, date_completed, time_completed, duration, veteran_lastname, veteran_firstname,
-		// veteran_midname, veteran_SSN, veteran_DOB
+		// date_created, time_created, date_completed, time_completed, duration, vista_lastname, vista_firstname,
+		// vista_midname, vista_SSN, vista_DOB
 		if (!ignoreThisExportName(dec.getColumnName(), atd, deidentified)) {
 			assertNotNull(String.format("%s => export column name =>%s is not provided in user provided json", atd.testName, dec.getColumnName()), expectedVal);
 			return false;
@@ -376,7 +376,7 @@ public class XportDataTest {
 
 	}
 
-	private static final List<String> mandatoryExportNames = Arrays.asList("assessment_id", "created_by", "battery_name", "program_name", "vista_clinic", "note_title", "clinician_name", "date_created", "time_created", "date_completed", "time_completed", "duration", "veteran_ien", "veteran_lastname", "veteran_firstname", "veteran_midname", "veteran_SSN", "veteran_DOB");
+	private static final List<String> mandatoryExportNames = Arrays.asList("assessment_id", "created_by", "battery_name", "program_name", "vista_clinic", "note_title", "clinician_name", "date_created", "time_created", "date_completed", "time_completed", "duration", "vista_ien", "vista_lastname", "vista_firstname", "vista_midname", "vista_SSN", "vista_DOB");
 	private static final List<String> identificationSurveyPpiExportNames = Arrays.asList("demo_lastname", "demo_firstname", "demo_midname", "demo_SSN");
 	private static final List<String> basicDemoPpiExportNames = Arrays.asList("demo_DOB");
 
@@ -467,7 +467,7 @@ public class XportDataTest {
 
 		String name = "templateProcessorService-->templateDataVerifierTypeTxt-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
@@ -484,7 +484,7 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierTypeHtml-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE, TemplateType.VISTA_QA));
 			sw.stop();
@@ -501,7 +501,7 @@ public class XportDataTest {
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierVetSummary-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
 			sw.stop();
@@ -566,7 +566,7 @@ public class XportDataTest {
 		String name = "testSmrListResponseTimeForVet18";
 		StopWatch sw = new StopWatch(name);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			smrLister.loadSmrFromDb(18);
 			sw.stop();
@@ -745,7 +745,7 @@ public class XportDataTest {
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
 		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();

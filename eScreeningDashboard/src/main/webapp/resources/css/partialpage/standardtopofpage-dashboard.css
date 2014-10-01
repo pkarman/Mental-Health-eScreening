@@ -130,6 +130,17 @@ h2 {
 	font-size:14px;
 	font-weight:bold;
 }
+
+.border-radius-box-a h2{
+	margin:0px;
+	padding:6px 10px;
+	font-size:14px;
+	font-weight:bold;
+}
+.verifyFormImportData h1{
+  font-size:18px;
+}
+
 .box-padding-10{
 	padding:10px;
 }
