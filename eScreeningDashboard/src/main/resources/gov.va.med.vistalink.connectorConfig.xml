@@ -11,6 +11,6 @@
 	<connector jndiName="vljsdconnector" ip="10.184.72.10"
 		port="18110" primaryStation="664" access-code="cBM29nD"
 		verify-code="Ry8kq5MP#1234" encrypted="false"
-		enabled="true" timeout="100" always-use-default-as-min="false"/>
+		enabled="true" timeout="1000" always-use-default-as-min="false"/>
 
 </connectors>
