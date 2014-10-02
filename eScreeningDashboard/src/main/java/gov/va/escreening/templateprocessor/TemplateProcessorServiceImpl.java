@@ -231,7 +231,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		/* Add optional VistA questions/answer text */
 		if(templateMap.containsKey(TemplateType.VISTA_QA)) {
-			evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
+			evaluator.appendQuestionsAndAnswers(templateMap.get(TemplateType.VISTA_QA));
 		}
 		
 		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();
@@ -542,11 +542,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			return this;
 		}
 		
-	    private TemplateEvaluator appendQuestionsAndAnswers(String s){
+	    private TemplateEvaluator appendQuestionsAndAnswers(Template qaTemplate) throws IllegalSystemStateException{
             endPreviousSection();
             logger.debug("Appending clinical reminder questions");
             startSection(new SurveySection(null, "CLINICAL REMINDERS", null));
-            text.append(s);
+            text.append(processTemplate(qaTemplate, assessmentId));
             endPreviousSection();
             logger.debug("Completed clinical reminder questions");
             return this;
