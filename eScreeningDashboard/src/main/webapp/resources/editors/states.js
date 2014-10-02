@@ -736,33 +736,55 @@ angular.module('Editors')
 
                     }]
                 })
-                .state('templates.templatelistview',{
-                    url:'',
-                    /*template:'<div class="col-md-12" style="background-color:#ebebeb;min-height:400px;">' +
-                        '<h3>Templates Selection View</h3>' +
-                        '<div class="form-inline form-group" style="background-color:#245269;">' +
-                        '<button class="btn btn-primary" ng-click="goToAddEdit();">Add/Edit Template</button>' +
-                        '</div>' +
-                        '</div>',*/
+                
+                //TODO: relocate this up with the other module states
+                .state('modules.templatelist',{
+                    url:'/templatelist',  //remove the survey ID once we relocate this state when we add templatelist to the url it should look like module/45/templatelist but the state hierarchy is incorrect currently
                     data: {
-                        displayName: 'Templates: Selection'
+                        displayName: 'Manage Templates'
                     },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
-                    controller:['$rootScope', '$scope', '$state',
-                        function($rootScope, $scope, $state){
-                            $scope.goToAddEdit = function(){
-                                $state.go('templates.templateeditorview');
-                            }
-
-                            $scope.deleteClick = function(){
-                                alert('Triggers Template Delete functionality.');
-                            }
-
-                            $scope.goToHome = function(){
-                                $state.go('/')
-                            }
-                        }]
-
+                    controller: 'templateListController',
+                    resolve: {
+                      templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+                          var deferred = $q.defer();
+                          
+                          //TODO: uncomment this when we merge code and have the surveyId 
+                         // if(Object.isDefined($stateParams) && Object.isDefined($stateParams.surveyId)){
+                          
+                              //TODO: this is not correct
+//                              TemplateService
+//                              	.getTypesForModule($scope.selectedSurveyUIObject.id)
+//                              	.then(
+//                              		function (templateTypes){
+//                              		    deferred.resolve(templateTypes);
+//                              		
+//                              		}, 
+//                              		function(responseError) {
+//                              		    $rootScope.errors.push(responseError.getMessage());
+//                              		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
+//                              		    deferred.reject(responseError.getMessage());
+//                              		}
+//                          		);
+                              var templateTypes = [
+                                   	new EScreeningDashboardApp.models.TemplateType(
+                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
+                                   	new EScreeningDashboardApp.models.TemplateType(
+                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
+                                                   ];
+                              deferred.resolve(templateTypes);
+                              
+                           //TODO: uncomment this when we merge code and have the surveyId
+//                          }
+//                          else{
+//                            $rootScope.errors.push("No valid context found. Please contact support.");
+//                            console.log("Template Type List Error:: either a Module ID or a Battery ID must be given."); 
+//                            $state.go('???');
+//                          }
+//                          
+                          return deferred.promise;
+                      }]
+                  },
                 })
 
                 .state('templates.templateeditorview', {

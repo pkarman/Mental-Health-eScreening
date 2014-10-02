@@ -108,4 +108,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.goToCreateVar = function(){
         $state.go('modules.detail.createvariable.questionvariable');
     };
+    
+    $scope.editTemplates = function(){
+        $state.go('modules.templatelist');
+    };
 }]);
