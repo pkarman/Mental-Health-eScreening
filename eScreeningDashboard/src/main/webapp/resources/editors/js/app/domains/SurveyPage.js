@@ -113,6 +113,9 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
     this.toUIObject = function(){
         var surveyUIObject = JSON.parse(this.toJSON(true));
         surveyUIObject.createdDate = this.getCreatedDate();
+        surveyUIObject.toString = function() {
+            return id;
+        };
         return surveyUIObject;
     };
 };

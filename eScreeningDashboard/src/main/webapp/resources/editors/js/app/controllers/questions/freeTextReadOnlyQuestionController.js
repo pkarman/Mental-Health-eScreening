@@ -2,6 +2,55 @@
  * Created by Bryan Henderson - 08/07/2014
  */
 Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'textFormatTypeMenuOptions', function($rootScope, $scope, $state, QuestionService, textFormatTypeMenuOptions){
+    var parentEditQuestion = $scope.editQuestion,
+        selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedPageQuestionItem.getItem()),
+        validationsArrayConfiguration = [
+            {name: 'dataType',      value: 'email'},
+            {name: 'dataType',      value: 'date'},
+            {name: 'dataType',      value: 'number'},
+            {name: 'exactLength',   value: undefined},
+            {name: 'minLength',     value: undefined},
+            {name: 'maxLength',     value: undefined},
+            {name: 'minValue',      value: undefined},
+            {name: 'maxValue',      value: undefined}
+        ];
+    var convertFieldValueToNumber = function (validationUIObject) {
+            if (Object.isDefined(validationUIObject) && Object.isDefined(validationUIObject.value)) {
+                validationUIObject.value = parseInt(validationUIObject.value);
+            }
+            return validationUIObject;
+        },
+        removeValidations = function(validationsToBeRemovedArray) {
+            var someValidationToBeRemoved,
+                validations = $scope.selectedPageQuestionItem.getItem().validations,
+                existingValidation = null,
+                i = 0;
+
+            if(Object.isArray(validationsToBeRemovedArray) && validationsToBeRemovedArray.length > 0) {
+                for (i = 0; i < validations.length; i++) {
+                    existingValidation = validations[i];
+                    if (Object.isDefined(existingValidation)) {
+                        someValidationToBeRemoved = validationsToBeRemovedArray.find(function (validationToBeRemoved, index) {
+                            if (Object.isDefined(validationToBeRemoved)) {
+                                if (validationToBeRemoved.name === "dataType" && existingValidation.name === "dataType" &&
+                                    validationToBeRemoved.value === existingValidation.value) {
+                                    return true;
+                                } else if (validationToBeRemoved.name === existingValidation.name &&
+                                    validationToBeRemoved.name !== "dataType" && existingValidation.name !== "dataType") {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+
+                        if (Object.isDefined(someValidationToBeRemoved)) {
+                            validations.splice(i--, 1);
+                        }
+                    }
+                }
+            }
+        };
+
     $scope.setTextFormatDropDownMenuOptions(textFormatTypeMenuOptions);
     $scope.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem.getItem(), $scope.textFormatDropDownMenuOptions);
     $scope.showExactLengthField = (Object.isDefined($scope.textFormatDropDownMenu) && $scope.textFormatDropDownMenu.value === "number")? true : false;
@@ -10,15 +59,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
     $scope.showMinValueField = (Object.isDefined($scope.textFormatDropDownMenu) && $scope.textFormatDropDownMenu.value === "number")? true : false;
     $scope.showMaxValueField = (Object.isDefined($scope.textFormatDropDownMenu) && $scope.textFormatDropDownMenu.value === "number")? true : false;
     $scope.parentResetForm = $scope.resetForm;
-    var parentEditQuestion = $scope.editQuestion;
 
-    var selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedPageQuestionItem.getItem());
-    var convertFieldValueToNumber = function (validationUIObject) {
-        if (Object.isDefined(validationUIObject) && Object.isDefined(validationUIObject.value)) {
-            validationUIObject.value = parseInt(validationUIObject.value);
-        }
-        return validationUIObject;
-    };
 
     $scope.exactLengthField = convertFieldValueToNumber(selectedQuestionDomainObject.findValidation("name", "exactLength").toUIObject());
     $scope.minLengthField = convertFieldValueToNumber(selectedQuestionDomainObject.findValidation("name", "minLength").toUIObject());
@@ -32,7 +73,9 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         if(currentlySelectedPageQuestionItem === previouslySelectedPageQuestionItem) {
             return;
         } else {
-            $scope.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem.getItem(), $scope.textFormatDropDownMenuOptions);
+            if(Object.isDefined($scope.selectedPageQuestionItem)){
+                $scope.textFormatDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedPageQuestionItem.getItem(), $scope.textFormatDropDownMenuOptions);
+            }
         }
     });
 
@@ -91,8 +134,27 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         var selectedQuestionUIObject = $scope.selectedPageQuestionItem.getItem(),
             selectTextFormatValidationMenuItem = $scope.textFormatDropDownMenu;
 
+
         if(Object.isDefined(selectTextFormatValidationMenuItem)) {
-            if (selectTextFormatValidationMenuItem.name === "dataType") {
+            if (selectTextFormatValidationMenuItem.name === "dataType" &&
+                selectTextFormatValidationMenuItem.value !== "number") {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === "dataType" &&
+                            validationConfig.value === "number"){
+
+                            return true;
+                        } else if (validationConfig.name !== "dataType") {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
+            }
+
+            if (selectTextFormatValidationMenuItem.name === "dataType" ){
                 var existingValidation = selectedQuestionUIObject.validations.find(function (validation, index, array) {
                     if(validation.name === selectTextFormatValidationMenuItem.name && validation.value === selectTextFormatValidationMenuItem.value) {
                         return true;
@@ -105,18 +167,42 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                     selectedQuestionUIObject.validations.push(selectTextFormatValidationMenuItem);
                 }
 
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === "dataType" &&
+                            selectTextFormatValidationMenuItem.name === "dataType" &&
+                            validationConfig.value !== selectTextFormatValidationMenuItem.value){
+
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
+
                 selectedQuestionUIObject.textFormatDropDownMenu = selectTextFormatValidationMenuItem;
             }
         } else {
             $scope.textFormatDropDownMenu = null;
             $scope.selectedPageQuestionItem.getItem().textFormatDropDownMenu = null;
-            $scope.selectedPageQuestionItem.getItem().validations.forEach(function (validation, index, array) {
-                if(Object.isDefined(validation)){
-                    if(validation.name === "dataType" && (validation.value === "email" || validation.value === "date" || validation.value === "number")){
-                        array.splice(index, 1);
+            removeValidations(validationsArrayConfiguration);
+        }
+    };
+
+    $scope.removeExactLengthValidation = function () {
+        if(Object.isDefined($scope.exactLengthField)) {
+            if (!$scope.exactLengthField.selected) {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === $scope.exactLengthField.name){
+                            return true;
+                        }
                     }
-                }
-            });
+
+                    return false;
+                }));
+            }
         }
     };
 
@@ -133,11 +219,41 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                 });
 
                 if(Object.isDefined(existingValidation)) {
-                    existingValidation.value = $scope.exactLengthField.value;
+                    if (Object.isDefined($scope.exactLengthField.value)) {
+                        existingValidation.value = $scope.exactLengthField.value;
+                    } else {
+                        removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                            if(Object.isDefined(validationConfig)) {
+                                if(validationConfig.name === $scope.exactLengthField.name){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }));
+                    }
+
                 } else {
                     validation = new EScreeningDashboardApp.models.Validation($scope.exactLengthField);
                     $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
+            }
+        }
+    };
+
+    $scope.removeMinLengthValidation = function () {
+        if(Object.isDefined($scope.minLengthField)) {
+            if (!$scope.minLengthField.selected) {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === $scope.minLengthField.name){
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
             }
         }
     };
@@ -147,7 +263,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         if (Object.isDefined($scope.minLengthField)) {
             if ($scope.minLengthField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.minValueField.name) {
+                    if(validation.name === $scope.minLengthField.name) {
                         return true;
                     }
 
@@ -155,11 +271,40 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                 });
 
                 if(Object.isDefined(existingValidation)) {
-                    existingValidation.value = $scope.minValueField.value;
+                    if (Object.isDefined($scope.minLengthField.value)) {
+                        existingValidation.value = $scope.minLengthField.value;
+                    } else {
+                        removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                            if(Object.isDefined(validationConfig)) {
+                                if(validationConfig.name === $scope.minLengthField.name){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }));
+                    }
                 } else {
                     validation = new EScreeningDashboardApp.models.Validation($scope.minLengthField);
                     $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
+            }
+        }
+    };
+
+    $scope.removeMaxLengthValidation = function () {
+        if(Object.isDefined($scope.maxLengthField)) {
+            if (!$scope.maxLengthField.selected) {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === $scope.maxLengthField.name){
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
             }
         }
     };
@@ -169,7 +314,7 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
         if(Object.isDefined($scope.maxLengthField)) {
             if ($scope.maxLengthField.selected) {
                 var existingValidation = $scope.selectedPageQuestionItem.getItem().validations.find(function (validation, index, array) {
-                    if(validation.name === $scope.minValueField.name) {
+                    if(validation.name === $scope.maxLengthField.name) {
                         return true;
                     }
 
@@ -177,11 +322,40 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                 });
 
                 if(Object.isDefined(existingValidation)) {
-                    existingValidation.value = $scope.minValueField.value;
+                    if(Object.isDefined($scope.maxLengthField.value)) {
+                        existingValidation.value = $scope.maxLengthField.value;
+                    } else {
+                        removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                            if(Object.isDefined(validationConfig)) {
+                                if(validationConfig.name === $scope.maxLengthField.name){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }));
+                    }
                 } else {
                     validation = new EScreeningDashboardApp.models.Validation($scope.maxLengthField);
                     $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
+            }
+        }
+    };
+
+    $scope.removeMinValueValidation = function () {
+        if(Object.isDefined($scope.minValueField)) {
+            if (!$scope.minValueField.selected) {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === $scope.minValueField.name){
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
             }
         }
     };
@@ -199,11 +373,41 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                 });
 
                 if(Object.isDefined(existingValidation)) {
-                    existingValidation.value = $scope.minValueField.value;
+                    if(Object.isDefined($scope.minValueField.value)){
+                        existingValidation.value = $scope.minValueField.value;
+                    } else {
+                        removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                            if(Object.isDefined(validationConfig)) {
+                                if(validationConfig.name === $scope.minValueField.name){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }));
+                    }
+
                 } else {
                     validation = new EScreeningDashboardApp.models.Validation($scope.minValueField);
                     $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());
                 }
+            }
+        }
+    };
+
+    $scope.removeMaxValueValidation = function () {
+        if(Object.isDefined($scope.maxValueField)) {
+            if (!$scope.maxValueField.selected) {
+
+                removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                    if(Object.isDefined(validationConfig)) {
+                        if(validationConfig.name === $scope.maxValueField.name){
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }));
             }
         }
     };
@@ -221,7 +425,20 @@ Editors.controller('freeTextReadOnlyQuestionController', ['$rootScope', '$scope'
                 });
 
                 if(Object.isDefined(existingValidation)) {
-                    existingValidation.value = $scope.maxValueField.value;
+                    if(Object.isDefined($scope.maxValueField.value)) {
+                        existingValidation.value = $scope.maxValueField.value;
+                    } else {
+                        removeValidations(validationsArrayConfiguration.filter(function(validationConfig) {
+                            if(Object.isDefined(validationConfig)) {
+                                if(validationConfig.name === $scope.maxValueField.name){
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }));
+                    }
+
                 } else {
                     validation = new EScreeningDashboardApp.models.Validation($scope.maxValueField);
                     $scope.selectedPageQuestionItem.getItem().validations.push(validation.toUIObject());

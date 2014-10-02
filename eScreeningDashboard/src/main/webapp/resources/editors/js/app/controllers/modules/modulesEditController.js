@@ -199,7 +199,9 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };*/
 
     $scope.cancel = function () {
-        $state.go('modules.detail.emtpy');
+        $scope.setSelectedPageQuestionItem(null);
+        $scope.setSelectedSurveyUIObject(null);
+        $state.go('modules.detail.empty');
     };
 
     /*$scope.addQuestion = function(){
@@ -216,7 +218,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 doTransition: false
             };
 
-        $scope.setEditorMode("edit");
         if(Object.isDefined(stateName)) {
             $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
             $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});

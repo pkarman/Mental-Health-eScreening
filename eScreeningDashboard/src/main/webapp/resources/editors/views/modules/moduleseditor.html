@@ -97,7 +97,7 @@
                                                           ng-show="item.getItem().pageNumber > 1"
                                                           ng-click="deletePageQuestionItem(item);"/>
                                             </button>
-                                            <button class="btn btn-success btn-sm" ng-click="goToQuestions();"><span
+                                            <button class="btn btn-success btn-sm" ng-click="goToQuestions(item);"><span
                                                     class="glyphicon glyphicon-plus"></span> Add Item
                                             </button>
                                         </div>
@@ -142,7 +142,7 @@
     <div class="col-md-12">
         <div class="form-group pull-right">
             <button class="btn btn-primary" ng-disabled="!moduleDetailsForm.$valid" ng-click="save();">Save</button>
-            <button class="btn btn-default" ng-disabled="!moduleDetailsForm.$valid" ng-click="cancel();">Cancel</button>
+            <button class="btn btn-default" ng-click="cancel();">Cancel</button>
         </div>
     </div>
 </div>

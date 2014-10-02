@@ -71,7 +71,7 @@
 
                 <div class="input-group">
                         <span class="input-group-addon">
-                            <input type="checkbox" ng-model="exactLengthField.selected">
+                            <input type="checkbox" ng-model="exactLengthField.selected" ng-change="removeExactLengthValidation()">
                         </span>
                     <input type="number" id="inputExactLength" name="inputExactLength"
                            class="form-control" placeholder="0" ng-model="exactLengthField.value"
@@ -86,7 +86,7 @@
 
                 <div class="input-group">
                         <span class="input-group-addon">
-                            <input type="checkbox" ng-model="minLengthField.selected">
+                            <input type="checkbox" ng-model="minLengthField.selected" ng-change="removeMinLengthValidation()">
                         </span>
                     <input type="number" id="inputMinLength" name="inputMinLength" class="form-control" placeholder="0"
                            ng-change="setMinLengthValidation()"
@@ -100,7 +100,7 @@
 
                 <div class="input-group">
                         <span class="input-group-addon">
-                            <input type="checkbox" ng-model="maxLengthField.selected">
+                            <input type="checkbox" ng-model="maxLengthField.selected" ng-change="removeMaxLengthValidation()">
                         </span>
                     <input type="number" id="inputMaxLength" name="inputMaxLength" class="form-control" placeholder="0"
                            ng-change="setMaxLengthValidation()"
@@ -114,7 +114,7 @@
 
                 <div class="input-group">
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-model="minValueField.selected">
+                        <input type="checkbox" ng-model="minValueField.selected" ng-change="removeMinValueValidation()">
                     </span>
                     <input type="number" id="inputMinValue" name="inputMinValue" class="form-control" placeholder="0"
                            ng-change="setMinValueValidation()"
@@ -128,7 +128,7 @@
 
                 <div class="input-group">
                     <span class="input-group-addon">
-                        <input type="checkbox" ng-model="maxValueField.selected">
+                        <input type="checkbox" ng-model="maxValueField.selected" ng-change="removeMaxValueValidation()">
                     </span>
                     <input type="number" id="inputMaxValue" name="inputMaxValue" class="form-control" placeholder="0"
                            ng-change="setMaxValueValidation()"

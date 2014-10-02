@@ -2,6 +2,8 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
+    var selectedPage;
+
     var createModule = function(jsonModuleObject){
             return new EScreeningDashboardApp.models.Survey(jsonModuleObject);
         },
@@ -15,7 +17,6 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
-    $scope.editorMode = null;
 
     $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
         var pageIndex = 0;
@@ -50,12 +51,16 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         return organizedPages;
     };
 
-    $scope.setFormReset = function(formReset) {
-        $scope.formReset = formReset;
+    $scope.setSelectedPage = function (someSelectedPage){
+        selectedPage = someSelectedPage;
     };
 
-    $scope.setEditorMode = function(editorMode){
-        $scope.editorMode = editorMode;
+    $scope.getSelectedPage = function(){
+        return selectedPage;
+    };
+
+    $scope.setFormReset = function(formReset) {
+        $scope.formReset = formReset;
     };
 
     $scope.setSelectedSurveyUIObject = function(someSelectedQuestionUIObject) {
@@ -64,6 +69,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.setSelectedPageQuestionItem = function(someSelectedPageQuestionItem) {
         $scope.selectedPageQuestionItem = someSelectedPageQuestionItem;
+    };
+
+    $scope.getSelectedPageQuestionItem = function() {
+        return $scope.selectedPageQuestionItem;
     };
 
     $scope.setPageQuestionItems = function(newPageQuestionItems) {
@@ -80,13 +89,37 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
 
     $scope.addQuestion = function(someQuestionUIObject) {
         var questionUIObject = (Object.isDefined(someQuestionUIObject))? someQuestionUIObject: new EScreeningDashboardApp.models.Question(null).toUIObject,
-            pageQuestionItem = new EScreeningDashboardApp.models.QuestionUIObjectItemWrapper({questionIUObject: questionUIObject});
+            pageQuestionItem = new EScreeningDashboardApp.models.QuestionUIObjectItemWrapper({questionIUObject: questionUIObject}),
+            selectedPage = $scope.getSelectedPage(),
+            trackPageQuestionItem = false,
+            nextPageAfterSelectedPage;
 
         if($scope.pageQuestionItems.length === 0) {
            $scope.addPageBreak();
         }
 
-        $scope.pageQuestionItems.push(pageQuestionItem);
+        if((Object.isDefined(selectedPage))){
+            nextPageAfterSelectedPage = $scope.pageQuestionItems.find(function(existingPageQuestionItem, index, pageQuestionItems) {
+
+                if(existingPageQuestionItem === selectedPage){
+                    trackPageQuestionItem = true;
+                } else if(trackPageQuestionItem) {
+                    if(existingPageQuestionItem.isPage()) {
+                        $scope.pageQuestionItems.splice(index, 0, pageQuestionItem);
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            if(!Object.isDefined(nextPageAfterSelectedPage)) {
+                $scope.pageQuestionItems.push(pageQuestionItem);
+            }
+        } else {
+            $scope.pageQuestionItems.push(pageQuestionItem);
+        }
+
         return pageQuestionItem;
     };
 
@@ -103,13 +136,21 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.deletePageQuestionItem = function (pageQuestionItem) {
-        var matchIndex = -1;
+        var matchIndex = -1,
+            doStateTransition = (pageQuestionItem === $scope.getSelectedPageQuestionItem())? true: false;
+
         if(Object.isDefined(pageQuestionItem)) {
             matchIndex = $scope.pageQuestionItems.indexOf(pageQuestionItem);
 
             if(matchIndex > -1) {
                 $scope.pageQuestionItems.splice(matchIndex, 1);
             }
+        }
+
+        if(doStateTransition) {
+            $scope.setSelectedPageQuestionItem(null);
+            $scope.setSelectedSurveyUIObject(null);
+            $state.go('modules.detail.empty', {selectedQuestionId: -1})
         }
     };
 
@@ -136,23 +177,16 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-    $scope.goToQuestions = function() {
+    $scope.goToQuestions = function(selectedPage) {
         var softReset = false,
             state = {
                 name: "modules.detail.selectQuestionType",
                 params: {selectedQuestionId: -1},
                 doTransition: true
             };
+        $scope.setSelectedPage(selectedPage);
         $scope.resetForm(false, state);
     };
-
-
-
-
-
-
-
-
 
 
 
