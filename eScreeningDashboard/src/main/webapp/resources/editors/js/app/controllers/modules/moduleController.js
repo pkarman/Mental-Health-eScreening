@@ -11,6 +11,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
         };
 
+    $scope.surveyUIObjects = [];
     $scope.pageQuestionItems = [];
     $scope.selectedSurveyUIObject = createModule().toUIObject();
     $scope.selectedPageQuestionItem = {};
@@ -49,6 +50,14 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
 
         return organizedPages;
+    };
+
+    $scope.setSurveyUIObjects = function(newSurveyUIObjects) {
+        $scope.surveyUIObjects = newSurveyUIObjects;
+    };
+
+    $scope.getSurveyUIObjects = function() {
+        return $scope.surveyUIObjects;
     };
 
     $scope.setSelectedPage = function (someSelectedPage){
