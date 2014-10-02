@@ -5,15 +5,11 @@
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
-
 <html ng-app="userEditViewApp">
 <head>
+    <title>User Edit View</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
-
+    
     <link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
@@ -26,11 +22,13 @@
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
 
-    <title>User Edit View</title>
-
+    <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+    
     <script type="text/javascript">
         $(document).ready(function() {
-            tabsLoad("userManagement");
+            
         });
         
     </script>
@@ -191,7 +189,9 @@
 								maxlength="30" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter the First Name" />
+								placeholder="Enter the First Name"
+                required="required"
+                />
 							<form:errors path="firstName" cssClass="help-inline"  required="required" />
 						</div>
 					</div>
@@ -226,7 +226,9 @@
 								maxlength="10" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter a Phone Number" />
+								placeholder="Enter a Phone Number"
+                required="required"
+                />
 							<form:errors path="phoneNumber" cssClass="help-inline"  required="required" />
 						</div>
 					</div>
@@ -273,7 +275,10 @@
 								maxlength="50" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter an alternate Email Address" />
+								placeholder="Enter an alternate Email Address"
+                required="required"
+                type="email"
+                />
 							<form:errors path="emailAddress" cssClass="help-inline"/>
 						</div>
 					</div>
@@ -284,7 +289,10 @@
 								maxlength="50" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter an alternate Email Address" />
+								placeholder="Enter an alternate Email Address"
+                required="required"
+                type="email"
+                />
 							<form:errors path="emailAddress2" cssClass="help-inline"/>
 						</div>
 					</div>
@@ -299,7 +307,9 @@
 									maxlength="50" 
 									cssClass="inputStyle form-control"
 									cssErrorClass="errorInputStyle  form-control"
-									placeholder="Enter a Password" type="password" />
+									placeholder="Enter a Password" type="password"
+                  required="required" 
+                  />
 								<form:errors path="password" cssClass="help-inline"/>
 							</div>
 						</div>
@@ -310,7 +320,9 @@
 									maxlength="50" 
 									cssClass="inputStyle form-control"
 									cssErrorClass="errorInputStyle  form-control"
-									placeholder="Reenter the Password" type="password" />
+									placeholder="Reenter the Password" type="password"
+                  required="required" 
+                  />
 								<form:errors path="passwordConfirmed" cssClass="help-inline"  />
 							</div>
 						</div>
@@ -320,7 +332,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
-							<form:label path="selectedProgramIdList">Program</form:label>
+              <div class="strong">Program</div>
 							<div class="program_list checkbox">
 								<ul id="dev-table">
 									<c:if test="${not empty programList}">
@@ -348,7 +360,7 @@
 
 	</div>
 
-	<!-- Modal -->
+	  <!-- Modal for ChangeP assword-->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -356,46 +368,35 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title" id="changePasswordLabel">Change Password</h4>
           </div>
-          
           <form id="changePasswordForm" name="changePasswordForm" autocomplete="off">
           <div class="modal-body">
-
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-							
-			
-								
-                           		<div class="alert hide" id="verification_message" ></div>
-                           
-
-								<div class="row" id="changePasswordInputBlock">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="chnPassword" >Password *</label>
-											<input type="password" name="chnPassword" id="chnPassword" class="form-control" maxlength="30"  placeholder="Enter Password" required="required" >
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="chnPasswordConfirmed" >Reenter Password *</label>
-											<input type="password" name="chnPasswordConfirmed" id="chnPasswordConfirmed" class="form-control" maxlength="30" placeholder="Reenter Password"  required="required" >
-										</div>
-									</div>
-								</div>							
-							
-								
-						</div>
-					</div>	
-				</div>
-				
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="alert hide" id="verification_message" ></div>
+                    <div class="row" id="changePasswordInputBlock">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="chnPassword" >Password *</label>
+                          <input type="password" name="chnPassword" id="chnPassword" class="form-control" maxlength="30"  placeholder="Enter Password" required="required" >
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="chnPasswordConfirmed" >Reenter Password *</label>
+                          <input type="password" name="chnPasswordConfirmed" id="chnPasswordConfirmed" class="form-control" maxlength="30" placeholder="Reenter Password"  required="required" >
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>	
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" id="btnSaveChangePassword" data-text-loading="Loading...">Save</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_close" >Cancel</button>
           </div>
           </form>			
-          
         </div>
       </div>
     </div>
