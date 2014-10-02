@@ -1,15 +1,19 @@
 package gov.va.escreening.service.export;
 
+import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.dto.dashboard.DataExportFilterOptions;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.ExportLog;
 import gov.va.escreening.entity.ExportType;
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.ExportTypeRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
@@ -19,54 +23,68 @@ import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.repository.VeteranRepository;
+import gov.va.escreening.service.DataDictionaryService;
 import gov.va.escreening.service.MeasureService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.VeteranAssessmentSurveyService;
+import gov.va.escreening.util.SurveyResponsesHelper;
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
 
 @Service("exportDataService")
-public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAware {
+public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
 	private static final Logger logger = LoggerFactory.getLogger(ExportDataServiceImpl.class);
-	private BeanFactory bf;
 
-	@Autowired
+	private MessageSource msgSrc;
+
+	@Resource(type = ExportLogRepository.class)
 	private ExportLogRepository exportLogRepository;
-	@Autowired
+
+	@Resource(type = ExportTypeRepository.class)
 	private ExportTypeRepository exportTypeRepository;
-	@Autowired
-	private MeasureAnswerRepository measureAnswerRepository;
-	@Autowired
-	private MeasureRepository measureRepository;
-	@Autowired
-	private MeasureService measureService;
-	@Autowired
+
+	@Resource(type = ProgramRepository.class)
 	private ProgramRepository programRepository;
-	@Autowired
-	private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
-	@Autowired
-	private SurveyRepository surveyRepository;
-	@Autowired
+
+	@Resource(type = UserRepository.class)
 	private UserRepository userRepository;
-	@Autowired
+
+	@Resource(type = VeteranAssessmentService.class)
 	private VeteranAssessmentService veteranAssessmentService;
-	@Autowired
-	private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
-	@Autowired
+
+	@Resource(type = VeteranRepository.class)
 	private VeteranRepository veteranRepository;
+
+	@Resource(type = VariableResolverService.class)
+	private VariableResolverService vrs;
+
+	@Resource(type = AssessmentVariableRepository.class)
+	private AssessmentVariableRepository avr;
+
+	@Resource(type = DataDictionaryService.class)
+	private DataDictionaryService dds;
+
+	@Resource(type = SurveyResponsesHelper.class)
+	private SurveyResponsesHelper srh;
 
 	@Override
 	@Transactional
@@ -76,23 +94,52 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 		AssessmentDataExport assessmentDataExport = new AssessmentDataExport();
 
 		if (exportDataFormBean.getHasParameter()) {
-			// 1) Use the passed in filter criteria to pull in the matching assessments
+			// 10) Use the passed in filter criteria to pull in the matching assessments
 			List<VeteranAssessment> matchingAssessments = veteranAssessmentService.searchVeteranAssessmentForExport(exportDataFormBean);
 
-			// 2) prepare exportData from matching assessments
-			assessmentDataExport.setTableContents(createDataExportReport(matchingAssessments, exportDataFormBean.getExportTypeId()));
+			// 11) collect all the formulae for these assessments
+			Map<Integer, Map<String, String>> formulae = buildFormulaeMapForMatchingAssessments(matchingAssessments);
+
+			// 12) get a fresh data dictionary representing the fresh meta data
+			Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+
+			// 20) prepare exportData from matching assessments
+			assessmentDataExport.setTableContents(createDataExportReport(matchingAssessments, exportDataFormBean.getExportTypeId(), formulae, dataDictionary));
 			DataExportFilterOptions filterOptions = createFilterOptions(exportDataFormBean);
 			assessmentDataExport.setFilterOptions(filterOptions);
 
-			// 3) log this activity
+			// 30) log this activity
 			ExportLog exportLog = logDataExport(assessmentDataExport);
 
-			if (exportLog!=null){
+			if (exportLog != null) {
 				assessmentDataExport.setExportLogId(exportLog.getExportLogId());
 			}
 		}
 
 		return assessmentDataExport;
+	}
+
+	private Map<Integer, Map<String, String>> buildFormulaeMapForMatchingAssessments(
+			List<VeteranAssessment> matchingAssessments) {
+
+		Map<Integer, Map<String, String>> formulaeMap = Maps.newHashMap();
+
+		Iterable<AssessmentVariable> avFormulaeEntities = avr.findAllFormulae();
+
+		for (VeteranAssessment va : matchingAssessments) {
+			Iterable<AssessmentVariableDto> avFormulaeList = vrs.resolveVariablesFor(va.getVeteranAssessmentId(), avFormulaeEntities);
+			formulaeMap.put(va.getVeteranAssessmentId(), createFormulaeMap(avFormulaeList));
+		}
+		return formulaeMap;
+	}
+
+	private Map<String, String> createFormulaeMap(
+			Iterable<AssessmentVariableDto> avFormulaeList) {
+		Map<String, String> formulaeMap = Maps.newHashMap();
+		for (AssessmentVariableDto dto : avFormulaeList) {
+			formulaeMap.put(dto.getDisplayName(), dto.getDisplayText());
+		}
+		return formulaeMap;
 	}
 
 	private DataExportFilterOptions createFilterOptions(
@@ -137,20 +184,21 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public ExportLog logDataExport(AssessmentDataExport dataExport) {
 
 		// Add an entry to the exportLog table
 		ExportLog exportLog = createExportLogFromOptions(dataExport.getFilterOptions());
 
-		if (addExportLogDataToExportLog(exportLog, dataExport)){
+		if (addExportLogDataToExportLog(exportLog, dataExport)) {
 			exportLogRepository.create(exportLog);
 			return exportLog;
 		}
 		return null;
 	}
 
-	private boolean addExportLogDataToExportLog(ExportLog exportLog, AssessmentDataExport dataExport) {
+	private boolean addExportLogDataToExportLog(ExportLog exportLog,
+			AssessmentDataExport dataExport) {
 		String header = createHeaderFromDataExport(dataExport);
 		if (header != null) {
 			List<String> data = createDataFromDataExport(dataExport);
@@ -175,7 +223,8 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 					sb.append(",");
 				}
 				if (logger.isDebugEnabled()) {
-					if (logger.isDebugEnabled()) logger.debug(String.format("row of length %s is being added [%s]", sb.length(), sb));
+					if (logger.isDebugEnabled())
+						logger.debug(String.format("row of length %s is being added [%s]", sb.length(), sb));
 				}
 				rows.add(sb.toString());
 			}
@@ -205,7 +254,8 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 			header = dataExport.getHeader();
 		}
 		if (header != null && logger.isDebugEnabled()) {
-			if (logger.isDebugEnabled()) logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
+			if (logger.isDebugEnabled())
+				logger.debug(String.format("header of length %s is being added [%s]", header.length(), header));
 		}
 		return header;
 	}
@@ -266,46 +316,64 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 
 	private List<List<DataExportCell>> createDataExportReport(
 			List<VeteranAssessment> matchingAssessments,
-			Integer identifiedExportType) {
+			Integer identifiedExportType,
+			Map<Integer, Map<String, String>> vid2AggregatesMap,
+			Map<String, Table<String, String, String>> dataDictionary) {
 
 		List<List<DataExportCell>> tableContent = new ArrayList<List<DataExportCell>>();
 
 		// build an export row for each assessment
 		for (VeteranAssessment assessment : matchingAssessments) {
-			List<DataExportCell> row = createDataExportForOneAssessment(assessment, identifiedExportType);
-			tableContent.add(row);
+			Map<String, String> formulaeMap = vid2AggregatesMap.get(assessment.getVeteranAssessmentId());
+			List<SurveyMeasureResponse> smrList = assessment.getSurveyMeasureResponseList();
+			List<DataExportCell> exportDataRowCells = buildExportDataForOneAssessment(assessment, identifiedExportType, smrList, formulaeMap, dataDictionary);
+			tableContent.add(exportDataRowCells);
 		}
 
 		return tableContent;
 	}
 
-	@Override
-	public List<DataExportCell> createDataExportForOneAssessment(
-			VeteranAssessment assessment, Integer identifiedExportType) {
+	private List<DataExportCell> buildExportDataForOneAssessment(
+			VeteranAssessment assessment, Integer identifiedExportType,
+			List<SurveyMeasureResponse> smrList,
+			Map<String, String> formulaeMap,
+			Map<String, Table<String, String, String>> ddMap) {
 
-		// Iterate the list of modules and add them to the export row
-		// each row consists of cells, and each cell is represented by a DataExportCell
-		// every survey (also called interchangeably as 'module' here [database survey = java module]) has its own set
-		// of data export cells
-		List<DataExportCell> exportRow = new ArrayList<DataExportCell>();
+		// has user asked to show the ppi info or not
+		boolean show = ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
 
-		for (ModuleEnum module : ModuleEnum.values()) {
-			List<DataExportCell> cells = module.apply(this.bf, assessment, identifiedExportType);
-			if (cells != null && !cells.isEmpty()) {
-				exportRow.addAll(cells);
+		// quickly gather mandatory columns data
+		List<DataExportCell> exportDataRowCells = buildMandatoryColumns(assessment, show);
+
+		for (String surveyName : ddMap.keySet()) {
+			Map<String, String> usrRespMap = srh.prepareSurveyResponsesMap(surveyName, smrList, show);
+
+			// get the table data (one sheet) for this survey
+			Table<String, String, String> dataDictionary = ddMap.get(surveyName);
+
+			// get the names of export names for each row
+			// the returned data will be rowId=exportName for the export column
+			Map<String, String> columnData = dataDictionary.column(msgSrc.getMessage("data.dict.column.var.name", null, null));
+
+			// traverse through each exportName, and try to find the run time response for the exportName. In case the
+			// user has not responded, leave 999
+			for (String exportName : columnData.values()) {
+				if (!exportName.isEmpty()) {
+					DataExportCell oneCell = srh.createExportCell(usrRespMap, formulaeMap, exportName, show);
+					if (oneCell != null) {
+						if (logger.isDebugEnabled()) {
+							logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, exportName, oneCell));
+						}
+						exportDataRowCells.add(oneCell);
+					}
+				}
 			}
 		}
-
-		return exportRow;
+		return exportDataRowCells;
 	}
 
 	@Override
-	public void setBeanFactory(BeanFactory arg0) throws BeansException {
-		this.bf = arg0;
-	}
-
-	@Override
-    @Transactional
+	@Transactional
 	public AssessmentDataExport downloadExportData(Integer userId,
 			int exportLogId, String comment) {
 
@@ -319,7 +387,65 @@ public class ExportDataServiceImpl implements ExportDataService, BeanFactoryAwar
 		ExportLog newExportLog = logDataExport(ade);
 
 		ade.setExportLogId(newExportLog.getExportLogId());
-		
+
 		return ade;
 	}
+
+	@Override
+	public void setMessageSource(MessageSource msgSrc) {
+		this.msgSrc = msgSrc;
+	}
+
+	@Override
+	public List<DataExportCell> createDataExportForOneAssessment(
+			VeteranAssessment va, int identifiedExportType) {
+
+		Map<Integer, Map<String, String>> formulaeMap = buildFormulaeMapForMatchingAssessments(Arrays.asList(va));
+		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+		List<SurveyMeasureResponse> smrList = va.getSurveyMeasureResponseList();
+		List<DataExportCell> row = buildExportDataForOneAssessment(va, identifiedExportType, smrList, formulaeMap.get(va.getVeteranAssessmentId()), dataDictionary);
+		return row;
+
+	}
+
+	public List<DataExportCell> buildMandatoryColumns(
+			VeteranAssessment assessment, boolean show) {
+
+		List<DataExportCell> mandatoryData = new ArrayList<DataExportCell>();
+
+		mandatoryData.addAll(collectPpi(assessment, show));
+
+		mandatoryData.add(new DataExportCell("assessment_id", srh.getOrMiss(srh.getStrFromInt(assessment.getVeteranAssessmentId()))));
+		mandatoryData.add(new DataExportCell("created_by", srh.getOrMiss(assessment.getCreatedByUser() != null ? assessment.getCreatedByUser().getUserFullName() : null)));
+		mandatoryData.add(new DataExportCell("battery_name", srh.getOrMiss(assessment.getBattery() != null ? assessment.getBattery().getName() : null)));
+		mandatoryData.add(new DataExportCell("program_name", srh.getOrMiss(assessment.getProgram() != null ? assessment.getProgram().getName() : null)));
+		mandatoryData.add(new DataExportCell("vista_clinic", srh.getOrMiss(assessment.getClinic() != null ? assessment.getClinic().getName() : null)));
+		mandatoryData.add(new DataExportCell("note_title", srh.getOrMiss(assessment.getNoteTitle() != null ? assessment.getNoteTitle().getName() : null)));
+		mandatoryData.add(new DataExportCell("clinician_name", srh.getOrMiss(assessment.getClinician() != null ? assessment.getClinician().getUserFullName() : null)));
+		mandatoryData.add(new DataExportCell("date_created", srh.getOrMiss(srh.getDtAsStr(assessment.getDateCreated()))));
+		mandatoryData.add(new DataExportCell("time_created", srh.getOrMiss(srh.getTmAsStr(assessment.getDateCreated()))));
+		mandatoryData.add(new DataExportCell("date_completed", srh.getOrMiss(srh.getDtAsStr(assessment.getDateCompleted()))));
+		mandatoryData.add(new DataExportCell("time_completed", srh.getOrMiss(srh.getTmAsStr(assessment.getDateCompleted()))));
+		mandatoryData.add(new DataExportCell("duration", srh.getOrMiss(srh.getStrFromInt(assessment.getDuration()))));
+
+		mandatoryData.add(new DataExportCell("vista_DOB", show ? srh.getOrMiss(srh.getDtAsStr(assessment.getVeteran().getBirthDate())) : srh.miss()));
+		return mandatoryData;
+	}
+
+	private List<DataExportCell> collectPpi(VeteranAssessment assessment,
+			boolean show) {
+		Veteran v = assessment.getVeteran();
+
+		List<DataExportCell> mandatoryIdendifiedData = new ArrayList<DataExportCell>();
+
+		// if veteran has taken the 'Identification' survey then skip this as veteran survey response
+		// will take precedence over the clinician entered data
+
+		mandatoryIdendifiedData.addAll(Arrays.asList(new DataExportCell("vista_lastname", show ? srh.getOrMiss(v.getLastName()) : srh.miss()),//
+				new DataExportCell("vista_firstname", show ? srh.getOrMiss(v.getFirstName()) : srh.miss()),//
+				new DataExportCell("vista_midname", show ? srh.getOrMiss(v.getMiddleName()) : srh.miss()),//
+				new DataExportCell("vista_SSN", show ? srh.getOrMiss(v.getSsnLastFour()) : srh.miss()), new DataExportCell("vista_ien", v.getVeteranIen())));
+		return mandatoryIdendifiedData;
+	}
+
 }

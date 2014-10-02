@@ -1,5 +1,5 @@
 /* ********************************************** */
-/* Assesment Variables  */
+/* Assessment Variables  */
 /* ********************************************** */
 
 /* Introduction Section */
@@ -3050,7 +3050,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (3354, 2, 'usually', 'usually answer', 5773);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (3355, 2, 'always', 'always answer', 5774);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (3389, 4, 'ROAS_weighted_score', 'ROAS_weighted_score', '([3200] + [3210] + [3220] + [3230] + [3240] + [3250] + [3260] + [3270] + [3280] + [3290] + [3300] + [3310] + [3320] + [3330] + [3340] + [3350])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (3389, 4, 'ROAS_weighted_score', 'ROAS_weighted_score', '([3200] + [3210]*2 + [3220]*3 + [3230]*4 + [3240]*2 + [3250]*3 + [3260]*4 + [3270]*5 + [3280]*3 + [3290]*4 + [3300]*5 + [3310]*6 + [3320]*3 + [3330]*4 + [3340]*5 + [3350]*6)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (70, 3389, 3200);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (71, 3389, 3210);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (72, 3389, 3220);

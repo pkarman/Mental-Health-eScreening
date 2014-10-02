@@ -180,7 +180,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	private String extractFormulaPlusExportName(AssessmentVariable av) {
 		String formula = extractFormula(av);
-		return String.format("%s, %s", formula, av.getDisplayName());
+		return String.format("%s,%s", formula, av.getDisplayName());
 	}
 
 	private String extractFormula(AssessmentVariable av) {
