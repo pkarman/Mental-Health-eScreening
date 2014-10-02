@@ -32,12 +32,6 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 
 		Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) model.get("dataDictionary");
 		
-//		CellStyle cellStyle = workbook.createCellStyle();
-//        HSSFFont hSSFFont = workbook.createFont();
-//        hSSFFont.setFontName(HSSFFont.FONT_ARIAL);
-//        hSSFFont.setFontHeightInPoints((short) 16);
-//        cellStyle.setFont(hSSFFont);
-        
 		CellStyle csWrapText = workbook.createCellStyle();
 		csWrapText.setWrapText(true);
 

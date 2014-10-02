@@ -8,7 +8,7 @@
 			vars$demo_heightft : "6",
 			vars$demo_heightinch : "1",
 			numb$demo_weight : "234",
-			derive$demo_totalheightin : "73",
+			derive$demo_totalheightin : "73.0",
 			derive$demo_BMI : "30.869207",
 			vars$demo_ethnic : "2",
 			vars$demo_racewhite : "1",

@@ -73,7 +73,8 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
         	
         	String result = expressionEvaluatorService.evaluateFormula(rootFormula);
         	
-        	variableDto = createAssessmentVariableDto(assessmentVariable.getAssessmentVariableId(), result);	
+        	variableDto = createAssessmentVariableDto(assessmentVariable.getAssessmentVariableId(), result);
+        	variableDto.setDisplayName(assessmentVariable.getDisplayName());
     	}
     	//warnings, these exceptions typically mean that a question was not answered
     	catch(CouldNotResolveVariableValueException cnrvve) { 

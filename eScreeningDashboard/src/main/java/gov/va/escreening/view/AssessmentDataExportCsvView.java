@@ -1,18 +1,17 @@
 package gov.va.escreening.view;
 
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
-import gov.va.escreening.dto.dashboard.DataExportCell;
-import gov.va.escreening.service.export.ExportLogService;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -84,6 +83,8 @@ public class AssessmentDataExportCsvView extends AbstractView implements Message
 
 	private void setCsvHeader(BufferedWriter writer, String header,
 			String fileName) throws IOException {
+		writer.write(String.format("%s %s dated %s", messageSource.getMessage("export.data.assessments.msg.intro", null, null), messageSource.getMessage("export.data.assessments.version", null, null), ISODateTimeFormat.dateTime().print(new DateTime())));
+		writer.newLine();
 		writer.write(header);
 		writer.newLine();
 		if (logger.isDebugEnabled()) {
