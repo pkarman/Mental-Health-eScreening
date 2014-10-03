@@ -1,32 +1,63 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.SurveyDto;
+import gov.va.escreening.dto.ae.Page;
+import gov.va.escreening.dto.editors.QuestionInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
+import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly=true)
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
 
 	private SurveyRepository surveyRepository;
+	
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
 
+	@Autowired
+	private MeasureRepository measureRepository;
+	
+	@Autowired
+	private SurveyPageRepository surveyPageRepository;
+	
+	@Autowired
+	private AssessmentVariableRepository assessmentVariableRepository;
+	
 	@Autowired
 	public void setSurveyRepository(SurveyRepository surveyRepository) {
 		this.surveyRepository = surveyRepository;
@@ -148,6 +179,7 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public SurveyInfo update(SurveyInfo surveyInfo) {
 		Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
 		SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
@@ -189,6 +221,177 @@ public class SurveyServiceImpl implements SurveyService {
 	public Survey findOne(int surveyId) {
 
 		return surveyRepository.findOne(surveyId);
+	}
+	
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@Override
+	public void removeMeasureFromSurvey(Integer surveyId, Integer questionId) {
+		
+		Measure measure = measureRepository.findOne(questionId);
+		
+		if (measure!=null)
+		{
+			if (measure.getParent()!=null)
+			{
+				measure.setParent(null);
+				measureRepository.update(measure);
+				measureRepository.commit();
+			}
+			else
+			{
+				SurveyPage sp = surveyPageRepository.getSurveyPageByMeasureId(questionId);
+				
+				if (sp!=null)
+				{
+					sp.getMeasures().remove(measure);
+					surveyPageRepository.update(sp);
+					surveyPageRepository.commit();
+				}
+				
+			}
+		}
+		
+	}
+
+	@Override
+	public void createSurveyPage(Integer surveyId, Page page) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		SurveyPage surveyPage = new SurveyPage();
+		surveyPage.setPageNumber(page.getPageNumber());
+		surveyPage.setDescription(page.getDescription());
+		surveyPage.setTitle(page.getPageTitle());
+		surveyPage.setSurvey(survey);
+		
+		surveyPageRepository.create(surveyPage);
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public void updateSurveyPages(Integer surveyId,
+			List<SurveyPageInfo> surveyPageInfos) {
+		
+		
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		List<SurveyPage> surveyPageList = new ArrayList<SurveyPage>();
+		
+		String surveyPageTitle = survey.getSurveySection().getName();
+		
+		for(SurveyPageInfo surveyPageInfo : surveyPageInfos)
+		{
+			
+			SurveyPage surveyPage = null;
+			
+			if (surveyPageInfo.getId() == null)
+			{
+				surveyPage = new SurveyPage();
+			}
+			else
+			{
+				surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
+			}
+			
+			surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
+			surveyPage.setDescription(surveyPageInfo.getDescription());
+			surveyPage.setTitle(surveyPageTitle);
+			surveyPage.setSurveyPageId(surveyPageInfo.getId());
+			
+			if (surveyPageInfo.getDateCreated()==null)
+			{
+				surveyPage.setDateCreated(new Date());
+			}
+			else
+			{
+				surveyPage.setDateCreated(surveyPageInfo.getDateCreated());
+			}
+			surveyPage.setSurvey(survey);
+			
+			List<Measure> measures = new ArrayList<Measure>();
+			surveyPage.setMeasures(measures);
+			
+			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
+			{
+				Integer measureId = questionInfo.getId();
+				if (measureId != null)
+				{
+					measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
+					measures.add(measureRepository.findOne(questionInfo.getId()));			
+				}
+				else
+				{
+					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));	
+					
+					Measure measure = measureRepository.findOne(measureDTO.getMeasureId());
+					
+					AssessmentVariable av = new AssessmentVariable();
+					av.setMeasure(measure);
+					av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
+					av.setDisplayName(measure.getMeasureText());
+					assessmentVariableRepository.create(av);
+					List<AssessmentVariable> assessmentVariableList = new ArrayList<AssessmentVariable>();
+					assessmentVariableList.add(av);
+					measure.setAssessmentVariableList(assessmentVariableList);
+					measureRepository.update(measure);
+					measures.add(measure);
+				}
+			}
+			
+			if (surveyPageInfo.getId() == null)
+			{
+				surveyPageRepository.create(surveyPage);
+			}
+			else
+				surveyPageRepository.update(surveyPage);
+			
+			surveyPageList.add(surveyPage);
+		}
+		
+		System.out.println("aaaaaab");
+		survey.setSurveyPageList(surveyPageList);
+		surveyRepository.update(survey);
+	}
+
+	@Override
+	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		List<SurveyPage> surveyPages = survey.getSurveyPageList();
+		
+		List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
+		for(SurveyPage surveyPage : surveyPages)
+		{
+			SurveyPageInfo spi = new SurveyPageInfo();
+			spi.setId(surveyPage.getSurveyPageId());
+		    spi.setDescription(surveyPage.getDescription());
+		    spi.setPageNumber(surveyPage.getPageNumber());
+		    spi.setTitle(surveyPage.getTitle());
+		    spi.setDateCreated(surveyPage.getDateCreated());
+		    
+		    spi.setQuestions(new ArrayList<QuestionInfo>());
+		    for(Measure measure : surveyPage.getMeasures())
+		    {
+		    	spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+		    }
+		    surveyPageInfos.add(spi);
+		    
+		}
+		return surveyPageInfos;
+	}
+
+	@Override
+	public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
+		Survey survey = new Survey();
+		
+		BeanUtils.copyProperties(surveyInfo, survey);
+		
+		SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
+		
+		survey.setSurveySection(surveySection);
+		//surveySection.getSurveyList().add(survey);
+		surveyRepository.create(survey);
+		//surveySectionRepository.update(surveySection);
+				
+		return convertToSurveyItem(survey);
 	}
 
 }

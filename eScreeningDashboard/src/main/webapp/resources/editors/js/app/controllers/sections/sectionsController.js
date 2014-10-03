@@ -1,7 +1,6 @@
 Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$resource','$location', '$window', '$filter', 'SurveySectionService','sections',function($rootScope,$scope,$state,$resource,$location,$window,$filter,SurveySectionService,sections){
             $scope.sections = sections;
             $scope.editSections = [];
-            $scope.inError = false;
             $scope.errors = [];
             $scope.battery = $rootScope.selectedBattery;
             $scope.isDirty = false;
@@ -101,41 +100,45 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             	if (surveySection.getId()<0){
             		// Create.
             		SurveySectionService.create(SurveySectionService.setCreateSurveySectionRequestParameter(surveySection)).then(
-                        function(section){
-                            var editSection = $scope.returnEditSection(section);
+                        function(response){
+                            var sectionDomainObject = response.getPayload();
+                            var editSection = $scope.returnEditSection(sectionDomainObject);
                             for (var i=0;i<$scope.sections.length;i++){
-                                if ($scope.sections[i].getId() == section.getId()){
+                                if ($scope.sections[i].getId() == sectionDomainObject.getId()){
                                     // Perform inserts.
-                                    $scope.sections[i] = section;
+                                    $scope.sections[i] = sectionDomainObject;
                                     $scope.editSections[i] = editSection;
                                 }
                             }
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                         }, function(responseError) {
-                            $scope.errors.push(responseError.getMessage());
-                            $scope.inError = true;
+                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                         });
             	} else {
             		// Update.
             		if (surveySection.isMarkedForDeletion()){
             			//alert('marked for deletion');
-            			SurveySectionService.remove(SurveySectionService.setRemoveSurveySectionRequestParameter(surveySection.getId())).then(
-                        function(section){
-                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (existingSections){
+            			SurveySectionService.remove(SurveySectionService.setRemoveSurveySectionRequestParameter(surveySection.getId())).then(function(response){
+                            var section = response.getPayload();
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                var existingSections = response.getPayload();
                                 $scope.sections = existingSections;
                                 console.log('Sections:: ' + existingSections);
-
-	                            }, function(responseError) {
-	                                $scope.errors.push(responseError.getMessage());
-                                    $scope.inError = true;
-	                            });
-	                        }
-	                    );
+                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                            }, function(responseError) {
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                            });
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                        }),
+                        function(responseError) {
+                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                        };
             		}else{
             			//alert('marked for update');
             			//delete sect.markedForDeletion;
             			//delete sect.visible;
             			SurveySectionService.update(SurveySectionService.setUpdateSurveySectionRequestParameter(surveySection)).then(
-                            function(section){
+                            function(response){
                                 var editSection = $scope.returnEditSection(section);
                                 $scope.sections.forEach(function (surveySection, index, array) {
                                     if(surveySection.getId() == section.getId()) {
@@ -148,9 +151,9 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                                         array[index] = editSection;
                                     }
                                 });
+                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                             }, function(responseError) {
-                                $scope.errors.push(responseError.getMessage());
-                                $scope.inError = true;
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                             }
                         );
             		}

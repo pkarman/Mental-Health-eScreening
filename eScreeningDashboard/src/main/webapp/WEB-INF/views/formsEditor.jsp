@@ -42,8 +42,8 @@
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/BytePushersApplication.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Errors.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/DateConverter.js"></script>
-
-    
+    <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Message.js"></script>
+    <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/MessageHandler.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/Response.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/ResponseException.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/ResponseExceptionStackTrace.js"></script>
@@ -53,6 +53,10 @@
 
     <!-- Domain Object -->
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageUIObjectItemWrapper.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageTransformer.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPagesTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveysTransformer.js"></script>
@@ -62,8 +66,14 @@
 
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Question.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/QuestionUIObjectItemWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
+
+
+    <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionUIObjectWrapper.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionWrapper.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/PageQuestionItem.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Answer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/AnswerTransformer.js"></script>
@@ -95,15 +105,17 @@
     
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
+
+    <!-- Application filters -->
+    <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
     
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>
-    
-    
     
     <!-- Controllers -->
     
@@ -199,7 +211,7 @@
         });
     </script>
 </head>
-<body style="">
+<body class="form_editor">
 <!-- Top Nav Content -->
 <div id="outerPageDiv">
     <div id="headerDiv" class="top_header">
@@ -263,7 +275,7 @@
                 </div>
             <!-- </div>-->
             		 <div class="row">
-            		<div class="col-md-12" ui-view></div>
+            		    <div class="col-md-12" ui-view></div>
                 </div>
         		</div>
 	        </div>
@@ -282,4 +294,3 @@
     </div>
 </body>
 </html>
-

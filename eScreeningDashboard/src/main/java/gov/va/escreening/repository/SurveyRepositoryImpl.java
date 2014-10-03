@@ -54,7 +54,7 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
 
         logger.debug("in findForVeteranAssessmentId()");
 
-        String sql = "SELECT s FROM Survey s WHERE s.surveyId IN (SELECT s2.surveyId FROM VeteranAssessment va JOIN va.veteranAssessmentSurveyList vas JOIN vas.survey s2 WHERE va.veteranAssessmentId = :veteranAssessmentId) ORDER BY s.displayOrder";
+        String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE s.surveyId IN (SELECT s2.surveyId FROM VeteranAssessment va JOIN va.veteranAssessmentSurveyList vas JOIN vas.survey s2 WHERE va.veteranAssessmentId = :veteranAssessmentId) ORDER BY ss.displayOrder";
 
         TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
         query.setParameter("veteranAssessmentId", veteranAssessmentId);

@@ -5,6 +5,9 @@ html body{
 	font-family: Arial,sans-serif;
     margin: 0px !important;
 }
+.strong{
+  font-weight:bold;
+}
 #vaLogoDiv {
 	float:left; 
 	padding:10px 30px 0px 5px;
@@ -501,6 +504,42 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 
+.border-radius-top-box{
+	-webkit-border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
+	border: 1px solid #bbb;
+	padding: 5px 10px;
+}
+
+.border-radius-bottom-box{
+	-webkit-border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+	border: 1px solid #bbb;
+	padding: 5px 5px;
+}
+.section_header_title{
+  margin-top:5px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
+.padding_10{
+  padding:10px;
+}
+
+.margin_top_10{
+  margin-top:10px;
+}
+/* Form Editor Start Here */
+.form_editor .list-group-item{
+  padding:5px 10px;
+}
+
+.form_editor .highlight-item{
+  background-color:#d4d4d4;
+}
 
 @media only screen 
 and (min-device-width : 768px) 

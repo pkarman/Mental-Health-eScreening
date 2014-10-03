@@ -27,6 +27,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 	@Autowired
 	ValidationRepository validationRepo;
+	
+	@Autowired
+	MeasureTypeRepository measureTypeRepo;
 
 	public MeasureRepositoryImpl() {
 		super();
@@ -137,16 +140,67 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 		return dto;
 	}
+	
+	@Override
+	public gov.va.escreening.dto.ae.Measure createMeasure(
+			gov.va.escreening.dto.ae.Measure measureDto) {
+
+		Measure m = createMeasureEntity(measureDto);
+		gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
+				m, null, null);
+		
+		return dto;
+	}
 
 	private Measure updateMeasureEntity(
 			gov.va.escreening.dto.ae.Measure measureDto) {
 		Measure m = findOne(measureDto.getMeasureId());
 
+		copyFromDTO(m, measureDto);
+		
+		update(m);
+
+		if (measureDto.getChildMeasures() != null) {
+			for (gov.va.escreening.dto.ae.Measure child : measureDto
+					.getChildMeasures()) {
+				updateMeasure(child);
+			}
+		}
+		return m;
+	}
+	
+	
+	private Measure createMeasureEntity(
+			gov.va.escreening.dto.ae.Measure measureDto) {
+		
+		Measure m = new Measure();		
+		copyFromDTO(m, measureDto);
+		
+		create(m);
+
+		if (measureDto.getChildMeasures() != null) {
+			for (gov.va.escreening.dto.ae.Measure child : measureDto
+					.getChildMeasures()) {
+				updateMeasure(child);
+			}
+		}
+		
+		return m;
+	}
+	
+	private void copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto)
+	{
 		m.setIsRequired(measureDto.getIsRequired());
 		m.setIsPatientProtectedInfo(measureDto.getIsPPI());
 		m.setIsMha(measureDto.getIsMha());
 		m.setMeasureText(measureDto.getMeasureText());
 		m.setVistaText(measureDto.getVistaText());
+		m.setVariableName(measureDto.getVariableName());
+	    m.setDisplayOrder(measureDto.getDisplayOrder());
+	    m.setIsPatientProtectedInfo(measureDto.getIsPPI());
+	    m.setMeasureType(measureTypeRepo.findMeasureTypeByName(measureDto.getMeasureType().trim()));
+		m.setMeasureText(measureDto.getMeasureText());
+
 
 		List<Answer> answerList = measureDto.getAnswers();
 		Map<Integer, Answer> answerMap = new HashedMap<Integer, Answer>();
@@ -154,16 +208,18 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			answerMap.put(a.getAnswerId(), a);
 		}
 
-		for (MeasureAnswer ma : m.getMeasureAnswerList()) {
-			Answer answerDto = answerMap.get(ma.getMeasureAnswerId());
-			if (answerDto != null) {
-				ma.setAnswerText(answerDto.getAnswerText());
-				ma.setExportName(answerDto.getExportName());
-				ma.setVistaText(answerDto.getVistaText());
-				ma.setAnswerType(answerDto.getAnswerType());
+		if (m.getMeasureAnswerList()!=null)
+		{
+			for (MeasureAnswer ma : m.getMeasureAnswerList()) {
+				Answer answerDto = answerMap.get(ma.getMeasureAnswerId());
+				if (answerDto != null) {
+					ma.setAnswerText(answerDto.getAnswerText());
+					ma.setExportName(answerDto.getExportName());
+					ma.setVistaText(answerDto.getVistaText());
+					ma.setAnswerType(answerDto.getAnswerType());
+				}
 			}
 		}
-
 		m.setMeasureValidationList(new ArrayList<MeasureValidation>());
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
@@ -173,7 +229,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				if ("boolean".equalsIgnoreCase(v.getDataType())) {
 					mv.setBooleanValue(Integer.getInteger(mvdto.getValue()));
 				} else if ("number".equalsIgnoreCase(v.getDataType())) {
-					mv.setNumberValue(Integer.getInteger(mvdto.getValue()));
+					mv.setNumberValue(Integer.parseInt(mvdto.getValue()));
 				} else {
 					mv.setTextValue(mvdto.getValue());
 				}
@@ -186,14 +242,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 
-		update(m);
-
-		if (measureDto.getChildMeasures() != null) {
-			for (gov.va.escreening.dto.ae.Measure child : measureDto
-					.getChildMeasures()) {
-				updateMeasure(child);
-			}
-		}
-		return m;
 	}
+
+	
 }

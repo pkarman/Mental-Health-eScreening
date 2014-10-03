@@ -14,8 +14,6 @@ public interface SurveyBaseProperties {
     void setDescription(String description);
     Integer getVersion();
     void setVersion(Integer version);
-    Integer getDisplayOrder();
-    void setDisplayOrder(Integer displayOrder);
     boolean isMha();
     void setMha(boolean mha);
     String getMhaTestName();

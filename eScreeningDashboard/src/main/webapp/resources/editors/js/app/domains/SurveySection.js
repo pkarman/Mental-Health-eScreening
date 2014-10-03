@@ -140,3 +140,14 @@ EScreeningDashboardApp.models.SurveySection = function (jsonSurveySectionObject)
     	return surveySectionUIObject;
     };
 };
+EScreeningDashboardApp.models.SurveySection.toUIObjects = function(surveySections) {
+    var surveySectionUIObjects = [];
+
+    if(Object.isArray(surveySections)) {
+        surveySections.forEach(function(surveySection){
+            surveySectionUIObjects.push(surveySection.toUIObject());
+        });
+    }
+
+    return surveySectionUIObjects;
+};

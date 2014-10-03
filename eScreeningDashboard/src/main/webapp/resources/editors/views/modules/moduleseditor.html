@@ -1,86 +1,150 @@
 <h1>Manage Module</h1>
-<!-- Alerts and Messages
+<!-- Alerts and Messages -->
 <div class="row">
-  <div class="col-md-12">
-    <div class="alert alert-danger">Error Message </div>
-    <div class="alert alert-success">Your data has been saved successfully</div>
-  </div>
-</div>
--->
-
-
-<div class="col-md-12">
-  <div class="row">
-    <div class="col-sm-12">
-      
-      
-      <div class="btn-group-sm pull-right"> 
-      <button ng-click="editTemplates();" class="btn btn-primary" type="button">Manage Templates</button>
-	     
-	      
-	      <!-- JH OOOCOMMENT              
-	      <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a>
-	      <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> 
-	      -->
-      </div>
-    </div>
-  
-  <div class="border-radius-main-form gray-lighter">
-  <form class="form-inline">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="col-sm-12 form-group">
-          <label>Title</label>
-          <input type="text" class="form-control" ng-model="selectedSurveyUIObject.name" placeholder="Enter Module Title">
+    <div class="col-md-12">
+        <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
+            <div>Error Message(s):</div>
+            <div ng-repeat="error in messageHandler.getMessages()| uniqueMessage">{{error.getValue()}}</div>
         </div>
-        <div class="col-sm-12 form-group pull-right">
-          <label>Description</label>
-          <input type="text" class="form-control" ng-model="selectedSurveyUIObject.description" placeholder="Enter Module Description">
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="col-sm-12 form-group"><br>
-          <input type="checkbox" id="is_clinical_reminder" ng-model="selectedSurveyUIObject.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
-          <!--
-          <label>VistA Title</label>
-          <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
-          //-->
-        </div>
-      </div>
-    </div>
-  </form>
-  </div>
-  </div><br>
-  
-  <h4>Questions</h4>
-  <div class="row">
-    <div class="col-md-4 text-center">
-      
-      
-      <!-- JH OOOCOMMENT
-      <div class="form-inline form-group center-block">
-        <button class="btn btn-primary btn-sm" ng-click="goToQuestions();"><span class="glyphicon glyphicon-plus"></span> Question</button>
-        <button class="btn btn-success btn-sm" popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."><span class="glyphicon glyphicon-plus"></span> Page Break</button>
-      </div>
-      -->
-      <div class="well" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
-        <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="questions">
-          <li class="list-group-item text-left" ng-repeat="question in questions">
-            <div class="form-inline"> <span class="glyphicon glyphicon-align-justify pull-left"></span> &nbsp;&nbsp; <span class="badge" ng-click="editQuestion(question);">Var: {{question.variableName}}</span> <span style="font-size:12px;">| {{question.type}}</span>
-              
-              
-              <!-- JH OOOCOMMENT <div class="form-group pull-right"> <span class="glyphicon glyphicon-remove-circle" style="color:red;" ng-click="deleteQuestion(question);"></span> </div> -->
-              <div class="form-group pull-right"> <span class="glyphicon glyphicon-edit" ng-click="editQuestion(question);"></span> </div>
+        <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
+            <div ng-repeat="message in messageHandler.getMessages()| uniqueMessage">
+                {{message.getValue()}}
             </div>
-          </li>
-        </ul>
-      </div>
-   
+        </div>
     </div>
-    <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
-      <div class="border-radius-main-form" style="border:1px solid #E8E8E8; min-height:470px; background-color:#FFFFFF;">
-        <div class="col-md-12" ui-view></div>
-      </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- JH OOOCOMMENT
+        <div class="col-sm-12">
+        <div class="btn-group-sm pull-right"> <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a> <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> <a ui-sref="modules.detail.templatecaptureview" class="btn btn-info" href="#/modules/modules.detail/modules.addedt.templatecaptureview">Add/Edit Template</a> </div>
+        </div>
+        -->
+        <form name="moduleDetailsForm" novalidate>
+            <div class="border-radius-main-form gray-lighter">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="inputTitle">Title *</label>
+                            <input name="inputTitle" id="inputTitle" type="text" class="form-control"
+                                   ng-model="selectedSurveyUIObject.name"
+                                   placeholder="Enter Module Title" requried>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription">Description</label>
+                            <input name="inputDescription" id="inputDescription" type="text" class="form-control"
+                                   ng-model="selectedSurveyUIObject.description"
+                                   placeholder="Enter Module Description">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                            <!--
+                            <br>
+                            <input type="checkbox" id="is_clinical_reminder" ng-model="selectedSurveyUIObject.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
+
+                            <label>VistA Title</label>
+                            <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
+                            //-->
+                            <div class="form-group">
+                                <label for="selectSurveySection">Section *</label>
+                                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
+                                        ng-model="selectedSurveyUIObject.surveySection"
+                                        ng-options="surveySectionDropDownMenuOption.item as surveySectionDropDownMenuOption.name for surveySectionDropDownMenuOption in surveySectionDropDownMenuOptions"
+                                        required>
+                                    <option value=""> -- Choose Section --</option>
+                                </select>
+                            </div>
+                       
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <br>
+
+        
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="border-radius-top-box  gray-lighter">
+                  <div class="section_header_title pull-left">Items</div>
+                  <button class="btn btn-success btn-sm pull-right" ng-click="addPageBreak();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
+                  <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
+                  <div class="clearfix"></div>
+                 </div>
+                 
+                    
+                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
+                    <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="pageQuestionItems">
+
+                        <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems"
+                            ng-class="{'unsortable': item.isEnabled() === false}">
+
+                            <div ng-switch on="item.isPage()">
+                                <div ng-switch-when="true" class="page-divider-container">
+                                    <div class="page-divider-container-row">
+                                        <div class="page-divider">
+                                            <button type="button" class="btn btn-default btn-circle pull-left">
+                                                {{item.getType()}} {{item.getItem().pageNumber}}
+                                                    <span class="glyphicon glyphicon-remove-circle"
+                                                          style="margin-left: 10px;color:red;"
+                                                          ng-show="item.getItem().pageNumber > 1"
+                                                          ng-click="deletePageQuestionItem(item);"/>
+                                            </button>
+                                            <button class="btn btn-success btn-sm pull-right" ng-click="goToQuestions(item);"><span
+                                                    class="glyphicon glyphicon-plus"></span> Add Item
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div ng-switch-default class="form-inline">
+                                    <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>                                    
+                                    <div class="pull-left">
+                                      <div class="strong" style="font-size:12px;" ng-click="editQuestion(item);">{{item.getItem().variableName}}</div>
+                                      <div style="font-size:12px;">{{item.getItem().type}}</div>
+                                    </div>
+                                    <div class="pull-right margin_top_10">
+                                        <span ng-show="item.isQuestion()">
+                                            <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(item);"></span>
+                                        </span>
+                                        <span class="glyphicon glyphicon-remove-circle cursor_pointer"
+                                              style="margin-left: 10px; color:red;"
+                                              ng-click="deletePageQuestionItem(item);"></span>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
+              <div class="border-radius-top-box  gray-lighter">
+              <div class="section_header_title pull-left">Properties</div>
+              <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
+              <div class="clearfix"></div>
+              </div>
+                <div class="border-radius-bottom-box padding_10" style="min-height:470px; background-color:#FFFFFF;">
+                    <div class="row">
+                        <div class="col-md-12" ui-view></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+<br>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group pull-right">
+            <button class="btn btn-primary" ng-disabled="!moduleDetailsForm.$valid" ng-click="save();">Save</button>
+            <button class="btn btn-default" ng-click="cancel();">Cancel</button>
+        </div>
+    </div>
 </div>
