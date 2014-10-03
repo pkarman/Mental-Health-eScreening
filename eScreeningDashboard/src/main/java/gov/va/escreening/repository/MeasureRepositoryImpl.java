@@ -198,10 +198,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 		m.setVariableName(measureDto.getVariableName());
 	    m.setDisplayOrder(measureDto.getDisplayOrder());
 	    m.setIsPatientProtectedInfo(measureDto.getIsPPI());
-	   
 	    m.setMeasureType(measureTypeRepo.findMeasureTypeByName(measureDto.getMeasureType().trim()));
-		
 		m.setMeasureText(measureDto.getMeasureText());
+
 
 		List<Answer> answerList = measureDto.getAnswers();
 		Map<Integer, Answer> answerMap = new HashedMap<Integer, Answer>();
@@ -230,7 +229,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				if ("boolean".equalsIgnoreCase(v.getDataType())) {
 					mv.setBooleanValue(Integer.getInteger(mvdto.getValue()));
 				} else if ("number".equalsIgnoreCase(v.getDataType())) {
-					mv.setNumberValue(Integer.getInteger(mvdto.getValue()));
+					mv.setNumberValue(Integer.parseInt(mvdto.getValue()));
 				} else {
 					mv.setTextValue(mvdto.getValue());
 				}
