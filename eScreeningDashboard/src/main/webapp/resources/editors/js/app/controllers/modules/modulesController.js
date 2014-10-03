@@ -5,7 +5,7 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'SurveyService', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, SurveyService, surveys) {
-    $rootScope.surveyUIObjects = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
+    $scope.setSurveyUIObjects(EScreeningDashboardApp.models.Survey.toUIObjects(surveys));
     
     $scope.refreshTable = function () {
         /*$scope['tableParams'] = {

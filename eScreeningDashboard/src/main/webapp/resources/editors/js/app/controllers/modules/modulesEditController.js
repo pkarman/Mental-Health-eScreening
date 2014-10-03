@@ -1,8 +1,21 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'surveyUIObject', 'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, surveyUIObject, pageQuestionItems, surveySectionDropDownMenuOptions){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', /*'surveyUIObject', */'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, /*surveyUIObject, */pageQuestionItems, surveySectionDropDownMenuOptions){
     var tmpList = [],
+        getSurveyUIObject = function () {
+            var selectedSurveyUIObject = null;
+
+            if(Object.isArray($scope.surveyUIObjects)) {
+                $scope.surveyUIObjects.forEach(function (surveyUIObject) {
+                    if(surveyUIObject.id === parseInt($state.params.selectedSurveyId)) {
+                        selectedSurveyUIObject = surveyUIObject;
+                    }
+                });
+            }
+
+            return selectedSurveyUIObject;
+        },
         updateSurveyPages = function (selectedSurveyId, surveyPages) {
             if(Object.isNumber(selectedSurveyId) && Object.isArray(surveyPages) && surveyPages.length > 0) {
                 SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function (response) {
@@ -82,12 +95,14 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             }
 
             return selectedMenuOptionIndex;
-        };
+        },
+        surveyUIObject = getSurveyUIObject();
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
         $scope.textFormatDropDownMenuOptions = textFormatTypeMenuOptions;
     };
+
 
     $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
 
