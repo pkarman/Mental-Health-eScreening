@@ -332,3 +332,202 @@ set template_file = '
     '
 where template_id = 14;
 
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10540, 15);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10541, 15);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10542, 15);
+
+/*** Exposures skip logic tiket-589 ***/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+EXPOSURES:
+${MODULE_TITLE_END}
+${MODULE_START}
+	 <#-- var2200: ${var2200}<br><br>  var2230: ${var2230}<br><br>  var2240: ${var2240}<br><br>  var2250: ${var2250}<br><br> var2260: ${var2260}<br><br>  -->
+	
+    <#assign nextLine = "">
+	<#if (var10540.children)??  && ((var10540.children)?size > 0) || (var2200.children)?? || ((var2230.children)?? && (var2240.children)?? && (var2250.children)??) || (var2260.children)?? || (var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound") > 
+	 	
+	 	<#if (var10540.children)??  && ((var10540.children)?size > 0)>
+	 	<#if isSelectedAnswer(var10540,var10541)>
+	 		The Veteran is not concerned about, but may have been exposed
+	 	<#elseif isSelectedAnswer(var10540,var10542)>
+	 		The Veteran reported persistent major concerns related to the effects of exposure
+	 	</#if>
+	  	<#if (var2200.children)?? && hasValue(var2200) && getSelectMultiDisplayText(var2200)!= "notfound"> 	
+			${NBSP}to ${getSelectMultiDisplayText(var2200)}
+            <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		</#if>
+		.
+		</#if>
+	
+	    <#if var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound">
+		<#assign score = getFormulaDisplayText(var2289)>
+		<#assign scoreText = "notset">
+	
+		<#if (score?number >= 1) >
+				<#assign scoreText = "being exposed">
+		<#elseif score?number == 0>
+			<#assign scoreText = "no exposure">
+		</#if> 
+        ${nextLine}The Veteran reported ${scoreText} to animal contact during a deployment in the past 18 months that could result in rabies.
+        <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">	
+		</#if>
+		<#if (var2260.children)??  && hasValue(var2260)> 	
+			<#assign combat = getSelectMultiDisplayText(var2260)>
+			<#if combat == "notfound">
+				<#assign combatText = "none">
+			<#else>
+				<#assign combatText = combat>
+			</#if>
+		</#if>
+		${nextLine}The Veteran reported the following types of combat experience: ${combatText}.
+
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 15;
+
+
+/*********** SERVICE INJURIES SKIP LOGIC **********************/
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SERVICE INJURIES:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#-- var1380: ${var1380!""}<br><br>  var1390: ${var1390!""}<br><br>  var1400: ${var1400!""}<br><br>  var1410: ${var1410!""}<br><br>  var1480: ${var1480!""}<br><br>  var1490: ${var1490!""}<br><br> -->
+	<#if (var1380.children)?? && (var1390.children)?? && (var1400.children)?? && (var1410.children)?? && (var1420.children)?? 
+			&& (var1430.children)?? && (var1440.children)?? && (var1450.children)?? && (var1460.children)?? && (var1470.children)?? 
+			|| (var1480.children)?? && (var1490.children)?? 
+			&& (var1380.children?size > 0) && (var1390.children?size > 0)  && (var1400.children?size > 0) && (var1410.children?size > 0)
+			&& (var1420.children?size > 0) && (var1430.children?size > 0) && (var1440.children?size > 0) && (var1450.children?size > 0)
+			&& (var1460.children?size > 0) && (var1470.children?size > 0) && (var1480.children?size > 0) && (var1490.children?size > 0)
+			||((var1510.children)??&& (var1510.children?size > 0))>
+		
+		<#assign answerTextHash = {"var1380":"blast injury", "var1390":"injury to spine or back", "var1400":"burn (second, 3rd degree)", 
+									"var1410":"nerve damage", "var1420":"Loss or damage to vision", "var1430":"loss or damage to hearing", 
+									"var1440":"amputation", "var1450":"broken/fractured bone(s)", "var1460":"joint or muscle damage", 
+									"var1470":"internal or abdominal injuries", "var1480":"other", "var1490":"other"}>
+		
+		<#-- must have answer questions -->
+		<#assign questions1 = [var1380, var1390, var1400, var1410, var1420, var1430, var1440, var1450, var1460, var1470]>
+
+		<#-- optional answer questions -->
+		<#assign questions2 = [var1480, var1490]>
+
+
+		<#assign outputText = "">
+		<#assign errorText = "">
+		<#assign sentences = []>
+		<#-- organize answers in a way to facilitate output -->
+		<#assign noneAnswers = []>
+		<#assign combatAnswers = []>
+		<#assign nonCombatAnswers = []>
+		<#assign otherAnswers = []>
+		<#list questions1 as q>
+			<#if (q.children[0])?? >
+				<#assign key = (q.key)!"">
+				<#assign text = (q.children[0].overrideText)!""> 
+				<#if text == "none">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign noneAnswers = noneAnswers + [answer]> 
+				<#elseif text == "combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign combatAnswers = combatAnswers + [answer]> 
+				<#elseif text == "non-combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign nonCombatAnswers = nonCombatAnswers + [answer]> 
+				<#elseif text == "other">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign otherAnswers = otherAnswers + [answer]> 
+				</#if>
+			<#else>
+				<#-- if no children then question was not answered -->
+				<#assign errorText =  getNotCompletedText()>
+				<#break>
+			</#if>
+		</#list>
+
+		
+		<#if !(errorText?has_content)>
+				<#if (var1480.children)?has_content && (var1480.children[0].overrideText == "none")>
+					<#assign answer = (answerTextHash["var1480"])!"">
+					<#-- dont do anything here this freeform Q is handled differently than the others -->
+				<#elseif ((var1480.children?size) > 0) && !((var1481.otherText)?has_content) > 
+					<#-- veteran did not complete this answer -->
+					<#assign errorText = getNotCompletedText()>
+				<#else>
+					<#if (var1480.children?size > 0)>
+						<#assign otherAnswer = var1481.otherText!"">
+						<#list var1480.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+					</#if>
+				</#if>	
+		</#if>
+		
+		<#if !(errorText?has_content)>
+				<#if (var1490.children)?has_content && (var1490.children[0].overrideText == "none")>
+					<#assign answer = (answerTextHash["var1490"])!"">
+					<#-- dont do anything here this freeform Q is handled differently than the others -->
+				<#elseif ((var1490.children?size) > 0) && !((var1491.otherText)?has_content) > 
+					<#-- veteran did not complete this answer -->
+					<#assign outputText = getNotCompletedText()>
+				<#else>
+					<#if (var1490.children?size > 0)>
+						<#assign otherAnswer = var1491.otherText!"">
+						<#list var1490.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+					</#if>
+				</#if>	
+		</#if>
+		
+		<#-- build first two sentences -->
+		<#if combatAnswers?has_content>
+			The following injuries were reported during combat deployment: ${createSentence(combatAnswers)}.${LINE_BREAK}>
+		<#else>
+			The Veteran reported no injuries during combat deployment.${LINE_BREAK}
+		</#if>
+		
+		<#if nonCombatAnswers?has_content>
+			The following injuries were reported during other service period or training: ${createSentence(nonCombatAnswers)}.${LINE_BREAK}
+		<#else>
+			The Veteran reported no injuries during other service period or training.${LINE_BREAK}
+		</#if>
+		
+		<#if (var1510.children)??>
+			<#assign frag = "">
+			<#if isSelectedAnswer(var1510,var1512)>
+				<#assign frag = "has">
+			</#if>
+			<#if isSelectedAnswer(var1510,var1511) || isSelectedAnswer(var1510,var1513)>
+				<#assign frag = "does not have">
+			</#if>
+			The Veteran ${frag} a service connected disability rating.
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 16;
