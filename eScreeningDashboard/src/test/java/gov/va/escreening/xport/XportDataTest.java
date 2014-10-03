@@ -446,7 +446,7 @@ public class XportDataTest {
 	private boolean exportDataVerifierIdentified(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-		List<DataExportCell> exportedData = exportDataService.createDataExportForOneAssessment(va, 1);
+		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 1);
 
 		return exportDataVerifierResult(atd, exportedData, false);
 	}
@@ -454,7 +454,7 @@ public class XportDataTest {
 	private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-		List<DataExportCell> exportedData = exportDataService.createDataExportForOneAssessment(va, 2);
+		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 2);
 
 		atd.removePPIInfoExportNames();
 

@@ -16,38 +16,34 @@ import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.ExportLogRepository;
 import gov.va.escreening.repository.ExportTypeRepository;
-import gov.va.escreening.repository.MeasureAnswerRepository;
-import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.ProgramRepository;
-import gov.va.escreening.repository.SurveyMeasureResponseRepository;
-import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.repository.VeteranRepository;
-import gov.va.escreening.service.DataDictionaryService;
-import gov.va.escreening.service.MeasureService;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.VeteranAssessmentSurveyService;
 import gov.va.escreening.util.SurveyResponsesHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
 @Service("exportDataService")
@@ -357,19 +353,51 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 			// traverse through each exportName, and try to find the run time response for the exportName. In case the
 			// user has not responded, leave 999
-			for (String exportName : columnData.values()) {
+			Multimap<String, DataExportCell> multiSelectMap = HashMultimap.create();
+			for (Entry<String, String> entry : columnData.entrySet()) {
+				String exportName = entry.getValue();
 				if (!exportName.isEmpty()) {
 					DataExportCell oneCell = srh.createExportCell(usrRespMap, formulaeMap, exportName, show);
-					if (oneCell != null) {
-						if (logger.isDebugEnabled()) {
-							logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, exportName, oneCell));
-						}
-						exportDataRowCells.add(oneCell);
+					if (logger.isDebugEnabled()) {
+						logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, exportName, oneCell));
 					}
+					exportDataRowCells.add(oneCell);
+					saveMultiSelects(multiSelectMap, entry, oneCell);
+				}
+			}
+			adjustMultiSelects(multiSelectMap);
+		}
+		return exportDataRowCells;
+	}
+
+	private void adjustMultiSelects(
+			Multimap<String, DataExportCell> multiSelectMap) {
+		for (String key : multiSelectMap.keySet()) {
+			Collection<DataExportCell> cells = multiSelectMap.get(key);
+			for (DataExportCell cell : cells) {
+				if ("1".equals(cell.getCellValue())) {
+					setMissingCellsToZero(cells);
+					break;
 				}
 			}
 		}
-		return exportDataRowCells;
+	}
+
+	private void setMissingCellsToZero(Collection<DataExportCell> cells) {
+		for (DataExportCell cell : cells) {
+			if (srh.miss().equals(cell.getCellValue())) {
+				cell.setCellValue("0");
+			}
+		}
+	}
+
+	private void saveMultiSelects(
+			Multimap<String, DataExportCell> multiSelectMap,
+			Entry<String, String> entry, DataExportCell oneCell) {
+
+		String key = entry.getKey();
+		key = key.substring(0, key.lastIndexOf("_"));
+		multiSelectMap.put(key, oneCell);
 	}
 
 	@Override
@@ -397,7 +425,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	}
 
 	@Override
-	public List<DataExportCell> createDataExportForOneAssessment(
+	public List<DataExportCell> buildExportDataForOneAssessment(
 			VeteranAssessment va, int identifiedExportType) {
 
 		Map<Integer, Map<String, String>> formulaeMap = buildFormulaeMapForMatchingAssessments(Arrays.asList(va));

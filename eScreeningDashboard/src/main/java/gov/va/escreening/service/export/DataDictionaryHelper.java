@@ -1,23 +1,19 @@
-package gov.va.escreening.service;
+package gov.va.escreening.service.export;
 
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.Validation;
-import gov.va.escreening.repository.ValidationRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
@@ -25,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -33,51 +28,29 @@ import com.google.common.collect.Table;
 
 @Service("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	MessageSource msgSrc;
 
-	// @Resource(type = MeasureRepository.class)
-	// MeasureRepository mr;
-
-	@Resource(type = ValidationRepository.class)
-	ValidationRepository vr;
-
 	Map<Integer, Resolver> resolverMap;
-
-	/**
-	 * on 'first touch' cache of measure with a list of validation
-	 * 
-	 * Validations for a free text measure (only) are defined in measure_validation table which relate a measure to a
-	 * validation. A measure can have more than one validation which is applied.
-	 * 
-	 * The way validations work is there is a type id (taken from the validation table), combined with some value in the
-	 * measure_validation table. Each type only has one valid value in measure_validation table.
-	 * 
-	 * For example minValue will have an entry in measure_validation.number_value to indicate the minimum allowable
-	 * value.
-	 * 
-	 * the property this{@link #measureValidationsMap} will keep a map of measure id with a list of validation in the
-	 * form 'Min Value=1970, Max Value=2020, Exact Number=4' would mean that the measure answer is a date and it should
-	 * be between 1970 and 2020 and must contain century too
-	 * */
-	Multimap<Integer, String> measureValidationsMap;
 
 	private Resolver findResolver(Measure m) {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
 	}
 
 	public void buildDataDictionary(Survey s, Table<String, String, String> t,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+			Collection<Measure> smList, Multimap mvMap,
+			Collection<AssessmentVariable> avList) {
 		for (Measure m : smList) {
-			addDictionaryRowsForMeasure(s, m, t);
+			addDictionaryRowsForMeasure(s, m, mvMap, t);
 		}
 
 		addFormulaeToSurvey(s, t, smList, avList);
 	}
 
 	public void addDictionaryRowsForMeasure(Survey s, Measure m,
-			Table<String, String, String> t) {
-		findResolver(m).addDictionaryRows(s, m, t);
+			Multimap mvMap, Table<String, String, String> t) {
+		findResolver(m).addDictionaryRows(s, m, mvMap, t);
 	}
 
 	private void addFormulaeToSurvey(Survey s, Table<String, String, String> t,
@@ -113,45 +86,16 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		registerResolversNow();
 	}
 
-	public void buildAndCacheMeasureValidationMap() {
-		List<Validation> validations = vr.findAll();
-
-		this.measureValidationsMap = LinkedHashMultimap.create();
-
-		for (Validation v : validations) {
-			for (MeasureValidation mv : v.getMeasureValidationList()) {
-				this.measureValidationsMap.put(mv.getMeasure().getMeasureId(), buildMeasureValidation(mv));
-			}
-		}
-	}
-
-	private String buildMeasureValidation(MeasureValidation mv) {
-		Validation v = mv.getValidation();
-		String mvStr = null;
-		switch (v.getDataType()) {
-		case "string":
-			mvStr = String.format("%s=%s", v.getDescription(), mv.getTextValue());
-			break;
-		case "number":
-			mvStr = String.format("%s=%s", v.getDescription(), mv.getNumberValue());
-			break;
-		default:
-			mvStr = "";
-			break;
-		}
-		return mvStr;
-	}
-
 	private void registerResolversNow() {
 		this.resolverMap = Maps.newHashMap();
-		this.resolverMap.put(1, new FreeTextResolver(this));
-		this.resolverMap.put(2, new SelectOneResolver(this));
-		this.resolverMap.put(3, new MultiSelectResolver(this));
-		this.resolverMap.put(4, new TableQuestionResolver(this));
-		this.resolverMap.put(5, new FreeTextResolver(this));
-		this.resolverMap.put(6, new SelectOneMatrixResolver(this));
-		this.resolverMap.put(7, new SelectOneMatrixResolver(this));
-		this.resolverMap.put(8, new InstructionResolver(this));
+		this.resolverMap.put(1, new FreeTextResolver(this)); // freeText
+		this.resolverMap.put(2, new SelectOneResolver(this)); // selectOne
+		this.resolverMap.put(3, new MultiSelectResolver(this)); // selectMulti
+		this.resolverMap.put(4, new TableQuestionResolver(this)); // tableQuestion
+		this.resolverMap.put(5, new FreeTextResolver(this)); // readOnlyText
+		this.resolverMap.put(6, new SelectOneMatrixResolver(this)); // selectOneMatrix
+		this.resolverMap.put(7, new SelectMultiMatrixResolver(this)); // selectMultiMatrix
+		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
 	void buildSurveyFormulae(Set<String> surveyFormulae, Survey s,
@@ -207,9 +151,13 @@ abstract class Resolver {
 		this.ddh = ddh;
 	}
 
-	public final void addDictionaryRows(Survey s, Measure m,
+	String getValidationDescription(Measure m, Multimap mvMap) {
+		return "";
+	}
+
+	public final void addDictionaryRows(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t) {
-		addDictionaryRowsNow(s, m, t);
+		addDictionaryRowsNow(s, m, mvMap, t);
 	}
 
 	String getValuesRange(Measure m, MeasureAnswer ma) {
@@ -220,20 +168,12 @@ abstract class Resolver {
 		return "";
 	}
 
-	String getValidationDescription(Measure m) {
-		return "";
-	}
-
-	protected void addDictionaryRowsNow(Survey s, Measure m,
+	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t) {
-		addSingleRow(s, m, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
+		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
 	}
 
-	// Collection<Measure> findChildren(Measure m) {
-	// return ddh.mr.getChildMeasures(m);
-	// }
-
-	protected final void addSingleRow(Survey s, Measure m,
+	protected final void addSingleRow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t, MeasureAnswer ma, int index,
 			boolean other) {
 		int mId = m.getMeasureId();
@@ -246,7 +186,7 @@ abstract class Resolver {
 			t.put(indexAsStr, ddh.msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
 			t.put(indexAsStr, ddh.msg("vals.range"), getValuesRange(m, ma));
 			t.put(indexAsStr, ddh.msg("vals.desc"), getValuesDescription(m, ma));
-			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(m));
+			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(m, mvMap));
 			t.put(indexAsStr, ddh.msg("followup"), "todo");
 			t.put(indexAsStr, ddh.msg("skiplevel"), getSkipLevel(m));
 		}
@@ -273,15 +213,15 @@ class MultiSelectResolver extends Resolver {
 	}
 
 	@Override
-	protected void addDictionaryRowsNow(Survey s, Measure m,
+	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t) {
 
 		int index = 0;
-		addSingleRow(s, m, t, null, index++, false);
+		addSingleRow(s, m, mvMap, t, null, index++, false);
 		for (MeasureAnswer ma : m.getMeasureAnswerList()) {
-			addSingleRow(s, m, t, ma, index++, false);
+			addSingleRow(s, m, mvMap, t, ma, index++, false);
 			if ("other".equals(ma.getAnswerType())) {
-				addSingleRow(s, m, t, ma, index++, true);
+				addSingleRow(s, m, mvMap, t, ma, index++, true);
 			}
 		}
 	}
@@ -342,15 +282,8 @@ class FreeTextResolver extends Resolver {
 	}
 
 	@Override
-	String getValidationDescription(Measure m) {
-		// the measureValidationsMap should have been initialized inside DataDictionayHelper class, but using
-		// @PostContruct or calling this from setMeasureSource which spring calls we get Hibernate Lazy Initialization
-		// error
-		if (ddh.measureValidationsMap == null) {
-			ddh.buildAndCacheMeasureValidationMap();
-		}
-
-		Collection<String> validations = ddh.measureValidationsMap.get(m.getMeasureId());
+	String getValidationDescription(Measure m, Multimap mvMap) {
+		Collection<String> validations = mvMap.get(m.getMeasureId());
 		String description = Joiner.on(", ").skipNulls().join(validations);
 		return description;
 	}
@@ -368,10 +301,10 @@ class SelectOneMatrixResolver extends Resolver {
 	}
 
 	@Override
-	protected void addDictionaryRowsNow(Survey s, Measure m,
+	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t) {
 
-		super.addDictionaryRowsNow(s, m, t);
+		super.addDictionaryRowsNow(s, m, mvMap, t);
 
 		// collect all children here. find all measures which (whose parent_id) points to this measure (m)
 		// Collection<Measure> children = findChildren(m);
@@ -379,13 +312,31 @@ class SelectOneMatrixResolver extends Resolver {
 
 		for (Measure cm : mc) {
 			// let the framework take care of rest
-			ddh.addDictionaryRowsForMeasure(s, cm, t);
+			ddh.addDictionaryRowsForMeasure(s, cm, mvMap, t);
 		}
+	}
+}
+
+class SelectMultiMatrixResolver extends SelectOneMatrixResolver {
+	protected SelectMultiMatrixResolver(DataDictionaryHelper ddr) {
+		super(ddr);
+	}
+
+	@Override
+	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
+			Table<String, String, String> t) {
+		super.addDictionaryRowsNow(s, m, mvMap, t);
 	}
 }
 
 class TableQuestionResolver extends SelectOneMatrixResolver {
 	protected TableQuestionResolver(DataDictionaryHelper ddr) {
 		super(ddr);
+	}
+
+	@Override
+	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
+			Table<String, String, String> t) {
+		super.addDictionaryRowsNow(s, m, mvMap, t);
 	}
 }

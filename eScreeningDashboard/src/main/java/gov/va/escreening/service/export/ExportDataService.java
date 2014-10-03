@@ -23,7 +23,7 @@ public interface ExportDataService {
 	AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
 			String comment);
 
-	List<DataExportCell> createDataExportForOneAssessment(VeteranAssessment va,
+	List<DataExportCell> buildExportDataForOneAssessment(VeteranAssessment va,
 			int identifiedExportType);
 
 }

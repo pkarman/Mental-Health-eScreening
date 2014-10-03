@@ -97,10 +97,8 @@ public class SurveyResponsesHelper {
 
 		// try to find the user response
 		String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
-		// if value of export name was an formulae (sum, avg, or some other fornula derived value)
+		// if value of export name was an formulae (sum, avg, or some other formula derived value)
 		exportVal = getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
-		// skip the MISSING value
-		// return MISSING_DEFAULT.equals(colVal) ? null : new DataExportCell(colName, colVal);
 		return new DataExportCell(exportName, exportVal);
 	}
 }

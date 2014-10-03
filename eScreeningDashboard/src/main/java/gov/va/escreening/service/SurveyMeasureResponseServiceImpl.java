@@ -28,7 +28,7 @@ import com.google.common.collect.ListMultimap;
 @Transactional
 @Service
 public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseService {
-    private static final Logger logger = LoggerFactory.getLogger(SurveyMeasureResponseServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SurveyMeasureResponseRepository surveyMeasureResponseRepository;

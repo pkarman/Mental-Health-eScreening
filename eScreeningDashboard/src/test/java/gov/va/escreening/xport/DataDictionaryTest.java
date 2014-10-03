@@ -1,6 +1,6 @@
 package gov.va.escreening.xport;
 
-import gov.va.escreening.service.DataDictionaryService;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.view.DataDictionaryExcelView;
 
 import java.io.ByteArrayOutputStream;
