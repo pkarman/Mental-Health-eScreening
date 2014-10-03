@@ -813,7 +813,7 @@ angular.module('Editors')
                                    	new EScreeningDashboardApp.models.TemplateType(
                                    	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
                                    	new EScreeningDashboardApp.models.TemplateType(
-                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
+                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true })
                                                    ];
                               deferred.resolve(templateTypes);
                               
@@ -827,7 +827,7 @@ angular.module('Editors')
 //                          
                           return deferred.promise;
                       }]
-                  },
+                  }
                 })
 
                 .state('templates.templateeditorview', {
