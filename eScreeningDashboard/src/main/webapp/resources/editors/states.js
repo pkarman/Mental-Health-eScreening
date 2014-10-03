@@ -762,23 +762,6 @@ angular.module('Editors')
                 //////////////////////////////
                 // Templates Workflow Views //
                 //////////////////////////////
-                .state('templates',{
-                    abstract:true,
-                    url:'/templates',
-                    data: {
-                        displayName: false
-                    },
-                    template: '<div class="col-md-12" style="min-height:400px;">' +
-                        '<div class="ui-view-container container-fluid">' +
-                        '<div class="" ui-view></div>' +
-                        '</div>' +
-                        '</div>',
-                    controller:['$rootScope','$scope','$state',
-                    function($rootScope,$scope,$state){
-
-                    }]
-                })
-                
                 //TODO: relocate this up with the other module states
                 .state('modules.templatelist',{
                     url:'/templatelist',  //remove the survey ID once we relocate this state when we add templatelist to the url it should look like module/45/templatelist but the state hierarchy is incorrect currently
