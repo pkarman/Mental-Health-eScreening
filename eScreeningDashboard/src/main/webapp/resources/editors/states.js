@@ -752,20 +752,21 @@ angular.module('Editors')
                           //TODO: uncomment this when we merge code and have the surveyId 
                          // if(Object.isDefined($stateParams) && Object.isDefined($stateParams.surveyId)){
                           
-                              //TODO: this is not correct
-//                              TemplateService
-//                              	.getTypesForModule($scope.selectedSurveyUIObject.id)
-//                              	.then(
-//                              		function (templateTypes){
-//                              		    deferred.resolve(templateTypes);
-//                              		
-//                              		}, 
-//                              		function(responseError) {
-//                              		    $rootScope.errors.push(responseError.getMessage());
-//                              		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-//                              		    deferred.reject(responseError.getMessage());
-//                              		}
-//                          		);
+                          //TODO: remove this once this state uses the correct parent
+//                          $stateParams.surveyId = 26;
+//                              
+//                          TemplateService
+//                          	.getTypes({surveyId: $stateParams.surveyId})
+//                          	.then(
+//                          	    function (templateTypes){
+//                          	        deferred.resolve(templateTypes);
+//                          		}, 
+//                          		function(responseError) {
+//                          		    $rootScope.errors.push(responseError.getMessage());
+//                          		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
+//                          		    deferred.reject(responseError.getMessage());
+//                          		});
+                              
                               var templateTypes = [
                                    	new EScreeningDashboardApp.models.TemplateType(
                                    	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
@@ -779,7 +780,7 @@ angular.module('Editors')
 //                          else{
 //                            $rootScope.errors.push("No valid context found. Please contact support.");
 //                            console.log("Template Type List Error:: either a Module ID or a Battery ID must be given."); 
-//                            $state.go('???');
+//                            $state.go('home');
 //                          }
 //                          
                           return deferred.promise;

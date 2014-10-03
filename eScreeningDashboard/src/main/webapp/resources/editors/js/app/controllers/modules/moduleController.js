@@ -110,6 +110,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
     
     $scope.editTemplates = function(){
-        $state.go('modules.templatelist');
+        $state.go('modules.templatelist')
+              .catch(
+                function(error){
+                    console.log('Error: ' + error);
+                });        
     };
 }]);
