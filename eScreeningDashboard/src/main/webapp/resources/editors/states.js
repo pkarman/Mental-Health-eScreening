@@ -197,19 +197,6 @@ angular.module('Editors')
                         displayName: 'Modules-Editor: Add/Edit'
                     },
                     resolve: {
-                        /*surveyUIObject: ['$scope', '$stateParams', function($scope, $stateParams){
-                            var selectedSurveyUIObject = null;
-
-                            if(Object.isArray($scope.surveyUIObjects)) {
-                                $scope.surveyUIObjects.forEach(function (surveyUIObject) {
-                                    if(surveyUIObject.id === parseInt($stateParams.selectedSurveyId)) {
-                                        selectedSurveyUIObject = surveyUIObject;
-                                    }
-                                });
-                            }
-
-                            return selectedSurveyUIObject;
-                        }],*/
                         pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
                             var deferred = $q.defer();
 

@@ -1,7 +1,7 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', /*'surveyUIObject', */'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, /*surveyUIObject, */pageQuestionItems, surveySectionDropDownMenuOptions){
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, pageQuestionItems, surveySectionDropDownMenuOptions){
     var tmpList = [],
         getSurveyUIObject = function () {
             var selectedSurveyUIObject = null;
