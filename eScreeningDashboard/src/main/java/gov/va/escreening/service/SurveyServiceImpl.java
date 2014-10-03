@@ -291,12 +291,12 @@ public class SurveyServiceImpl implements SurveyService {
 			{
 				surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
 			}
-			System.out.println("survapteInfo");
+			
 			surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
 			surveyPage.setDescription(surveyPageInfo.getDescription());
 			surveyPage.setTitle(surveyPageTitle);
 			surveyPage.setSurveyPageId(surveyPageInfo.getId());
-			System.out.println("survapteInfo  1");
+			
 			if (surveyPageInfo.getDateCreated()==null)
 			{
 				surveyPage.setDateCreated(new Date());
