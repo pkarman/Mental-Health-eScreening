@@ -562,6 +562,9 @@ table.gridtable td {
 	margin: 5px;
 	border: 1px solid #D4D4D4;
 }
+.vertical_scoll_list input[type=checkbox], .checkbox_margin_right input[type=checkbox]{
+  margin-right:5px;
+}
 .panel-title label {
 	margin-bottom: 0px;
 }
