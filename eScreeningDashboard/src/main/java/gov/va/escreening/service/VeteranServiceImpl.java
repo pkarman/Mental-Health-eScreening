@@ -269,9 +269,9 @@ public class VeteranServiceImpl implements VeteranService {
         veteran.setLastName(veteranDto.getLastName());
         veteran.setSuffix(veteranDto.getSuffix());
         veteran.setEmail(veteranDto.getEmail());
-        veteran.setPhone(StringUtils.remove(veteranDto.getPhone(), "-"));
-        veteran.setCellPhone(StringUtils.remove(veteranDto.getCellPhone(), "-"));
-        veteran.setOfficePhone(StringUtils.remove(veteranDto.getWorkPhone(), "-"));
+        veteran.setPhone(cleanUpPhoneNumber(veteranDto.getPhone()));
+        veteran.setCellPhone(cleanUpPhoneNumber(veteranDto.getCellPhone()));
+        veteran.setOfficePhone(cleanUpPhoneNumber(veteranDto.getWorkPhone()));
         veteran.setBirthDate(veteranDto.getBirthDate());
         veteran.setGender(veteranDto.getGender());
         veteran.setDateRefreshedFromVista(new Date());
@@ -282,5 +282,10 @@ public class VeteranServiceImpl implements VeteranService {
         veteranRepository.commit(); // must explicitly call commit
 
         return veteran.getVeteranId();
+    }
+    
+    private String cleanUpPhoneNumber(String phoneNumber)
+    {
+    	return StringUtils.remove(StringUtils.remove(StringUtils.remove(phoneNumber, ')'), '('), '-');
     }
 }
