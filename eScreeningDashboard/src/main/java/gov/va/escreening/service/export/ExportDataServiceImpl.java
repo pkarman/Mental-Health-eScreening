@@ -317,14 +317,14 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	private List<List<DataExportCell>> createDataExportReport(
 			List<VeteranAssessment> matchingAssessments,
 			Integer identifiedExportType,
-			Map<Integer, Map<String, String>> vid2AggregatesMap,
+			Map<Integer, Map<String, String>> vid2FormulaeMap,
 			Map<String, Table<String, String, String>> dataDictionary) {
 
 		List<List<DataExportCell>> tableContent = new ArrayList<List<DataExportCell>>();
 
 		// build an export row for each assessment
 		for (VeteranAssessment assessment : matchingAssessments) {
-			Map<String, String> formulaeMap = vid2AggregatesMap.get(assessment.getVeteranAssessmentId());
+			Map<String, String> formulaeMap = vid2FormulaeMap.get(assessment.getVeteranAssessmentId());
 			List<SurveyMeasureResponse> smrList = assessment.getSurveyMeasureResponseList();
 			List<DataExportCell> exportDataRowCells = buildExportDataForOneAssessment(assessment, identifiedExportType, smrList, formulaeMap, dataDictionary);
 			tableContent.add(exportDataRowCells);

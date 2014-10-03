@@ -2,10 +2,7 @@ package gov.va.escreening.util;
 
 import gov.va.escreening.domain.ExportDataDefaultValuesEnum;
 import gov.va.escreening.dto.dashboard.DataExportCell;
-import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.service.export.DataExtractor;
 
 import java.text.DateFormat;
@@ -103,7 +100,7 @@ public class SurveyResponsesHelper {
 		// if value of export name was an formulae (sum, avg, or some other fornula derived value)
 		exportVal = getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
 		// skip the MISSING value
-		//return MISSING_DEFAULT.equals(colVal) ? null : new DataExportCell(colName, colVal);
+		// return MISSING_DEFAULT.equals(colVal) ? null : new DataExportCell(colName, colVal);
 		return new DataExportCell(exportName, exportVal);
 	}
 }
