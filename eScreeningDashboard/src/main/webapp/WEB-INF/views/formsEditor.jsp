@@ -205,7 +205,7 @@
         });
     </script>
 </head>
-<body style="">
+<body class="form_editor">
 <!-- Top Nav Content -->
 <div id="outerPageDiv">
     <div id="headerDiv" class="top_header">
@@ -269,7 +269,7 @@
                 </div>
             <!-- </div>-->
             		 <div class="row">
-            		<div class="col-md-12" ui-view></div>
+            		    <div class="col-md-12" ui-view></div>
                 </div>
         		</div>
 	        </div>

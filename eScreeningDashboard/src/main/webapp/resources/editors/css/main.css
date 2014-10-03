@@ -258,3 +258,7 @@ to prevent collapsing during animation*/
   border-color: #ccc;
   background:none #fff;
 }
+
+.cursor_pointer{
+  cursor:pointer;
+}

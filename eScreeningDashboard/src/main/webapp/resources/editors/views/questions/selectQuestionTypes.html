@@ -3,16 +3,16 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-horizontal">
-                <div>Select Question Type</div>
+                <div><strong>Select Question Type</strong></div>
                 <div ng-repeat="questionTypeDropDownMenuOption in questionTypeDropDownMenuOptions">
                     <input type="radio" name="questionTypes" ng-required="true"
                            ng-model="questionTypeSelection.type"
-                           value="{{questionTypeDropDownMenuOption.name}}"> {{questionTypeDropDownMenuOption.displayName}}
+                           value="{{questionTypeDropDownMenuOption.name}}" id="{{questionTypeDropDownMenuOption.name}}"> <label for="{{questionTypeDropDownMenuOption.name}}">{{questionTypeDropDownMenuOption.displayName}}</label>
                 </div>
-                <button class="btn btn-success btn-sm"
+                <hr />
+                <button class="btn btn-primary btn-sm"
                         ng-disabled="selectedQuestionTypeForm.$invalid"
-                        ng-click="goToQuestionTypeForm();"><span
-                        class="glyphicon glyphicon-plus"></span> Next
+                        ng-click="goToQuestionTypeForm();">Next <span class="glyphicon glyphicon-chevron-right"></span>
                 </button>
                 <!--div class="col-md-4">
                     <select id="selectQuestionType" name="selectQuestionType" class="form-control"
