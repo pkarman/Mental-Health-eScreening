@@ -46,6 +46,13 @@ public class TemplateRestController {
 		return templateTypeService.getModuleTemplateTypes(templateId);
 	}
 	
+	@RequestMapping(value ="/services/templateType/survey/{surveyId}")
+	@ResponseBody
+	public List<ModuleTemplateTypeDTO> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)
+	{
+		return templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+	}
+	
 	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
 	@ResponseBody

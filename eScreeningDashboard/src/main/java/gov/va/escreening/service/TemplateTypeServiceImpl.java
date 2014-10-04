@@ -1,13 +1,16 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.dto.ModuleTemplateTypeDTO;
+import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.TemplateType;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,10 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	
 	@Autowired
 	private TemplateRepository templateRepository;
+	
+	@Autowired 
+	private SurveyRepository surveyRepository;
+	
 	
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
@@ -47,6 +54,42 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 			
 			results.add(moduleTemplateTypeDTO);
 		}
+		
+		return results;
+	}
+
+	@Override
+	public List<ModuleTemplateTypeDTO> getModuleTemplateTypesBySurvey(
+			Integer surveyId) {
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		Set<Template> templates = survey.getTemplates();
+		
+		List<TemplateType> templateTypes = templateTypeRepository.findAllModuleTypeOrderByName();
+		List<ModuleTemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
+		
+		for(TemplateType templateType : templateTypes)
+		{
+			ModuleTemplateTypeDTO moduleTemplateTypeDTO = new ModuleTemplateTypeDTO();
+			moduleTemplateTypeDTO.setTemplateTypeId(templateType.getTemplateTypeId());
+			moduleTemplateTypeDTO.setTemplateTypeName(templateType.getName());
+			moduleTemplateTypeDTO.setTemplateTypeDescription(templateType.getDescription());
+			
+			boolean exists = false;
+			
+			for(Template template : templates)
+			{
+				if (templateType.getTemplateTypeId().intValue() == template.getTemplateType().getTemplateTypeId().intValue())
+				{
+					exists = true;
+					break;
+				}
+			}
+			moduleTemplateTypeDTO.setGivenTemplateExists(exists);
+			
+			results.add(moduleTemplateTypeDTO);
+		}
+		
 		
 		return results;
 	}

@@ -8,4 +8,7 @@ public interface TemplateTypeService {
 	
 	public List<ModuleTemplateTypeDTO> getModuleTemplateTypes(Integer templateId);
 
+	public List<ModuleTemplateTypeDTO> getModuleTemplateTypesBySurvey(
+			Integer surveyId);
+
 }
