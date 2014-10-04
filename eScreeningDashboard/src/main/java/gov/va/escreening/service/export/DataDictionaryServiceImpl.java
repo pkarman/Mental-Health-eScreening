@@ -127,16 +127,12 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		Multimap<Integer, String> ftMvMap = buildAndCacheMeasureValidationMap();
 
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			if ("AUDIT-C".equals(s.getName())){
-				int i=0;
-			}
 			Table<String, String, String> sheet = buildSurveySheet(s, surveyMeasuresMap.get(s), ftMvMap, avList);
 			// bind the survey (or module with its sheet)
 			dataDictionary.put(s.getName(), sheet);
 			
 			if (logger.isDebugEnabled()){logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));}
 		}
-
 		return dataDictionary;
 	}
 

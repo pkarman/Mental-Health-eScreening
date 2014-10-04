@@ -60,7 +60,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	private UserService userService;
 	@Autowired
 	private VeteranAssessmentService veteranAssessmentService;
-	
+
 	@Resource(type = DataDictionaryService.class)
 	DataDictionaryService dds;
 
@@ -131,12 +131,12 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	@RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
 	public ModelAndView downloadAgain(ModelAndView modelAndView,
 			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
-		
+
 		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
-		
+
 		modelAndView.setViewName("dataDictionaryExcelView");
 		modelAndView.addObject("dataDictionary", dataDictionary);
-		
+
 		return modelAndView;
 	}
 

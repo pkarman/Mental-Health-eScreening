@@ -30,9 +30,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.bouncycastle.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -42,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -347,9 +350,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			// get the table data (one sheet) for this survey
 			Table<String, String, String> dataDictionary = ddMap.get(surveyName);
 
-			// get the names of export names for each row
-			// the returned data will be rowId=exportName for the export column
-			Map<String, String> columnData = dataDictionary.column(msgSrc.getMessage("data.dict.column.var.name", null, null));
+			Map<String, String> columnData = syncTableQ(usrRespMap, dataDictionary);
 
 			// traverse through each exportName, and try to find the run time response for the exportName. In case the
 			// user has not responded, leave 999
@@ -357,7 +358,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			for (Entry<String, String> entry : columnData.entrySet()) {
 				String exportName = entry.getValue();
 				if (!exportName.isEmpty()) {
-					DataExportCell oneCell = srh.createExportCell(usrRespMap, formulaeMap, exportName, show);
+					DataExportCell oneCell = createExportCell(usrRespMap, formulaeMap, exportName, show);
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, exportName, oneCell));
 					}
@@ -368,6 +369,62 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			adjustMultiSelects(multiSelectMap);
 		}
 		return exportDataRowCells;
+	}
+
+	public DataExportCell createExportCell(Map<String, String> usrRespMap,
+			Map<String, String> formulaeMap, String exportName, boolean show) {
+
+		// try to find the user response
+		String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
+		// if value of export name was an formulae (sum, avg, or some other formula derived value)
+		exportVal = srh.getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
+		return new DataExportCell(exportName, exportVal);
+	}
+
+	/**
+	 * method to traverse user responses and look for table questions
+	 * 
+	 * for every table question, this method will add a row in data dictionary
+	 * 
+	 * @param usrRespMap
+	 * @param dataDictionary
+	 * @return
+	 */
+	private Map<String, String> syncTableQ(Map<String, String> usrRespMap,
+			Table<String, String, String> dataDictionary) {
+
+		String ddColumnKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
+		Map<String, String> ddColumnData = dataDictionary.column(ddColumnKey);
+
+		Map<String, String> modColumnData = Maps.newHashMap();
+		List<String> toBeDelKeys = Lists.newArrayList();
+
+		Set<String> usrRespExportNames = usrRespMap.keySet();
+		for (String usrRespExportName : usrRespExportNames) {
+			if (usrRespExportName.contains("~")) {
+				String[] exportNamesParts = Strings.split(usrRespExportName, '~');
+
+				String usrExportName = exportNamesParts[0];
+				String usrTQIndex = exportNamesParts[1];
+				// now look for this export name in the columnData []
+				for (Entry<String, String> entry : ddColumnData.entrySet()) {
+					if (entry.getValue().equals(usrExportName)) {
+						modColumnData.put(entry.getKey() + "_" + usrTQIndex, usrRespExportName);
+						toBeDelKeys.add(entry.getKey());
+					}
+				}
+			}
+		}
+
+		// truncate the ddColumnData
+		for (String key : toBeDelKeys) {
+			dataDictionary.remove(key, ddColumnKey);
+		}
+
+		ddColumnData.putAll(modColumnData);
+
+		return ddColumnData;
+
 	}
 
 	private void adjustMultiSelects(

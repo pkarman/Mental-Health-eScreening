@@ -52,11 +52,11 @@ public class SurveyResponsesHelper {
 
 		for (SurveyMeasureResponse smr : smrLst) {
 			// need to examine smr twice. once for exportName and other one for possible chance of otherExportName
-			Map<String, String> tuple = smrExportName.apply(smr);
+			Map<String, String> tuple = smrExportName.apply(smr, this);
 			if (tuple != null) {
 				exportColumnsMap.put(tuple.get("exportName"), tuple.get("exportableResponse"));
 			}
-			tuple = smrExportOtherName.apply(smr);
+			tuple = smrExportOtherName.apply(smr, this);
 			if (tuple != null) {
 				exportColumnsMap.put(tuple.get("exportName"), tuple.get("exportableResponse"));
 			}
@@ -92,13 +92,20 @@ public class SurveyResponsesHelper {
 		return strVal == null ? 0.00F : Float.parseFloat(strVal.trim());
 	}
 
-	public DataExportCell createExportCell(Map<String, String> usrRespMap,
-			Map<String, String> formulaeMap, String exportName, boolean show) {
+	public String buildExportName(SurveyMeasureResponse smr, String xportName) {
+		if (xportName == null) {
+			return null;
+		}
 
-		// try to find the user response
-		String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
-		// if value of export name was an formulae (sum, avg, or some other formula derived value)
-		exportVal = getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
-		return new DataExportCell(exportName, exportVal);
+		// if this Survey Measure Response is representing one of the Table Question, then its tabular row must be
+		// having an index, and we will have to take that index into consideration
+		Integer tr = smr.getTabularRow();
+		Integer tabularIndex = "null".equals(tr) ? null : tr;
+
+		// if tabular row is not null than we will append the index to the export name. The export name will turn into a
+		// exportName plus the index
+		xportName += (tabularIndex != null ? "~" + tabularIndex : "");
+
+		return xportName;
 	}
 }

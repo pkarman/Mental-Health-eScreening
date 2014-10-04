@@ -28,7 +28,7 @@ import com.google.common.collect.Table;
 
 @Service("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	MessageSource msgSrc;
 
@@ -232,6 +232,9 @@ class SelectOneResolver extends Resolver {
 		super(ddr);
 	}
 
+	/**
+	 * consolidate measure answers' ranges. The out put will be in following format 1-10,999
+	 */
 	@Override
 	public String getValuesRange(Measure m, MeasureAnswer unusedMa) {
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
@@ -249,6 +252,12 @@ class SelectOneResolver extends Resolver {
 		return "TO-DO";
 	}
 
+	/**
+	 * consolidate measure answers' calculationValue wirh the answer text. The output will be in following format
+	 * 
+	 * 1=English,2=Spanish,3=Tagalog,4=Chinese,5=German,6=Japanese,7=Korean,8=Russian,9=Vietnamese,10=Other, please
+	 * specify,999=missing
+	 */
 	@Override
 	public String getValuesDescription(Measure m, MeasureAnswer unusedMa) {
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
