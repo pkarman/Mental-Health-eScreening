@@ -78,7 +78,7 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
 
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
-    	$scope.selectedSurveyUIObject = survey;
+    	$scope.setSelectedSurveyUIObject(survey);
         $state.go('modules.detail', {selectedSurveyId: survey.id});
     };
 
