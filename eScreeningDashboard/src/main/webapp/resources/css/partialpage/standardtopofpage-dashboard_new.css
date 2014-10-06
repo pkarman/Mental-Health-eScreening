@@ -824,7 +824,20 @@ a.offscreen:focus, a.offscreen:active {
   font-weight:bold;
 }
 
-
+/* addons for datepicker */
+.form-group .add-on{
+  display: inline-block;
+  width: auto;
+  height: 30px;
+  min-width: 40px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;  
+  position: absolute;
+  right: 0;
+  top: 0px;
+  cursor:pointer;
+}
 
 
 
