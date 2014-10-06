@@ -72,7 +72,7 @@ Editors.controller('templateListController',
             console.log('Opening Template Editor for type: ' + templateTypeUIObj.name);
             
             if($scope.relatedObj && $scope.relatedObj.type == "module"){
-                $state.go('template.editor', {typeId: templateTypeUIObj.getId(), moduleId: $scope.relatedObj.id});
+                $state.go('template.editor', {typeId: templateTypeUIObj.id, moduleId: $scope.relatedObj.id});
             }
             
             //TODO: move to the template.editor state (or maybe the modules.templateeditor state):
