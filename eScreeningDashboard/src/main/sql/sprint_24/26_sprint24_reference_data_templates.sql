@@ -406,10 +406,10 @@ ${MODULE_START}
 	<#-- var1380: ${var1380!""}<br><br>  var1390: ${var1390!""}<br><br>  var1400: ${var1400!""}<br><br>  var1410: ${var1410!""}<br><br>  var1480: ${var1480!""}<br><br>  var1490: ${var1490!""}<br><br> -->
 	<#if (var1380.children)?? && (var1390.children)?? && (var1400.children)?? && (var1410.children)?? && (var1420.children)?? 
 			&& (var1430.children)?? && (var1440.children)?? && (var1450.children)?? && (var1460.children)?? && (var1470.children)?? 
-			|| (var1480.children)?? && (var1490.children)?? 
 			&& (var1380.children?size > 0) && (var1390.children?size > 0)  && (var1400.children?size > 0) && (var1410.children?size > 0)
 			&& (var1420.children?size > 0) && (var1430.children?size > 0) && (var1440.children?size > 0) && (var1450.children?size > 0)
-			&& (var1460.children?size > 0) && (var1470.children?size > 0) && (var1480.children?size > 0) && (var1490.children?size > 0)
+			&& (var1460.children?size > 0) && (var1470.children?size > 0) 
+			|| ((var1480.children)?? && (var1490.children)?? && (var1480.children?size > 0) && (var1490.children?size > 0))	
 			||((var1510.children)??&& (var1510.children?size > 0))>
 		
 		<#assign answerTextHash = {"var1380":"blast injury", "var1390":"injury to spine or back", "var1400":"burn (second, 3rd degree)", 
@@ -504,8 +504,9 @@ ${MODULE_START}
 		</#if>
 		
 		<#-- build first two sentences -->
+		<#if !(errorText?has_content)>
 		<#if combatAnswers?has_content>
-			The following injuries were reported during combat deployment: ${createSentence(combatAnswers)}.${LINE_BREAK}>
+			The following injuries were reported during combat deployment: ${createSentence(combatAnswers)}.${LINE_BREAK}
 		<#else>
 			The Veteran reported no injuries during combat deployment.${LINE_BREAK}
 		</#if>
@@ -514,6 +515,7 @@ ${MODULE_START}
 			The following injuries were reported during other service period or training: ${createSentence(nonCombatAnswers)}.${LINE_BREAK}
 		<#else>
 			The Veteran reported no injuries during other service period or training.${LINE_BREAK}
+		</#if>
 		</#if>
 		
 		<#if (var1510.children)??>
@@ -531,3 +533,6 @@ ${MODULE_START}
 	</#if>
 ${MODULE_END}'
 where template_id = 16;
+
+
+
