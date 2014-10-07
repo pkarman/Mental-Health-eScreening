@@ -500,6 +500,39 @@ a.offscreen:focus, a.offscreen:active {
 	margin-top: 0;
 }
 
+/*WYSIWYG Update by Joseph */
+.scroll-div-y{
+  overflow-y:auto;
+}
+
+.border-radius-main-box .panel{
+  margin-bottom:10px;
+}
+.border-radius-main-box .panel .list-group{
+  margin-bottom:0px;
+}
+
+.border-radius-main-box .panel .panel-heading {
+  padding: 10px 8px;
+}
+
+.border-radius-main-box .panel .panel-title{
+  font-size:14px;
+  line-height: 20px;
+} 
+.border-radius-main-box .panel .panel-body {
+  padding:5px;
+}
+
+.border-radius-main-box{
+  border-radius: 5px;
+  border: 1px solid #BBB;
+  padding: 10px 10px;
+}
+
+.color-red{
+  color:#FF0000;
+}
 
 
 @media only screen 
