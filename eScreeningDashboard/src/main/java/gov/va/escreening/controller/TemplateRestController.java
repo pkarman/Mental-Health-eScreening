@@ -6,13 +6,17 @@ import java.util.Map;
 
 import javax.ws.rs.NotFoundException;
 
+import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ModuleTemplateTypeDTO;
 import gov.va.escreening.dto.TemplateDTO;
-import gov.va.escreening.dto.ae.ErrorResponse;
+import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
+import gov.va.escreening.webservice.Response;
+import gov.va.escreening.webservice.ResponseStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,22 +45,24 @@ public class TemplateRestController {
 	
 	@RequestMapping(value ="/services/templateType/{templateId}")
 	@ResponseBody
-	public List<ModuleTemplateTypeDTO> getModuleTemplateTypes(@PathVariable Integer templateId, @CurrentUser EscreenUser escreenUser)
+	public Response<List<ModuleTemplateTypeDTO>> getModuleTemplateTypes(@PathVariable Integer templateId, @CurrentUser EscreenUser escreenUser)
 	{
-		return templateTypeService.getModuleTemplateTypes(templateId);
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
+							templateTypeService.getModuleTemplateTypes(templateId));
 	}
 	
 	@RequestMapping(value ="/services/templateType/survey/{surveyId}")
 	@ResponseBody
-	public List<ModuleTemplateTypeDTO> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)
+	public Response<List<ModuleTemplateTypeDTO>> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)
 	{
-		return templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
+							templateTypeService.getModuleTemplateTypesBySurvey(surveyId));
 	}
 	
 	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public boolean deleteTemplate(
+	public Response<Boolean> deleteTemplate(
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
 		try
@@ -65,109 +71,130 @@ public class TemplateRestController {
 		}
 		catch(IllegalArgumentException e)
 		{
-			throw new NotFoundException("Could not find the template");
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+	            .toUser("Could not find the template.")
+	            .toAdmin("Could not find the template with ID: " + templateId)
+	            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	            .throwIt();
 		}
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public TemplateDTO getTemplate(
+	public Response<TemplateDTO> getTemplate(
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
 		TemplateDTO dto = templateService.getTemplate(templateId);
 		if (dto == null)
-			throw new NotFoundException("Could not find the template.");
-		return dto;
+			 ErrorBuilder.throwing(EntityNotFoundException.class)
+	             .toUser("Could not find the template.")
+	             .toAdmin("Could not find the template with ID: " + templateId)
+	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	             .throwIt();
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), dto);
 	}
 	
 	@RequestMapping(value="/services/template/{surveyId}/{templateTypeId}")
 	@ResponseBody
-	public TemplateDTO getTemplate(@PathVariable("templateTypeId") Integer templateTypeId, @PathVariable("surveyId") Integer surveyId,
+	public Response<TemplateDTO> getTemplate(@PathVariable("templateTypeId") Integer templateTypeId, @PathVariable("surveyId") Integer surveyId,
 			@CurrentUser EscreenUser screenUser)
 	{
 		TemplateDTO dto = templateService.getTemplateBySurveyAndTemplateType(surveyId, templateTypeId);
 		if (dto == null)
-			throw new NotFoundException("Could not find the template.");
-		return dto;
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+	            .toUser("Could not find the template.")
+	            .toAdmin("Could not find the template with a type ID of: " + templateTypeId + " for module with ID: " + surveyId)
+	            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	            .throwIt();
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), dto);
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public TemplateDTO updateTemplate(@PathVariable("templateId") Integer templateId,
+	public Response<TemplateDTO> updateTemplate(@PathVariable("templateId") Integer templateId,
 			@RequestBody TemplateDTO templateDTO,
 			@CurrentUser EscreenUser escreenUser) {
+		
+		TemplateDTO updatedTemplate = null;
 		try
 		{
-			return templateService.updateTemplate(templateDTO);
+			updatedTemplate = templateService.updateTemplate(templateDTO);
 		}
 		catch(IllegalArgumentException e)
 		{
-			throw new NotFoundException("Could not find the template");
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+	            .toUser("Could not find the template.")
+	            .toAdmin("Could not find the template with ID: " + templateId)
+	            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	            .throwIt();
 		}
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), updatedTemplate);
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}/surveyId/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public TemplateDTO createTemplateForSurvey(
+	public Response<TemplateDTO> createTemplateForSurvey(
 			@RequestBody TemplateDTO templateDTO,
 			@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-		return templateService.createTemplate(templateDTO, surveyId, true);
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
+							templateService.createTemplate(templateDTO, surveyId, true));
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}/batteryId/{batteryId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public TemplateDTO createTemplateForBattery(
+	public Response<TemplateDTO> createTemplateForBattery(
 			@RequestBody TemplateDTO templateDTO,
 			@PathVariable Integer batteryId, boolean isSurvey,
 			@CurrentUser EscreenUser escreenUser) {
-		return templateService.createTemplate(templateDTO, batteryId, false);
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
+				templateService.createTemplate(templateDTO, batteryId, false));
 	}
 	
 	
 	@RequestMapping(value="/services/template/addVariableTemplate/{templateId}", method =RequestMethod.POST,
 			consumes="application/json", produces="application/json")
 	@ResponseBody
-	public boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
+	public Response<Boolean> addVariableTemplateToTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
 	{
 		templateService.addVariableTemplates(templateId, variableTemplateIds);
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 	
 	@RequestMapping(value="/services/template/removeVariableTemplate/{templateId}", method =RequestMethod.POST,
 			consumes="application/json", produces="application/json")
 	@ResponseBody
-	public boolean removeVariableTemplatesFromTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
+	public Response<Boolean> removeVariableTemplatesFromTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
 	{
 		templateService.removeVariableTemplatesFromTemplate(templateId, variableTemplateIds);
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 	
 	@RequestMapping(value="/services/template/addVariableTemplates/{templateId}/{variableTemplateId}", method =RequestMethod.POST,
 			consumes="application/json", produces="application/json")
 	@ResponseBody
-	public boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
+	public Response<Boolean> addVariableTemplateToTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
 	{
 		templateService.addVariableTemplate(templateId, variableTemplateId);
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 	
 	@RequestMapping(value="/services/template/removeVariableTemplate/{templateId}/{variableTemplateId}", method =RequestMethod.POST,
 			consumes="application/json", produces="application/json")
 	@ResponseBody
-	public boolean removeVariableTemplateFromTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
+	public Response<Boolean> removeVariableTemplateFromTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
 	{
 		templateService.removeVariableTemplateFromTemplate(templateId, variableTemplateId);
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 	
 	@RequestMapping(value="/services/template/setVariableTemplates/{templateId}", method =RequestMethod.POST,
 			consumes="application/json", produces="application/json")
 	@ResponseBody
-	public boolean setVariableTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
+	public Response<Boolean> setVariableTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
 	{
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
-		return true;
+		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), Boolean.TRUE);
 	}
 	
 	@ExceptionHandler(NotFoundException.class)

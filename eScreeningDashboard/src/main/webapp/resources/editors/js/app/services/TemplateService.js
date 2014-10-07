@@ -15,7 +15,7 @@ angular.module('EscreeningDashboardApp.services.template', ['ngResource'])
                         query: {
                             method: 'GET',
                             params: {"surveyId": surveyId},
-                            isArray: true,
+                            isArray: false,
                             headers:{
                                 'Accept': 'application/json',
                                 'Content-Type':'application/json'

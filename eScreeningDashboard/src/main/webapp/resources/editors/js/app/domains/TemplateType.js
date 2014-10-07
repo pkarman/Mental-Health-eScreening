@@ -109,7 +109,7 @@ EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (json
         throw new BytePushers.exceptions.InvalidParameterException("Server response must be an Array.");
     }
 
-    templateTypes = jsonResponse.forEach(function(jsonTemplateType){
+    jsonResponse.forEach(function(jsonTemplateType){
         templateTypes.push(new EScreeningDashboardApp.models.TemplateType(jsonTemplateType));
     });
 
