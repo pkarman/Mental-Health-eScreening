@@ -30,6 +30,9 @@ import com.google.common.collect.Table;
 public class DataDictionaryHelper implements MessageSourceAware {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	public static final String EXPORT_NAME_KEY_PREFIX = "mId_";
+	public static final String FORMULA_KEY_PREFIX = "surveyId_";
+
 	MessageSource msgSrc;
 
 	Map<Integer, Resolver> resolverMap;
@@ -63,7 +66,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			int i = 0;
 			for (String formula : formulae) {
 				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
-				String indexAsStr = String.valueOf("surveyId_" + s.getSurveyId()) + "_" + i++;
+				String indexAsStr = String.valueOf(FORMULA_KEY_PREFIX + s.getSurveyId()) + "_" + i++;
 
 				t.put(indexAsStr, msg("ques.type"), "formula");
 				t.put(indexAsStr, msg("ques.desc"), formulaTokens.next());
@@ -177,7 +180,7 @@ abstract class Resolver {
 			Table<String, String, String> t, MeasureAnswer ma, int index,
 			boolean other) {
 		int mId = m.getMeasureId();
-		String indexAsStr = String.valueOf("mId_" + mId) + "_" + index;
+		String indexAsStr = String.valueOf(DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX + mId) + "_" + index;
 
 		t.put(indexAsStr, ddh.msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
 		t.put(indexAsStr, ddh.msg("ques.desc"), index == 0 ? m.getMeasureText() : ma.getAnswerText());

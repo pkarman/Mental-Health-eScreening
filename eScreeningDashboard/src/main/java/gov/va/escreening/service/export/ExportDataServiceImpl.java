@@ -384,7 +384,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			List<DataExportCell> firstRow = tableContent.iterator().next();
 			StringBuilder sb = new StringBuilder();
 			for (DataExportCell dec : firstRow) {
-				sb.append(dec.getColumnName().replaceAll(",", "-"));
+				sb.append(dec.getColumnName().replaceAll(",", "-").replaceAll("~", "_"));
 				sb.append(",");
 			}
 			header = sb.toString();
@@ -495,12 +495,14 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			List<VeteranAssessment> matchingAssessments,
 			Integer identifiedExportType) {
 
+		String ddColumnKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
 		boolean show = ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
 
 		Map<String, Table<String, String, String>> masterDataDictionary = dds.createDataDictionary();
 
 		Map<String, Map<String, String>> miscDataMap = Maps.newHashMap();
-		Map<String, String> surveyNamesMap = Maps.newTreeMap(); // we want to see surveys sorted (columns are children of surveys) in the report
+		Map<String, String> surveyNamesMap = Maps.newTreeMap(); // we want to see surveys sorted (columns are children
+																// of surveys) in the report
 
 		for (VeteranAssessment assessment : matchingAssessments) {
 			List<SurveyMeasureResponse> smrList = assessment.getSurveyMeasureResponseList();
@@ -515,7 +517,11 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 				// get the table data (one sheet) for this survey
 				Table<String, String, String> dataDictionary = masterDataDictionary.get(surveyName);
-				saveSurveyDictionary(syncTableQ(usrRespMap, dataDictionary), miscDataMap, surveyName);
+
+				// extract all rows/columnValues for column key=data.dict.column.var.name
+				Map<String, String> ddColumnData = dataDictionary.column(ddColumnKey);
+
+				saveSurveyDictionary(syncTableQ(usrRespMap, ddColumnData), miscDataMap, surveyName);
 
 				surveyNamesMap.put(surveyName, miscDataMap.get(prepareSurveyDictionary(surveyName)).toString());
 			}
@@ -580,12 +586,12 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	 * @return
 	 */
 	private Map<String, String> syncTableQ(Map<String, String> usrRespMap,
-			Table<String, String, String> dataDictionary) {
+			Map<String, String> dataDictionarySurveyColumns) {
 
-		String ddColumnKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
-		Map<String, String> ddColumnData = Maps.newHashMap(dataDictionary.column(ddColumnKey));
+		Map<String, String> ddColumnData = Maps.newTreeMap();
+		ddColumnData.putAll(dataDictionarySurveyColumns);
 
-		Map<String, String> modColumnData = Maps.newHashMap();
+		Map<String, String> modColumnData = Maps.newTreeMap();
 		List<String> toBeDelKeys = Lists.newArrayList();
 
 		Set<String> usrRespExportNames = usrRespMap.keySet();
@@ -598,7 +604,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 				// now look for this export name in the columnData []
 				for (Entry<String, String> entry : ddColumnData.entrySet()) {
 					if (entry.getValue().equals(usrExportName)) {
-						modColumnData.put(entry.getKey() + "_" + usrTQIndex, usrRespExportName);
+						modColumnData.put(entry.getKey().replaceAll(DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX, DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX + usrTQIndex + "_"), usrRespExportName);
 						toBeDelKeys.add(entry.getKey());
 					}
 				}
