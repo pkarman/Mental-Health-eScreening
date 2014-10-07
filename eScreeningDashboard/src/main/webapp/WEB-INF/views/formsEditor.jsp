@@ -145,7 +145,6 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/instructionQuestionController.js"></script>
     
     <!-- Template View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateListController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/TemplateController.js"></script>
     
     <!-- UI-Router View States definition -->

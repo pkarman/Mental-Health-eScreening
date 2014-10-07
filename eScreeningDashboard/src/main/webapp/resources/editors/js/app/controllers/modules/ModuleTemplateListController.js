@@ -1,7 +1,10 @@
 /**
  * Created by Robin Carnow on 9/26/2014.
  */
-Editors.controller('ModuleTemplateListController', ['$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', function($scope, $state, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+Editors.controller('ModuleTemplateListController', 
+        ['$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
+         function($scope, $state, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+    
     //set target object which is related to the templates we will be editing
     if(Object.isDefined($scope.selectedSurveyUIObject)){
         if(templateTypes.length == 0){

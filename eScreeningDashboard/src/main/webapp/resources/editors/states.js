@@ -763,8 +763,8 @@ angular.module('Editors')
                 // Templates Workflow Views //
                 //////////////////////////////
                 //TODO: relocate this up with the other module states
-                .state('modules.detail.templatelist',{
-                    url:'/templatelist',  //remove the survey ID once we relocate this state when we add templatelist to the url it should look like module/45/templatelist but the state hierarchy is incorrect currently
+                .state('modules.list.templatelist',{
+                    url:'/:selectedSurveyId/templatelist', 
                     data: {
                         displayName: 'Manage Templates'
                     },
