@@ -79,3 +79,40 @@ EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes)
 
     return templateTypesUIObjects;
 };
+
+/**
+ * Static method to translated an array of ModuleTemplateTypeDTO (in JSON) into an array of TemplateType domain model objects.
+ *
+ * @static
+ * @method
+ * @param {String}  jsonResponse  Represents the JSON response of a service call request.
+ * @returns {EScreeningDashboardApp.models.TemplateType[]} A list of TemplateTypes that have been returned from a service call request.
+ *
+ * @author Robin Carnow
+ */
+EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (jsonResponse) {
+    'use strict';
+    /**
+     * Represent list of template types.
+     *
+     * @private
+     * @field
+     * @type {EScreeningDashboardApp.models.TemplateType[]}
+     */
+    var templateTypes = [];
+
+    if (!Object.isDefined(jsonResponse)) {
+        throw new BytePushers.exceptions.InvalidParameterException("Server response can not be null or undefined.");
+    }
+
+    if (!Array.isArray(jsonResponse)) {
+        throw new BytePushers.exceptions.InvalidParameterException("Server response must be an Array.");
+    }
+
+    templateTypes = jsonResponse.forEach(function(jsonTemplateType){
+        templateTypes.push(new EScreeningDashboardApp.models.TemplateType(jsonTemplateType));
+    });
+
+
+    return templateTypes;
+};

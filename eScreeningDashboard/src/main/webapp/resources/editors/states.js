@@ -777,28 +777,28 @@ angular.module('Editors')
                           //TODO: uncomment this when we merge code and have the surveyId 
                          // if(Object.isDefined($stateParams) && Object.isDefined($stateParams.surveyId)){
                           
-                          //TODO: remove this once this state uses the correct parent
-//                          $stateParams.surveyId = 26;
-//                              
-//                          TemplateService
-//                          	.getTypes({surveyId: $stateParams.surveyId})
-//                          	.then(
-//                          	    function (templateTypes){
-//                          	        deferred.resolve(templateTypes);
-//                          		}, 
-//                          		function(responseError) {
-//                          		    $rootScope.errors.push(responseError.getMessage());
-//                          		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-//                          		    deferred.reject(responseError.getMessage());
-//                          		});
+                              //TODO: remove this once this state uses the correct parent
+                              $stateParams.surveyId = 26;
                               
-                              var templateTypes = [
-                                   	new EScreeningDashboardApp.models.TemplateType(
-                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
-                                   	new EScreeningDashboardApp.models.TemplateType(
-                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true })
-                                                   ];
-                              deferred.resolve(templateTypes);
+                              TemplateService
+                              	.getTypes({surveyId: $stateParams.surveyId})
+                              	.then(
+                              	    function (templateTypes){
+                              	        deferred.resolve(templateTypes);
+                              		}, 
+                              		function(responseError) {
+                              		    $rootScope.errors.push(responseError.getMessage());
+                              		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
+                              		    deferred.reject(responseError.getMessage());
+                              		});
+                                  
+    //                              var templateTypes = [
+    //                                   	new EScreeningDashboardApp.models.TemplateType(
+    //                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
+    //                                   	new EScreeningDashboardApp.models.TemplateType(
+    //                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
+    //                                                   ];
+    //                              deferred.resolve(templateTypes);
                               
                            //TODO: uncomment this when we merge code and have the surveyId
 //                          }
