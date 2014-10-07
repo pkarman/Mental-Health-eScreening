@@ -532,7 +532,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void testEveryFileForExportData() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(minimum)) {
 			assertTrue(fileName, exportDataTesterIdentified(fileName, minimum));
@@ -540,7 +540,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void testEveryFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTesterIdentified(fileName, detail));
@@ -548,7 +548,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void testEveryFileForExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTesterDeIdentified(fileName, detail));
@@ -556,7 +556,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
 	}
@@ -675,19 +675,19 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsIdentified(testFilesFor(minimum), minimum));
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void mix__DETAIL__ExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsIdentified(testFilesFor(detail), detail));
 	}
 
 	// @Rollback(value = false)
-	@Test
+//	@Test
 	public void mix__DETAIL__ExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsDeIdentified(testFilesFor(detail), detail));
 	}
