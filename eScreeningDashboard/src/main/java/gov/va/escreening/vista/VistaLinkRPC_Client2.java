@@ -441,13 +441,14 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 			{
 			
 			String result = rpcInvolker.invokeRpc(getConnection(), getRequest(), "ORQQVI2 VITALS VAL & STORE");
-			
+			logger.info("Save vitals result= " + result);
 			if(!result.equals("1"))
 			{
 				logger.error("Save vitals failed");
 			}
 			}catch(VistaLinkClientException ex)
 			{
+				logger.warn("Exception occurred during save vitals", ex);
 				return false;
 			}
 		}
