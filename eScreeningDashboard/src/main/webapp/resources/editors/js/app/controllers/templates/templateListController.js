@@ -18,7 +18,7 @@ Editors.controller('templateListController',
                     type : "module"
             };
         }
-       //TODO: add a check here for a Battery as the related object
+        //TODO: add a check here for a Battery as the related object
                 
         $scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
         
@@ -36,12 +36,12 @@ Editors.controller('templateListController',
     
     
         //TODO: May need to watch for templateTypes but shouldn't this just update via data binding? 
-    //    $scope.$watch('templateTypes', function(newVal, oldVal){
-    //    	console.log('Template type list has changed');
-    //    	if ($scope.templateTypes && $scope.templateTypes.length && $scope.templateTypes.length > 0){
-    //    		$timeout($scope.refreshTable, 500);
-    //    	}
-    //    });
+        //    $scope.$watch('templateTypes', function(newVal, oldVal){
+        //    	console.log('Template type list has changed');
+        //    	if ($scope.templateTypes && $scope.templateTypes.length && $scope.templateTypes.length > 0){
+        //    		$timeout($scope.refreshTable, 500);
+        //    	}
+        //    });
     
         function setTable(arguments) {
         	console.log('template list setTable');
@@ -92,7 +92,6 @@ Editors.controller('templateListController',
             
             //update list of template types
             // $scope.refreshTable();
-            
         };
     
         /**
