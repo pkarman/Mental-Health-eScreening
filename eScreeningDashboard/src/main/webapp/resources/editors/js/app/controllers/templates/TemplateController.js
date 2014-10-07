@@ -4,6 +4,6 @@
 /**
  * Created by Robin Carnow on 9/26/2014.
  */
-Editors.controller('TemplateController', ['$scope', '$state', 'TemplateService', function($scope, $state, TemplateService) {
+Editors.controller('TemplateController', ['$scope', '$state', 'TemplateService', 'templateTypes', function($scope, $state, TemplateService, templateTypes) {
 
 }]);

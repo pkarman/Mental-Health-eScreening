@@ -769,7 +769,7 @@ angular.module('Editors')
                         displayName: 'Manage Templates'
                     },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
-                    controller: 'templateListController',
+                    controller: 'ModuleTemplateListController',
                     resolve: {
                       templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
                           var deferred = $q.defer();
@@ -852,7 +852,7 @@ angular.module('Editors')
                             return deferred.promise;
                         }]
                     },
-                    controller:'templateListController'
+                    controller:'TemplateController'
                 })
 
                 .state('template.editor',{
@@ -860,8 +860,7 @@ angular.module('Editors')
                     templateUrl:'resources/editors/views/templates/templateeditor.html',
                     data: {
                         displayName: 'Template-Editor: Add/Edit'
-                    },
-                    controller:'TemplateController'
+                    }
                 })
 
                 .state('templates.templateeditorview', {
