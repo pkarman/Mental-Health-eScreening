@@ -809,6 +809,61 @@ angular.module('Editors')
                   }
                 })
 
+                .state('template',{
+                    abstract:true,
+                    url:'/modules',
+                    templateUrl:'resources/editors/views/modules/modulesabstract.html',
+                    data: {
+                        displayName: false
+                    },
+                    resolve: {
+                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+                            var deferred = $q.defer();
+
+                            //TODO: uncomment this when we merge code and have the surveyId
+                            // if(Object.isDefined($stateParams) && Object.isDefined($stateParams.surveyId)){
+
+                            //TODO: remove this once this state uses the correct parent
+                            /*$stateParams.surveyId = 26;
+
+                             TemplateService.getTypes({surveyId: $stateParams.surveyId}).then(
+                             function (templateTypes){
+                             deferred.resolve(templateTypes);
+                             },
+                             function(responseError) {
+                             $rootScope.errors.push(responseError.getMessage());
+                             console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
+                             deferred.reject(responseError.getMessage());
+                             }
+                             );*/
+
+                            var templateTypes = [
+                                new EScreeningDashboardApp.models.TemplateType({templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
+                                new EScreeningDashboardApp.models.TemplateType({templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true })
+                            ];
+
+                            deferred.resolve(templateTypes);
+
+                            //TODO: uncomment this when we merge code and have the surveyId
+                            /*$rootScope.errors.push("No valid context found. Please contact support.");
+                             console.log("Template Type List Error:: either a Module ID or a Battery ID must be given.");
+                             $state.go('home');*/
+
+                            return deferred.promise;
+                        }]
+                    },
+                    controller:'templateListController'
+                })
+
+                .state('template.editor',{
+                    url:"modules/:moduleId/template/type/:typeId",
+                    templateUrl:'resources/editors/views/templates/templateeditor.html',
+                    data: {
+                        displayName: 'Template-Editor: Add/Edit'
+                    },
+                    controller:'TemplateController'
+                })
+
                 .state('templates.templateeditorview', {
                     url:'/templates.templateeditorview',
                     data: {
@@ -831,7 +886,8 @@ angular.module('Editors')
                             $scope.goToTemplateList = function(){
                                 $state.go('templates.templatelistview');
                             }
-                        }]
+                        }
+                    ]
                 })
 
                 .state('templates.statementeditorview',{
@@ -855,7 +911,8 @@ angular.module('Editors')
                             $scope.goToSelection = function(){
                                 $state.go('templates.templatelistview');
                             }
-                        }]
+                        }
+                    ]
                 })
             /*.state('contacts', {
 
