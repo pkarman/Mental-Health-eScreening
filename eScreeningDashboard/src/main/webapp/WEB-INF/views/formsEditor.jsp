@@ -135,6 +135,7 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleSelectController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
 
     <!-- Questions View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>
