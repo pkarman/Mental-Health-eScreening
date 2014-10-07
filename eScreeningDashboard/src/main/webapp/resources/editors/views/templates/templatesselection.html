@@ -5,31 +5,25 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <!--- ngTable Begin -->
-            <table ng-table="tableParams" show-filter="false" class="table">
-                <tr ng-repeat="templateType in templateTypeUIObj" ng-class-odd="'odd'" ng-class-even="'even'">
-
-                    <td data-title="'Type'" sortable="'name'">
-                        {{templateType.name}}
-                    </td>
-                    <td data-title="'Description'">
-                        {{templateType.description}}
-                    </td>
+            <table ng-table="tableParams" show-filter="false" class="table table-hover">
+                <tr ng-repeat="templateType in templateTypeUIObj"  ng-class-odd="'odd'" ng-class-even="'even'">
+                    <td data-title="'Type'" sortable="'name'">{{templateType.name}}</td>
+                    <td data-title="'Description'">{{templateType.description}}</td>
                     <td data-title="'Actions'">
                         <div class="pull-right">
                             <div class="cursor-pointer">
-                                
-                                <span class="glyphicon glyphicon-plus" title="Create"
+                                <span title="Create"
                                       ng-if="!templateType.exists"
-                                      ng-click="editTemplate(templateType);">Create </span>
-                                
-	                            <span class="glyphicon glyphicon-edit" title="Edit"
+                                      ng-click="editTemplate(templateType);"><i class="glyphicon glyphicon-plus"></i> Create </span>
+                              
+	                            <span title="Edit"
                                       ng-if="templateType.exists"
-                                      ng-click="editTemplate(templateType);">Edit | </span>
-	                                 
-	                            <span class="glyphicon glyphicon-remove-circle" title="Delete"
+                                      ng-click="editTemplate(templateType);"><i class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
+                                      
+	                            <span title="Delete"
                                       ng-if="templateType.exists"
                                       ng-really-message="Are you sure"
-                                      ng-really-click="deleteTemplate(templateType);">Delete </span>
+                                      ng-really-click="deleteTemplate(templateType);"><i class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
                             </div>
                         </div>
                     </td>

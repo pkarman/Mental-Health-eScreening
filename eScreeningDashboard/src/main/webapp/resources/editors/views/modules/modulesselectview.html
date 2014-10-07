@@ -2,9 +2,6 @@
 <h1>Module Selection</h1>
 	<div class="row clearfix">
         <div class="col-md-12">
-        	
-      
-    		
             <!-- JH OOOCOMMENT
             <form class="form-inline">
                 <div class="form-group pull-right">
@@ -20,7 +17,7 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <!--- ngTable Begin --->
-            <table ng-table="tableParams" show-filter="true" class="table">
+            <table ng-table="tableParams" show-filter="false" class="table table-hover">
                 <tr ng-repeat="survey in $data" ng-class-odd="'odd'" ng-class-even="'even'">
                     <!--<td data-title="'Index'" sortable="'id'">
                         {{survey.id}}
@@ -38,7 +35,7 @@
                         <div class="pull-right">
                         
                             <div class="cursor-pointer pull-right"  ng-click="deleteClick();">
-                                &nbsp; &nbsp;<span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" title="Delete"></span> Delete &nbsp; &nbsp;
+                                &nbsp; &nbsp;<span class="glyphicon glyphicon-remove-circle delete-red" style="margin-left: 10px;" title="Delete"></span> Delete &nbsp; &nbsp;
                             </div>
                             
                             <div class="cursor-pointer pull-right" ng-click="editModule(survey);">
