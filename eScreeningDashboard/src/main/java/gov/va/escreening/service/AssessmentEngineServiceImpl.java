@@ -299,7 +299,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		ListMultimap<Integer, SurveyMeasureResponse> responseMap = surveyMeasureResponseRepository.getForVeteranAssessmentAndSurvey(veteranAssessmentId, surveyPage.getSurvey().getSurveyId());
 
 		Map<Integer, Boolean> measureVisibilityMap = measureVisibilityRepository.getVisibilityMapForSurveyPage(veteranAssessmentId, surveyPageId);
-		page.setPageTitle(surveyPage.getTitle());
+		page.setPageTitle(surveyPage.getSurvey().getSurveySection().getName());
 
 		if (!surveyPage.getMeasures().isEmpty()) {
 			page.setMeasures(new ArrayList<Measure>());
