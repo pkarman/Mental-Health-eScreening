@@ -4376,3 +4376,11 @@ INSERT INTO variable_template(variable_template_id, assessment_variable_id, temp
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10104, 1534, 100, 'psychiatric medication');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10105, 1535, 100, 'electro convulsive therapy');
 INSERT INTO variable_template(variable_template_id, assessment_variable_id, template_id, override_display_value) VALUES (10106, 1536, 100, 'other');
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10600, 4, 'whodas_understand_score', 'whodas_understand_mean formula', '(([4000] + [4020] + [4040] + [4060] + [4080] + [4100]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10601, 4, 'whodas_mobility_score', 'whodas_mobility_score formula', '(([4120] + [4140] + [4160] + [4180] + [4220]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10602, 4, 'whodas_selfcare_score', 'whodas_selfcare_score formula', '(([4240] + [4260] + [4280] + [4300]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10603, 4, 'whodas_people_score', 'whodas_people_score formula', '(([4320] + [4340] + [4360] + [4380] + [4400]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10604, 4, 'whodas_household_score', 'whodas_household_score formula', '(([4420] + [4430] + [4440] + [4460]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10605, 4, 'whodas_work_score', 'whodas_work_score formula', '(([4480] + [4500] + [4520] + [4540]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10606, 4, 'whodas_society_score', 'whodas_society_score formula', '(([4560] + [4580] + [4600] + [4620] + [4640] + [4660] + [4680] + [4700]))');
