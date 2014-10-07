@@ -763,7 +763,7 @@ angular.module('Editors')
                 // Templates Workflow Views //
                 //////////////////////////////
                 //TODO: relocate this up with the other module states
-                .state('modules.templatelist',{
+                .state('modules.detail.templatelist',{
                     url:'/templatelist',  //remove the survey ID once we relocate this state when we add templatelist to the url it should look like module/45/templatelist but the state hierarchy is incorrect currently
                     data: {
                         displayName: 'Manage Templates'
@@ -774,14 +774,12 @@ angular.module('Editors')
                       templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
                           var deferred = $q.defer();
                           
-                          //TODO: uncomment this when we merge code and have the surveyId 
-                         // if(Object.isDefined($stateParams) && Object.isDefined($stateParams.surveyId)){
+                          if(Object.isDefined($stateParams) 
+                                  && Object.isDefined($stateParams.selectedSurveyId)
+                                  && $stateParams.selectedSurveyId > -1){
                           
-                              //TODO: remove this once this state uses the correct parent
-                              $stateParams.surveyId = 26;
-                              
                               TemplateService
-                              	.getTypes({surveyId: $stateParams.surveyId})
+                              	.getTypes({surveyId: $stateParams.selectedSurveyId})
                               	.then(
                               	    function (templateTypes){
                               	        deferred.resolve(templateTypes);
@@ -792,23 +790,21 @@ angular.module('Editors')
                               		    deferred.reject(responseError.getMessage());
                               		});
                                   
-    //                              var templateTypes = [
-    //                                   	new EScreeningDashboardApp.models.TemplateType(
-    //                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
-    //                                   	new EScreeningDashboardApp.models.TemplateType(
-    //                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
-    //                                                   ];
-    //                              deferred.resolve(templateTypes);
+//                              var templateTypes = [
+//                                   	new EScreeningDashboardApp.models.TemplateType(
+//                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
+//                                   	new EScreeningDashboardApp.models.TemplateType(
+//                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
+//                                                   ];
+//                              deferred.resolve(templateTypes);
                               
-                           //TODO: uncomment this when we merge code and have the surveyId
-//                          }
-//                          else{
-//                            $rootScope.errors.push("No valid context found. Please contact support.");
-//                            console.log("Template Type List Error:: either a Module ID or a Battery ID must be given."); 
-//                            $state.go('home');
-//                          }
-//                          
-                          return deferred.promise;
+                              return deferred.promise;
+                          }
+                         
+                          //TODO: rootscope is undefined here?
+                          $rootScope.errors.push("No valid context found. Please contact support.");
+                          console.log("Template Type List Error:: either a Module ID or a Battery ID must be given."); 
+                          return $state.go('home');
                       }]
                   }
                 })
