@@ -274,10 +274,6 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
     
     $scope.editTemplates = function(){        
-        $state.go('modules.list.templatelist', {selectedSurveyId: $scope.selectedSurveyUIObject.id})
-              .catch(
-                function(error){
-                    console.log('Error: ' + error);
-                });        
+        $state.go('modules.templates', {selectedSurveyId: $scope.selectedSurveyUIObject.id});
     };
 }]);

@@ -191,6 +191,37 @@ angular.module('Editors')
                     controller:'modulesController'
                 })
 
+                .state('modules.templates',{
+                    url:'/:selectedSurveyId/templates',
+                    data: {
+                        displayName: 'Manage Templates'
+                    },
+                    templateUrl:'resources/editors/views/templates/templatesselection.html',
+                    resolve: {
+                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+                            var deferred = $q.defer();
+
+                            if(Object.isDefined($stateParams) &&
+                                Object.isDefined($stateParams.selectedSurveyId) &&
+                                $stateParams.selectedSurveyId > -1) {
+
+
+                                TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
+                                        deferred.resolve(templateTypes);
+                                    },
+                                    function(responseError) {
+                                        $rootScope.errors.push(responseError.getMessage());
+                                        console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
+                                        deferred.reject(responseError.getMessage());
+                                    });
+                            }
+
+                            return deferred.promise;
+                        }]
+                    },
+                    controller: 'ModuleTemplateListController'
+                })
+
                 .state('modules.detail',{
                     url:"/:selectedSurveyId/details",
                     templateUrl:'resources/editors/views/modules/moduleseditor.html',
@@ -759,56 +790,6 @@ angular.module('Editors')
                     }]
                 })
 
-                //////////////////////////////
-                // Templates Workflow Views //
-                //////////////////////////////
-                //TODO: relocate this up with the other module states
-                .state('modules.list.templatelist',{
-                    url:'/:selectedSurveyId/templatelist', 
-                    data: {
-                        displayName: 'Manage Templates'
-                    },
-                    templateUrl:'resources/editors/views/templates/templatesselection.html',
-                    controller: 'ModuleTemplateListController',
-                    resolve: {
-                      templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
-                          var deferred = $q.defer();
-                          
-                          if(Object.isDefined($stateParams) 
-                                  && Object.isDefined($stateParams.selectedSurveyId)
-                                  && $stateParams.selectedSurveyId > -1){
-                          
-                              TemplateService
-                              	.getTypes({surveyId: $stateParams.selectedSurveyId})
-                              	.then(
-                              	    function (templateTypes){
-                              	        deferred.resolve(templateTypes);
-                              		}, 
-                              		function(responseError) {
-                              		    $rootScope.errors.push(responseError.getMessage());
-                              		    console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-                              		    deferred.reject(responseError.getMessage());
-                              		});
-                                  
-//                              var templateTypes = [
-//                                   	new EScreeningDashboardApp.models.TemplateType(
-//                                   	        {templateTypeId:1, templateTypeName:"Test type 1", templateTypeDescription:"template type that doesn't exsit", givenTemplateExists:false }),
-//                                   	new EScreeningDashboardApp.models.TemplateType(
-//                                   	        {templateTypeId:2, templateTypeName:"Test type 2", templateTypeDescription:"template type that does exist", givenTemplateExists:true }),
-//                                                   ];
-//                              deferred.resolve(templateTypes);
-                              
-                              return deferred.promise;
-                          }
-                         
-                          //TODO: rootscope is undefined here?
-                          $rootScope.errors.push("No valid context found. Please contact support.");
-                          console.log("Template Type List Error:: either a Module ID or a Battery ID must be given."); 
-                          return $state.go('home');
-                      }]
-                  }
-                })
-
                 .state('template',{
                     abstract:true,
                     url:'/modules',
@@ -856,7 +837,7 @@ angular.module('Editors')
                 })
 
                 .state('template.editor',{
-                    url:"modules/:moduleId/template/type/:typeId",
+                    url:"/:moduleId/template/type/:typeId",
                     templateUrl:'resources/editors/views/templates/templateeditor.html',
                     data: {
                         displayName: 'Template-Editor: Add/Edit'
