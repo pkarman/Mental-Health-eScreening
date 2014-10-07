@@ -11,10 +11,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
         };
 
-    $scope.surveyUIObjects = [];
-    $scope.pageQuestionItems = [];
-    $scope.selectedSurveyUIObject = createModule().toUIObject();
-    $scope.selectedPageQuestionItem = {};
+    $scope.surveyUIObjects = $scope.surveyUIObjects || [];
+    $scope.pageQuestionItems = $scope.pageQuestionItems || [];
+    $scope.selectedSurveyUIObject = $scope.selectedSurveyUIObject || createModule().toUIObject();
+    $scope.selectedPageQuestionItem = $scope.selectedPageQuestionItem || {};
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
@@ -276,4 +276,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.editTemplates = function(){        
         $state.go('modules.templates', {selectedSurveyId: $scope.selectedSurveyUIObject.id});
     };
+    
+    $scope.isModuleSaved = function(){
+        return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
+    }
 }]);

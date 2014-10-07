@@ -83,7 +83,7 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     };
 
     $scope.addModule = function(){
-        $scope.selectedSurveyUIObject = $scope.createModule();
+        $scope.setSelectedSurveyUIObject($scope.createModule());
         $state.go('modules.detail.selectQuestionType');
     };
 

@@ -4,7 +4,7 @@
       <h1>Manage Module</h1>
     </div>
     <div class="col-md-6">
-      <button ng-click="editTemplates();" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
+      <button ng-click="editTemplates();" ng-disabled="!isModuleSaved();" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
     </div>
 </div>
 
