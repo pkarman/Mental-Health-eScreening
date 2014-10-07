@@ -7,7 +7,7 @@
 			vars$es2_talk : "3",
 			vars$es3_feel : "3",
 			vars$es4_bad : "3",
-			derive$es_score_promis : "12"
+			derive$es_score_promis : "12.0"
 		}
 	} ]
 }
