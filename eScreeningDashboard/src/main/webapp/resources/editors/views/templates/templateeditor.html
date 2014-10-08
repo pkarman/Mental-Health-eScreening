@@ -1,294 +1,53 @@
+
 <div class="row">
+    <div class="col-md-10">
+      <h1>Edit {{relatedObj.name}} | {{template.templateType.name}}</h1>
+    </div>
+    <div class="col-md-2">
+      <button ng-click="addBlock();" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
+    </div>
+</div>
+    
+<!-- Alerts and Messages -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
+            <div>Error Message(s):</div>
+            <div ng-repeat="error in messageHandler.getMessages()| uniqueMessage">{{error.getValue()}}</div>
+        </div>
+        <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
+            <div ng-repeat="message in messageHandler.getMessages()| uniqueMessage">
+                {{message.getValue()}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="col-md-12">
-<div class="row clearfix">
-<h3>Template Editor</h3>
+	<div class="row">
+    
+	    <div class="border-radius-main-form gray-lighter">
+	       <div class="row">
+                <div class="col-md-8">
+                
+                <!-- add ng-tree here -->
+                soon to be the template structure
+	            </div>
+	       </div>
+	    </div>
+    </div>
+    
+</div>
+<br>
+
 <div class="row">
     <div class="col-md-12">
-        <form class="inline-form">
-            <div class="form-group col-sm-6">
-                <label for="txtTemplateName" class="col-sm-2 form-label">
-                    Name
-                </label>
-                <div class="col-sm-2-offset col-sm-10">
-                    <input type="text" id="txtTemplateName" class="form-control" placeholder="Enter Template Name">
-                </div>
-            </div>
-            <div class="form-group col-sm-6 pull-right">
-                <label for="selTemplateType" class="col-sm-4 form-label">
-                    Template Type
-                </label>
-                <div class="col-sm-2-offset col-sm-8">
-                    <select id="selTemplateType" class="form-control">
-                        <option value="-1" selected>--Select Type</option>
-                        <option value="0">Veteran's Summary Note</option>
-                        <option value="1">Clinical Summary Note</option>
-                        <option value="2">Program End of Assessment Message</option>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="col-md-6">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label class="pull-left">
-                    Variables
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <form class="template">
-            <div class="form-group col-md-5">
-                <label for="title" class=" col-sm-2 control-label">
-                    Title
-                </label>
-                <div class="col-sm-2-offset col-sm-10">
-                    <input type="search" id="title" placeholder="Enter Title" class="form-control">
-                </div>
-            </div>
-            <div class="form-group col-md-5">
-                <label for="type" class="col-sm-2 control-label">
-                    Type
-                </label>
-                <div class="col-sm-2-offset col-sm-10">
-                    <select id="type" class="form-control">
-                        <option value="-1">-- Select Type</option>
-                        <option value="0" selected>Question</option>
-                        <option value="1">Answer</option>
-                        <option value="2">Custom Variable</option>
-                        <option value="3">Formula</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group pull-right">
-                <button class="btn btn-success btn-sm" ng-click="addVariable();">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Add
-                </button>
-            </div>
-        </form>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>
-                #
-            </th>
-            <th>
-                Title
-            </th>
-            <th>
-                Type
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                1
-            </td>
-            <td>
-                Variable One
-            </td>
-            <td>
-                Question
-            </td>
-        </tr>
-        <tr class="active">
-            <td>
-                1
-            </td>
-            <td>
-                Variable Two
-            </td>
-            <td>
-                Question
-            </td>
-        </tr>
-        <tr class="success">
-            <td>
-                2
-            </td>
-            <td>
-                Variable Three
-            </td>
-            <td>
-                Answer
-            </td>
-        </tr>
-        <tr class="warning">
-            <td>
-                3
-            </td>
-            <td>
-                Variable Four
-            </td>
-            <td>
-                Custom Variable
-            </td>
-        </tr>
-        <tr class="danger">
-            <td>
-                4
-            </td>
-            <td>
-                Variable Five
-            </td>
-            <td>
-                Formula
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="row">
-        <div class="col-md-12">
-            <button id="btnBuildCondition" class="btn btn-primary" ng-click="goToAddEdit();">
-                <span class="glyphicon glyphicon-plus"></span>
-                Add Conditional Statement
-            </button>
-        </div>
-    </div>
-</div>
-<div class="col-md-6">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label class="pull-left">
-                    Conditions and Functions
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <form class="form-inline">
-            <div class="form-group col-md-5">
-                <label for="title" class=" col-sm-2 control-label">
-                    Title
-                </label>
-                <div class="col-sm-2-offset col-sm-10">
-                    <input type="search" id="txtVarName" placeholder="Enter Function Name" class="form-control">
-                </div>
-            </div>
-            <div class="form-group col-md-5">
-                <label for="title" class="col-sm-2 control-label">
-                    Type
-                </label>
-                <div class="col-sm-2-offset col-sm-10">
-                    <select id="selVarType" class="form-control">
-                        <option value="-1">-- Select Type</option>
-                        <option value="0" selected>Conditions</option>
-                        <option value="1">Functions</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group pull-right">
-                <button class="btn btn-success btn-sm" ng-click="addFormula();">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Add
-                </button>
-            </div>
-        </form>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>
-                #
-            </th>
-            <th>
-                Title
-            </th>
-            <th>
-                Type
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                1
-            </td>
-            <td>
-                getBMI
-            </td>
-            <td>
-                Function
-            </td>
-        </tr>
-        <tr class="active">
-            <td>
-                1
-            </td>
-            <td>
-                ifNavyNuclear
-            </td>
-            <td>
-                Condition
-            </td>
-        </tr>
-        <tr class="success">
-            <td>
-                2
-            </td>
-            <td>
-                calculateCivilianYears
-            </td>
-            <td>
-                Function
-            </td>
-        </tr>
-        <tr class="warning">
-            <td>
-                3
-            </td>
-            <td>
-                calcPerChild
-            </td>
-            <td>
-                Function
-            </td>
-        </tr>
-        <tr class="danger">
-            <td>
-                4
-            </td>
-            <td>
-                ifPTSD
-            </td>
-            <td>
-                Conditon
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-</div>
-<div class="row clearfix">
-    <div class="col-md-12">
-        <form class="form-horizontal">
-            <div class="form-group">
-                <label for="taNoteEdit" class="form-label">
-                    Note Editor
-                </label>
-                <textarea id="taNoteEdit" class="form-control">
-                    <p><b><i>I'm going to be an</i> </b> modified HTML Redactor when I grow up!</p>
-                </textarea>
-            </div>
-        </form>
-        <hr>
-    </div>
-</div>
-</div>
-</div>
-</hr>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group form-inline pull-right">
-            <button class="btn btn-info" ng-click="goToTemplateList();">Cancel</button>
-            <button class="btn btn-primary" ng-click="goToTemplateList();">Save</button>
+        <div class="form-group pull-right">
+            <button class="btn btn-primary" ng-click="save();">Save</button>
+            <button class="btn btn-default" 
+            ng-really-message="Cancel template editing and lose changes?"
+            ng-really-click="cancel();">Cancel</button>
         </div>
     </div>
 </div>

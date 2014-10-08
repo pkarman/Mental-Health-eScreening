@@ -40,19 +40,26 @@ Editors.controller('ModuleTemplateListController',
     
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
-            //console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
-            //$state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
+            console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
+            $state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
         }
         else{
-            //console.log('No module selected. Redirecting back to module list');
-            //$state.go('modules.list');
+            console.log('No module selected. Redirecting back to module list');
+            $state.go('modules.list');
         }
+    };
+    
+    var editorParams = function(typeID, state){
+        return {selectedSurveyId: $stateParams.selectedSurveyId,
+                selectedSurveyName: $stateParams.selectedSurveyName,
+                typeId: typeID,
+                editState: state};
     };
     
     
     $scope.relatedObj = {
         id : $stateParams.selectedSurveyId,
-        name : $scope.decode($stateParams.selectedSurveyName),
+        name : decodeURIComponent($stateParams.selectedSurveyName)
     };
     
     if(templateTypes.length == 0){
@@ -87,16 +94,12 @@ Editors.controller('ModuleTemplateListController',
     /* ---- Button Actions ---- */
     $scope.newTemplate = function(templateTypeUIObj){
         console.log('Opening Template Editor to create new template of type: ' + templateTypeUIObj.name);
-        $state.go('template.module.edit', {typeId: templateTypeUIObj.id, 
-                                           moduleId: $scope.relatedObj.id,
-                                           editState: "new"});
+        $state.go('template.moduleeditor', editorParams(templateTypeUIObj.id, "new"));
     };
     
     $scope.editTemplate = function(templateTypeUIObj){
         console.log('Opening Template Editor to edit template of type: ' + templateTypeUIObj.name);
-        $state.go('template.module.edit', {typeId: templateTypeUIObj.id, 
-                                           moduleId: $scope.relatedObj.id, 
-                                           editState: "edit"});
+        $state.go('template.moduleeditor', editorParams(templateTypeUIObj.id, "edit"));
     };
 
     $scope.deleteTemplate = function(templateTypeUIObj){
