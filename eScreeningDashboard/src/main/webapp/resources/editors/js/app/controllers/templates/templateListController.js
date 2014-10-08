@@ -2,8 +2,8 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('templateListController', 
-    ['$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
-    function($scope, $state, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+    ['$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', '$modal',
+    function($scope, $state, $filter, $timeout, ngTableParams, TemplateService, templateTypes, $modal) {
         
         //set target object which is related to the templates we will be editing
         if(Object.isDefined($scope.selectedSurveyUIObject)){
@@ -108,5 +108,33 @@ Editors.controller('templateListController',
             //TODO: add a check here for returning to the currently edited Battery
             
             alert('Error: there is not contex object to return to.');
+        };
+
+        $scope.openBlockModal = function() {
+
+            // Create the modal
+            var modalInstance = $modal.open({
+                templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
+                resolve: {
+                    relatedObj: function() {
+                        return $scope.relatedObj;
+                    }
+                },
+                controller: function($scope, $timeout, $modalInstance, relatedObj) {
+
+                    $scope.relatedObj = angular.copy(relatedObj);
+
+                    $scope.block = {};
+
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+
+                    $scope.close = function() {
+                        $modalInstance.close($scope.relatedObj, $scope.block);
+                    };
+                }
+
+            });
         };
 }]);
