@@ -201,14 +201,16 @@
 						<div class="col-md-2">
 							Date of Birth
 							<div class="txt_lable_lg">
-								<fmt:formatDate type="date" pattern="MM/dd/yyyy"
-									value="${veteran.birthDate}" />
+								<c:if test="${veteran.isSensitive}"><c:out value="XX/XX/XXXX"/></c:if>
+								<c:if test="${!veteran.isSensitive}"><fmt:formatDate type="date" pattern="MM/dd/yyyy"
+									value="${veteran.birthDate}" /></c:if>
 							</div>
 						</div>
 						<div class="col-md-1 text-right">
 							SSN-4
 							<div class="txt_lable_lg text-right">
-								<c:out value="${veteran.ssnLastFour}" />
+							<c:if test="${veteran.isSensitive}"><c:out value="XXXX"/></c:if>
+							<c:if test="${!veteran.isSensitive}"><c:out value="${veteran.ssnLastFour}" /></c:if>
 							</div>
 						</div>
 

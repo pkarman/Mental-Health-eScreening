@@ -11,6 +11,7 @@ public class VeteranSearchResult implements Serializable {
 	public static String GENDER = "gender";
 	public static String LAST_ASSESSMENT_DATE = "lastAssessmentDate";
 	public static String TOTAL_ASSESSMENTS = "totalAssessments";
+	public static String IS_SENSITIVE = "isSensitive";
 	
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +23,7 @@ public class VeteranSearchResult implements Serializable {
     private String gender = "";
     private String lastAssessmentDate = "";
     private Integer totalAssessments;
+    private boolean isSensitive;
 
     public Integer getVeteranId() {
         return veteranId;
@@ -87,7 +89,15 @@ public class VeteranSearchResult implements Serializable {
         this.totalAssessments = totalAssessments;
     }
 
-    public VeteranSearchResult() {
+    public boolean getIsSensitive() {
+		return isSensitive;
+	}
+
+	public void setIsSensitive(boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+
+	public VeteranSearchResult() {
 
     }
 
