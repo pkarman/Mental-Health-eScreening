@@ -822,14 +822,37 @@ angular.module('Editors')
                     controller:'TemplateController'
                 })
 
-                .state('template.editor',{
-                    url:"/:moduleId/template/type/:typeId",
+                .state('template.module.edit',{
+                    url:"/:moduleId/template/type/:typeId/:editState",
                     templateUrl:'resources/editors/views/templates/templateeditor.html',
                     data: {
-                        displayName: 'Template-Editor: Add/Edit'
-                    }
+                        displayName: 'Template Editor'
+                    },
+                    controller: "TemplateController"
+//                    resolve : {
+//                        template: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+//                            var deferred = $q.defer();
+//                            if(Object.isDefined($stateParams) 
+//                                    && Object.isDefined($stateParams.moduleId) 
+//                                    && $stateParams.moduleId > -1
+//                                    && Object.isDefined($stateParams.typeId)
+//                                    && Object.isDefined($stateParams.editState) ) {
+//                                
+//                                if($stateParams.editState == "edit"){
+//                                    console.log("Getting template from server.");
+//                                    //TemplateService.getTemplateByModuleAndTemplateType($scope.relatedObj.id, templateTypeUIObj.id);
+//                                }
+//                                else{
+//                                    
+//                                }
+//                            
+//                            }
+//                            return deferred.promise;
+//                        }]
+//                    }
+                        
                 })
-
+                
                 .state('templates.templateeditorview', {
                     url:'/templates.templateeditorview',
                     data: {

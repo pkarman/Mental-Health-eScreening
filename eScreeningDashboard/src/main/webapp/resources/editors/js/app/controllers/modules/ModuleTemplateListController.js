@@ -10,21 +10,53 @@ Editors.controller('ModuleTemplateListController',
             || !Object.isDefined($stateParams.selectedSurveyId) 
             || !Object.isDefined($stateParams.selectedSurveyName)){
             //redirect back to module list
-        console.warn("No module is selected. Redirecting to module list.")
+        console.log("No module is selected. Redirecting to module list.");
         $state.go('modules.list');
     }        
 
+    var setTable = function(arguments) {
+        console.log('template list setTable');
+        $scope.tableParams = new ngTableParams({
+            page: 1, // show first page
+            count: 10, // count per page
+            sorting: {
+                name: 'asc'
+            }
+        }, {
+            total:$scope.templateTypes.length,
+            getData: function ($defer, params) {
+                console.log(
+                    '\n\nngTable getData called now');
+                // use build-in angular filter
+                params.total($scope.templateTypes.length);
+                var filteredData = params.filter() ?
+                    $filter('filter')($scope.templateTypes, params.filter()) : $scope.templateTypes;
+                var orderedData = params.sorting() ?
+                    $filter('orderBy')(filteredData, params.orderBy()) : $scope.templateTypes;
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }
+        });
+    };
+    
+    var backToModule = function(){
+        if(Object.isDefined($scope.relatedObj)){
+            //console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
+            //$state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
+        }
+        else{
+            //console.log('No module selected. Redirecting back to module list');
+            //$state.go('modules.list');
+        }
+    };
+    
+    
     $scope.relatedObj = {
         id : $stateParams.selectedSurveyId,
         name : $scope.decode($stateParams.selectedSurveyName),
     };
     
-    var backToModule = function() {
-        $state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
-    }
-    
     if(templateTypes.length == 0){
-        console.error("No template types received from server. Redirecting back to module.");
+        console.log("No template types received from server. Redirecting back to module.");
         backToModule();
     }
 
@@ -50,43 +82,21 @@ Editors.controller('ModuleTemplateListController',
     //    		$timeout($scope.refreshTable, 500);
     //    	}
     //    });
-
-    function setTable(arguments) {
-        console.log('template list setTable');
-        $scope.tableParams = new ngTableParams({
-            page: 1, // show first page
-            count: 10, // count per page
-            sorting: {
-                name: 'asc'
-            }
-        }, {
-            total:$scope.templateTypes.length,
-            getData: function ($defer, params) {
-                console.log(
-                    '\n\nngTable getData called now');
-                // use build-in angular filter
-                params.total($scope.templateTypes.length);
-                var filteredData = params.filter() ?
-                    $filter('filter')($scope.templateTypes, params.filter()) : $scope.templateTypes;
-                var orderedData = params.sorting() ?
-                    $filter('orderBy')(filteredData, params.orderBy()) : $scope.templateTypes;
-                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-        });
-    };
+    
 
     /* ---- Button Actions ---- */
+    $scope.newTemplate = function(templateTypeUIObj){
+        console.log('Opening Template Editor to create new template of type: ' + templateTypeUIObj.name);
+        $state.go('template.module.edit', {typeId: templateTypeUIObj.id, 
+                                           moduleId: $scope.relatedObj.id,
+                                           editState: "new"});
+    };
+    
     $scope.editTemplate = function(templateTypeUIObj){
-        console.log('Opening Template Editor for type: ' + templateTypeUIObj.name);
-
-        if($scope.relatedObj){
-            $state.go('template.editor', {typeId: templateTypeUIObj.id, moduleId: $scope.relatedObj.id});
-        }
-
-        //TODO: move to the template.editor state (or maybe the modules.templateeditor state):
-        //TemplateService.getTemplateByModuleAndTemplateType($scope.relatedObj.id, templateTypeUIObj.id);
-
-
+        console.log('Opening Template Editor to edit template of type: ' + templateTypeUIObj.name);
+        $state.go('template.module.edit', {typeId: templateTypeUIObj.id, 
+                                           moduleId: $scope.relatedObj.id, 
+                                           editState: "edit"});
     };
 
     $scope.deleteTemplate = function(templateTypeUIObj){
@@ -106,10 +116,8 @@ Editors.controller('ModuleTemplateListController',
      * Should return the user to the "template-related-object" we are editing
      */
     $scope.cancel = function(){
-        
-        if(Object.isDefined($scope.relatedObj)){
-            console.log("Canceling edit of module's template. Going back to editor for module " + $scope.relatedObj.name);
-            backToModule();
-        }
+        console.log("Canceling edit of module's template. Going back to editor for module");
+        backToModule();
     };
+    
 }]);
