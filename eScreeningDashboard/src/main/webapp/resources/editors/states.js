@@ -192,7 +192,7 @@ angular.module('Editors')
                 })
 
                 .state('modules.templates',{
-                    url:'/:selectedSurveyId/templates',
+                    url:'/:selectedSurveyId/:selectedSurveyName/templates',
                     data: {
                         displayName: 'Manage Templates'
                     },

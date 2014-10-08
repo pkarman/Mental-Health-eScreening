@@ -274,10 +274,18 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
     
     $scope.editTemplates = function(){        
-        $state.go('modules.templates', {selectedSurveyId: $scope.selectedSurveyUIObject.id});
+        $state.go('modules.templates', {selectedSurveyId: $scope.selectedSurveyUIObject.id, selectedSurveyName: $scope.encode($scope.selectedSurveyUIObject.name)});
     };
     
     $scope.isModuleSaved = function(){
         return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
+    }
+    
+    $scope.encode = function(name){
+        return encodeURIComponent(name);
+    }
+    
+    $scope.decode = function(name){
+        return decodeURIComponent(name);
     }
 }]);

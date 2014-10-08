@@ -2,23 +2,31 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('ModuleTemplateListController', 
-        ['$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
-         function($scope, $state, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
+         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
     
     //set target object which is related to the templates we will be editing
-    if(Object.isDefined($scope.selectedSurveyUIObject)){
-        if(templateTypes.length == 0){
+    if(!Object.isDefined($stateParams) 
+            || !Object.isDefined($stateParams.selectedSurveyId) 
+            || !Object.isDefined($stateParams.selectedSurveyName)){
             //redirect back to module list
-            $state.go('modules.list');
-        }
+        console.warn("No module is selected. Redirecting to module list.")
+        $state.go('modules.list');
+    }        
 
-        $scope.relatedObj = {
-            id : $scope.selectedSurveyUIObject.id,
-            name : $scope.selectedSurveyUIObject.name,
-            type : "module"
-        };
+    $scope.relatedObj = {
+        id : $stateParams.selectedSurveyId,
+        name : $scope.decode($stateParams.selectedSurveyName),
+    };
+    
+    var backToModule = function() {
+        $state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
     }
-    //TODO: add a check here for a Battery as the related object
+    
+    if(templateTypes.length == 0){
+        console.error("No template types received from server. Redirecting back to module.");
+        backToModule();
+    }
 
     $scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
 
@@ -71,7 +79,7 @@ Editors.controller('ModuleTemplateListController',
     $scope.editTemplate = function(templateTypeUIObj){
         console.log('Opening Template Editor for type: ' + templateTypeUIObj.name);
 
-        if($scope.relatedObj && $scope.relatedObj.type == "module"){
+        if($scope.relatedObj){
             $state.go('template.editor', {typeId: templateTypeUIObj.id, moduleId: $scope.relatedObj.id});
         }
 
@@ -98,14 +106,10 @@ Editors.controller('ModuleTemplateListController',
      * Should return the user to the "template-related-object" we are editing
      */
     $scope.cancel = function(){
-        //TODO: add logic to see if we are editing a battery or a survey
-        if($scope.relatedObj && $scope.relatedObj.type == "module"){
+        
+        if(Object.isDefined($scope.relatedObj)){
             console.log("Canceling edit of module's template. Going back to editor for module " + $scope.relatedObj.name);
-            $state.go('modules.detail.question', {surveyId: $scope.relatedObj.id});
-            return;
+            backToModule();
         }
-        //TODO: add a check here for returning to the currently edited Battery
-
-        alert('Error: there is not contex object to return to.');
     };
 }]);
