@@ -23,6 +23,7 @@ public class VeteranAssessmentDto implements Serializable {
     private String createdByUserFirstName;
     private String createdByUserMiddleName;
     private String batteryName;
+    private Boolean isSensitive;
 
     public Integer getVeteranAssessmentId() {
         return veteranAssessmentId;
@@ -152,7 +153,15 @@ public class VeteranAssessmentDto implements Serializable {
         this.batteryName = batteryName;
     }
 
-    public VeteranAssessmentDto() {
+    public Boolean getIsSensitive() {
+		return isSensitive;
+	}
+
+	public void setIsSensitive(Boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+
+	public VeteranAssessmentDto() {
 
     }
 

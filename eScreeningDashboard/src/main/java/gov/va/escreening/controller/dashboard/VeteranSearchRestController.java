@@ -66,10 +66,10 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 		displaySearchParms(request);
 
 		SearchAttributes searchAttributes = createSearchAttributes(request);
-
+		
 		// Do a search and get the result.
 		SearchResult<VeteranSearchResult> serchResult = getVeteranSearchResultsFromForm(veteranSearchFormBean, searchAttributes, escreenUser);
-
+		
 		// Start populating the response.
 		String echo = request.getParameter("sEcho");
 		logger.debug("sEcho: " + echo);
@@ -253,6 +253,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 
 		if (searchCriteriaProvided) {
 			searchResult = veteranService.searchVeterans(veteranSearchFormBean.getVeteranId(), veteranSearchFormBean.getLastName(), veteranSearchFormBean.getSsnLastFour(), escreenUser.getProgramIdList(), searchAttributes);
+		
 		} else {
 			logger.debug("Veteran search criteria was not provided, returning an empty result set.");
 
