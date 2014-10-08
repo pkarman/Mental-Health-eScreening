@@ -9,7 +9,7 @@ angular.module('EscreeningDashboardApp.services.template', ['ngResource'])
         
         var moduleTemplateTypesService = function(surveyId){
             return $resource (
-                    "services/templateType/:surveyId",
+                    "services/templateType/survey/:surveyId",
                     {},
                     {
                         query: {
