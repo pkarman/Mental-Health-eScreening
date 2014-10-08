@@ -216,7 +216,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     $scope.cancel = function () {
         $scope.setSelectedPageQuestionItem(null);
         $scope.setSelectedSurveyUIObject(null);
-        $state.go('modules.detail.empty');
+        $state.go('modules.list');
     };
 
     /*$scope.addQuestion = function(){

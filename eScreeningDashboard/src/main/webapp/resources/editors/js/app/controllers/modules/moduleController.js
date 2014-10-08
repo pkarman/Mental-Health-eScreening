@@ -11,10 +11,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
         };
 
-    $scope.surveyUIObjects = [];
-    $scope.pageQuestionItems = [];
-    $scope.selectedSurveyUIObject = createModule().toUIObject();
-    $scope.selectedPageQuestionItem = {};
+    $scope.surveyUIObjects = $scope.surveyUIObjects || [];
+    $scope.pageQuestionItems = $scope.pageQuestionItems || [];
+    $scope.selectedSurveyUIObject = $scope.selectedSurveyUIObject || createModule().toUIObject();
+    $scope.selectedPageQuestionItem = $scope.selectedPageQuestionItem || {};
     $scope.createModule = createModule;
     $scope.createQuestion = createQuestion;
     $scope.formReset = false;
@@ -273,11 +273,19 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $state.go('modules.detail.createvariable.questionvariable');
     };
     
-    $scope.editTemplates = function(){
-        $state.go('modules.templatelist')
-              .catch(
-                function(error){
-                    console.log('Error: ' + error);
-                });        
+    $scope.editTemplates = function(){        
+        $state.go('modules.templates', {selectedSurveyId: $scope.selectedSurveyUIObject.id, selectedSurveyName: $scope.encode($scope.selectedSurveyUIObject.name)});
     };
+    
+    $scope.isModuleSaved = function(){
+        return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
+    }
+    
+    $scope.encode = function(name){
+        return encodeURIComponent(name);
+    }
+    
+    $scope.decode = function(name){
+        return decodeURIComponent(name);
+    }
 }]);
