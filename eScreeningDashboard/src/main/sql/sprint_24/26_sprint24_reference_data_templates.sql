@@ -534,5 +534,257 @@ ${MODULE_START}
 ${MODULE_END}'
 where template_id = 16;
 
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Health Status:
+${MODULE_TITLE_END}
+${MODULE_START}
+	  <#if var1189?? && (var1020.children)?? && (var1030.children)?? && (var1040.children)?? && (var1050.children)?? && (var1060.children)?? 
+		&& (var1070.children)?? && (var1080.children)?? && (var1090.children)?? && (var1100.children)?? && (var1110.children)?? 
+		&& (var1120.children)?? && (var1130.children)?? && (var1140.children)?? && (var1150.children)?? && (var1160.children)??
+		&& ((var1020.children)?size > 0) && ((var1030.children)?size > 0) && ((var1040.children)?size > 0) && ((var1050.children)?size > 0) 
+		&& ((var1060.children)?size > 0) && ((var1070.children)?size > 0) && ((var1080.children)?size > 0) && ((var1090.children)?size > 0) 
+		&& ((var1100.children)?size > 0) && ((var1110.children)?size > 0) && ((var1120.children)?size > 0) && ((var1130.children)?size > 0) 
+		&& ((var1140.children)?size > 0) && ((var1150.children)?size > 0) && ((var1160.children)?size > 0)>  
+	
+	<#assign totalScore = getFormulaDisplayText(var1189)>
+	<#assign scoreText = "">
+	<#if totalScore != "notset" && totalScore != "notfound">
+		<#assign totalScore = totalScore?number>
+		<#if (totalScore <= 4)>
+			<#assign scoreText = "minimal">
+		<#elseif (totalScore >= 5 &&  (totalScore <= 9))>
+			<#assign scoreText = "low number of">
+		<#elseif (totalScore >= 10 &&  (totalScore <= 14))>
+			<#assign scoreText = "medium number of">
+		<#elseif (totalScore >= 15 &&  (totalScore <= 30))>
+			<#assign scoreText = "high number of">
+		</#if>
+	</#if>
 
+	<#-- During the past 4 weeks, how much have you been bothered by any of the following problems -->
+	<#-- this is almost identical to Other Health Symptoms -->
+	<#assign fragments = []> 
+    <#if (getScore(var1150) > 1)>
+		<#assign fragments = fragments + ["stomach pain"] >
+	</#if>
+    <#if (getScore(var1160) > 1)>
+		<#assign fragments = fragments + ["back pain"] >
+	</#if>
+	<#if (getScore(var1020) > 1)>
+		<#assign fragments = fragments + ["pain in arms, legs or joints (knees, hips, etc.)"] >
+	</#if>
+	<#if (getScore(var1030) > 1)>
+		<#assign fragments = fragments + ["menstrual cramps or other problems with your periods"] >
+	</#if>
+	<#if (getScore(var1040) > 1)>
+		<#assign fragments = fragments + ["headaches"] >
+	</#if>
+	<#if (getScore(var1050) > 1)>
+		<#assign fragments = fragments + ["chest pain"] >
+	</#if>
+	<#if (getScore(var1060) > 1)>
+		<#assign fragments = fragments + ["dizziness"] >
+	</#if>
+	<#if (getScore(var1070) > 1)>
+		<#assign fragments = fragments + ["fainting spells"] >
+	</#if>
+	<#if (getScore(var1080) > 1)>
+		<#assign fragments = fragments + ["feeling your heart pound or race"] >
+	</#if>
+	<#if (getScore(var1090) > 1)>
+		<#assign fragments = fragments + ["shortness of breath"] >
+	</#if>
+	<#if (getScore(var1100) > 1)>
+		<#assign fragments = fragments + ["pain or problems during sexual intercourse"] >
+	</#if>
+	<#if (getScore(var1110) > 1)>
+		<#assign fragments = fragments + ["constipation, loose bowels or diarrhea"] >
+	</#if>
+	<#if (getScore(var1120) > 1)>
+		<#assign fragments = fragments + ["nausea, gas or indigestion"] >
+	</#if>
+	<#if (getScore(var1130) > 1)>
+		<#assign fragments = fragments + ["feeling tired or having low energy"] >
+	</#if>
+	<#if (getScore(var1140) > 1)>
+		<#assign fragments = fragments + ["trouble sleeping"] >
+	</#if>
+
+	<#if fragments?has_content  >
+		<#assign resolved_fragments =  createSentence(fragments)>
+	<#else>
+		<#assign resolved_fragments = "None">
+	</#if>
+
+	The Veteran reported a ${scoreText} of somatic symptoms.${LINE_BREAK}${LINE_BREAK}
+	The Veteran endorsed being bothered a lot by the following health symptoms over the past four weeks: ${resolved_fragments}.${NBSP}
+
+	
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 17;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Screen for Infectious Disease and Embedded Fragments:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var2500.children)?? && ((var2500.children)?size > 0) || ((var2501.children)?? && ((var2501.children)?size > 0))
+	 || ((var2502.children)?? && ((var2502.children)?size > 0)) || ((var2009.children)?? && ((var2009.children)?size > 0))>
+
+	<#-- ${createSentence(parts)}. -->
+	<#assign questions = [var2500,var2501,var2502,var2009]>
+	<#assign textHash = {"var2500": "chronic diarrhea or other gastrointestinal", 
+							"var2501": "pain, unexplained fevers", 
+							"var2502": "persistent popular or nodular skin rash that began after deployment to Southwest Asia", 
+							"var2009": "suspects that he/she has retained fragments or shrapnel as a result of injuries"}>
+	
+	<#assign parts = []>
+		
+	<#list questions as q >
+		<#assign child = q.children[0] >
+		<#if ((child.calculationValue?number) > 0)>
+			<#assign problem = textHash[q.key] >
+			<#assign part = problem + ", with symptoms of " + getVariableDisplayText(child) >
+			<#assign parts = parts + [part] >
+		</#if>
+	</#list>
+	
+	<#if parts?has_content>
+		The Veteran endorsed other health problems of: ${createSentence(parts)}. ${NBSP}
+	<#else>
+		${getAnsweredNoAllText("OOO Infect & Embedded Fragment CR")}. ${NBSP}
+	</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 19;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PAIN:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var2300.children)?? && (var2300.children)?? || (var2330.children)?? >  
+
+		<#if (var2300.children?size == 0)  || ((var2330.children?size == 0) || ((var2334.value) != "true"))>
+			${getNotCompletedText()}
+		<#else>
+			<#--  --> 
+			<#assign fragments = []>
+			<#assign text ="notset">  
+	
+			<#assign level = getSelectOneDisplayText(var2300)!("-1"?number)>
+			<#assign bodyParts = getTableMeasureValueDisplayText(var2330)!"">
+			<#if !(bodyParts?has_content) && ((var2334.value) == "true")>
+				<#assign bodyParts = "none">
+			</#if>
+			<#if level?? >
+				Over the past month, the Veteran\'s reported pain level was ${level} of 10.
+			</#if> 
+			<#if bodyParts != "none">
+				The pain was located in: ${bodyParts}.
+			</#if>
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 20;
+
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Promis Pain Scales:
+${MODULE_TITLE_END}
+${MODULE_START}
+
+	<#if (var2550.children[0])?? || (var2560.children[0])?? || (var2570.children[0])?? || var2640??>
+		
+		<#if var2550?? && var2550.children?? && (var2550.children[0])??>
+		The Veteran endorsed having ${getSelectOneDisplayText(var2550)} pain currently. 
+		</#if>
+		<#if var2560?? && var2560.children?? && (var2560.children[0])??>
+		     Over the past week the veteran reported a pain intensity of ${getSelectOneDisplayText(var2560)} 
+		     <#if var2570?? && var2570.children?? && (var2570.children[0])??>
+		      ${NBSP}with ${getSelectOneDisplayText(var2570)} average pain. ${LINE_BREAK}${LINE_BREAK}
+		     </#if>
+		</#if>
+		
+		<#if var2640??>
+			<#assign score = getFormulaDisplayText(var2640)>
+			<#if score != "notset" && score != "notfound">
+				<#assign score = score?number>		
+				<#if (score >= 0) && (score < 17)>
+					<#assign scoreText = "does not">
+				<#elseif (score >= 17) && (score <= 998)>
+					<#assign scoreText = "does">
+				<#else>
+					<#assign scoreText = "notset">
+				</#if>
+				<#if scoreText != "notset">
+					The pain ${scoreText} significantly interfere.${NBSP}
+				</#if>
+			</#if>
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 21;
+
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PRIOR TREATMENT:
+${MODULE_TITLE_END}
+${MODULE_START}
+    <#assign nextLine = "">
+	<#-- var1520: ${var1520!""}<br><br>  var1521: ${var1521!""}<br><br> -->
+
+  	<#if (var1520.children)?? && ((var1520.children)?size > 0) || ((var1530.children)?? 
+			 && ((var1530.children)?size > 0)) >
+	  
+	<#--  -->
+	<#assign fragments = []>
+	<#assign text =""> 
+		
+	<#if var1520?has_content> 	
+		<#if isSelectedAnswer(var1520, var1521)><#-- was answer "none" or something else -->
+			The Veteran reported being diagnosed with no prior mental health issues in the last 18 months.
+			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		<#else>
+			The Veteran endorsed being diagnosed with ${getSelectMultiDisplayText(var1520)} within the last 18 months.
+			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		</#if>
+	</#if>
+	
+	<#if var1530?has_content>
+		<#if isSelectedAnswer(var1530, var1531)><#-- was answer "none" or something else -->
+			${nextLine}The Veteran reported receiving no prior mental health treatment for a mental health diagnosis in the last 18 months.
+		<#elseif getSelectMultiDisplayText(var1530) != "notfound">
+			${nextLine}The Veteran endorsed having received the following treatments within the last 18 months for a mental health diagnosis: ${getSelectMultiDisplayText(var1530)}.
+		</#if>
+	</#if>
+	
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 23;
 
