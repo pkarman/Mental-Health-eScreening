@@ -2,8 +2,8 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('ModuleTemplateListController', 
-        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', '$modal',
-         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes, $modal) {
+        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes',
+         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
     
     //set target object which is related to the templates we will be editing
     if(!Object.isDefined($stateParams) 
@@ -121,34 +121,6 @@ Editors.controller('ModuleTemplateListController',
     $scope.cancel = function(){
         console.log("Canceling edit of module's template. Going back to editor for module");
         backToModule();
-    };
-
-    $scope.openBlockModal = function() {
-
-     // Create the modal
-     var modalInstance = $modal.open({
-         templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
-         resolve: {
-             relatedObj: function() {
-                 return $scope.relatedObj;
-             }
-         },
-         controller: function($scope, $timeout, $modalInstance, relatedObj) {
-
-             $scope.relatedObj = angular.copy(relatedObj);
-
-             $scope.block = {};
-
-             $scope.cancel = function() {
-                 $modalInstance.dismiss('cancel');
-             };
-
-             $scope.close = function() {
-                 $modalInstance.close($scope.relatedObj, $scope.block);
-             };
-         }
-
-     });
     };
     
 }]);

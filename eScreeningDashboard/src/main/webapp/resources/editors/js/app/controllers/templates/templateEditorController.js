@@ -1,5 +1,5 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'template', 
-                                          function($scope, $state, $stateParams, TemplateService, template) {
+Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'template', '$modal',
+                                          function($scope, $state, $stateParams, TemplateService, template, $modal) {
 
     console.log("In templateEditorController");
     
@@ -23,7 +23,30 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     };
     
     $scope.addBlock = function(){
-        console.log("Add block");
+        // Create the modal
+        var modalInstance = $modal.open({
+            templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
+            resolve: {
+                relatedObj: function() {
+                    return $scope.relatedObj;
+                }
+            },
+            controller: function($scope, $timeout, $modalInstance, relatedObj) {
+
+                $scope.relatedObj = angular.copy(relatedObj);
+
+                $scope.block = {};
+
+                $scope.cancel = function() {
+                    $modalInstance.dismiss('cancel');
+                };
+
+                $scope.close = function() {
+                    $modalInstance.close($scope.relatedObj, $scope.block);
+                };
+            }
+
+        });
     };
     
 }]);
