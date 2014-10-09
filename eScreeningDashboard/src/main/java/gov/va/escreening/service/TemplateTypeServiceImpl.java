@@ -50,7 +50,10 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 			moduleTemplateTypeDTO.setTemplateTypeId(templateType.getTemplateTypeId());
 			moduleTemplateTypeDTO.setTemplateTypeName(templateType.getName());
 			moduleTemplateTypeDTO.setTemplateTypeDescription(templateType.getDescription());			
-			moduleTemplateTypeDTO.setGivenTemplateExists(theTemplateTypeId == templateType.getTemplateTypeId().intValue());
+			if(theTemplateTypeId == templateType.getTemplateTypeId().intValue());
+			{
+				moduleTemplateTypeDTO.setTemplateID(template.getTemplateId());
+			}
 			
 			results.add(moduleTemplateTypeDTO);
 		}
@@ -81,11 +84,10 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 			{
 				if (templateType.getTemplateTypeId().intValue() == template.getTemplateType().getTemplateTypeId().intValue())
 				{
-					exists = true;
+					moduleTemplateTypeDTO.setTemplateID(template.getTemplateId());
 					break;
 				}
 			}
-			moduleTemplateTypeDTO.setGivenTemplateExists(exists);
 			
 			results.add(moduleTemplateTypeDTO);
 		}

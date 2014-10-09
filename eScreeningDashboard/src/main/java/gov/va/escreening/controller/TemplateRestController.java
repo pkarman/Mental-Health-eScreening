@@ -43,14 +43,6 @@ public class TemplateRestController {
 	@Autowired
 	private TemplateTypeService templateTypeService;
 	
-	@RequestMapping(value ="/services/templateType/{templateId}")
-	@ResponseBody
-	public Response<List<ModuleTemplateTypeDTO>> getModuleTemplateTypes(@PathVariable Integer templateId, @CurrentUser EscreenUser escreenUser)
-	{
-		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
-							templateTypeService.getModuleTemplateTypes(templateId));
-	}
-	
 	@RequestMapping(value ="/services/templateType/survey/{surveyId}")
 	@ResponseBody
 	public Response<List<ModuleTemplateTypeDTO>> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)

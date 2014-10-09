@@ -5,7 +5,7 @@ public class ModuleTemplateTypeDTO {
 	private Integer templateTypeId;
 	private String templateTypeName;
 	private String templateTypeDescription;
-	private boolean givenTemplateExists;
+	private Integer templateID;
 
 	public Integer getTemplateTypeId() {
 		return this.templateTypeId;
@@ -31,12 +31,12 @@ public class ModuleTemplateTypeDTO {
 		this.templateTypeDescription = templateTypeDescription;
 	}
 
-	public boolean isGivenTemplateExists() {
-		return givenTemplateExists;
+	public Integer getTemplateID() {
+		return templateID;
 	}
 
-	public void setGivenTemplateExists(boolean givenTemplateExists) {
-		this.givenTemplateExists = givenTemplateExists;
+	public void setTemplateID(Integer templateID) {
+		this.templateID = templateID;
 	}
 
 }

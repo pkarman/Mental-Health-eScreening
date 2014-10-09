@@ -14,7 +14,7 @@
                             <div class="cursor-pointer">
                                 <span title="Create"
                                       ng-if="!templateType.exists"
-                                      ng-click="editTemplate(templateType);"><i class="glyphicon glyphicon-plus"></i> Create </span>
+                                      ng-click="newTemplate(templateType);"><i class="glyphicon glyphicon-plus"></i> Create </span>
                               
 	                            <span title="Edit"
                                       ng-if="templateType.exists"
@@ -22,7 +22,7 @@
                                       
 	                            <span title="Delete"
                                       ng-if="templateType.exists"
-                                      ng-really-message="Are you sure"
+                                      ng-really-message="Are you sure?"
                                       ng-really-click="deleteTemplate(templateType);"><i class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
                             </div>
                         </div>

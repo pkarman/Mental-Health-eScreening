@@ -797,89 +797,61 @@ angular.module('Editors')
                     data: {
                         displayName: false
                     },
-                    resolve: {
-                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+                    controller:['$rootScope','$scope','$state',
+                    function($rootScope,$scope,$state){  /*placeholder*/  }]
+                })
+
+                .state('template.moduleeditor',{
+                    url:"/:selectedSurveyId/:selectedSurveyName/template/type/:typeId/:editState",
+                    templateUrl:'resources/editors/views/templates/templateeditor.html',
+                    data: {
+                        displayName: 'Template Editor'
+                    },
+                    controller: "templateEditorController",
+                    resolve : {
+                        template: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
                             var deferred = $q.defer();
-
-                            if(Object.isDefined($stateParams) &&
-                                Object.isDefined($stateParams.selectedSurveyId) &&
-                                $stateParams.selectedSurveyId > -1) {
-
-
-                                TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
-                                        deferred.resolve(templateTypes);
-                                    },
-                                    function(responseError) {
-                                        $rootScope.errors.push(responseError.getMessage());
-                                        console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-                                        deferred.reject(responseError.getMessage());
-                                    });
+                            if(Object.isDefined($stateParams) 
+                                    && Object.isDefined($stateParams.selectedSurveyId) 
+                                    && $stateParams.selectedSurveyId > -1
+                                    && Object.isDefined($stateParams.typeId)
+                                    && Object.isDefined($stateParams.editState) ) {
+                                
+                                
+                                var templateObj = {
+                                        templateId: 45, 
+                                        templateType : {id: $stateParams.typeId,
+                                                        name:"Template type name here"}
+                                };
+                                
+                                deferred.resolve(templateObj);
+                                
+//                                if($stateParams.editState == "edit"){
+//                                    console.log("Getting template from server.");
+//                                    
+                                    //deferred.resolve({});
+                                    //TemplateService.getTemplateByModuleAndTemplateType($scope.relatedObj.id, templateTypeUIObj.id)
+                                    //.then(function (templateTypes){
+//                                  deferred.resolve(templateTypes);
+//                                  },
+//                                  function(responseError) {
+//                                      $rootScope.errors.push(responseError.getMessage());
+//                                      console.log('Template Query Error:: ' + JSON.stringify($rootScope.errors));
+//                                      deferred.reject(responseError.getMessage());
+//                                  });
+//                                }
+//                                else{
+//                                    console.log("Creating empty template.");
+//                                    deferred.resolve({});
+//                                }
                             }
-
                             return deferred.promise;
                         }]
-                    },
-                    controller:'TemplateController'
-                })
-
-                .state('template.editor',{
-                    url:"/:moduleId/template/type/:typeId",
-                    templateUrl:'resources/editors/views/templates/templateeditor.html',
-                    data: {
-                        displayName: 'Template-Editor: Add/Edit'
                     }
+                        
                 })
+                
 
-                .state('templates.templateeditorview', {
-                    url:'/templates.templateeditorview',
-                    data: {
-                        displayName: 'Templates: Editor'
-                    },
-                    /*template:'<div class="col-md-12" style="background-color:#ebebeb;min-height:400px;">' +
-                        '<h3>Template Editor View</h3>' +
-                        '<div class="form-inline form-group" style="background-color:#245269;">' +
-                        '<button class="btn btn-primary" ng-click="goToAddEdit();">Add/Edit Template Statements</button>' +
-                        '<button class="btn btn-success" ng-click="goToTemplateList();">Done (Return to Template List)</button>'+
-                        '</div>' +
-                        '</div>',*/
-                    templateUrl:'resources/editors/views/templates/templateeditor.html',
-                    controller:['$rootScope', '$scope', '$state',
-                        function($rootScope, $scope, $state){
-                            $scope.goToAddEdit = function(){
-                                $state.go('templates.statementeditorview');
-                            }
-
-                            $scope.goToTemplateList = function(){
-                                $state.go('templates.templatelistview');
-                            }
-                        }
-                    ]
-                })
-
-                .state('templates.statementeditorview',{
-                    url:'/templates.statementeditorview',
-                    /*template:'<div class="col-md-12" style="background-color:#ebebeb;min-height:400px;">' +
-                        '<h3>Templates Statement Editor View</h3>' +
-                        '<div class="form-inline form-group" style="background-color:#245269;">' +
-                        '<button class="btn btn-primary" ng-click="goToAddEdit();">Return to Template Editor</button>' +
-                        '</div>' +
-                        '</div>',*/
-                    data: {
-                        displayName: 'Templates: Statement Editor'
-                    },
-                    templateUrl:'resources/editors/views/templates/templatestatementeditor.html',
-                    controller:['$rootScope', '$scope', '$state',
-                        function($rootScope, $scope, $state){
-                            $scope.goToAddEdit = function(){
-                                $state.go('templates.templateeditorview');
-                            }
-
-                            $scope.goToSelection = function(){
-                                $state.go('templates.templatelistview');
-                            }
-                        }
-                    ]
-                })
             /*.state('contacts', {
 
              // With abstract set to true, that means this state can not be explicitly activated.
