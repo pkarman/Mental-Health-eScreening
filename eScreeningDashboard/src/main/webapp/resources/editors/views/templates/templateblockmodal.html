@@ -3,58 +3,64 @@
 </div>
 <div class="modal-body">
 
+    <mhe-assessment-variables></mhe-assessment-variables>
+
     <form role="form">
 
         <div class="row">
-            <label for="block-name" class="col-sm-1 control-label">Block Name</label>
-            <div class="col-sm-11">
+            <label for="block-name" class="col-sm-2 control-label">Block Name</label>
+            <div class="col-sm-10">
                 <input type="text" class="form-control" id="block-name" placeholder="Block name" ng-model="block.name">
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label">Block Type</label>
-        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="control-label">Block Type</label>
+                </div>
 
-        <div class="form-group col-sm-2">
-            <select class="form-control">
-                <option>-- Select Type --</option>
-                <option>If</option>
-                <option>Else if</option>
-                <option>Else</option>
-            </select>
-        </div>
+                <div class="form-group col-sm-2">
+                    <select class="form-control" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
+                        <option value="">-- Select Type</option>
+                    </select>
+                </div>
 
-        <div class="form-group col-sm-2">
-            <label class="sr-only" for="variable">Select Variable</label>
-            <input type="text" class="form-control" id="variable" placeholder="Select Variable" ng-model="block.variable">
-        </div>
+                <div ng-if="block.type && block.type !== 'text'">
+                    <div class="form-group col-sm-2">
+                        <label class="sr-only" for="variable">Select Variable</label>
+                        <input type="text" class="form-control" id="variable" placeholder="Select Variable" ng-model="block.variable">
+                    </div>
 
-        <div class="form-group col-sm-2">
-            <select class="form-control">
-                <option>-- Operator --</option>
-                <option>Equals</option>
-                <option>Doesn't Equal</option>
-            </select>
-        </div>
+                    <div class="form-group col-sm-2">
+                        <select class="form-control" ng-model="block.operator" ng-options="operator.name group by operator.category for operator in operators">
+                            <option value="">-- Operator</option>
+                        </select>
+                    </div>
 
-        <div class="form-group col-sm-2">
-            <label class="sr-only" for="blockvalue">Enter Value</label>
-            <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.value">
-        </div>
+                    <div class="form-group col-sm-2">
+                        <label class="sr-only" for="blockvalue">Enter Value</label>
+                        <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.value">
+                    </div>
 
-        <div class="pull-right">
-            <button class="btn btn-default">AND</button>
-            <button class="btn btn-default">OR</button>
-            <button class="btn btn-default"><i class="fa fa-plus"></i></button>
-        </div>
-
-        <div class="form-group">
-            <div class="form-group">
-                <div text-angular="text-angular" ng-model="block.text" ta-toolbar-class="btn-toolbar"
-                     ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
-                     ta-toolbar-button-active-class="active" class="tab-content"> </div>
+                    <div class="pull-right">
+                        <button title="AND" class="btn btn-default">AND</button>
+                        <button title="OR" class="btn btn-default">OR</button>
+                        <button title="PLUS" class="btn btn-default"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="form-group" ng-if="block.type === 'text'">
+
+            <div class="pull-right">
+                <button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>
+            </div>
+
+            <div text-angular="text-angular" ng-model="block.text" ta-toolbar-class="btn-toolbar"
+                 ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
+                 ta-toolbar-button-active-class="active" class="tab-content"></div>
         </div>
 
     </form>

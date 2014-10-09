@@ -431,7 +431,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['ngResourc
             update: update,
             remove: remove,
             setQueryAssessmentVariableSearchCriteria: setQueryAssessmentVariableSearchCriteria,
-            setCreateAssessmentVariableSearchCriteria:setCreateAssessmentVariableSearchCriteria,
+            // setCreateAssessmentVariableSearchCriteria: setCreateAssessmentVariableSearchCriteria,
             setUpdateAssessmentVariableRequestParameter: setUpdateAssessmentVariableRequestParameter,
             setRemoveAssessmentVariableRequestParameter: setRemoveAssessmentVariableRequestParameter
         };

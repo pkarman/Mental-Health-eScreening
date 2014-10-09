@@ -18,6 +18,7 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.surveysection',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.services.template',
+        'EscreeningDashboardApp.services.assessmentVariable',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.filters.messages'
     ]);
