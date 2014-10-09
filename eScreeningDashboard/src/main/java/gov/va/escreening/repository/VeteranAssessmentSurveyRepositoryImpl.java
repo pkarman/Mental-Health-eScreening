@@ -23,7 +23,7 @@ public class VeteranAssessmentSurveyRepositoryImpl extends AbstractHibernateRepo
 
     public List<VeteranAssessmentSurvey> forVeteranAssessmentId(int veteranAssessmentId) {
 
-        String sql = "SELECT vas FROM VeteranAssessmentSurvey vas WHERE vas.veteranAssessment.veteranAssessmentId = :veteranAssessmentId ORDER BY vas.survey.displayOrder";
+        String sql = "SELECT vas FROM VeteranAssessmentSurvey vas JOIN vas.survey survey WHERE vas.veteranAssessment.veteranAssessmentId = :veteranAssessmentId ORDER BY survey.surveySection.displayOrder";
 
         TypedQuery<VeteranAssessmentSurvey> query = entityManager.createQuery(sql, VeteranAssessmentSurvey.class);
         query.setParameter("veteranAssessmentId", veteranAssessmentId);
