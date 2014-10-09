@@ -154,6 +154,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 	private Measure updateMeasureEntity(
 			gov.va.escreening.dto.ae.Measure measureDto) {
+		
+		try
+		{
 		Measure m = findOne(measureDto.getMeasureId());
 
 		copyFromDTO(m, measureDto);
@@ -167,6 +170,12 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 		return m;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
@@ -220,7 +229,12 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				}
 			}
 		}
-		m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+		if (m.getMeasureValidationList()==null)
+		{
+			m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+		}
+		else
+			m.getMeasureValidationList().clear();
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
 				gov.va.escreening.entity.Validation v = validationRepo
