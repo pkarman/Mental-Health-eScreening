@@ -221,7 +221,12 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 		
-		m.getMeasureValidationList().clear();
+		if (m.getMeasureValidationList()==null)
+		{
+			m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+		}
+		else
+			m.getMeasureValidationList().clear();
 		
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
@@ -243,7 +248,6 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				m.getMeasureValidationList().add(mv);
 			}
 			
-			System.out.println(m.getMeasureValidationList().size() + "============ size ");
 		}
 
 	}
