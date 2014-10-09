@@ -191,7 +191,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			formula = formula.replaceAll(toBeReplaced, exportName);
 		}
-		return formula.replaceAll("$", "");
+		return formula.replaceAll("[$]", "");
 	}
 
 	public String msg(String propertySuffix) {

@@ -39,8 +39,8 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (32, 2, 'Not Hispanic', 'Not Hispanic answer', 221);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (33, 2, 'Decline To Answer', 'Decline To Answer', 222);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10, 4, 'Calculate height', 'Calculate height formula', '( [140] * 12 ) + [141]');
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (11, 4, 'Calculate BMI', 'Calculate BMI formula', '( [142] / ( [$10$] * [$10$] ) ) * 703');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10, 4, 'demo_totalheightin', 'demo_totalheightin formula', '( [140] * 12 ) + [141]');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (11, 4, 'demo_BMI', 'demo_BMI formula', '( [142] / ( [$10$] * [$10$] ) ) * 703');
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_id) VALUES (140, 1, 'Veteran height feet', 'Veteran height feet question', 71);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_id) VALUES (141, 1, 'Veteran height inches', 'Veteran height inches question', 72);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_id) VALUES (142, 1, 'Veteran weight', 'Veteran weight question', 20);
@@ -593,7 +593,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (734, 2, 'usually', 'usually answer', 1043);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (735, 2, 'missing', 'missing', 1044);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (739, 4, 'Calculate emotional support score', 'Calculate emotional support score formula', '([700] + [710] + [720] + [730])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (739, 4, 'es_score_promis', 'es_score_promis formula', '([700] + [710] + [720] + [730])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (6, 739, 700);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (7, 739, 710);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (8, 739, 720);
@@ -776,11 +776,11 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (982, 2, 'bothered a little', 'bothered a little answer', 1861);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (983, 2, 'bothered a lot', 'bothered a lot answer', 1862);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (998, 4, 'Other Health Symptoms Score 1', 'Other Health Symptoms Score 1 Formula', '([930] + [940])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (998, 4, 'health_score_hearing', 'health_score_hearing Formula', '([930] + [940])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (650, 998, 930);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (651, 998, 940);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (999, 4, 'Other Health Symptoms Score 2', 'Other Health Symptoms Score 2 Formula', '([960] + [970])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (999, 4, 'health_score_weight', 'health_score_weight Formula', '([960] + [970])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (670, 999, 960);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (671, 999, 970);
 
@@ -905,7 +905,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1143, 2, 'bothered a lot', 'bothered a lot answer', 1752);
 
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1189, 4, 'PHQ-15 Score ', 'PHQ-15 Score 1 Formula', '([1020] + [1030] + [1040] + [1050] + [1060] + [1070] + [1080] + [1090] + [1100] + [1110] + [1120] + [1130] + [1140] + [1150]  + [1160])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1189, 4, 'health_score_phq15', 'health_score_phq15 Formula', '([1020] + [1030] + [1040] + [1050] + [1060] + [1070] + [1080] + [1090] + [1100] + [1110] + [1120] + [1130] + [1140] + [1150]  + [1160])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (780, 1189, 1020);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (781, 1189, 1030);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (782, 1189, 1040);
@@ -1031,7 +1031,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1224, 2, 'weekly', 'weekly answer', 3723);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1225, 2, 'daily', 'daily answer', 3724);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1229, 4, 'Calculate Alcohol Score', 'Calculate Alcohol Score Formula', '([1200] + [1210] + [1220])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1229, 4, 'alc_score_audit', 'alc_score_audit Formula', '([1200] + [1210] + [1220])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (450, 1229, 1200);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (451, 1229, 1210);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (452, 1229, 1220);
@@ -1117,7 +1117,7 @@ INSERT INTO assessment_variable (assessment_variable_id, assessment_variable_typ
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1331, 2, 'no', 'no answer', 3910);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1332, 2, 'yes', 'yes answer', 3911);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1010, 4, 'Calculate DAST Score', 'Calculate DAST Score Formula', '(([1000] + [1001] + [1003] + [1004] + [1005] + [1006] + [1007] + [1008] + [1009]) + (1 - [1002]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1010, 4, 'DAST_score', 'DAST_score Formula', '(([1000] + [1001] + [1003] + [1004] + [1005] + [1006] + [1007] + [1008] + [1009]) + (1 - [1002]))');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (730, 1010, 1000);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (731, 1010, 1001);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (732, 1010, 1002);
@@ -1442,7 +1442,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1593, 2, 'more than half the days', 'more than half the days answer', 4612);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1594, 2, 'nearly every day', ' nearly every day answer', 4613);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1599, 4, 'Depression formula', 'Depression formula', '([2960] + [2970] + [2980] + [2990] + [3000] + [1550] + [1560] + [1570] + [1580])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1599, 4, 'dep_score_phq9', 'dep_score_phq9', '([2960] + [2970] + [2980] + [2990] + [3000] + [1550] + [1560] + [1570] + [1580])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (50, 1599, 2960);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (51, 1599, 2970);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (52, 1599, 2980);
@@ -1617,7 +1617,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1733, 2, 'very difficult', 'very difficult answer', 5192);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1734, 2, 'extremely difficult', 'extremely difficult answer', 5193);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1749, 4, 'GAD 7 formula', 'GAD 7 formula', '([1660] + [1670] + [1680] + [1690] + [1700] + [1710] + [1720] + [1730])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1749, 4, 'gad7_score', 'gad7_score', '([1660] + [1670] + [1680] + [1690] + [1700] + [1710] + [1720] + [1730])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (500, 1749, 1660);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (501, 1749, 1670);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (502, 1749, 1680);
@@ -1803,7 +1803,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1914, 2, 'quite a bit', 'quite a bit answer', 5383);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1915, 2, 'extremely', 'extremely answer', 5384);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1929, 4, 'PCL formula', 'PCL formula', '([1750] + [1760] + [1770] + [1780] + [1790] + [1800] + [1810] + [1820] + [1830] + [1840] + [1850] + [1860] + [1870] + [1880] + [1890] + [1900] + [1910])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1929, 4, 'pcl_score', 'pcl_score', '([1750] + [1760] + [1770] + [1780] + [1790] + [1800] + [1810] + [1820] + [1830] + [1840] + [1850] + [1860] + [1870] + [1880] + [1890] + [1900] + [1910])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (350, 1929, 1750);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (351, 1929, 1760);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (352, 1929, 1770);
@@ -1966,7 +1966,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1971, 2, 'no', 'no answer', 5450);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (1972, 2, 'yes', 'yes answer', 5451);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1989, 4, 'PTSD formula', 'PTSD formula', '([1940] + [1950] + [1960] + [1970])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (1989, 4, 'pcptsd_score', 'pcptsd_score', '([1940] + [1950] + [1960] + [1970])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (400, 1989, 1940);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (401, 1989, 1950);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (402, 1989, 1960);
@@ -2042,7 +2042,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (2184, 2, 'much', 'much answer', 5593);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (2185, 2, 'very much', 'very much	answer', 5594);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2189, 4, 'ISI formula', 'ISI formula', '([2120] + [2130] + [2140] + [2150] + [2160] + [2170] + [2180])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2189, 4, 'sleep_score', 'sleep_score', '([2120] + [2130] + [2140] + [2150] + [2160] + [2170] + [2180])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (550, 2189, 2120);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (551, 2189, 2130);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (552, 2189, 2140);
@@ -2366,7 +2366,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (2635, 2, 'very much', 'very much answer', 2174);
 
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2640, 4, 'Calculate pain inference formula', 'Calculate pain inference formula', '([2580] + [2590] + [2600] + [2610] + [2620] + [2630])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2640, 4, 'pain_score_interference', 'pain_score_interference', '([2580] + [2590] + [2600] + [2610] + [2620] + [2630])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (30, 2640, 2580);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (31, 2640, 2590);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (32, 2640, 2600);
@@ -2375,7 +2375,7 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (35, 2640, 2630);
 
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2650, 4, 'Calculate pain intensity formula', 'Calculate pain intensity formula', '([2550] + [2560] + [2570])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2650, 4, 'pain_score_intensity', 'pain_score_intensity', '([2550] + [2560] + [2570])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (680, 2650, 2550);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (681, 2650, 2560);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (682, 2650, 2570);
@@ -2518,7 +2518,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (2804, 2, 'serious problem', 'serious problem answer', 4903);
 
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2809, 4, 'MDQ hp1 formula', 'MDQ hyp1 formula', '([2660] + [2670] + [2680] + [2690] + [2700] + [2710] + [2720] + [2730] + [2740] + [2750] + [2760] + [2770] + [2780])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2809, 4, 'hyp_score', 'MDQ hyp1 formula', '([2660] + [2670] + [2680] + [2690] + [2700] + [2710] + [2720] + [2730] + [2740] + [2750] + [2760] + [2770] + [2780])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (475, 2809, 2660);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (476, 2809, 2670);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (477, 2809, 2680);
@@ -2673,7 +2673,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (2915, 2, 'true nearly all the time', 'true nearly all the time answer', 5914);
 
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2930, 4, 'Resilience formula', 'Resilience formula', '([2820] + [2830] + [2840] + [2850] + [2860] + [2870] + [2880] + [2890] + [2900] + [2910])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (2930, 4, 'res_score', 'res_score', '([2820] + [2830] + [2840] + [2850] + [2860] + [2870] + [2880] + [2890] + [2900] + [2910])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (40, 2930, 2820);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (41, 2930, 2830);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (42, 2930, 2840);
@@ -3050,7 +3050,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (3354, 2, 'usually', 'usually answer', 5773);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (3355, 2, 'always', 'always answer', 5774);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (3389, 4, 'Agression formula', 'Agression formula', '([3200] + [3210] + [3220] + [3230] + [3240] + [3250] + [3260] + [3270] + [3280] + [3290] + [3300] + [3310] + [3320] + [3330] + [3340] + [3350])');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (3389, 4, 'ROAS_weighted_score', 'ROAS_weighted_score', '([3200] + [3210] + [3220] + [3230] + [3240] + [3250] + [3260] + [3270] + [3280] + [3290] + [3300] + [3310] + [3320] + [3330] + [3340] + [3350])');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (70, 3389, 3200);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (71, 3389, 3210);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (72, 3389, 3220);
@@ -3399,7 +3399,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4104, 2, 'severe', 'severe answer', 2573);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4105, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 2574);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4119, 4, 'WHODAS_1 formula', 'WHODAS_1 formula', '(([4000] + [4020] + [4040] + [4060] + [4080] + [4100])/6)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4119, 4, 'whodas_understand_mean', 'whodas_understand_mean', '(([4000] + [4020] + [4040] + [4060] + [4080] + [4100])/6)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (150, 4119, 4000);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (151, 4119, 4020);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (152, 4119, 4040);
@@ -3445,7 +3445,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4224, 2, 'severe', 'severe answer', 2663);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4225, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 2664);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4239, 4, 'WHODAS_2 formula', 'WHODAS_2 formula', '(([4120] + [4140] + [4160] + [4180] + [4220])/5)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4239, 4, 'whodas_mobility_mean', 'whodas_mobility_mean', '(([4120] + [4140] + [4160] + [4180] + [4220])/5)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (180, 4239, 4120);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (181, 4239, 4140);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (182, 4239, 4160);
@@ -3485,7 +3485,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4304, 2, 'severe', 'severe answer', 2753);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4305, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 2754);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4319, 4, 'WHODAS_3 formula', 'WHODAS_3 formula', '(([4240] + [4260] + [4280] + [4300])/4)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4319, 4, 'whodas_selfcare_mean', 'whodas_selfcare_mean', '(([4240] + [4260] + [4280] + [4300])/4)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (200, 4319, 4240);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (201, 4319, 4260);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (202, 4319, 4280);
@@ -3533,7 +3533,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4404, 2, 'severe', 'severe answer', 2863);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4405, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 2864);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4419, 4, 'WHODAS_4 formula', 'WHODAS_4 formula', '(([4320] + [4340] + [4360] + [4380] + [4400])/5)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4419, 4, 'whodas_people_mean', 'whodas_people_mean', '(([4320] + [4340] + [4360] + [4380] + [4400])/5)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (220, 4419, 4320);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (221, 4419, 4340);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (222, 4419, 4360);
@@ -3569,7 +3569,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4464, 2, 'severe', 'severe answer', 2953);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4465, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 2954);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4499, 4, 'WHODAS_5 formula', 'WHODAS_5 formula', '(([4420] + [4430] + [4440] + [4460])/4)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4499, 4, 'whodas_household_mean', 'whodas_household_mean', '(([4420] + [4430] + [4440] + [4460])/4)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (240, 4499, 4420);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (241, 4499, 4430);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (242, 4499, 4440);
@@ -3613,7 +3613,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4544, 2, 'severe', 'severe answer', 3063);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4545, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 3064);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4559, 4, 'WHODAS_6 formula', 'WHODAS_6 formula', '(([4480] + [4500] + [4520] + [4540])/4)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4559, 4, 'whodas_work_score', 'whodas_work_score', '(([4480] + [4500] + [4520] + [4540])/4)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (260, 4559, 4480);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (261, 4559, 4500);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (262, 4559, 4520);
@@ -3680,7 +3680,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4704, 2, 'severe', 'severe answer', 3193);
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, measure_answer_id) VALUES (4705, 2, 'Extreme or cannot do', 'Extreme or cannot do answer', 3194);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4789, 4, 'WHODAS_7 formula', 'WHODAS_7 formula', '(([4560] + [4580] + [4600] + [4620] + [4640] + [4660] + [4680] + [4700])/8)');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (4789, 4, 'whodas_society_mean', 'whodas_society_mean', '(([4560] + [4580] + [4600] + [4620] + [4640] + [4660] + [4680] + [4700])/8)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (280, 4789, 4560);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (281, 4789, 4580);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (282, 4789, 4600);
