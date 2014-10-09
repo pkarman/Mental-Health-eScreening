@@ -821,7 +821,8 @@ angular.module('Editors')
                                 var templateObj = {
                                         templateId: 45, 
                                         templateType : {id: $stateParams.typeId,
-                                                        name:"Template type name here"}
+                                                        name:"Template type name here"},
+                                        isGraphical: false
                                 };
                                 
                                 deferred.resolve(templateObj);

@@ -28,7 +28,8 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
         id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeId))? jsonTemplateObject.templateTypeId : -1,
         name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeName))? jsonTemplateObject.templateTypeName : null,
         description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeDescription))? jsonTemplateObject.templateTypeDescription : null,
-        exists = (Object.isDefined(jsonTemplateObject) && Object.isBoolean(jsonTemplateObject.givenTemplateExists))? jsonTemplateObject.givenTemplateExists: false;
+        templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateID)) ? jsonTemplateObject.templateID : null,
+        exists =  Object.isDefined(templateId);
 
     this.getId = function(){
         return id;
@@ -55,6 +56,7 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
             templateTypeId: (Object.isDefined(id) && id > 0)? id : null,
             templateTypeName: name,
             templateTypeDescription: description,
+            templateID : templateId,
             givenTemplateExists: exists
         });
     };
@@ -64,6 +66,7 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
             "id" : id,
             "name" : name,
             "description" : description,
+            "templateId" : templateId,
             "exists" : exists
         }
     };

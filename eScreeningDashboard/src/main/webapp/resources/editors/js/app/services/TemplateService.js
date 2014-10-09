@@ -81,20 +81,22 @@ angular.module('EscreeningDashboardApp.services.template', ['ngResource'])
         }
         
         /**
-         * Send template update to the server.
-         * 
-         * @param Template DTO:  templateId, name, description, templateFile, templateTypeId, isGraphical
-         */
-        var update = function(template){
-            
-        };
-        
-        /**
          * Removes the template with the give ID from the system
          */
         var remove = function(templateId){
             
         };
+        
+        /**
+         * Send template update to the server.
+         * 
+         * @param Template DTO:  ???
+         */
+        var update = function(template){
+            
+        };
+        
+        
         
         // Expose the public TemplateService API to the rest of the application.
         return {
