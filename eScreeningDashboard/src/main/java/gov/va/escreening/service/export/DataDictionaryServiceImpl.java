@@ -11,6 +11,7 @@ import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -95,9 +96,6 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Table<String, String, String>> createDataDictionary() {
-
-		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
-
 		/**
 		 * <pre>
 		 * 
@@ -118,7 +116,8 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		 */
 		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
 
-		// keep this transaction as stateless and work against the fresh data from database
+		// partition all survey with its list of measures
+		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
 
 		// read all AssessmenetVariables having formulae
 		Collection<AssessmentVariable> avList = avr.findAllFormulae();

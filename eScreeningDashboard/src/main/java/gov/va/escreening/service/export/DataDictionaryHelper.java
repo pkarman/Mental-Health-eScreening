@@ -109,8 +109,16 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			boolean found = false;
 			for (Measure m : smList) {
 				for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-					if (m.equals(avc.getVariableChild().getMeasure())) {
-						surveyFormulae.add(extractFormulaPlusExportName(av));
+					AssessmentVariable avChild = avc.getVariableChild();
+					Measure childM = avChild.getMeasure();
+					MeasureAnswer childMa = avChild.getMeasureAnswer();
+					if (childM != null && m.equals(childM)) {
+						surveyFormulae.add(useM2FormulaPlusExportName(av));
+						found = true;
+						break;
+					} else if (childM == null && childMa != null && childMa.getMeasure().equals(m) && avChild.getFormulaTemplate() == null) {
+						logger.warn(String.format("Measure missing AssessmentVarChildren [%s]. Child of AssessmentVariable [%s] ", avc.getVariableChild().getDisplayName(), av.getDisplayName()));
+						surveyFormulae.add(useMa2FormulaPlusExportName(av));
 						found = true;
 						break;
 					}
@@ -125,20 +133,50 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		}
 	}
 
-	private String extractFormulaPlusExportName(AssessmentVariable av) {
-		String formula = extractFormula(av);
+	private String useMa2FormulaPlusExportName(AssessmentVariable av) {
+		String formula = extractFormulaUsingMeasureAnswer(av);
+		return formulaPlusExportName(formula, av);
+	}
+
+	private String extractFormulaUsingMeasureAnswer(AssessmentVariable av) {
+		String dbFormula = av.getFormulaTemplate();
+		String displayableFormula = dbFormula;
+		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
+			String exportName = ma.getExportName();
+			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
+			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
+		}
+		displayableFormula = displayableFormula.replaceAll("[$]", "");
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
+		}
+		return displayableFormula;
+	}
+
+	private String useM2FormulaPlusExportName(AssessmentVariable av) {
+		String formula = extractFormulaUsingMeasure(av);
+		return formulaPlusExportName(formula, av);
+	}
+
+	private String formulaPlusExportName(String formula, AssessmentVariable av) {
 		return String.format("%s,%s", formula, av.getDisplayName());
 	}
 
-	private String extractFormula(AssessmentVariable av) {
-		String formula = av.getFormulaTemplate();
+	private String extractFormulaUsingMeasure(AssessmentVariable av) {
+		String dbFormula = av.getFormulaTemplate();
+		String displayableFormula = dbFormula;
 		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
 			Measure m = avc.getVariableChild().getMeasure();
 			String exportName = m != null ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
-			formula = formula.replaceAll(toBeReplaced, exportName);
+			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		return formula.replaceAll("[$]", "");
+		displayableFormula = displayableFormula.replaceAll("[$]", "");
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
+		}
+		return displayableFormula;
 	}
 
 	public String msg(String propertySuffix) {

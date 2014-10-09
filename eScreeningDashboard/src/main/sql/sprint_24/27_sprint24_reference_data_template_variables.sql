@@ -21,7 +21,6 @@ UPDATE assessment_variable SET display_name='whodas_mobility_mean', description=
 UPDATE assessment_variable SET display_name='whodas_selfcare_mean', description='whodas_selfcare_mean formula' WHERE assessment_variable_id = 4319;
 UPDATE assessment_variable SET display_name='whodas_people_mean', description='whodas_people_mean formula' WHERE assessment_variable_id = 4419;
 UPDATE assessment_variable SET display_name='whodas_household_mean', description='whodas_household_mean formula' WHERE assessment_variable_id = 4499;
-UPDATE assessment_variable SET display_name='whodas_work_mean', description='whodas_work_mean formula' WHERE assessment_variable_id = 4559;
 UPDATE assessment_variable SET display_name='whodas_society_mean', description='whodas_society_mean formula' WHERE assessment_variable_id = 4789;
 
 /* missing formulae added by krizvi to accomodate t646 */
@@ -59,7 +58,7 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (864, 10604, 4440);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (865, 10604, 4460);
 
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10605, 4, 'whodas_work_score', 'whodas_work_score formula', '(([4480] + [4500] + [4520] + [4540]))');
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10605, 4, 'whodas_work_mean', 'whodas_work_mean formula', '(([4480] + [4500] + [4520] + [4540])/4)');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (850, 10605, 4480);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (851, 10605, 4500);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (852, 10605, 4520);
@@ -86,6 +85,11 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 
 /*
 ==>sum prior_dx_dep, prior_dx_ptsd, prior_dx_oth	prior_dx_score
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10711, 4, 'prior_dx_score', 'prior_dx_score formula', '(([1522] + [1523] + [1524]))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (890, 10711, 1522);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (891, 10711, 1523);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (892, 10711, 1524);
 */
 
 /*
