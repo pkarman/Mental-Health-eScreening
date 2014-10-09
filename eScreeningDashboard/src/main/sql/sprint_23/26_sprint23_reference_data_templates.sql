@@ -800,12 +800,9 @@ SERVICE HISTORY:
 ${MODULE_TITLE_END}
 ${MODULE_START}
         <#assign nextLine = "">
-		<#if (var3180.children)??  && (var3180.children?size>0) && ((var3160.children)?? && (var3160.children)?has_content)>
-			<#-- var3180: ${var3180}<Br><br>  -->
-		
-			<#assign allAnswersPresent = false>
-			<#assign allAnswersNone = false>
-			<#assign outputText = "">
+		<#if (var3180.children)??  && (var3180.children?size>0) || ((var3160.children)?? && (var3160.children)?has_content)>
+			<#-- var3180: ${var3180}<Br><br>  -->	
+			<#if (var3180.children)??  && (var3180.children?size>0)>			
 			<#assign rows = {}>
 
 			<#list ((var3180.children)![]) as v>
@@ -832,6 +829,7 @@ ${MODULE_START}
 				</#list>
 			</#if>
 
+			<#assign isFirst = true>
 			<#list uniqueRows as ur>
 				
 				<#assign group = {}>
@@ -869,9 +867,7 @@ ${MODULE_START}
 						<#assign type =  ((group[gk])!"")>
 						<#if (type?length > 0)>
 							<#assign typeIsComplete = true>
-						</#if>
-					
-						
+						</#if>						
 					</#if>
 
 					<#-- check if BRANCH answer is present -->
@@ -879,9 +875,7 @@ ${MODULE_START}
 						<#assign branch =  ((group[gk])!"")>
 						<#if (branch?length > 0)>
 							<#assign branchIsComplete = true>
-						</#if>
-						
-						
+						</#if>						
 					</#if>
 
 					<#-- check if BEGINNING YEAR answer is present -->
@@ -889,9 +883,7 @@ ${MODULE_START}
 						<#assign beg_yr =  ((group[gk])!"")>
 						<#if (beg_yr?length > 0)>
 							<#assign beg_yrIsComplete = true>
-						</#if>
-						
-						
+						</#if>												
 					</#if>
 
 
@@ -900,9 +892,7 @@ ${MODULE_START}
 						<#assign end_yr =  ((group[gk])!"")>
 						<#if (end_yr?length > 0)>
 							<#assign end_yrIsComplete = true>
-						</#if>
-						
-						
+						</#if>						
 					</#if>
 
 
@@ -911,9 +901,7 @@ ${MODULE_START}
 						<#assign dischargeType =  ((group[gk])!"")>
 						<#if (dischargeType?length > 0)>
 							<#assign dischargeTypeIsComplete = true>
-						</#if>
-						
-						
+						</#if>						
 					</#if>
 
 
@@ -924,9 +912,7 @@ ${MODULE_START}
 						<#assign rank =  ((group[gk])!"")>
 						<#if (rank?length > 0)>
 							<#assign rankIsComplete = true>
-						</#if>
-						
-						
+						</#if>						
 					</#if>
 
 					<#-- check if JOB answer is present -->
@@ -934,51 +920,27 @@ ${MODULE_START}
 						<#assign job =  ((group[gk])!"")>
 						<#if (job?length > 0)>
 							<#assign jobIsComplete = true>
-						</#if>
-						
-						
+						</#if>						
 					</#if>
 			</#list>
 
-			<#if typeIsComplete && branchIsComplete && beg_yrIsComplete && end_yrIsComplete 
-										&& dischargeTypeIsComplete && rankIsComplete && jobIsComplete>
-				<#assign allAnswersPresent =true>
-					
-				<#if ((outputText?trim?length) > 0)>
-					<#assign outputText = 
-						("The Veteran reported previous enlistment in the " + type + " " + branch + " in " + beg_yr 
-						+ ", received an " + dischargeType + " discharge in " + end_yr + " at the rank of " + rank + ".")>
+			<#if typeIsComplete>
+				<#if isFirst>
+					<#assign isFirst=false>	
+					The Veteran reported previous enlistment in the ${type} 
 				<#else>
-					<#assign outputText = ("The Veteran reported entering the " + type + " " + branch + " in " + beg_yr 
-						+ ", received an " + dischargeType + " discharge in " + end_yr + " at the rank of " + rank + ".")>
+					${nextLine}The Veteran reported entering the ${type} 
 				</#if>
-			<#else>
-				<#assign allAnswersPresent =false>
-			</#if>
-
-
-			<#-- clear our vars for the next row\'s processing -->
-			<#assign type = "">
-			<#assign branch = "">
-			<#assign beg_yr = "">
-			<#assign end_yr = "">
-			<#assign dischargeType = "">
-			<#assign rank = "">
-			<#assign job = "">
-
-			<#-- after processing a row , if a var is missing then it is not complete therefore "all" questions were not answered -->
-			<#if !allAnswersPresent>
-					${nextLine}${getNotCompletedText()}.
-                    <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
-					<#-- no need to continue if we are finished processing a row and a var is missing -->
-					<#break>
-			<#else>
-					${nextLine}${outputText} 
-                    <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">		
+				<#if branchIsComplete> ${NBSP}${branch}</#if>
+				<#if beg_yrIsComplete> ${NBSP}in ${beg_yr}</#if>
+				<#if dischargeTypeIsComplete>, received an ${dischargeType} discharge</#if>
+				<#if end_yrIsComplete> ${NBSP}in ${end_yr}</#if>
+				<#if rankIsComplete>${NBSP}at the rank of ${rank}</#if>
+				<#assign nextLine=".${LINE_BREAK}${LINE_BREAK}">
 			</#if>
 		  </#list>
-			
-		  <#if allAnswersPresent>
+		</#if>	
+		  <#if ((var3160.children)?? && (var3160.children)?has_content)>
 			${nextLine}The Veteran also served in the following operations or combat zones: ${getSelectMultiDisplayText(var3160)}.
             <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
 		  </#if>

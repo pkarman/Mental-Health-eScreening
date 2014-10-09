@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class EditVeteranAssessmentFormBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +24,7 @@ public class EditVeteranAssessmentFormBean implements Serializable {
     private Integer selectedNoteTitleId;
     @NotNull(message = "Battery is required")
     private Integer selectedBatteryId;
+    @NotEmpty(message = "Atleast one screening module is required to create an assessment")
     private List<Integer> selectedSurveyIdList = new ArrayList<Integer>();
 
     public Integer getVeteranAssessmentId() {
