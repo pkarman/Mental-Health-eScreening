@@ -143,7 +143,7 @@ label {
 	cursor: pointer;
 }
 
-#measuresProgress li label{
+#measuresProgress li span{
 	color:#fff;
 	hsla(360, 100%, 100%, 1);
 	font-family:MyriadProRegular, Arial, sans-serif;
@@ -489,6 +489,7 @@ label.tableQuestionCell{
 
 .entryLabelText {
 	font-size: 16px;
+  font-weight:bold;
 	margin:0;
 }
 
@@ -749,6 +750,16 @@ label.freeTextAnswer{
 	margin-top: 0;
 	margin-left: 10px;
 	width:auto;
+}
+
+span.freeTextAnswer{
+	/*width: 5em;*/
+	white-space: nowrap;
+	color: #666;
+	margin-top: 0;
+	padding-left:10px;
+	width:auto;
+  font-size:12px;
 }
 
 label.freeTextQuestion{

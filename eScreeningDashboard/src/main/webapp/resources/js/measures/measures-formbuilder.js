@@ -149,7 +149,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				.html("*")
 				.appendTo(title);
 		}
-		
+
 		return questionLI;
 	}
 	
@@ -208,7 +208,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			
 			var answerText = question.answers[i].answerText;
 			if(answerText != undefined){
-				$("<label>")
+				$("<span>")
 					.attr("for", answerId)
 					.addClass("freeTextAnswer")
 					.html(answerText)
@@ -773,7 +773,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				entry.addClass("tableSingleEntry");
 			}
 			
-			$("<label/>")
+			$("<span/>")
 				.addClass("entryLabelText")
 				.html(entryName  + "  " + (rowIndex + 1))
 				.appendTo(deleteWrapper);
