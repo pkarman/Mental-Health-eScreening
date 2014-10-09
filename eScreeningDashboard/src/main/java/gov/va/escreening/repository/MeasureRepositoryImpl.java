@@ -220,7 +220,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				}
 			}
 		}
-		m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+		
+		m.getMeasureValidationList().clear();
+		
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
 				gov.va.escreening.entity.Validation v = validationRepo
@@ -240,6 +242,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				mv.setValidation(v);
 				m.getMeasureValidationList().add(mv);
 			}
+			
+			System.out.println(m.getMeasureValidationList().size() + "============ size ");
 		}
 
 	}
