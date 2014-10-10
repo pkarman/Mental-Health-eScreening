@@ -207,15 +207,13 @@ angular.module('Editors')
 
     //This doesn't work:
     //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
-                                
-                                TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
-                                        deferred.resolve(templateTypes);
-                                    },
-                                    function(responseError) {
-                                        $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                        console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-                                        deferred.reject(responseError.getMessage());
-                                    });
+                                TemplateService.query({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
+                                    deferred.resolve(templateTypes);
+                                },
+                                function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
                             }
 
                             return deferred.promise;

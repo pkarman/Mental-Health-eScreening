@@ -31,7 +31,7 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
         templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null,
         exists =  Object.isDefined(templateId);
 
-    this.getId = function(){
+    /*this.getId = function(){
         return id;
     };
 
@@ -45,13 +45,13 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
 
     this.getExists = function() {
         return exists;
-    };
+    };*/
 
     this.toString = function () {
-        return "TemplateType {id: " + id + ", name: " + name + ", description: " + description + ", exists: " + exists + "}";
+        return "TemplateType {id: " + this.id + ", name: " + this.name + ", description: " + this.description + ", exists: " + this.exists + "}";
     };
 
-    this.toJSON = function () {
+    /*this.toJSON = function () {
         return JSON.stringify({ 
             id: (Object.isDefined(id) && id > 0)? id : null,
             name: name,
@@ -68,8 +68,9 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
             "templateId" : templateId,
             "exists" : exists
         }
-    };
+    };*/
 };
+/*
 EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes) {
     var templateTypesUIObjects = [];
 
@@ -82,6 +83,7 @@ EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes)
     return templateTypesUIObjects;
 };
 
+*/
 /**
  * Static method to translated an array of ModuleTemplateTypeDTO (in JSON) into an array of TemplateType domain model objects.
  *
@@ -91,16 +93,19 @@ EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes)
  * @returns {EScreeningDashboardApp.models.TemplateType[]} A list of TemplateTypes that have been returned from a service call request.
  *
  * @author Robin Carnow
- */
+ *//*
+
 EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (jsonResponse) {
     'use strict';
-    /**
+    */
+/**
      * Represent list of template types.
      *
      * @private
      * @field
      * @type {EScreeningDashboardApp.models.TemplateType[]}
-     */
+     *//*
+
     var templateTypes = [];
 
     if (!Object.isDefined(jsonResponse)) {
@@ -117,4 +122,4 @@ EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (json
 
 
     return templateTypes;
-};
+};*/

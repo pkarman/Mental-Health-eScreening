@@ -4,7 +4,15 @@
 Editors.controller('ModuleTemplateListController', 
         ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
          function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
-    
+
+    if(templateTypes.length == 0){
+        console.log("No template types received from server. Redirecting back to module.");
+        backToModule();
+    }
+
+    $scope.templateTypes = templateTypes;
+    //$scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
+
     //set target object which is related to the templates we will be editing
     if(!Object.isDefined($stateParams) 
             || !Object.isDefined($stateParams.selectedSurveyId) 
@@ -61,13 +69,6 @@ Editors.controller('ModuleTemplateListController',
         id : $stateParams.selectedSurveyId,
         name : decodeURIComponent($stateParams.selectedSurveyName)
     };
-    
-    if(templateTypes.length == 0){
-        console.log("No template types received from server. Redirecting back to module.");
-        backToModule();
-    }
-
-    $scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
 
     $scope.refreshTable = function () {
         console.log('\n\n refreshing template table');
