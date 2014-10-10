@@ -62,7 +62,7 @@ angular.module('Editors')
                             SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
                                 deferred.resolve(response.getPayload());
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
                                 deferred.reject(responseError.getMessage());
                             });
@@ -92,7 +92,7 @@ angular.module('Editors')
 	                			console.log('Batteries:: ' + existingBatteries);
 	                			deferred.resolve(existingBatteries);
 	                		},function(responseError){
-	                			$rootScope.errors.push(responseError.getMessage());
+	                			$rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 	                			console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
 	                			deferred.reject(responseError.getMessage());
 	                		});
@@ -205,15 +205,15 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-
-                                TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
-                                        deferred.resolve(templateTypes);
-                                    },
-                                    function(responseError) {
-                                        $rootScope.errors.push(responseError.getMessage());
-                                        console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-                                        deferred.reject(responseError.getMessage());
-                                    });
+    //This doesn't work:
+    //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
+                                TemplateService.query({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
+                                    deferred.resolve(templateTypes);
+                                },
+                                function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
                             }
 
                             return deferred.promise;
@@ -821,7 +821,8 @@ angular.module('Editors')
                                 var templateObj = {
                                         templateId: 45, 
                                         templateType : {id: $stateParams.typeId,
-                                                        name:"Template type name here"}
+                                                        name:"Template type name here"},
+                                        isGraphical: false
                                 };
                                 
                                 deferred.resolve(templateObj);
@@ -835,7 +836,7 @@ angular.module('Editors')
 //                                  deferred.resolve(templateTypes);
 //                                  },
 //                                  function(responseError) {
-//                                      $rootScope.errors.push(responseError.getMessage());
+//                                      $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 //                                      console.log('Template Query Error:: ' + JSON.stringify($rootScope.errors));
 //                                      deferred.reject(responseError.getMessage());
 //                                  });

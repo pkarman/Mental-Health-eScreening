@@ -1,6 +1,6 @@
 package gov.va.escreening.service;
 
-import gov.va.escreening.dto.ModuleTemplateTypeDTO;
+import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.TemplateType;
@@ -35,24 +35,24 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
     private static final Logger logger = LoggerFactory.getLogger(TemplateTypeServiceImpl.class);	
 
 	@Override
-	public List<ModuleTemplateTypeDTO> getModuleTemplateTypes(Integer templateId) {
+	public List<TemplateTypeDTO> getModuleTemplateTypes(Integer templateId) {
 		
 		Template template = templateRepository.findOne(templateId);
 		
 		int theTemplateTypeId = template.getTemplateType().getTemplateTypeId().intValue();
 		
 		List<TemplateType> templateTypes = templateTypeRepository.findAllModuleTypeOrderByName();
-		List<ModuleTemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
+		List<TemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
 		
 		for(TemplateType templateType : templateTypes)
 		{
-			ModuleTemplateTypeDTO moduleTemplateTypeDTO = new ModuleTemplateTypeDTO();
-			moduleTemplateTypeDTO.setTemplateTypeId(templateType.getTemplateTypeId());
-			moduleTemplateTypeDTO.setTemplateTypeName(templateType.getName());
-			moduleTemplateTypeDTO.setTemplateTypeDescription(templateType.getDescription());			
+			TemplateTypeDTO moduleTemplateTypeDTO = new TemplateTypeDTO();
+			moduleTemplateTypeDTO.setId(templateType.getTemplateTypeId());
+			moduleTemplateTypeDTO.setName(templateType.getName());
+			moduleTemplateTypeDTO.setDescription(templateType.getDescription());			
 			if(theTemplateTypeId == templateType.getTemplateTypeId().intValue());
 			{
-				moduleTemplateTypeDTO.setTemplateID(template.getTemplateId());
+				moduleTemplateTypeDTO.setTemplateId(template.getTemplateId());
 			}
 			
 			results.add(moduleTemplateTypeDTO);
@@ -62,29 +62,27 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	}
 
 	@Override
-	public List<ModuleTemplateTypeDTO> getModuleTemplateTypesBySurvey(
+	public List<TemplateTypeDTO> getModuleTemplateTypesBySurvey(
 			Integer surveyId) {
 		Survey survey = surveyRepository.findOne(surveyId);
 		
 		Set<Template> templates = survey.getTemplates();
 		
 		List<TemplateType> templateTypes = templateTypeRepository.findAllModuleTypeOrderByName();
-		List<ModuleTemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
+		List<TemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
 		
 		for(TemplateType templateType : templateTypes)
 		{
-			ModuleTemplateTypeDTO moduleTemplateTypeDTO = new ModuleTemplateTypeDTO();
-			moduleTemplateTypeDTO.setTemplateTypeId(templateType.getTemplateTypeId());
-			moduleTemplateTypeDTO.setTemplateTypeName(templateType.getName());
-			moduleTemplateTypeDTO.setTemplateTypeDescription(templateType.getDescription());
-			
-			boolean exists = false;
+			TemplateTypeDTO moduleTemplateTypeDTO = new TemplateTypeDTO();
+			moduleTemplateTypeDTO.setId(templateType.getTemplateTypeId());
+			moduleTemplateTypeDTO.setName(templateType.getName());
+			moduleTemplateTypeDTO.setDescription(templateType.getDescription());
 			
 			for(Template template : templates)
 			{
 				if (templateType.getTemplateTypeId().intValue() == template.getTemplateType().getTemplateTypeId().intValue())
 				{
-					moduleTemplateTypeDTO.setTemplateID(template.getTemplateId());
+					moduleTemplateTypeDTO.setTemplateId(template.getTemplateId());
 					break;
 				}
 			}

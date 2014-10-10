@@ -25,12 +25,13 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  */
 EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
     var that = this,
-        id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeId))? jsonTemplateObject.templateTypeId : -1,
-        name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeName))? jsonTemplateObject.templateTypeName : null,
-        description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeDescription))? jsonTemplateObject.templateTypeDescription : null,
-        exists = (Object.isDefined(jsonTemplateObject) && Object.isBoolean(jsonTemplateObject.givenTemplateExists))? jsonTemplateObject.givenTemplateExists: false;
+        id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.id))? jsonTemplateObject.id : -1,
+        name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.name))? jsonTemplateObject.name : null,
+        description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.description))? jsonTemplateObject.description : null,
+        templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null,
+        exists =  Object.isDefined(templateId);
 
-    this.getId = function(){
+    /*this.getId = function(){
         return id;
     };
 
@@ -44,18 +45,18 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
 
     this.getExists = function() {
         return exists;
-    };
+    };*/
 
     this.toString = function () {
-        return "TemplateType {id: " + id + ", name: " + name + ", description: " + description + ", exists: " + exists + "}";
+        return "TemplateType {id: " + this.id + ", name: " + this.name + ", description: " + this.description + ", exists: " + this.exists + "}";
     };
 
-    this.toJSON = function () {
+    /*this.toJSON = function () {
         return JSON.stringify({ 
-            templateTypeId: (Object.isDefined(id) && id > 0)? id : null,
-            templateTypeName: name,
-            templateTypeDescription: description,
-            givenTemplateExists: exists
+            id: (Object.isDefined(id) && id > 0)? id : null,
+            name: name,
+            description: description,
+            "templateId" : templateId
         });
     };
     
@@ -64,10 +65,12 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
             "id" : id,
             "name" : name,
             "description" : description,
+            "templateId" : templateId,
             "exists" : exists
         }
-    };
+    };*/
 };
+/*
 EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes) {
     var templateTypesUIObjects = [];
 
@@ -80,6 +83,7 @@ EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes)
     return templateTypesUIObjects;
 };
 
+*/
 /**
  * Static method to translated an array of ModuleTemplateTypeDTO (in JSON) into an array of TemplateType domain model objects.
  *
@@ -89,16 +93,19 @@ EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes)
  * @returns {EScreeningDashboardApp.models.TemplateType[]} A list of TemplateTypes that have been returned from a service call request.
  *
  * @author Robin Carnow
- */
+ *//*
+
 EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (jsonResponse) {
     'use strict';
-    /**
+    */
+/**
      * Represent list of template types.
      *
      * @private
      * @field
      * @type {EScreeningDashboardApp.models.TemplateType[]}
-     */
+     *//*
+
     var templateTypes = [];
 
     if (!Object.isDefined(jsonResponse)) {
@@ -115,4 +122,4 @@ EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (json
 
 
     return templateTypes;
-};
+};*/

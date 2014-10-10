@@ -30,6 +30,7 @@
     <script type="text/javascript" src="resources/editors/vendors/angular/angular.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
     <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
+    <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     
     <!-- Utility classes and non-Angular, non-framework classes -->
