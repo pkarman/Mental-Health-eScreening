@@ -317,15 +317,23 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				.appendTo(li);
 	
 			if(answer.answerText != null && answer.answerText.length > 0){
-				$("<label/>")
+				if(answer.answerType == "other"){ 
+					$("<label/>")
+					.attr("for", "other" + answer.answerId)
+					.attr("id", "labelfor_" + answer.answerId)
+					.html(answer.answerText)
+					.appendTo(labelDiv);
+					//we only add this if answerText has something (matrix uses this)
+					self.buildOtherDiv(answer).appendTo(labelDiv);
+				}
+				else
+				{
+					$("<label/>")
 					.attr("for", checkbox.attr("id"))
 					.attr("id", "labelfor_" + answer.answerId)
 					.html(answer.answerText)
 					.appendTo(labelDiv);
-				
-				if(answer.answerType == "other"){ 
-					//we only add this if answerText has something (matrix uses this)
-					self.buildOtherDiv(answer).appendTo(labelDiv);
+					
 				}
 			}
 				
@@ -348,7 +356,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			
 			return li;
 		};
-	
+		
 		this.buildOtherDiv = function(answer){
 			
       var otherLabel = $("<label/>")
@@ -360,6 +368,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
       var otherTextInput = $("<input/>")
 				.attr("type", "text")
 				.attr("id", "other" + answer.answerId)
+				.attr("label", "inp"+answer.answerId)
 				.addClass("selectOther");
 	
 			//set saved response
