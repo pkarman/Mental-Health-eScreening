@@ -25,10 +25,10 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  */
 EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
     var that = this,
-        id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeId))? jsonTemplateObject.templateTypeId : -1,
-        name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeName))? jsonTemplateObject.templateTypeName : null,
-        description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateTypeDescription))? jsonTemplateObject.templateTypeDescription : null,
-        templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateID)) ? jsonTemplateObject.templateID : null,
+        id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.id))? jsonTemplateObject.id : -1,
+        name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.name))? jsonTemplateObject.name : null,
+        description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.description))? jsonTemplateObject.description : null,
+        templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null,
         exists =  Object.isDefined(templateId);
 
     this.getId = function(){
@@ -53,11 +53,10 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
 
     this.toJSON = function () {
         return JSON.stringify({ 
-            templateTypeId: (Object.isDefined(id) && id > 0)? id : null,
-            templateTypeName: name,
-            templateTypeDescription: description,
-            templateID : templateId,
-            givenTemplateExists: exists
+            id: (Object.isDefined(id) && id > 0)? id : null,
+            name: name,
+            description: description,
+            "templateId" : templateId
         });
     };
     

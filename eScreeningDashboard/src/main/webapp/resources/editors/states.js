@@ -62,7 +62,7 @@ angular.module('Editors')
                             SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
                                 deferred.resolve(response.getPayload());
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
                                 deferred.reject(responseError.getMessage());
                             });
@@ -92,7 +92,7 @@ angular.module('Editors')
 	                			console.log('Batteries:: ' + existingBatteries);
 	                			deferred.resolve(existingBatteries);
 	                		},function(responseError){
-	                			$rootScope.errors.push(responseError.getMessage());
+	                			$rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 	                			console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
 	                			deferred.reject(responseError.getMessage());
 	                		});
@@ -205,12 +205,14 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-
+    //This doesn't work:
+    //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
+                                
                                 TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
                                         deferred.resolve(templateTypes);
                                     },
                                     function(responseError) {
-                                        $rootScope.errors.push(responseError.getMessage());
+                                        $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                         console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
                                         deferred.reject(responseError.getMessage());
                                     });
@@ -836,7 +838,7 @@ angular.module('Editors')
 //                                  deferred.resolve(templateTypes);
 //                                  },
 //                                  function(responseError) {
-//                                      $rootScope.errors.push(responseError.getMessage());
+//                                      $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
 //                                      console.log('Template Query Error:: ' + JSON.stringify($rootScope.errors));
 //                                      deferred.reject(responseError.getMessage());
 //                                  });

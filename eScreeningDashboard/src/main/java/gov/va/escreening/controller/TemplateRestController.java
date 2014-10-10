@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.ws.rs.NotFoundException;
 
 import gov.va.escreening.domain.ErrorCodeEnum;
-import gov.va.escreening.dto.ModuleTemplateTypeDTO;
+import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.exception.EntityNotFoundException;
@@ -45,7 +45,7 @@ public class TemplateRestController {
 	
 	@RequestMapping(value ="/services/templateType/survey/{surveyId}")
 	@ResponseBody
-	public Response<List<ModuleTemplateTypeDTO>> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)
+	public Response<List<TemplateTypeDTO>> getModuleTemplateTypesBySurveyId(@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser)
 	{
 		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), 
 							templateTypeService.getModuleTemplateTypesBySurvey(surveyId));
