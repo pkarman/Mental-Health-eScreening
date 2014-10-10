@@ -21,22 +21,52 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
             $state.go('modules.templates', $stateParams);
         }
     };
+
+    // Template structure
+    $scope.template = {
+        blocks: [
+            {
+                section: '1.',
+                title: name,
+                items: [
+                    {
+                        type: 'if',
+                        variable: 'dep4_tired',
+                        operator: 'gt',
+                        content: '(var1599)?? && isSet(var1599.value) && (var1599.value?number > 9)'
+                    },
+                    {
+                        type: 'text',
+                        content: '${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Yes.${LINE_BREAK} ${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}NURSING/NON-PROVIDER: Follow-up:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}The following action was taken: Patient\'s provider,${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}(Assigned Clincian), was notified for immediate intervention.${LINE_BREAK}'
+                    }
+                ],
+                children: []
+            }
+        ]
+    };
     
-    $scope.addBlock = function(){
+    $scope.editBlock = function(selectedBlock){
         // Create the modal
         var modalInstance = $modal.open({
             templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
             resolve: {
                 relatedObj: function() {
                     return $scope.relatedObj;
+                },
+                block: function() {
+                    // If we are creating a new block, create a new block instance from Restangular
+                    return selectedBlock || { name: '', items: [] };
                 }
             },
-            controller: function($scope, $timeout, $modalInstance, relatedObj) {
+            controller: function($scope, $timeout, $modalInstance, relatedObj, block) {
 
+                // Copy the relatedObject so that potential changes in modal don't update object in page
                 $scope.relatedObj = angular.copy(relatedObj);
 
-                $scope.block = {};
+                // Copy the selected or new block so that potential changes in modal don't update object in page
+                $scope.block = angular.copy(block);
 
+                // TODO Move to service to be shared elsewhere?
                 $scope.blockTypes = [
                     { name: 'If', value: 'if', selected: false },
                     { name: 'Else If', value: 'elseif', selected: false },
@@ -44,6 +74,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                     { name: 'Text', value: 'text', selected: false }
                 ];
 
+                // TODO Move to service to be shared elsewhere?
                 $scope.operators = [
                     { name: 'Equals', value: 'eq', category: 'all' },
                     { name: 'Doesn\'t Equals', value: 'neq', category: 'all' },
@@ -59,16 +90,28 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                     { name: 'Response isn\t', value: 'nresponse', category: 'select' }
                 ];
 
+                // Dismiss modal
                 $scope.cancel = function() {
                     $modalInstance.dismiss('cancel');
                 };
 
+                // Close modal and pass updated block to the page
                 $scope.close = function() {
-                    $modalInstance.close($scope.relatedObj, $scope.block);
+                    $modalInstance.close($scope.block);
                 };
             }
 
         });
+
+        // Update the dashboard on the scope
+        modalInstance.result.then(
+            function(block) {
+                // Update blocks array with updated or new block
+                console.log('block', block);
+            },
+            function() {
+                // Error
+            });
     };
     
 }]);
