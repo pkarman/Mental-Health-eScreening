@@ -1,5 +1,4 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'template', '$modal',
-                                          function($scope, $state, $stateParams, TemplateService, template, $modal) {
+Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'template', '$modal', function($scope, $state, $stateParams, TemplateService, template, $modal) {
 
     console.log("In templateEditorController");
     
@@ -58,7 +57,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                 },
                 block: function() {
                     // If we are creating a new block, create a new block instance from Restangular
-                    return selectedBlock || { name: '', items: [] };
+                    return selectedBlock || $scope.template.blocks[1];
                 }
             },
             controller: function($scope, $timeout, $modalInstance, relatedObj, block) {
@@ -71,10 +70,10 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 
                 // TODO Move to service to be shared elsewhere?
                 $scope.blockTypes = [
-                    { name: 'If', value: 'if', selected: false },
-                    { name: 'Else If', value: 'elseif', selected: false },
-                    { name: 'Else', value: 'else', selected: false },
-                    { name: 'Text', value: 'text', selected: false }
+                    { name: 'If', value: 'If', selected: false },
+                    { name: 'Else If', value: 'Else If', selected: false },
+                    { name: 'Else', value: 'Else', selected: false },
+                    { name: 'Text', value: 'Text', selected: false }
                 ];
 
                 // TODO Move to service to be shared elsewhere?
