@@ -197,7 +197,7 @@ angular.module('Editors')
                         displayName: 'Manage Templates'
                     },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
-                    /*resolve: {
+                    resolve: {
                         templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
                             var deferred = $q.defer();
 
@@ -205,10 +205,9 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-                                return TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
+                                TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
-                                },
-                                function(responseError) {
+                                }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                     deferred.reject(responseError.getMessage());
                                 });
@@ -216,7 +215,7 @@ angular.module('Editors')
 
                             return deferred.promise;
                         }]
-                    },*/
+                    },
                     controller: 'ModuleTemplateListController'
                 })
 

@@ -8,8 +8,9 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
         "use strict";
 
         var job = Restangular.service("services/templateTypes");
+        //var job = Restangular.all('services/templateTypes');
 
-        Restangular.extendModel("services", function(model) {
+        Restangular.extendModel("services/templateTypes", function(model) {
             return angular.extend(model, TemplateType);
         });
         
