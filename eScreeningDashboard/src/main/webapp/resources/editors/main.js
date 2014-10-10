@@ -8,6 +8,7 @@ var Editors = angular.module("Editors",
         'ui.bootstrap',
         'ngTable',
         'xeditable',
+        'ui.tree',
         'ui.sortable',
         'ngAnimate',
         'textAngular',
@@ -19,7 +20,9 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.services.template',
         'EscreeningDashboardApp.services.question',
-        'EscreeningDashboardApp.filters.messages'
+        'EscreeningDashboardApp.filters.messages',
+        'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
+        'EscreeningDashboardApp.filters.limitToWithEllipsis'
     ]);
 
 /**
