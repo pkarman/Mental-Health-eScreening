@@ -143,7 +143,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		String displayableFormula = dbFormula;
 		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
 			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
-			String exportName = ma.getExportName();
+			String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
