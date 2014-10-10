@@ -2,15 +2,23 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('ModuleTemplateListController', 
-        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes', 
-         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService',
+         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService) {
 
-    if(templateTypes.length == 0){
+    $scope.templateTypes = [];
+
+    TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
+        $scope.templateTypes = templateTypes;
+    }, function (reason) {
+        $scope.templateTypes = reason.data;
+    });
+
+    if($scope.templateTypes.length == 0){
         console.log("No template types received from server. Redirecting back to module.");
-        backToModule();
+        //backToModule();
     }
 
-    $scope.templateTypes = templateTypes;
+
     //$scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
 
     //set target object which is related to the templates we will be editing

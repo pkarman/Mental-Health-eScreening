@@ -197,7 +197,7 @@ angular.module('Editors')
                         displayName: 'Manage Templates'
                     },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
-                    resolve: {
+                    /*resolve: {
                         templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
                             var deferred = $q.defer();
 
@@ -205,9 +205,7 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-    //This doesn't work:
-    //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
-                                TemplateService.query({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
+                                return TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
                                 },
                                 function(responseError) {
@@ -218,7 +216,7 @@ angular.module('Editors')
 
                             return deferred.promise;
                         }]
-                    },
+                    },*/
                     controller: 'ModuleTemplateListController'
                 })
 
