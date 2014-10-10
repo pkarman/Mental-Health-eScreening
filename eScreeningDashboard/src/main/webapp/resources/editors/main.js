@@ -12,6 +12,7 @@ var Editors = angular.module("Editors",
         'ui.sortable',
         'ngAnimate',
         'textAngular',
+        'restangular',
         'angularUtils.directives.uiBreadcrumbs',
         'EscreeningDashboardApp.services.battery',
         'EscreeningDashboardApp.services.survey',
@@ -42,6 +43,10 @@ Editors.directive('ngReallyClick', [function() {
         }
     };
 }]);
+Editors.config(function(RestangularProvider) {
+    RestangularProvider.setBaseUrl('/escreeningdashboard/dashboard');
+    RestangularProvider.setRequestSuffix('.json');
+});
 
 Editors.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
@@ -60,3 +65,4 @@ Editors.run(
 
 }]);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
+Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());

@@ -205,17 +205,12 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-    //This doesn't work:
-    //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
-                                
-                                TemplateService.getTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
-                                        deferred.resolve(templateTypes);
-                                    },
-                                    function(responseError) {
-                                        $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                        console.log('Template Type Query Error:: ' + JSON.stringify($rootScope.errors));
-                                        deferred.reject(responseError.getMessage());
-                                    });
+                                TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
+                                    deferred.resolve(templateTypes);
+                                }, function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
                             }
 
                             return deferred.promise;
