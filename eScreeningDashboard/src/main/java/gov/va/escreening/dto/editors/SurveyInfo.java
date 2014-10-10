@@ -22,7 +22,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private String vistaTitle;
     private String description;
     private Integer version;
-    private Integer displayOrder;
     private boolean hasMha;
     private String mhaTestName;
     private String mhaResultGroupIen;
@@ -64,14 +63,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
     }
 
     public boolean isMha() {
@@ -159,7 +150,7 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     @Override
     public String toString() {
         return "SurveyItem [surveyId=" + surveyId + ", name=" + name + ", description=" + description + ", version="
-                + version + ", displayOrder=" + displayOrder + ", isMha=" + hasMha + ", mhaTestName=" + mhaTestName
+                + version + ", isMha=" + hasMha + ", mhaTestName=" + mhaTestName
                 + ", mhaResultGroupIen=" + mhaResultGroupIen + ", dateCreated=" + dateCreated
                 + ", isIncludedInBattery=" + isIncludedInBattery + /*", surveySectionItem=" + surveySectionItem
                 + ", surveyStatusItem=" + surveyStatusItem + */"]";

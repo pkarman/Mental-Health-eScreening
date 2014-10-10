@@ -59,9 +59,8 @@ angular.module('Editors')
 
                             console.log('VIEW STATE SECTIONS:: Resolve sections');
 
-                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (existingSections){
-                                console.log('Sections:: ' + existingSections);
-                                deferred.resolve(existingSections);
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                deferred.resolve(response.getPayload());
                             }, function(responseError) {
                                 $rootScope.errors.push(responseError.getMessage());
                                 console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
@@ -86,7 +85,7 @@ angular.module('Editors')
 	                            '   <div class="col-md-12" ui-view></div>'+
 	                           '</div>',
 	                resolve:{
-	                	batteries:function($rootScope,$q,BatteryService,SurveySectionService){
+	                	batteries:function($rootScope,$q,BatteryService){
 	                		var deferred = $q.defer();
 	                		console.log('VIEW STATE Battery:: Resolve Batteries');
 	                		BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
@@ -98,21 +97,18 @@ angular.module('Editors')
 	                			deferred.reject(responseError.getMessage());
 	                		});
 	                		return deferred.promise;
-	                	  },
-	                	  sections: function($rootScope, $q, SurveySectionService){
-	                            var deferred = $q.defer();
-	                            console.log('VIEW STATE SECTIONS:: Resolve sections');
-	                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (existingSections){
-	                                console.log('Sections:: ' + existingSections);
-	                                deferred.resolve(existingSections);
-	                            }, function(responseError) {
-	                                $rootScope.errors.push(responseError.getMessage());
-	                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
-	                                deferred.reject(responseError.getMessage());
-	                            });
-	                            return deferred.promise;
-		                	}
 	                	},
+                        sections: function($rootScope, $q, SurveySectionService){
+                            var deferred = $q.defer();
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                deferred.resolve(response.getPayload());
+                            }, function(responseError) {
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                deferred.reject(responseError.getMessage());
+                            });
+                            return deferred.promise;
+                        }
+	                },
 
 	                controller:'batteryAbstractController'
 	            })
@@ -135,15 +131,14 @@ angular.module('Editors')
                                     console.log('Battery:: ' + existingBattery);
                                     deferred.resolve(existingBattery);
                                 }, function (responseError) {
-                                    $rootScope.errors.push(responseError.getMessage());
-                                    console.log('Battery Query Error:: ' + JSON.stringify($rootScope.errors));
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                     deferred.reject(responseError.getMessage());
                                 });
                             } else {
                                 deferred.resolve(new EScreeningDashboardApp.models.Battery());
                             }
                             return deferred.promise;
-	                	  }
+	                	  } 
 	                },
 	                controller:'batteryAddEditController'
 	            })
@@ -157,7 +152,6 @@ angular.module('Editors')
 	            /* ------ Workflow Frozen until completion of Formulas, Rules/Events, Templates.
 	             * Nothing here should be considered canonical. - JBH
 	             */
-
                 .state('modules',{
                     abstract:true,
                     url:'/modules',
@@ -167,7 +161,7 @@ angular.module('Editors')
                     },
                     /*resolve: {
                         surveyId: ['$stateParams', function($stateParams){
-                            return $stateParams.surveyId;
+                            return $stateParams.selectedSurveyId;
                         }]
                     },*/
                     controller:'moduleController'
@@ -186,8 +180,7 @@ angular.module('Editors')
                             SurveyService.query(SurveyService.setQuerySurveySearchCriteria(null)).then(function (existingSurveys){
                                 deferred.resolve(existingSurveys);
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
-                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 deferred.reject(responseError.getMessage());
                             });
 
@@ -198,33 +191,58 @@ angular.module('Editors')
                 })
 
                 .state('modules.detail',{
-                    url:"/:surveyId/details",
+                    url:"/:selectedSurveyId/details",
                     templateUrl:'resources/editors/views/modules/moduleseditor.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit'
                     },
                     resolve: {
-                        surveyUIObject: ['$rootScope', '$stateParams', function($rootScope, $stateParams){
-                            var selectedSurveyUIObject = null;
-
-                            if(Object.isArray($rootScope.surveyUIObjects)) {
-                                $rootScope.surveyUIObjects.forEach(function (surveyUIObject) {
-                                    if(surveyUIObject.id === parseInt($stateParams.surveyId)) {
-                                        selectedSurveyUIObject = surveyUIObject;
-                                    }
-                                });
-                            }
-
-                            return selectedSurveyUIObject;
-                        }],
-                        questions: ['$rootScope', '$q', '$stateParams', 'QuestionService',  function($rootScope, $q, $stateParams, QuestionService) {
+                        pageQuestionItems: ['$rootScope', '$q', '$stateParams', 'SurveyPageService',  function($rootScope, $q, $stateParams, SurveyPageService) {
                             var deferred = $q.defer();
 
-                            QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria($stateParams.surveyId)).then(function (existingSurveys){
-                                deferred.resolve(existingSurveys);
+                            if($stateParams.selectedSurveyId > -1) {
+                                SurveyPageService.query(SurveyPageService.setQuerySurveyPageSearchCriteria($stateParams.selectedSurveyId)).then(function (response) {
+                                    var surveyPages = (Object.isArray(response.getPayload()))? response.getPayload() : Object.isDefined(response.getPayload())? [response.getPayload()] : [],
+                                        pageQuestionItems = [],
+                                        surveyPageConfig;
+
+                                    surveyPages.forEach(function(surveyPage){
+                                        surveyPageConfig = surveyPage.toUIObject();
+                                        surveyPageConfig.questions = [];
+                                        pageQuestionItems.push(new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper({surveyPageUIObject: surveyPageConfig}));
+
+                                        surveyPage.getQuestions().forEach(function(question){
+                                             pageQuestionItems.push(new EScreeningDashboardApp.models.QuestionUIObjectItemWrapper({questionIUObject: question.toUIObject()}));
+                                        });
+
+                                    });
+
+                                    deferred.resolve(pageQuestionItems);
+                                }, function(responseError) {
+                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                    deferred.reject(responseError.getMessage());
+                                });
+                            } else {
+                                deferred.resolve([]);
+                            }
+
+                            return deferred.promise;
+                        }],
+                        surveySectionDropDownMenuOptions: ['$rootScope', '$q', 'SurveySectionService',  function($rootScope, $q, SurveySectionService) {
+                            var deferred = $q.defer();
+
+                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
+                                var surveySectionDropDownMenuOptions = [];
+
+                                response.getPayload().forEach(function (surveySection){
+                                    if(Object.isDefined(surveySection)) {
+                                        surveySectionDropDownMenuOptions.push(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper(surveySection.toUIObject()));
+                                    }
+                                });
+
+                                deferred.resolve(surveySectionDropDownMenuOptions);
                             }, function(responseError) {
-                                $rootScope.errors.push(responseError.getMessage());
-                                console.log('Questions Query Error:: ' + JSON.stringify($rootScope.errors));
+                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                 deferred.reject(responseError.getMessage());
                             });
 
@@ -234,70 +252,93 @@ angular.module('Editors')
                     controller:'addEditModuleController'
                 })
 
-                .state('modules.detail.questions',{
-                    abstract:true,
-                    url:'questions',
-                    templateUrl:'resources/editors/views/questions/questionsabstract.html',
-                    data: {
-                        displayName: false
+                .state('modules.detail.empty',{
+                    url:'/question/empty',
+                    templateUrl:'resources/editors/views/questions/questionnull.html',
+                    data:{displayName:false}
+                })
+
+                .state('modules.detail.selectQuestionType',{
+                    url:'/question',
+                    templateUrl:'resources/editors/views/questions/selectQuestionTypes.html',
+                    data:{displayName:false},
+                    resolve: {
+                        questionTypeDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: 0, name: "freeText", displayName: "Free Text"}
+                                /*{id: 1, name: "readOnly", displayName: "Read-Only Text"},*/
+                                /*{id: 1, name: "selectOne", displayName: "Select Single"},
+                                {id: 2, name: "selectMulti", displayName: "Select Multiple"},
+                                {id: 3, name: "selectOneMatrix", displayName: "Select Single Matrix"},
+                                {id: 4, name: "selectMultiMatrix", displayName: "Select Multiple Matrix"},
+                                {id: 5, name: "tableQuestion", displayName: "Table Question"},
+                                {id: 6, name: "instruction", displayName: "Instructions"}*/
+                            ];
+                        }]
                     },
                     controller:'questionsController'
                 })
 
-                .state('modules.detail.question',{
-                    url:'/question',
-                    templateUrl:'resources/editors/views/questions/questionnull.html',
-                    data:{displayName:false},
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope, $scope, $state){
-                            $scope.addQuestion = function(){
-                                $state.go('modules.detail.editReadOnlyQuestion');
-                            }
-                        }
-                    ]/*,
-                    controller: 'addEditModuleController'*/
-                })
-
-                .state('modules.detail.editSelectOneQuestion',{
-                    url:'/question/:selectedQuestionId',
+                .state('modules.detail.editSelectOneQuestionType',{
+                    url:'/selectOne/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
-                    },
-                    controller: 'addEditModuleController'
+                    }
                 })
 
-                .state('modules.detail.editSelectOneMatrixQuestion',{
-                    url:'/question/selectOneMatrix/:selectedQuestionId',
+                .state('modules.detail.editSelectOneMatrixQuestionType',{
+                    url:'/selectOneMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
-                    },
-                    controller: 'addEditModuleController'
+                    }
                 })
 
-                .state('modules.detail.editReadOnlyQuestion',{
-                    url:'/question/readOnly/:selectedQuestionId',
+                .state('modules.detail.editFreeTextQuestionType', {
+                    url:'/freeText/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                     },
                     resolve: {
-                        currentlySelectedTextFormatDropDownMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
                             //TODO: Need to dynamically pull a unique list of validation type from the
                             //TODO: measure_validation table where measure_validation.validation_id = 1.
                             return [
-                                {id: 1, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
-                                {id: 1, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
-                                {id: 1, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+                                {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
                             ];
                         }]
                     },
                     controller:'freeTextReadOnlyQuestionController'
                 })
 
-                .state('modules.detail.editSelectMultipleQuestion',{
-                    url:'/question/selectMultiple/:selectedQuestionId',
+                .state('modules.detail.editReadOnlyQuestionType',{
+                    url:'/readOnly/:selectedQuestionId',
+                    templateUrl:'resources/editors/views/questions/freereadonlyquestion.html',
+                    data: {
+                        displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
+                    },
+                    resolve: {
+                        textFormatTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
+                            //TODO: Need to dynamically pull a unique list of validation type from the
+                            //TODO: measure_validation table where measure_validation.validation_id = 1.
+                            return [
+                                {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
+                                {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+                            ];
+                        }]
+                    },
+                    controller:'readOnlyQuestionController'
+                })
+
+                .state('modules.detail.editSelectMultipleQuestionType',{
+                    url:'/selectMultiple/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple'
@@ -315,8 +356,8 @@ angular.module('Editors')
                     controller:'selectMultipleQuestionController'
                 })
 
-                .state('modules.detail.editSelectMultipleMatrixQuestion',{
-                    url:'/question/selectMultipleMatrix/:selectedQuestionId',
+                .state('modules.detail.editSelectMultipleMatrixQuestionType',{
+                    url:'/selectMultipleMatrix/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/selectsinglemultiplematrixquestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Single/Multiple Matrix'
@@ -325,25 +366,25 @@ angular.module('Editors')
                         answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
                             //TODO: Need to dynamically pull a unique list of answer types from the database.
                             return [
-                                {id: -1, name: "Regular"},
-                                {id: -1, name: "Other"},
-                                {id: -1, name: "None"}
+                                {id: null, name: "Regular"},
+                                {id: null, name: "Other"},
+                                {id: null, name: "None"}
                             ];
                         }]
                     },
                     controller:'selectMultipleMatrixQuestionController'
                 })
 
-                .state('modules.detail.editTableQuestion',{
-                    url:'/question/table/:selectedQuestionId',
+                .state('modules.detail.editTableQuestionType',{
+                    url:'/table/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/tablequestion.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'
                     }
                 })
 
-                .state('modules.detail.editInstructionQuestion', {
-                    url:'/question/instruction/:selectedQuestionId',
+                .state('modules.detail.editInstructionQuestionType', {
+                    url:'/instruction/:selectedQuestionId',
                     templateUrl:'resources/editors/views/questions/questioninstructions.html',
                     data: {
                         displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'

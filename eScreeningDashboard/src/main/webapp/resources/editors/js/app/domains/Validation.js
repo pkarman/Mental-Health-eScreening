@@ -44,11 +44,11 @@ EScreeningDashboardApp.models.Validation = function (jsonValidationObject) {
 
     this.getName = function() {
         return name;
-    }
+    };
 
     this.getValue = function() {
         return value;
-    }
+    };
     
     this.getDescription = function(){
     	return description;

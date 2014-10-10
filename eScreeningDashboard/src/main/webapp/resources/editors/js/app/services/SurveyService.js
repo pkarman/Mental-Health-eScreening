@@ -44,7 +44,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
 
             service.query(querySurveySearchCriteria, function (jsonResponse) {
                 var existingSurveys = handleSurveyQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveysTransformer, null);
-                deferred.resolve((existingSurveys.length === 0)? existingSurveys[0]: existingSurveys);
+                deferred.resolve((existingSurveys.length === 1)? existingSurveys[0]: existingSurveys);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -104,10 +104,21 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                 );
 
             service.save(updateSurveyRequestParameter.survey.toJSON(), function (jsonResponse) {
-                var existingSurvey = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
-                deferred.resolve(existingSurvey);
+                var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer, null);
+                deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -117,7 +128,7 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
          *
          * @param {{surveyId: String, survey: EScreeningDashboardApp.models.Survey, surveys: String }}  saveSurveyRequestParameters Represents the save parameters for the request.
          */
-        create = function (updateSurveyRequestParameter) {
+        create = function (createSurveyRequestParameter) {
 
             /**
              * Represents the angular Defer that is used for asynchronous service calls.
@@ -139,9 +150,9 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                     {},
                     {
                         save: {
-                            method: 'PUT',
+                            method: 'POST',
                             params: {
-                                "survey": updateSurveyRequestParameter.survey
+                                "survey": createSurveyRequestParameter.survey
                             },
                             isArray: false,
                             headers:{
@@ -152,11 +163,22 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                     }
                 );
 
-            service.save(updateSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var existingSurvey = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
-                deferred.resolve(existingSurvey);
+            service.save(createSurveyRequestParameter.payload.toJSON(), function (jsonResponse) {
+                var response = handleSurveySaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveyTransformer);
+                deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -200,7 +222,18 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
                 var response = handleSurveyRemoveResponse(jsonResponse);
                 deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -348,7 +381,8 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
          * @returns {*} A transformed Survey payload object.
          * @throws {Error} If the jsonResponse can not be property transformed.
          */
-        var handleSurveySaveResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId) {
+        var handleSurveySaveResponse = function (jsonResponse, jsonResponsePayloadTransformer, userId, transFormPayload) {
+            transFormPayload = (Object.isBoolean(transFormPayload))? transFormPayload : true;
             /**
              * Represents the response of a service call request.
              *
@@ -356,27 +390,13 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId, transFormPayload);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (!Object.isDefined(response)) {
                 throw new Error("handleSurveyServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
@@ -390,7 +410,9 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
          * @returns {*} A transformed Survey payload object.
          * @throws {Error} If the jsonResponse can not be property transformed.
          */
-        var handleSurveyRemoveResponse = function (jsonResponse, userId) {
+        var handleSurveyRemoveResponse = function (jsonResponse, userId, transFormPayload) {
+            transFormPayload = (Object.isBoolean(transFormPayload))? transFormPayload : true;
+
             /**
              * Represents the response of a service call request.
              *
@@ -398,27 +420,11 @@ angular.module('EscreeningDashboardApp.services.survey', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false);
 
-            if (!jsonResponse.status.status == 'succeeded'){
-                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
-                    /**
-                     * Represents the transformed payload object of a service call request.
-                     *
-                     * @private
-                     * @field
-                     * @type {Object}
-                     */
-                    payload = null;
 
-                if (response !== null) {
-                    if (response.isSuccessful()) {
-                        payload = response.getPayload();
-                    } else {
-                        throw new Error(response.getMessage());
-                    }
-                } else {
-                    throw new Error("handleSurveyServiceQueryResponse() method: Response is null.");
-                }
+            if (!Object.isDefined(response)) {
+                throw new Error("handleSurveyServiceQueryResponse() method: Response is null.");
             }
 
             return response;

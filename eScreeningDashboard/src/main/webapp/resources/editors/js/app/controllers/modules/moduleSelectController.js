@@ -15,7 +15,7 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
         {id:9, title:'OEF/OIF Something 1', status:'Published', description:'I\'m your friendly, neighborhood description!', questions:[]},
         {id:10, title:'OEF/OIF Something 2', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]},
         {id:11, title:'OEF/OIF Something 3', status:'Editable', description:'I\'m your friendly, neighborhood description!', questions:[]}
-    ]
+    ];
 
     var data = $scope.modules;
 
@@ -71,16 +71,16 @@ Editors.controller('moduleSelectController',['$rootScope','$scope','$state', '$f
     $scope.editModule = function(selectedSurveyUIObject){
         $scope.selectedSurveyUIObject = selectedSurveyUIObject;
         selectedSurveyUIObject.questions =  $scope.buildQuestions();
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.selectQuestionType');
     }
 
     $scope.addModule = function(){
         $scope.selectedSurveyUIObject = $scope.createModule();
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.selectQuestionType');
     }
 
     $scope.goToAddEdit = function(){
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.selectQuestionType');
     }
 
     $scope.cancel = function(){

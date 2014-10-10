@@ -38,4 +38,6 @@ public interface MeasureRepository extends RepositoryInterface<Measure> {
     public abstract List<gov.va.escreening.dto.ae.Measure> getMeasureDtoBySurveyID(int surveyID);
 
     public abstract gov.va.escreening.dto.ae.Measure updateMeasure(gov.va.escreening.dto.ae.Measure measureDto);
+    
+    public  gov.va.escreening.dto.ae.Measure createMeasure(gov.va.escreening.dto.ae.Measure measureDto);
 }

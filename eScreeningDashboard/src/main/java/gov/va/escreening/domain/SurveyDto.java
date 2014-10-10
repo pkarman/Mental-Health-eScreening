@@ -14,7 +14,6 @@ public class SurveyDto implements Serializable {
     private String name;
     private String description;
     private Integer version;
-    private Integer displayOrder;
     private Date dateCreated;
     private String note;
     private SurveySectionDto surveySection;
@@ -28,7 +27,6 @@ public class SurveyDto implements Serializable {
         setName(survey.getName());
         setDescription(survey.getDescription());
         setVersion(survey.getVersion());
-        setDisplayOrder(survey.getDisplayOrder());
         setDateCreated(survey.getDateCreated());
 
         SurveySectionDto section = new SurveySectionDto(survey.getSurveySection());
@@ -65,14 +63,6 @@ public class SurveyDto implements Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
     }
 
     public Date getDateCreated() {
