@@ -4,7 +4,7 @@
       <h1>Edit {{relatedObj.name}} | {{template.templateType.name}}</h1>
     </div>
     <div class="col-md-2">
-      <button title="Add New Block" ng-click="editBlock();" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
+      <button title="Add New Block" ng-click="updateBlock();" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
     </div>
 </div>
     
@@ -49,12 +49,12 @@
                                 </span>
 
 
-                                <span class="pull-right btn btn-xs" ng-click="editBlock(this);" data-nodrag title="Edit">
+                                <span class="pull-right btn btn-xs" ng-click="updateBlock(block, true);" data-nodrag title="Edit">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </span>
 
 
-                                <button class="pull-right btn btn-xs btn-primary" data-nodrag ng-click="addBlock(this);" title="Add">Add</button>
+                                <button class="pull-right btn btn-xs btn-primary" data-nodrag ng-click="updateBlock(block);" title="Add">Add</button>
                             </div>
                         </div>
                         <ol ui-tree-nodes="options" ng-model="block.children">

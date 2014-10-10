@@ -25,45 +25,24 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     /**
      * @param parent is optional. If undefined then the block is added to the bottom of the template.
      */
-    $scope.addBlock = function(parentScope){
-        if(Object.isDefined(parentScope)){
-            var parent = parentScope.$modelValue;
-            console.log("Add block under parent block: " + parent.title);
-        }
-        else{
-            console.log("Add block to bottom of template");
-        }
-    };
     
-    $scope.removeBlock = function(blockScope){
-        var block = blockScope.$modelValue;
-        console.log("remove block: " + block.title);
-    };
-
-    /*
-    $scope.editBlock = function(blockScope){
-        var block = blockScope.$modelValue;
-        console.log("edit block: " + block.title);
-    };
-    */
-    
-    $scope.editBlock = function(selectedBlock){
+    $scope.updateBlock = function(selectedBlock, editing){
         // Create the modal
         var modalInstance = $modal.open({
             templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
             resolve: {
-                relatedObj: function() {
-                    return $scope.relatedObj;
+                templateName: function() {
+                    return $scope.relatedObj.name
                 },
                 block: function() {
                     // If we are creating a new block, create a new block instance from Restangular
-                    return selectedBlock || $scope.template.blocks[1];
-                }
+                    return selectedBlock || {};
+                },
+                editing: editing
             },
-            controller: function($scope, $timeout, $modalInstance, relatedObj, block) {
+            controller: function($scope, $modalInstance, templateName, block, editing) {
 
-                // Copy the relatedObject so that potential changes in modal don't update object in page
-                $scope.relatedObj = angular.copy(relatedObj);
+                $scope.templateName = templateName;
 
                 // Copy the selected or new block so that potential changes in modal don't update object in page
                 $scope.block = angular.copy(block);
@@ -92,6 +71,15 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                     { name: 'Response isn\t', value: 'nresponse', category: 'select' }
                 ];
 
+                $scope.addBlock = function(selectedBlock) {
+                    if (selectedBlock.children) {
+                        selectedBlock.children.push({});
+                    } else {
+                        selectedBlock.children = [];
+                        selectedBlock.children.push({});
+                    }
+                };
+
                 // Dismiss modal
                 $scope.cancel = function() {
                     $modalInstance.dismiss('cancel');
@@ -114,6 +102,11 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
             function() {
                 // Error
             });
+    };
+
+    $scope.removeBlock = function(blockScope){
+        var block = blockScope.$modelValue;
+        console.log("remove block: " + block.title);
     };
 
     //ng-tree options
