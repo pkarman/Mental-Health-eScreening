@@ -85,20 +85,32 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 
 /*
 ==>sum prior_dx_dep, prior_dx_ptsd, prior_dx_oth	prior_dx_score
-
-INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10711, 4, 'prior_dx_score', 'prior_dx_score formula', '(([1522] + [1523] + [1524]))');
+*/
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10711, 4, 'prior_dx_score', 'prior_dx_score formula', '(([1522]?1:0 + [1523]?1:0 + [1524]?1:0))');
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (890, 10711, 1522);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (891, 10711, 1523);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (892, 10711, 1524);
-*/
+
 
 /*
 ==>sum prior_tx_inpt, prior_tx_thpy, prior_tx_med, prior_tx_ect, prior_tx_oth	prior_tx_score
 */
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10712, 4, 'prior_tx_score', 'prior_tx_score formula', '(([1532]?1:0 + [1533]?1:0 + [1534]?1:0 + [1535]?1:0 + [1536]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (893, 10712, 1532);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (894, 10712, 1533);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (895, 10712, 1534);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (896, 10712, 1535);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (897, 10712, 1536);
+
 
 /*
 ==>prior_dx_score + Prior_tx_score + demo_info_ment+ demo_va_menthealth	Prior_hx_tx_req_appt
 */
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10713, 4, 'prior_hx_tx_req_appt', 'prior_hx_tx_req_appt formula', '(([$10711$] + [$10712$] + [202]?1:0 + [214]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (898, 10713, 10711);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (899, 10713, 10712);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (900, 10713, 202);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (901, 10713, 214);
 
 /*
 ==>Sum tbi_blast, tbi_vehicle, tbi_fragment, tbi_fall, tbi_blow, tbi_otherinj	tbi_q1_score
@@ -108,3 +120,41 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 ==>If sumQ1-Q4 =4	tbi_score1
 ==>If sumQ1-Q5 =5	tbi_score2
 */
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10714, 4, 'tbi_q1_score', 'tbi_q1_score formula', '(([2010]?1:0 + [2011]?1:0 + [2012]?1:0 + [2013]?1:0 + [2014]?1:0 + [2015]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (902, 10714, 2010);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (903, 10714, 2011);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (904, 10714, 2012);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (905, 10714, 2013);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (906, 10714, 2014);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (907, 10714, 2015);
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10715, 4, 'tbi_q2_score', 'tbi_q2_score formula', '(([2017]?1:0 + [2018]?1:0 + [2019]?1:0 + [2020]?1:0 + [2021]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (908, 10715, 2017);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (909, 10715, 2018);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (910, 10715, 2019);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (911, 10715, 2020);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (912, 10715, 2021);
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10716, 4, 'tbi_q3_score', 'tbi_q3_score formula', '(([2023]?1:0 + [2024]?1:0 + [2025]?1:0 + [2027]?1:0 + [2028]?1:0 + [2029]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (913, 10716, 2023);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (914, 10716, 2024);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (915, 10716, 2025);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (916, 10716, 2027);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (917, 10716, 2028);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (918, 10716, 2029);
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10717, 4, 'tbi_q4_score', 'tbi_q4_score formula', '(([2031]?1:0 + [2032]?1:0 + [2033]?1:0 + [2034]?1:0 + [2035]?1:0 + [2036]?1:0))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (919, 10717, 2031);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (920, 10717, 2032);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (921, 10717, 2033);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (922, 10717, 2034);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (923, 10717, 2035);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (924, 10717, 2036);
+
+INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10718, 4, 'tbi_score1', 'tbi_score1 formula', '(([$10714$] + [$10715$] + [$10716$] + [$10717$]))');
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (925, 10718, 10714);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (926, 10718, 10715);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (927, 10718, 10716);
+INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (928, 10718, 10717);
+
+
