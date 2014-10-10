@@ -292,7 +292,12 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			var li = $("<li/>")
 				.addClass("selectMultiCheckbox");
 			
-			var checkbox = $('<input/>')
+			var label = $('<label/>')
+				.attr("for", "inp" + answer.answerId)
+				.addClass("checkSwitchHidden")
+        .text(answer.answerId); // TODO - JH - replace with question text
+        
+      var checkbox = $('<input/>')
 				.attr("type", "checkbox")
 				.attr("id", "inp" + answer.answerId)
 				.addClass("checkSwitch");
@@ -303,7 +308,8 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			// checkbox div
 			$("<div/>")
 				.addClass("selectMultiInput")
-				.append(checkbox)
+				.append(label)
+        .append(checkbox)
 				.appendTo(li);
 			
 			var labelDiv = $("<div/>")
@@ -344,7 +350,14 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 		};
 	
 		this.buildOtherDiv = function(answer){
-			var otherTextInput = $("<input/>")
+			
+      var otherLabel = $("<label/>")
+				.attr("for", "other" + answer.answerId)
+        .text("other" + answer.answerId) // TODO - JH - Add label text
+				.addClass("selectOtherHidden");
+
+
+      var otherTextInput = $("<input/>")
 				.attr("type", "text")
 				.attr("id", "other" + answer.answerId)
 				.addClass("selectOther");
@@ -356,7 +369,8 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 	
 			return $("<div/>")
 				.addClass("selectOther")
-				.append(otherTextInput);
+				.append(otherLabel)
+        .append(otherTextInput);
 		};
 	
 		//This is also used for matrix question types so test them if you make changes.
@@ -375,7 +389,14 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				.addClass("selectOneInput")
 				.appendTo(li);
 			
-			$("<input/>")
+      // TODO - JH - Duplicate label in some views
+			$("<label/>")
+				.attr("for", inputId)
+        .attr("class", "selectOneInputHidden") // Workaround to add title in case of radio buttons
+        .text(inputId)  // TODO - JH - Replace with Question text and header answer
+				.appendTo(inputDiv);
+
+      $("<input/>")
 				.attr("name", groupName)
 				.attr("type", "radio")
 				.attr("id", inputId)

@@ -6,6 +6,15 @@ body {
 	min-width: 240px;
 	*/
 }
+
+/* JH - Focus add 
+a:focus, input:focus, select:focus, .checkSwitch:focus{ 
+   outline: none  !important;
+   border-color: #0f3049  !important;
+   box-shadow: 0 0 10px #0f3049 !important;
+}
+*/
+
 #header, #footer {
 	margin-left: -206px; /* LC full width */
 	margin-right: -70px; /* RC fullwidth + CC padding */
@@ -599,14 +608,14 @@ label.radioLabel {
 }
 
 div.selectOneInput > input[type="radio"] {
-    height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 	position:relative;
 	z-index: 10;
 	top: 10px;
 	left: 0;
 	opacity: 0;
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 div.selectOneInput > input[type="radio"] + div:before {
@@ -1037,6 +1046,20 @@ td.matrixQuestionText input.selectOther{
 .instructionLi {
 	margin: 16px 0px;
 }
+
+.selectOneInputHidden{
+  display:none;
+}
+.checkSwitchHidden{
+  display:none;
+}
+.selectOtherHidden{
+  display:none;
+}
+
+/*input:focus,  div.selectOneInput:focus{
+outline:#FF0004 dotted;
+}*/
 
 @media (min-width: 768px) {
 	/* 
