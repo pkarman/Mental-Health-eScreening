@@ -16,6 +16,7 @@
     <title>VA Editors</title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/menu-partial.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/userManagement.css" type="text/css">
@@ -27,9 +28,9 @@
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="resources/editors/vendors/angular/angular.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+    <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     
@@ -103,6 +104,7 @@
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
+    <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
     
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
@@ -114,6 +116,8 @@
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
     
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>

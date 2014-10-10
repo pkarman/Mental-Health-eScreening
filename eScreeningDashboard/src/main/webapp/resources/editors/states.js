@@ -205,12 +205,9 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-    //This doesn't work:
-    //$rootScope.addMessage($rootScope.createErrorMessage("test error"));
-                                TemplateService.query({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes){
+                                TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
-                                },
-                                function(responseError) {
+                                }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
                                     deferred.reject(responseError.getMessage());
                                 });
@@ -822,7 +819,48 @@ angular.module('Editors')
                                         templateId: 45, 
                                         templateType : {id: $stateParams.typeId,
                                                         name:"Template type name here"},
-                                        isGraphical: false
+                                        isGraphical: false,
+                                        template_variables: [1599, 2960, 2970, 2980, 2990, 3000, 1550, 1560, 1570, 1580, 1590],
+                                        blocks: [
+                                                 { 
+                                                     section: "1.",
+                                                     title: "depression_screening",
+                                                     type: "Text",
+                                                     content: "Depression Screening:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}Depression Screen:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}------------------${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}PHQ-9${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}A PHQ-9 screen was performed.${NBSP}The score was ${var1599.value}.${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}1. Little interest or pleasure in doing things${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var2960)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}2. Feeling down, depressed, or hopeless${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var2970)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}3. Trouble falling or staying asleep, or sleeping too much${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var2980)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}4. Feeling tired or having little energy${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var2990)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}5. Poor appetite or overeating${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var3000)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}6. Feeling bad about yourself or that you are a failure or${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}have let yourself or your family down${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var1550)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}7. Trouble concentrating on things, such as reading the${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}newspaper or watching television${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var1560)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}8. Moving or speaking so slowly that other people could have${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}noticed. Or the opposite being so fidgety or restless that you${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}have been moving around a lot more than usual${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var1570)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}9. Thoughts that you would be better off dead or of hurting${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}yourself in some way${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var1580)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}10. If you checked off any problems, how DIFFICULT have these${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}problems made it for you to do your work, take care of things${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}at home or get along with other people?${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${getSelectOneDisplayText(var1590)}${LINE_BREAK}${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Was the patient\'s PHQ-2 score greater than 2, or PHQ-9 score greater${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}than 9?${LINE_BREAK}",
+                                                     children: []
+                                                 },
+                                                 {
+                                                     section: "2.",
+                                                     title: "if_dep_score_phq2",
+                                                     type: "If Condition",
+                                                     content: "(var1599)?? && isSet(var1599.value) && (var1599.value?number > 9)",
+                                                     children: [
+                                                                {
+                                                                    section: "2.1",
+                                                                    title: "Yes_NURSING",
+                                                                    type: "Text",
+                                                                    content:  "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Yes.${LINE_BREAK} ${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}NURSING/NON-PROVIDER: Follow-up:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}The following action was taken: Patient\'s provider,${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}(Assigned Clincian), was notified for immediate intervention.${LINE_BREAK}",
+                                                                    children: []
+                                                                },
+                                                                
+                                                                {
+                                                                    section: "2.2",
+                                                                    title: "else_block_1",
+                                                                    type: "Else",
+                                                                    content:  "",
+                                                                    children: [
+                                                                                {
+                                                                                    section: "2.2.1",
+                                                                                    title: "No_1",
+                                                                                    type: "Text",
+                                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
+                                                                                    children: []
+                                                                                }
+                                                                               ]
+                                                                }                                                              
+                                                               ]
+                                                 }                                                                                 
+                                                ]
                                 };
                                 
                                 deferred.resolve(templateObj);

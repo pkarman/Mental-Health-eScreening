@@ -5,12 +5,13 @@ Editors.controller('ModuleTemplateListController',
         ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes',
          function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
 
-    if(templateTypes.length == 0){
+    $scope.templateTypes = templateTypes;
+
+    if($scope.templateTypes.length == 0){
         console.log("No template types received from server. Redirecting back to module.");
         backToModule();
     }
 
-    $scope.templateTypes = templateTypes;
     //$scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
 
     //set target object which is related to the templates we will be editing

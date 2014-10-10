@@ -4,6 +4,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     console.log("In templateEditorController");
     
     $scope.template = template;
+    
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
         id : $stateParams.selectedSurveyId,
@@ -22,28 +23,30 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
         }
     };
 
-    // Template structure
-    $scope.template = {
-        blocks: [
-            {
-                section: '1.',
-                title: name,
-                items: [
-                    {
-                        type: 'if',
-                        variable: 'dep4_tired',
-                        operator: 'gt',
-                        content: '(var1599)?? && isSet(var1599.value) && (var1599.value?number > 9)'
-                    },
-                    {
-                        type: 'text',
-                        content: '${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Yes.${LINE_BREAK} ${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}NURSING/NON-PROVIDER: Follow-up:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}The following action was taken: Patient\'s provider,${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}(Assigned Clincian), was notified for immediate intervention.${LINE_BREAK}'
-                    }
-                ],
-                children: []
-            }
-        ]
+    /**
+     * @param parent is optional. If undefined then the block is added to the bottom of the template.
+     */
+    $scope.addBlock = function(parentScope){
+        if(Object.isDefined(parentScope)){
+            var parent = parentScope.$modelValue;
+            console.log("Add block under parent block: " + parent.title);
+        }
+        else{
+            console.log("Add block to bottom of template");
+        }
     };
+    
+    $scope.removeBlock = function(blockScope){
+        var block = blockScope.$modelValue;
+        console.log("remove block: " + block.title);
+    };
+
+    /*
+    $scope.editBlock = function(blockScope){
+        var block = blockScope.$modelValue;
+        console.log("edit block: " + block.title);
+    };
+    */
     
     $scope.editBlock = function(selectedBlock){
         // Create the modal
@@ -113,5 +116,10 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                 // Error
             });
     };
-    
+
+    //ng-tree options
+    $scope.treeOptions = {
+
+    };
+
 }]);

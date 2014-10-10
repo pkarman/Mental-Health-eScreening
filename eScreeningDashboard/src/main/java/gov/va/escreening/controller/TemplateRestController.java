@@ -66,7 +66,7 @@ public class TemplateRestController {
     }
 	
 	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET/*, consumes = "application/json"*/, produces = "application/json")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
 		return templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
@@ -89,7 +89,7 @@ public class TemplateRestController {
 	}
 
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	public TemplateDTO getTemplate(
 			@PathVariable("templateId") Integer templateId,
@@ -105,7 +105,7 @@ public class TemplateRestController {
 	}
 	
 	@RequestMapping(value="/services/template/{surveyId}/{templateTypeId}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	public TemplateDTO getTemplate(@PathVariable("templateTypeId") Integer templateTypeId, @PathVariable("surveyId") Integer surveyId,
 			@CurrentUser EscreenUser screenUser)
