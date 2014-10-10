@@ -788,3 +788,118 @@ ${MODULE_END}
 '
 where template_id = 23;
 
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+WHODAS 2.0: The Veteran was given the WHODAS 2.0, which covers six domains of assessing health status and disability on a scale of one to five. 
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#function getScoreText score>
+			<#assign text = "">
+			<#if (score?number >= 1) && (score?number < 2)>
+				<#assign text = "no">
+			<#elseif (score?number >= 2) && (score?number < 3)>
+				<#assign text = "mild">
+			<#elseif (score?number >= 3) && (score?number < 4)>
+				<#assign text = "moderate">
+			<#elseif (score?number >= 4) && (score?number < 5)>
+				<#assign text = "severe">
+			<#elseif (score?number >= 5) && (score?number < 6)>
+				<#assign text = "extreme">
+			</#if>
+
+			<#return text>
+	</#function>	
+
+		  <#t><b>Understanding and Communicating</b> - the veteran had an average score of${NBSP}
+		  <#if var4119?? && (var4119.value)??>
+			${var4119.value} which indicates ${getScoreText(var4119.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+		  <#else>
+		  	could not be calculated.
+		  </#if>
+		  ${LINE_BREAK}${LINE_BREAK}
+		  
+			<b>Mobility</b> - the veteran had an average score of${NBSP}
+			<#if var4239?? && (var4239.value)??>
+			 ${var4239.value}, which indicates ${getScoreText(var4239.value)} disability.
+			<#else> could not be calculated.
+			</#if>
+			
+			${LINE_BREAK}${LINE_BREAK}
+			<b>Self-Care</b> - the veteran had an average score of 
+			<#if var4319?? && var4319.value??>
+				${var4319.value} which indicates ${getScoreText(var4319.value)} disability.
+			<#else>could not be calculated.
+			</#if>
+			${LINE_BREAK}${LINE_BREAK}		
+
+			<b>Getting Along</b> - the veteran had an average score of 
+			<#if var4419?? && var4419.value??>
+				${var4419.value} which indicates ${getScoreText(var4419.value)} disability.
+			<#else>could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Life Activities (Household/Domestic)</b> - the veteran had an average score of
+			<#if var4499?? && var4499.value??>
+			 ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. 
+			<#else>could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK} 
+			
+			<#if var4200?? && ((var4200.children)?? && ((var4200.children)?size > 0))>
+				<#if isSelectedAnswer(var4200, var4202)>
+					<b>Life Activities (School /Work)</b> - the veteran had an average score of ${var4559.value} which is a rating of ${getScoreText(var4559.value)} disability. ${LINE_BREAK}${LINE_BREAK}    
+				<#elseif isSelectedAnswer(var4200, var4201)>
+					<b>Life Activities (School /Work)</b> - the veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
+				</#if>
+			</else>
+				<b>Life Activities (School /Work)</b> - the veteran had an average score of could not be calculated.
+			</#if>
+			
+			<b>Participation in Society</b> - the veteran had an average score of 
+			
+			<#if var4789?? && var4789.value??>
+			${var4789.value} which indicates ${getScoreText(var4789.value)} disability. ${NBSP} 
+			<#else>could not be calculated.
+			</#if>
+${MODULE_END}'
+where template_id = 24;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+A/V HALLUCINATIONS:
+${MODULE_TITLE_END}
+${MODULE_START}
+
+	<#if (var1350.children)?? && (var1350.children?size > 0) || ((var1360.children)?? && (var1360.children?size > 0))>  		
+		The Veteran ${NBSP}
+		<#if (var1350.children)?? && (var1350.children?size > 0)>
+			<#assign Q1_Score = getScore(var1350)>
+			<#if (Q1_Score > 0) >
+				reported hearing things other people can\'t hear
+			<#else>
+				denied audio hallucinations
+			</#if>
+		</#if>
+		
+		<#if ((var1360.children)?? && (var1360.children?size > 0))>
+		  <#assign Q2_Score = getScore(var1360)>		
+			<#if (Q2_Score > 0) >
+				,reported seeing things or having visions other people can\'t see"
+			<#else>
+				,denied visual hallucinations
+			</#if>
+		</#if>
+		.
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 29;
+
+
