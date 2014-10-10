@@ -539,8 +539,10 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		String surveyDictionaryKey = prepareSurveyDictionary(surveyName);
 		Map<String, String> currentSurveyDictionary = miscDataMap.get(surveyDictionaryKey);
 
-		if (currentSurveyDictionary == null || syncTableQ.size() > currentSurveyDictionary.size()) {
+		if (currentSurveyDictionary == null) {
 			miscDataMap.put(surveyDictionaryKey, syncTableQ);
+		} else {
+			currentSurveyDictionary.putAll(syncTableQ);
 		}
 	}
 
