@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -24,10 +25,12 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
@@ -125,12 +128,20 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		// read all measures of free text and its validations
 		Multimap<Integer, String> ftMvMap = buildAndCacheMeasureValidationMap();
 
+		Set<String> avUsed = Sets.newLinkedHashSet();
+
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<String, String, String> sheet = buildSurveySheet(s, surveyMeasuresMap.get(s), ftMvMap, avList);
+			Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, avUsed);
 			// bind the survey (or module with its sheet)
 			dataDictionary.put(s.getName(), sheet);
-			
-			if (logger.isDebugEnabled()){logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));
+			}
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("Assessment Variables Used: %s", Joiner.on("','").join(avUsed)));
 		}
 		return dataDictionary;
 	}
@@ -144,12 +155,12 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		return smMap;
 	}
 
-	private Table<String, String, String> buildSurveySheet(Survey s,
+	private Table<String, String, String> buildSheetFor(Survey s,
 			Collection<Measure> surveyMeasures, Multimap mvMap,
-			Collection<AssessmentVariable> avList) {
+			Collection<AssessmentVariable> avList, Set<String> avUsed) {
 
 		Table<String, String, String> t = TreeBasedTable.create();
-		ddh.buildDataDictionary(s, t, surveyMeasures, mvMap, avList);
+		ddh.buildDataDictionaryFor(s, t, surveyMeasures, mvMap, avList, avUsed);
 
 		return t;
 	}

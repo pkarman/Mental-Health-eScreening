@@ -135,7 +135,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 		for (String surveyName : preFetchedData.get(prepareSurveyNames()).keySet()) {
 			Map<String, String> usrRespMap = preFetchedData.get(prepareUsrRespKey(assessment, surveyName));
-			Map<String, String> surveyDictionary = preFetchedData.get(prepareSurveyDictionary(surveyName));
+			Map<String, String> surveyDictionary = preFetchedData.get(prepareDictHdrKey(surveyName));
 
 			// traverse through each exportName, and try to find the run time response for the exportName. In case the
 			// user has not responded, leave 999
@@ -160,7 +160,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		return "DATA_DICTIONARY_SURVEY";
 	}
 
-	private String prepareSurveyDictionary(String surveyName) {
+	private String prepareDictHdrKey(String surveyName) {
 		return String.format("SURVEY_DICTIONARY_KEY_%s", surveyName);
 	}
 
@@ -501,13 +501,14 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		Map<String, Table<String, String, String>> masterDataDictionary = dds.createDataDictionary();
 
 		Map<String, Map<String, String>> miscDataMap = Maps.newHashMap();
-		Map<String, String> surveyNamesMap = Maps.newTreeMap(); // we want to see surveys sorted (columns are children
-																// of surveys) in the report
+
+		// we want to see surveys sorted (columns are children of surveys) in the report
+		Map<String, String> surveyNamesMap = Maps.newTreeMap();
 
 		for (VeteranAssessment assessment : matchingAssessments) {
 			List<SurveyMeasureResponse> smrList = assessment.getSurveyMeasureResponseList();
-			for (String surveyName : masterDataDictionary.keySet()) {
 
+			for (String surveyName : masterDataDictionary.keySet()) {
 				Map<String, String> usrRespMap = srh.prepareSurveyResponsesMap(surveyName, smrList, show);
 				if (usrRespMap == null) {
 					continue;
@@ -521,9 +522,9 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 				// extract all rows/columnValues for column key=data.dict.column.var.name
 				Map<String, String> ddColumnData = dataDictionary.column(ddColumnKey);
 
-				saveSurveyDictionary(syncTableQ(usrRespMap, ddColumnData), miscDataMap, surveyName);
+				buildDictionaryHeaderFor(surveyName, syncTableQ(usrRespMap, ddColumnData), miscDataMap);
 
-				surveyNamesMap.put(surveyName, miscDataMap.get(prepareSurveyDictionary(surveyName)).toString());
+				surveyNamesMap.put(surveyName, miscDataMap.get(prepareDictHdrKey(surveyName)).toString());
 			}
 		}
 
@@ -533,10 +534,10 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		return miscDataMap;
 	}
 
-	private void saveSurveyDictionary(Map<String, String> syncTableQ,
-			Map<String, Map<String, String>> miscDataMap, String surveyName) {
+	private void buildDictionaryHeaderFor(String surveyName,
+			Map<String, String> syncTableQ, Map<String, Map<String, String>> miscDataMap) {
 
-		String surveyDictionaryKey = prepareSurveyDictionary(surveyName);
+		String surveyDictionaryKey = prepareDictHdrKey(surveyName);
 		Map<String, String> currentSurveyDictionary = miscDataMap.get(surveyDictionaryKey);
 
 		if (currentSurveyDictionary == null) {

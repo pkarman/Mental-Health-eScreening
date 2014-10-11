@@ -6,7 +6,9 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	public static final String EXPORT_NAME_KEY_PREFIX = "mId_";
 	public static final String FORMULA_KEY_PREFIX = "surveyId_";
-
 	MessageSource msgSrc;
 
 	Map<Integer, Resolver> resolverMap;
@@ -41,26 +42,28 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
 	}
 
-	public void buildDataDictionary(Survey s, Table<String, String, String> t,
-			Collection<Measure> smList, Multimap mvMap,
-			Collection<AssessmentVariable> avList) {
+	public void buildDataDictionaryFor(Survey s,
+			Table<String, String, String> t, Collection<Measure> smList,
+			Multimap mvMap, Collection<AssessmentVariable> avList,
+			Set<String> avUsed) {
 		for (Measure m : smList) {
-			addDictionaryRowsForMeasure(s, m, mvMap, t);
+			addDictionaryRowsFor(m, s, mvMap, t);
 		}
 
-		addFormulaeToSurvey(s, t, smList, avList);
+		addFormulaeFor(s, t, smList, avList, avUsed);
 	}
 
-	public void addDictionaryRowsForMeasure(Survey s, Measure m,
-			Multimap mvMap, Table<String, String, String> t) {
+	public void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
+			Table<String, String, String> t) {
 		findResolver(m).addDictionaryRows(s, m, mvMap, t);
 	}
 
-	private void addFormulaeToSurvey(Survey s, Table<String, String, String> t,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+	private void addFormulaeFor(Survey s, Table<String, String, String> t,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList,
+			Set<String> avUsed) {
 
 		Set<String> formulae = Sets.newLinkedHashSet();
-		buildSurveyFormulae(formulae, s, smList, avList);
+		buildFormulaeFor(s, formulae, avUsed, smList, avList);
 
 		if (formulae != null) {
 			int i = 0;
@@ -101,36 +104,53 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-	void buildSurveyFormulae(Set<String> surveyFormulae, Survey s,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+	void buildFormulaeFor(Survey s, Set<String> surveyFormulae,
+			Set<String> avUsed, Collection<Measure> smList,
+			Collection<AssessmentVariable> avList) {
 
-		// find AssessVariable with any AssessmentVarChild whose Measure matches with any of Measure in this Survey
 		for (AssessmentVariable av : avList) {
-			boolean found = false;
 			for (Measure m : smList) {
 				for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-					AssessmentVariable avChild = avc.getVariableChild();
-					Measure childM = avChild.getMeasure();
-					MeasureAnswer childMa = avChild.getMeasureAnswer();
-					if (childM != null && m.equals(childM)) {
+					if (compareMeasure(avc.getVariableChild(), m)) {
 						surveyFormulae.add(useM2FormulaPlusExportName(av));
-						found = true;
-						break;
-					} else if (childM == null && childMa != null && childMa.getMeasure().equals(m) && avChild.getFormulaTemplate() == null) {
-						logger.warn(String.format("Measure missing AssessmentVarChildren [%s]. Child of AssessmentVariable [%s] ", avc.getVariableChild().getDisplayName(), av.getDisplayName()));
+						avUsed.add(av.getDisplayName());
+					} else if (compareMeasureAnswer(avc.getVariableChild(), m)) {
 						surveyFormulae.add(useMa2FormulaPlusExportName(av));
-						found = true;
-						break;
+						avUsed.add(av.getDisplayName());
 					}
 				}
-				if (found) {
-					break;
-				}
 				if (!m.getChildren().isEmpty()) {
-					buildSurveyFormulae(surveyFormulae, s, m.getChildren(), avList);
+					buildFormulaeFor(s, surveyFormulae, avUsed, m.getChildren(), avList);
 				}
 			}
+
 		}
+	}
+
+	private boolean compareMeasureAnswer(AssessmentVariable avChild, Measure m) {
+		if (avChild == null) {
+			return false;
+		} else if (avChild.getMeasureAnswer() != null && m.equals(avChild.getMeasureAnswer().getMeasure())) {
+			return true;
+		} else {
+			for (AssessmentVarChildren avc : avChild.getAssessmentVarChildrenList()) {
+				return compareMeasureAnswer(avc.getVariableChild(), m);
+			}
+		}
+		return false;
+	}
+
+	private boolean compareMeasure(AssessmentVariable avChild, Measure m) {
+		if (avChild == null) {
+			return false;
+		} else if (m.equals(avChild.getMeasure())) {
+			return true;
+		} else {
+			for (AssessmentVarChildren avc : avChild.getAssessmentVarChildrenList()) {
+				return compareMeasure(avc.getVariableChild(), m);
+			}
+		}
+		return false;
 	}
 
 	private String useMa2FormulaPlusExportName(AssessmentVariable av) {
@@ -362,7 +382,7 @@ class SelectOneMatrixResolver extends Resolver {
 
 		for (Measure cm : mc) {
 			// let the framework take care of rest
-			ddh.addDictionaryRowsForMeasure(s, cm, mvMap, t);
+			ddh.addDictionaryRowsFor(cm, s, mvMap, t);
 		}
 	}
 }
