@@ -122,7 +122,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 	 * textOverride - optional, if given then the question text in question object is ignored
 	 * typeOverride - optional, if given the question type in question object is ignored
 	 */
-	function buildQuestionLI(question, textOverride, typeOverride){
+	function buildQuestionLI(question, textOverride, typeOverride, labelForId){
 		
 		var questionLI = $("<li>")
 			.attr("class", "surveyQuestion")
@@ -134,11 +134,23 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 		}
 		
 		//question text
+		var questionText = textOverride == null ? question.measureText : textOverride;
 		var title = $("<div/>")
 			.attr("id", "title" + question.measureId)
-			.addClass("surveyQuestionText")
-			.html(textOverride == null ? question.measureText : textOverride)
-			.appendTo(questionLI);
+			.addClass("surveyQuestionText");
+		
+		if(labelForId){
+		    title.append(
+		            $("<label/>")
+                    .attr("for", labelForId)
+                    .html(questionText)
+            );
+		}
+		else{
+		    title.html(questionText);
+		}
+		
+		questionLI.append(title);
 		
 		if(question.isRequired==true) {
 			questionLI.addClass("isRequired");
@@ -357,35 +369,43 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			return li;
 		};
 		
-		this.buildOtherDiv = function(answer){
-			
-      var otherLabel = $("<label/>")
-				.attr("for", "other" + answer.answerId)
-        .text("other" + answer.answerId) // TODO - JH - Add label text
-				.addClass("selectOtherHidden");
-
-
-      var otherTextInput = $("<input/>")
-				.attr("type", "text")
-				.attr("id", "other" + answer.answerId)
-				.attr("label", "inp"+answer.answerId)
-				.addClass("selectOther");
+		this.buildOtherDiv = function(answer, hiddenLabelText){
+			var textInputId = "other" + answer.answerId;
+            var otherTextInput = $("<input/>")
+                .attr("type", "text")
+                .attr("id", textInputId)
+                .attr("label", "inp"+answer.answerId)
+                .addClass("selectOther");
 	
 			//set saved response
 			if(answer.otherAnswerResponse != null){
 				otherTextInput.val(answer.otherAnswerResponse);
 			}
 	
-			return $("<div/>")
-				.addClass("selectOther")
-				.append(otherLabel)
-        .append(otherTextInput);
+			var otherDiv = $("<div/>").addClass("selectOther");
+			
+			//add label if given
+			if(hiddenLabelText){
+	            $("<label/>")
+	                .attr("for", textInputId)
+	                .html(hiddenLabelText)
+	                .addClass("selectOtherHidden")
+	                .appendTo(otherDiv);
+			}
+			
+			otherDiv.append(otherTextInput);
+			return otherDiv;
 		};
 	
 		//This is also used for matrix question types so test them if you make changes.
 		//Also, we are counting on this being a radio input so if that changes please update
 		//the way we notice a user changing an answer (for visibility updates)
-		this.buildRadioLI = function (answer, groupName){
+		/**
+		 * @param columnHeader is optional for when the radio is a cell in a table. This allows for an additional
+		 * hidden label to be added. 
+		 * Please note: for 508 either answer.answerText or columnHeader should be given 
+		 */
+		this.buildRadioLI = function (answer, groupName, columnHeader){
 			
 			var inputId = "inp" + answer.answerId;
 			
@@ -397,15 +417,8 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			var inputDiv = $("<div/>")
 				.addClass("selectOneInput")
 				.appendTo(li);
-			
-      // TODO - JH - Duplicate label in some views
-			$("<label/>")
-				.attr("for", inputId)
-        .attr("class", "selectOneInputHidden") // Workaround to add title in case of radio buttons
-        .text(inputId)  // TODO - JH - Replace with Question text and header answer
-				.appendTo(inputDiv);
 
-      $("<input/>")
+            $("<input/>")
 				.attr("name", groupName)
 				.attr("type", "radio")
 				.attr("id", inputId)
@@ -427,8 +440,16 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 					.appendTo(labelDiv);
 				
 				if(answer.answerType == "other"){
-					self.buildOtherDiv(answer).appendTo(labelDiv);
+					self.buildOtherDiv(answer, answer.answerText)
+					    .appendTo(labelDiv);
 				}
+			}
+			else{// Workaround to add title in case of radio buttons
+	            $("<label/>")
+	                .attr("for", inputId)
+	                .attr("class", "selectOneInputHidden") 
+                    .text(columnHeader ? columnHeader : "undefined")
+	                .appendTo(labelDiv);
 			}
 			
 			if(answer.answerType == "other"){
@@ -484,7 +505,8 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 		}
 	
 		function buildDropdown(question){
-			var questionLI = buildQuestionLI(question, null, "selectDropdown")
+		    var questionId ="inpILS" + question.measureId;
+			var questionLI = buildQuestionLI(question, null, "selectDropdown", questionId)
 							 	.addClass("surveyQuestion dropdownList");
 			
 			var wrapperDiv = $("<div/>")
@@ -492,7 +514,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				.appendTo(questionLI);
 			
 			var select = $("<select/>")
-				.attr("id", "inpILS" + question.measureId)
+				.attr("id", questionId)
 				.addClass("selectOne")
 				.addClass("selectDropdown")
 				.appendTo(wrapperDiv)
@@ -541,11 +563,11 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				.addClass("dropdownOther")
 				.appendTo(ddOther);
 			
-			/*$("<label/>")
+			$("<label/>")
 				.attr("for", inputId)
-				.addClass("dropdownOther")
+				.addClass("selectOtherHidden")
 				.html("Please specify")
-				.appendTo(span);*/
+				.appendTo(span);
 			
 			$("<input/>")
 				.addClass("dropdownOther")
@@ -1030,8 +1052,9 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 		
 		function singleMatrixAnswerFactory(answer, measureId){
 			//clear answer text
+		    var columnHeader = answer.answerText;
 			answer.answerText = "";
-			return selectBuilder.buildRadioLI(answer, "grp_"+measureId);
+			return selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
 		}
 	
 		function multiMatrixAnswerFactory(answer, measureId){
@@ -1070,9 +1093,10 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 				var other = null;
 				$.each(question.answers, function(i, answer){
 					if(answer.answerType == "other"){
-						 other = selectBuilder.buildOtherDiv(answer)
-							.appendTo(questionCell)
-							.change(function(){ matrixOtherTextChange($(this), row); });
+                        other = selectBuilder
+                            .buildOtherDiv(answer, question.measureText)
+                            .appendTo(questionCell)
+                            .change(function(){ matrixOtherTextChange($(this), row); });
 						
 						//keep other hidden (to be programmatically changed as Other field is changed)
 						answerFactory(answer, question.measureId)
