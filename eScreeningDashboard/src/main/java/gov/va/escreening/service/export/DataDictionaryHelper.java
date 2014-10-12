@@ -104,7 +104,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-	void buildFormulaeFor(Survey s, Set<String> surveyFormulae,
+	void buildFormulaeFor(Survey survey, Set<String> surveyFormulae,
 			Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avList) {
 
@@ -120,33 +120,47 @@ public class DataDictionaryHelper implements MessageSourceAware {
 					}
 				}
 				if (!m.getChildren().isEmpty()) {
-					buildFormulaeFor(s, surveyFormulae, avUsed, m.getChildren(), avList);
+					buildFormulaeFor(survey, surveyFormulae, avUsed, m.getChildren(), avList);
 				}
 			}
 
 		}
 	}
 
-	private boolean compareMeasureAnswer(AssessmentVariable avChild, Measure m) {
-		if (avChild == null) {
+	/**
+	 * recursively search that AssessmentVariable belongs to the MeasurementAnswer of passed in Measure
+	 * 
+	 * @param av
+	 * @param m
+	 * @return
+	 */
+	private boolean compareMeasureAnswer(AssessmentVariable av, Measure m) {
+		if (av == null) {
 			return false;
-		} else if (avChild.getMeasureAnswer() != null && m.equals(avChild.getMeasureAnswer().getMeasure())) {
+		} else if (av.getMeasureAnswer() != null && m.equals(av.getMeasureAnswer().getMeasure())) {
 			return true;
 		} else {
-			for (AssessmentVarChildren avc : avChild.getAssessmentVarChildrenList()) {
+			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
 				return compareMeasureAnswer(avc.getVariableChild(), m);
 			}
 		}
 		return false;
 	}
 
-	private boolean compareMeasure(AssessmentVariable avChild, Measure m) {
-		if (avChild == null) {
+	/**
+	 * recursively search that AssessmentVariable belongs to the Measure
+	 * 
+	 * @param av
+	 * @param m
+	 * @return
+	 */
+	private boolean compareMeasure(AssessmentVariable av, Measure m) {
+		if (av == null) {
 			return false;
-		} else if (m.equals(avChild.getMeasure())) {
+		} else if (m.equals(av.getMeasure())) {
 			return true;
 		} else {
-			for (AssessmentVarChildren avc : avChild.getAssessmentVarChildrenList()) {
+			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
 				return compareMeasure(avc.getVariableChild(), m);
 			}
 		}

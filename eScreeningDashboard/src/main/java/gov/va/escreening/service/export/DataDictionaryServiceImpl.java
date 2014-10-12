@@ -10,14 +10,16 @@ import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.bouncycastle.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -25,9 +27,13 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -141,9 +147,27 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug(String.format("Assessment Variables Used: %s", Joiner.on("','").join(avUsed)));
+			List<String> l1 = Lists.newArrayList(avUsed);
+			Collections.sort(l1);
+
+			String refAssessmentVars = getRefAssessmentVars(avList);
+			List<String> l2 = Lists.newArrayList(Strings.split(refAssessmentVars, ','));
+			Collections.sort(l2);
+
+			Preconditions.checkArgument(l1.equals(l2), String.format("(Ref AssessmentVariable List) [%s] is not same as asscoiated AssessmentVariable List [%s]", l2, l1));
 		}
 		return dataDictionary;
+	}
+
+	private String getRefAssessmentVars(Collection<AssessmentVariable> avList) {
+		Iterable<String> displayNames = Iterables.transform(avList, new Function<AssessmentVariable, String>() {
+			public String apply(AssessmentVariable input) {
+				// extract display names from Assessment Variables
+				return (input == null) ? null : input.getDisplayName();
+			}
+		});
+		String joinedDisplayNames = Joiner.on(",").skipNulls().join(displayNames);
+		return joinedDisplayNames;
 	}
 
 	private Multimap<Survey, Measure> buildSurveyMeasuresMap() {
