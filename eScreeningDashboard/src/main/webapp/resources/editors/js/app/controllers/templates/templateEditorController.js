@@ -47,39 +47,6 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                 // Copy the selected or new block so that potential changes in modal don't update object in page
                 $scope.block = angular.copy(block);
 
-                // TODO Move to service to be shared elsewhere?
-                $scope.blockTypes = [
-                    { name: 'If', value: 'If', selected: false },
-                    { name: 'Else If', value: 'Else If', selected: false },
-                    { name: 'Else', value: 'Else', selected: false },
-                    { name: 'Text', value: 'Text', selected: false }
-                ];
-
-                // TODO Move to service to be shared elsewhere?
-                $scope.operators = [
-                    { name: 'Equals', value: 'eq', category: 'all' },
-                    { name: 'Doesn\'t Equals', value: 'neq', category: 'all' },
-                    { name: 'Is Less Than', value: 'lt', category: 'all' },
-                    { name: 'Is Greater Than', value: 'gt', category: 'all' },
-                    { name: 'Is Less Than or Equals', value: 'lte', category: 'all' },
-                    { name: 'Is Greater Than or Equals', value: 'gte', category: 'all' },
-                    { name: 'Was Answered', value: 'answered', category: 'question' },
-                    { name: 'Wasn\'t Answered', value: 'nanswered', category: 'question' },
-                    { name: 'Has Result', value: 'result', category: 'formula' },
-                    { name: 'Has No Result', value: 'nresult', category: 'formula' },
-                    { name: 'Response is', value: 'response', category: 'select' },
-                    { name: 'Response isn\t', value: 'nresponse', category: 'select' }
-                ];
-
-                $scope.addBlock = function(selectedBlock) {
-                    if (selectedBlock.children) {
-                        selectedBlock.children.push({});
-                    } else {
-                        selectedBlock.children = [];
-                        selectedBlock.children.push({});
-                    }
-                };
-
                 // Dismiss modal
                 $scope.cancel = function() {
                     $modalInstance.dismiss('cancel');

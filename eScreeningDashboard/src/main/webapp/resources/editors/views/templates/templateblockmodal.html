@@ -3,67 +3,16 @@
 </div>
 <div class="modal-body">
 
-    <!-- Block template. TODO make into a directives. -->
-    <script type="text/ng-template" id="templateblock.html">
-        <div class="clearfix">
-            <div class="form-group">
-                <label class="control-label">Block Type</label>
-            </div>
-
-            <div class="form-group col-sm-2">
-                <select class="form-control" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
-                    <option value="">-- Select Type</option>
-                </select>
-            </div>
-
-            <div ng-if="block.type && block.type !== 'Text'">
-                <div class="form-group col-sm-2">
-                    <label class="sr-only">Select Variable</label>
-                    <input type="text" class="form-control" placeholder="Select Variable" ng-model="block.title">
-                </div>
-
-                <div class="form-group col-sm-2">
-                    <select class="form-control" ng-model="block.operator" ng-options="operator.name group by operator.category for operator in operators">
-                        <option value="">-- Operator</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-sm-2">
-                    <label class="sr-only" for="blockvalue">Enter Value</label>
-                    <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.content">
-                </div>
-
-                <div class="pull-right">
-                    <button title="AND" class="btn btn-default">AND</button>
-                    <button title="OR" class="btn btn-default">OR</button>
-                    <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"><i class="fa fa-plus"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div class="clearfix form-group" ng-if="block.type === 'Text'">
-
-            <div class="pull-right">
-                <button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>
-            </div>
-
-            <div text-angular="text-angular" ng-model="block.content" ta-toolbar-class="btn-toolbar"
-                 ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
-                 ta-toolbar-button-active-class="active" class="tab-content"></div>
-        </div>
-
-        <div ng-repeat="block in block.children" ng-include="'templateblock.html'"></div>
-
-    </script>
-
     <div class="row">
         <label for="block-name" class="col-sm-2 control-label">Block Name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="block-name" placeholder="Block name" ng-model="block.title">
+            <input type="text" class="form-control" id="block-name" placeholder="Block name" ng-model="block.title" disabled>
         </div>
     </div>
 
-    <div ng-include="'templateblock.html'"></div>
+    <template-block-editor block="block"></template-block-editor>
+
+    {{ block | json }}
 
 </div>
 <div class="modal-footer">
