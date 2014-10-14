@@ -7,23 +7,23 @@
             <!--- ngTable Begin -->
             <table ng-table="tableParams" show-filter="false" class="table table-hover">
                 <tr ng-repeat="templateType in templateTypes"  ng-class-odd="'odd'" ng-class-even="'even'">
-                    <td data-title="'Type'" sortable="'name'">{{templateType.name}}</td>
-                    <td data-title="'Description'">{{templateType.description}}</td>
-                    <td data-title="'Actions'">
+                    <td data-title="'Type'" sortable="'name'" class="col-md-3">{{templateType.name}}</td>
+                    <td data-title="'Description'" class="col-md-7">{{templateType.description}}</td>
+                    <td data-title="'Actions'"  class="col-md-2">
                         <div class="pull-right">
                             <div class="cursor-pointer">
                                 <span title="Create"
                                       ng-if="!templateType.exists"
-                                      ng-click="newTemplate(templateType);"><i class="glyphicon glyphicon-plus"></i> Create </span>
+                                      ng-click="newTemplate(templateType);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-plus"></i> Create </span>
                               
 	                            <span title="Edit"
                                       ng-if="templateType.exists"
-                                      ng-click="editTemplate(templateType);"><i class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
+                                      ng-click="editTemplate(templateType);"  class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
                                       
 	                            <span title="Delete"
                                       ng-if="templateType.exists"
                                       ng-really-message="Are you sure?"
-                                      ng-really-click="deleteTemplate(templateType);"><i class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
+                                      ng-really-click="deleteTemplate(templateType);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
                             </div>
                         </div>
                     </td>
