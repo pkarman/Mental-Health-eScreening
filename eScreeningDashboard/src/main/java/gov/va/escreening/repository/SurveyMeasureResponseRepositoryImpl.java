@@ -26,7 +26,7 @@ import com.google.common.collect.ListMultimap;
 public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateRepository<SurveyMeasureResponse> implements SurveyMeasureResponseRepository {
 
 	@Resource(name = "veteranAssessmentSmrList")
-	VeteranAssessmentSmrList veteranAssessmentSmrList;
+	VeteranAssessmentSmrList smrLister;
 
 	private static final Logger logger = LoggerFactory.getLogger(SurveyMeasureResponseRepositoryImpl.class);
 
@@ -80,10 +80,10 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	}
 
 	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
-		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.fetchCachedSmr();
+		List<SurveyMeasureResponse> smrList = smrLister.fetchCachedSmr();
 		if (smrList == null) {
-			veteranAssessmentSmrList.loadSmrFromDb(veteranAssessmentId);
-			smrList = veteranAssessmentSmrList.fetchCachedSmr();
+			smrLister.loadSmrFromDb(veteranAssessmentId);
+			smrList = smrLister.fetchCachedSmr();
 		}
 		return smrList;
 	}

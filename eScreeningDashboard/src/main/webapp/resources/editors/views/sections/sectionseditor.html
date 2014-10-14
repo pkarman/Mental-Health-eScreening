@@ -19,29 +19,25 @@
             </div>
           </div>
         </h1>
-        
-        <!-- Alerts and Messages 
+
+        <!-- Alerts and Messages -->
         <div class="row">
-          <div class="col-md-12">
-            <div class="alert alert-danger">Error Message </div>
-            <div class="alert alert-success">Your data has been saved successfully</div>
-          </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
+                    Error Message(s):<br><br>
+                    <div ng-repeat="error in messageHandler.getMessages()| filter:messageHandler.filterByErrorMessage">
+                        {{error.getValue()}}
+                    </div>
+                </div>
+                <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
+                    <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessMessage">
+                        {{message.getValue()}}
+                    </div>
+                </div>
+            </div>
         </div>
-        -->
-        
-      </div>
-       <div class="row">
-        <div class="col-md-12">
-          <div class="alert alert-danger" ng-show="inError" ng-hide="!inError">
-            <h3>
-              Errors
-            </h3>
-            <ul class="list-group" ng-model="errors" >
-              <li class="list-group-item" ng-model="errors" ng-repeat="error in errors">{{error}}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
+
       <div class="row">
         <div class="col-md-12">
           <ul class="list-group app screen first connected-sec-container"  ui-sortable="sortableSecOptions" ng-model="editSections">

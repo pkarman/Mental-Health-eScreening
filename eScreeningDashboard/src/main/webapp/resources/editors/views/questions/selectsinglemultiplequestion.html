@@ -4,8 +4,8 @@
         <form class="form" role="form">
             <div class="form-group">
                 <label for="txtVariableNm"> Variable Name </label>
-                <input type="text" ng-model="selectedQuestionUIObject.variableName" id="txtVariableNm"
-                       class="form-control" placeholder="Variable Name" ng-disabled="true">
+                <input type="text" ng-model="selectedPageQuestionItem.getItem().variableName" id="txtVariableNm"
+                       class="form-control" placeholder="Variable Name">
             </div>
         </form>
     </div>
@@ -16,7 +16,7 @@
             <form role="form" class="form-horizontal">
                 <div class="form-group">
                     <label> Question Text </label>
-                    <textarea class="form-control" ng-model="selectedQuestionUIObject.text"></textarea>
+                    <textarea class="form-control" ng-model="selectedPageQuestionItem.getItem().text"></textarea>
                 </div>
             </form>
         </div>
@@ -44,13 +44,13 @@
                       -->
             <div class="form-group form-inline">
                 <label class="checkbox">
-                    <input type="checkbox" ng-model="selectedQuestionUIObject.required"> Required
+                    <input type="checkbox" ng-model="selectedPageQuestionItem.getItem().required"> Required
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" ng-model="selectedQuestionUIObject.ppi"> PPI
+                    <input type="checkbox" ng-model="selectedPageQuestionItem.getItem().ppi"> PPI
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" ng-model="selectedQuestionUIObject.mha"> MHA
+                    <input type="checkbox" ng-model="selectedPageQuestionItem.getItem().mha"> MHA
                 </label>
             </div>
 
@@ -78,7 +78,7 @@
 </div>
 <div class="row">
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="answerUIObject in selectedQuestionUIObject.answers">
+        <li class="list-group-item" ng-repeat="answerUIObject in selectedPageQuestionItem.getItem().answers">
             <div class="form-group">
                 <label> {{$index + 1}}. Answer Text </label>
                 <input type="text" class="form-control" ng-model="answerUIObject.text" placeholder="Enter Answer Text">
@@ -131,13 +131,4 @@
 
         </li>
     </ul>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group pull-right">
-            <button class="btn btn-primary" ng-click="save();">Save</button>
-            <button class="btn btn-default" ng-click="cancel();">Cancel</button>
-        </div>
-    </div>
 </div>

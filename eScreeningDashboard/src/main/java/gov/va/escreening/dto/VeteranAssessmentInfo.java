@@ -36,6 +36,7 @@ public class VeteranAssessmentInfo implements Serializable {
     private String clinicianFullName;
     private Integer assessmentStatusId;
     private String assessmentStatusName;
+    public Boolean isSensitive;
 
     public Integer getVeteranAssessmentId() {
         return veteranAssessmentId;
@@ -272,4 +273,13 @@ public class VeteranAssessmentInfo implements Serializable {
     public VeteranAssessmentInfo() {
         // Default constructor
     }
+
+	public void setIsSensitive(Boolean isSensitive) {
+		this.isSensitive = isSensitive;
+	}
+	
+	public Boolean getIsSensitive(){
+		return isSensitive;
+	}
+	
 }

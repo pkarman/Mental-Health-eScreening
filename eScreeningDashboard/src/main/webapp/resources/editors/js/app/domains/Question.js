@@ -34,10 +34,10 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
         mha = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.mha) && Object.isBoolean(jsonQuestionObject.mha)) ? jsonQuestionObject.mha : false,
         visible = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.visible) && Object.isBoolean(jsonQuestionObject.visible))? visible : false,
         variableName = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.variableName))? jsonQuestionObject.variableName : null,
-        answers = (Object.isDefined(jsonQuestionObject) && Object.isArray(jsonQuestionObject.answers))? EScreeningDashboardApp.models.AnswersTransformer.transformJSONPayload({"answers": jsonQuestionObject.answers}): [],
-        validations = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.validations) && Object.isArray(jsonQuestionObject.validations))? EScreeningDashboardApp.models.ValidationsTransformer.transformJSONPayload({"validations": jsonQuestionObject.validations}): [],
-        childQuestions = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.childQuestions) && Object.isArray(jsonQuestionObject.childQuestions)) ? EScreeningDashboardApp.models.QuestionsTransformer.transformJSONPayload({"questions": jsonQuestionObject.childQuestions}) : [],
-        tableAnswers = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.tableAnswers) && Object.isArray(jsonQuestionObject.tableAnswers)) ? EScreeningDashboardApp.models.TableAnswersTransformer.transformJSONPayload({"tableAnswers": jsonQuestionObject.tableAnswers}) : [];
+        answers = (Object.isDefined(jsonQuestionObject) && (Object.isArray(jsonQuestionObject.answers) && jsonQuestionObject.answers.length > 0))? EScreeningDashboardApp.models.AnswersTransformer.transformJSONPayload({"answers": jsonQuestionObject.answers}): [],
+        validations = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.validations) && (Object.isArray(jsonQuestionObject.validations) && jsonQuestionObject.validations.length > 0))? EScreeningDashboardApp.models.ValidationsTransformer.transformJSONPayload({"validations": jsonQuestionObject.validations}): [],
+        childQuestions = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.childQuestions) && (Object.isArray(jsonQuestionObject.childQuestions) && jsonQuestionObject.childQuestions.length > 0)) ? EScreeningDashboardApp.models.QuestionsTransformer.transformJSONPayload({"questions": jsonQuestionObject.childQuestions}) : [],
+        tableAnswers = (Object.isDefined(jsonQuestionObject) && Object.isDefined(jsonQuestionObject.tableAnswers) && (Object.isArray(jsonQuestionObject.tableAnswers) && jsonQuestionObject.tableAnswers.length > 0)) ? EScreeningDashboardApp.models.TableAnswersTransformer.transformJSONPayload({"tableAnswers": jsonQuestionObject.tableAnswers}) : [];
 
     this.escapeTags = function(string){
         string = string.replace(/</g, 'tag');
@@ -243,7 +243,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
             propertyNameValue = false,
             filteredValidations = [];
 
-        validations.forEach(function (validation) {
+        validations.some(function (validation) {
             if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
                 validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
                 if(typeof validation[isPropertyName] === 'function'){
@@ -258,7 +258,10 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
                 if(propertyNameValue === targetPropertyValue) {
                     filteredValidations.push(validation);
+                    return true;
                 }
+
+                return false;
             }
         });
 
@@ -300,7 +303,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
 
     this.toJSON = function (serializeCollections) {
         serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-        var jsonId = (id != null && id > 0)? id : null,
+        var jsonId = (Object.isDefined(id) && id > 0)? id : null, //null
             jsonText = (Object.isDefined(text))? "\"" + this.escapeTags(text) + "\"": null,
             jsonType = (Object.isDefined(type))? "\"" + type + "\"" : null,
             jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
@@ -347,14 +350,18 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     
     
     this.toUIObject = function(){
-    	var questionUIObject = JSON.parse(this.escapeTags(this.toJSON()));
+    	var questionUIObject = JSON.parse(this.escapeTags(this.toJSON())),
+            existingValidation;
+
+        questionUIObject.textFormatDropDownMenu = null;
+
     	return questionUIObject;
     };
 };
 EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
      var surveyUIObjects = [];
 
-     if(Object.isDefined(questions) && Object.isArray(questions)) {
+     if(Object.isArray(questions)) {
          questions.forEach(function(question) {
              surveyUIObjects.push(question.toUIObject());
          });
@@ -362,7 +369,7 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
 
      return surveyUIObjects;
  };
- EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers = function (childQuestions) {
+EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers = function (childQuestions) {
      var firstChildMeasureAnswers = [];
 
      if(Object.isDefined(childQuestions) && childQuestions.length > 0) {
@@ -381,4 +388,54 @@ EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {
      }
 
      return firstChildMeasureAnswers;
+ };
+
+EScreeningDashboardApp.models.Question.filterValidations = function (targetPropertyName, targetPropertyValue, validations) {
+    var isPropertyName =  "is"  + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        hasPropertyName = "has" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        getPropertyName = "get" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
+        propertyNameValue = false,
+        filteredValidations = [];
+
+    validations.some(function (validation) {
+        if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
+            validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
+            if(typeof validation[isPropertyName] === 'function'){
+                 propertyNameValue = validation[isPropertyName]();
+            } else if(typeof validation[hasPropertyName] === 'function') {
+                propertyNameValue = validation[hasPropertyName]();
+            } else if(typeof validation[getPropertyName] === 'function') {
+                propertyNameValue = validation[getPropertyName]();
+            } else {
+                propertyNameValue = validation[targetPropertyName];
+            }
+
+            if(propertyNameValue === targetPropertyValue) {
+                filteredValidations.push(validation);
+                return true;
+            }
+
+            return false;
+        }
+    });
+
+    return filteredValidations;
+};
+EScreeningDashboardApp.models.Question.findValidation = function (targetPropertyName, targetPropertyValue, validations) {
+
+    var filteredValidations = EScreeningDashboardApp.models.Question.filterValidations(targetPropertyName, targetPropertyValue, validations),
+        filteredValidation = null,
+        filteredValidationConstructorParameters;
+
+     if (Object.isArray(filteredValidations) && filteredValidations.length > 0) {
+         filteredValidation = filteredValidations[0];
+     } else {
+         filteredValidationConstructorParameters = {} ;
+         filteredValidationConstructorParameters[targetPropertyName] = targetPropertyValue;
+         filteredValidationConstructorParameters["selected"] = false;
+
+         filteredValidation = new EScreeningDashboardApp.models.Validation(filteredValidationConstructorParameters);
+     }
+
+     return filteredValidation;
  };

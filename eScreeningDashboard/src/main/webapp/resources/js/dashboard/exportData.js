@@ -127,6 +127,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$scope.exportDataFormBean.exportDataType = 'identified';
 		$("#alertType").removeClass("alert-warning").addClass("alert-danger");
 		$("#alertData").text("Identified Data");
+    $("#myModalLabel").text("Exporting Identified Data Confirmation");
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
@@ -139,6 +140,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$scope.exportDataFormBean.exportDataType = 'deidentified';
 		$("#alertType").removeClass("alert-danger").addClass("alert-warning");
 		$("#alertData").text("De-Identified Data");
+    $("#myModalLabel").text("Exporting De-Identified Data Confirmation");
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
@@ -353,9 +355,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	    $scope.destroyDataTable($scope.filter.stateId);
 	}
 	
-	
-	
-	
 	/**
 	 * Initializes the model with any parameters initially passed to the controller synchronously.
 	 */
@@ -365,24 +364,27 @@ function exportDataController($scope,$element,$http,$window, programListService,
 
 
  $(document).ready(function() {
-    	tabsLoad("exportData");
-		$("#fromAssessmentDate").datepicker({
-			showOn : 'button',
-			buttonImage : "../resources/images/calendar1.png",
-			buttonImageOnly : true
-		});
-		$("#toAssessmentDate").datepicker({
-			showOn : 'button',
-			buttonImage : "../resources/images/calendar1.png",
-			buttonImageOnly : true
-		});
-		$('.ui-datepicker-trigger').mouseover(function() {
-			$(this).attr("title", "click to open calendar");
 
+    // Load current tab
+    tabsLoad("exportData");
+
+
+    // Date Picker Start - Call picker and focus for 508         
+    var fromAssessmentDateGroup  = "#fromAssessmentDateGroup";
+    var toAssessmentDateGroup    = "#toAssessmentDateGroup";
+    $(fromAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+      autoclose: true
 		});
-		
+
+		$(toAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+			autoclose: true
+		});
+	
 		$('.id_header_tooltip').tooltip({
 			'placement': 'top'
 		});
-		
 });

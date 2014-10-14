@@ -8,10 +8,10 @@ import gov.va.escreening.dto.dashboard.ExportDataSearchResult;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.DataDictionaryService;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataFilterOptionsService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.service.export.ExportLogService;
@@ -60,7 +60,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	private UserService userService;
 	@Autowired
 	private VeteranAssessmentService veteranAssessmentService;
-	
+
 	@Resource(type = DataDictionaryService.class)
 	DataDictionaryService dds;
 
@@ -131,12 +131,12 @@ public class ExportDataRestController extends BaseDashboardRestController {
 	@RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
 	public ModelAndView downloadAgain(ModelAndView modelAndView,
 			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
-		
+
 		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
-		
+
 		modelAndView.setViewName("dataDictionaryExcelView");
 		modelAndView.addObject("dataDictionary", dataDictionary);
-		
+
 		return modelAndView;
 	}
 

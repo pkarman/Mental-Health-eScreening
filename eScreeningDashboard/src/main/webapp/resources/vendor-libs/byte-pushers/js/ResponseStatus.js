@@ -24,22 +24,23 @@ BytePushers.models = BytePushers.models || BytePushers.namespace("com.byte-pushe
  * @author <a href="mailto:pouncilt.developer@gmail.com">Tont&eacute; Pouncil</a>
  */
 BytePushers.models.ResponseStatus =  function (jsonResponseStatus) {
+
     /**
-     * Represent the response status message from a Restful service call.
+     * Represent the response status from a Restful service call.
      *
      * @private
      * @field
      * @type {String}
      */
-    var message = (Object.isDefined(jsonResponseStatus) && Object.isDefined(jsonResponseStatus.message)) ? jsonResponseStatus.message : null,
+     var status = (Object.isDefined(jsonResponseStatus) && Object.isDefined(jsonResponseStatus.status)) ? jsonResponseStatus.status : "failed",
         /**
-         * Represent the response status from a Restful service call.
+         * Represent the response status message from a Restful service call.
          *
          * @private
          * @field
-         * @type {String}
+         * @type {EScreeningDashboardApp.models.Message}
          */
-        status = (Object.isDefined(jsonResponseStatus) && Object.isDefined(jsonResponseStatus.status)) ? jsonResponseStatus.status : "failed",
+        message = (Object.isDefined(jsonResponseStatus) && Object.isDefined(jsonResponseStatus.message)) ? (status.toLowerCase() === "failed")? new BytePushers.models.Message({type: "error", value: jsonResponseStatus.message}): new BytePushers.models.Message({type: "success", value: jsonResponseStatus.message}) : null,
         /**
          * Represent the response status exception from a Restful service call.
          *
@@ -54,7 +55,7 @@ BytePushers.models.ResponseStatus =  function (jsonResponseStatus) {
      *
      * @public
      * @method
-     * @returns {String} The response message of the service call.
+     * @returns {EScreeningDashboardApp.models.Message} The response message of the service call.
      */
     this.getMessage = function () {
         return message;

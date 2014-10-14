@@ -13,7 +13,7 @@
 			vars$pain_interfere_rec : "2",
 			vars$pain_interfere_task : "3",
 			vars$pain_interfere_social : "2",
-			derive$pain_score_interference : "14"
+			derive$pain_score_interference : "14.0"
 		}
 	} ]
 }

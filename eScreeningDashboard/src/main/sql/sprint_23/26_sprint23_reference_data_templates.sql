@@ -1106,11 +1106,9 @@ UPDATE template set template_file = '
 where template_id=301;
 
 
--- /* VETERAN SUMMARY - Alcohol Use  Update #230*/
+-- /* VETERAN SUMMARY - Alcohol Use (AUIDT-C) Update #230*/
 UPDATE template set template_file = '
 <#include "clinicalnotefunctions"> 
-<#-- Template start -->
-<#if (var1229??) &&  getFormulaDisplayText(var1229) != "notfound">
     ${MODULE_TITLE_START}
     Alcohol Use
     ${MODULE_TITLE_END}
@@ -1119,17 +1117,18 @@ UPDATE template set template_file = '
     ${LINE_BREAK}
     ${LINE_BREAK}
     <b>Results:</b> ${NBSP}
-    <#if (getFormulaDisplayText(var1229)?number >= 0) && (getFormulaDisplayText(var1229)?number <= 2)>
-        negative screen
-    <#elseif (getFormulaDisplayText(var1229)?number == 3) >
-        at risk
-    <#elseif (getFormulaDisplayText(var1229)?number >= 4) && (getFormulaDisplayText(var1229)?number <= 12)>
-        at risk
+    <#if (var1229??) &&  getFormulaDisplayText(var1229) != "notfound">
+        <#if getFormulaDisplayText(var1229)?number <= 2 >
+            negative screen
+        <#else>
+            at risk
+        </#if>
+    <#else>
+        declined
     </#if>
     ${LINE_BREAK}
     <b>Recommendation:</b> If female, limit yourself to one drink a day; if male, limit yourself to 2 drinks a day. If this is difficult, ask your clinician for help with managing your drinking.  
     ${MODULE_END}
-</#if>
 ' where template_id = 302;
 
 
@@ -1165,10 +1164,9 @@ UPDATE template set template_file = '
 
 
 -- /* VETERAN SUMMARY - Environmental Exposure Update #230 */
-UPDATE template set template_file = '
+UPDATE escreening.template set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
-<#if (var10540.children)??  && ((var10540.children)?size > 0)>
     ${MODULE_TITLE_START}
     Environmental Exposure
     ${MODULE_TITLE_END}
@@ -1177,15 +1175,19 @@ UPDATE template set template_file = '
     ${LINE_BREAK}
     ${LINE_BREAK}
     <b>Results:</b> ${NBSP}
-    <#if isSelectedAnswer(var10540,var10541)>
-        none reported
-    <#elseif isSelectedAnswer(var10540,var10542)>
-        at risk
-        ${LINE_BREAK}
-        <b>Recommendation:</b> Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm.
+
+    <#if (var10540.children)??  && ((var10540.children)?size > 0)>
+        <#if isSelectedAnswer(var10540,var10541)>
+            none reported
+        <#elseif isSelectedAnswer(var10540,var10542)>
+            at risk
+            ${LINE_BREAK}
+            <b>Recommendation:</b> Call Dale Willoughby at the Environmental Registry Program and discuss your exposure: (858) 642-3995, weekdays 7:30am-4:00pm.
+        </#if>
+    <#else>
+        skipped
     </#if>
     ${MODULE_END}
-</#if>
 ' where template_id=304;
 
 
@@ -1246,3 +1248,166 @@ UPDATE template set template_file = '
 -- fix for 230 where the veteran summary template for the PCL-C module module was mapped to another module
 update survey_template st set survey_id=34 
 where st.survey_id=35 and st.template_id=310;
+
+-- /* VETERAN SUMMARY -  My Pain Score  (Basic Pain) #230 update */
+UPDATE template set template_file = ' 
+<#include "clinicalnotefunctions"> 
+<#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Pain 
+    ${MODULE_TITLE_END}
+    ${GRAPH_SECTION_START}
+
+        ${GRAPH_BODY_START}
+          {
+            "type": "stacked",
+            "title": "My Pain Score",
+            "footer": "",
+            "data": {
+                "graphStart": 0,
+                "ticks": [0,1,4,6,8,10],
+                "intervals": {
+                    "None": 1,
+                    "Mild": 4,
+                    "Moderate": 6,
+                    "Severe": 8,
+                    "Very Severe":10
+                },
+                "score": ${getSelectOneDisplayText(var2300)}
+            }
+          }
+        ${GRAPH_BODY_END}
+    ${GRAPH_SECTION_END}
+
+    ${MODULE_START}
+    Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
+    <b>Recommendation:</b>${NBSP} 
+    <#if getSelectOneDisplayText(var2300)?number < 4 >
+        Seek medical attention if your pain suddenly increases or changes.
+    <#else>
+        Tell your clinician if medications aren\'t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+    </#if>
+    ${MODULE_END}   
+
+</#if>
+' where template_id=309;
+
+-- /* VETERAN SUMMARY - Traumatic Brain Injury (TBI)  */
+UPDATE template set template_file = ' 
+<#include "clinicalnotefunctions"> 
+<#function calcScore obj>
+    <#assign result = 0>
+    <#if (obj.children)?? && ((obj.children)?size > 0)>
+        <#list obj.children as c>
+            <#if c.overrideText != "none">
+                <#assign result = result + 1>
+                <#break>
+            </#if>
+        </#list>
+    </#if>
+        <#return result>
+</#function>
+
+<#assign score = 0>
+
+<#assign isQ2Complete = false>
+<#assign isQ2None = false>
+<#if (var3400.children)?? && ((var3400.children)?size > 0)>
+    <#assign isQ2Complete = true>
+    <#if isSelectedAnswer(var3400, var2016)!false>
+        <#assign isQ2None = true>
+    <#else>
+        <#assign score = score + calcScore(var3400)>
+    </#if>
+</#if>
+
+<#assign isQ3Complete = false>
+<#assign isQ3None = false>
+<#if isQ2Complete>
+    <#if isQ2None> 
+        <#assign isQ3Complete = true>
+    <#else>
+        <#if (var3410.children)?? && ((var3410.children)?size > 0) >
+            <#if isSelectedAnswer(var3410, var2022)!false>
+                <#assign isQ3None = true>
+            <#else>
+                <#assign score = score + calcScore(var3410)>
+            </#if>
+            <#assign isQ3Complete = true>
+        </#if>
+    </#if>
+</#if>
+
+<#assign isQ4Complete = false>
+<#assign isQ4None = false>
+<#if isQ3Complete>
+    <#if isQ2None || isQ3None> 
+        <#assign isQ4Complete = true>
+    <#else>
+        <#if (var3420.children)?? && ((var3420.children)?size > 0) >
+            <#if isSelectedAnswer(var3420, var2030)!false>
+                <#assign isQ4None = true>
+            <#else>
+                <#assign score = score + calcScore(var3420)>
+            </#if>
+            <#assign isQ4Complete = true>
+        </#if>
+    </#if>
+</#if>
+
+<#assign isQ5Complete = false>
+<#assign isQ5None = false>
+<#if isQ4Complete>
+    <#if isQ2None || isQ3None || isQ4None> 
+        <#assign isQ5Complete = true>
+    <#else>
+        <#if (var3430.children)?? && ((var3430.children)?size > 0) >
+            <#if isSelectedAnswer(var3430, var2037)!false>
+                <#assign isQ5None = true>
+            <#else>
+                <#assign score = score + calcScore(var3430)>
+            </#if>
+            <#assign isQ5Complete = true>
+        </#if>
+    </#if>
+</#if>
+
+<#assign isComplete = false>
+<#if isQ2Complete && isQ3Complete && isQ4Complete && isQ5Complete>
+    <#assign isComplete = true>
+</#if>
+
+    ${MODULE_TITLE_START}
+    Traumatic Brain Injury (TBI)
+    ${MODULE_TITLE_END}
+    ${MODULE_START}  
+
+    <#assign showRec = false>
+    <#assign tbi_consult_text = "">
+    <#if isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3442)>
+        <#assign showRec = true>
+        <#assign tbi_consult_text = "You have requested further assessment">
+    <#elseif isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3441)>
+        <#assign showRec = true>
+        <#assign tbi_consult_text = "You have declined further assessment">
+    </#if>
+    A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
+    ${LINE_BREAK}
+    ${LINE_BREAK}
+    <b>Results:</b>${NBSP} 
+    <#if isComplete>
+        <#if (score >= 0) && (score <= 3)>
+            negative screen
+        <#elseif (score >= 4 )>
+            at risk
+        </#if>
+    <#else>
+        declined to be screened
+    </#if>
+ 
+    <#if isComplete && showRec>
+        ${LINE_BREAK}
+        <b>Recommendation:</b> ${tbi_consult_text}.
+    </#if>
+    ${MODULE_END}
+' where template_id=307;
