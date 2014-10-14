@@ -10,7 +10,7 @@
             </select>
         </div>
 
-        <div ng-if="block.type && block.type !== 'Text'">
+        <div ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">
             <div class="form-group col-sm-2">
                 <label class="sr-only">Select Variable</label>
                 <input type="text" class="form-control" placeholder="Select Variable" ng-model="block.title">
@@ -26,12 +26,12 @@
                 <label class="sr-only" for="blockvalue">Enter Value</label>
                 <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.content">
             </div>
+        </div>
 
-            <div class="pull-right">
-                <button title="AND" class="btn btn-default">AND</button>
-                <button title="OR" class="btn btn-default">OR</button>
-                <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"><i class="fa fa-plus"></i></button>
-            </div>
+        <div class="pull-right">
+            <button title="AND" class="btn btn-default"  ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">AND</button>
+            <button title="OR" class="btn btn-default"  ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">OR</button>
+            <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"><i class="fa fa-plus"></i></button>
         </div>
     </div>
 
