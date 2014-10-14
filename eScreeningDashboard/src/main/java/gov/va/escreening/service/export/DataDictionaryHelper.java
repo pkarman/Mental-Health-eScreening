@@ -245,7 +245,16 @@ abstract class Resolver {
 
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t) {
-		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), 0, false);
+		int index = 0;
+		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), index++, false);
+
+		// compensate measure answer of other type
+		for (MeasureAnswer ma : m.getMeasureAnswerList()) {
+			if ("other".equals(ma.getAnswerType())) {
+				addSingleRow(s, m, mvMap, t, ma, index++, true);
+			}
+		}
+
 	}
 
 	protected final void addSingleRow(Survey s, Measure m, Multimap mvMap,
