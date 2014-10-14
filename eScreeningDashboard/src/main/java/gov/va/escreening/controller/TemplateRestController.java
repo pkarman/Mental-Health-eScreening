@@ -57,7 +57,25 @@ public class TemplateRestController {
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-		return templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+        if(surveyId == null || surveyId < 0) {
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        List<TemplateTypeDTO> templateTypes = templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+
+        if(templateTypes == null || (templateTypes != null && templateTypes.isEmpty())){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        return templateTypes;
 	}
 	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
