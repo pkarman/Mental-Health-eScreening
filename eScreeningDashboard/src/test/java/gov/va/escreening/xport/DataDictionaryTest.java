@@ -3,7 +3,6 @@ package gov.va.escreening.xport;
 import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.view.DataDictionaryExcelView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,8 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +27,6 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
-import com.google.common.io.Files;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -78,6 +74,12 @@ public class DataDictionaryTest {
 		writeAsExcelFile(documentDirName+File.separator+"data_dict_test_"+System.nanoTime()+".xls", response);
 	}
 
+	@Test
+	public void removeTernaryTest(){
+		String ternary="(([tbi_week_memory]?1:0) + ([tbi_week_balance]?1:0) + ([tbi_week_light]?1:0) + ([tbi_week_irritable]?1:0) + ([tbi_week_headache]?1:0) + ([tbi_week_sleep]?1:0))";
+		String refined=ternary.replaceAll("[?]", "").replaceAll("1:0", "");
+		int i=0;
+	}
 	private void writeAsExcelFile(String excelFile,
 			MockHttpServletResponse response) throws IOException {
 		File dest = new File(excelFile);

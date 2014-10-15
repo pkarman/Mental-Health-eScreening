@@ -6,9 +6,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +28,26 @@ import com.google.common.collect.Table;
 
 @Service("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
+	interface ExportNameExtractor {
+		String extractExportName(AssessmentVarChildren avc);
+	}
+
+	class MaNameExtractor implements ExportNameExtractor {
+		public String extractExportName(AssessmentVarChildren avc) {
+			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
+			String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
+			return exportName;
+		}
+	}
+
+	class MeasureNameExtractor implements ExportNameExtractor {
+		public String extractExportName(AssessmentVarChildren avc) {
+			Measure m = avc.getVariableChild().getMeasure();
+			String exportName = m != null ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
+			return exportName;
+		}
+	}
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String EXPORT_NAME_KEY_PREFIX = "mId_";
@@ -168,28 +186,28 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	}
 
 	private String useMa2FormulaPlusExportName(AssessmentVariable av) {
-		String formula = extractFormulaUsingMeasureAnswer(av);
+		String formula = extractFormula(av, new MaNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
 
-	private String extractFormulaUsingMeasureAnswer(AssessmentVariable av) {
-		String dbFormula = av.getFormulaTemplate();
-		String displayableFormula = dbFormula;
-		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
-			String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
-			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
-			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
-		}
-		displayableFormula = displayableFormula.replaceAll("[$]", "");
-		if (logger.isDebugEnabled()) {
-			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
-		}
-		return displayableFormula;
-	}
+	// private String extractFormulaUsingMeasureAnswer(AssessmentVariable av) {
+	// String dbFormula = av.getFormulaTemplate();
+	// String displayableFormula = dbFormula;
+	// for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+	// MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
+	// String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
+	// String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
+	// displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
+	// }
+	// displayableFormula = displayableFormula.replaceAll("[$]", "");
+	// if (logger.isDebugEnabled()) {
+	// logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
+	// }
+	// return displayableFormula;
+	// }
 
 	private String useM2FormulaPlusExportName(AssessmentVariable av) {
-		String formula = extractFormulaUsingMeasure(av);
+		String formula = extractFormula(av, new MeasureNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
 
@@ -197,16 +215,16 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		return String.format("%s,%s", formula, av.getDisplayName());
 	}
 
-	private String extractFormulaUsingMeasure(AssessmentVariable av) {
+	private String extractFormula(AssessmentVariable av,
+			ExportNameExtractor extractor) {
 		String dbFormula = av.getFormulaTemplate();
 		String displayableFormula = dbFormula;
 		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-			Measure m = avc.getVariableChild().getMeasure();
-			String exportName = m != null ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
+			String exportName = extractor.extractExportName(avc);
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		displayableFormula = displayableFormula.replaceAll("[$]", "");
+		displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1:0", "");
 		if (logger.isDebugEnabled()) {
 			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
 		}
