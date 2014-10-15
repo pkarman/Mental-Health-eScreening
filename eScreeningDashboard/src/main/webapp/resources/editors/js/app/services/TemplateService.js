@@ -1,7 +1,7 @@
 /**
  * Angular service factory method for Templates.
  *
- * @author Robin Carnow
+ * @author Tonté Pouncil
  */
 angular.module('EscreeningDashboardApp.services.template', ['restangular'])
     .factory('TemplateService', ['Restangular', 'TemplateType', function (Restangular, TemplateType){
