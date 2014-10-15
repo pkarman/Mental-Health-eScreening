@@ -393,6 +393,10 @@ div.progressLabel{
 	line-height:28px;
 }
 
+.surveyQuestionText > label{
+	margin: 0;
+}
+
 .requiredIcon{
 	color: #000000;
 	margin-left: 4px;
