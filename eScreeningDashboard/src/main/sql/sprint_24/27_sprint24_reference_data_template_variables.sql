@@ -169,3 +169,5 @@ INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10714
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10715, 30);
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10716, 30);
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10717, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (3441, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (3442, 30);

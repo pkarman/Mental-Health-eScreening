@@ -921,8 +921,13 @@ ${MODULE_START}
 	</#if>			
 	The Veteran\'s TBI screen was ${scoreText}. ${NBSP}
 			
-	<#if var2047??>
-		Veteran ${getSelectOneDisplayText(var2047)} to TBI consult for further evaluation. ${NBSP}
+	<#if var2047?? && (var2047.children)?? && ((var2047.children)?size > 0)>
+		Veteran${NBSP}
+		<#if isSelectedAnswer(var2047,var3442)>
+		 agreed to
+		<#else>declined
+		</#if>
+		  ${NBSP}TBI consult for further evaluation. ${NBSP}
     </#if>
 	
 ${MODULE_END}
@@ -931,3 +936,143 @@ where template_id = 30;
 
 delete from variable_template where template_id = 30;
 
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+DEPRESSION:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1550.children)?? && (var1560.children)?? && (var1570.children)?? && (var1580.children)?? && (var1590.children)??
+			&& ((var1550.children)?size > 0) && ((var1560.children)?size > 0) && ((var1570.children)?size > 0) 
+			&& ((var1580.children)?size > 0) && ((var1590.children)?size > 0)>
+	<#assign fragments = []>
+	<#assign text ="notset"> 
+	<#-- <#assign score = (getListScore([var1550,var1560,var1570,var1580,var1590]))!("-1"?number)> -->
+	<#assign totScore = getFormulaDisplayText(var1599)>
+	<#assign score = -1>
+	<#assign scoreText ="notset">
+		
+	<#if totScore?? && totScore != "notfound"  && totScore != "notset"> 
+		<#assign score = totScore?number>
+		<#if (score == 0) >
+			<#assign scoreText = "negative">
+		<#elseif (score >= 1) && (score <= 4)>
+			<#assign scoreText = "positive">
+			<#assign text = "minimal depression">
+		<#elseif (score >= 5) && (score <= 9)>
+			<#assign scoreText = "positive">
+			<#assign text = "mild depression">
+		<#elseif (score >= 10) && (score <= 14)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderate depression">
+		<#elseif (score >= 15) && (score <= 19)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderately severe depression">
+		<#elseif (score >= 20) && (score <= 27)>
+			<#assign scoreText = "positive">
+			<#assign text = "severe depression">
+		</#if>
+
+		<#if (score >=1) && (score <= 27)>
+			<#t>The Veteran\'s PHQ-9 screen was ${scoreText}.${NBSP} The score was ${(score)?string} which is suggestive of ${text}.${NBSP}
+		<#elseif (score == 0)>
+			The Veteran\'s PHQ-9 screen was ${scoreText}. The score was ${(score)?string}.${NBSP}
+		</#if>
+
+	<#else>
+		The Veteran\'s PHQ-9 screen was not calculated due to the Veteran declining to answer some or all of the questions.
+	</#if>
+
+	
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+' where template_id = 31;
+
+
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Mood Disorder:
+${MODULE_TITLE_END}
+${MODULE_START}
+ 
+	<#if var2670?? && var2670?? && var2680?? && var2690?? && var2700?? && var2710?? && var2720?? && var2730?? && var2740?? && var2750?? && var2760?? && var2770?? && var2780?? && var2790?? && var2800??>
+	<#--  -->
+		<#if getScore(var2660) == 999 ||  getScore(var2670) == 999 ||  getScore(var2680) == 999  || getScore(var2690) == 999  ||  getScore(var2700) == 999  || getScore(var2710) == 999  ||  getScore(var2720) == 999  
+				|| getScore(var2730) == 999  ||  getScore(var2740) == 999  || getScore(var2750) == 999  ||  getScore(var2760) == 999  ||
+					getScore(var2770) == 999  || getScore(var2780) == 999  ||  getScore(var2790) == 999  || getScore(var2800) == 999 >
+			
+			<#assign text = getNotCompletedText()>		
+		<#else>			
+			<#assign score1 = getListScore([var2670, var2670 , var2680 , var2690, var2700 , var2710, var2720, var2730, var2740, var2750, var2760, var2770, var2780])>
+			<#assign score2 =  getScore(var2790) >
+			<#assign score3 =  getScore(var2800) >
+
+			<#assign t = "">
+			<#assign text2 = "">
+			<#assign fragments = []>
+		
+				
+				<#if (score1 >= 7) && (score2 == 1) && (score3 >= 2) >
+					<#assign t = "positive indicating that the Veteran may benefit from further assessment for possible symptoms of mania or other mood disorders">
+				
+					<#if (getScore(var2660) > 0)>
+						<#assign fragments = fragments + ["so hyper got into trouble"]>
+					</#if>
+					<#if (getScore(var2670) > 0)>
+						<#assign fragments = fragments + ["so irritable started fights"]>
+					</#if>
+					<#if (getScore(var2680) > 0)>
+						<#assign fragments = fragments + ["felt much more self-confident than usual"]>
+					</#if>
+					<#if (getScore(var2690) > 0)>
+						<#assign fragments = fragments + ["got less sleep"]>
+					</#if>
+					<#if (getScore(var2700) > 0)>
+						<#assign fragments = fragments + ["was much more talkative/spoke much faster"]>
+					</#if>
+					<#if (getScore(var2710) > 0)>
+						<#assign fragments = fragments + ["racing thoughts"]>
+					</#if>
+					<#if (getScore(var2720) > 0)>
+						<#assign fragments = fragments + ["could not concentrate"]>
+					</#if>
+					<#if (getScore(var2730) > 0)>
+						<#assign fragments = fragments + ["more energy"]>
+					</#if>
+					<#if (getScore(var2740) > 0)>
+						<#assign fragments = fragments + ["more active/did more things"]>
+					</#if>
+					<#if (getScore(var2750) > 0)>
+						<#assign fragments = fragments + ["more social/outgoing"]>
+					</#if>
+					<#if (getScore(var2760) > 0)>
+						<#assign fragments = fragments + ["much more interested in sex"]>
+					</#if>
+					<#if (getScore(var2770) > 0)>
+						<#assign fragments = fragments + ["was excessive/foolish/risky"]>
+					</#if>
+					<#if (getScore(var2780) > 0)>
+						<#assign fragments = fragments + ["got in trouble spending money"]>
+					</#if>
+				
+					<#assign text2 = createSentence(fragments)>
+				
+				<#else>
+					<#assign t = "negative">
+				</#if>
+				The MDQ (Hyper mood) screen was ${t}.
+			
+				<#if text2?has_content>
+					${LINE_BREAK}${LINE_BREAK}Symptoms endorsed: ${text2}.
+				</#if>
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 32;
