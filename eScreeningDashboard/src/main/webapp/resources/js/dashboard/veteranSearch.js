@@ -26,7 +26,7 @@ app.directive('reportTable', function() {
         aoColumns = [
  			{ "mData": "veteranId","sClass":"numeric", "sWidth":"25px"},
  			{ "mData": "veteranName" },
- 			{ "mData": "ssnLastFour","sClass":"numeric" },
+ 			{ "mData": "ssnLastFour","sClass":"numeric","mRender": function(data, type, full) { if (full.isSensitive) return 'XXXX'; else return data+'';  }},
  			{ "mData": "email" },
  			{ "mData": "gender" },
  			{ "mData": "lastAssessmentDate", "sType": "date","sClass":"numeric" },

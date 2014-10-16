@@ -562,6 +562,9 @@ table.gridtable td {
 	margin: 5px;
 	border: 1px solid #D4D4D4;
 }
+.vertical_scoll_list input[type=checkbox], .checkbox_margin_right input[type=checkbox]{
+  margin-right:5px;
+}
 .panel-title label {
 	margin-bottom: 0px;
 }
@@ -821,7 +824,20 @@ a.offscreen:focus, a.offscreen:active {
   font-weight:bold;
 }
 
-
+/* addons for datepicker */
+.form-group .add-on{
+  display: inline-block;
+  width: auto;
+  height: 30px;
+  min-width: 40px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;  
+  position: absolute;
+  right: 0;
+  top: 0px;
+  cursor:pointer;
+}
 
 
 

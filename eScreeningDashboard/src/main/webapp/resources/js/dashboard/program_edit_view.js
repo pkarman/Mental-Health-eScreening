@@ -1,8 +1,5 @@
-
-
 $(document).ready(function() {
-    
-	
+  tabsLoad("programManagement");
 });
 
 
@@ -50,5 +47,3 @@ $(function(){
 	});
 	$('[data-toggle="tooltip"]').tooltip();
 })
-
-

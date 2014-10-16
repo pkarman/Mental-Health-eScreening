@@ -131,6 +131,9 @@ to prevent collapsing during animation*/
     padding-bottom:-20px;
 }
 
+
+
+
 @media (max-width: 600px) {
     .modal-huge {
         width: 580px;
@@ -178,7 +181,7 @@ to prevent collapsing during animation*/
 }
 
 .app{
-    cursor:move;
+    /* cursor:move; */
 }
 
 .buttonaction {

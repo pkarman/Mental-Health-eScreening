@@ -211,11 +211,11 @@
 	                	<c:if test="${not empty searchResultList}">
 							<c:forEach var="item" items="${searchResultList}">
 								<tr>
-									<td class="text-right"><c:out value="${item.ssnLastFour}" /></td>
+									<td class="text-right"><c:if test="${item.isSensitive}"><c:out value="XXXX"/></c:if><c:if test="${!item.isSensitive}"><c:out value="${item.ssnLastFour}" /></c:if></td>
 									<td><c:out value="${item.lastName}" /></td>
 									<td><c:out value="${item.firstName}" /></td>
 									<td><c:out value="${item.middleName}" /></td>
-									<td class="text-right"><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
+									<td class="text-right"><c:if test="${item.isSensitive}"><c:out value="XX/XX/XXXX"/></c:if><c:if test="${!item.isSensitive}"><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></c:if></td>
 									
 									<td>
 										<c:choose>
