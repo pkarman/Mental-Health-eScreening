@@ -54,7 +54,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 
                 // Close modal and pass updated block to the page
                 $scope.close = function() {
-                    $modalInstance.close($scope.block);
+                    $modalInstance.close($scope.block, editing);
                 };
             }
 
@@ -62,9 +62,9 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 
         // Update the dashboard on the scope
         modalInstance.result.then(
-            function(block) {
+            function(block, editing) {
                 // Update blocks array with updated or new block
-                console.log('block', block);
+                console.log('block', block, editing);
             },
             function() {
                 // Error

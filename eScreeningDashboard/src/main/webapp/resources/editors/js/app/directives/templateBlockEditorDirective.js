@@ -4,16 +4,19 @@
     Editors.directive('templateBlockEditor', ['$compile', function($compile) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
-        function getBlockTypes(type) {
-            var allBlockTypes = [
-                { name: 'If', value: 'If Condition' },
-                { name: 'Else If', value: 'Else If' },
-                { name: 'Else', value: 'Else' },
-                { name: 'Text', value: 'Text' }
-            ];
+        var allBlockTypes = [
+            { name: 'If', value: 'If Condition' },
+            { name: 'Else If', value: 'Else If' },
+            { name: 'Else', value: 'Else' },
+            { name: 'Text', value: 'Text' }
+        ];
 
+        function getBlockTypes(type) {
             switch(type) {
                 case 'If':
+                    return allBlockTypes.slice(1);
+                    break;
+                case 'If Condition':
                     return allBlockTypes.slice(1);
                     break;
                 case 'Else If':
