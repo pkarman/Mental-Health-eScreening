@@ -44,9 +44,24 @@ Editors.directive('ngReallyClick', [function() {
         }
     };
 }]);
-Editors.config(function(RestangularProvider) {
+Editors.config(function(RestangularProvider, $provide) {
     RestangularProvider.setBaseUrl('/escreeningdashboard/dashboard');
     RestangularProvider.setRequestSuffix('.json');
+
+	$provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, $delegate){
+		// $delegate is the taOptions we are decorating
+		// register the tool with textAngular
+		taRegisterTool('addVariable', {
+			iconclass: "fa fa-plus",
+			buttonText: 'Add Variable',
+			action: function(){
+				this.$editor().wrapSelection('forecolor', 'red');
+			}
+		});
+		// add the button to the default toolbar definition
+		$delegate.toolbar[4] = ['addVariable'];
+		return $delegate;
+	}]);
 });
 
 Editors.run(function(editableOptions) {
