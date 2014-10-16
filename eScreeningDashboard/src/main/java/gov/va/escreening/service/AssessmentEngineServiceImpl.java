@@ -1,7 +1,6 @@
 package gov.va.escreening.service;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_EVENT_MARKED_COMPLETED;
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.context.AssessmentContext;
@@ -300,7 +299,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		ListMultimap<Integer, SurveyMeasureResponse> responseMap = surveyMeasureResponseRepository.getForVeteranAssessmentAndSurvey(veteranAssessmentId, surveyPage.getSurvey().getSurveyId());
 
 		Map<Integer, Boolean> measureVisibilityMap = measureVisibilityRepository.getVisibilityMapForSurveyPage(veteranAssessmentId, surveyPageId);
-		page.setPageTitle(surveyPage.getTitle());
+		page.setPageTitle(surveyPage.getSurvey().getSurveySection().getName());
 
 		if (!surveyPage.getMeasures().isEmpty()) {
 			page.setMeasures(new ArrayList<Measure>());
@@ -447,9 +446,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_UPDATED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
 			
-			// refresh list of SurveyMeasureResponses for this current Assessment. 
-			// This will be consumed by Rules
-			smrLister.loadSmrFromDb(assessmentContext.getVeteranAssessmentId());
+			// clear the threadlocal cache
+			smrLister.clearSmrFromCache();
 
 		} catch (Exception ex) {
 			errorResponse.setCode(10);

@@ -7,11 +7,13 @@ import gov.va.escreening.exception.VistaVerificationException;
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.vista.VistaBrokerVistaLinkConnectionSpec;
 import gov.va.escreening.vista.VistaRpcParam;
+import gov.va.escreening.vista.VistaUtils;
 import gov.va.escreening.vista.dto.DialogComponent;
 import gov.va.escreening.vista.dto.DialogPrompt;
 import gov.va.escreening.vista.dto.VistaBrokerUserInfo;
 import gov.va.escreening.vista.dto.VistaClinicAppointment;
 import gov.va.escreening.vista.dto.VistaClinicalReminderAndCategory;
+import gov.va.escreening.vista.dto.VistaDateFormat;
 import gov.va.escreening.vista.dto.VistaLocation;
 import gov.va.escreening.vista.dto.VistaNoteTitle;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
@@ -61,6 +63,7 @@ import javax.annotation.Resource;
 import javax.resource.ResourceException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,16 +241,16 @@ public class VistaRepositoryImpl implements VistaRepository {
 	}
 
 	@Override
-	public List<VistaVeteranAppointment> getVeteranAppointments(
-			String division, String vpid, String duz, String appProxyName,
-			String veteranIen) {
-
-		VistaRpcParam vistaRpcParam = new VistaRpcParam("string", veteranIen);
+	public List<VistaVeteranAppointment> getVeteranAppointments(String division, String vpid, String duz, String appProxyName,String veteranIen) {
 
 		List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();
-		vistaRpcParamList.add(vistaRpcParam);
+		vistaRpcParamList.add(new VistaRpcParam("string", veteranIen)); 	// Veteran IEN
+		vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString((new LocalDate()).toDate(), VistaDateFormat.MMdd)));		// Beginning Date (Fileman format), which is usually 1 year ago
+		vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString((new LocalDate()).plusYears(1).toDate(), VistaDateFormat.MMddHHmmss)));		// Ending Date (Fileman format), usually today
+		vistaRpcParamList.add(new VistaRpcParam("string", "0"));			// Skip (1 or 0), if 1 skip over admissions else include admissions
+		
 
-		List<VistaVeteranAppointment> resultList = query(division, vpid, duz, appProxyName, "OR CPRS GUI CHART", "ORWPT APPTLST", vistaRpcParamList, new OrwptApptlstListExtractor());
+		List<VistaVeteranAppointment> resultList = query(division, vpid, duz, appProxyName, "OR CPRS GUI CHART", "ORWCV VST", vistaRpcParamList, new OrwptApptlstListExtractor());
 
 		return resultList;
 	}

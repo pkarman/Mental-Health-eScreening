@@ -17,6 +17,7 @@ public class AssessmentVariableDto {
 	private Integer row ;
 	private String calculationValue;
 	private String otherValue;
+	private String displayName;
 	
 	private List<AssessmentVariableDto> children = new ArrayList<AssessmentVariableDto>();
 	
@@ -172,12 +173,20 @@ public class AssessmentVariableDto {
 
 	@Override
 	public String toString() {
-		return "AssessmentVariableDto [variableId=" + variableId + ", key="
+		return "AssessmentVariableDto [displayName="+displayName+", variableId=" + variableId + ", key="
 				+ key + ", type=" + type + ", name=" + name + ", value="
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
 				+ ", otherValue=" + otherValue + ", children=" + children + "]";
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName=displayName;
+	}
+
+	public String getDisplayName() {
+		return this.displayName;
 	}
 	
 }

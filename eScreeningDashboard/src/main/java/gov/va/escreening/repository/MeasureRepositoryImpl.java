@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -74,6 +73,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 		return measureIds;
 	}
 
+	@Override
 	public List<Measure> getChildMeasures(Measure parentMeasure) {
 		String sql = "SELECT m FROM Measure m  "
 				+ "WHERE m.parent = :parentMeasure";
@@ -197,7 +197,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 		return m;
 	}
 	
-	private void copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto)
+	private Measure copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto)
 	{
 		m.setIsRequired(measureDto.getIsRequired());
 		m.setIsPatientProtectedInfo(measureDto.getIsPPI());
@@ -229,21 +229,23 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				}
 			}
 		}
+		
 		if (m.getMeasureValidationList()==null)
 		{
 			m.setMeasureValidationList(new ArrayList<MeasureValidation>());
 		}
 		else
 			m.getMeasureValidationList().clear();
+		
 		if (measureDto.getValidations() != null) {
 			for (Validation mvdto : measureDto.getValidations()) {
 				gov.va.escreening.entity.Validation v = validationRepo
 						.findValidationByCode(mvdto.getName());
 				MeasureValidation mv = new MeasureValidation();
 				if ("boolean".equalsIgnoreCase(v.getDataType())) {
-					mv.setBooleanValue(Integer.getInteger(mvdto.getValue()));
+					mv.setBooleanValue(Integer.valueOf(mvdto.getValue()));
 				} else if ("number".equalsIgnoreCase(v.getDataType())) {
-					mv.setNumberValue(Integer.parseInt(mvdto.getValue()));
+					mv.setNumberValue(Integer.valueOf(mvdto.getValue()));
 				} else {
 					mv.setTextValue(mvdto.getValue());
 				}
@@ -254,9 +256,17 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 				mv.setValidation(v);
 				m.getMeasureValidationList().add(mv);
 			}
+			
 		}
 
-	}
+		update(m);
 
-	
+		if (measureDto.getChildMeasures() != null) {
+			for (gov.va.escreening.dto.ae.Measure child : measureDto
+					.getChildMeasures()) {
+				updateMeasure(child);
+			}
+		}
+		return m;
+	}
 }

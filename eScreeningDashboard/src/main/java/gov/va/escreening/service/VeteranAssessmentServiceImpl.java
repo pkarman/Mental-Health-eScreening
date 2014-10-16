@@ -351,7 +351,10 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 					}
 				}
 
-				assessmentSearchResult.setSsnLastFour(veteranAssessment.getVeteran().getSsnLastFour());
+				if (veteranAssessment.getVeteran().getIsSensitive())
+					assessmentSearchResult.setSsnLastFour("XXXX");
+				else	
+					assessmentSearchResult.setSsnLastFour(veteranAssessment.getVeteran().getSsnLastFour());
 
 				if (veteranAssessment.getDuration() == null) {
 					assessmentSearchResult.setDuration(0);
@@ -854,6 +857,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			veteranAssessmentInfo.setOfficePhone(veteranAssessment.getVeteran().getOfficePhone());
 			veteranAssessmentInfo.setCellPhone(veteranAssessment.getVeteran().getCellPhone());
 			veteranAssessmentInfo.setEmail(veteranAssessment.getVeteran().getEmail());
+			veteranAssessmentInfo.setIsSensitive(veteranAssessment.getVeteran().getIsSensitive());
 		}
 
 		if (veteranAssessment.getBattery() != null) {

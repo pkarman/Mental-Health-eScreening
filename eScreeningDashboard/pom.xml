@@ -320,7 +320,6 @@
 			<artifactId>guava</artifactId>
 			<version>12.0</version>
 		</dependency>
-
 		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
@@ -438,7 +437,7 @@
 					<password>${jdbc.password}</password>
 				</configuration>
 
-				<executions>
+			   <executions>
 					<execution>
 						<id>recreate-db</id>
 						<phase>process-test-resources</phase>
@@ -519,6 +518,32 @@
 							</fileset>
 						</configuration>
 					</execution>
+					<execution>
+						<id>apply-sprint-24-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<orderFile>ascending</orderFile>
+							<fileset> 
+								<basedir>src/main/sql/sprint_24</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+                        <id>apply-ticket-related-data</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <orderFile>ascending</orderFile>
+                            <fileset> 
+                                <basedir>src/main/sql/ticketRelatedChanges</basedir>
+                            </fileset>
+                        </configuration>
+                    </execution>
 					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>

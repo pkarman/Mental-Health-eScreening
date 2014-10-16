@@ -2,6 +2,7 @@ package gov.va.escreening.service.export;
 
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.util.SurveyResponsesHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,17 +10,17 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 public interface DataExtractor {
-	Map<String, String> apply(SurveyMeasureResponse smr);
+	Map<String, String> apply(SurveyMeasureResponse smr, SurveyResponsesHelper srh);
 }
 
 @Component("smrExportName")
 class ExportName implements DataExtractor {
 	@Override
-	public Map<String, String> apply(SurveyMeasureResponse smr) {
+	public Map<String, String> apply(SurveyMeasureResponse smr, SurveyResponsesHelper srh) {
 		MeasureAnswer ma = smr.getMeasureAnswer();
 
 		// data export column we could be interested in
-		String xportName = ma.getExportName();
+		String xportName = srh.buildExportName(smr, ma.getExportName());
 
 		// user entered data
 		String textValue = smr.getTextValue();
@@ -59,11 +60,12 @@ class ExportName implements DataExtractor {
 @Component("smrExportOtherName")
 class ExportOtherName implements DataExtractor {
 	@Override
-	public Map<String, String> apply(SurveyMeasureResponse smr) {
+	public Map<String, String> apply(SurveyMeasureResponse smr, SurveyResponsesHelper srh) {
 		MeasureAnswer ma = smr.getMeasureAnswer();
 
-		// data export column we coudl be interested in
-		String xportName = ma.getOtherExportName();
+		// data export column we could be interested in
+		String xportName = srh.buildExportName(smr,ma.getOtherExportName());
+
 		String otherValue = smr.getOtherValue();
 
 		String exportableResponse = null;
