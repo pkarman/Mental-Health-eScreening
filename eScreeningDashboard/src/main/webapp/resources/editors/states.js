@@ -208,8 +208,7 @@ angular.module('Editors')
                                 TemplateService.getTemplateTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
                                 }, function(responseError) {
-                                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                    deferred.reject(responseError.getMessage());
+                                    deferred.reject(responseError.data);
                                 });
                             }
 
@@ -864,7 +863,6 @@ angular.module('Editors')
                                 };
                                 
                                 deferred.resolve(templateObj);
-                                
 //                                if($stateParams.editState == "edit"){
 //                                    console.log("Getting template from server.");
 //                                    
