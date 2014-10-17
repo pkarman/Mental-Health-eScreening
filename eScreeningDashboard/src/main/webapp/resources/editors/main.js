@@ -46,10 +46,7 @@ Editors.directive('ngReallyClick', [function() {
 }]);
 
 Editors.config(function(RestangularProvider, $provide) {
-    RestangularProvider.setBaseUrl('/escreeningdashboard/dashboard');
-    RestangularProvider.setRequestSuffix('.json');
-
-	$provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, $delegate){
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, $delegate){
 		// $delegate is the taOptions we are decorating
 		// register the tool with textAngular
 		taRegisterTool('addVariable', {
