@@ -198,14 +198,14 @@ angular.module('Editors')
                     },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
                     resolve: {
-                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateService', function($rootScope, $stateParams, $q, TemplateService) {
+                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateTypeService', function($rootScope, $stateParams, $q, TemplateTypeService) {
                             var deferred = $q.defer();
 
                             if(Object.isDefined($stateParams) &&
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-                                TemplateService.getTemplateTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
+                                TemplateTypeService.getTemplateTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
                                 }, function(responseError) {
                                     deferred.reject(responseError.data);
@@ -863,6 +863,7 @@ angular.module('Editors')
                                 };
                                 
                                 deferred.resolve(templateObj);
+                                
 //                                if($stateParams.editState == "edit"){
 //                                    console.log("Getting template from server.");
 //                                    

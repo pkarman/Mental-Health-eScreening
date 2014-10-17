@@ -20,6 +20,7 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.surveysection',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.services.template',
+        'EscreeningDashboardApp.services.templateType',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.filters.messages',
         'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
@@ -71,3 +72,4 @@ Editors.run(['$rootScope', '$state', '$stateParams', '$modal', 'Restangular', fu
 }]);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
+Editors.value('Template', new EScreeningDashboardApp.models.Template());

@@ -94,6 +94,7 @@
 	
 	<!-- Template Domain -->
 	<script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
+	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
@@ -110,6 +111,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>

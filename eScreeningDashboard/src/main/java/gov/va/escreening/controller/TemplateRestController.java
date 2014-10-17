@@ -57,7 +57,7 @@ public class TemplateRestController {
         return er;
     }
 	
-	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET/*, consumes = "application/json"*/, produces = "application/json")
+	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
@@ -98,7 +98,7 @@ public class TemplateRestController {
 		return Boolean.TRUE;
 	}
 
-	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	public TemplateDTO getTemplate(
