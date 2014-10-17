@@ -23,4 +23,8 @@ public class VeteranAssessmentSmrList {
 	public void loadSmrFromDb(int vetAssId) {
 		t.set(smrr.findForVeteranAssessmentId(vetAssId));
 	}
+	
+	public void clearSmrFromCache(){
+	    t.remove();
+	}
 }

@@ -392,7 +392,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			ErrorBuilder
 				.throwing(IllegalSystemStateException.class)
 				.toUser("A needed template does not exist. Please contact the technical administrator.")
-				.toAdmin(String.format("A required template with ID: %s, could not be found in the database.", templateToProcess)).throwIt();
+				.toAdmin("A required template, could not be found in the database.").throwIt();
 
 		String templateText = templateToProcess.getTemplateFile();
 		if (templateText == null)
