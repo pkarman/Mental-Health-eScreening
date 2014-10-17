@@ -31,95 +31,12 @@ EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
         templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null,
         exists =  Object.isDefined(templateId);
 
-    /*this.getId = function(){
-        return id;
-    };
-
-    this.getName = function() {
-        return name;
-    };
-
-    this.getDescription = function() {
-        return description;
-    };
-
-    this.getExists = function() {
-        return exists;
-    };*/
-
+    this.exists = function(){
+        return Object.isDefined(this.templateId);
+    }
+    
     this.toString = function () {
         return "TemplateType {id: " + this.id + ", name: " + this.name + ", description: " + this.description + ", exists: " + this.exists + "}";
     };
 
-    /*this.toJSON = function () {
-        return JSON.stringify({ 
-            id: (Object.isDefined(id) && id > 0)? id : null,
-            name: name,
-            description: description,
-            "templateId" : templateId
-        });
-    };
-    
-    this.toUIObject = function(){
-        return {
-            "id" : id,
-            "name" : name,
-            "description" : description,
-            "templateId" : templateId,
-            "exists" : exists
-        }
-    };*/
 };
-/*
-EScreeningDashboardApp.models.TemplateType.toUIObjects = function(templateTypes) {
-    var templateTypesUIObjects = [];
-
-    if(Object.isDefined(templateTypes) && Object.isArray(templateTypes)) {
-        templateTypes.forEach(function(templateType) {
-            templateTypesUIObjects.push(templateType.toUIObject());
-        });
-    }
-
-    return templateTypesUIObjects;
-};
-
-*/
-/**
- * Static method to translated an array of ModuleTemplateTypeDTO (in JSON) into an array of TemplateType domain model objects.
- *
- * @static
- * @method
- * @param {String}  jsonResponse  Represents the JSON response of a service call request.
- * @returns {EScreeningDashboardApp.models.TemplateType[]} A list of TemplateTypes that have been returned from a service call request.
- *
- * @author Robin Carnow
- *//*
-
-EScreeningDashboardApp.models.TemplateType.transformJSONPayload = function (jsonResponse) {
-    'use strict';
-    */
-/**
-     * Represent list of template types.
-     *
-     * @private
-     * @field
-     * @type {EScreeningDashboardApp.models.TemplateType[]}
-     *//*
-
-    var templateTypes = [];
-
-    if (!Object.isDefined(jsonResponse)) {
-        throw new BytePushers.exceptions.InvalidParameterException("Server response can not be null or undefined.");
-    }
-
-    if (!Array.isArray(jsonResponse)) {
-        throw new BytePushers.exceptions.InvalidParameterException("Server response must be an Array.");
-    }
-
-    jsonResponse.forEach(function(jsonTemplateType){
-        templateTypes.push(new EScreeningDashboardApp.models.TemplateType(jsonTemplateType));
-    });
-
-
-    return templateTypes;
-};*/

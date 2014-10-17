@@ -12,8 +12,6 @@ Editors.controller('ModuleTemplateListController',
         backToModule();
     }
 
-    //$scope.templateTypeUIObj = EScreeningDashboardApp.models.TemplateType.toUIObjects(templateTypes);
-
     //set target object which is related to the templates we will be editing
     if(!Object.isDefined($stateParams) 
             || !Object.isDefined($stateParams.selectedSurveyId) 
@@ -58,14 +56,6 @@ Editors.controller('ModuleTemplateListController',
         }
     };
     
-    var editorParams = function(typeID, state){
-        return {selectedSurveyId: $stateParams.selectedSurveyId,
-                selectedSurveyName: $stateParams.selectedSurveyName,
-                typeId: typeID,
-                editState: state};
-    };
-    
-    
     $scope.relatedObj = {
         id : $stateParams.selectedSurveyId,
         name : decodeURIComponent($stateParams.selectedSurveyName)
@@ -93,19 +83,21 @@ Editors.controller('ModuleTemplateListController',
     //    });
     
 
-    /* ---- Button Actions ---- */
-    $scope.newTemplate = function(templateTypeUIObj){
-        console.log('Opening Template Editor to create new template of type: ' + templateTypeUIObj.name);
-        $state.go('template.moduleeditor', editorParams(templateTypeUIObj.id, "new"));
-    };
-    
-    $scope.editTemplate = function(templateTypeUIObj){
-        console.log('Opening Template Editor to edit template of type: ' + templateTypeUIObj.name);
-        $state.go('template.moduleeditor', editorParams(templateTypeUIObj.id, "edit"));
+    /* ---- Button Actions ---- */    
+    $scope.editTemplate = function(templateType){
+        console.log('Opening Template Editor to edit template of type: ' + templateType.name);
+        var editorParams =
+           {selectedSurveyId: $stateParams.selectedSurveyId,
+            selectedSurveyName: $stateParams.selectedSurveyName,
+            typeId: templateType.id,
+            templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
+           };
+        
+        $state.go('template.moduleeditor', editorParams);
     };
 
-    $scope.deleteTemplate = function(templateTypeUIObj){
-        console.log('Deleting template type: ' + templateTypeUIObj.name);
+    $scope.deleteTemplate = function(templateType){
+        console.log('Deleting template type: ' + templateType.name);
 
         //todo remove this when we are wired up
         alert("Deleted template type: " + templateType.name);
