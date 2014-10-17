@@ -10,13 +10,41 @@
             },
             controller: ['$scope', '$modal', '$filter', 'ngTableParams', function ($scope, $modal, $filter, ngTableParams) {
                 $scope.showAssessmentVariableSelectionTable = false;
-                $scope.assessmentVariables = [];
+                $scope.data = [
+                    {
+                        "id" : "87",                // the value of assessment_variable.assessment_variable_id
+                        "typeId" : "2",             // the value of assessment_variable.assessment_variable_type_id
+                        "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
+                        "displayName" :  "email",   // filled with either measureText or answerText
+                        "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
+                        "measureId": "2",          // the id of the measure if this is an AV of type Measure
+                        "measureTypeId" : "3"       // the type ID of the measure if this is an AV of type Measure
+                    },
+                    {
+                        "id" : "287",                // the value of assessment_variable.assessment_variable_id
+                        "typeId" : "24",             // the value of assessment_variable.assessment_variable_type_id
+                        "name": "demo_phone",       // filled with the value found in the export column (we can talk more about this)
+                        "displayName" :  "phone",   // filled with either measureText or answerText
+                        "answerId": "15",           // the id of the answer if this is an AV of type Measure Answer
+                        "measureId": "62",          // the id of the measure if this is an AV of type Measure
+                        "measureTypeId" : "93"       // the type ID of the measure if this is an AV of type Measure
+                    },
+                    {
+                        "id" : "872",                // the value of assessment_variable.assessment_variable_id
+                        "typeId" : "52",             // the value of assessment_variable.assessment_variable_type_id
+                        "name": "demo_age",       // filled with the value found in the export column (we can talk more about this)
+                        "displayName" :  "age",   // filled with either measureText or answerText
+                        "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
+                        "measureId": "22",          // the id of the measure if this is an AV of type Measure
+                        "measureTypeId" : "13"       // the type ID of the measure if this is an AV of type Measure
+                    }
+                ];
 
                 var toggleAssessmentVariableSelectionTable = function() {
                         $scope.showAssessmentVariableSelectionTable = ($scope.showAssessmentVariableSelectionTable)? false: true;
                     },
                     selectAssessmentVariable = function(assessmentVariable) {
-
+                        console.log("assessmentVariable: " + assessmentVariable);
                     },
                     displayAssessmentVariableSelectionTableAsModal = function () {
                         // Create the modal
@@ -61,12 +89,12 @@
                             return {};
                         }
                     }, {
-                        total:$scope.assessmentVariables.length,
+                        total:$scope.data.length,
                         getData: function ($defer, params) {
                             // use build-in angular filter
-                            params.total($scope.assessmentVariables.length);
-                            var filteredData = params.filter() ? $filter('filter')($scope.assessmentVariables, params.filter()) : $scope.assessmentVariables;
-                            var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : $scope.assessmentVariables;
+                            params.total($scope.data.length);
+                            var filteredData = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
+                            var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : $scope.data;
                             //params.total(orderedData.length); // set total for recalc pagination
                             $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                         }
@@ -79,35 +107,7 @@
             templateUrl: 'resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableSelection.html',
             link: function(scope, element, attributes, controller) {
                 element.addClass("assessmentVariableSelection");
-                scope.assessmentVariables = [
-                    {
-                        "id" : "87",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "2",             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
-                        "displayName" :  "email",   // filled with either measureText or answerText
-                        "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
-                        "measureId": "2",          // the id of the measure if this is an AV of type Measure
-                        "measureTypeId" : "3"       // the type ID of the measure if this is an AV of type Measure
-                    },
-                    {
-                        "id" : "287",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "24",             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_phone",       // filled with the value found in the export column (we can talk more about this)
-                        "displayName" :  "phone",   // filled with either measureText or answerText
-                        "answerId": "15",           // the id of the answer if this is an AV of type Measure Answer
-                        "measureId": "62",          // the id of the measure if this is an AV of type Measure
-                        "measureTypeId" : "93"       // the type ID of the measure if this is an AV of type Measure
-                    },
-                    {
-                        "id" : "872",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "52",             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_age",       // filled with the value found in the export column (we can talk more about this)
-                        "displayName" :  "age",   // filled with either measureText or answerText
-                        "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
-                        "measureId": "22",          // the id of the measure if this is an AV of type Measure
-                        "measureTypeId" : "13"       // the type ID of the measure if this is an AV of type Measure
-                    }
-                ];
+
                 /*AssessmentVariableService.query(AssessmentVariableService.setQueryAssessmentVariableSearchCriteria(null)).then(function(response) {
 
                     scope.variables = response;
