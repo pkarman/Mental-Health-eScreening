@@ -82,7 +82,7 @@ public class TemplateRestController {
         return templateTypes;
 	}
 	
-	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	public Boolean deleteTemplate( @PathVariable("templateId") Integer templateId, @CurrentUser EscreenUser escreenUser) {

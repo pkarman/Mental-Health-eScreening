@@ -2,8 +2,8 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('ModuleTemplateListController', 
-        ['$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes',
-         function($scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+        ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes',
+         function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
 
     $scope.templateTypes = templateTypes;
 
@@ -61,28 +61,6 @@ Editors.controller('ModuleTemplateListController',
         name : decodeURIComponent($stateParams.selectedSurveyName)
     };
 
-    $scope.refreshTable = function () {
-        console.log('\n\n refreshing template table');
-        /*$scope['tableParams'] = {
-         reload: function () {},
-         settings: function () {
-         return {};
-         }*/
-        //};
-        $timeout(setTable, 100);
-    };
-    //$scope.refreshTable();
-
-
-    //TODO: May need to watch for templateTypes but shouldn't this just update via data binding?
-    //    $scope.$watch('templateTypes', function(newVal, oldVal){
-    //    	console.log('Template type list has changed');
-    //    	if ($scope.templateTypes && $scope.templateTypes.length && $scope.templateTypes.length > 0){
-    //    		$timeout($scope.refreshTable, 500);
-    //    	}
-    //    });
-    
-
     /* ---- Button Actions ---- */    
     $scope.editTemplate = function(templateType){
         console.log('Opening Template Editor to edit template of type: ' + templateType.name);
@@ -97,16 +75,17 @@ Editors.controller('ModuleTemplateListController',
     };
 
     $scope.deleteTemplate = function(templateType){
-        console.log('Deleting template type: ' + templateType.name);
-
-        //todo remove this when we are wired up
-        alert("Deleted template type: " + templateType.name);
+        console.log('Deleting template type: ' + templateType.name + " which has ID: " + templateType.templateId);
 
         // send delete rest call
-        // TemplateService.delete({moduleId: $scope.relatedObj.id, templateType: templateType});
-
-        //update list of template types
-        // $scope.refreshTable();
+        TemplateService.one(templateType.templateId).remove().then(function(template){
+            console.log("Successfully deleted template type: " + templateType.name + " which has ID: " + templateType.templateId);
+            
+            $rootScope.addMessage(
+                    $rootScope.createSuccessDeleteMessage(templateType.name + " template was successfully deleted."));
+            
+            delete(templateType.templateId);
+        });
     };
 
     /**
