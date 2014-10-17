@@ -24,6 +24,7 @@ public class ResponseStatus {
     private String message;
     @JsonProperty("status")
     private Request requestStatus;
+    private Exception exception;
 
     public ResponseStatus() {
 
@@ -38,11 +39,21 @@ public class ResponseStatus {
         this.requestStatus = requestStatus;
     }
 
+    public ResponseStatus(Request requestStatus, String message, Exception exception) {
+        this.message = message;
+        this.requestStatus = requestStatus;
+        this.exception = exception;
+    }
+
     public String getMessage() {
         return message;
     }
 
     public Request getRequestStatus() {
         return requestStatus;
+    }
+
+    public Exception getException() {
+        return exception;
     }
 }

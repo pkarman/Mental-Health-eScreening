@@ -43,7 +43,7 @@ public class SurveyProgress implements Serializable {
     public SurveyProgress(VeteranAssessmentSurvey veteranAssessmentSurvey) {
         this.surveyId = veteranAssessmentSurvey.getSurvey().getSurveyId();
         this.sectionId = veteranAssessmentSurvey.getSurvey().getSurveySection().getSurveySectionId();
-        this.displayOrder = veteranAssessmentSurvey.getSurvey().getDisplayOrder();
+        this.displayOrder = veteranAssessmentSurvey.getSurvey().getSurveySection().getDisplayOrder();
         
         if(veteranAssessmentSurvey.getTotalQuestionCount() != null)
         {

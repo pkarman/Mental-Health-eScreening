@@ -5,10 +5,9 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'SurveyService', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, SurveyService, surveys) {
-    $rootScope.surveyUIObjects = EScreeningDashboardApp.models.Survey.toUIObjects(surveys);
+    $scope.setSurveyUIObjects(EScreeningDashboardApp.models.Survey.toUIObjects(surveys));
     
     $scope.refreshTable = function () {
-        console.log('\n\n refreshing table');
         /*$scope['tableParams'] = {
             reload: function () {},
             settings: function () {
@@ -19,18 +18,14 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     };
     //$scope.refreshTable();
 
-
-    //TODO: May need to watch for surveyUIObjects instead of surveys.
     $scope.$watch('surveys', function(newVal, oldVal){
-    	console.log('Watch Surveys');
     	if ($scope.surveyUIObjects && $scope.surveyUIObjects.length && $scope.surveyUIObjects.length > 0){
     		$timeout($scope.refreshTable, 500);
     	}
     });
 
     function setTable(arguments) {
-    	console.log('SetTable');
-        $scope.tableParams = new ngTableParams({
+    	$scope.tableParams = new ngTableParams({
             page: 1, // show first page
             count: 10, // count per page
             filter: {
@@ -46,8 +41,6 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
         }, {
             total:$scope.surveyUIObjects.length,
             getData: function ($defer, params) {
-                console.log(
-                    '\n\nngTable getData called now');
                 // use build-in angular filter
                 params.total($scope.surveyUIObjects.length);
                 var filteredData = params.filter() ?
@@ -85,20 +78,18 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
 
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
-    	console.log('Transition to Add/Edit Modules');
-        $scope.selectedSurveyUIObject = survey;
-        console.log(JSON.stringify(survey));
-        $state.go('modules.detail.question', {surveyId: survey.id});
+    	$scope.selectedSurveyUIObject = survey;
+        $state.go('modules.detail', {selectedSurveyId: survey.id});
     };
 
     $scope.addModule = function(){
-        $scope.selectedSurveyUIObject = $rootScope.createModule();
-        $state.go('modules.detail.question');
+        $scope.selectedSurveyUIObject = $scope.createModule();
+        $state.go('modules.detail.selectQuestionType');
     };
 
     $scope.goToAddEdit = function(){
     	console.log('Transition to Add/Edit Modules');
-        $state.go('modules.detail.question');
+        $state.go('modules.detail.selectQuestionType');
     };
 
     $scope.cancel = function(){

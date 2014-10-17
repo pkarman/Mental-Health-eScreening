@@ -164,4 +164,10 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (932, 10719, 10717);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (933, 10719, 10718);
 
-
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2047, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10714, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10715, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10716, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10717, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (3441, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (3442, 30);

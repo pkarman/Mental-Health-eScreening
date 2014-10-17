@@ -36,8 +36,14 @@
                     </td>
                     <td data-title="Actions">
                         <div class="pull-right">
-                            <div class="cursor-pointer" ng-click="editModule(survey);"><span class="glyphicon glyphicon-edit" title="Edit"></span> Edit</div>
-                            <!-- JH OOOCOMMENT <span class="glyphicon glyphicon-remove-circle" style="color:red;" title="Delete" ng-click="deleteClick();"></span> -->
+                        
+                            <div class="cursor-pointer pull-right"  ng-click="deleteClick();">
+                                &nbsp; &nbsp;<span class="glyphicon glyphicon-remove-circle" style="margin-left: 10px;color:red;" title="Delete"></span> Delete &nbsp; &nbsp;
+                            </div>
+                            
+                            <div class="cursor-pointer pull-right" ng-click="editModule(survey);">
+                                &nbsp; &nbsp;<span class="glyphicon glyphicon-edit" title="Edit"></span> Edit &nbsp; &nbsp;
+                            </div>
                         </div>
                     </td>
                 </tr>

@@ -35,7 +35,7 @@ BytePushers.models.ResponseTransformer =  BytePushers.namespace("com.byte-pusher
  */
 BytePushers.models.ResponseTransformer.transformJSONResponse = function (jsonResponse, payloadTransformer, userId, transFormPayload) {
     'use strict';
-    transFormPayload = (Object.isDefined(transFormPayload) && Object.isBoolean(transFormPayload)) ? transFormPayload : true;
+    transFormPayload = (Object.isBoolean(transFormPayload)) ? transFormPayload : true;
         /**
          * Represent the response from a Restful service call.
          *
@@ -76,7 +76,7 @@ BytePushers.models.ResponseTransformer.transformJSONResponse = function (jsonRes
 
     responseStatus = new BytePushers.models.ResponseStatus(jsonResponse.status);
     if (responseStatus.getStatus().toLowerCase() === "Succeeded".toLowerCase()) {
-        if (!Object.isDefined(jsonResponse.payload)) {
+        if (transFormPayload && !Object.isDefined(jsonResponse.payload)) {
             throw new BytePushers.exceptions.InvalidParameterException("jsonResponse.payload can not be null or undefined.");
         }
         responsePayload = (transFormPayload)? payloadTransformer.transformJSONPayload(jsonResponse.payload, userId) : null;
