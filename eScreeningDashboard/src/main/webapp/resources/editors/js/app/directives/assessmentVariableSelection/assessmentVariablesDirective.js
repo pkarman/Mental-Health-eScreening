@@ -7,9 +7,12 @@
             restrict: 'EA',
             scope: {},
             controller: function ($scope) {
-
+                $scope.showAssessmentVariableSelectionTable = false;
+                $scope.toggleAssessmentVariableSelectionTable = function() {
+                    $scope.showAssessmentVariableSelectionTable = ($scope.showAssessmentVariableSelectionTable)? false: true;
+                };
             },
-            templateUrl: 'resources/editors/views/templates/assessmentvariables.html',
+            templateUrl: 'resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariables.html',
             link: function(scope, element, attributes, controller) {
 
                 /*AssessmentVariableService.query(AssessmentVariableService.setQueryAssessmentVariableSearchCriteria(null)).then(function(response) {
