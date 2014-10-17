@@ -30,7 +30,7 @@ public class DataExportCell {
 
 	@Override
 	public String toString() {
-		return "DataExportCell [columnName=" + columnName + ", cellValue=" + cellValue + "]";
+		return "name=" + columnName + ", val=" + cellValue;
 	}
 
 }

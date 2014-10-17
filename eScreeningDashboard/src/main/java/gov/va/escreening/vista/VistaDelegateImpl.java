@@ -8,7 +8,9 @@ import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.entity.HealthFactor;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
@@ -155,14 +157,27 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
 	private void saveTbiConsultRequest(VeteranAssessment veteranAssessment,
 			VistaLinkClient vistaLinkClient) {
-		Survey btbisSurvey = surveyResponsesHelper.isTBIConsultSelected(veteranAssessment);
+		Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
 		if (btbisSurvey != null) {
 			logger.debug("saving TBI Consult Request to Vista");
 
-			Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), ExportTypeEnum.DEIDENTIFIED.getExportTypeId()));
+			Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
 			logger.debug("TBI Consult Response {}", vistaResponse);
 		}
 	}
+	
+	private Survey isTBIConsultSelected(VeteranAssessment veteranAssessment) {
+		for (SurveyMeasureResponse smr : veteranAssessment.getSurveyMeasureResponseList()) {
+			if ("BTBIS".equals(smr.getSurvey().getName())) {
+				MeasureAnswer ma = smr.getMeasureAnswer();
+				if ("1".equals(ma.getCalculationValue()) && smr.getBooleanValue()) {
+					return smr.getSurvey();
+				}
+			}
+		}
+		return null;
+	}
+
 
 	private String msg(String msgKey) {
 		return messageSource.getMessage(msgKey, null, null);

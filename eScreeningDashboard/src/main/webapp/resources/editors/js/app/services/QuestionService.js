@@ -47,7 +47,7 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
 
             service.query(queryQuestionSearchCriteria, function (jsonResponse) {
                 var existingQuestions = handleQuestionQueryResponse(jsonResponse, EScreeningDashboardApp.models.QuestionsTransformer, null);
-                deferred.resolve((existingQuestions.length === 0)? existingQuestions[0]: existingQuestions);
+                deferred.resolve((existingQuestions.length === 1)? existingQuestions[0]: existingQuestions);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -103,7 +103,7 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
 
             service.query(setQueryBySurveyIdSearchCriteria, function (jsonResponse) {
                 var existingQuestions = handleQuestionQueryResponse(jsonResponse, EScreeningDashboardApp.models.QuestionsTransformer, null);
-                deferred.resolve((existingQuestions.length === 0)? existingQuestions[0]: existingQuestions);
+                deferred.resolve((existingQuestions.length === 1)? existingQuestions[0]: existingQuestions);
             }, function (reason) {
                 var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
@@ -163,10 +163,21 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 );
 
             service.save(updateQuestionRequestParameter.question.toJSON(), function (jsonResponse) {
-                var existingQuestion = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
-                deferred.resolve(existingQuestion);
+                var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
+                deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -212,10 +223,21 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 );
 
             service.save(updateQuestionRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var existingQuestion = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
-                deferred.resolve(existingQuestion);
+                var response = handleQuestionSaveResponse(jsonResponse, EScreeningDashboardApp.models.QuestionTransformer);
+                deferred.resolve(resposne);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -242,13 +264,13 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                  * @type {Resource}
                  */
                 service = $resource(
-                    "services/:questions/:questionId",
+                    "services/surveys/:surveyId/:questions/:questionId",
                     {},
                     {
                         save: {
                             method: 'DELETE',
                             params: {
-                                "questionId": removeQuestionRequestParameters.questionId
+                                /*"questionId": removeQuestionRequestParameters.questionId*/
                             },
                             isArray: false
                         }
@@ -259,7 +281,18 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
                 var response = handleQuestionRemoveResponse(jsonResponse);
                 deferred.resolve(response);
             }, function (reason) {
-                deferred.reject(reason);
+                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                    errorMessage = HttpRejectionProcessor.processRejection(reason);
+                }
+
+                deferred.reject(new BytePushers.models.ResponseStatus(
+                    {
+                        "message": errorMessage,
+                        "status": "failed"
+                    }
+                ));
             });
 
             return deferred.promise;
@@ -297,14 +330,19 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
          * @param {String} questionId Represent the Question id to save.
          * @returns {{questionId: *, questions: String}} A search criteria object.
          */
-        var setRemoveQuestionRequestParameter = function (questionId) {
+        var setRemoveQuestionRequestParameter = function (surveyId, questionId) {
             var removeQuestionRequestParameter = {
+                "surveyId": surveyId,
                 "questionId": questionId,
                 "questions": "questions"
             };
 
             if (!Object.isDefined(questionId)) {
                 throw new BytePushers.exceptions.NullPointerException("questionId parameter can not be null");
+            }
+
+            if (!Object.isDefined(surveyId)) {
+                throw new BytePushers.exceptions.NullPointerException("surveyId parameter can not be null");
             }
 
             return removeQuestionRequestParameter;
@@ -443,27 +481,13 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId),
-                /**
-                 * Represents the transformed payload object of a service call request.
-                 *
-                 * @private
-                 * @field
-                 * @type {Object}
-                 */
-                payload = null;
+            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, jsonResponsePayloadTransformer, userId);
 
-            if (response !== null) {
-                if (response.isSuccessful()) {
-                    payload = response.getPayload();
-                } else {
-                    throw new Error(response.getMessage());
-                }
-            } else {
+            if (response === null) {
                 throw new Error("handleQuestionServiceQueryResponse() method: Response is null.");
             }
 
-            return payload;
+            return response;
         };
 
         /**
@@ -486,8 +510,8 @@ angular.module('EscreeningDashboardApp.services.question', ['ngResource'])
              * @type {EScreeningDashboardApp.models.Response}
              */
 
-            if (!jsonResponse.status.status == 'succeeded'){
-                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId),
+            if (jsonResponse.status.status.toLowerCase() === 'succeeded'){
+                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId, false),
                     /**
                      * Represents the transformed payload object of a service call request.
                      *

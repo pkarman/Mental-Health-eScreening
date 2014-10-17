@@ -1,27 +1,154 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'questions', 'surveyUIObject', function($rootScope, $scope, $state, SurveyService, QuestionService, questions, surveyUIObject){
-    var tmpList = [];
-    $scope.selectedSurveyUIObject = surveyUIObject;
-    $scope.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
+Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, pageQuestionItems, surveySectionDropDownMenuOptions){
+    var tmpList = [],
+        getSurveyUIObject = function () {
+            var selectedSurveyUIObject = null;
+
+            if(Object.isArray($scope.surveyUIObjects)) {
+                $scope.surveyUIObjects.forEach(function (surveyUIObject) {
+                    if(surveyUIObject.id === parseInt($state.params.selectedSurveyId)) {
+                        selectedSurveyUIObject = surveyUIObject;
+                    }
+                });
+            }
+
+            return selectedSurveyUIObject;
+        },
+        updateSurveyPages = function (selectedSurveyId, surveyPages) {
+            if(Object.isNumber(selectedSurveyId) && Object.isArray(surveyPages) && surveyPages.length > 0) {
+                SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function (response) {
+                    if (Object.isDefined(response)) {
+                        if (response.isSuccessful()) {
+                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                        } else {
+                            $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                            console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                        }
+                    }
+                }, function (responseError) {
+                    $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                });
+            }
+        },
+        createQuestion = function(selectedQuestionDomainObject) {
+            QuestionService.create(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        //TODO: Need to update surveyPageQuestion list.
+                        //$scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from QuestionService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        },
+        updateQuestion = function (selectedQuestionDomainObject){
+            QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        //TODO: Need to update surveyPageQuestion list.
+                        //$scope.setSelectedQuestionUIObject(response.getPayload().toUIObject());
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from QuestionService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        },
+        setQuestionUIObjects = function () {
+            QuestionService.queryBySurveyId(QuestionService.setQueryBySurveyIdSearchCriteria(surveyUIObject.id)).then(function (existingQuestions){
+                $scope.sections = EScreeningDashboardApp.models.Question.toUIObjects(existingQuestions);
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        },
+        getSelectedQuestionDomainObject = function () {
+            var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions);
+
+            $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
+                if(index > 0) {
+                    childMeasure.answers = firstChildQuestionAnswers;
+                }
+            });
+
+            return new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+        },
+        selectedMenuItemIndex = function (menuItem, menuItemOptions) {
+            var selectedMenuOptionIndex = -1;
+
+            if(Object.isArray(menuItemOptions)) {
+                menuItemOptions.some(function (menuOption, index) {
+                    if (menuOption.name === menuItem.name) {
+                        selectedMenuOptionIndex = index;
+                        return true;
+                    }
+                });
+            }
+
+            return selectedMenuOptionIndex;
+        },
+        surveyUIObject = getSurveyUIObject();
+
+    $scope.textFormatDropDownMenuOptions = [];
+    $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
+        $scope.textFormatDropDownMenuOptions = textFormatTypeMenuOptions;
+    };
+
+
+    $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
+
+    if (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0) {
+        $scope.setPageQuestionItems(pageQuestionItems);
+    } else {
+        $scope.addPageBreak({pageNumber: 1});
+    }
+
+    $scope.surveySectionDropDownMenuOptions = surveySectionDropDownMenuOptions;
+    var surveySectionDropDownMenuOptionIndex = (Object.isDefined($scope.selectedSurveyUIObject.surveySection))? selectedMenuItemIndex(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper($scope.selectedSurveyUIObject.surveySection), surveySectionDropDownMenuOptions) : -1;
+    $scope.selectedSurveyUIObject.surveySection = (surveySectionDropDownMenuOptionIndex >= 0)? surveySectionDropDownMenuOptions[surveySectionDropDownMenuOptionIndex].item: null;
+
+
+
+    $scope.$watch('selectedSurveyUIObject.surveySection', function (currentlySelectedSurveySectionItem, previouslySelectedSurveySectionItem) {
+        if (currentlySelectedSurveySectionItem === previouslySelectedSurveySectionItem) {
+            return;
+        } else {
+            if(Object.isDefined(currentlySelectedSurveySectionItem)) {
+                var dropDownMenuOptionIndex = selectedMenuItemIndex(currentlySelectedSurveySectionItem, $scope.surveySectionDropDownMenuOptions);
+                $scope.selectedSurveyUIObject.surveySection = (dropDownMenuOptionIndex >= 0)? $scope.surveySectionDropDownMenuOptions[dropDownMenuOptionIndex].item: null;
+            }
+        }
+    }, true);
 
     $scope.getFirstChildMeasureAnswers = function(childQuestions) {
         return EScreeningDashboardApp.models.Question.getFirstChildMeasureAnswers(childQuestions);
     };
-    $scope.getDefaultTextFormatType = function (targetQuestionUIObject, dropDownMenuOptions) {
-        var defaultTextFormatTypeValidation = new EScreeningDashboardApp.models.Validation();
+    $scope.getDefaultTextFormatType = function (targetQuestion, dropDownMenuOptions) {
+        var defaultTextFormatTypeValidation = null; //new EScreeningDashboardApp.models.Validation().toUIObject();
 
-        if(Object.isDefined(targetQuestionUIObject)) {
-           if(Object.isArray(targetQuestionUIObject.validations)) {
-               targetQuestionUIObject.validations.some(function(validation, index) {
+        if(Object.isDefined(targetQuestion)) {
+           if(Object.isArray(targetQuestion.validations)) {
+               targetQuestion.validations.some(function(validation, index) {
                    if(validation.name === "dataType") {
-                       return dropDownMenuOptions.some(function(dropDownMenuOption) {
+                       dropDownMenuOptions.some(function(dropDownMenuOption) {
                             if(dropDownMenuOption.name === validation.name && dropDownMenuOption.value === validation.value){
                                 defaultTextFormatTypeValidation = dropDownMenuOption;
                                 return true;
                             }
                        });
+
+                       if(Object.isDefined(defaultTextFormatTypeValidation)) {
+                           return true;
+                       }
                    }
                });
            }
@@ -30,87 +157,147 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return defaultTextFormatTypeValidation;
     };
 
-    $scope.editQuestion = function(questionUIObject){
-        $scope.selectedQuestionUIObject = questionUIObject;
+    $scope.save = function () {
+        var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
+            organizedPages = $scope.organizePages();
 
-        switch ($scope.selectedQuestionUIObject.type){
-            case 'freeText':
-            case 'readOnly':
-                $state.go('modules.detail.editReadOnlyQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            case 'selectOne':
-                $state.go('modules.detail.editSelectOneQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            case'selectMulti':
-                $state.go('modules.detail.editSelectMultipleQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            case 'selectOneMatrix':
-                $state.go('modules.detail.editSelectOneMatrixQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            case 'selectMultiMatrix':
-                $state.go('modules.detail.editSelectMultipleMatrixQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            case 'tableQuestion':
-                $state.go('modules.detail.editTableQuestion');
-                break;
-            case 'instruction':
-                $state.go('modules.detail.editInstructionQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
-                break;
-            default:
-                $state.go('modules.detail.editReadOnlyQuestion', {selectedQuestionId: $scope.selectedQuestionUIObject.id});
+
+        //console.info("Restful Payload Request: \n" + EScreeningDashboardApp.models.SurveyPage.toJSON(organizedPages) + "\n\n");
+
+        if(selectedModuleDomainObject.getId() > -1) {
+            SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+
+                        updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
+        } else {
+            SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
+                if(Object.isDefined(response)) {
+                    if (response.isSuccessful()) {
+                        $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
+                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+
+                        updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
+                    } else {
+                        $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+                        console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+                    }
+                }
+            }, function(responseError) {
+                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+            });
         }
 
+        $scope.resetForm(false, {
+            name: "modules.detail.empty",
+            params: {selectedQuestionId: $scope.selectedSurveyUIObject.id},
+            doTransition: true
+        });
     };
 
-    $scope.save = function () {
-        var firstChildQuestionAnswers = $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions),
-            selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.selectedSurveyUIObject),
-            selectedQuestionDomainObject;
+    /*$scope.addToPageQuestion = function (resetFormFunction, state, softReset) {
+        var selectedQuestionDomainObject = getSelectedQuestionDomainObject();
+        softReset = (Object.isBoolean(softReset))? softReset: false;
 
-        $scope.selectedQuestionUIObject.childQuestions.forEach(function (childMeasure, index) {
-            if(index > 0) {
-                childMeasure.answers = firstChildQuestionAnswers;
-            }
-        });
-
-        selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject),
-
-        console.info("modulesEditController.save() method:\n" + selectedQuestionDomainObject + "\n\n");
-        SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (existingSurvey){
-            $scope.selectedSurveyUIObject = existingSurvey.toUIObject();
-        }, function(responseError) {
-            $rootScope.errors.push(responseError.getMessage());
-            console.log('Update Module Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
-        });
-        QuestionService.update(QuestionService.setUpdateQuestionRequestParameter(selectedQuestionDomainObject)).then(function(existingQuestion){
-            $scope.selectedQuestionUIObject = existingQuestion;
-        }, function(responseError) {
-            $rootScope.errors.push(responseError.getMessage());
-            console.log('Update Question Restful WebService Call Error:: ' + JSON.stringify($rootScope.errors));
-        });
-
-        $state.go('modules.detail.question');
-    };
+        $scope.addQuestion(selectedQuestionDomainObject);
+        resetFormFunction(state.name, state.params, softReset);
+    };*/
 
     $scope.cancel = function () {
-        $state.go('modules.detail.question');
+        $scope.setSelectedPageQuestionItem(null);
+        $scope.setSelectedSurveyUIObject(null);
+        $state.go('modules.detail.empty');
     };
 
-    $scope.addQuestion = function(){
-        $scope.selectedQuestionUIObject = $rootScope.createQuestion();
-        $state.go('modules.detail.editReadOnlyQuestion');
+    /*$scope.addQuestion = function(){
+        $scope.setSelectedQuestionUIObject($rootScope.createQuestion());
+        $state.go('modules.detail.editReadOnlyQuestionType');
+    };*/
+
+    $scope.editQuestion = function(selectedPageQuestionItem){
+        var stateName = $scope.getStateName(selectedPageQuestionItem.getItem().type),
+            softReset = false,
+            state = {
+                name: undefined,
+                params: {selectedQuestionId: selectedPageQuestionItem.getItem().id},
+                doTransition: false
+            };
+
+        if(Object.isDefined(stateName)) {
+            $scope.setSelectedPageQuestionItem(selectedPageQuestionItem);
+            $state.go(stateName, {selectedQuestionId: selectedPageQuestionItem.getItem().id});
+        }
     };
 
-    $scope.deleteQuestion = function(question){
-        alert('Will delete the Question with VISTA Variable: ' + question.vistaVariable);
+    $scope.getStateName = function(selectedStateName){
+        var stateName;
+
+        switch (selectedStateName){
+            case 'freeText':
+                stateName = "modules.detail.editFreeTextQuestionType";
+                break;
+            case 'readOnly':
+                stateName = "modules.detail.editReadOnlyQuestionType";
+                break;
+            case 'selectOne':
+                stateName = "modules.detail.editSelectOneQuestionType";
+                break;
+            case'selectMulti':
+                stateName = "modules.detail.editSelectMultipleQuestionType";
+                break;
+            case 'selectOneMatrix':
+                stateName = "modules.detail.editSelectOneMatrixQuestionType";
+                break;
+            case 'selectMultiMatrix':
+                stateName = "modules.detail.editSelectMultipleMatrixQuestionType";
+                break;
+            case 'tableQuestion':
+                stateName = "modules.detail.editTableQuestionType";
+                break;
+            case 'instruction':
+                stateName = "modules.detail.editInstructionQuestionType";
+                break;
+            default:
+                stateName = "modules.detail.editFreeTextQuestionType";
+        }
+
+        return stateName;
     };
+
+    /*$scope.deleteQuestion = function(question){
+        $rootScope.messageHandler.clearMessages();
+        QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
+            setQuestionUIObjects();
+            $rootScope.addMessage($rootScope.createSuccessDeleteMessage(response.getMessage()));
+        }, function(responseError) {
+            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+        });
+
+        $state.go('modules.detail.selectQuestionType');
+    };*/
 
     $scope.sortableOptions = {
+        cancel: ".unsortable",
+        items: "li:not(.unsortable)",
+
         update: function(e, ui) {
             var logEntry = tmpList.map(function(i){
                 return i.value;
             }).join(', ');
             // $scope.sortingLog.push('Update: ' + logEntry);
+            if (ui.item.scope().item.isEnabled() === true) {
+
+            }
         },
         stop: function(e, ui) {
             // this callback has the changed model

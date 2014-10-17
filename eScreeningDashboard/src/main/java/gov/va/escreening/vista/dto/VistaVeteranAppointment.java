@@ -7,17 +7,10 @@ public class VistaVeteranAppointment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String clinicIen;
     private String clinicName;
     private Date appointmentDate;
+    private String status;
 
-    public String getClinicIen() {
-        return clinicIen;
-    }
-
-    public void setClinicIen(String clinicIen) {
-        this.clinicIen = clinicIen;
-    }
 
     public String getClinicName() {
         return clinicName;
@@ -41,8 +34,15 @@ public class VistaVeteranAppointment implements Serializable {
 
     @Override
     public String toString() {
-        return "VistaVeteranAppointment [clinicIen=" + clinicIen + ", clinicName=" + clinicName + ", appointmentDate="
-                + appointmentDate + "]";
+        return "VistaVeteranAppointment [clinicName=" + clinicName + ", appointmentDate=" + appointmentDate + "status="+status+"]";
     }
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 }

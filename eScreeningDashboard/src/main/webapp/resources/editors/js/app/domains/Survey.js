@@ -14,12 +14,12 @@ var EScreeningDashboardApp = EScreeningDashboardApp || {};
  */
 EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
 /**
- * Constructor method for the SurveySection class.  The properties of this class can be initialized with
+ * Constructor method for the Survey class.  The properties of this class can be initialized with
  * the jsonUserObject.
  * @class
  * @classdesc   This class is a domain model class; which means it has both behaviour and state
  *              information about the user.
- * @param {String}  jsonSurveySectionObject  Represents the JSON representation of a SurveySection object.
+ * @param {String}  jsonSurveyObject  Represents the JSON representation of a Survey object.
  * @constructor
  * @author <a href="mailto:pouncilt.developer@gmail.com">Tont&eacute; Pouncil</a>
  */

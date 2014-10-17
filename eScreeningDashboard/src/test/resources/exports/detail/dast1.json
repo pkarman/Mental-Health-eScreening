@@ -13,7 +13,7 @@
 			vars$DAST8_illegal : "1",
 			vars$DAST9_withdraw : "1",
 			vars$DAST10_medical : "1",
-			vars$DAST_score : "9"
+			vars$DAST_score : "9.0"
 		}
 	} ]
 }

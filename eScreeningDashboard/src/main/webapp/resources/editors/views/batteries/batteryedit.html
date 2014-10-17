@@ -1,7 +1,6 @@
-    <div class="page-header">
-    <h1>
-        Add/Edit Battery
-    </h1>
+<div class="row">
+  <div class="col-md-12">
+    <h1>Add/Edit Battery</h1>
     
     <!-- Alerts and Messages 
         <div class="row">
@@ -10,7 +9,7 @@
             <div class="alert alert-success">Your data has been saved successfully</div>
           </div>
         </div>
-    -->
+    
     <div class="row">
         <div class="col-md-12">
             <ul class="breadcrumb">
@@ -26,38 +25,42 @@
             </ul>
         </div>
     </div>
+    --> 
+  </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <form class="form-inline" name="battForm">
-            <div class="col-sm-3 form-group">
-                <label>
-                    Title
-                </label>
-                <input type="text" name="txtName" class="form-control" placeholder="Enter Battery Title" ng-model="currentlySelectedBatteryUIObject.name" required value="{{currentlySelectedBatteryUIObject.name}}">
-                <span class="error" ng-show="battForm.txtName.$error.required" style="font-weight:700;color:red;">Required</span>
-            </div>
-            <div class="col-sm-9 form-group pull-right">
-                <label>
-                    Description
-                </label>
-                <input type="text" name="txtDescription" class="form-control" placeholder="Enter Description" ng-model="currentlySelectedBatteryUIObject.description" required value="{{currentlySelectedBatteryUIObject.description}}">
-                <span class="error" ng-show="battForm.txtDescription.$error.required" style="font-weight:700;color:red;">Required</span>
-            </div>
-        </form>
+<div class="border-radius-main-form gray-lighter">
+  <form name="battForm">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="txtName">Title</label>
+          <span class="error" ng-show="battForm.txtName.$error.required" title="Required">*</span>
+          <input type="text" id="txtName" name="txtName" class="form-control" placeholder="Enter Battery Title" ng-model="currentlySelectedBatteryUIObject.name" required value="{{currentlySelectedBatteryUIObject.name}}">
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="form-group">
+          <label for="txtDescription">Description</label>
+          <span class="error" ng-show="battForm.txtDescription.$error.required" title="Required">*</span>
+          <input type="text" id="txtDescription" name="txtDescription" class="form-control" placeholder="Enter Description" ng-model="currentlySelectedBatteryUIObject.description" required value="{{currentlySelectedBatteryUIObject.description}}">
+        </div>
+      </div>
     </div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<form class="form-inline">
-			<div class="form-group" style="padding-left:20px;">
-				<label>Disabled</label>
-                <input type="checkbox" ng-model="currentlySelectedBatteryUIObject.disabled" ng-checked="currentlySelectedBatteryUIObject.disabled"/>
-			</div>
-		</form>
-	</div>
+  </form>
+  <form role="form">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <input type="checkbox" id="currentlySelectedBatteryDisabled" ng-model="currentlySelectedBatteryUIObject.disabled" ng-checked="currentlySelectedBatteryUIObject.disabled"/>
+          <label for="currentlySelectedBatteryDisabled">Disabled</label>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 <br>
+
+<!--
 <div class="row">
     <div class="col-md-12 text-center">
         <div class="btn-group">
@@ -68,70 +71,67 @@
         </div>
     </div>
 </div>
+
 <hr>
+-->
 <div class="row">
-    <div class="col-md-5">
-        <div class="well" style="height:500px;overflow-x:hidden;">
-            <h3>Available Modules by Section</h3>
-            <hr>
-            <div class="col-md-12" style="height:380px;overflow-x:visible;" ng-model="sections">
-                <div class="panel panel-default" ng-repeat="section in availSections track by $index">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{section.name}}<div class="form-group pull-right"><button class="btn btn-success btn-xs" ng-show="section.visible" ng-hide="!section.visible"  ng-click="section.isExpanded = !section.isExpanded"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"></span> </button> </div> </h3>
-                    </div>
-                    <div collapse="!section.isExpanded" style="overflow-y:auto;overflow-x:hidden;">
-                        <div class="panel-body" ng-show="section.isExpanded">
-                            <ul class="list-group" ng-model="section.surveys">
-                                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in section.surveys track by $index" ng-show="survey.visible==true">
-                                    <label>Module</label> {{survey.name}}
-                                    <div class="form-group buttonaction pull-right">
-                                        <span class="glyphicon glyphicon-arrow-right buttonaction pull-right" style="color:blue;cursor:hand;" ng-click="selectForBattery(survey);"></span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-md-5">
+    <h2>Available Modules by Section</h2>
+    <div class="border-radius-main-box gray-lighter" style="height:500px;overflow-x:hidden;">
+      <div class="" style="height:380px; overflow-x:none;" ng-model="sections">
+        <div class="panel panel-default" ng-repeat="section in availSections track by $index">
+          <div class="panel-heading">
+              <h3 class="panel-title">{{section.name}}
+                <div class="pull-right">
+                  <button class="btn btn-success btn-xs" ng-show="section.visible" ng-hide="!section.visible"  ng-click="section.isExpanded = !section.isExpanded"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"  title="Expand / Collapse Available Modules by Section"></span> </button>
+                </div>              
+              </h3>
+          </div>
+          <div collapse="!section.isExpanded">
+            <div class="panel-body" ng-show="section.isExpanded">
+              <ul class="list-group" ng-model="section.surveys">
+                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in section.surveys track by $index" ng-show="survey.visible==true"> {{survey.name}} <span>Module</span>
+                  <div class="form-group buttonaction pull-right cursor-pointer"> <span class="glyphicon glyphicon-chevron-right buttonaction pull-right " ng-click="selectForBattery(survey);"></span> </div>
+                </li>
+              </ul>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="col-md-7">
-        <div class="well" style="height:500px;overflow-x:hidden;">
-            <h3>Assigned Modules by Section</h3>
-            <hr>
-            <div class="col-md-12">
-            	<div class="app screen first" ng-model="batterySections" style="height:380px;overflow-x:visible;">
-	                <div class="panel panel-default" ng-repeat="sec in batterySections" ng-show="sec.visible==true">
-	                    <div class="panel-heading">
-	                        <h3 class="panel-title">{{sec.name}}<div class="form-group pull-right"><button class="btn btn-success btn-xs" ng-show="sec.surveys.length > 0" ng-click="sec.isExpanded = !sec.isExpanded;"><span ng-class="sec.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"></span></button> </div> </h3>
-	                    </div>
-	                    <div collapse="!sec.isExpanded" style="overflow-y:auto;overflow-x:hidden;">
-	                        <div class="panel-body" ng-show="sec.isExpanded">
-	                            <ul class="list-group" ng-model="sec.surveys">
-	                                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in sec.surveys track by $index" ng-show="survey.visible==true">
-	                                    <label> {{survey.name}}</label>
-	                                    <span class="glyphicon glyphicon-remove-circle buttonaction pull-right" style="color:red;cursor:hand;" ng-click="removeFromBattery(survey);"></span>
-	                                </li>
-	                            </ul>
-	                        </div>
-	                    </div>
-	            	</div>
-                </div>
+  </div>
+  <div class="col-md-7">
+    <h2>Assigned Modules by Section</h2>
+    <div class="border-radius-main-box gray-lighter scroll-div-y" style="height:500px;">
+      <div class="app screen first" ng-model="batterySections" style="height:380px;overflow-x:visible;">
+        <div class="panel panel-default" ng-repeat="sec in batterySections" ng-show="sec.visible==true">
+          
+          <div class="panel-heading">
+            <h3 class="panel-title">{{sec.name}}
+              <div class="pull-right">
+                <button class="btn btn-success btn-xs" ng-show="sec.surveys.length > 0" ng-click="sec.isExpanded = !sec.isExpanded;"><span ng-class="sec.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'" title="Expand / Collapse Assigned Modules by Section"></span></button>
+              </div>
+            </h3>
+          </div>
+          
+          <div collapse="!sec.isExpanded">
+            <div class="panel-body" ng-show="sec.isExpanded">
+              <ul class="list-group" ng-model="sec.surveys">
+                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in sec.surveys track by $index" ng-show="survey.visible==true"> <span> {{survey.name}}</span> <span class="glyphicon glyphicon-remove-circle buttonaction pull-right color-red cursor-pointer" ng-click="removeFromBattery(survey);"></span> </li>
+              </ul>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <hr>
 <div class="row">
   <div class="col-md-12">
-      <div class="form-group pull-right">
-     
-          <button class="btn btn-primary" ng-disabled="battForm.$valid==false" ng-click="saveBattery();">
-              Save
-          </button>
-          <button class="btn btn-default" ng-click="cancelBattery();">
-              Cancel
-          </button>
-      </div>
+    <div class="form-group pull-right">
+      <button class="btn btn-primary" ng-disabled="battForm.$valid==false" ng-click="saveBattery();"> Save </button>
+      <button class="btn btn-default" ng-click="cancelBattery();"> Cancel </button>
+    </div>
   </div>
 </div>
