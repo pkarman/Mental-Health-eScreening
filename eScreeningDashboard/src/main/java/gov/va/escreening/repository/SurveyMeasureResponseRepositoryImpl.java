@@ -26,7 +26,7 @@ import com.google.common.collect.ListMultimap;
 public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateRepository<SurveyMeasureResponse> implements SurveyMeasureResponseRepository {
 
 	@Resource(name = "veteranAssessmentSmrList")
-	VeteranAssessmentSmrList veteranAssessmentSmrList;
+	VeteranAssessmentSmrList smrLister;
 
 	private static final Logger logger = LoggerFactory.getLogger(SurveyMeasureResponseRepositoryImpl.class);
 
@@ -80,10 +80,10 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	}
 
 	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
-		List<SurveyMeasureResponse> smrList = veteranAssessmentSmrList.fetchCachedSmr();
-		if (smrList == null || smrList.isEmpty()) {
-			veteranAssessmentSmrList.loadSmrFromDb(veteranAssessmentId);
-			smrList = veteranAssessmentSmrList.fetchCachedSmr();
+		List<SurveyMeasureResponse> smrList = smrLister.fetchCachedSmr();
+		if (smrList == null) {
+			smrLister.loadSmrFromDb(veteranAssessmentId);
+			smrList = smrLister.fetchCachedSmr();
 		}
 		return smrList;
 	}
@@ -147,7 +147,7 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	}
 
 	@Override
-	public SurveyMeasureResponse findSmrUsingPreFetch(int veteranAssessmentId, int measureAnswerId) {
+	public SurveyMeasureResponse findSmrUsingPreFetch(int veteranAssessmentId, int measureAnswerId, @Nullable Integer tabularRow) {
 		/**
 		 * <pre>
 		 * String sql = &quot;SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId&quot;;
@@ -173,7 +173,9 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		 */
 		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
 			if (smr.getMeasureAnswer().getMeasureAnswerId().equals(measureAnswerId)) {
+				if(tabularRow==null || tabularRow.equals(smr.getTabularRow())){
 					return smr;
+				}
 			}
 		}
 		return null;
@@ -183,27 +185,28 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 	@Override
 	public SurveyMeasureResponse find(int veteranAssessmentId,	int measureAnswerId, @Nullable Integer tabularRow) {
 
-		logger.trace("find");
-
-		String sql = "SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId";
-
-		if (tabularRow != null) {
-			sql += " AND smr.tabularRow = :tabularRow";
-		}
-
-		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class).setParameter("veteranAssessmentId", veteranAssessmentId).setParameter("measureAnswerId", measureAnswerId);
-
-		if (tabularRow != null) {
-			query.setParameter("tabularRow", tabularRow);
-		}
-
-		List<SurveyMeasureResponse> surveyMeasureResponseList = query.getResultList();
-
-		if (surveyMeasureResponseList.size() > 0) {
-			return surveyMeasureResponseList.get(0);
-		} else {
-			return null;
-		}
+		return findSmrUsingPreFetch(veteranAssessmentId, measureAnswerId, tabularRow);
+//		logger.trace("find");
+//
+//		String sql = "SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId";
+//
+//		if (tabularRow != null) {
+//			sql += " AND smr.tabularRow = :tabularRow";
+//		}
+//
+//		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class).setParameter("veteranAssessmentId", veteranAssessmentId).setParameter("measureAnswerId", measureAnswerId);
+//
+//		if (tabularRow != null) {
+//			query.setParameter("tabularRow", tabularRow);
+//		}
+//
+//		List<SurveyMeasureResponse> surveyMeasureResponseList = query.getResultList();
+//
+//		if (surveyMeasureResponseList.size() > 0) {
+//			return surveyMeasureResponseList.get(0);
+//		} else {
+//			return null;
+//		}
 
 	}
 

@@ -205,7 +205,7 @@ angular.module('Editors')
                                 Object.isDefined($stateParams.selectedSurveyId) &&
                                 $stateParams.selectedSurveyId > -1) {
 
-                                TemplateService.getList({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
+                                TemplateService.getTemplateTypes({surveyId: $stateParams.selectedSurveyId}).then(function (templateTypes) {
                                     deferred.resolve(templateTypes);
                                 }, function(responseError) {
                                     $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));

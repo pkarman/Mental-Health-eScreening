@@ -18,7 +18,7 @@ app.directive('reportTable', function() {
 			}
 		}
         
-        var dataTable;
+    var dataTable;
 		var sourceURL = "exportData/services/exports/exportLog";
 		
 		exportDataTable(sourceURL);
@@ -105,21 +105,12 @@ app.factory('filterOptionService', function($http) {
 			}).then(function(result) {
 				// console.log(">>>>>>> DATA >>> ");
 				// console.log(result.data.stateId);
-				
-			
-				
-				
 				return result.data;
 				
 			});
 		}
 	};
 });
-
-
-
-
-
 
 /**
  * Controller for the page.
@@ -136,6 +127,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$scope.exportDataFormBean.exportDataType = 'identified';
 		$("#alertType").removeClass("alert-warning").addClass("alert-danger");
 		$("#alertData").text("Identified Data");
+    $("#myModalLabel").text("Exporting Identified Data Confirmation");
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
@@ -148,9 +140,26 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		$scope.exportDataFormBean.exportDataType = 'deidentified';
 		$("#alertType").removeClass("alert-danger").addClass("alert-warning");
 		$("#alertData").text("De-Identified Data");
+    $("#myModalLabel").text("Exporting De-Identified Data Confirmation");
 		$("#comment").val("");
 		$scope.exportDataFormBean.exportLogId = exportLogId;
     };
+    
+
+	$scope.launchDataDictionaryButton = function(){
+		
+	    $http({method: 'GET', url: 'exportData/services/exports/dataDictionary'}).
+	      success(function(data, status, headers, config) {
+	    	
+	        window.open("exportData/services/exports/dataDictionary", "_self");
+	        $('#modal_progress').modal('hide');
+	        $("#progressMessages").html("");
+	      }).
+	      error(function(data, status, headers, config) {
+	    	  $("#progressMessages").html("<div class='alert alert-danger' role='alert'>Error occurred.</div>");
+	        //$("#modal_progress .progress").hide();
+	      });
+	};
 	
 	 
 	//console.log("inside the controller");
@@ -260,7 +269,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 		
 		// Null out current selected item and clear list.
 		$scope.exportDataFormBean.clinicianId = "";
-		console.log(">> "+ $scope.exportDataFormBean.clinicianId);
+		//console.log(">> "+ $scope.exportDataFormBean.clinicianId);
 		$scope.clinicanList = [];
 
 		// Create the request parameters we will post.
@@ -320,6 +329,7 @@ function exportDataController($scope,$element,$http,$window, programListService,
 					//
 				});
 	}
+  
 
 	/**
 	 * Initializes the model with any parameters initially passed to the controller. 
@@ -327,7 +337,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	function initializeModel() {
 		$scope.exportDataFormBean = {};
 	}
-
 
 
 	programListService.getProgramList().then(function(data) {
@@ -346,9 +355,6 @@ function exportDataController($scope,$element,$http,$window, programListService,
 	    $scope.destroyDataTable($scope.filter.stateId);
 	}
 	
-	
-	
-	
 	/**
 	 * Initializes the model with any parameters initially passed to the controller synchronously.
 	 */
@@ -358,24 +364,27 @@ function exportDataController($scope,$element,$http,$window, programListService,
 
 
  $(document).ready(function() {
-    	tabsLoad("exportData");
-		$("#fromAssessmentDate").datepicker({
-			showOn : 'button',
-			buttonImage : "../resources/images/calendar1.png",
-			buttonImageOnly : true
-		});
-		$("#toAssessmentDate").datepicker({
-			showOn : 'button',
-			buttonImage : "../resources/images/calendar1.png",
-			buttonImageOnly : true
-		});
-		$('.ui-datepicker-trigger').mouseover(function() {
-			$(this).attr("title", "click to open calendar");
 
+    // Load current tab
+    tabsLoad("exportData");
+
+
+    // Date Picker Start - Call picker and focus for 508         
+    var fromAssessmentDateGroup  = "#fromAssessmentDateGroup";
+    var toAssessmentDateGroup    = "#toAssessmentDateGroup";
+    $(fromAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+      autoclose: true
 		});
-		
+
+		$(toAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+			autoclose: true
+		});
+	
 		$('.id_header_tooltip').tooltip({
 			'placement': 'top'
 		});
-		
 });

@@ -91,13 +91,17 @@ public class Measure implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure", orphanRemoval=true)
     private List<MeasureValidation> measureValidationList;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure")
     @OrderBy("displayOrder")
     private List<MeasureAnswer> measureAnswerList;
+    
     @OneToMany(mappedBy = "measure")
     private List<AssessmentVariable> assessmentVariableList;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure")
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
+    
     @ManyToOne(cascade = { CascadeType.ALL }, optional = true)
     @JoinColumn(name = "parent_measure_id")
     private Measure parent;

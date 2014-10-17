@@ -91,7 +91,7 @@
 							<div class="col-md-4">
 								<div class="border-radius-box-a ">
 									<div class="gray-lighter border-bottom-solid-gray">
-										<h3>Import VistA Clinic List from VistA</h3>
+										<h2>Import VistA Clinic List from VistA</h2>
 									</div>
 									<div class="box-padding-10  text-center">
 										<p class="min-height-140">
@@ -120,7 +120,7 @@
 							<div class="col-md-4">
 								<div class="border-radius-box-a">
 									<div class="gray-lighter border-bottom-solid-gray">
-										<h3>Import Clinical Reminder List from VistA</h3>
+										<h2>Import Clinical Reminder List from VistA</h2>
 									</div>
 									<div class="box-padding-10  text-center">
 										<p class="min-height-140">
@@ -151,7 +151,7 @@
 							<div class="col-md-4">
 								<div class="border-radius-box-a">
 									<div class="gray-lighter border-bottom-solid-gray">
-										<h3>Import Note Title List from VistA</h3>
+										<h2>Import Note Title List from VistA</h2>
 									</div>
 									<div class="box-padding-10  text-center">
 										<p class="min-height-140">
@@ -186,10 +186,10 @@
 						  <div class="modal-dialog">
 						    <div class="modal-content">
 						      
-                              <form name="verifyForm" id="verifyForm">
+                              <form name="verifyForm" id="verifyForm" class="verifyFormImportData">
                                   <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title" id="import_modal_label">Import Clinic List</h4>
+                                    <h1 class="modal-title" id="import_modal_label">Import Clinic List</h1>
                                   </div>
                                   <div class="modal-body">
                                     <div class="alert alert-info" id="verification_message">Are you sure you want to import clinic lists data from VistA?</div>

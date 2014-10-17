@@ -61,7 +61,7 @@
 					OEF/OIF Health Assessment
 				</span>
 					<div class="cesamhLogo">
-						<img src="resources/images/cesamh_new_logo.png" class="cesamh">
+						<img src="resources/images/cesamh_new_logo.png" class="cesamh" alt="VA CENTER OF EXCELLENCE CESAMH STRESS AND MENTAL HEALTH LOGO">
 					</div>
 </div>
 <br/>

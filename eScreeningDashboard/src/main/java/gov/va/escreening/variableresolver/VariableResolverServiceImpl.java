@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
@@ -11,6 +12,8 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +31,10 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     private VeteranAssessmentRepository veteranAssessmentRepository;
     @Autowired
     private TemplateRepository templateRepository;
-    
+
+	@Resource(name = "veteranAssessmentSmrList")
+	VeteranAssessmentSmrList smrLister;
+
     private static final Logger logger = LoggerFactory.getLogger(VariableResolverServiceImpl.class);
     
     //TODO: If we don't need to support the use of template ID and we can just use a template object that we already have queried, that would make this faster.
@@ -58,10 +64,16 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, Iterable<AssessmentVariable> dbVariables) {
         List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
         
+        // clear the smr cache before resolving variable for every assessment 
+        smrLister.clearSmrFromCache();
+        
         //Used for resolving override values
         Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(dbVariables);
         
         for(AssessmentVariable dbVariable : dbVariables){
+        	if ("prior_dx_score".equals(dbVariable.getDisplayName())){
+        		int i=0;
+        	}
             assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, veteranAssessmentId, measureAnswerHash).asSet());
         }
         

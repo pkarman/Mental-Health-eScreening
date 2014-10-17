@@ -38,7 +38,7 @@
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="/WEB-INF/messages/messages" />
+		<property name="basename" value="classpath:messages" />
 		<property name="cacheSeconds" value="0" />
 	</bean>
 

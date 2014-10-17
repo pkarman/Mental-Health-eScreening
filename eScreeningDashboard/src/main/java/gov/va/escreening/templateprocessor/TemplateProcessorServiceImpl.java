@@ -154,6 +154,25 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 	
 	/**
+	 * method to reset the {@link ThreadLocal} of VeteranAssessmentSmrList#clearSmrFromCache()}, as threads are not created here but served from the thread pool
+	 * @param veteranAssessmentId
+	 * @param viewType
+	 * @param cprsNote
+	 * @param optionalTemplates
+	 * @param includeSections
+	 * @return
+	 * @throws IllegalSystemStateException
+	 */
+	private String createDocument(int veteranAssessmentId, ViewType viewType,
+			DocumentType cprsNote, EnumSet<TemplateType> optionalTemplates,
+			boolean includeSections) throws IllegalSystemStateException {
+		smrLister.clearSmrFromCache();
+		String docAsString=createDocumentNow(veteranAssessmentId, viewType, cprsNote, optionalTemplates, includeSections);
+		smrLister.clearSmrFromCache();
+		return docAsString;
+	}
+
+	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates
 	 * @param assessment the assessment the document is being created for
 	 * @param viewType the type of rendering
@@ -165,11 +184,8 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @return the rendered document
 	 * @throws IllegalSystemStateException
 	 */
-	private String createDocument(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
+	private String createDocumentNow(int veteranAssessmentId, ViewType viewType, DocumentType documentType, 
 			EnumSet<TemplateType> optionalTemplates, boolean includeSections) throws IllegalSystemStateException{
-		
-		// load list of SurveyMeasureResponse for this assessment id
-		smrLister.loadSmrFromDb(veteranAssessmentId);
 		
 		//get assessment
 		VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
@@ -190,15 +206,22 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
 		List<Template> graphicalTemplates = new LinkedList();
 		for (SurveySection section : sections) {
-
+			boolean sectionStarted = false;
+			
 			// start section
-			if(includeSections)
-				evaluator.startSection(section);
+//			if(includeSections)
+//				evaluator.startSection(section);
 			
 			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
 				if (surveysTaken.containsKey(survey.getSurveyId())) {
 					for (Template template : survey.getTemplates()) {
+						if(!sectionStarted)
+						{
+							if(includeSections)
+								evaluator.startSection(section);
+							sectionStarted = true;
+						}
 						TemplateType type = TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId());
 						if(type.equals(documentType.getEntryType())) {
 							if(template.getIsGraphical()){
@@ -588,6 +611,18 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		sb.append(st).append("You may ask to meet with a Transition Case Manager today to discuss any issues presented in this screen. You can also call the OEF/OIF/OND Care Management team at any point in the future for assistance. Their contact information is listed on your personalized summary.").append(closeDiv);
 
 		return sb.toString();
+	}
+	
+	@Override
+	public freemarker.template.Template getTemplate(Integer templateId, String templateText)
+		throws IOException
+	{
+		// Convert the template to a string, load it into the freemarker
+				// configuration
+		Configuration fmConfiguration = getFreemarkerConfiguration();
+		String templateCacheName = String.format("template%s", templateId);
+		((StringTemplateLoader) fmConfiguration.getTemplateLoader()).putTemplate(templateCacheName, templateText);
+		return  fmConfiguration.getTemplate(templateCacheName);
 	}
 
 }

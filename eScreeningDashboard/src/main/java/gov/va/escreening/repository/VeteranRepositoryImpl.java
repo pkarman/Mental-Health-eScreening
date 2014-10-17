@@ -62,9 +62,10 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
                 veteranRoot.get("lastName"),
                 veteranRoot.get("ssnLastFour"),
                 veteranRoot.get("email"),
-                veteranRoot.get("gender"),
+                veteranRoot.get("gender"),                
                 maxDateCreated,
-                countOfAssessment));
+                countOfAssessment,
+                veteranRoot.get("isSensitive")));
 
         criteriaQuery.groupBy(veteranRoot);
 
@@ -192,6 +193,10 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
                 veteranSearchResult.setTotalAssessments(Integer.parseInt(String.valueOf(record[9])));
             }
 
+            if (record[10]!=null)
+            {
+            	veteranSearchResult.setIsSensitive((Boolean)record[10]);
+            }
             veteranSearchResults.add(veteranSearchResult);
         }
 

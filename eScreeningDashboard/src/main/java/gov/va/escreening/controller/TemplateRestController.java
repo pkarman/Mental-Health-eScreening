@@ -4,12 +4,15 @@ import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.dto.ae.ErrorResponse;
+import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
-import gov.va.escreening.webservice.RequestError;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.NotFoundException;
+
 import java.util.List;
 
 @Controller
@@ -36,40 +39,47 @@ public class TemplateRestController {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public RequestError handleEntityNotFoundException(EntityNotFoundException enfe) {
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
         logger.debug(enfe.getMessage());
-        return new RequestError(enfe.getMessage(), enfe.getCause().getMessage());
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public RequestError handleException(NotFoundException nfe) {
-        logger.debug(nfe.getMessage());
-        return new RequestError(nfe.getMessage(), nfe.getCause().getMessage());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public RequestError handleIllegalArgumentException(IllegalArgumentException iae) {
-        logger.debug(iae.getMessage());
-        return new RequestError(iae.getMessage(), iae.getCause().getMessage());
+        return enfe.getErrorResponse();
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public RequestError handleIllegalArgumentException(Exception iae) {
+    public ErrorResponse handleIllegalArgumentException(Exception iae) {
         logger.debug(iae.getMessage());
-        return new RequestError(iae.getMessage(), iae.getCause().getMessage());
+        ErrorResponse er = new ErrorResponse();
+
+        er.setDeveloperMessage(iae.getMessage());
+        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
+        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return er;
     }
 	
 	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET/*, consumes = "application/json"*/, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-		return templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+        if(surveyId == null || surveyId < 0) {
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        List<TemplateTypeDTO> templateTypes = templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
+
+        if(templateTypes == null || (templateTypes != null && templateTypes.isEmpty())){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        return templateTypes;
 	}
 	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
@@ -208,6 +218,22 @@ public class TemplateRestController {
 	{
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
+	}
+	
+	@RequestMapping(value = "/services/template/getTemplateFile/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseBody
+	public TemplateFileDTO getTemplateFile(
+			@PathVariable("templateId") Integer templateId,
+			@CurrentUser EscreenUser escreenUser) {
+		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
+		if (dto == null)
+			 ErrorBuilder.throwing(EntityNotFoundException.class)
+	             .toUser("Could not find the template.")
+	             .toAdmin("Could not find the template with ID: " + templateId)
+	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	             .throwIt();
+		return dto;
 	}
 
 }

@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateElementNodeDTO implements Serializable {
@@ -10,23 +11,23 @@ public class TemplateElementNodeDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = -8322597683027468035L;
 	
-	private String nodeType;
-	private List<TemplateElementNodeDTO> childrenNodes;
+	private String title;
+	private String section;
+	private String type;
 	private String content;
-	private boolean isLeaf;
-	
+	private List<TemplateElementNodeDTO> children = new ArrayList<>();
 	
 	public String getType() {
-		return nodeType;
+		return type;
 	}
 	public void setType(String type) {
-		this.nodeType = type;
+		this.type = type;
 	}
-	public List<TemplateElementNodeDTO> getChildrenNodes() {
-		return childrenNodes;
+	public List<TemplateElementNodeDTO> getChildren() {
+		return children;
 	}
-	public void setChildrenNodes(List<TemplateElementNodeDTO> childrenNodes) {
-		this.childrenNodes = childrenNodes;
+	public void setChildren(List<TemplateElementNodeDTO> childrenNodes) {
+		this.children = childrenNodes;
 	}
 	public String getContent() {
 		return content;
@@ -34,14 +35,17 @@ public class TemplateElementNodeDTO implements Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public boolean isLeaf() {
-		return isLeaf;
+	public String getTitle() {
+		return title;
 	}
-	public void setLeaf(boolean isLeaf) {
-		this.isLeaf = isLeaf;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getSection() {
+		return section;
+	}
+	public void setSection(String section) {
+		this.section = section;
 	}
 	
-	
-	
-
 }

@@ -1,4 +1,3 @@
-
 var app = angular.module('assessmentReportFormApp', []);
 
 /**
@@ -23,15 +22,15 @@ app.directive('reportTable', function() {
 
         var aoColumns = {};
         aoColumns = [
-			{ "mData": "veteranAssessmentId","sClass":"numeric", "sWidth":"45px"},
-			{ "mData": "programName"},
-			{ "mData": "clinicianName"},
-			{ "mData": "createdBy", "sWidth":"75px"},
-			{ "mData": "assessmentDate","sClass":"numeric", "sWidth":"158px"},
-			{ "mData": "veteranId","sClass":"numeric", "sWidth":"100px"},
-			{ "mData": "veteranName"},
-			{ "mData": "assessmentStatusName", "sWidth":"80px"},
-			{ "mData": "veteranAssessmentId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#" vaidurl="assessmentPreview?vaid='+full.veteranAssessmentId+'" class="assessmentPreviewIFramePush" data-title="Assessment Report Preview"><img class="imgSize" src="../resources/images/Assess_icon.png" title="Link to View Assessment"></a>&nbsp;&nbsp;<a href="#"  class="assessmentNotePush" vaid='+full.veteranAssessmentId+' data-title="Review Note"><img class="imgSize" src="../resources/images/review.png" title="Link to Review Notes"></a>&nbsp;&nbsp;<a class="assessmentPreviewIFramePush" href="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" vaidurl="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" data-title="Audit Log"><img class="imgSize" src="../resources/images/auditLog.png" title="Link to View Audit Log"></a>'; }}];
+          { "mData": "veteranAssessmentId","sClass":"numeric", "sWidth":"45px"},
+          { "mData": "programName"},
+          { "mData": "clinicianName"},
+          { "mData": "createdBy", "sWidth":"75px"},
+          { "mData": "assessmentDate","sClass":"numeric", "sWidth":"158px"},
+          { "mData": "veteranId","sClass":"numeric", "sWidth":"100px"},
+          { "mData": "veteranName"},
+          { "mData": "assessmentStatusName", "sWidth":"80px"},
+          { "mData": "veteranAssessmentId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#" vaidurl="assessmentPreview?vaid='+full.veteranAssessmentId+'" class="assessmentPreviewIFramePush" data-title="Assessment Report Preview"><img class="imgSize" src="../resources/images/Assess_icon.png" title="Link to View Assessment" alt="Link to View Assessment"></a>&nbsp;&nbsp;<a href="#"  class="assessmentNotePush" vaid='+full.veteranAssessmentId+' data-title="Review Note"><img class="imgSize" src="../resources/images/review.png" title="Link to Review Notes" alt="Link to Review Notes"></a>&nbsp;&nbsp;<a class="assessmentPreviewIFramePush" href="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" vaidurl="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" data-title="Audit Log"><img class="imgSize" src="../resources/images/auditLog.png" title="Link to View Audit Log" alt="Link to View Audit Log"></a>'; }}];
 
         options["aoColumns"] = aoColumns;
 
@@ -60,11 +59,11 @@ function assessmentReportController($scope,$element,$http,$window) {
 	//console.log("inside the controller");
 
 	// Initialize the model.
-	$scope.assessmentReportFormBean = {};
-	$scope.assessmentSearchResult = {};
-	$scope.programList = [];
-	$scope.clinicanList = [];
-	$scope.createdByUserList = [];
+	$scope.assessmentReportFormBean   = {};
+	$scope.assessmentSearchResult     = {};
+	$scope.programList                = [];
+	$scope.clinicanList               = [];
+	$scope.createdByUserList          = [];
 
 	// Populate dropdown lists.
 	updateProgramList();
@@ -128,8 +127,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 	/**
 	 * Updates the Program dropdown box.
 	 */
-	function updateProgramList() {
-		
+	function updateProgramList() {	
 		// Null out current selected item and clear list.
 		$scope.assessmentReportFormBean.programId = "";
 		$scope.programList = [];
@@ -152,7 +150,6 @@ function assessmentReportController($scope,$element,$http,$window) {
 	 * when calling the web service.
 	 */
 	function updateClinicianList() {
-		
 		// Null out current selected item and clear list.
 		$scope.assessmentReportFormBean.clinicianId = "";
 		$scope.clinicanList = [];
@@ -165,7 +162,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 		else {
 			requestPayload = $.param({ "includeAll": false });
 		}
-
+    
 		// Call the web service and update the model.
 		$http({
 			method: "POST",
@@ -219,11 +216,8 @@ function assessmentReportController($scope,$element,$http,$window) {
 	 * Initializes the model with any parameters initially passed to the controller. 
 	 */
 	function initializeModel() {
-		
-		//console.log("Inside initializeModel()");
-		
 		$scope.assessmentReportFormBean = {};
-		
+    
 		// Call the web service and update the model.
 		$http({
 			method: "GET",
@@ -233,7 +227,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 					$scope.assessmentReportFormBean = data;
 				})
 				.error(function(data, status) {
-					//
+          
 				});
 	}
 
@@ -257,3 +251,101 @@ function assessmentReportController($scope,$element,$http,$window) {
 		});
 	}
 };
+
+
+$(document).ready(function() {
+      
+  
+  // Load current tab
+  tabsLoad("assessmentReport");
+  
+ var fromAssessmentDateGroup  = "#fromAssessmentDateGroup";
+    var toAssessmentDateGroup    = "#toAssessmentDateGroup";
+    $(fromAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+      autoclose: true
+		});
+
+		$(toAssessmentDateGroup).datepicker({
+			showOn : 'button',
+      format: 'mm/dd/yyyy',
+			autoclose: true
+		});
+    
+    
+    
+  function showInDialog(obj) {
+		var wWidth                      = $(window).width();
+		var dWidth                      = wWidth * 0.98;
+		var wHeight                     = $(window).height();
+		var dHeight                     = wHeight * 0.97;
+    var assessmentPreview           = "#assessmentPreview";
+    var assessmentPreviewIframe     = "#assessmentPreviewIframe";
+		$(assessmentPreview).dialog(
+				{
+					autoOpen : false,
+					modal : true,
+					width : dWidth,
+					height : 635,
+					open : function(ev, ui) {
+						$(assessmentPreviewIframe).attr('src',
+								obj.getAttribute('href'));
+            //$(assessmentPreviewIframe).attr('name', obj.getAttribute('data-title'));
+            //$(assessmentPreviewIframe).attr('title', obj.getAttribute('data-title'));
+            $(assessmentPreviewIframe).attr('name', "aaaaaa");
+            $(assessmentPreviewIframe).attr('title', "bbbb");
+            
+					}
+				});
+		$(assessmentPreview).dialog('open');
+		$(assessmentPreview).show();
+	} 
+    
+    
+  var assessmentNotePush = ".assessmentNotePush";
+  
+	$(this).on("click", assessmentNotePush, function(e){
+		  var vaid                    = $(this).attr('vaid');
+		  var title                   = $(this).attr('data-title');
+      
+      var assessmentReportPreview = "#AssessmentReportPreview";
+      var modalContents           = '.modal_contents';
+      var modalTitle              = '#modal-title';
+      var loadingMessage          = '<i class="ajax_loading text-center"></i> Loading...';
+
+		  e.preventDefault();
+      
+		  $(assessmentReportPreview).modal('show');
+		  $(modalContents).html(loadingMessage);
+		  
+      $.ajax({
+			  type : 'get',
+			   url : 'assessmentNote?vaid='+ vaid,
+		     success : function(r)
+			   {
+           $(modalContents).show().html(r);
+           $(modalTitle).html(title);
+			   }
+		  });
+	
+	});
+	
+	$(this).on("click", '.assessmentPreviewIFramePush', function(e){
+      var assessmentFrame               = '#AssessmentReportPreviewIFrame iframe';
+      var assessmentReportPreviewIFrame = '#AssessmentReportPreviewIFrame';
+		  var vaidurl                       = $(this).attr('vaidurl');
+      var frameTitle                    = $(this).attr('data-title');
+		  var title                         = $(this).attr('data-title');
+      var modalTitleIframe              = "#modal-title-iframe";
+      
+      e.preventDefault();
+      
+		  $(assessmentFrame).attr('src', vaidurl);
+      $(assessmentFrame).attr('name', frameTitle);
+      $(assessmentFrame).attr('title', frameTitle);
+      
+		  $(assessmentReportPreviewIFrame).modal('show');
+		  $(modalTitleIframe).html(title);
+	});
+});
