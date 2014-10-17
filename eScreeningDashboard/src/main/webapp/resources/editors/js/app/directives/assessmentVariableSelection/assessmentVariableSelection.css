@@ -1,6 +1,6 @@
 
-#assessmentVariableSelection {
-    background-color: green;
+.assessmentVariableSelection {
+    background-color: darkseagreen;
     display: inline-block;
     height: 33px;
     width: 150px;
@@ -8,4 +8,16 @@
     vertical-align:middle;
     text-align: center;
     border-radius: 5px;
+}
+
+.assessmentVariableSelectionTable {
+    background-color: royalblue;
+    min-height: 150px;
+    min-width: 195px;
+    display:inline-block;
+    z-index:1;
+    position:relative;
+    margin-left: -5px;
+    margin-top: 7px;
+    padding: 5px;
 }
