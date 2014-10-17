@@ -1,0 +1,10 @@
+
+#assessmentVariableSelection {
+    background-color: green;
+    display: inline-block;
+    height: 33px;
+    width: 150px;
+    padding: 5px;
+    vertical-align:middle;
+    text-align: center;
+}

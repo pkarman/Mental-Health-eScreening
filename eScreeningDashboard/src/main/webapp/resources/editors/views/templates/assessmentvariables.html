@@ -1,19 +1,10 @@
-<div class="row">
-    <div class="col-sm-6">
-
-        <div class="form-group col-sm-2">
-            <label class="sr-only">Select Type</label>
-            <select ng-model="variableType" class="form-control">
-                <option value="">-- Select Type</option>
-            </select>
-            <label class="sr-only">Search Variable</label>
-            <input type="text" class="form-control" id="block-name" placeholder="Search Variable" ng-model="variableSearch">
-        </div>
-
-        <!--table ng-table="tableParams" show-filter="false" class="table table-hover">
-            <tr><td></td></tr>
-
-        </table-->
-        {{ variables }}
-    </div>
+<link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableSelection.css">
+<div id="assessmentVariableSelection" ng-click="">
+    Select Variable
 </div>
+
+<!--table ng-table="tableParams" show-filter="false" class="table table-hover">
+    <tr><td></td></tr>
+
+</table-->
+{{ variables }}

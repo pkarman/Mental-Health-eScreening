@@ -6,13 +6,16 @@
         return {
             restrict: 'EA',
             scope: {},
-            templateUrl: 'resources/editors/views/templates/assessmentvariables.html',
-            link: function(scope) {
+            controller: function ($scope) {
 
-                AssessmentVariableService.query(AssessmentVariableService.setQueryAssessmentVariableSearchCriteria(null)).then(function(response) {
+            },
+            templateUrl: 'resources/editors/views/templates/assessmentvariables.html',
+            link: function(scope, element, attributes, controller) {
+
+                /*AssessmentVariableService.query(AssessmentVariableService.setQueryAssessmentVariableSearchCriteria(null)).then(function(response) {
 
                     scope.variables = response;
-                });
+                });*/
 
             }
         };

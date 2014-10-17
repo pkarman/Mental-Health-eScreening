@@ -152,7 +152,7 @@
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariablesDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariablesDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
 
     <!-- UI-Router View States definition -->
