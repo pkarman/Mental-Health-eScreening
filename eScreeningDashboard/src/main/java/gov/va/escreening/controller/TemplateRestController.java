@@ -5,17 +5,21 @@ import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
+import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -214,6 +218,22 @@ public class TemplateRestController {
 	{
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
+	}
+	
+	@RequestMapping(value = "/services/template/getTemplateFile/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseBody
+	public TemplateFileDTO getTemplateFile(
+			@PathVariable("templateId") Integer templateId,
+			@CurrentUser EscreenUser escreenUser) {
+		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
+		if (dto == null)
+			 ErrorBuilder.throwing(EntityNotFoundException.class)
+	             .toUser("Could not find the template.")
+	             .toAdmin("Could not find the template with ID: " + templateId)
+	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	             .throwIt();
+		return dto;
 	}
 
 }

@@ -612,6 +612,18 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 		return sb.toString();
 	}
+	
+	@Override
+	public freemarker.template.Template getTemplate(Integer templateId, String templateText)
+		throws IOException
+	{
+		// Convert the template to a string, load it into the freemarker
+				// configuration
+		Configuration fmConfiguration = getFreemarkerConfiguration();
+		String templateCacheName = String.format("template%s", templateId);
+		((StringTemplateLoader) fmConfiguration.getTemplateLoader()).putTemplate(templateCacheName, templateText);
+		return  fmConfiguration.getTemplate(templateCacheName);
+	}
 
 }
 

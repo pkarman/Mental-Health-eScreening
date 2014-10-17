@@ -1,7 +1,9 @@
 package gov.va.escreening.templateprocessor;
 
+import java.io.IOException;
 import java.util.EnumSet;
 
+import freemarker.template.Template;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.exception.IllegalSystemStateException;
@@ -53,5 +55,8 @@ public interface TemplateProcessorService {
 	 * @throw IllegalStateException if a template of the given type does not exist for the given survey
 	 */
 	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException;
+
+	Template getTemplate(Integer templateId, String templateText)
+			throws IOException;
 	
 }

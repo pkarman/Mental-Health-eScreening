@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import java.util.List;
 
 import gov.va.escreening.dto.TemplateDTO;
+import gov.va.escreening.dto.template.TemplateFileDTO;
 
 public interface TemplateService {
 
@@ -31,6 +32,8 @@ public interface TemplateService {
 
 	 TemplateDTO getTemplateBySurveyAndTemplateType(Integer surveyId,
 			Integer templateTypeId);
+
+	TemplateFileDTO getTemplateFileAsTree(Integer templateId);
 
 	
 
