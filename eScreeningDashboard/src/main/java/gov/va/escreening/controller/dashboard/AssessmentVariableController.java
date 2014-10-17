@@ -26,9 +26,9 @@ public class AssessmentVariableController {
 	@ResponseBody
 	public List getAssessmentVarsForSurvey(
 			@PathVariable("surveyId") Integer surveyId) {
-		Table<String, String, String> t = avs.getAssessmentVarsFor(surveyId);
+		Table<String, String, Object> t = avs.getAssessmentVarsFor(surveyId);
 
-		List<Map<String, String>> avs = Lists.newArrayList();
+		List<Map<String, Object>> avs = Lists.newArrayList();
 
 		for (String rowKey : t.rowKeySet()) {
 			avs.add(t.row(rowKey));

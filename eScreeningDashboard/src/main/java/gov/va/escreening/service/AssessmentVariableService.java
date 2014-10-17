@@ -18,7 +18,7 @@ public interface AssessmentVariableService {
 	 * @param surveyId
 	 * @return
 	 */
-	public Table<String, String, String> getAssessmentVarsFor(int surveyId);
+	public Table<String, String, Object> getAssessmentVarsFor(int surveyId);
 
 	Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
