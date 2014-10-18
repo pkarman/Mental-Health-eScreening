@@ -4,13 +4,12 @@ import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.entity.Validation;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
+import gov.va.escreening.service.AssessmentVariableService;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
@@ -52,13 +50,10 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	@Resource(type = ValidationRepository.class)
 	ValidationRepository vr;
 
-	@Resource(type = SurveyPageMeasureRepository.class)
-	SurveyPageMeasureRepository spmr;
+	@Resource(type = AssessmentVariableService.class)
+	AssessmentVariableService avs;
 
-	@Resource(type = AssessmentVariableRepository.class)
-	AssessmentVariableRepository avr;
-
-	private Multimap<Integer, String> buildAndCacheMeasureValidationMap() {
+	private Multimap<Integer, String> buildMeasureValidationMap() {
 
 		List<Validation> validations = vr.findAll();
 		/**
@@ -126,13 +121,13 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
 
 		// partition all survey with its list of measures
-		Multimap<Survey, Measure> surveyMeasuresMap = buildSurveyMeasuresMap();
+		Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
 
 		// read all AssessmenetVariables having formulae
-		Collection<AssessmentVariable> avList = avr.findAllFormulae();
+		Collection<AssessmentVariable> avList = avs.findAllFormulae();
 
 		// read all measures of free text and its validations
-		Multimap<Integer, String> ftMvMap = buildAndCacheMeasureValidationMap();
+		Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
 
 		Set<String> avUsed = Sets.newLinkedHashSet();
 
@@ -170,14 +165,6 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		return joinedDisplayNames;
 	}
 
-	private Multimap<Survey, Measure> buildSurveyMeasuresMap() {
-		List<SurveyPageMeasure> spmList = spmr.findAll();
-		Multimap<Survey, Measure> smMap = ArrayListMultimap.create();
-		for (SurveyPageMeasure spm : spmList) {
-			smMap.put(spm.getSurveyPage().getSurvey(), spm.getMeasure());
-		}
-		return smMap;
-	}
 
 	private Table<String, String, String> buildSheetFor(Survey s,
 			Collection<Measure> surveyMeasures, Multimap mvMap,
