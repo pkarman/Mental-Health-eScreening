@@ -26,8 +26,6 @@ public class MeasureEditorController {
 	@Autowired
 	MeasureRepository measureRepo;
 
-	@Resource(name = "assessmentVariableService")
-	AssessmentVariableService avs;
 
 	@RequestMapping(value = "/measure/get", method = RequestMethod.GET)
 	@ResponseBody
@@ -36,18 +34,4 @@ public class MeasureEditorController {
 		return measureList;
 	}
 
-	@RequestMapping(value = "/av/get/{surveyId}", method = RequestMethod.GET)
-	@ResponseBody
-	public List getAssessmentVarsForSurvey(
-			@PathVariable("surveyId") Integer surveyId) {
-		Table<String, String, String> t = avs.getAssessmentVarsFor(surveyId);
-
-		List<Map<String, String>> avs = Lists.newArrayList();
-
-		for (String rowKey : t.rowKeySet()) {
-			avs.add(t.row(rowKey));
-		}
-
-		return avs;
-	}
 }

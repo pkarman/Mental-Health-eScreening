@@ -29,23 +29,23 @@ import com.google.common.collect.TreeBasedTable;
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	public class TableTypeAvModelBuilder implements AvModelBuilder {
-		final Table<String, String, String> assessments;
+		final Table<String, String, Object> assessments;
 
-		public TableTypeAvModelBuilder(Table<String, String, String> assessments) {
+		public TableTypeAvModelBuilder(Table<String, String, Object> assessments) {
 			this.assessments = assessments;
 		}
 
 		private void addAv2Table(AssessmentVariable av, Measure m,
 				MeasureAnswer ma) {
-			String avId = String.valueOf(av.getAssessmentVariableId());
+			Integer avId = av.getAssessmentVariableId();
 			String avIdRowKey = String.format("avId_%s", avId);
 			this.assessments.put(avIdRowKey, "id", avId);
-			this.assessments.put(avIdRowKey, "typeId", String.valueOf(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()));
+			this.assessments.put(avIdRowKey, "typeId", av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
 			this.assessments.put(avIdRowKey, "description", av.getDescription());
 			this.assessments.put(avIdRowKey, "displayName", av.getDisplayName());
-			this.assessments.put(avIdRowKey, "answerId", ma != null ? String.valueOf(ma.getMeasureAnswerId()) : "");
-			this.assessments.put(avIdRowKey, "measureId", m != null ? String.valueOf(m.getMeasureId()) : "");
-			this.assessments.put(avIdRowKey, "measureTypeId", m != null ? String.valueOf(m.getMeasureType().getMeasureTypeId()) : "");
+			this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
+			this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
+			this.assessments.put(avIdRowKey, "measureTypeId", m != null ? m.getMeasureType().getMeasureTypeId() : 0);
 		}
 
 		@Override
@@ -154,7 +154,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Table<String, String, String> getAssessmentVarsFor(int surveyId) {
+	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
 
 		// retrieve a list of all surveys along with their measures
 		Multimap<Survey, Measure> surveyMap = buildSurveyMeasuresMap();
@@ -173,10 +173,10 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 		Collection<AssessmentVariable> avList = avr.findAll();
 
-		Table<String, String, String> assessments = TreeBasedTable.create();
+		Table<String, String, Object> assessments = TreeBasedTable.create();
 		AvModelBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
 		filterBySurvey(survey, avModelBldr, measures, avList);
-		return (Table<String, String, String>) avModelBldr.getResult();
+		return (Table<String, String, Object>) avModelBldr.getResult();
 	}
 
 	private void handleCustomType(AssessmentVariable av,
