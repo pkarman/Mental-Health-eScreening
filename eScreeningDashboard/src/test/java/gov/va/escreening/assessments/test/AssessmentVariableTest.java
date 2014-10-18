@@ -6,9 +6,11 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,7 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -34,43 +37,59 @@ public class AssessmentVariableTest extends AssessmentTestBase {
 		Collection<AssessmentVariable> avList = avr.findAll();
 		StringBuffer sb = new StringBuffer();
 		for (AssessmentVariable av : avList) {
-			if (av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() < 3) {
-				Optional<String> updateStatement = buildUpdate(av);
-				if (updateStatement.isPresent()) {
-					sb.append(updateStatement.get()).append(";").append("\n");
-				}
-			}
+			buildUpdate(av, sb);
 		}
 
 		String updateString = sb.toString();
+		logger.info(updateString);
 	}
 
-	private Optional<String> buildUpdate(AssessmentVariable av) {
+	private void buildUpdate(AssessmentVariable av, StringBuffer sb) {
 		MeasureAnswer ma = av.getMeasureAnswer();
 
 		String name = ma != null ? ma.getExportName() : null;
 		String descr = ma != null ? ma.getAnswerText() : null;
 
 		if (name == null && descr == null && av.getMeasure() != null) {
-			Measure m = av.getMeasure();
-			if (m.getChildren().isEmpty()) {
-				name = m.getMeasureAnswerList().iterator().next().getExportName();
-				descr = m.getMeasureAnswerList().iterator().next().getAnswerText();
-			} else {
-				return Optional.absent();
-			}
+			updateSqlUsingMeasure(av.getMeasure(), av, sb);
 		}
 
+		addUpdateString(sb, name, descr, av.getAssessmentVariableId(), av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+		return;
+	}
+
+	private void updateSqlUsingMeasure(Measure m, AssessmentVariable av,
+			StringBuffer sb) {
+		if (m.getChildren().isEmpty()) {
+			String name = m.getMeasureAnswerList().iterator().next().getExportName();
+			String descr = m.getMeasureAnswerList().iterator().next().getAnswerText();
+			addUpdateString(sb, name, descr, av.getAssessmentVariableId(), av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+		} else {
+			for (Measure m1 : m.getChildren()) {
+				updateSqlUsingMeasure(m1, av, sb);
+			}
+		}
+	}
+
+	Set<Integer> vaIdSet = Sets.newHashSet();
+
+	private void addUpdateString(StringBuffer sb, String name, String descr,
+			int avId, int avTypeId) {
 		if (name == null || "null".equals(name)) {
-			return Optional.absent();
+			return;
 		}
 		if (descr == null || "null".equals(descr)) {
-			return Optional.absent();
+			return;
 		} else {
 			descr = descr.replaceAll("\"", "'");
 		}
 
-		return Optional.of(String.format("UPDATE assessment_variable SET display_name = '%s', description = \"%s\" WHERE assessment_variable_id = %s", name, descr, av.getAssessmentVariableId()));
+		if (vaIdSet.add(avId)) {
+			String updateSql = String.format("UPDATE assessment_variable SET assessment_variable_type_id = %s, display_name = '%s', description = \"%s\" WHERE assessment_variable_id = %s", avTypeId, name, descr, avId);
+			sb.append(updateSql).append(";").append("\n");
+		} else {
+			logger.warn(String.format("displayName=%s,  description=%s could not be added as %s has an update sql already", name, descr, avId));
+		}
 	}
 
 	@Test
