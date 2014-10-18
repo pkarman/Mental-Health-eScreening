@@ -11,8 +11,9 @@
 }
 
 .assessmentVariableSelectionTable {
-    background-color: royalblue;
-    min-height: 150px;
+    /*background-color: royalblue;*/
+    border: 1px solid black;
+    /*min-height: 150px;*/
     min-width: 195px;
     display:inline-block;
     z-index:1;

@@ -10,7 +10,7 @@
             },
             controller: ['$scope', '$modal', '$filter', 'ngTableParams', function ($scope, $modal, $filter, ngTableParams) {
                 $scope.showAssessmentVariableSelectionTable = false;
-                $scope.data = [
+                var data = [
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
                         "typeId" : "2",             // the value of assessment_variable.assessment_variable_type_id
@@ -79,7 +79,7 @@
                         page: 1, // show first page
                         count: 10, // count per page
                         filter: {
-                            name: '' // initial filter
+                            name: 'M' // initial filter
                         },
                         sorting: {
                             name: 'asc'
@@ -89,12 +89,12 @@
                             return {};
                         }
                     }, {
-                        total:$scope.data.length,
+                        total: data.length,
                         getData: function ($defer, params) {
                             // use build-in angular filter
-                            params.total($scope.data.length);
-                            var filteredData = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
-                            var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : $scope.data;
+                            params.total(data.length);
+                            var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
+                            var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : data;
                             //params.total(orderedData.length); // set total for recalc pagination
                             $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                         }
