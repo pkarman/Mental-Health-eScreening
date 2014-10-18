@@ -1,8 +1,8 @@
 <table ng-table="tableParams" show-filter="true" class="table table-hover">
     <tr ng-repeat="assessmentVariable in $data" ng-class-odd="'odd'" ng-class-even="'even'">
-        <td data-title="'Variable Name'" filter="{ 'name': 'text' }">{{assessmentVariable.name}}</td>
-        <td data-title="'Name'">{{assessmentVariable.displayName}}</td>
-        <td data-title="'Type'">{{assessmentVariable.typeId}}</td>
+        <td data-title="'Variable Name'" filter="{ 'name': 'text' }" sortable="'name'">{{assessmentVariable.name}}</td>
+        <td data-title="'Name'" filter="{ 'displayName': 'text' }" sortable="'displayName'">{{assessmentVariable.displayName}}</td>
+        <td data-title="'Type'" sortable="'type'">{{assessmentVariable.typeId}}</td>
         <td data-title="'Insert'">
             <div class="cursor-pointer pull-right" ng-click="selectAssessmentVariable(assessmentVariable);">
                 <span>Select</span>
