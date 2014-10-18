@@ -5,13 +5,12 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Validation;
-import gov.va.escreening.repository.AssessmentVariableRepository;
-import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.ValidationRepository;
 import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,7 +117,13 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		 * Perfect data abstraction to capture the above model is to have Google Guava's Table Table <row, col name, col
 		 * value>
 		 */
-		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap();
+		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap(new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.toLowerCase().compareTo(o2.toLowerCase());
+			}
+		});
 
 		// partition all survey with its list of measures
 		Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
@@ -129,10 +134,13 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		// read all measures of free text and its validations
 		Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
 
-		Set<String> avUsed = Sets.newLinkedHashSet();
+		// bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
+		// the data dictionary
+		Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
 
 		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, avUsed);
+			Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
+
 			// bind the survey (or module with its sheet)
 			dataDictionary.put(s.getName(), sheet);
 
@@ -142,7 +150,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		}
 
 		if (logger.isDebugEnabled()) {
-			List<String> l1 = Lists.newArrayList(avUsed);
+			List<String> l1 = Lists.newArrayList(formulaeAvTouched);
 			Collections.sort(l1);
 
 			String refAssessmentVars = getRefAssessmentVars(avList);
@@ -150,6 +158,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 			Collections.sort(l2);
 
 			Preconditions.checkArgument(l1.equals(l2), String.format("(Ref AssessmentVariable List) [%s] is not same as asscoiated AssessmentVariable List [%s]", l2, l1));
+			logger.debug("returning data dictionary with surveys in this order:{}", dataDictionary.keySet());
 		}
 		return dataDictionary;
 	}
@@ -164,7 +173,6 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		String joinedDisplayNames = Joiner.on(",").skipNulls().join(displayNames);
 		return joinedDisplayNames;
 	}
-
 
 	private Table<String, String, String> buildSheetFor(Survey s,
 			Collection<Measure> surveyMeasures, Multimap mvMap,
