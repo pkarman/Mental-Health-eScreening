@@ -188,4 +188,9 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	public void setMessageSource(MessageSource messageSource) {
 		this.msgSrc = messageSource;
 	}
+
+	@Override
+	public String getExportNameKeyPrefix() {
+		return ddh.EXPORT_NAME_KEY_PREFIX;
+	}
 }

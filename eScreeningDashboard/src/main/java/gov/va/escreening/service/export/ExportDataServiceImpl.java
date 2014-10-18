@@ -27,7 +27,6 @@ import gov.va.escreening.variableresolver.VariableResolverService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -535,7 +534,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	}
 
 	private void buildDictionaryHeaderFor(String surveyName,
-			Map<String, String> syncTableQ, Map<String, Map<String, String>> miscDataMap) {
+			Map<String, String> syncTableQ,
+			Map<String, Map<String, String>> miscDataMap) {
 
 		String surveyDictionaryKey = prepareDictHdrKey(surveyName);
 		Map<String, String> currentSurveyDictionary = miscDataMap.get(surveyDictionaryKey);
@@ -607,7 +607,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 				// now look for this export name in the columnData []
 				for (Entry<String, String> entry : ddColumnData.entrySet()) {
 					if (entry.getValue().equals(usrExportName)) {
-						modColumnData.put(entry.getKey().replaceAll(DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX, DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX + usrTQIndex + "_"), usrRespExportName);
+						String expotNameKeyPrefix = dds.getExportNameKeyPrefix();
+						modColumnData.put(entry.getKey().replaceAll(expotNameKeyPrefix, expotNameKeyPrefix + usrTQIndex + "_"), usrRespExportName);
 						toBeDelKeys.add(entry.getKey());
 					}
 				}
