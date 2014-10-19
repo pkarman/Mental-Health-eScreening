@@ -107,7 +107,7 @@
             	<li>
             		<div class="progressEntry">
             			<div class="progressLabel">
-            			  <label for="progress_<c:out value="${section.surveySectionId}"/>" aria-label="<c:out value="${section.name}" />"><c:out value="${section.name}" /></label>
+            			  <span for="progress_<c:out value="${section.surveySectionId}"/>" aria-label="<c:out value="${section.name}" />"><c:out value="${section.name}" /></span>
             			</div>
                 		<div id="progress_<c:out value="${section.surveySectionId}"/>" class="progressBar" role="progressbar"></div>
             		</div>

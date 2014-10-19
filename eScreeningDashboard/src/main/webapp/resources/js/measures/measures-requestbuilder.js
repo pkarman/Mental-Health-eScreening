@@ -20,53 +20,58 @@ function evaluateAndBuildTypes(formHTML /*HTMLElement with children*/)/* returns
 	$(questions).each(function(index){
 		// Section off by type.
 		var currLI = $(this);
-		
-			var questionType = currLI.attr('data');
-			var measId = currLI.attr('id').substring(3);
-			
-			var measureObj = {"measureId":measId};
-		
-			switch (questionType){
-				case "freeText":
-				case "roText":
-					var inputs = currLI.find('input[type=text]');
-					measureObj.answers = grabAnswersFromText(inputs);
-					break;
-					
-				case "selectMulti":
-				case "selectMulti-Other":
-				case "selectMulti-None":
-					measureObj.answers = grabAnswersFromMulti(currLI, measId);
-					break;
-					
-				case "selectOne":
-					measureObj.answers = grabAnswersFromRadio(currLI);
-					break;
-					
-				case "selectDropdown":
-					var intSUL = $(currLI).find('select[id=inpILS'+measId+']');
-					measureObj.answers = grabAnswersFromDropdown($(intSUL));
-					break;
-					
-				case "tableQuestion":
-					measureObj = buildFromTabularObject(currLI);
-					break;
-			}
-			
-			if(measureObj != null){
-				
-				//get row index
-				var tableEntry = formBuilder.tableEntryFor(currLI);
-				if(tableEntry.size() != 0){
-					var row = tableEntry.index();
-					//add row index to all answers
-					$.each(measureObj.answers, function(i, answer){
-						answer.rowId = row;
-					});
-				}
-				
-				answers.push(measureObj);
-			}
+        var questionType = currLI.attr('data');
+        var measId = currLI.attr('id').substring(3);
+        var measureObj = {"measureId":measId};
+        
+        //get row index
+        var tableEntry = formBuilder.tableEntryFor(currLI);
+        var rowIndex = null;
+        if(tableEntry.size() != 0){
+            //this looks strange but when the Wave tool added elements into the tableEntry container the index was breaking
+            var rowIndex = tableEntry.parent().children(".tableQuestionEntry").index(tableEntry);
+        }
+        
+        switch (questionType){
+            case "freeText":
+            case "roText":
+                var inputs = currLI.find('input[type=text]');
+                measureObj.answers = grabAnswersFromText(inputs);
+                break;
+            
+            case "selectMulti":
+            case "selectMulti-Other":
+            case "selectMulti-None":
+                measureObj.answers = grabAnswersFromMulti(currLI, measId);
+                break;
+            
+            case "selectOne":
+                measureObj.answers = grabAnswersFromRadio(currLI);
+                break;
+            
+            case "selectDropdown":
+                var questionId = formBuilder.createQuestionId( measId, rowIndex, "ILS");
+                var intSUL = $(currLI).find('select[id=' + questionId +']');
+                measureObj.answers = grabAnswersFromDropdown($(intSUL));
+                break;
+            
+            case "tableQuestion":
+                measureObj = buildFromTabularObject(currLI);
+                break;
+        }
+        
+        if(measureObj != null){
+        
+            if(tableEntry.size() != 0){
+                var row = tableEntry.index();
+                //add row index to all answers
+                $.each(measureObj.answers, function(i, answer){
+                    answer.rowId = row;
+                });
+            }
+        
+            answers.push(measureObj);
+        }
 	});
 	return answers;
 }
@@ -82,7 +87,7 @@ function isVisible(element){
 function grabAnswersFromText(inputs /*Text input*/)/*returns JSON*/{
 	var answers = [];
 	$(inputs).each(function(){
-		var answerId = parseInt($(this).attr('id').substring(3));
+		var answerId = formBuilder.getAnswerId($(this).attr('id'));
 		var answerResponse = $(this).val();
 		if(answerResponse != null){
 			answerResponse = answerResponse.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
@@ -102,7 +107,7 @@ function grabAnswersFromMulti(liContainer /* selectMulti question li with any nu
 			var ansInput = $(this).find("input[type='checkbox']");
 			var ansResponse = ansInput.parent().hasClass("on") ?  "true" : "false";
 			
-			var idStr = ansInput.attr('id').substring(3);
+			var idStr = formBuilder.getAnswerId(ansInput.attr('id'));
 			var ansId = parseInt(idStr);
 			
 			var otherAnswer = $(this).find("input.selectOther[type='text']");
@@ -127,7 +132,7 @@ function grabAnswersFromRadio(liContainer /* HTML (the element that contains LIs
 	var LIs = $(liContainer).find('li.selectOneList');
 	LIs.each(function(index){
 		var currRadio =  $(this).find("input[type=radio]");
-		var ansId = currRadio.attr("id").substring(3);
+		var ansId = formBuilder.getAnswerId(currRadio.attr("id"));
 		var ansResponse = currRadio.is(':checked')? "true" : "false";
 		var otherAnswer = $(this).find("input.selectOther[type='text']");
 		if(otherAnswer.size() == 0 && $(this).hasClass("selectOther")){
@@ -150,13 +155,13 @@ function grabAnswersFromDropdown(input) {
 	var answers = [];
 	
 	input.find("option:not(:first)").filter(":not(:selected)").each(function(ind) {
-		var answerId = $(this).attr("id").substring(3);
+		var answerId = formBuilder.getAnswerId($(this).attr("id"));
 		answers.push(buildSimpleObject(answerId, "false"));
 	});
 	
 	var selected = input.find("option:selected");
 	if(selected.val() != ""){
-		var selectedAnswerId = selected.attr("id").substring(3);
+		var selectedAnswerId = formBuilder.getAnswerId(selected.attr("id"));
 		
 		if(selected.attr("is_other") == "true") {
 			answers.push(buildObjectFromOther(selectedAnswerId, "true", input.parent().find("input[type='text']").val()));
