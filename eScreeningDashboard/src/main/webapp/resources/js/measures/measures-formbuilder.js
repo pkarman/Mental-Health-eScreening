@@ -365,13 +365,8 @@ function SelectBuilder(formBuilder){
 			.addClass("selectMultiCheckbox");
 		
 		var answerEleId = formBuilder.createAnswerId(answer.answerId, rowIndex);
-		
-		var label = $('<label/>')
-			.attr("for", answerEleId)
-			.addClass("checkSwitchHidden")
-            .text(answer.answerId); // TODO - JH - replace with question text
     
-        var checkbox = $('<input/>')
+    var checkbox = $('<input/>')
 			.attr("type", "checkbox")
 			.attr("id", answerEleId)
 			.addClass("checkSwitch");
@@ -382,7 +377,6 @@ function SelectBuilder(formBuilder){
 		// checkbox div
 		$("<div/>")
 			.addClass("selectMultiInput")
-			.append(label)
             .append(checkbox)
 			.appendTo(li);
 		
@@ -1254,7 +1248,3 @@ function MatrixBuilder(formBuilder, selectBuilder){
 		return name;
 	}
 }
-
-
-
-
