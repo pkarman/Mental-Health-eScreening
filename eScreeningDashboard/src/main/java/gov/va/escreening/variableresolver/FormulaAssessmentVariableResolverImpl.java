@@ -3,6 +3,7 @@ package gov.va.escreening.variableresolver;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Measure;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.exception.ErrorResponseRuntimeException;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     	List<AssessmentVariable> measureTypeList = new ArrayList<AssessmentVariable>();
     	List<AssessmentVariable> customTypeList = new ArrayList<AssessmentVariable>();
     	List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
-    	sortAssessmentVariablesByType(assessmentVariable, answerTypeList, measureTypeList, customTypeList, formulaTypeList);
+    	sortAssessmentVariablesByType(assessmentVariable.getAssessmentVarChildrenList(), answerTypeList, measureTypeList, customTypeList, formulaTypeList);
     	
     	FormulaDto rootFormula = new FormulaDto();
     	
@@ -128,10 +130,10 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     }
     
     //recursive method to sort by variable type and get dependencies for child formulas
-    private void sortAssessmentVariablesByType(AssessmentVariable assessmentVariable, List<AssessmentVariable> answerTypeList,  
+    private void sortAssessmentVariablesByType(List<AssessmentVarChildren> formulaDependencies, List<AssessmentVariable> answerTypeList,  
     		List<AssessmentVariable> measureTypeList, List<AssessmentVariable> customTypeList, List<AssessmentVariable> formulaTypeList) {
     	
-    	List<AssessmentVarChildren> formulaDependencies = assessmentVariable.getAssessmentVarChildrenList();
+    	//List<AssessmentVarChildren> formulaDependencies = assessmentVariable.getAssessmentVarChildrenList();
     	for(AssessmentVarChildren dependencyAssociation : formulaDependencies) {
     		AssessmentVariable child = dependencyAssociation.getVariableChild();
     		switch(child.getAssessmentVariableTypeId().getAssessmentVariableTypeId()) {
@@ -146,7 +148,7 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
 					break;
 				case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA: 
 					formulaTypeList.add(child);
-					sortAssessmentVariablesByType(child, answerTypeList, measureTypeList, customTypeList, formulaTypeList);
+					sortAssessmentVariablesByType(child.getAssessmentVarChildrenList(), answerTypeList, measureTypeList, customTypeList, formulaTypeList);
 					break;
 				default:			
 					throw new UnsupportedOperationException(String.format("Assessment variable of type id: %s is not supported.", child.getAssessmentVariableTypeId().getAssessmentVariableTypeId()));
@@ -154,5 +156,46 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     	}
     	
     }
+
+	//@Override
+	public AssessmentVariableDto resolveAssessmentVariable(
+			List<AssessmentVarChildren> formulaDependencies,
+			FormulaDto rootFormula,
+			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
+			Map<Integer, AssessmentVariable> measureAnswerHash) {
+	   	List<AssessmentVariable> answerTypeList = new ArrayList<AssessmentVariable>();
+    	List<AssessmentVariable> measureTypeList = new ArrayList<AssessmentVariable>();
+    	List<AssessmentVariable> customTypeList = new ArrayList<AssessmentVariable>();
+    	List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
+    	sortAssessmentVariablesByType(formulaDependencies, answerTypeList, measureTypeList, customTypeList, formulaTypeList);
+    	
+    	AssessmentVariableDto variableDto = null;
+    		
+        for(AssessmentVariable answerVariable : answerTypeList) {
+   	    	String value = measureAnswerVariableResolver.resolveCalculationValue(answerVariable, veteranAssessmentId);
+   	    	rootFormula.getVariableValueMap().put(answerVariable.getAssessmentVariableId(), value);
+       	}
+        	
+       	for(AssessmentVariable measureVariable : measureTypeList) {
+        	String value = measureVariableResolver.resolveCalculationValue(measureVariable, veteranAssessmentId, measureAnswerHash);
+    	    rootFormula.getVariableValueMap().put(measureVariable.getAssessmentVariableId(), value);
+       	}    	
+
+       	if(customTypeList.size() > 0) 
+       		throw new UnsupportedOperationException("Resolve calcuation value for variable type Custom has not been implemented.");
+        	
+        	//iterate the list of formulas and add them to the object
+       	for(AssessmentVariable formulaVariable : formulaTypeList) {
+       		int id = formulaVariable.getAssessmentVariableId();
+       		String template = formulaVariable.getFormulaTemplate();
+       		rootFormula.getChildFormulaMap().put(id, template);
+        } 
+        	
+       	String result = expressionEvaluatorService.evaluateFormula(rootFormula);
+        	
+       	variableDto = createAssessmentVariableDto(-1, result);
+       	
+    	return variableDto;
+	}
     
 }

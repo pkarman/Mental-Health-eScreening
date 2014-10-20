@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.context.AssessmentContext;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.domain.AssessmentStatusEnum;
@@ -16,7 +17,10 @@ import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.ae.SurveyProgress;
 import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.Event;
+import gov.va.escreening.entity.EventType;
 import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
@@ -31,8 +35,10 @@ import gov.va.escreening.measure.BooleanAnswerProcessor;
 import gov.va.escreening.measure.NumberAnswerProcessor;
 import gov.va.escreening.measure.StringAnswerProcessor;
 import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.EventRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.RuleRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
@@ -42,6 +48,7 @@ import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +56,9 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +69,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Sets;
 
 @Transactional
 @Service("assessmentEngineService")
@@ -98,6 +108,9 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	private VeteranAssessmentService veteranAssessmentService;
 	@Autowired
 	private VeteranAssessmentMeasureVisibilityRepository measureVisibilityRepository;
+	
+	@Autowired
+	EventRepository eventRepo;
 
 	private static final Logger logger = LoggerFactory.getLogger(AssessmentEngineServiceImpl.class);
 
@@ -136,6 +149,72 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		} catch (Throwable t) {
 			logger.warn("Error during save of user data for follow-up question visibility update:\n{}", t.getLocalizedMessage());
 		}
+		
+		// update visibility for the measures found on the page
+		ruleProcessorService.updateVisibilityForQuestions(assessmentContext.getVeteranAssessmentId(), page.getMeasures());
+
+		return measureVisibilityRepository.getVisibilityMapForSurveyPage(assessmentRequest.getAssessmentId(), assessmentRequest.getPageId());
+	}
+	
+
+	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
+			AssessmentRequest assessmentRequest) {
+		
+		Map<Integer, Boolean> visibilityMap = new HashedMap<Integer, Boolean>();
+		
+		SurveyPage page = surveyPageRepository.findOne(assessmentRequest.getPageId());
+		
+		List<gov.va.escreening.entity.Measure> measures = page.getMeasures();		
+		
+		checkArgument(page != null, "Invalid page ID given");
+		
+		List<Integer> objectIds = new ArrayList<>();
+		   Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap 
+       	= new HashedMap<Integer, Pair<gov.va.escreening.entity.Measure, Measure>>(measures.size());
+		for(gov.va.escreening.entity.Measure m : measures)
+		{
+			objectIds.add(m.getMeasureId());
+			Measure userAnswer = null;
+			for(Measure answer : assessmentRequest.getUserAnswers())
+			{
+				if(answer.getMeasureId().intValue() == m.getMeasureId())
+				{
+					userAnswer = answer;
+					break;
+				}
+			}
+			
+			if(userAnswer != null)
+			{
+				responseMap.put(m.getMeasureId(), Pair.of(m, userAnswer));
+			}
+		}
+		List<Event> events = eventRepo.getEventByTypeFilteredByObjectIds(RuleConstants.EVENT_TYPE_SHOW_QUESTION, objectIds);
+		
+		if(events == null || events.isEmpty())
+		{
+			return visibilityMap; //no update
+		}
+
+		Set<Rule> rules = Collections.emptySet();
+        for(Event e : events){
+            rules = Sets.union(rules, e.getRules());
+        }
+        
+        for(Rule r : rules)
+        {
+        	ruleProcessorService.evaluate(r, responseMap);
+        }
+		
+		// we set the assessment ID from the context (not from the request)
+//		assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
+//
+//		try {
+//			// First validate and save data.
+//			saveUserInput(assessmentRequest);
+//		} catch (Throwable t) {
+//			logger.warn("Error during save of user data for follow-up question visibility update:\n{}", t.getLocalizedMessage());
+//		}
 		
 		// update visibility for the measures found on the page
 		ruleProcessorService.updateVisibilityForQuestions(assessmentContext.getVeteranAssessmentId(), page.getMeasures());

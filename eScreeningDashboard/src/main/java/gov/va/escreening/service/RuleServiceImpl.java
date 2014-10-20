@@ -17,6 +17,7 @@ import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
+import gov.va.escreening.expressionevaluator.FormulaDto;
 import gov.va.escreening.repository.ConsultRepository;
 import gov.va.escreening.repository.DashboardAlertRepository;
 import gov.va.escreening.repository.EventRepository;
@@ -27,6 +28,7 @@ import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.AssessmentVariableDtoFactory;
+import gov.va.escreening.variableresolver.FormulaAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +87,9 @@ public class RuleServiceImpl implements RuleService {
     private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
     @Autowired
     private VeteranAssessmentRepository veteranAssessmentRepository;
+
+    @Autowired
+	private FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
 
     @Override
     public void processRules(Integer veteranAssessmentId, Collection<SurveyMeasureResponse> responses) {
@@ -366,4 +372,19 @@ public class RuleServiceImpl implements RuleService {
             }
         }
     }
+
+	@Override
+	public boolean evaluate(
+			Rule rule,
+			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap) {
+		
+		FormulaDto formula = new FormulaDto();
+    	formula.setExpressionTemplate(rule.getExpression());
+    	Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
+    	
+    	AssessmentVariableDto variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(formula, responseMap, measureAnswerHash);
+    	 
+		return false;
+	}
+    
 }

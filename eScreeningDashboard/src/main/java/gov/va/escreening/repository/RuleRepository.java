@@ -17,4 +17,5 @@ public interface RuleRepository extends RepositoryInterface<Rule> {
     List<Rule> getRulesForResponses(Collection<SurveyMeasureResponse> responses);
 
     public abstract List<Rule> getRuleForAssessment(int veteranAssessmentID);
+    
 }

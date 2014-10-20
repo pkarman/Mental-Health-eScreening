@@ -1,6 +1,7 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -10,6 +11,7 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -90,6 +92,24 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     
     @Override
     public String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId) {
+    	
+		MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
+		if(measureAnswer == null)
+			throw new AssessmentVariableInvalidValueException(String.format("AssessmentVariable of type MeasureAnswer did not reference a MeasureAnswer"
+			  + " VeteranAssessment id was: %s, AssessmentVariable id was: %s", veteranAssessmentId, assessmentVariable.getAssessmentVariableId()));
+
+    	SurveyMeasureResponse response = surveyMeasureResponseRepository.findSmrUsingPreFetch(veteranAssessmentId, measureAnswer.getMeasureAnswerId(), null);
+    		if(response == null)
+    			throw new CouldNotResolveVariableValueException(String.format("There was no MeasureAnswer reponse for MeasureAnswerId: %s, assessmentId: %s", 
+    				measureAnswer.getMeasureAnswerId(), veteranAssessmentId));
+    	
+    	String calcValue =  resolveCalculationValue(assessmentVariable, veteranAssessmentId, response);
+    	logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
+    	return calcValue;
+    }
+    
+    public String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, List<Measure> measureResp, 
+    		List<gov.va.escreening.entity.Measure> measures) {
     	
 		MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
 		if(measureAnswer == null)
