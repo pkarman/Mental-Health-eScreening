@@ -1,20 +1,12 @@
 package gov.va.escreening.service;
 
-import freemarker.cache.StringTemplateLoader;
-import freemarker.cache.TemplateLoader;
 import freemarker.core.TemplateElement;
-import freemarker.ext.beans.StringModel;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
-import gov.va.escreening.dto.template.TemplateBaseBlockDTO;
-import gov.va.escreening.dto.template.TemplateConditionBaseBlockDTO;
-import gov.va.escreening.dto.template.TemplateElementNodeDTO;
 import gov.va.escreening.dto.template.TemplateFileDTO;
-import gov.va.escreening.dto.template.TemplateIfBlockDTO;
-import gov.va.escreening.dto.template.TemplateTextDTO;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
