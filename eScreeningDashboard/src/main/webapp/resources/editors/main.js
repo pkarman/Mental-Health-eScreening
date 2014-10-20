@@ -45,15 +45,36 @@ Editors.directive('ngReallyClick', [function() {
     };
 }]);
 
-Editors.config(function(RestangularProvider, $provide) {
+Editors.config(function(RestangularProvider, $provide, taSelectableElements, taCustomRenderers) {
+
+	taSelectableElements.push('code');
+
+	taCustomRenderers.push({
+		// Parse back out: '<div class="ta-insert-video" ta-insert-video src="' + urlLink + '" allowfullscreen="true" width="300" frameborder="0" height="250"></div>'
+		// To correct video element. For now only support youtube
+		selector: 'code',
+		customAttribute: 'ta-insert-variable',
+		renderLogic: function(element){
+			var iframe = angular.element('<iframe></iframe>');
+			var attributes = element.prop("attributes");
+			// loop through element attributes and apply them on iframe
+			angular.forEach(attributes, function(attr) {
+				iframe.attr(attr.name, attr.value);
+			});
+			iframe.attr('src', iframe.attr('ta-insert-video'));
+			element.replaceWith(iframe);
+		}
+	});
+
     $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, $delegate){
 		// $delegate is the taOptions we are decorating
 		// register the tool with textAngular
 		taRegisterTool('addVariable', {
-			iconclass: "fa fa-plus",
-			buttonText: 'Add Variable',
+			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
 			action: function(){
-				this.$editor().wrapSelection('forecolor', 'red');
+				console.log('editor', this.$editor());
+				//this.$editor().wrapSelection('createlink');
+				//this.$editor().showPopover();
 			}
 		});
 		// add the button to the default toolbar definition

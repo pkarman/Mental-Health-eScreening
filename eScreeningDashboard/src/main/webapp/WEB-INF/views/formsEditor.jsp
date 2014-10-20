@@ -100,7 +100,7 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>

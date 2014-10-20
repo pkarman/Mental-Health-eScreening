@@ -6,7 +6,8 @@
         return {
             restrict: 'EA',
             scope: {
-                assessmentVariable: '='
+                displayAsModal: '=modalDisplay',
+	            assesmentVariable: '='
             },
             controller: ['$scope', '$filter', 'ngTableParams', function ($scope, $filter, ngTableParams) {
                 $scope.showAssessmentVariableSelectionTable = false;
