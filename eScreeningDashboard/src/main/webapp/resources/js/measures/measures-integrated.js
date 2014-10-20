@@ -75,9 +75,9 @@ $(document).ready(function(e) {
     	}
 	});
     
-    $("#measuresProgress li label").parent().parent().click(function() {
+    $("#measuresProgress li span").parent().parent().click(function() {
     	if (surveyValidation.pageIsValid()){
-    		var sectionId = $(this).find("label").attr("for").match(/[0-9]+/g)[0];
+    		var sectionId = $(this).find("span").attr("for").match(/[0-9]+/g)[0];
 			callMeasure(measuresURL,
 				buildReqAdvBack('nextSkipped', buildJSONFromForm('nextSkipped'), sectionId),
 				initialPageCallback);
@@ -508,7 +508,7 @@ function buildFormFromJSON(json){
 	// The matched page title will be wrapped with the triangle
 	
 	//move progress arrow
-	$("#measuresProgress li label").each(function(index) {
+	$("#measuresProgress li span").each(function(index) {
 		$(".progressEntry").removeClass("triangleWrapper");
 	});
 

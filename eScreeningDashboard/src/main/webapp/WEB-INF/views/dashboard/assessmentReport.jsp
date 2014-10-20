@@ -5,11 +5,12 @@
 <!doctype html>
 <html ng-app="assessmentReportFormApp">
 <head>
+  <title>Assessment Report</title>
   <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
   <!-- <script type="text/javascript" src="resources/js/jquery/jquery.dialogextend.min.js"></script> -->
   <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-  <script type="text/javascript" src="resources/js/jquery/ui/jquery-ui.min.js"></script>
+  <!--<script type="text/javascript" src="resources/js/jquery/ui/jquery-ui.min.js"></script>-->
   
   <script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>    
   
@@ -17,22 +18,26 @@
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
   <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" />
   
+  
   <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
   <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
   <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
   <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
+  
+  <link href="resources/vendor-libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
   <!-- Bootstrap -->
   <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-  <link href="resources/css/partialpage/standardtopofpage-dashboard_new.css" rel="stylesheet" type="text/css">
   
   <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">  
-  <title>Assessment Report</title>
+  <link href="resources/css/partialpage/standardtopofpage-dashboard_new.css" rel="stylesheet" type="text/css">
+
 
 </head>
 <body>
+
 <a href="#skip" class="offscreen">Skip to main content</a> 
-<div id="outerPageDiv" class="noPrint">
+<div id="outerPageDiv" class="nonPrintableArea">
   <%@ include
 			file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
     <div class="navbar navbar-default navbar-update" role="navigation">
@@ -53,7 +58,7 @@
       </div>
     </div>
 </div>
-<div class="container  left-right-shadow  noPrint">
+<div class="container  left-right-shadow  nonPrintableArea">
   <div class="row">
     <div class="col-md-12">
       <div ng-controller="assessmentReportController" class="mainDiv">
@@ -180,7 +185,7 @@
         <div class="row">
           <div class="col-md-12">
             <div id="mainContent">
-              <div align="right"> <a href="#" class="btn btn-default btn-xs" ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/csv" />')"><img src="resources/images/csvIcon2.png" class="exportImg" alt="CSV File"> <strong>CSV</strong></a> <a href="#" class="btn btn-default btn-xs"  ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/xls" />')"><img src="resources/images/xlsIcon1.png" class="exportImg" alt="Excel File">&nbsp;Excel</a> <a href="#" class="btn btn-default btn-xs" ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/pdf" />')"><img src="resources/images/pdfIcon4.png" class="exportImg" alt="PDF File">&nbsp;PDF</a> </div>
+              <div align="right"> <a href="#" class="btn btn-default btn-xs" ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/csv" />')"><i class="fa fa-file-o" title="CSV"></i> CSV</a> <a href="#" class="btn btn-default btn-xs"  ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/xls" />')"><i class="fa fa-file-excel-o" title="Excel File"></i> &nbsp;Excel</a> <a href="#" class="btn btn-default btn-xs" ng-click="exportDataGrid('<c:url value="/dashboard/assessmentReport/services/assessments/search/pdf" />')"><i class="fa fa-file-pdf-o" title="PDF"></i> &nbsp;PDF</a> </div>
               <table id="assessmentReportTable" name="assessmentReportTable" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" summary="Assessment Report Table">
                 <thead>
                   <tr>
@@ -215,12 +220,12 @@
     <div class="modal fade" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header noPrint">
+          <div class="modal-header nonPrintableArea">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title" id="modal-title">Assessment Report Preview</h4>
           </div>
           <div class="modal-body">
-            <div class="modal_contents yesPrint">Loading...</div>
+            <div class="modal_contents printableArea">Loading...</div>
           </div>
         </div>
       </div>
@@ -232,12 +237,12 @@
     <div class="modal fade" id="AssessmentReportPreviewIFrame" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreviewIFrame" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header noPrint">
+          <div class="modal-header nonPrintableArea">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title" id="modal-title-iframe">Assessment Report Preview</h4>
           </div>
           <div class="modal-body">
-            <div class="yesPrint" style="height:450px; overflow:auto; ">
+            <div class="printableArea" style="height:450px; overflow:auto; ">
                 <iframe src="" width="100%" height="99%" name="Assessment Report Preview" title="Assessment Report Preview"></iframe></div>
           </div>
      
@@ -246,7 +251,7 @@
     </div>
 </div>
 
-<div class="noprint">
+<div  class="nonPrintableArea">
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </div>
 <script type="text/javascript" src="<c:url value="/resources/js/angular/angular.min.js" />"></script>
