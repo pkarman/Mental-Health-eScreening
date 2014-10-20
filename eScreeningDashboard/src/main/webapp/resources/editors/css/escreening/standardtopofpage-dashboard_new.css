@@ -585,6 +585,9 @@ a.offscreen:focus, a.offscreen:active {
   background-color:#FFFFFF;
 }
 
+.border-bottom-3-gray{
+  border-bottom:3px solid #ADADAD;
+}
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 
