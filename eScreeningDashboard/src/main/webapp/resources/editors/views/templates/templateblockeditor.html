@@ -12,7 +12,7 @@
 
         <div ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">
             <div class="form-group col-sm-2">
-                <mhe-assessment-variables></mhe-assessment-variables>
+                <mhe-assessment-variables assessment-variable="block.left"></mhe-assessment-variables>
                 <!--label class="sr-only">Select Variable</label>
                 <input type="text" class="form-control" placeholder="Select Variable" ng-model="block.title"-->
             </div>

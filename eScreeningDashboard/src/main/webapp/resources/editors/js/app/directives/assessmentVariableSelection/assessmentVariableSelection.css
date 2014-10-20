@@ -14,11 +14,12 @@
     /*background-color: royalblue;*/
     border: 1px solid black;
     /*min-height: 150px;*/
-    min-width: 195px;
+    min-width: 350px;
     display:inline-block;
     z-index:1;
     position:relative;
     margin-left: -5px;
     margin-top: 7px;
     padding: 5px;
+    text-align:left;
 }

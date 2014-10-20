@@ -6,9 +6,9 @@
         return {
             restrict: 'EA',
             scope: {
-                displayAsModal: '=modalDisplay'
+                assessmentVariable: '='
             },
-            controller: ['$scope', '$modal', '$filter', 'ngTableParams', function ($scope, $modal, $filter, ngTableParams) {
+            controller: ['$scope', '$filter', 'ngTableParams', function ($scope, $filter, ngTableParams) {
                 $scope.showAssessmentVariableSelectionTable = false;
                 var data = [
                     {
@@ -45,56 +45,40 @@
                     },
                     selectAssessmentVariable = function(assessmentVariable) {
                         console.log("assessmentVariable: " + assessmentVariable);
-                    },
-                    displayAssessmentVariableSelectionTableAsModal = function () {
-                        // Create the modal
-                        var modalInstance = $modal.open({
-                            templateUrl: 'resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableSelection',
-                            resolve: {
 
-                            },
-                            controller: function($scope, $modalInstance) {
-
-                                $scope.selectAssessmentVariable = selectAssessmentVariable;
-                            }
-
-                        });
+                        $scope.assessmentVariable = assessmentVariable;
+                        $scope.displayAssessmentVariableSelectionTable();
                     };
 
                 $scope.selectAssessmentVariable = selectAssessmentVariable;
 
                 $scope.displayAssessmentVariableSelectionTable = function (){
                     $scope.displayAsModal = ($scope.displayAsModal === undefined || $scope.displayAsModal === null)? false: $scope.displayAsModal;
-
-                    if($scope.displayAsModal) {
-                        $scope.showAssessmentVariableSelectionTable = false;
-                        displayAssessmentVariableSelectionTableAsModal();
-                    } else {
-                        toggleAssessmentVariableSelectionTable();
-                    }
+                    toggleAssessmentVariableSelectionTable();
                 };
 
                 function setTable() {
                     $scope.tableParams = new ngTableParams({
                         page: 1, // show first page
-                        count: 10, // count per page
-                        filter: {
-                            name: 'M' // initial filter
-                        },
+                        count: 2, // count per page
+                        /*filter: {
+                            name: '' // initial filter
+                        },*/
                         sorting: {
                             name: 'asc'
-                        },
+                        }/*,
                         reload: function () {},
                         settings: function () {
                             return {};
-                        }
+                        }*/
                     }, {
+                        counts: [],
                         total: data.length,
                         getData: function ($defer, params) {
                             // use build-in angular filter
-                            params.total(data.length);
-                            var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
-                            var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : data;
+                            //params.total(data.length);
+                            //var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
+                            var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                             //params.total(orderedData.length); // set total for recalc pagination
                             $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                         }
@@ -107,7 +91,7 @@
             templateUrl: 'resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableSelection.html',
             link: function(scope, element, attributes, controller) {
                 element.addClass("assessmentVariableSelection");
-
+                //element.find('.ng-table-counts').hide();
                 /*AssessmentVariableService.query(AssessmentVariableService.setQueryAssessmentVariableSearchCriteria(null)).then(function(response) {
 
                     scope.variables = response;
