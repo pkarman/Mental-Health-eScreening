@@ -45,36 +45,49 @@ Editors.directive('ngReallyClick', [function() {
     };
 }]);
 
-Editors.config(function(RestangularProvider, $provide, taSelectableElements, taCustomRenderers) {
+Editors.config(function(RestangularProvider, $provide) {
 
-	taSelectableElements.push('code');
+    $provide.decorator('taOptions', ['taRegisterTool', 'taSelectableElements', 'taCustomRenderers', '$delegate', '$modal', function(taRegisterTool, taSelectableElements, taCustomRenderers, $delegate, $modal){
 
-	taCustomRenderers.push({
-		// Parse back out: '<div class="ta-insert-video" ta-insert-video src="' + urlLink + '" allowfullscreen="true" width="300" frameborder="0" height="250"></div>'
-		// To correct video element. For now only support youtube
-		selector: 'code',
-		customAttribute: 'ta-insert-variable',
-		renderLogic: function(element){
-			var iframe = angular.element('<iframe></iframe>');
-			var attributes = element.prop("attributes");
-			// loop through element attributes and apply them on iframe
-			angular.forEach(attributes, function(attr) {
-				iframe.attr(attr.name, attr.value);
-			});
-			iframe.attr('src', iframe.attr('ta-insert-video'));
-			element.replaceWith(iframe);
-		}
-	});
+	    taSelectableElements.push('code');
 
-    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, $delegate){
+	    taCustomRenderers.push({
+		    // Parse back out: '<div class="ta-insert-video" ta-insert-video src="' + urlLink + '" allowfullscreen="true" width="300" frameborder="0" height="250"></div>'
+		    // To correct video element. For now only support youtube
+		    selector: 'code',
+		    customAttribute: 'ta-insert-variable',
+		    renderLogic: function(element){
+			    var iframe = angular.element('<iframe></iframe>');
+			    var attributes = element.prop("attributes");
+			    // loop through element attributes and apply them on iframe
+			    angular.forEach(attributes, function(attr) {
+				    iframe.attr(attr.name, attr.value);
+			    });
+			    iframe.attr('src', iframe.attr('ta-insert-variable'));
+			    element.replaceWith(iframe);
+		    }
+	    });
+
 		// $delegate is the taOptions we are decorating
 		// register the tool with textAngular
 		taRegisterTool('addVariable', {
 			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
 			action: function(){
-				console.log('editor', this.$editor());
-				//this.$editor().wrapSelection('createlink');
-				//this.$editor().showPopover();
+
+				var assementVariable;
+
+				var modalInstance = $modal.open({
+					template: '<mhe-assessment-variables assessment-variable="assessmentVariable"></mhe-assessment-variables>',
+					controller: function($scope, $modalInstance) {
+
+					}
+
+				});
+			},
+			onElementSelect: {
+				element: 'img',
+				onlyWithAttrs: ['ta-insert-video']
+				//action: imgOnSelectAction
 			}
 		});
 		// add the button to the default toolbar definition
