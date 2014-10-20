@@ -55,10 +55,22 @@ public class TemplateFollowingConditionBlock{
 		this.connector = connector;
 	}
 	
+	private String getOperatorForConnector()
+	{
+		if ("AND".equals(connector))
+		{
+			return " && ";
+		}
+		else
+		{
+			return " || ";
+		}
+	}
+	
 	public String toFreeMarkerFormatFormula()
 	{
 		StringBuffer sb = new StringBuffer();
-		sb.append(" ").append(connector).append(" (").append(FormulaUtil.createFormula(operator, left, right));
+		sb.append(" ").append(getOperatorForConnector()).append(" (").append(FormulaUtil.createFormula(operator, left, right));
 		
 		if (conditions != null && conditions.size() > 0)
 		{
