@@ -1,6 +1,6 @@
 package gov.va.escreening.dto.template;
 
-public class TemplateDollarVariableDTO {
+public class TemplateDollarVariableDTO extends TemplateBaseBlockDTO{
 	
 	//private 
 

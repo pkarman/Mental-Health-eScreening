@@ -8,32 +8,29 @@ import java.util.List;
 
 public class TemplateFileDTO implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8179415554770183325L;
 	
-	private Integer templateId;
+	private Integer id;
 	private boolean isGraphical;
-	private TemplateTypeDTO templateType;
-	private List<TemplateElementNodeDTO> blocks = new ArrayList<>();
+	private TemplateTypeDTO type;
+	private List<INode> blocks = new ArrayList<>();
 	
-	public Integer getTemplateId() {
-		return templateId;
+	public Integer getId() {
+		return id;
 	}
-	public void setTemplateId(Integer templateId) {
-		this.templateId = templateId;
+	public void setId(Integer templateId) {
+		this.id = templateId;
 	}
-	public TemplateTypeDTO getTemplateType() {
-		return templateType;
+	public TemplateTypeDTO getType() {
+		return type;
 	}
-	public void setTemplateType(TemplateTypeDTO templateType) {
-		this.templateType = templateType;
+	public void setType(TemplateTypeDTO templateType) {
+		this.type = templateType;
 	}
-	public List<TemplateElementNodeDTO> getBlocks() {
+	public List<INode> getBlocks() {
 		return blocks;
 	}
-	public void setBlocks(List<TemplateElementNodeDTO> nodes) {
+	public void setBlocks(List<INode> nodes) {
 		this.blocks = nodes;
 	}
 	public boolean getIsGraphical() {

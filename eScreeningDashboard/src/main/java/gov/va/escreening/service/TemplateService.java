@@ -35,6 +35,10 @@ public interface TemplateService {
 
 	TemplateFileDTO getTemplateFileAsTree(Integer templateId);
 
+	Integer saveTemplateFile(Integer surveyId, TemplateFileDTO templateFile);
+
+	void updateTemplateFile(Integer templateId, TemplateFileDTO templateFile);
+
 	
 
 }

@@ -8,8 +8,13 @@ import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
+import gov.va.escreening.dto.template.INode;
+import gov.va.escreening.dto.template.TemplateBaseBlockDTO;
+import gov.va.escreening.dto.template.TemplateConditionBaseBlockDTO;
 import gov.va.escreening.dto.template.TemplateElementNodeDTO;
 import gov.va.escreening.dto.template.TemplateFileDTO;
+import gov.va.escreening.dto.template.TemplateIfBlockDTO;
+import gov.va.escreening.dto.template.TemplateTextDTO;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
@@ -23,6 +28,7 @@ import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +40,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -292,46 +300,66 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		return dto;
 	}
-
+	
+	
 	@Override
 	public TemplateFileDTO getTemplateFileAsTree(Integer templateId) {
-		Template t = templateRepository.findOne(templateId);
+		
+			Template t = templateRepository.findOne(templateId);
 
-		if (t == null)
-			return null;
-
-		TemplateFileDTO dto = new TemplateFileDTO();
-
-		dto.setTemplateId(templateId);
-		dto.setIsGraphical(t.getIsGraphical());
-
-		TemplateTypeDTO ttDTO = new TemplateTypeDTO();
-		dto.setTemplateType(ttDTO);
-		ttDTO.setName(t.getTemplateType().getName());
-		ttDTO.setId(t.getTemplateType().getTemplateTypeId());
-		ttDTO.setDescription(t.getTemplateType().getDescription());
-
-		String templateFile = t.getTemplateFile();
-		templateFile = templateFile.replace("${NBSP}", "&nbsp;")
-				.replace("${LINE_BREAK}","<br/>")
-				.replace("<#include \"clinicalnotefunctions\">", "");
-
-		try {
-			freemarker.template.Template fmTemplate = templateProcessorService
-					.getTemplate(templateId, templateFile);
-			for (int i = 0; i < fmTemplate.getRootTreeNode().getChildCount(); i++) {
-				TemplateElementNodeDTO nod = nodeIterate(
-						((TemplateElement) fmTemplate.getRootTreeNode()
-								.getChildAt(i)), null);
-				if (nod == null)
-					continue;
-
-			//TODO:	dto.getNodes().add(nod);
+			if (t == null)
+				return null;
+			
+			// now parsing the template file
+			ObjectMapper om = new ObjectMapper();
+			
+			TemplateFileDTO dto = new TemplateFileDTO();
+			
+			try
+			{
+				dto.setBlocks((List<INode>) om.readValue(t.getJsonFile(), List.class));
+			}catch(IOException e)
+			{
+				e.printStackTrace();
+				return null;
 			}
 
-		} catch (IOException e) {
-			return null;
-		}
+			dto.setId(templateId);
+			dto.setIsGraphical(t.getIsGraphical());
+
+			TemplateTypeDTO ttDTO = new TemplateTypeDTO();
+			dto.setType(ttDTO);
+			ttDTO.setName(t.getTemplateType().getName());
+			ttDTO.setId(t.getTemplateType().getTemplateTypeId());
+			ttDTO.setDescription(t.getTemplateType().getDescription());
+
+			/*
+			  String templateFile = t.getTemplateFile();
+
+			templateFile = templateFile.replace("${NBSP}", "&nbsp;")
+					.replace("${LINE_BREAK}", "<br/>")
+					.replace("<#include \"clinicalnotefunctions\">", "");
+
+			try {
+				freemarker.template.Template fmTemplate = templateProcessorService
+						.getTemplate(templateId, templateFile);
+				for (int i = 0; i < fmTemplate.getRootTreeNode()
+						.getChildCount(); i++) {
+					INode nod = nodeIterate(((TemplateElement) fmTemplate
+							.getRootTreeNode().getChildAt(i)), null);
+					if (nod == null)
+						continue;
+
+					dto.getBlocks().add(nod);
+				}
+
+			} catch (IOException e) {
+				return null;
+			}
+			return dto;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 		return dto;
 	}
 
@@ -351,11 +379,11 @@ public class TemplateServiceImpl implements TemplateService {
 
 	private String metaStr = null;
 
-	private TemplateElementNodeDTO nodeIterate(TemplateElement node,
-			List<Long> templateVariables) {
-		TemplateElementNodeDTO nodeDTO = new TemplateElementNodeDTO();
+	private INode nodeIterate(TemplateElement node, List<Long> templateVariables) {
 
-		nodeDTO.setType(node.getClass().getSimpleName());
+		INode nodeDTO = null;
+
+	/*	String type = node.getClass().getSimpleName();
 
 		String content = node.getCanonicalForm();
 
@@ -363,65 +391,181 @@ public class TemplateServiceImpl implements TemplateService {
 			try {
 				// nodeDTO.setContent(content.substring(0,
 				// content.indexOf(((TemplateElement)node.getChildNodes().get(0)).getCanonicalForm())));
-				if (nodeDTO.getType().equals("IfBlock")) {
-					nodeDTO.setType("ConditionalBlock");
-					// nodeDTO.setContent(content.substring(4,
-					// content.indexOf(")>")+1));
-				} else if (nodeDTO.getType().equals("ConditionalBlock")) {
 
-					nodeDTO.setContent(content.substring(0, content
-							.indexOf(((TemplateElement) node.getChildAt(0))
-									.getCanonicalForm())));
+				if (type.equals("IfBlock")) {
+					nodeDTO = new TemplateIfBlockDTO();
+				} else if (type.equals("ConditionalBlock")) {
+
+					// nodeDTO.setContent(content.substring(0, content
+					// .indexOf(((TemplateElement) node.getChildAt(0))
+					// .getCanonicalForm())));
 
 					if (content.equals("<#else>")) {
+						nodeDTO = new TemplateBaseBlockDTO();
 						nodeDTO.setType("elseBlock");
 					} else if (content.startsWith("<#if")) {
+						nodeDTO = new TemplateConditionBlockDTO();
 						nodeDTO.setType("ifBlock");
+						
+						String formula = content.substring(0, content
+								 .indexOf(((TemplateElement) node.getChildAt(0))
+								 .getCanonicalForm())).replace("<#if ", "").trim();
+						formula = formula.substring(0, formula.length()-1);
+						
+						// parse the content here
+						
+						parseFormula(formula, (TemplateConditionBlockDTO)nodeDTO);
+						
+						
+						
 					} else {
+						nodeDTO = new TemplateConditionBlockDTO();
 						nodeDTO.setType("elseIfBlock");
+						// parse the content here
 					}
-				} else
-					nodeDTO.setContent(content);
-				if (metaStr != null) {
-					Properties p = parseMetaData();
-					nodeDTO.setTitle(p.getProperty("TITLE"));
-					nodeDTO.setSection(p.getProperty("SECTION"));
-					metaStr = null;
+				} else {
 				}
+				// nodeDTO.setContent(content);
+				// if (metaStr != null) {
+				// Properties p = parseMetaData();
+				// nodeDTO.setTitle(p.getProperty("TITLE"));
+				// nodeDTO.setSection(p.getProperty("SECTION"));
+				// metaStr = null;
+				// }
 
+			
+
+			for (int i = 0; i < node.getChildCount(); i++) {
+				TemplateElement childTemplateElement = (TemplateElement) node
+						.getChildAt(i);
+				INode n = nodeIterate(childTemplateElement,
+				 templateVariables);
+				if (n != null)
+				{
+					if (((TemplateBaseBlockDTO)nodeDTO).getChildren()==null)
+					{
+						((TemplateBaseBlockDTO)nodeDTO).setChildren(new ArrayList<INode>());
+					}
+				 ((TemplateBaseBlockDTO)nodeDTO).getChildren().add(n);
+				}
+			}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			for (int i = 0; i < node.getChildCount(); i++) {
-				TemplateElement childTemplateElement = (TemplateElement)node
-						.getChildAt(i);
-				TemplateElementNodeDTO n = nodeIterate(childTemplateElement,
-						templateVariables);
-				if (n != null)
-					nodeDTO.getChildren().add(n);
-			}
 		} else {
-			if (nodeDTO.getType().equals("Comment")) {
+			if (type.equals("Comment")) {
 				metaStr = content;
 				return null;
 			}
 
-			if (metaStr != null) {
-				Properties p = parseMetaData();
-				nodeDTO.setTitle(p.getProperty("TITLE"));
-				nodeDTO.setSection(p.getProperty("SECTION"));
-				metaStr = null;
-			}
+			if (type.equals("TextBlock")) {
+				nodeDTO = new TemplateTextDTO();
+				nodeDTO.setType(type);
+				((TemplateTextDTO) nodeDTO).setContent(content);
 
-			if (nodeDTO.getType().equals("TextBlock"))
-			{
-				content = content.replace("${LINE_BREAK}", "<br/>");
+				if (metaStr != null) {
+					Properties p = parseMetaData();
+					((TemplateTextDTO) nodeDTO)
+							.setTitle(p.getProperty("TITLE"));
+					((TemplateTextDTO) nodeDTO).setSection(p
+							.getProperty("SECTION"));
+					metaStr = null;
+				}
+
 			}
-			nodeDTO.setContent(content);
-		}
+		}*/
 
 		return nodeDTO;
 	}
+	
+	
 
+	@Override
+	public Integer saveTemplateFile(Integer surveyId, TemplateFileDTO templateFile){
+		Survey survey = surveyRepository.findOne(surveyId);
+		
+		Template template = new Template();
+		
+		
+		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
+		template.setTemplateType(templateType);
+		
+		template.setDateCreated(new Date());
+		template.setIsGraphical(templateFile.getIsGraphical());
+		
+		// save raw json file to the database
+		ObjectMapper om = new ObjectMapper();
+		try
+		{
+			template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			template.setJsonFile(null);
+		}
+		
+		template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		/**
+		 * for survey one template per type
+		 */
+		for(Template t : survey.getTemplates())
+		{
+			if (t.getTemplateType().getTemplateTypeId().longValue() == templateFile.getType().getId().longValue())
+			{
+				survey.getTemplates().remove(t);
+				break;
+			}
+		}
+		
+		survey.getTemplates().add(template);
+		
+		surveyRepository.update(survey);
+		
+		return template.getTemplateId();
+	}
+
+	private String generateFreeMarkerTemplateFile(List<INode> blocks) {
+		StringBuffer file = new StringBuffer();
+		file.append("<#include \"clinicalnotefunctions\">\n");
+		
+		file.append("<#-- generated file. Do not change -->");
+		
+		for(INode block : blocks)
+		{
+			file.append(block.toFreeMarkerFormat());
+		}
+		
+		return file.toString();
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public void updateTemplateFile(Integer templateId,
+			TemplateFileDTO templateFile) {
+		Template template = templateRepository.findOne(templateId);
+		
+		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
+		template.setTemplateType(templateType);
+		
+		template.setDateCreated(new Date());
+		template.setIsGraphical(templateFile.getIsGraphical());
+		
+		// save raw json file to the database
+		ObjectMapper om = new ObjectMapper();
+		try
+		{
+			template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			template.setJsonFile(null);
+		}
+		
+		template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+
+		templateRepository.update(template);
+		
+	}
 }

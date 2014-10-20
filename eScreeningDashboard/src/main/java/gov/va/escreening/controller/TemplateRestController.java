@@ -234,6 +234,23 @@ public class TemplateRestController {
 	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
 	             .throwIt();
 		return dto;
+		
+	}
+	
+	@RequestMapping(value="/services/template/templateFile/{surveyId}", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	@ResponseBody
+	public Integer saveTemplateFile(@PathVariable("surveyId") Integer surveyId,@RequestBody TemplateFileDTO templateFile, @CurrentUser EscreenUser escreenUser)
+	{
+		return templateService.saveTemplateFile(surveyId, templateFile);
+	}
+	
+	@RequestMapping(value="/services/template/templateFile/{templateId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
+	@ResponseBody
+	public Boolean updateTemplateFile(@PathVariable("templateId") Integer templateId, @RequestBody TemplateFileDTO templateFile, @CurrentUser EscreenUser escreenUser)
+	{
+		templateService.updateTemplateFile(templateId, templateFile);
+		return Boolean.TRUE;
+		
 	}
 
 }
