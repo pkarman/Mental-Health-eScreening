@@ -113,7 +113,7 @@ public class AssessmentEngineController {
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		return assessmentEngineService.getUpdatedVisibility(assessmentRequest);
+		return assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
 	}
 
 	@ExceptionHandler(AssessmentEngineDataValidationException.class)

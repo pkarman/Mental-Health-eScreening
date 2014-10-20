@@ -157,7 +157,7 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     	
     }
 
-	//@Override
+	@Override
 	public AssessmentVariableDto resolveAssessmentVariable(
 			List<AssessmentVarChildren> formulaDependencies,
 			FormulaDto rootFormula,
@@ -172,12 +172,14 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     	AssessmentVariableDto variableDto = null;
     		
         for(AssessmentVariable answerVariable : answerTypeList) {
-   	    	String value = measureAnswerVariableResolver.resolveCalculationValue(answerVariable, veteranAssessmentId);
+        	Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(answerVariable.getMeasureAnswer().getMeasure().getMeasureId());
+   	    	String value = measureAnswerVariableResolver.resolveCalculationValue(answerVariable, answer);
    	    	rootFormula.getVariableValueMap().put(answerVariable.getAssessmentVariableId(), value);
        	}
         	
        	for(AssessmentVariable measureVariable : measureTypeList) {
-        	String value = measureVariableResolver.resolveCalculationValue(measureVariable, veteranAssessmentId, measureAnswerHash);
+       		Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(measureVariable.getMeasure().getMeasureId());
+        	String value = measureVariableResolver.resolveCalculationValue(measureVariable, answer, measureAnswerHash);
     	    rootFormula.getVariableValueMap().put(measureVariable.getAssessmentVariableId(), value);
        	}    	
 
@@ -191,7 +193,12 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
        		rootFormula.getChildFormulaMap().put(id, template);
         } 
         	
-       	String result = expressionEvaluatorService.evaluateFormula(rootFormula);
+       	String result;
+		try {
+			result = expressionEvaluatorService.evaluateFormula(rootFormula);
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new CouldNotResolveVariableException(getCouldNotResolveMessage(-1, -1, e.getMessage()));
+		}
         	
        	variableDto = createAssessmentVariableDto(-1, result);
        	

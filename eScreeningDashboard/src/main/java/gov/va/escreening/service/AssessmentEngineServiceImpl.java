@@ -29,6 +29,7 @@ import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
+import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.measure.AnswerProcessor;
 import gov.va.escreening.measure.AnswerSubmission;
 import gov.va.escreening.measure.BooleanAnswerProcessor;
@@ -108,17 +109,19 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	private VeteranAssessmentService veteranAssessmentService;
 	@Autowired
 	private VeteranAssessmentMeasureVisibilityRepository measureVisibilityRepository;
-	
+
 	@Autowired
 	EventRepository eventRepo;
 
-	private static final Logger logger = LoggerFactory.getLogger(AssessmentEngineServiceImpl.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(AssessmentEngineServiceImpl.class);
 
 	private static final AnswerProcessor answerProcessor;
 	static {
 		// create chain or processors
 		answerProcessor = new StringAnswerProcessor();
-		answerProcessor.setNext(new BooleanAnswerProcessor()).setNext(new NumberAnswerProcessor());
+		answerProcessor.setNext(new BooleanAnswerProcessor()).setNext(
+				new NumberAnswerProcessor());
 	}
 
 	@Override
@@ -128,7 +131,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		List<SurveyMeasureResponse> savedResponses = saveUserInput(assessmentRequest);
 
 		// evaluate rules
-		ruleProcessorService.processRules(assessmentContext.getVeteranAssessmentId(), savedResponses);
+		ruleProcessorService.processRules(
+				assessmentContext.getVeteranAssessmentId(), savedResponses);
 
 		// If all went well, get the next set of question for the user, if any.
 		return getAssessmentResponse(assessmentRequest);
@@ -137,89 +141,92 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	@Override
 	public Map<Integer, Boolean> getUpdatedVisibility(
 			AssessmentRequest assessmentRequest) {
-		SurveyPage page = surveyPageRepository.findOne(assessmentRequest.getPageId());
+		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
+				.getPageId());
 		checkArgument(page != null, "Invalid page ID given");
 
 		// we set the assessment ID from the context (not from the request)
-		assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
+		assessmentRequest.setAssessmentId(assessmentContext
+				.getVeteranAssessmentId());
 
 		try {
 			// First validate and save data.
 			saveUserInput(assessmentRequest);
 		} catch (Throwable t) {
-			logger.warn("Error during save of user data for follow-up question visibility update:\n{}", t.getLocalizedMessage());
+			logger.warn(
+					"Error during save of user data for follow-up question visibility update:\n{}",
+					t.getLocalizedMessage());
 		}
-		
+
 		// update visibility for the measures found on the page
-		ruleProcessorService.updateVisibilityForQuestions(assessmentContext.getVeteranAssessmentId(), page.getMeasures());
+		ruleProcessorService.updateVisibilityForQuestions(
+				assessmentContext.getVeteranAssessmentId(), page.getMeasures());
 
-		return measureVisibilityRepository.getVisibilityMapForSurveyPage(assessmentRequest.getAssessmentId(), assessmentRequest.getPageId());
+		return measureVisibilityRepository.getVisibilityMapForSurveyPage(
+				assessmentRequest.getAssessmentId(),
+				assessmentRequest.getPageId());
 	}
-	
 
+	@Override
+	@Transactional(readOnly=true, noRollbackFor={CouldNotResolveVariableException.class, 
+			CouldNotResolveVariableException.class})
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
 			AssessmentRequest assessmentRequest) {
-		
+
 		Map<Integer, Boolean> visibilityMap = new HashedMap<Integer, Boolean>();
-		
-		SurveyPage page = surveyPageRepository.findOne(assessmentRequest.getPageId());
-		
-		List<gov.va.escreening.entity.Measure> measures = page.getMeasures();		
-		
+
+		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
+				.getPageId());
+
+		List<gov.va.escreening.entity.Measure> measures = page.getMeasures();
+
 		checkArgument(page != null, "Invalid page ID given");
-		
+
 		List<Integer> objectIds = new ArrayList<>();
-		   Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap 
-       	= new HashedMap<Integer, Pair<gov.va.escreening.entity.Measure, Measure>>(measures.size());
-		for(gov.va.escreening.entity.Measure m : measures)
-		{
+		Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap = new HashedMap<Integer, Pair<gov.va.escreening.entity.Measure, Measure>>(
+				measures.size());
+		for (gov.va.escreening.entity.Measure m : measures) {
 			objectIds.add(m.getMeasureId());
 			Measure userAnswer = null;
-			for(Measure answer : assessmentRequest.getUserAnswers())
-			{
-				if(answer.getMeasureId().intValue() == m.getMeasureId())
-				{
+			for (Measure answer : assessmentRequest.getUserAnswers()) {
+				if (answer.getMeasureId().intValue() == m.getMeasureId()) {
 					userAnswer = answer;
 					break;
 				}
 			}
-			
-			if(userAnswer != null)
-			{
+
+			if (userAnswer != null) {
 				responseMap.put(m.getMeasureId(), Pair.of(m, userAnswer));
 			}
 		}
-		List<Event> events = eventRepo.getEventByTypeFilteredByObjectIds(RuleConstants.EVENT_TYPE_SHOW_QUESTION, objectIds);
-		
-		if(events == null || events.isEmpty())
-		{
-			return visibilityMap; //no update
+		List<Event> events = eventRepo.getEventByTypeFilteredByObjectIds(
+				RuleConstants.EVENT_TYPE_SHOW_QUESTION, objectIds);
+
+		if (events == null || events.isEmpty()) {
+			return visibilityMap; // no update
 		}
 
 		Set<Rule> rules = Collections.emptySet();
-        for(Event e : events){
-            rules = Sets.union(rules, e.getRules());
-        }
-        
-        for(Rule r : rules)
-        {
-        	ruleProcessorService.evaluate(r, responseMap);
-        }
-		
-		// we set the assessment ID from the context (not from the request)
-//		assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
-//
-//		try {
-//			// First validate and save data.
-//			saveUserInput(assessmentRequest);
-//		} catch (Throwable t) {
-//			logger.warn("Error during save of user data for follow-up question visibility update:\n{}", t.getLocalizedMessage());
-//		}
-		
-		// update visibility for the measures found on the page
-		ruleProcessorService.updateVisibilityForQuestions(assessmentContext.getVeteranAssessmentId(), page.getMeasures());
+		for (Event e : events) {
+			rules = Sets.union(rules, e.getRules());
+		}
 
-		return measureVisibilityRepository.getVisibilityMapForSurveyPage(assessmentRequest.getAssessmentId(), assessmentRequest.getPageId());
+		for (Rule r : rules) {
+			try {
+				boolean show = ruleProcessorService.evaluate(r, responseMap);
+
+				for (Event e : r.getEvents()) {
+					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+						visibilityMap.put(e.getRelatedObjectId(), show);
+					}
+				}
+			} catch (Throwable ex) {
+				logger.warn("rule evaluation exception", ex);
+			}
+
+		}
+
+		return visibilityMap;
 	}
 
 	/**
@@ -242,11 +249,14 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 		// Now that we have saved the submitted data, update the progress and
 		// get it.
-		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId, assessmentRequest.getStartTime());
-		assessmentResponse.setSurveyProgresses(getProgressStatuses(veteranAssessmentId));
+		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
+				assessmentRequest.getStartTime());
+		assessmentResponse
+				.setSurveyProgresses(getProgressStatuses(veteranAssessmentId));
 
 		// set the assessment's date last modified
-		assessmentResponse.setDateModified(veteranAssessmentRepository.getDateModified(veteranAssessmentId).getTime());
+		assessmentResponse.setDateModified(veteranAssessmentRepository
+				.getDateModified(veteranAssessmentId).getTime());
 
 		Page page = getPage(veteranAssessmentId, assessment.getPageId());
 		assessmentResponse.setPage(page);
@@ -258,13 +268,17 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 * Given a request for assessment, this method will generate an Assessment. <br/>
 	 * Valid navigations are:
 	 * <ul>
-	 * <li>"next" - the next survey page in the assessment unless we are at the last page in which case isComplete is
-	 * set to true and the same page is shown</li>
-	 * <li>"previous" - the previous page unless we are at the first page which will respond with first page</li>
-	 * <li>"nextSkipped" - the next page containing at least one skipped question (required or not) or the "end" page
-	 * when all questions are answered</li>
+	 * <li>"next" - the next survey page in the assessment unless we are at the
+	 * last page in which case isComplete is set to true and the same page is
+	 * shown</li>
+	 * <li>"previous" - the previous page unless we are at the first page which
+	 * will respond with first page</li>
+	 * <li>"nextSkipped" - the next page containing at least one skipped
+	 * question (required or not) or the "end" page when all questions are
+	 * answered</li>
 	 * <li>"last" - the last page of the assessment that contains questions</li>
-	 * <li>"end" - the "assessment complete" page which is after all survey pages have been traversed</li>
+	 * <li>"end" - the "assessment complete" page which is after all survey
+	 * pages have been traversed</li>
 	 * </ul>
 	 * 
 	 * @param assessmentRequest
@@ -273,19 +287,26 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	private Assessment getAssessmentForNextPage(
 			AssessmentRequest assessmentRequest) {
 
-		String navigation = Strings.nullToEmpty(assessmentRequest.getNavigation()).toLowerCase();
+		String navigation = Strings.nullToEmpty(
+				assessmentRequest.getNavigation()).toLowerCase();
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 
 		// Get all the survey pages for the assessment.
-		List<SurveyPage> surveyPageList = surveyPageRepository.getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
+		List<SurveyPage> surveyPageList = surveyPageRepository
+				.getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
 
 		Integer currentSurveyPageId;
 		if (assessmentRequest.getTargetSection() != null) {
-			currentSurveyPageId = surveyPageService.getFirstUnansweredSurveyPage(veteranAssessmentId, assessmentRequest.getTargetSection());
+			currentSurveyPageId = surveyPageService
+					.getFirstUnansweredSurveyPage(veteranAssessmentId,
+							assessmentRequest.getTargetSection());
 		} else if ("firstskipped".equals(navigation)) {
-			currentSurveyPageId = surveyPageService.getFirstUnansweredSurveyPage(veteranAssessmentId, null);
+			currentSurveyPageId = surveyPageService
+					.getFirstUnansweredSurveyPage(veteranAssessmentId, null);
 		} else if ("nextskipped".equals(navigation)) {
-			Optional<Integer> nextSkippedSurveyPageId = surveyPageService.getNextUnansweredSurveyPage(veteranAssessmentId, assessmentRequest.getPageId());
+			Optional<Integer> nextSkippedSurveyPageId = surveyPageService
+					.getNextUnansweredSurveyPage(veteranAssessmentId,
+							assessmentRequest.getPageId());
 			if (nextSkippedSurveyPageId.isPresent()) {
 				currentSurveyPageId = nextSkippedSurveyPageId.get();
 			} else {
@@ -303,7 +324,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			if (currentSurveyPageId == null || currentSurveyPageId < 1) {
 				i = 0;
 				found = true;
-			} else if (surveyPageList.get(i).getSurveyPageId().intValue() == currentSurveyPageId.intValue()) {
+			} else if (surveyPageList.get(i).getSurveyPageId().intValue() == currentSurveyPageId
+					.intValue()) {
 				found = true;
 			}
 
@@ -334,13 +356,16 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				if (i > surveyPageList.size() - 1)
 					i = surveyPageList.size() - 1;
 
-				return new Assessment(surveyPageList.get(i), isFirstPage, isLastPage, isComplete);
+				return new Assessment(surveyPageList.get(i), isFirstPage,
+						isLastPage, isComplete);
 			}
 		}
 
 		// Throw exception. This can happen if an invalid veteranAssessmentId or
 		// surveyPageId was passed.
-		throw new IllegalArgumentException(String.format("VeteranAssessment %s does not have SurveyPageId %s", veteranAssessmentId, currentSurveyPageId));
+		throw new IllegalArgumentException(String.format(
+				"VeteranAssessment %s does not have SurveyPageId %s",
+				veteranAssessmentId, currentSurveyPageId));
 	}
 
 	/**
@@ -351,9 +376,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 */
 	private List<SurveyProgress> getProgressStatuses(int veteranAssessmentId) {
 
-		List<VeteranAssessmentSurvey> veteranAssessmentSurveyList = veteranAssessmentSurveyRepository.forVeteranAssessmentId(veteranAssessmentId);
+		List<VeteranAssessmentSurvey> veteranAssessmentSurveyList = veteranAssessmentSurveyRepository
+				.forVeteranAssessmentId(veteranAssessmentId);
 
-		List<SurveyProgress> progressStatuses = new ArrayList<SurveyProgress>(veteranAssessmentSurveyList.size());
+		List<SurveyProgress> progressStatuses = new ArrayList<SurveyProgress>(
+				veteranAssessmentSurveyList.size());
 		for (VeteranAssessmentSurvey veteranAssessmentSurvey : veteranAssessmentSurveyList) {
 			progressStatuses.add(new SurveyProgress(veteranAssessmentSurvey));
 		}
@@ -362,7 +389,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	/**
-	 * Gets the survey page, the measures, answer choices, and what the veteran has already answered.
+	 * Gets the survey page, the measures, answer choices, and what the veteran
+	 * has already answered.
 	 * 
 	 * @param surveyPageId
 	 * @return
@@ -375,20 +403,26 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		SurveyPage surveyPage = surveyPageRepository.findOne(surveyPageId);
 
 		// Now get all the answers user entered previously.
-		ListMultimap<Integer, SurveyMeasureResponse> responseMap = surveyMeasureResponseRepository.getForVeteranAssessmentAndSurvey(veteranAssessmentId, surveyPage.getSurvey().getSurveyId());
+		ListMultimap<Integer, SurveyMeasureResponse> responseMap = surveyMeasureResponseRepository
+				.getForVeteranAssessmentAndSurvey(veteranAssessmentId,
+						surveyPage.getSurvey().getSurveyId());
 
-		Map<Integer, Boolean> measureVisibilityMap = measureVisibilityRepository.getVisibilityMapForSurveyPage(veteranAssessmentId, surveyPageId);
+		Map<Integer, Boolean> measureVisibilityMap = measureVisibilityRepository
+				.getVisibilityMapForSurveyPage(veteranAssessmentId,
+						surveyPageId);
 		page.setPageTitle(surveyPage.getSurvey().getSurveySection().getName());
 
 		if (!surveyPage.getMeasures().isEmpty()) {
 			page.setMeasures(new ArrayList<Measure>());
 			int i = 0;
-			List<gov.va.escreening.entity.Measure> measures = surveyPage.getMeasures();
+			List<gov.va.escreening.entity.Measure> measures = surveyPage
+					.getMeasures();
 			for (gov.va.escreening.entity.Measure dbMeasure : measures) {
 
 				if (dbMeasure != null) { // it should never been null but just
 											// in case I'm checking for it
-					Measure measure = new Measure(dbMeasure, responseMap, measureVisibilityMap);
+					Measure measure = new Measure(dbMeasure, responseMap,
+							measureVisibilityMap);
 					// dbMeasure is give in display order so we don't need the
 					// actual display order
 					measure.setDisplayOrder(i++);
@@ -401,10 +435,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	/**
-	 * Validate and save user input. <b>Note:</b> This saves all responses even if they are hidden. As a result you must
-	 * call ruleProcessorService.processRules or ruleProcessorService.updateVisibilityForQuestions so that the
-	 * visibility rules are run and invisible questions are removed from the database. This is so the visibility rules
-	 * can take all answers into account. This results in the UI question visibility to work correctly when a user
+	 * Validate and save user input. <b>Note:</b> This saves all responses even
+	 * if they are hidden. As a result you must call
+	 * ruleProcessorService.processRules or
+	 * ruleProcessorService.updateVisibilityForQuestions so that the visibility
+	 * rules are run and invisible questions are removed from the database. This
+	 * is so the visibility rules can take all answers into account. This
+	 * results in the UI question visibility to work correctly when a user
 	 * switches from one answer to another and then back again.
 	 * 
 	 * @param assessmentRequest
@@ -416,31 +453,40 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		List<SurveyMeasureResponse> surveyMeasureResponseList = new ArrayList<SurveyMeasureResponse>();
 
 		// See if we need to do anything.
-		if (assessmentRequest.getUserAnswers() == null || assessmentRequest.getUserAnswers().size() < 1) {
+		if (assessmentRequest.getUserAnswers() == null
+				|| assessmentRequest.getUserAnswers().size() < 1) {
 			// Nothing to process.
 			return surveyMeasureResponseList;
 		}
 
 		// Validate veteranAssessment
-		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository
+				.findOne(assessmentContext.getVeteranAssessmentId());
 
 		if (veteranAssessment == null) {
 			// Invalid veteran assessment id;
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
-			errorResponse.reject("page", "0", "Unable to process submitted data.");
-			errorResponse.addDeveloperMessage("Veteran assessment could not be found in database: " + assessmentRequest.getAssessmentId());
+			errorResponse.reject("page", "0",
+					"Unable to process submitted data.");
+			errorResponse
+					.addDeveloperMessage("Veteran assessment could not be found in database: "
+							+ assessmentRequest.getAssessmentId());
 			throw new AssessmentEngineDataValidationException(errorResponse);
 		}
 
 		// Validate surveyPage
-		SurveyPage surveyPage = surveyPageRepository.findOne(assessmentRequest.getPageId());
+		SurveyPage surveyPage = surveyPageRepository.findOne(assessmentRequest
+				.getPageId());
 		if (surveyPage == null) {
 			// Invalid survey page.
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
-			errorResponse.reject("page", "0", "Unable to process submitted data.");
-			errorResponse.addDeveloperMessage("Survey page could not be found in database: " + assessmentRequest.getPageId());
+			errorResponse.reject("page", "0",
+					"Unable to process submitted data.");
+			errorResponse
+					.addDeveloperMessage("Survey page could not be found in database: "
+							+ assessmentRequest.getPageId());
 			throw new AssessmentEngineDataValidationException(errorResponse);
 		}
 
@@ -451,8 +497,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			// Invalid veteran assessment survey.
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
-			errorResponse.reject("page", "0", "Unable to process submitted data.");
-			errorResponse.addDeveloperMessage("Veteran not associated with survey page: " + assessmentRequest.getPageId());
+			errorResponse.reject("page", "0",
+					"Unable to process submitted data.");
+			errorResponse
+					.addDeveloperMessage("Veteran not associated with survey page: "
+							+ assessmentRequest.getPageId());
 			throw new AssessmentEngineDataValidationException(errorResponse);
 		}
 
@@ -461,30 +510,41 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
 		// We can't proceed if we have errors here, so throw an exception.
 		if (!errorResponse.getErrorMessages().isEmpty()) {
-			throw new AssessmentEngineDataValidationException(errorResponse.setCode(10).setProperty("system"));
+			throw new AssessmentEngineDataValidationException(errorResponse
+					.setCode(10).setProperty("system"));
 		}
 
 		//
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
 
-		Map<Integer, Boolean> visMap = measureVisibilityRepository.getVisibilityMapForSurveyPage(assessmentRequest.getAssessmentId(), assessmentRequest.getPageId());
+		Map<Integer, Boolean> visMap = measureVisibilityRepository
+				.getVisibilityMapForSurveyPage(
+						assessmentRequest.getAssessmentId(),
+						assessmentRequest.getPageId());
 
-		AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(visMap).setErrorResponse(errorResponse);
+		AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
+				visMap).setErrorResponse(errorResponse);
 		Set<gov.va.escreening.entity.Measure> tableMeasures = new HashSet<gov.va.escreening.entity.Measure>();
 		for (Measure measure : assessmentRequest.getUserAnswers()) {
 
 			// Get the data validation for this measure.
-			gov.va.escreening.entity.Measure dbMeasure = measureRepository.findOne(measure.getMeasureId());
+			gov.va.escreening.entity.Measure dbMeasure = measureRepository
+					.findOne(measure.getMeasureId());
 
 			if (dbMeasure == null) {
-				logger.error("Invalid measure posted by client " + measure.getMeasureId());
-				errorResponse.reject("page", "0", "Submitted data could not be processed");
-				errorResponse.addDeveloperMessage("Invalid measure posted by client " + measure.getMeasureId());
+				logger.error("Invalid measure posted by client "
+						+ measure.getMeasureId());
+				errorResponse.reject("page", "0",
+						"Submitted data could not be processed");
+				errorResponse
+						.addDeveloperMessage("Invalid measure posted by client "
+								+ measure.getMeasureId());
 				continue;
 			}
 
-			if (dbMeasure.getMeasureType().getMeasureTypeId() != null && dbMeasure.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE) {
+			if (dbMeasure.getMeasureType().getMeasureTypeId() != null
+					&& dbMeasure.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE) {
 				tableMeasures.add(dbMeasure);
 			}
 
@@ -494,7 +554,10 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			if (measure.getAnswers() != null) {
 				// Now, for each answer, we need to validate and then save add
 				// response to surveyMeasureResponseList.
-				prepareSurveyResponseList(surveyMeasureResponseList, errorResponse, assessmentRequest, measure, submissionBuilder, veteranAssessment, surveyPage, dbMeasure);
+				prepareSurveyResponseList(surveyMeasureResponseList,
+						errorResponse, assessmentRequest, measure,
+						submissionBuilder, veteranAssessment, surveyPage,
+						dbMeasure);
 			}
 		}
 
@@ -506,7 +569,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		}
 
 		// remove table question child answers before we save
-		deleteTableChildQuestionsFromDB(tableMeasures, veteranAssessment, surveyPage, surveyMeasureResponseList);
+		deleteTableChildQuestionsFromDB(tableMeasures, veteranAssessment,
+				surveyPage, surveyMeasureResponseList);
 
 		// Save to database.
 		try {
@@ -522,17 +586,24 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			// TODO: Currently only a Veteran can take the assessment, person
 			// type will need to be detected once a
 			// user can take an assessment to properly track the person_id
-			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_UPDATED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_VETERAN);
+			VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper
+					.createAuditLogEntry(veteranAssessment,
+							AssessmentConstants.ASSESSMENT_EVENT_UPDATED,
+							veteranAssessment.getAssessmentStatus()
+									.getAssessmentStatusId(),
+							AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
-			
+
 			// clear the threadlocal cache
 			smrLister.clearSmrFromCache();
 
 		} catch (Exception ex) {
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
-			errorResponse.reject("page", "0", "Unable to process submitted data");
-			errorResponse.addDeveloperMessage("An error occured saving to the database.");
+			errorResponse.reject("page", "0",
+					"Unable to process submitted data");
+			errorResponse
+					.addDeveloperMessage("An error occured saving to the database.");
 			logger.error("Error when saving to database.", ex);
 			throw new AssessmentEngineDataValidationException(errorResponse);
 		}
@@ -548,8 +619,10 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	@Override
 	public boolean transitionAssessmentStatusTo(Integer veteranAssessmentId,
 			AssessmentStatusEnum requestedState) {
-		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
-		AssessmentStatus previousState = veteranAssessment.getAssessmentStatus();
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository
+				.findOne(veteranAssessmentId);
+		AssessmentStatus previousState = veteranAssessment
+				.getAssessmentStatus();
 		if (isValidTransition(previousState, requestedState)) {
 			transitionAssessmentTo(veteranAssessment, requestedState);
 			logThisTransition(veteranAssessment, previousState, requestedState);
@@ -562,14 +635,19 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	private void logThisTransition(VeteranAssessment veteranAssessment,
 			AssessmentStatus previousState, AssessmentStatusEnum requestedState) {
 
-		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_MARKED_FINALIZED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
+		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper
+				.createAuditLogEntry(veteranAssessment,
+						AssessmentConstants.ASSESSMENT_EVENT_MARKED_FINALIZED,
+						veteranAssessment.getAssessmentStatus()
+								.getAssessmentStatusId(), PERSON_TYPE_VETERAN);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 	}
 
 	private void transitionAssessmentTo(VeteranAssessment veteranAssessment,
 			AssessmentStatusEnum requestedState) {
 
-		AssessmentStatus status = assessmentStatusRepository.findOne(requestedState.getAssessmentStatusId());
+		AssessmentStatus status = assessmentStatusRepository
+				.findOne(requestedState.getAssessmentStatusId());
 
 		veteranAssessment.setAssessmentStatus(status);
 		veteranAssessmentRepository.update(veteranAssessment);
@@ -583,7 +661,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			AssessmentStatusEnum requestedState) {
 
 		boolean isValid = true;
-		if (fromStatus.getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId()) {
+		if (fromStatus.getAssessmentStatusId() == AssessmentStatusEnum.CLEAN
+				.getAssessmentStatusId()) {
 			isValid = requestedState == AssessmentStatusEnum.INCOMPLETE;
 		}
 
@@ -610,22 +689,32 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		// re-inserted)
 		StringBuilder savedResponses = new StringBuilder();
 		for (SurveyMeasureResponse response : surveyMeasureResponseList) {
-			boolean hasTableParent = response.getMeasure() != null && response.getMeasure().getParent() != null && response.getMeasure().getParent().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE;
+			boolean hasTableParent = response.getMeasure() != null
+					&& response.getMeasure().getParent() != null
+					&& response.getMeasure().getParent().getMeasureType()
+							.getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE;
 			if (hasTableParent && response.getSurveyMeasureResponseId() != null) {
-				savedResponses.append(response.getSurveyMeasureResponseId()).append(',');
+				savedResponses.append(response.getSurveyMeasureResponseId())
+						.append(',');
 			}
 		}
 		if (savedResponses.length() > 0) {
-			savedResponses = savedResponses.deleteCharAt(savedResponses.length() - 1);
+			savedResponses = savedResponses.deleteCharAt(savedResponses
+					.length() - 1);
 		}
 
 		String responsesToLeave = savedResponses.toString();
 
 		// For each table measure remove each response of its child measures
 		for (gov.va.escreening.entity.Measure measure : tableMeasures) {
-			for (gov.va.escreening.entity.Measure childMeasure : measure.getChildren()) {
+			for (gov.va.escreening.entity.Measure childMeasure : measure
+					.getChildren()) {
 
-				surveyMeasureResponseRepository.deleteResponseForMeasureAnswerId(veteranAssessment.getVeteranAssessmentId(), surveyPage.getSurvey().getSurveyId(), childMeasure, responsesToLeave);
+				surveyMeasureResponseRepository
+						.deleteResponseForMeasureAnswerId(
+								veteranAssessment.getVeteranAssessmentId(),
+								surveyPage.getSurvey().getSurveyId(),
+								childMeasure, responsesToLeave);
 			}
 		}
 	}
@@ -647,12 +736,15 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			submissionBuilder.setUserAnswer(answer);
 
 			if (!submissionBuilder.answerIdIsValid()) {
-				errorResponse.reject("measure", measure.getMeasureId().toString(), "Invalid answer ID submitted");
+				errorResponse.reject("measure", measure.getMeasureId()
+						.toString(), "Invalid answer ID submitted");
 				continue;
 			}
 
 			// See if this has already been answered. If not, create a new one.
-			SurveyMeasureResponse surveyMeasureResponse = surveyMeasureResponseRepository.find(assessmentRequest.getAssessmentId(), answerId, answer.getRowId());
+			SurveyMeasureResponse surveyMeasureResponse = surveyMeasureResponseRepository
+					.find(assessmentRequest.getAssessmentId(), answerId,
+							answer.getRowId());
 
 			// This is a 'transient' hibernate object since we created it.
 			if (surveyMeasureResponse == null) {
@@ -675,7 +767,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				if (answer.getRowId() == null)
 					answerProcessor.process(submissionBuilder.build(), 0);
 				else {
-					answerProcessor.process(submissionBuilder.build(), answer.getRowId());
+					answerProcessor.process(submissionBuilder.build(),
+							answer.getRowId());
 				}
 			}
 
@@ -690,15 +783,21 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		for (Measure measure : assessmentRequest.getUserAnswers()) {
 			if (measure.getMeasureId() == null) {
 				errorResponse.reject("page", "0", "Measure ID cannot be NULL");
-				errorResponse.addDeveloperMessage("A measure was posted back that did not have a measureId");
+				errorResponse
+						.addDeveloperMessage("A measure was posted back that did not have a measureId");
 			} else {
 				if (measure.getTableAnswers() != null) {
 					for (List<Answer> tableAnswer : measure.getTableAnswers()) {
 						if (tableAnswer != null) {
 							for (Answer answer : tableAnswer) {
 								if (answer.getAnswerId() == null) {
-									errorResponse.reject("measure", measure.getMeasureId().toString(), "Unable to process submitted data.");
-									errorResponse.addDeveloperMessage("A measure was posted back with a NULL answerId for measureId: " + measure.getMeasureId());
+									errorResponse
+											.reject("measure", measure
+													.getMeasureId().toString(),
+													"Unable to process submitted data.");
+									errorResponse
+											.addDeveloperMessage("A measure was posted back with a NULL answerId for measureId: "
+													+ measure.getMeasureId());
 								}
 							}
 						}
@@ -708,8 +807,12 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				if (measure.getAnswers() != null) {
 					for (Answer answer : measure.getAnswers()) {
 						if (answer.getAnswerId() == null) {
-							errorResponse.reject("measure", measure.getMeasureId().toString(), "Unable to process submitted data.");
-							errorResponse.addDeveloperMessage("A measure was posted back with a NULL answerId for measureId: " + measure.getMeasureId());
+							errorResponse.reject("measure", measure
+									.getMeasureId().toString(),
+									"Unable to process submitted data.");
+							errorResponse
+									.addDeveloperMessage("A measure was posted back with a NULL answerId for measureId: "
+											+ measure.getMeasureId());
 						}
 					}
 				}
@@ -723,15 +826,25 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		VeteranDto veteran = assessmentContext.getVeteran();
 
 		// persist the identification answers to the Veteran datasource
-		if (veteran != null && response != null && response.getUserAnswers() != null && surveyPage != null && surveyPage.getSurvey() != null && surveyPage.getSurvey().getSurveyId() != null && surveyPage.getSurvey().getSurveyId().intValue() == AssessmentConstants.SURVEY_IDENTIFICATION_ID) {
+		if (veteran != null
+				&& response != null
+				&& response.getUserAnswers() != null
+				&& surveyPage != null
+				&& surveyPage.getSurvey() != null
+				&& surveyPage.getSurvey().getSurveyId() != null
+				&& surveyPage.getSurvey().getSurveyId().intValue() == AssessmentConstants.SURVEY_IDENTIFICATION_ID) {
 
 			for (Measure measure : response.getUserAnswers()) {
 				if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_FIRST_NAME_ID) {
-					if (measure.getAnswers() != null && measure.getAnswers().get(0) != null)
-						veteran.setFirstName(measure.getAnswers().get(0).getAnswerResponse());
+					if (measure.getAnswers() != null
+							&& measure.getAnswers().get(0) != null)
+						veteran.setFirstName(measure.getAnswers().get(0)
+								.getAnswerResponse());
 				} else if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_MIDDLE_NAME_ID) {
-					if (measure.getAnswers() != null && measure.getAnswers().get(0) != null)
-						veteran.setMiddleName(measure.getAnswers().get(0).getAnswerResponse());
+					if (measure.getAnswers() != null
+							&& measure.getAnswers().get(0) != null)
+						veteran.setMiddleName(measure.getAnswers().get(0)
+								.getAnswerResponse());
 				}
 				// else if (measure.getMeasureId().intValue() ==
 				// AssessmentConstants.MEASURE_IDENTIFICATION_SUFFIX_ID) {
@@ -740,24 +853,33 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				// veteran.setSuffix(measure.getAnswers().get(0).getAnswerResponse());
 				// }
 				else if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_EMAIL) {
-					if (measure.getAnswers() != null && measure.getAnswers().get(0) != null)
-						veteran.setEmail(measure.getAnswers().get(0).getAnswerResponse());
+					if (measure.getAnswers() != null
+							&& measure.getAnswers().get(0) != null)
+						veteran.setEmail(measure.getAnswers().get(0)
+								.getAnswerResponse());
 				} else if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_PHONE_) {
-					if (measure.getAnswers() != null && measure.getAnswers().get(0) != null)
-						veteran.setPhone(measure.getAnswers().get(0).getAnswerResponse());
-				} else if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_CALL_TIME && measure.getAnswers() != null) {
+					if (measure.getAnswers() != null
+							&& measure.getAnswers().get(0) != null)
+						veteran.setPhone(measure.getAnswers().get(0)
+								.getAnswerResponse());
+				} else if (measure.getMeasureId().intValue() == AssessmentConstants.MEASURE_IDENTIFICATION_CALL_TIME
+						&& measure.getAnswers() != null) {
 
 					for (Answer answer : measure.getAnswers()) {
 						if (!Strings.isNullOrEmpty(answer.getAnswerResponse())) {
-							String userResponse = answer.getAnswerResponse().trim();
+							String userResponse = answer.getAnswerResponse()
+									.trim();
 							if (userResponse.equalsIgnoreCase("true")) {
-								MeasureAnswer selectedAnswer = measureAnswerRepository.findOne(answer.getAnswerId());
+								MeasureAnswer selectedAnswer = measureAnswerRepository
+										.findOne(answer.getAnswerId());
 								if (selectedAnswer != null) {
 									// use the text of the answer in case the
 									// answer ID changes due to new answers
 									// being added/removed to the question
-									veteran.setBestTimeToCall(selectedAnswer.getAnswerText());
-									veteran.setBestTimeToCallOther(answer.getOtherAnswerResponse());
+									veteran.setBestTimeToCall(selectedAnswer
+											.getAnswerText());
+									veteran.setBestTimeToCallOther(answer
+											.getOtherAnswerResponse());
 								}
 							}
 						}

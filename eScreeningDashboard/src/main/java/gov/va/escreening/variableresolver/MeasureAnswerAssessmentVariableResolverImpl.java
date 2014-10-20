@@ -1,6 +1,7 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
@@ -14,6 +15,7 @@ import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -285,6 +287,101 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		//otherwise just return null;
 		return null;
 	}
-    
-    
+
+	@Override
+	public String resolveCalculationValue(AssessmentVariable answerVariable,
+			Pair<gov.va.escreening.entity.Measure, Measure> answer) {
+		
+		String resolvedValue = 
+		        resolveResponseUsingCalculationType(answerVariable, answer);
+		        
+		return resolvedValue;        
+	}
+
+	private String resolveResponseUsingCalculationType(
+			AssessmentVariable answerVariable,
+			Pair<gov.va.escreening.entity.Measure, Measure> answer) {
+		
+		  MeasureAnswer measureAnswer = answerVariable.getMeasureAnswer();
+		  
+		  String answerValue = null;
+		  for(Answer ans : answer.getRight().getAnswers())
+		  {
+			  if(ans.getAnswerId().intValue() == measureAnswer.getMeasureAnswerId())
+			  {
+				  answerValue = ans.getAnswerResponse();
+				  break;
+			  }
+		  }
+	       
+		  int calculationType = measureAnswer.getCalculationType().getCalculationTypeId();
+	        switch(measureAnswer.getCalculationType().getCalculationTypeId()) {
+	            case CALCULATION_TYPE_USER_ENTERED_NUMBER:
+	            	
+	                if(answerValue != null){ 
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf",answerValue);
+	                }
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_BOOLEAN:
+	                if(answerValue != null) 
+	                   return String.valueOf(answerValue);  
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_STRING:
+	                return answerValue;
+	            case CALCULATION_TYPE_NUMBER:               
+	                String calcValue = getMeasureAnswerCalculationValue(measureAnswer);
+	                if(calcValue != null)
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf", calcValue);
+	                break;
+	            default:
+	                throw new UnsupportedOperationException(String.format("Referenced calculation type of: %s is not supported.  AssessmentVariableid: %s", 
+	                    calculationType, answerVariable.getAssessmentVariableId()));
+	        }
+	        return null;
+	}
+
+	@Override
+	public String resolveCalculationValue(
+			gov.va.escreening.entity.Measure measure, Answer answerVal) {
+		MeasureAnswer measureAnswer =null;
+		for(MeasureAnswer ma : measure.getMeasureAnswerList())
+		{
+			if(ma.getMeasureAnswerId().intValue() == answerVal.getAnswerId())
+			{
+				measureAnswer = ma;
+				break;
+			}
+		}
+		
+		String answerValue = answerVal.getAnswerResponse();
+	       
+		  int calculationType = measureAnswer.getCalculationType().getCalculationTypeId();
+	        switch(measureAnswer.getCalculationType().getCalculationTypeId()) {
+	            case CALCULATION_TYPE_USER_ENTERED_NUMBER:
+	            	
+	                if(answerValue != null){ 
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf",answerValue);
+	                }
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_BOOLEAN:
+	                if(answerValue != null) 
+	                   return String.valueOf(answerValue);  
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_STRING:
+	                return answerValue;
+	            case CALCULATION_TYPE_NUMBER:               
+	                String calcValue = getMeasureAnswerCalculationValue(measureAnswer);
+	                if(calcValue != null)
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf", calcValue);
+	                break;
+	            default:
+	                throw new UnsupportedOperationException(String.format("Referenced calculation type of: %s is not supported.  measureAnswerId: %s", 
+	                    calculationType, measureAnswer.getMeasureAnswerId()));
+	        }
+	        return null;
+	}
 }
