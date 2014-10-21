@@ -95,6 +95,14 @@ public class TemplateRestController {
 			@RequestBody TemplateFileDTO templateFile, 
 			@CurrentUser EscreenUser escreenUser){
 		
+		if (templateFile.getName() == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toUser("Template name can not be null.")
+            .toAdmin("Template name can not be null ")
+            .setCode(ErrorCodeEnum.DATA_VALIDATION.getValue())
+            .throwIt();
+		}
+		
 		return templateService.saveTemplateFileForSurvey(surveyId, templateTypeId, templateFile);
 	}
 		

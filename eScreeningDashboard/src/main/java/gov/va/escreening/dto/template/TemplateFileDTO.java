@@ -13,6 +13,7 @@ public class TemplateFileDTO implements Serializable{
 	private Integer id;
 	private boolean isGraphical;
 	private TemplateTypeDTO type;
+	private String name;
 	private List<INode> blocks = new ArrayList<>();
 	
 	public Integer getId() {
@@ -40,5 +41,13 @@ public class TemplateFileDTO implements Serializable{
 	public void setIsGraphical(Boolean isGraphical2) {
 		this.isGraphical = isGraphical2;		
 	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 	
 }

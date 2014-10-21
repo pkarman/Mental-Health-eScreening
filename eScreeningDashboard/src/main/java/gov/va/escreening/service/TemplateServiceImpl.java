@@ -475,6 +475,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
  
 	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Integer saveTemplateFileForSurvey(Integer surveyId, Integer templateTypeId, TemplateFileDTO templateFile){
 		//TODO: Can some of this be factored out so we an reuse the parts that don't deal with survey in a battery related version? 
 		
@@ -482,27 +483,34 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		Template template = new Template();
 		
-		
 		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateTypeId);
 		template.setTemplateType(templateType);
 		
 		template.setDateCreated(new Date());
 		template.setIsGraphical(templateFile.getIsGraphical());
+		template.setName(templateFile.getName());
 		
 		// save raw json file to the database
-		ObjectMapper om = new ObjectMapper();
-		try
+		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
 		{
-			template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
-		}
-		catch(IOException e)
-		{
-			logger.error("Error setting json blocks into template", e); 
-			e.printStackTrace();
 			template.setJsonFile(null);
 		}
-		
-		template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		else
+		{
+			ObjectMapper om = new ObjectMapper();
+			try
+			{
+				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+			}
+			catch(IOException e)
+			{
+				logger.error("Error setting json blocks into template", e); 
+				e.printStackTrace();
+				template.setJsonFile(null);
+			}
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		 }	
 		/**
 		 * for survey one template per type
 		 */
@@ -548,19 +556,27 @@ public class TemplateServiceImpl implements TemplateService {
 		template.setDateCreated(new Date());
 		template.setIsGraphical(templateFile.getIsGraphical());
 		
-		// save raw json file to the database
-		ObjectMapper om = new ObjectMapper();
-		try
+		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
 		{
-			template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
 			template.setJsonFile(null);
+			template.setTemplateFile(null);
 		}
-		
-		template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		else
+		{
+			// save raw json file to the database
+			ObjectMapper om = new ObjectMapper();
+			try
+			{
+				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				template.setJsonFile(null);
+			}
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		}
 
 		templateRepository.update(template);
 		
