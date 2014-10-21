@@ -9,7 +9,7 @@ Editors.controller('ModuleTemplateListController',
     TemplateTypeService.registerTypes($scope, templateTypes);
     
     if($stateParams.saved == "true"){
-        $rootScope.addMessage(
+        $rootScope.addInterstateMessage(
                 $rootScope.createSuccessSaveMessage("All template changes have been saved."));
     }
 

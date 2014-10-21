@@ -11,6 +11,18 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
             $rootScope.messageHandler.addMessage(message);
         }
     };
+    
+    /**
+     * Adds a message which will stay around for the next state.
+     * Needed if you want to:
+     *  - pass a message to another state because the action both makes a change and also transitions state
+     *  - you want to set a message when a controller is being initialized
+     */
+    $rootScope.addInterstateMessage = function(message) {
+        if(Object.isDefined(message)) {
+            $rootScope.messageHandler.addMessage(message, null, 1);
+        }
+    };
 
     $rootScope.createSuccessDeleteMessage = function(message) {
         var msg = BytePushers.models.Message.SUCCESS_DELETE_MSG;
