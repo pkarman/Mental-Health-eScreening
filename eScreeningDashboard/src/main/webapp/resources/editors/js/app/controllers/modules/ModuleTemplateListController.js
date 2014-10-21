@@ -8,7 +8,7 @@ Editors.controller('ModuleTemplateListController',
  
     TemplateTypeService.registerTypes($scope, templateTypes);
     
-    if($stateParams.saved){
+    if($stateParams.saved == "true"){
         $rootScope.addMessage(
                 $rootScope.createSuccessSaveMessage("All template changes have been saved."));
     }
