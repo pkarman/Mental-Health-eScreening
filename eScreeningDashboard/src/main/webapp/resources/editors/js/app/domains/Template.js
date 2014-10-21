@@ -25,8 +25,10 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  */
 EScreeningDashboardApp.models.Template = function (templateType) {
     if(Object.isDefined(templateType)){
+        this.isGraphical = false;
         this.type = templateType;
         this.name = templateType.name;
+        this.blocks = [];
     }
     
     /**
