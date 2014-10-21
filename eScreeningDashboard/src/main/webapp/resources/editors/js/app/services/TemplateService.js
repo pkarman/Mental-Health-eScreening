@@ -1,27 +1,28 @@
 /**
  * Angular service factory method for Templates.
  *
- * @author Tonté Pouncil
+ * @author Robin Carnow
  */
 angular.module('EscreeningDashboardApp.services.template', ['restangular'])
-    .factory('TemplateService', ['Restangular', 'TemplateType', function (Restangular, TemplateType){
+    .factory('TemplateService', ['Restangular', 'Template', function (Restangular, Template){
         "use strict";
 
         var restAngular = Restangular.withConfig(function(Configurer) {
                 Configurer.setBaseUrl('/escreeningdashboard/dashboard');
                 Configurer.setRequestSuffix('.json');
             }),
-            service = restAngular.service("services/templateTypes");
+            service = restAngular.service("services/template");
 
-        restAngular.extendModel("services/templateTypes", function(model) {
-            return angular.extend(model, TemplateType);
+        restAngular.extendModel("services/template", function(model) {
+            return angular.extend(model, Template);
         });
         
-        // Expose the public TemplateService API to the rest of the application.
-        //return service;
         return {
-            getTemplateTypes: function (queryParams) {
-                return service.getList(queryParams);
+            get: function(templateId) {
+                return service.one(templateId).get();
+            },
+            remove: function (templateId) {
+                return service.one(templateId).remove();
             }
         }
     }]);

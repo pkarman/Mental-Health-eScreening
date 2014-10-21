@@ -20,6 +20,7 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.surveysection',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.services.template',
+        'EscreeningDashboardApp.services.templateType',
         'EscreeningDashboardApp.services.assessmentVariable',
         'EscreeningDashboardApp.services.question',
         'EscreeningDashboardApp.filters.messages',
@@ -176,7 +177,19 @@ Editors.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
 });
 
-Editors.run(['$rootScope', '$state', '$stateParams', '$modal', function ($rootScope,   $state,   $stateParams,  $modal) {
+Editors.run(['$rootScope', '$state', '$stateParams', '$modal', 'Restangular', function ($rootScope,   $state,   $stateParams,  $modal, Restangular) {
+    Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
+
+        if(Object.isDefined(response) && Object.isDefined(response.data)){
+            if(Object.isArray(response.data.errorMessages)){
+                response.data.errorMessages.forEach(function (errorMessage) {
+                    $rootScope.addMessage(new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: errorMessage.description}));
+                });
+            }
+        }
+
+        return true; // error not handled
+    });
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
     // <li ng-class="{ active: $state.includes('assessments.list') }"> will set the <li>
@@ -187,3 +200,4 @@ Editors.run(['$rootScope', '$state', '$stateParams', '$modal', function ($rootSc
 }]);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
+Editors.value('Template', new EScreeningDashboardApp.models.Template());

@@ -1,6 +1,22 @@
 <div class="container">
     <h1>Manage {{relatedObj.name}} Templates</h1>
 
+	<!-- Alerts and Messages -->
+	<div class="row">
+	    <div class="col-md-12">
+	        <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
+	            <div>Error Message(s):</div>
+	            <div ng-repeat="error in messageHandler.getMessages()| uniqueMessage">{{error.getValue()}}</div>
+	        </div>
+	        <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
+	            <div ng-repeat="message in messageHandler.getMessages()| uniqueMessage">
+	                {{message.getValue()}}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+
     <div class="row clearfix">
         <div class="col-md-12 column">
             <!--- ngTable Begin -->
@@ -12,16 +28,16 @@
                         <div class="pull-right">
                             <div class="cursor-pointer">
                                 <span title="Create"
-                                      ng-if="!templateType.exists"
-                                      ng-click="newTemplate(templateType);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-plus"></i> Create </span>
+                                      ng-if="!templateType.exists()"
+                                      ng-click="editTemplate(templateType);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-plus"></i> Create </span>
                                       
 	                            <span title="Edit"
-                                      ng-if="templateType.exists"
+                                      ng-if="templateType.exists()"
                                       ng-click="editTemplate(templateType);"  class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
 
 	                            <span title="Delete"
-                                      ng-if="templateType.exists"
-                                      ng-really-message="Are you sure?"
+                                      ng-if="templateType.exists()"
+                                      ng-really-message="Permanently delete template?"
                                       ng-really-click="deleteTemplate(templateType);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
                             </div>
                         </div>
