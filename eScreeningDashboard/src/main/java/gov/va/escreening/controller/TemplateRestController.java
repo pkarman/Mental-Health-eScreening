@@ -1,7 +1,6 @@
 package gov.va.escreening.controller;
 
 import gov.va.escreening.domain.ErrorCodeEnum;
-import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -57,6 +56,10 @@ public class TemplateRestController {
         return er;
     }
 	
+    //TODO: when we have time it would probably be better to have the templateTypes be retrieved via the survey and battery controllers 
+    // so something like this: /services/survey/{surveyId}/templateTypes/{templateTypeId}
+    // this would make more sense in (and streamline) the UI code as well.
+    
 	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -82,6 +85,67 @@ public class TemplateRestController {
         return templateTypes;
 	}
 	
+	
+	@RequestMapping(value="/services/templateTypes/{templateTypeId}/surveys/{surveyId}", method=RequestMethod.POST /*, consumes="application/json", produces="application/json"*/)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody
+	public Integer createTemplateForSurvey(
+			@PathVariable("surveyId") Integer surveyId,
+			@PathVariable("templateTypeId") Integer templateTypeId,
+			@RequestBody TemplateFileDTO templateFile, 
+			@CurrentUser EscreenUser escreenUser){
+		
+		return templateService.saveTemplateFileForSurvey(surveyId, templateTypeId, templateFile);
+	}
+		
+
+	//TODO: As soon as we have a templateService.saveTemplateFileForBattery method then please uncomment this
+//	@RequestMapping(value = "/services/templateTypes/{templateTypeId}/batteries/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @ResponseBody
+//	public Integer createTemplateForBattery(
+//			@PathVariable("batteryId") Integer batteryId,
+//	        @PathVariable("templateTypeId") Integer templateTypeId,
+//			@RequestBody TemplateFileDTO templateFile, 		
+//			@CurrentUser EscreenUser escreenUser) {
+//		return templateService.saveTemplateFileForBattery(templateDTO, templateTypeId, batteryId, false);
+//	}
+	
+	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+	public TemplateFileDTO getTemplate(
+			@PathVariable("templateId") Integer templateId,
+			@CurrentUser EscreenUser escreenUser) {
+		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
+		if (dto == null)
+			 ErrorBuilder.throwing(EntityNotFoundException.class)
+	             .toUser("Could not find the template.")
+	             .toAdmin("Could not find the template with ID: " + templateId)
+	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+	             .throwIt();
+		return dto;
+	}
+	
+	@RequestMapping(value="/services/template/{templateId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public Boolean updateTemplateFile(@PathVariable("templateId") Integer templateId, 
+			@RequestBody TemplateFileDTO templateFile, 
+			@CurrentUser EscreenUser escreenUser){
+		
+		try{
+			templateService.updateTemplateFile(templateId, templateFile);
+		}catch(IllegalArgumentException e) {
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toUser("Could not find the template.")
+            .toAdmin("Could not find the template with ID: " + templateId)
+            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+            .throwIt();
+		}
+		return Boolean.TRUE;
+	}	
+	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -97,77 +161,7 @@ public class TemplateRestController {
 		}
 		return Boolean.TRUE;
 	}
-
-	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-	public TemplateDTO getTemplate(
-			@PathVariable("templateId") Integer templateId,
-			@CurrentUser EscreenUser escreenUser) {
-		TemplateDTO dto = templateService.getTemplate(templateId);
-		if (dto == null)
-			 ErrorBuilder.throwing(EntityNotFoundException.class)
-	             .toUser("Could not find the template.")
-	             .toAdmin("Could not find the template with ID: " + templateId)
-	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
-	             .throwIt();
-		return dto;
-	}
-	
-	@RequestMapping(value="/services/template/{surveyId}/{templateTypeId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-	public TemplateDTO getTemplate(@PathVariable("templateTypeId") Integer templateTypeId, @PathVariable("surveyId") Integer surveyId,
-			@CurrentUser EscreenUser screenUser)
-	{
-		TemplateDTO dto = templateService.getTemplateBySurveyAndTemplateType(surveyId, templateTypeId);
-		if (dto == null)
-			ErrorBuilder.throwing(EntityNotFoundException.class)
-	            .toUser("Could not find the template.")
-	            .toAdmin("Could not find the template with a type ID of: " + templateTypeId + " for module with ID: " + surveyId)
-	            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
-	            .throwIt();
-		return dto;
-	}
-
-	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-	public TemplateDTO updateTemplate(@PathVariable("templateId") Integer templateId,
-			@RequestBody TemplateDTO templateDTO,
-			@CurrentUser EscreenUser escreenUser) {
 		
-		TemplateDTO updatedTemplate = null;
-		try {
-			updatedTemplate = templateService.updateTemplate(templateDTO);
-		} catch(IllegalArgumentException e) {
-			ErrorBuilder.throwing(EntityNotFoundException.class)
-	            .toUser("Could not find the template.")
-	            .toAdmin("Could not find the template with ID: " + templateId)
-	            .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
-	            .throwIt();
-		}
-		return updatedTemplate;
-	}
-
-	@RequestMapping(value = "/services/template/{templateId}/surveyId/{surveyId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-	public TemplateDTO createTemplateForSurvey(
-			@RequestBody TemplateDTO templateDTO,
-			@PathVariable Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-		return templateService.createTemplate(templateDTO, surveyId, true);
-	}
-
-	@RequestMapping(value = "/services/template/{templateId}/batteryId/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-	public TemplateDTO createTemplateForBattery(
-			@RequestBody TemplateDTO templateDTO,
-			@PathVariable Integer batteryId, boolean isSurvey,
-			@CurrentUser EscreenUser escreenUser) {
-		return templateService.createTemplate(templateDTO, batteryId, false);
-	}
 	
 	
 	@RequestMapping(value="/services/template/addVariableTemplate/{templateId}", method =RequestMethod.POST,
@@ -218,39 +212,6 @@ public class TemplateRestController {
 	{
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
-	}
-	
-	@RequestMapping(value = "/services/template/getTemplateFile/{templateId}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.FOUND)
-    @ResponseBody
-	public TemplateFileDTO getTemplateFile(
-			@PathVariable("templateId") Integer templateId,
-			@CurrentUser EscreenUser escreenUser) {
-		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
-		if (dto == null)
-			 ErrorBuilder.throwing(EntityNotFoundException.class)
-	             .toUser("Could not find the template.")
-	             .toAdmin("Could not find the template with ID: " + templateId)
-	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
-	             .throwIt();
-		return dto;
-		
-	}
-	
-	@RequestMapping(value="/services/template/templateFile/{surveyId}", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	@ResponseBody
-	public Integer saveTemplateFile(@PathVariable("surveyId") Integer surveyId,@RequestBody TemplateFileDTO templateFile, @CurrentUser EscreenUser escreenUser)
-	{
-		return templateService.saveTemplateFile(surveyId, templateFile);
-	}
-	
-	@RequestMapping(value="/services/template/templateFile/{templateId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
-	@ResponseBody
-	public Boolean updateTemplateFile(@PathVariable("templateId") Integer templateId, @RequestBody TemplateFileDTO templateFile, @CurrentUser EscreenUser escreenUser)
-	{
-		templateService.updateTemplateFile(templateId, templateFile);
-		return Boolean.TRUE;
-		
 	}
 
 }

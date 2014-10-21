@@ -1,5 +1,5 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'template', 
-                                          function($scope, $state, $stateParams, TemplateService, template) {
+Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'TemplateTypeService', 'template', 
+                                          function($scope, $state, $stateParams, TemplateService, TemplateTypeService, template) {
 
     console.log("In templateEditorController");
     
@@ -13,10 +13,14 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     };
     
     $scope.save = function(){
-        console.log("Save template");
+        console.log("Save clicked");
+        
+        $scope.template.saveFor($scope.relatedObj).then(function(response){
+            $scope.done();
+        });       
     };
     
-    $scope.cancel = function(){
+    $scope.done = function(){
         console.log("Cancel edit");
         if($scope.relatedObj.type == "module"){
             $state.go('modules.templates', $stateParams);

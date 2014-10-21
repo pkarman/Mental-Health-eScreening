@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import freemarker.core.TemplateElement;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
+import gov.va.escreening.controller.TemplateRestController;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
+	private static final Logger logger = LoggerFactory.getLogger(TemplateServiceImpl.class);
 
 	@Autowired
 	private TemplateRepository templateRepository;
@@ -146,13 +150,11 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public TemplateDTO createTemplate(TemplateDTO templateDTO,
+	public TemplateDTO createTemplate(TemplateDTO templateDTO, Integer templateTypeId, 
 			Integer parentId, boolean isSurvey) {
-		Template template = TemplateTransformer.copyToTemplate(templateDTO,
-				null);
+		Template template = TemplateTransformer.copyToTemplate(templateDTO,	null);
 
-		template.setTemplateType(templateTypeRepository.findOne(templateDTO
-				.getTemplateTypeId()));
+		template.setTemplateType(templateTypeRepository.findOne(templateTypeId));
 
 		if (parentId == null) {
 			templateRepository.create(template);
@@ -471,15 +473,17 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 	
 	
-
+ 
 	@Override
-	public Integer saveTemplateFile(Integer surveyId, TemplateFileDTO templateFile){
+	public Integer saveTemplateFileForSurvey(Integer surveyId, Integer templateTypeId, TemplateFileDTO templateFile){
+		//TODO: Can some of this be factored out so we an reuse the parts that don't deal with survey in a battery related version? 
+		
 		Survey survey = surveyRepository.findOne(surveyId);
 		
 		Template template = new Template();
 		
 		
-		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
+		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateTypeId);
 		template.setTemplateType(templateType);
 		
 		template.setDateCreated(new Date());
@@ -493,6 +497,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		catch(IOException e)
 		{
+			logger.error("Error setting json blocks into template", e); 
 			e.printStackTrace();
 			template.setJsonFile(null);
 		}

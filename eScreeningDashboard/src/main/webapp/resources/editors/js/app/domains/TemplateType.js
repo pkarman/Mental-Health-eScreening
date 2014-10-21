@@ -24,13 +24,14 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Robin Carnow
  */
 EScreeningDashboardApp.models.TemplateType = function (jsonTemplateObject) {
-    var that = this,
-        id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.id))? jsonTemplateObject.id : -1,
-        name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.name))? jsonTemplateObject.name : null,
-        description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.description))? jsonTemplateObject.description : null,
-        templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null,
-        exists =  Object.isDefined(templateId);
-
+    var that = this;
+    if(Object.isDefined(jsonTemplateObject)){
+        this.id = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.id))? jsonTemplateObject.id : -1;
+        this.name = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.name))? jsonTemplateObject.name : null;
+        this.description = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.description))? jsonTemplateObject.description : null;
+        this.templateId = (Object.isDefined(jsonTemplateObject) && Object.isDefined(jsonTemplateObject.templateId)) ? jsonTemplateObject.templateId : null;
+    }
+    
     this.exists = function(){
         return Object.isDefined(this.templateId);
     }

@@ -17,7 +17,13 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             return angular.extend(model, Template);
         });
         
-        // Expose the restangular service
-        return service;
+        return {
+            get: function(templateId) {
+                return service.one(templateId).get();
+            },
+            remove: function (templateId) {
+                return service.one(templateId).remove();
+            }
+        }
     }]);
         

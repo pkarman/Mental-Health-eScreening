@@ -37,7 +37,15 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
     };
 
     $rootScope.createErrorMessage = function (message) {
-        return (Object.isDefined(message)) ? message : new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: BytePushers.models.Message.ERROR_MSG})
+        var msg = BytePushers.models.Message.ERROR_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: msg})
     };
 
     $rootScope.batteries = [];

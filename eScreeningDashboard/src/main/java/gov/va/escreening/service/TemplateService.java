@@ -13,8 +13,8 @@ public interface TemplateService {
 
 	TemplateDTO updateTemplate(TemplateDTO templateDTO);
 
-	TemplateDTO createTemplate(TemplateDTO templateDTO, Integer parentId,
-			boolean isSurvey);
+	TemplateDTO createTemplate(TemplateDTO templateDTO, Integer templateTypeId, 
+							   Integer parentId,  boolean isSurvey);
 
 	void addVariableTemplate(Integer templateId, Integer variableTemplateId);
 
@@ -35,7 +35,7 @@ public interface TemplateService {
 
 	TemplateFileDTO getTemplateFileAsTree(Integer templateId);
 
-	Integer saveTemplateFile(Integer surveyId, TemplateFileDTO templateFile);
+	Integer saveTemplateFileForSurvey(Integer surveyId, Integer templateTypeId, TemplateFileDTO templateFile);
 
 	void updateTemplateFile(Integer templateId, TemplateFileDTO templateFile);
 

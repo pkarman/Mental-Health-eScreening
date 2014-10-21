@@ -1,11 +1,14 @@
 package gov.va.escreening.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * This object represents a template type and, in the context of a specific 
  * referenced object (e.g. module or battery), an optional template ID (when such 
  * a relation exists).
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTypeDTO {
 
 	private Integer id;

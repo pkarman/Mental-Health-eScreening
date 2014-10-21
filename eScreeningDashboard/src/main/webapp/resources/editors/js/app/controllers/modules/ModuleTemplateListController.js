@@ -2,10 +2,11 @@
  * Created by Robin Carnow on 9/26/2014.
  */
 Editors.controller('ModuleTemplateListController', 
-        ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'templateTypes',
-         function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, templateTypes) {
+        ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'TemplateTypeService', 'templateTypes',
+         function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
-    $scope.templateTypes = templateTypes;
+ 
+    TemplateTypeService.registerTypes($scope, templateTypes);
 
     if($scope.templateTypes.length == 0){
         console.log("No template types received from server. Redirecting back to module.");
@@ -64,6 +65,9 @@ Editors.controller('ModuleTemplateListController',
     /* ---- Button Actions ---- */    
     $scope.editTemplate = function(templateType){
         console.log('Opening Template Editor to edit template of type: ' + templateType.name);
+        
+        TemplateTypeService.setSelectedType(templateType);
+        
         var editorParams =
            {selectedSurveyId: $stateParams.selectedSurveyId,
             selectedSurveyName: $stateParams.selectedSurveyName,
@@ -78,7 +82,7 @@ Editors.controller('ModuleTemplateListController',
         console.log('Deleting template type: ' + templateType.name + " which has ID: " + templateType.templateId);
 
         // send delete rest call
-        TemplateService.one(templateType.templateId).remove().then(function(template){
+        TemplateService.remove(templateType.templateId).then(function(template){
             console.log("Successfully deleted template type: " + templateType.name + " which has ID: " + templateType.templateId);
             
             $rootScope.addMessage(
