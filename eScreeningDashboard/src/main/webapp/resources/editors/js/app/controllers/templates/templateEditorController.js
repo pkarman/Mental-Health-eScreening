@@ -4,6 +4,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     console.log("In templateEditorController");
     
     $scope.template = template;
+    $scope.hasChanged = false;
     
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
@@ -38,11 +39,13 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
         else{
             console.log("Add block to bottom of template");
         }
+        $scope.templateChanged();
     };
     
     $scope.removeBlock = function(blockScope){
         var block = blockScope.$modelValue;
         console.log("remove block: " + block.title);
+        $scope.templateChanged();
     };
     
     $scope.editBlock = function(blockScope){
@@ -54,5 +57,12 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     $scope.treeOptions = {
     
     };
+    
+    //this could use $watch but this might be overkill for large templates since there are 
+    //only a couple of places that a change occurs and afer one has happened we don't care about new updates 
+    $scope.templateChanged = function(){
+        console.log("template changed");
+        $scope.hasChanged = true;
+    } 
     
 }]);

@@ -37,7 +37,11 @@ Editors.directive('ngReallyClick', [function() {
         link: function(scope, element, attrs) {
             element.bind('click', function() {
                 var message = attrs.ngReallyMessage;
-                if (message && confirm(message)) {
+                var shouldSkip = Object.isDefined(attrs.ngReallySkipWhen) 
+                    && attrs.ngReallySkipWhen.length > 0 
+                    && scope.$apply(attrs.ngReallySkipWhen);
+                    
+                if (shouldSkip || (message && confirm(message))) {
                     scope.$apply(attrs.ngReallyClick);
                 }
             });
