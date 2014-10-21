@@ -514,6 +514,11 @@ public class TemplateServiceImpl implements TemplateService {
 			
 			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
 		 }	
+		
+		if (template.getTemplateFile()==null)
+		{
+			template.setTemplateFile("");
+		}
 		/**
 		 * for survey one template per type
 		 */
@@ -562,7 +567,6 @@ public class TemplateServiceImpl implements TemplateService {
 		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
 		{
 			template.setJsonFile(null);
-			template.setTemplateFile(null);
 		}
 		else
 		{
@@ -579,6 +583,11 @@ public class TemplateServiceImpl implements TemplateService {
 			}
 			
 			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		}
+		
+		if (template.getTemplateFile()==null)
+		{
+			template.setTemplateFile("");
 		}
 
 		templateRepository.update(template);
