@@ -231,13 +231,17 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 								evaluator.appendModule(template);
 							}
 						}
+						else if (type.equals(TemplateType.VISTA_QA))
+						{
+							quesAndAnswers.append(processTemplate(template, veteranAssessmentId));
+						}
 					}
 					
-                    if (templateMap.containsKey(TemplateType.VISTA_QA) 
-                    		&& survey.getClinicalReminderSurveyList() != null 
-                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){
-                        quesAndAnswers.append(surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, veteranAssessmentId));
-                    }
+//                    if (templateMap.containsKey(TemplateType.VISTA_QA) && templateMap.
+//                    		&& survey.getClinicalReminderSurveyList() != null 
+//                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){                   	
+//                        quesAndAnswers.append(processTemplate(templateMap.get(TemplateType.VISTA_QA), veteranAssessmentId));
+//                    }
 				}
 			}
 		}
@@ -254,7 +258,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		/* Add optional VistA questions/answer text */
 		if(templateMap.containsKey(TemplateType.VISTA_QA)) {
-			evaluator.appendQuestionsAndAnswers(templateMap.get(TemplateType.VISTA_QA));
+			evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
 		}
 		
 		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();
@@ -392,7 +396,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			ErrorBuilder
 				.throwing(IllegalSystemStateException.class)
 				.toUser("A needed template does not exist. Please contact the technical administrator.")
-				.toAdmin(String.format("A required template with ID: %s, could not be found in the database.", templateToProcess)).throwIt();
+				.toAdmin("A required template, could not be found in the database.").throwIt();
 
 		String templateText = templateToProcess.getTemplateFile();
 		if (templateText == null)
@@ -565,11 +569,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			return this;
 		}
 		
-	    private TemplateEvaluator appendQuestionsAndAnswers(Template qaTemplate) throws IllegalSystemStateException{
+	    private TemplateEvaluator appendQuestionsAndAnswers(String qaTemplate) throws IllegalSystemStateException{
             endPreviousSection();
             logger.debug("Appending clinical reminder questions");
             startSection(new SurveySection(null, "CLINICAL REMINDERS", null));
-            text.append(processTemplate(qaTemplate, assessmentId));
+            text.append(qaTemplate);
             endPreviousSection();
             logger.debug("Completed clinical reminder questions");
             return this;

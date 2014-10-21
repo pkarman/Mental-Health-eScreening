@@ -13,23 +13,39 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
     };
 
     $rootScope.createSuccessDeleteMessage = function(message) {
-        /*return (Object.isDefined(message)) ?
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: message.getValue()}) :
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: BytePushers.models.Message.SUCCESS_DELETE_MSG});*/
-
-        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: (Object.isDefined(message)? message.getValue() : BytePushers.models.Message.SUCCESS_DELETE_MSG)});
+        var msg = BytePushers.models.Message.SUCCESS_DELETE_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: msg});
     };
 
     $rootScope.createSuccessSaveMessage = function (message) {
-        /*return (Object.isDefined(message)) ?
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: message.getValue()}) :
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: BytePushers.models.Message.SUCCESS_SAVE_MSG});*/
-
-        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: (Object.isDefined(message)? message.getValue() : BytePushers.models.Message.SUCCESS_SAVE_MSG)});
+        var msg = BytePushers.models.Message.SUCCESS_SAVE_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: msg});
     };
 
     $rootScope.createErrorMessage = function (message) {
-        return (Object.isDefined(message)) ? message : new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: BytePushers.models.Message.ERROR_MSG})
+        var msg = BytePushers.models.Message.ERROR_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: msg})
     };
 
     $rootScope.batteries = [];
