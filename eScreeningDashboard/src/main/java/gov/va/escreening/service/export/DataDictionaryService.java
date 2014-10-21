@@ -8,4 +8,6 @@ public interface DataDictionaryService {
 
 	public Map<String, Table<String, String, String>> createDataDictionary();
 
+	public String getExportNameKeyPrefix();
+
 }
