@@ -9,7 +9,7 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
 
         var restAngular = Restangular.withConfig(function(Configurer) {
                 Configurer.setBaseUrl('/escreeningdashboard/dashboard');
-                //Configurer.setRequestSuffix('.json');
+                Configurer.setRequestSuffix('.json');
             }),
             service = restAngular.service("services/template");
 

@@ -24,7 +24,10 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Robin Carnow
  */
 EScreeningDashboardApp.models.Template = function (templateType) {
-    this.type = templateType;
+    if(Object.isDefined(templateType)){
+        this.type = templateType;
+        this.name = templateType.name;
+    }
     
     /**
      * Because of some of the awkward nature of our endpoints and pre-restangular, UI code we have to do this for now
