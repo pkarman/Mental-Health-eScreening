@@ -168,8 +168,6 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	@Override
-	@Transactional(readOnly=true, noRollbackFor={CouldNotResolveVariableException.class, 
-			CouldNotResolveVariableException.class})
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
 			AssessmentRequest assessmentRequest) {
 
@@ -213,11 +211,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
 		for (Rule r : rules) {
 			try {
-				boolean show = ruleProcessorService.evaluate(r, responseMap);
-
-				for (Event e : r.getEvents()) {
-					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
-						visibilityMap.put(e.getRelatedObjectId(), show);
+				if (ruleProcessorService.evaluate(r, responseMap)) {
+					for (Event e : r.getEvents()) {
+						if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+							visibilityMap.put(e.getRelatedObjectId(), true);
+						}
 					}
 				}
 			} catch (Throwable ex) {

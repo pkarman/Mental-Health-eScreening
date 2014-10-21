@@ -10,12 +10,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.base.Optional;
+
 public interface FormulaAssessmentVariableResolver {
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,  
 			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
 
 
-	AssessmentVariableDto resolveAssessmentVariable(
+	Optional<String> resolveAssessmentVariable(
 			List<AssessmentVarChildren> createAssessmentVarChildrenList,
 			FormulaDto formula,
 			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,

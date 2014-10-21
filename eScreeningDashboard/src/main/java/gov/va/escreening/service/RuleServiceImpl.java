@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -434,7 +435,6 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	@Override
-	@Transactional(readOnly=true, noRollbackFor=CouldNotResolveVariableException.class)
 	public boolean evaluate(
 			Rule rule,
 			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap) {
@@ -444,13 +444,15 @@ public class RuleServiceImpl implements RuleService {
 			Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
 					.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
 
-			AssessmentVariableDto variableDto = formulaAssessmentVariableResolver
+			Optional<String> value = formulaAssessmentVariableResolver
 					.resolveAssessmentVariable(
 							createAssessmentVarChildrenList(rule
 									.getAssessmentVariables()), formula,
 							responseMap, measureAnswerHash);
 
-			return Boolean.parseBoolean(variableDto.getValue());
+			if (value.isPresent()) {
+				return Boolean.parseBoolean(value.get());
+			}
 		} catch (CouldNotResolveVariableException e) {
 			// we might want to throw the exception instead of returning false
 			// in the future

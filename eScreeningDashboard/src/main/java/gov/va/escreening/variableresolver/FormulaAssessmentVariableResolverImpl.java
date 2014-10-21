@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Optional;
+
 public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentVariableResolver {
 
 	@Autowired
@@ -158,7 +160,7 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     }
 
 	@Override
-	public AssessmentVariableDto resolveAssessmentVariable(
+	public Optional<String> resolveAssessmentVariable(
 			List<AssessmentVarChildren> formulaDependencies,
 			FormulaDto rootFormula,
 			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
@@ -169,7 +171,7 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     	List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
     	sortAssessmentVariablesByType(formulaDependencies, answerTypeList, measureTypeList, customTypeList, formulaTypeList);
     	
-    	AssessmentVariableDto variableDto = null;
+    	String result = null;
     		
         for(AssessmentVariable answerVariable : answerTypeList) {
         	Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(answerVariable.getMeasureAnswer().getMeasure().getMeasureId());
@@ -180,12 +182,16 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
        	for(AssessmentVariable measureVariable : measureTypeList) {
        		Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(measureVariable.getMeasure().getMeasureId());
         	String value = measureVariableResolver.resolveCalculationValue(measureVariable, answer, measureAnswerHash);
-    	    rootFormula.getVariableValueMap().put(measureVariable.getAssessmentVariableId(), value);
+    	    if(value!=null)
+    	    {
+    	    	rootFormula.getVariableValueMap().put(measureVariable.getAssessmentVariableId(), value);
+    	    }
+    	    else
+    	    {
+    	    	return Optional.absent();
+    	    }
        	}    	
 
-       	if(customTypeList.size() > 0) 
-       		throw new UnsupportedOperationException("Resolve calcuation value for variable type Custom has not been implemented.");
-        	
         	//iterate the list of formulas and add them to the object
        	for(AssessmentVariable formulaVariable : formulaTypeList) {
        		int id = formulaVariable.getAssessmentVariableId();
@@ -193,16 +199,14 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
        		rootFormula.getChildFormulaMap().put(id, template);
         } 
         	
-       	String result;
+    
 		try {
 			result = expressionEvaluatorService.evaluateFormula(rootFormula);
 		} catch (NoSuchMethodException | SecurityException e) {
-			throw new CouldNotResolveVariableException(getCouldNotResolveMessage(-1, -1, e.getMessage()));
+			//throw new CouldNotResolveVariableException(getCouldNotResolveMessage(-1, -1, e.getMessage()));
 		}
         	
-       	variableDto = createAssessmentVariableDto(-1, result);
-       	
-    	return variableDto;
+       return Optional.fromNullable(result);
 	}
     
 }

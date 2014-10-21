@@ -404,7 +404,6 @@ public class MeasureAssessmentVariableResolverImpl implements
 	public String resolveCalculationValue(AssessmentVariable measureVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
-		Integer measureId = measureVariable.getMeasure().getMeasureId();
 		
 		String result = null;
 		int measureTypeId = measureVariable.getMeasure().getMeasureType()
@@ -433,10 +432,10 @@ public class MeasureAssessmentVariableResolverImpl implements
 							measureTypeId));
 		}
 
-		if (result == null)
-			
-		 throw new CouldNotResolveVariableValueException(String.format("Was unable to resolve the calculation value for measureid: %s",
-		 measureId));
+//		if (result == null)
+//			
+//		 throw new CouldNotResolveVariableValueException(String.format("Was unable to resolve the calculation value for measureid: %s",
+//		     measureId));
 
 		return result;
 	}
