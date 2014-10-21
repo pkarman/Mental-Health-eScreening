@@ -274,3 +274,13 @@ to prevent collapsing during animation*/
 .cursor_pointer{
   cursor:pointer;
 }
+
+.angular-ui-tree-empty{
+    background-color: #eeeeee;
+    background-image: none;	
+    border: none;
+}
+
+.angular-ui-tree{
+	border: none;
+}
