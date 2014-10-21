@@ -304,20 +304,23 @@ public class TemplateServiceImpl implements TemplateService {
 			if (t == null)
 				return null;
 			
-			// now parsing the template file
-			ObjectMapper om = new ObjectMapper();
-			
 			TemplateFileDTO dto = new TemplateFileDTO();
 			
-			try
+			if (t.getJsonFile() != null)
 			{
-				dto.setBlocks((List<INode>) om.readValue(t.getJsonFile(), List.class));
-			}catch(IOException e)
-			{
-				e.printStackTrace();
-				return null;
+				// now parsing the template file
+				ObjectMapper om = new ObjectMapper();
+				try
+				{
+					dto.setBlocks((List<INode>) om.readValue(t.getJsonFile(), List.class));
+				}catch(IOException e)
+				{
+					e.printStackTrace();
+					return null;
+				}
 			}
-
+			
+			dto.setName(t.getName());
 			dto.setId(templateId);
 			dto.setIsGraphical(t.getIsGraphical());
 
