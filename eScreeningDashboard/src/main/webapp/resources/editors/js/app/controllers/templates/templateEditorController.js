@@ -21,7 +21,6 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
             $state.go('modules.templates', $stateParams);
         }
     };
-
     /**
      * @param parent is optional. If undefined then the block is added to the bottom of the template.
      */
@@ -41,7 +40,6 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                 editing: editing
             },
             controller: function($scope, $modalInstance, templateName, block, editing) {
-
                 $scope.templateName = templateName;
 
                 // Copy the selected or new block so that potential changes in modal don't update object in page

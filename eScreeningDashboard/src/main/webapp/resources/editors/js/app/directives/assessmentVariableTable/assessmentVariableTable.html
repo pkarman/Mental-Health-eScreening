@@ -1,0 +1,19 @@
+<div>
+    <link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
+
+    <select class="form-control" data-ng-model="searchObj.kind" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
+        <option value=""> -- Choose Type --</option>
+    </select>
+    <table ng-table="assessmentVariableTable" class="table table-hover">
+        <tr ng-repeat="item in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+            <td data-title="'Variable Name'">{{item.name}}</td>
+            <td data-title="'Name'">{{item.displayName}}</td>
+            <td data-title="'Type'">{{item.kind}}</td>
+            <td data-title="'Insert'">
+                <div class="cursor-pointer pull-right" ng-click="selectAssessmentVariable(item);">
+                    &nbsp; &nbsp;<span class="glyphicon glyphicon-edit" title="Edit"></span> Edit &nbsp; &nbsp;
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

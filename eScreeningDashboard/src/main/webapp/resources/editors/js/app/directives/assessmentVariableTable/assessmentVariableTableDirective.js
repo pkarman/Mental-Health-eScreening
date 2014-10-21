@@ -1,7 +1,10 @@
+/**
+ * Created by pouncilt on 10/21/14.
+ */
 (function(angular) {
     "use strict";
 
-    angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVariables', ['AssessmentVariableService', function(AssessmentVariableService) {
+    angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVarTblDir', ['AssessmentVariableService', function(AssessmentVariableService) {
 
         return {
             restrict: 'EA',
@@ -12,7 +15,7 @@
                 var data = [
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "1",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '1',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "email",   // filled with either measureText or answerText
                         "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
@@ -21,7 +24,7 @@
                     },
                     {
                         "id" : "287",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "2",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '2',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_phone",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "phone",   // filled with either measureText or answerText
                         "answerId": "15",           // the id of the answer if this is an AV of type Measure Answer
@@ -30,7 +33,7 @@
                     },
                     {
                         "id" : "872",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "3",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '3',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_age",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "age",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
@@ -39,7 +42,7 @@
                     },
                     {
                         "id" : "721",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "4",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '4',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_age",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "age",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
@@ -47,7 +50,7 @@
                         "measureTypeId" : "13"       // the type ID of the measure if this is an AV of type Measure
                     },{
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "1",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '1',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "email",   // filled with either measureText or answerText
                         "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
@@ -56,7 +59,7 @@
                     },
                     {
                         "id" : "287",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "2",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '2',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_password",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "password",   // filled with either measureText or answerText
                         "answerId": "15",           // the id of the answer if this is an AV of type Measure Answer
@@ -65,7 +68,7 @@
                     },
                     {
                         "id" : "872",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "3",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '3',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_salary",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "salary",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
@@ -74,7 +77,7 @@
                     },
                     {
                         "id" : "721",                // the value of assessment_variable.assessment_variable_id
-                        "typeId" : "4",             // the value of assessment_variable.assessment_variable_type_id
+                        "kind" : '4',             // the value of assessment_variable.assessment_variable_type_id
                         "name": "demo_birthday",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "birthday",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
@@ -83,16 +86,12 @@
                     }
                 ];
 
-                var toggleAssessmentVariableSelectionTable = function() {
-                    $scope.showAssessmentVariableSelectionTable = ($scope.showAssessmentVariableSelectionTable)? false: true;
-                };
-
-                $scope.showAssessmentVariableSelectionTable = false;
-                $scope.assessmentVariableTypes = [
-                    {id: 1, type: "Measure", displayName: "Question"},
-                    {id: 2, type: "Measure Answer", displayName: "Question"},
-                    {id: 3, type: "Custom", displayName: "Custom"},
-                    {id: 4, type: "Formula", displayName: "Formula"}
+                $scope.assessmentVariables = data;
+                $scope.assessmentVariableTypes = ['1', '2', '3', '4'
+                    /*{id: 1, type: "Measure", displayName: "Question"},
+                     {id: 2, type: "Measure Answer", displayName: "Question"},
+                     {id: 3, type: "Custom", displayName: "Custom"},
+                     {id: 4, type: "Formula", displayName: "Formula"}*/
                 ];
 
                 $scope.selectAssessmentVariable = function(assessmentVariable) {
@@ -102,75 +101,45 @@
                     $scope.displayAssessmentVariableSelectionTable();
                 };
 
-                $scope.displayAssessmentVariableSelectionTable = function (){
-                    toggleAssessmentVariableSelectionTable();
+                $scope.searchObj = {
+                    kind: ''
                 };
 
-                $scope.filterAssessmentVariableTable = function() {
-                    /*var filteredAssessmentVariables = [];
-                    if(Object.isDefined($scope.selectedAssessmentVariableType)){
-                        filteredAssessmentVariables = data.filter(function (assessmentVariable) {
-                            if(assessmentVariable.typeId === $scope.selectedAssessmentVariableType.id) {
-                                return true;
-                            }
+                $scope.$watch("searchObj.kind", function (currentlySelectedKind, previouslySelectedKind) {
+                    if(currentlySelectedKind === previouslySelectedKind){
 
-                            return false;
-                        });
-                    };*/
-                };
-
-                $scope.types = function (column) {
-                    var def = $q.defer(),
-                        arr = [],
-                        types = [];
-
-                    angular.forEach(data, function(existingAssessmentVariable){
-                        if (arr.indexOf(existingAssessmentVariable) === -1) {
-                            arr.push(existingAssessmentVariable);
-                            types.push(existingAssessmentVariable);
+                    } else {
+                        if(!Object.isDefined(currentlySelectedKind)) {
+                            $scope.searchObj.kind = "";
+                            $scope.assessmentVariableTable.reload();
                         }
-                    });
+                    }
 
-                    def.resolve(types);
-                    return def;
-                };
+                }, true);
 
-                $scope.filters = {
-                    type: ''
-                };
-
-                function setTable() {
-                    $scope.tableParams = new ngTableParams({
+                var setTable = function () {
+                    $scope.assessmentVariableTable = new ngTableParams({
                         page: 1, // show first page
-                        count: 10, // count per page
-                        filter: $scope.filters,
-                        sorting: {
-                            name: 'asc'
-                        }/*,
-                        reload: function () {},
-                        settings: function () {
-                            return {};
-                        }*/
+                        count: 5, // count per page
+                        filter: $scope.searchObj
                     }, {
                         counts: [],
                         total: data.length,
                         getData: function ($defer, params) {
                             // use build-in angular filter
                             //params.total(data.length);
-                            //var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
-                            var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-                            params.total(orderedData.length); // set total for recalc pagination
-                            $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                            var filteredData = params.filter() ? $filter('filter')($scope.assessmentVariables, params.filter()) : $scope.assessmentVariables;
+                            params.total(filteredData.length); // set total for recalc pagination
+                            $defer.resolve(filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                         }
                     });
                 };
 
                 setTable();
-
             }],
-            templateUrl: 'resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableSelection.html',
+            templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
             link: function(scope, element, attributes, controller) {
-                element.addClass("assessmentVariableSelection");
+                element.addClass("assessmentVariableTable");
             }
         };
 
