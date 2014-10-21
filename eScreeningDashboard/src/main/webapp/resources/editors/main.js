@@ -78,6 +78,7 @@ Editors.config(function(RestangularProvider, $provide) {
 			},
 			action: function(){
 
+				// TODO use real data from modal and move to edit from onElementSelect
 				var assessmentVariable = {
 					id: 287,
 					typeId: '1',
@@ -87,6 +88,9 @@ Editors.config(function(RestangularProvider, $provide) {
 					measureId: 62,
 					measureTypeId: 93
 				};
+
+				// TODO add this logic to domain object
+				var variablename = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
 				var modalInstance = $modal.open({
 					template: '<mhe-assessment-variables assessment-variable="assessmentVariable"></mhe-assessment-variables>',
@@ -99,8 +103,9 @@ Editors.config(function(RestangularProvider, $provide) {
 					}
 				});
 
-				var embed = '<code class="ta-insert-variable">(' + assessmentVariable.name + ')</code>';
+				var embed = '<code class="ta-insert-variable">(' + variablename  + ')</code>';
 
+				// TODO get this to work with some sort of insertHTML instead of wrapSelection
 				return this.$editor().wrapSelection('insertHTML', embed, true);
 
 			},
@@ -133,11 +138,20 @@ Editors.config(function(RestangularProvider, $provide) {
 					var reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
 					reLinkButton.on('click', function (event) {
 						event.preventDefault();
-						var urlLink = window.prompt(taTranslations.insertLink.dialogPrompt, $element.attr('href'));
-						if (urlLink && urlLink !== '' && urlLink !== 'http://') {
-							$element.attr('href', urlLink);
-							editorScope.updateTaBindtaTextElement();
-						}
+						var modalInstance = $modal.open({
+							template: '<mhe-assessment-variables assessment-variable="{}"></mhe-assessment-variables>',
+							controller: function($scope, $modalInstance, $timeout) {
+
+								$timeout(function() {
+									$modalInstance.close();
+								}, 5000);
+
+								$scope.updateVariable = function() {
+									$element.text('updated_var');
+									editorScope.updateTaBindtaTextElement();
+								}
+							}
+						});
 						editorScope.hidePopover();
 					});
 					buttonGroup.append(reLinkButton);
@@ -150,17 +164,6 @@ Editors.config(function(RestangularProvider, $provide) {
 						editorScope.hidePopover();
 					});
 					buttonGroup.append(unLinkButton);
-					var targetToggle = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on">Open in New Window</button>');
-					if ($element.attr('target') === '_blank') {
-						targetToggle.addClass('active');
-					}
-					targetToggle.on('click', function (event) {
-						event.preventDefault();
-						$element.attr('target', ($element.attr('target') === '_blank') ? '' : '_blank');
-						targetToggle.toggleClass('active');
-						editorScope.updateTaBindtaTextElement();
-					});
-					buttonGroup.append(targetToggle);
 					container.append(buttonGroup);
 					editorScope.showPopover($element);
 				}

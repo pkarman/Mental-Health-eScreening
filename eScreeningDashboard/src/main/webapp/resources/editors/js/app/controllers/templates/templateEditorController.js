@@ -1,4 +1,4 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', '$modal', 'TemplateService', 'TemplateTypeService', 'template', 
+Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', '$modal', 'TemplateService', 'TemplateTypeService', 'template',
                                           function($scope, $state, $stateParams, $modal, TemplateService, TemplateTypeService, template) {
 
     console.log("In templateEditorController");
