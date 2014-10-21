@@ -565,13 +565,36 @@ a.offscreen:focus, a.offscreen:active {
 .margin_top_10{
   margin-top:10px;
 }
-/* Form Editor Start Here */
+/* JH | Form Editor Start Here */
 .form_editor .list-group-item{
   padding:5px 10px;
 }
 
 .form_editor .highlight-item{
   background-color:#d4d4d4;
+}
+
+.modal-dialog h1{
+  font-size:26px;
+}
+
+.border-radius-block-type{
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border: 1px solid #bbb;
+	padding: 5px 10px 0px;
+  margin: 10px 0;
+}
+.border-radius-block-type hr{
+  margin-top:0px;
+
+}
+.blockLableMarginTop{
+  margin-top:20px;
+}
+.bg-gray-light{
+  background-color: #F8F8F8;
 }
 
 @media only screen 

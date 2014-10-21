@@ -1,45 +1,58 @@
-<div>
-    <div class="clearfix">
-        <div class="form-group">
-            <label class="control-label">Block Type</label>
-        </div>
-
-        <div class="form-group col-sm-2">
-            <select class="form-control" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
-                <option value="">-- Select Type</option>
-            </select>
-        </div>
-
-        <div ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">
-            <div class="form-group col-sm-2">
-                <label class="sr-only">Select Variable</label>
-                <!--mhe-assessment-variables assessment-variable="block.left"></mhe-assessment-variables-->
-                <mhe-assessment-var-dropdown-menu-dir>
-                    <mhe-assessment-var-tbl-dir assessment-variable="block.left"/>
-                </mhe-assessment-var-dropdown-menu-dir>
-                <!--input type="text" class="form-control" placeholder="Select Variable" ng-model="block.title"-->
-            </div>
-
-            <div class="form-group col-sm-2">
-                <select class="form-control" ng-model="block.operator" ng-options="operator.name group by operator.category for operator in operators">
-                    <option value="">-- Operator</option>
+<div class="border-radius-block-type bg-gray-light">
+     <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+              <label class="control-label">Block Type
+                <select class="form-control" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
+                    <option value="">-- Select Type --</option>
                 </select>
-            </div>
-
-            <div class="form-group col-sm-2">
-                <label class="sr-only" for="blockvalue">Enter Value</label>
-                <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.content">
-            </div>
+              </label>
+          </div>
         </div>
-
-        <div class="pull-right">
-            <button title="AND" class="btn btn-default"  ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">AND</button>
-            <button title="OR" class="btn btn-default"  ng-if="block.type && block.type !== 'Text' && block.type !== 'Else'">OR</button>
-            <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"><i class="fa fa-plus"></i></button>
+        
+        <div class="col-md-8">
+          <div ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'" class="blockLableMarginTop">
+            <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                  <label class="sr-only">Select Variable</label>
+                  <!--mhe-assessment-variables assessment-variable="block.left"></mhe-assessment-variables-->
+                  <mhe-assessment-var-dropdown-menu-dir>
+                      <mhe-assessment-var-tbl-dir assessment-variable="block.left"/>
+                  </mhe-assessment-var-dropdown-menu-dir>
+              </div>
+              </div>
+              <div class="col-md-4">
+              <div class="form-group">
+                  <select class="form-control" ng-model="block.operator" ng-options="operator.name group by operator.category for operator in operators">
+                      <option value="">-- Operator -- </option>
+                  </select>
+              </div>
+              </div>
+  
+              <div class="col-md-4">
+              <div class="form-group">
+                  <label class="sr-only" for="blockvalue">Enter Value</label>
+                  <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.content">
+              </div>
+              </div>
+              </div>
+          </div>
         </div>
+         <div class="col-md-2 pull-right">
+             <div class="pull-right blockLableMarginTop">
+                 <button title="AND" class="btn btn-default" ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'">AND</button>
+                 <button title="OR" class="btn btn-default" ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'">OR</button>
+                 <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'TextBlock'"><i class="fa fa-plus"></i></button>
+             </div>
+             <div class="clearfix"></div>
+         </div>
     </div>
-
-    <div class="clearfix form-group" ng-if="block.type === 'Text'">
+    
+    
+    
+    <div class="clearfix form-group" ng-if="block.type === 'TextBlock'">
+        <hr />
 
         <div text-angular="text-angular" ng-model="block.content" ta-toolbar-class="btn-toolbar"
              ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
