@@ -7,6 +7,11 @@ Editors.controller('ModuleTemplateListController',
 
  
     TemplateTypeService.registerTypes($scope, templateTypes);
+    
+    if($stateParams.saved){
+        $rootScope.addMessage(
+                $rootScope.createSuccessSaveMessage("All template changes have been saved."));
+    }
 
     if($scope.templateTypes.length == 0){
         console.log("No template types received from server. Redirecting back to module.");

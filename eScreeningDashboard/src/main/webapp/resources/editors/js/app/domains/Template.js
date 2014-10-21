@@ -43,14 +43,15 @@ EScreeningDashboardApp.models.Template = function (templateType) {
      * 
      */
     this.saveFor = function(relatedObject){
+        var isPostable = Object.isDefined(this.type.customPOST);
         
         if(Object.isDefined(this.id) 
                 && this.id != -1
-                && this.id.length > 0){
+                && (parseInt(this.id) == this.id || this.id.length > 0)){
             //this is an update
-            return $scope.template.put();
+            return this.put();
         }
-        else if(relatedObject.type == "module"){ //this is a new template
+        else if(isPostable && relatedObject.type == "module"){ //this is a new template
             console.log("Saving new template of type " + this.type.id  + " for survey with ID: " + relatedObject.id)
             //TODO: if/when we move to a more OO restful end point structure we should remove this in favor of:
             // var templateTypes = module.getList('templateTypes');
@@ -62,14 +63,20 @@ EScreeningDashboardApp.models.Template = function (templateType) {
             //  -  POST: /services/batteries/{batteryId}/templateTypes/{templateTypeId}
             return this.type.customPOST(this, "surveys/" + relatedObject.id);
         }
-        else if(relatedObject.type == "battery"){ //this is a new template
+        else if(isPostable && relatedObject.type == "battery"){ //this is a new template
             console.log("Saving new template of type " + this.type.id + " for battery with ID: " + relatedObject.id);
             return this.type.customPOST(this, "batteries/" + relatedObject.id);
         }
         
-        console.error("Unsupported operation. Template is new and related object is unsupported: " + JSON.stringify(relatedObject));
+        var logMsg = "State was lost for the currently edited template.  No ID was found but it is also not a new template.";
+        var userMsg = "Editor state was lost. Call support.";
+        if(isPostable){
+            logMsg = "Unsupported operation. Template is new and related object is unsupported: " + JSON.stringify(relatedObject);
+            userMsg = "Unsupported operation. Call support.";
+        }
+        console.error(logMsg);
         var deferred = $q.defer();
-        deferred.reject("Unsupported operation. Call support.");
+        deferred.reject(userMsg);
         return deferred.promise;
     }
     

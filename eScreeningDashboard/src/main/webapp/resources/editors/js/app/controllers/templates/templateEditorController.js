@@ -17,14 +17,18 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
         console.log("Save clicked");
         
         $scope.template.saveFor($scope.relatedObj).then(function(response){
-            $scope.done();
+            $scope.done(true);
         });       
     };
     
-    $scope.done = function(){
+    $scope.done = function(wasSaved){
         console.log("Cancel edit");
         if($scope.relatedObj.type == "module"){
-            $state.go('modules.templates', $stateParams);
+            var stateParams = angular.copy($stateParams);
+            if(wasSaved){
+                stateParams.saved = wasSaved;
+            }
+            $state.go('modules.templates', stateParams);
         }
     };
     
