@@ -5,24 +5,21 @@
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
         var allBlockTypes = [
-            { name: 'If', value: 'If Condition' },
-            { name: 'Else If', value: 'Else If' },
-            { name: 'Else', value: 'Else' },
-            { name: 'Text', value: 'Text' }
+            { name: 'If', value: 'ifBlock' },
+            { name: 'Else If', value: 'elseIfBlock' },
+            { name: 'Else', value: 'elseBlock' },
+            { name: 'Text', value: 'TextBlock' }
         ];
 
         function getBlockTypes(type) {
             switch(type) {
-                case 'If':
+                case 'ifBlock':
                     return allBlockTypes.slice(1);
                     break;
-                case 'If Condition':
-                    return allBlockTypes.slice(1);
-                    break;
-                case 'Else If':
+                case 'elseIfBlock':
                     return allBlockTypes.slice(2);
                     break;
-                case 'Else':
+                case 'elseBlock':
                     return allBlockTypes.slice(3);
                     break;
                 default:
