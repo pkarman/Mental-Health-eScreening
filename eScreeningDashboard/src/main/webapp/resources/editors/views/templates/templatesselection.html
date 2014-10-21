@@ -20,7 +20,8 @@
     <div class="row clearfix">
         <div class="col-md-12 column">
             <!--- ngTable Begin -->
-            <table ng-table="tableParams" show-filter="false" class="table table-hover">
+            <table ng-table="tableParams" show-filter="false" class="table table-hover" 
+              summary="This table contains a list of all template types which are available. Each type can have only one template created for it. If a template exists on the system for a given type, then Edit and Delete buttons will be available. If no template exists of a given type, a Create button will be available.">
                 <tr ng-repeat="templateType in templateTypes"  ng-class-odd="'odd'" ng-class-even="'even'">
                     <td data-title="'Type'" sortable="'name'" class="col-md-3">{{templateType.name}}</td>
                     <td data-title="'Description'" class="col-md-7">{{templateType.description}}</td>

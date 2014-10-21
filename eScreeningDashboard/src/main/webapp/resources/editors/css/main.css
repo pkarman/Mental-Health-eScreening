@@ -279,6 +279,13 @@ to prevent collapsing during animation*/
     background-color: #eeeeee;
     background-image: none;	
     border: none;
+    margin-top: 70px;
+    text-align: center;
+}
+.angular-ui-tree-empty:before{
+	content: "Click Add New Block to build a template";
+	color: #838383;
+	font-weight: bold;
 }
 
 .angular-ui-tree{
