@@ -16,19 +16,19 @@
     </div>
   </div>-->
   <div class="row">
-    <div class="col-md-12 column"> 
+    <div class="col-md-12"> 
       <!--- ngTable Begin --->
       <table ng-table="tableParams" show-filter="false" class="table table-hover" summary="Module Selection Table">
         <tr ng-repeat="survey in $data" ng-class-odd="'odd'" ng-class-even="'even'"> 
           <!--<td data-title="'Index'" sortable="'id'">
                         {{survey.id}}
                     </td>-->
-          <td data-title="'Title'" sortable="'name'"> {{survey.name}} </td>
+          <td data-title="'Title'" sortable="'name'"  class="col-md-4"> {{survey.name}} </td>
           <!--<td data-title="'Status'" sortable="'status'" filter="{ 'status': 'text' }">
                         {{survey.status}}
                     </td>-->
-          <td data-title="'Description'"> {{survey.description}} </td>
-          <td data-title="Actions"><div class="pull-right">
+          <td data-title="'Description'"  class="col-md-6"> {{survey.description}} </td>
+          <td data-title="Actions"  class="col-md-2"><div class="pull-right">
               <button class="btn btn-default btn-xs" ng-click="editModule(survey);" title="Edit {{survey.name}}" name="Edit {{survey.name}}"> <span class="glyphicon glyphicon-edit"></span> Edit </button>
               &nbsp;
               <button class="btn btn-default btn-xs" ng-click="deleteClick();" title="Delete {{survey.name}}" name="Delete {{survey.name}}"><span class="glyphicon glyphicon-remove-circle color-red" style="color:red;"></span> Delete</button>
