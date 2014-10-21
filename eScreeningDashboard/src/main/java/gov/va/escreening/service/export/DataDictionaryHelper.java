@@ -188,7 +188,10 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1:0", "");
+		//displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0", "").replaceAll(">=\\s*1", "");
+		//displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
+		displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
+		
 		if (logger.isDebugEnabled()) {
 			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
 		}
