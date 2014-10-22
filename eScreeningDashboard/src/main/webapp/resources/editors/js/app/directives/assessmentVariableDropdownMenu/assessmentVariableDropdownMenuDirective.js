@@ -1,5 +1,18 @@
 (function(angular) {
     "use strict";
+    angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheHideDropdownMenu', ['$document', function($document) {
+        return {
+            restrict: 'A',
+            link: function(scope, elem, attr, ctrl) {
+                elem.bind('click', function(e) {
+                    e.stopPropagation();
+                });
+                $document.bind('click', function() {
+                    scope.$apply(attr.mheHideDropdownMenu);
+                })
+            }
+        }
+    }]);
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVarDropdownMenuDir', [function() {
         return {
@@ -17,6 +30,9 @@
 
                 $scope.displayAssessmentVariableSelectionTable = function (){
                     toggleAssessmentVariableSelectionTable();
+                };
+                $scope.hideDropDownMenu = function (){
+                    $scope.showAssessmentVariableSelectionTable = false;
                 };
 
                 $rootScope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
