@@ -55,15 +55,19 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     $scope.editBlock = function(blockScope){
         var block = blockScope.$modelValue;
         console.log("edit block: " + block.title);
+        $scope.templateChanged();
     };
     
     //ng-tree options
     $scope.treeOptions = {
-    
+            dropped : function(event){
+                $scope.template.updateSections();
+                $scope.templateChanged();
+            },
     };
     
     //this could use $watch but this might be overkill for large templates since there are 
-    //only a couple of places that a change occurs and afer one has happened we don't care about new updates 
+    //only a couple of places that a change occurs and after one has happened we don't care about new updates 
     $scope.templateChanged = function(){
         console.log("template changed");
         $scope.hasChanged = true;
