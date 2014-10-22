@@ -37,11 +37,12 @@
                                {{block.section}} {{block.title | limitToWithEllipsis:30 }}
                             </div>
                             <div class="col-md-7">
-                               {{block.type}} <span ng-if="block.content.length > 0">|</span> {{block.content | removeSpaceTags | limitToWithEllipsis:50}}
+                               <span class="label label-default label-default-{{block.type}}">{{block.type}}</span>
+                               {{block.content | removeSpaceTags | limitToWithEllipsis:50}}
                             </div>
                             <div class="col-md-2 pull-right">
 
-                                <span class="pull-right btn btn-xs" 
+                                <span class="pull-right btn btn-xs block-btn-margin" 
                                     ng-really-click="removeBlock(this);" 
                                     ng-really-message="Are you sure you want to delete this block?" data-nodrag title="Delete">
                                     
@@ -49,23 +50,23 @@
                                 </span>
 
 
-                                <span class="pull-right btn btn-xs" ng-click="editBlock(this);" data-nodrag title="Edit">
+                                <span class="pull-right btn btn-xs block-btn-margin" ng-click="editBlock(this);" data-nodrag title="Edit">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </span>
 
 
-                                <button class="pull-right btn btn-xs btn-primary" data-nodrag ng-click="addBlock(this);" title="Add">Add</button>
+                                <button class="pull-right btn btn-xs btn-primary block-btn-margin" data-nodrag ng-click="addBlock(this);" title="Add">Add</button>
                             </div>
+                            <div class="clearfix"></div>
                         </div>
                         <ol ui-tree-nodes="options" ng-model="block.children">
-                            <li ng-repeat="block in block.children" ui-tree-node ng-include="'block_renderer.html'"></li>
+                            <li ng-repeat="block in block.children" ui-tree-node ng-include="'block_renderer.html'"  class="templateBlockLi"></li>
                         </ol>
                    </script>
 
 					<div ui-tree="treeOptions">
 						<ol ui-tree-nodes ng-model="template.blocks">
-							<li ng-repeat="block in template.blocks" ui-tree-node
-								ng-include="'block_renderer.html'"></li>
+							<li ng-repeat="block in template.blocks" ui-tree-node ng-include="'block_renderer.html'"  class="templateBlockLi"></li>
 						</ol>
 					</div>
 				</div>
