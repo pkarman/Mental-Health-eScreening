@@ -54,91 +54,75 @@ Editors.config(function(RestangularProvider, $provide) {
 
     $provide.decorator('taOptions', ['taRegisterTool', 'taSelectableElements', 'taCustomRenderers', '$delegate', '$modal', function(taRegisterTool, taSelectableElements, taCustomRenderers, $delegate, $modal){
 
+	    // Add <code></code> as selectable element
 	    taSelectableElements.push('code');
 
+	    // Add code with class attribute ta-insert-variable as custom renderer
 	    taCustomRenderers.push({
-		    // Parse back out: '<div class="ta-insert-video" ta-insert-video src="' + urlLink + '" allowfullscreen="true" width="300" frameborder="0" height="250"></div>'
-		    // To correct video element. For now only support youtube
 		    selector: 'code',
 		    customAttribute: 'ta-insert-variable',
-		    renderLogic: function(element){
-			    var iframe = angular.element('<iframe></iframe>');
-			    var attributes = element.prop("attributes");
-			    // loop through element attributes and apply them on iframe
-			    angular.forEach(attributes, function(attr) {
-				    iframe.attr(attr.name, attr.value);
-			    });
-			    iframe.attr('src', iframe.attr('ta-insert-variable'));
-			    element.replaceWith(iframe);
-		    }
+		    renderLogic: function(element){}
 	    });
 
-		// $delegate is the taOptions we are decorating
-		// register the tool with textAngular
+		// Register the custom addVariable tool with textAngular
+	    // $delegate is the taOptions we are decorating
 		taRegisterTool('addVariable', {
 			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
 			tooltiptext: {
-				tooltip: 'Insert / edit variable'
+				tooltip: 'Insert / edit assessment variable'
 			},
 			action: function(){
 
-				// TODO use real data from modal and move to edit from onElementSelect
-				var assessmentVariable = {
-					id: 287,
-					typeId: '1',
-					name: 'demo_phone',
-					displayName: 'phone',
-					answerId: 15,
-					measureId: 62,
-					measureTypeId: 93
-				};
-
-				// TODO add this logic to domain object
-				var variablename = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
+				var assessmentVariable,
+					variableName,
+					embed;
 
 				var modalInstance = $modal.open({
-					template: '<mhe-assessment-variables assessment-variable="assessmentVariable"></mhe-assessment-variables>',
+					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 					controller: function($scope, $modalInstance, $timeout) {
 
-						$timeout(function() {
-							$modalInstance.close();
-						}, 5000);
+						$scope.assessmentVariable = {};
+
+						$scope.close = function() {
+							$modalInstance.close($scope.assessmentVariable);
+						};
+
+						$scope.cancel = function() {
+							$modalInstance.dismiss();
+						};
 
 					}
 				});
 
-				var embed = '<code class="ta-insert-variable">(' + variablename  + ')</code>';
+				modalInstance.result.then(function(selectedAssessmentVariable) {
+					assessmentVariable = selectedAssessmentVariable;
+				});
 
-				// TODO get this to work with some sort of insertHTML instead of wrapSelection
+				if (assessmentVariable) {
+					// TODO add this logic to domain object
+					variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
+
+					embed = '<code class="ta-insert-variable">(' + variableName  + ')</code> ';
+				}
+
 				return this.$editor().wrapSelection('insertHTML', embed, true);
 
 			},
 			activeState: function(commonElement){
 				var result = false;
-				console.log('commonElement', commonElement);
 				return this.$editor().queryCommandState('ta-insert-variable');
 			},
 			onElementSelect: {
 				element: 'code',
 				action: function (event, $element, editorScope) {
-					// setup the editor toolbar
-					// Credit to the work at http://hackerwins.github.io/summernote/ for this editbar logic
+					// Setup the editor toolbar
+					// Edit bar logic based upon http://hackerwins.github.io/summernote
 					event.preventDefault();
-					editorScope.displayElements.popover.css('width', '435px');
+					//editorScope.displayElements.popover.css('width', '435px');
 					var container = editorScope.displayElements.popoverContainer;
 					container.empty();
 					container.css('line-height', '28px');
-					var link = angular.element('<a href="' + $element.attr('href') + '" target="_blank">' + $element.attr('href') + '</a>');
-					link.css({
-						'display': 'inline-block',
-						'max-width': '200px',
-						'overflow': 'hidden',
-						'text-overflow': 'ellipsis',
-						'white-space': 'nowrap',
-						'vertical-align': 'middle'
-					});
-					//container.append(link);
-					var buttonGroup = angular.element('<div class="btn-group pull-right">');
+					var buttonGroup = angular.element('<div class="btn-group">');
 					var reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
 					reLinkButton.on('click', function (event) {
 						event.preventDefault();
