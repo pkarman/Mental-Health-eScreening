@@ -817,12 +817,10 @@ angular.module('Editors')
                                 if(Object.isDefined($stateParams.isTesting) && $stateParams.isTesting == "test"){
                                     var selectedTemplateType = TemplateTypeService.getSelectedType();
                                     if(Object.isDefined(selectedTemplateType)){
-                                    
-                                        var templateObj = {
-                                                templateId: 45, 
-                                                templateType : selectedTemplateType,
-                                                isGraphical: false,
-                                                blocks: [
+                                        
+                                        var templateObj = new EScreeningDashboardApp.models.Template(selectedTemplateType);
+                                        templateObj.templateId=45;
+                                        templateObj.blocks = [
                                                          { 
                                                              section: "1.",
                                                              title: "depression_screening",
@@ -899,8 +897,7 @@ angular.module('Editors')
                                                                         }                                                              
                                                                        ]
                                                          }                                                                                 
-                                                        ]
-                                        };
+                                                        ];
                                         
                                         deferred.resolve(templateObj);
                                     }
