@@ -4,7 +4,7 @@
 (function(angular) {
     "use strict";
 
-    angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVarTblDir', ['AssessmentVariableService', function(AssessmentVariableService) {
+    angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVarTblDir', [function() {
 
         return {
             restrict: 'EA',
@@ -12,7 +12,7 @@
                 assessmentVariable: '=',
                 guid: '='
             },
-            controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', function ($scope, $rootScope, $filter, ngTableParams) {
+            controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
                 var data = [
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
@@ -86,6 +86,8 @@
                         "measureTypeId" : "13"       // the type ID of the measure if this is an AV of type Measure
                     }
                 ];
+
+                $scope.data = AssessmentVariableService.query({surveyId: 26});
 
                 $scope.assessmentVariableTypes = ['1', '2', '3', '4'
                     /*{id: 1, type: "Measure", displayName: "Question"},
