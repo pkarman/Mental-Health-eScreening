@@ -1,73 +1,79 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', '$modal', 'TemplateTypeService', 'template',
-                                          function($scope, $state, $stateParams, $modal, TemplateTypeService, template) {
+Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'template', function($scope, $state, $stateParams, $modal, AssessmentVariableService, template) {
 
-      console.log("In templateEditorController");
+    console.log("In templateEditorController");
 
-      $scope.template = template;
-      $scope.hasChanged = false;
+    $scope.template = template;
+    $scope.hasChanged = false;
+    $scope.assessmentVariables = [];
 
-      //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
-      $scope.relatedObj = {
-          id : $stateParams.selectedSurveyId,
-          name : decodeURIComponent($stateParams.selectedSurveyName),
-          type : "module"
-      };
+    //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
+    $scope.relatedObj = {
+        id: $stateParams.selectedSurveyId,
+        name: decodeURIComponent($stateParams.selectedSurveyName),
+        type: "module"
+    };
 
-      $scope.save = function(){
-          console.log("Save clicked");
+    if ($scope.relatedObj.type === "module") {
+        AssessmentVariableService.query({surveyId: $scope.relatedObj.id}).then(function(assessmentVariables) {
+            $scope.assessmentVariables = assessmentVariables;
+        });
+    }
 
-          $scope.template.saveFor($scope.relatedObj).then(function(response){
-              $scope.done(true);
-          });
-      };
+    $scope.save = function () {
+        console.log("Save clicked");
 
-      $scope.done = function(wasSaved){
-          console.log("Cancel edit");
-          if($scope.relatedObj.type == "module"){
-              var stateParams = angular.copy($stateParams);
-              if(wasSaved){
-                  stateParams.saved = wasSaved;
-              }
-              $state.go('modules.templates', stateParams);
-          }
-      };
+        $scope.template.saveFor($scope.relatedObj).then(function (response) {
+            $scope.done(true);
+        });
+    };
 
-      /**
-       * @param parent is optional. If undefined then the block is added to the bottom of the template.
-       */
-      $scope.addBlock = function(parentScope){
-          if(Object.isDefined(parentScope)){
-              var parent = parentScope.$modelValue;
-              console.log("Add block under parent block: " + parent.title);
-          }
-          else{
-              console.log("Add block to bottom of template");
-          }
-          $scope.templateChanged();
-      };
+    $scope.done = function (wasSaved) {
+        console.log("Cancel edit");
+        if ($scope.relatedObj.type == "module") {
+            var stateParams = angular.copy($stateParams);
+            if (wasSaved) {
+                stateParams.saved = wasSaved;
+            }
+            $state.go('modules.templates', stateParams);
+        }
+    };
 
-      $scope.removeBlock = function(blockScope){
-          var block = blockScope.$modelValue;
-          console.log("remove block: " + block.title);
-          $scope.templateChanged();
-      };
+    /**
+     * @param parent is optional. If undefined then the block is added to the bottom of the template.
+     */
+    $scope.addBlock = function (parentScope) {
+        if (Object.isDefined(parentScope)) {
+            var parent = parentScope.$modelValue;
+            console.log("Add block under parent block: " + parent.title);
+        }
+        else {
+            console.log("Add block to bottom of template");
+        }
+        $scope.templateChanged();
+    };
 
-      $scope.editBlock = function(blockScope){
-          var block = blockScope.$modelValue;
-          console.log("edit block: " + block.title);
-      };
+    $scope.removeBlock = function (blockScope) {
+        var block = blockScope.$modelValue;
+        console.log("remove block: " + block.title);
+        $scope.templateChanged();
+    };
 
-      //ng-tree options
-      $scope.treeOptions = {
+    $scope.editBlock = function (blockScope) {
+        var block = blockScope.$modelValue;
+        console.log("edit block: " + block.title);
+    };
 
-      };
+    //ng-tree options
+    $scope.treeOptions = {
 
-      //this could use $watch but this might be overkill for large templates since there are
-      //only a couple of places that a change occurs and afer one has happened we don't care about new updates
-      $scope.templateChanged = function(){
-          console.log("template changed");
-          $scope.hasChanged = true;
-      }
+    };
+
+    //this could use $watch but this might be overkill for large templates since there are
+    //only a couple of places that a change occurs and afer one has happened we don't care about new updates
+    $scope.templateChanged = function () {
+        console.log("template changed");
+        $scope.hasChanged = true;
+    };
 
 	var tempBlock = {
 		section: "1",

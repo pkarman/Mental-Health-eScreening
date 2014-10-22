@@ -31,7 +31,8 @@
             restrict: 'E',
             scope: {
                 block: '=',
-                parentBlock: '='
+                parentBlock: '=',
+                assessmentVariables: '='
             },
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {

@@ -10,15 +10,12 @@
             restrict: 'EA',
             scope: {
                 assessmentVariable: '=',
-                guid: '='
+                guid: '=',
+                surveyId: '@',
+                data: '=assessmentVariables'
             },
             controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
-                $scope.assessmentVariableTypes = ['Measure', 'Measure Answer', 'Custom', 'Formula'
-                    /*{id: 1, type: "Measure", displayName: "Question"},
-                     {id: 2, type: "Measure Answer", displayName: "Question"},
-                     {id: 3, type: "Custom", displayName: "Custom"},
-                     {id: 4, type: "Formula", displayName: "Formula"}*/
-                ];
+                $scope.assessmentVariableTypes = ['Measure', 'Measure Answer', 'Custom', 'Formula'];
 
                 $scope.selectAssessmentVariable = function(assessmentVariable) {
                     $scope.assessmentVariable = assessmentVariable;
@@ -50,13 +47,21 @@
                         counts: [],
                         total: 0,
                         getData: function ($defer, params) {
-                            AssessmentVariableService.query({surveyId: 26}).then(function(data) {
-                                // use build-in angular filter
-                                //params.total(data.length);
-                                data = params.filter() ? $filter('filter')(data, params.filter()) : data;
+                            if(Object.isArray($scope.data)){
+                                params.total($scope.data.length);
+                                var data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
                                 params.total(data.length); // set total for recalc pagination
                                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                            });
+                            }/* else if(Object.isNumber($scope.surveyId)){*/
+                                AssessmentVariableService.query({surveyId: 26}).then(function(data) {
+                                    // use build-in angular filter
+                                    //params.total(data.length);
+                                    data = params.filter() ? $filter('filter')(data, params.filter()) : data;
+                                    params.total(data.length); // set total for recalc pagination
+                                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                                });
+                            //}
+
                         }
                     });
                 };
