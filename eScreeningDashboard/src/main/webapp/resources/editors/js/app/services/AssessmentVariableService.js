@@ -25,7 +25,11 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
              */
             query: function (queryParams) {
                 if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
-                    return service.getList(queryParams);
+                    service.getList(queryParams).then(function (assessmentVariables) {
+                        return assessmentVariables;
+                    }, function (reason) {
+                        console.log("error: " + reason);
+                    });
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
                 }

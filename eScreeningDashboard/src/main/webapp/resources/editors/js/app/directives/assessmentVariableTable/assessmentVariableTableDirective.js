@@ -13,7 +13,7 @@
                 guid: '='
             },
             controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
-                var data = [
+                /*var data = [
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
                         "kind" : '1',             // the value of assessment_variable.assessment_variable_type_id
@@ -85,9 +85,9 @@
                         "measureId": "22",          // the id of the measure if this is an AV of type Measure
                         "measureTypeId" : "13"       // the type ID of the measure if this is an AV of type Measure
                     }
-                ];
+                ];*/
 
-                $scope.data = AssessmentVariableService.query({surveyId: 26});
+                //var data = AssessmentVariableService.query({surveyId: 26});
 
                 $scope.assessmentVariableTypes = ['1', '2', '3', '4'
                     /*{id: 1, type: "Measure", displayName: "Question"},
@@ -117,6 +117,16 @@
 
                 }, true);
 
+                /*$scope.$watch("data", function (currentData, previousData) {
+                    if(currentData === previousData){
+
+                    } else {
+                        $scope.searchObj.kind = "";
+                        $scope.assessmentVariableTable.reload();
+                    }
+
+                }, true);*/
+
                 var setTable = function () {
                     $scope.assessmentVariableTable = new ngTableParams({
                         page: 1, // show first page
@@ -126,11 +136,13 @@
                         counts: [],
                         total: data.length,
                         getData: function ($defer, params) {
-                            // use build-in angular filter
-                            //params.total(data.length);
-                            var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
-                            params.total(filteredData.length); // set total for recalc pagination
-                            $defer.resolve(filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                            AssessmentVariableService.query({surveyId: 26}).then(function(data) {
+                                // use build-in angular filter
+                                //params.total(data.length);
+                                var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
+                                params.total(filteredData.length); // set total for recalc pagination
+                                $defer.resolve(filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                            });
                         }
                     });
                 };
