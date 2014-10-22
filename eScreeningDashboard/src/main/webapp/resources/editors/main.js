@@ -73,13 +73,11 @@ Editors.config(function(RestangularProvider, $provide) {
 			},
 			action: function(){
 
-				var assessmentVariable,
-					variableName,
-					embed;
+				var that = this;
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-					controller: function($scope, $modalInstance, $timeout) {
+					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 						$scope.assessmentVariable = {};
 
@@ -91,21 +89,24 @@ Editors.config(function(RestangularProvider, $provide) {
 							$modalInstance.dismiss();
 						};
 
+					}]
+				});
+
+				modalInstance.result.then(function(assessmentVariable) {
+
+					var variableName;
+					var embed = '<code class="ta-insert-variable">(no_selection)</code>&nbsp;';
+
+					if (assessmentVariable.id) {
+						// TODO add this logic to domain object
+						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
+
+						embed = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
 					}
+
+					that.$editor().wrapSelection('insertHTML', embed, true);
+
 				});
-
-				modalInstance.result.then(function(selectedAssessmentVariable) {
-					assessmentVariable = selectedAssessmentVariable;
-				});
-
-				if (assessmentVariable) {
-					// TODO add this logic to domain object
-					variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
-
-					embed = '<code class="ta-insert-variable">(' + variableName  + ')</code> ';
-				}
-
-				return this.$editor().wrapSelection('insertHTML', embed, true);
 
 			},
 			activeState: function(commonElement){
@@ -118,7 +119,7 @@ Editors.config(function(RestangularProvider, $provide) {
 					// Setup the editor toolbar
 					// Edit bar logic based upon http://hackerwins.github.io/summernote
 					event.preventDefault();
-					//editorScope.displayElements.popover.css('width', '435px');
+					editorScope.displayElements.popover.css('width', '100px');
 					var container = editorScope.displayElements.popoverContainer;
 					container.empty();
 					container.css('line-height', '28px');

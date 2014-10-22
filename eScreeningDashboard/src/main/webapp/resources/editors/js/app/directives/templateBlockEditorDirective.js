@@ -4,26 +4,26 @@
     Editors.directive('templateBlockEditor', ['$compile', function($compile) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
-        var allBlockTypes = [
-            { name: 'If', value: 'ifBlock' },
-            { name: 'Else If', value: 'elseIfBlock' },
-            { name: 'Else', value: 'elseBlock' },
-            { name: 'Text', value: 'TextBlock' }
-        ];
+	    var blockTypes = [
+		    { name: 'If', value: 'if' },
+		    { name: 'Else If', value: 'elseif' },
+		    { name: 'Else', value: 'else' },
+		    { name: 'Text', value: 'text' }
+	    ];
 
         function getBlockTypes(type) {
             switch(type) {
-                case 'ifBlock':
-                    return allBlockTypes.slice(1);
+                case 'if':
+                    return blockTypes.slice(1);
                     break;
-                case 'elseIfBlock':
-                    return allBlockTypes.slice(2);
+                case 'elseif':
+                    return blockTypes.slice(2);
                     break;
-                case 'elseBlock':
-                    return allBlockTypes.slice(3);
+                case 'else':
+                    return blockTypes.slice(3);
                     break;
                 default:
-                    return allBlockTypes;
+                    return blockTypes;
             }
         }
 
@@ -57,18 +57,21 @@
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
-                    { name: 'Equals', value: 'eq', category: 'all' },
-                    { name: 'Doesn\'t Equals', value: 'neq', category: 'all' },
-                    { name: 'Is Less Than', value: 'lt', category: 'all' },
-                    { name: 'Is Greater Than', value: 'gt', category: 'all' },
-                    { name: 'Is Less Than or Equals', value: 'lte', category: 'all' },
-                    { name: 'Is Greater Than or Equals', value: 'gte', category: 'all' },
-                    { name: 'Was Answered', value: 'answered', category: 'question' },
-                    { name: 'Wasn\'t Answered', value: 'nanswered', category: 'question' },
-                    { name: 'Has Result', value: 'result', category: 'formula' },
-                    { name: 'Has No Result', value: 'nresult', category: 'formula' },
-                    { name: 'Response is', value: 'response', category: 'select' },
-                    { name: 'Response isn\t', value: 'nresponse', category: 'select' }
+	                { name: 'Equals',                    value: 'eq',    category: 'nonselect' },
+	                { name: 'Doesn\'t Equals',           value: 'neq',   category: 'nonselect' },
+	                { name: 'Is Less Than',              value: 'lt',    category: 'nonselect' },
+	                { name: 'Is Greater Than',           value: 'gt',    category: 'nonselect' },
+	                { name: 'Is Less Than or Equals',    value: 'lte',   category: 'nonselect' },
+	                { name: 'Is Greater Than or Equals', value: 'gte',   category: 'nonselect' },
+
+	                { name: 'Was Answered',     value: 'answered',   category: 'question' },
+	                { name: 'Wasn\'t Answered', value: 'nanswered', category: 'question' },
+
+	                { name: 'Has Result',      value: 'result',   category: 'formula' },
+	                { name: 'Has No Result',   value: 'nresult', category: 'formula' },
+
+	                { name: 'Response is',     value: 'response',  category: 'select' },
+	                { name: 'Response isn\t',  value: 'nresponse', category: 'select' }
                 ];
 
                 scope.addBlock = function(selectedBlock) {
