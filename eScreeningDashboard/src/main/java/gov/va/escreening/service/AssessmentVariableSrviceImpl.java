@@ -9,7 +9,6 @@ import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -24,12 +23,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
 @Service("assessmentVariableService")
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
+
+	@Resource(name = "filterMeasureTypes")
+	Set<Integer> filterMeasureTypes;
 
 	public class TableTypeAvModelBuilder implements AvModelBuilder {
 		final Table<String, String, Object> assessments;
@@ -133,7 +134,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			int avTypeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 			switch (avTypeId) {
 			case 1:
-				handleMeasureType(av, smList, avModelBldr);
+				Collection<Measure> filteredMeasures = filterMeasures(smList, filterMeasureTypes);
+				handleMeasureType(av, filteredMeasures, avModelBldr);
 				break;
 			case 2:
 				handleMeasureAnswerType(av, smList, avModelBldr);
@@ -155,8 +157,14 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return avr.findAllFormulae();
 	}
 
-	private Table<String, String, Object> getAssessmentVarsFor(int surveyId,
-			Set<Integer> measureTypes) {
+	@Override
+	@Transactional(readOnly = true)
+	/**
+	 * return assessment variables as perf following rules
+	 * return all Assessments Variables without any filtering except when the AssessmentVariable of type 1 (av_type=1) (Measure). 
+	 * If av_type=1 then only return those which belong to Measure Types of 1, 2, or 3
+	 */
+	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
 
 		// retrieve a list of all surveys along with their measures
 		Multimap<Survey, Measure> surveyMap = buildSurveyMeasuresMap();
@@ -165,7 +173,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		Survey survey = null;
 		for (Survey s : surveyMap.keySet()) {
 			if (surveyId == s.getSurveyId()) {
-				measures = filterMeasures(surveyMap.get(s), measureTypes);
+				measures = surveyMap.get(s);
 				survey = s;
 				break;
 			}
@@ -181,8 +189,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return (Table<String, String, Object>) avModelBldr.getResult();
 	}
 
-	private Collection<Measure> filterMeasures(
-			Collection<Measure> measures, final Set<Integer> measureTypes) {
+	private Collection<Measure> filterMeasures(Collection<Measure> measures,
+			final Set<Integer> measureTypes) {
 
 		Predicate<Measure> predicate = new Predicate<Measure>() {
 			@Override
@@ -235,12 +243,4 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			}
 		}
 	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
-		Set<Integer> measureTypesNeeded = Sets.newHashSet(Arrays.asList(4, 5, 6, 7, 8));
-		return getAssessmentVarsFor(surveyId, measureTypesNeeded);
-	}
-
 }
