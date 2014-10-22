@@ -11,7 +11,7 @@
         </div>
         
         <div class="col-md-8">
-          <div ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'" class="blockLableMarginTop">
+          <div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
             <div class="row">
             <div class="col-md-4">
               <div class="form-group">
@@ -40,9 +40,9 @@
         </div>
          <div class="col-md-2 pull-right">
              <div class="pull-right blockLableMarginTop">
-                 <button title="AND" class="btn btn-default" ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'">AND</button>
-                 <button title="OR" class="btn btn-default" ng-if="block.type && block.type !== 'TextBlock' && block.type !== 'elseBlock'">OR</button>
-                 <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'TextBlock'"><i class="fa fa-plus"></i></button>
+                 <button title="AND" class="btn btn-default" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND</button>
+                 <button title="OR" class="btn btn-default" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">OR</button>
+                 <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button>
              </div>
              <div class="clearfix"></div>
          </div>
@@ -50,7 +50,7 @@
     
     
     
-    <div class="clearfix form-group" ng-if="block.type === 'TextBlock'">
+    <div class="clearfix form-group" ng-if="block.type === 'text'">
         <hr />
 
         <div text-angular="text-angular" ng-model="block.content" ta-toolbar-class="btn-toolbar"
