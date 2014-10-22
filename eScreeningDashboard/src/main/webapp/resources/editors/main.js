@@ -73,9 +73,9 @@ Editors.config(function(RestangularProvider, $provide) {
 			},
 			action: function() {
 
-				var embed = {
-					code: '<code class="ta-insert-variable">(no_selection)</code>&nbsp;'
-				};
+				var addVariableTool = this;
+
+				var embed = '<code class="ta-insert-variable">(no_selection)</code>&nbsp;';
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -102,18 +102,19 @@ Editors.config(function(RestangularProvider, $provide) {
 						// TODO add this logic to domain object
 						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
-						embed.code = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
-
+						embed = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
 
 					} else {
-						embed.code = '<code class="ta-insert-variable">(updated_empty)</code>&nbsp;';
+						embed = '<code class="ta-insert-variable">(updated_empty)</code>&nbsp;';
 					}
 
-					console.log(embed.code);
+					console.log(embed);
+
+					addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
 
 				});
 
-				return this.$editor().wrapSelection('insertHTML', embed.code, true);
+				return addVariableTool;
 
 			},
 			activeState: function(commonElement){
@@ -133,9 +134,12 @@ Editors.config(function(RestangularProvider, $provide) {
 					var buttonGroup = angular.element('<div class="btn-group">');
 					var reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
 					reLinkButton.on('click', function (event) {
+
 						event.preventDefault();
+
 						var modalInstance = $modal.open({
-							template: '<mhe-assessment-variables assessment-variable="{}"></mhe-assessment-variables>',
+
+							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 							controller: function($scope, $modalInstance, $timeout) {
 
 								$timeout(function() {
