@@ -104,14 +104,13 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						embed = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
 
-
 					} else {
 						embed = '<code class="ta-insert-variable">(updated_empty)</code>&nbsp;';
 					}
 
 					console.log(embed);
 
-					addVariableTool.$editor().wrapSelection('insertHTML', embed.code, true);
+					addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
 
 				});
 
