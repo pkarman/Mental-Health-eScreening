@@ -9,19 +9,22 @@ import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
@@ -41,7 +44,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			String avIdRowKey = String.format("avId_%s", avId);
 			this.assessments.put(avIdRowKey, "id", avId);
 			this.assessments.put(avIdRowKey, "typeId", av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
-			this.assessments.put(avIdRowKey, "description", av.getDescription());
+			this.assessments.put(avIdRowKey, "name", av.getDescription());
 			this.assessments.put(avIdRowKey, "displayName", av.getDisplayName());
 			this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
 			this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
@@ -152,9 +155,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return avr.findAllFormulae();
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
+	private Table<String, String, Object> getAssessmentVarsFor(int surveyId,
+			Set<Integer> measureTypes) {
 
 		// retrieve a list of all surveys along with their measures
 		Multimap<Survey, Measure> surveyMap = buildSurveyMeasuresMap();
@@ -163,7 +165,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		Survey survey = null;
 		for (Survey s : surveyMap.keySet()) {
 			if (surveyId == s.getSurveyId()) {
-				measures = surveyMap.get(s);
+				measures = filterMeasures(surveyMap.get(s), measureTypes);
 				survey = s;
 				break;
 			}
@@ -177,6 +179,19 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		AvModelBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
 		filterBySurvey(survey, avModelBldr, measures, avList);
 		return (Table<String, String, Object>) avModelBldr.getResult();
+	}
+
+	private Collection<Measure> filterMeasures(
+			Collection<Measure> measures, final Set<Integer> measureTypes) {
+
+		Predicate<Measure> predicate = new Predicate<Measure>() {
+			@Override
+			public boolean apply(Measure input) {
+				return measureTypes.contains(input.getMeasureId());
+			}
+		};
+		Collection<Measure> result = Collections2.filter(measures, predicate);
+		return result;
 	}
 
 	private void handleCustomType(AssessmentVariable av,
@@ -219,6 +234,13 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				break;
 			}
 		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
+		Set<Integer> measureTypesNeeded = Sets.newHashSet(Arrays.asList(4, 5, 6, 7, 8));
+		return getAssessmentVarsFor(surveyId, measureTypesNeeded);
 	}
 
 }
