@@ -71,9 +71,11 @@ Editors.config(function(RestangularProvider, $provide) {
 			tooltiptext: {
 				tooltip: 'Insert / edit assessment variable'
 			},
-			action: function(){
+			action: function() {
 
-				var that = this;
+				var embed = {
+					code: '<code class="ta-insert-variable">(no_selection)</code>&nbsp;'
+				};
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -95,18 +97,23 @@ Editors.config(function(RestangularProvider, $provide) {
 				modalInstance.result.then(function(assessmentVariable) {
 
 					var variableName;
-					var embed = '<code class="ta-insert-variable">(no_selection)</code>&nbsp;';
 
 					if (assessmentVariable.id) {
 						// TODO add this logic to domain object
 						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
-						embed = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
+						embed.code = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
+
+
+					} else {
+						embed.code = '<code class="ta-insert-variable">(updated_empty)</code>&nbsp;';
 					}
 
-					that.$editor().wrapSelection('insertHTML', embed, true);
+					console.log(embed.code);
 
 				});
+
+				return this.$editor().wrapSelection('insertHTML', embed.code, true);
 
 			},
 			activeState: function(commonElement){
