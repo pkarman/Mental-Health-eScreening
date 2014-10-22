@@ -659,7 +659,8 @@ delete from variable_template where variable_template_id=10513;
 update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> <#if (var2001)?? && (var2001.children)?? && ((var2001.children)?size > 0)> ${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END} ${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} ${LINE_BREAK} <b>Results:</b>${NBSP} <#if isSelectedAnswer(var2001,var772)> unstable housing/at risk ${LINE_BREAK} <b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. <#elseif isSelectedAnswer(var2001,var771)> stable housing </#if>  ${MODULE_END} </#if>' 
 where template_id=301;
 
+/*
 update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> ${MODULE_TITLE_START} Tobacco Use ${MODULE_TITLE_END} ${MODULE_START} The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications. ${LINE_BREAK} ${LINE_BREAK} <b> Results:</b> ${NBSP} <#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)> <#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)> negative screen <#elseif isSelectedAnswer(var600,var603)> current user ${LINE_BREAK} <b> Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed. </#if> <#else><b> Declined<b> </#if> ${MODULE_END}' 
 where template_id=306;
-
+*/
  
