@@ -14,7 +14,9 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             service = restAngular.service("services/assessmentVariables");
 
         restAngular.extendModel("services/assessmentVariables", function(model) {
-            return angular.extend(model, AssessmentVariableInfo);
+            model = angular.extend(model, AssessmentVariableInfo);
+            model.setType();
+            return model;
         });
 
         // Expose the public TemplateService API to the rest of the application.
@@ -25,11 +27,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
              */
             query: function (queryParams) {
                 if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
-                    service.getList(queryParams).then(function (assessmentVariables) {
-                        return assessmentVariables;
-                    }, function (reason) {
-                        console.log("error: " + reason);
-                    });
+                    return service.getList(queryParams);
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
                 }

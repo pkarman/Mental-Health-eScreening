@@ -38,7 +38,7 @@ EScreeningDashboardApp.models.AssessmentVariableInfo = function (jsonAssessmentV
         return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
     };
 
-    this.getType = function () {
+    this.setType = function () {
         switch (this.typeId) {
             case 1:
                 this.type = "Measure";
