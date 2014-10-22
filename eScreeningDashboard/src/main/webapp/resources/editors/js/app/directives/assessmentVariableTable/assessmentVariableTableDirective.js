@@ -16,7 +16,7 @@
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
                         "kind" : '1',             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
+                        "name": "demo_email_phone",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "email",   // filled with either measureText or answerText
                         "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
                         "measureId": "2",          // the id of the measure if this is an AV of type Measure
@@ -43,7 +43,7 @@
                     {
                         "id" : "721",                // the value of assessment_variable.assessment_variable_id
                         "kind" : '4',             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_age",       // filled with the value found in the export column (we can talk more about this)
+                        "name": "demo_age_email",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "age",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
                         "measureId": "22",          // the id of the measure if this is an AV of type Measure
@@ -51,8 +51,8 @@
                     },{
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
                         "kind" : '1',             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_email",       // filled with the value found in the export column (we can talk more about this)
-                        "displayName" :  "email",   // filled with either measureText or answerText
+                        "name": "demo_email_age",       // filled with the value found in the export column (we can talk more about this)
+                        "displayName" :  "email1",   // filled with either measureText or answerText
                         "answerId": "1",           // the id of the answer if this is an AV of type Measure Answer
                         "measureId": "2",          // the id of the measure if this is an AV of type Measure
                         "measureTypeId" : "3"       // the type ID of the measure if this is an AV of type Measure
@@ -69,7 +69,7 @@
                     {
                         "id" : "872",                // the value of assessment_variable.assessment_variable_id
                         "kind" : '3',             // the value of assessment_variable.assessment_variable_type_id
-                        "name": "demo_salary",       // filled with the value found in the export column (we can talk more about this)
+                        "name": "demo_salary_password",       // filled with the value found in the export column (we can talk more about this)
                         "displayName" :  "salary",   // filled with either measureText or answerText
                         "answerId": "41",           // the id of the answer if this is an AV of type Measure Answer
                         "measureId": "22",          // the id of the measure if this is an AV of type Measure
