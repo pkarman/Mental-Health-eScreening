@@ -236,9 +236,6 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	private String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
 		String templateText = getTemplateText(template);
 		Integer templateId = template.getTemplateId();
-		if (templateId==306){ 
-			int i=0;
-		}
 		// It is valid to get an empty list of AssessmentVariables back as the
 		// questions might not have been answered yet.
         List<AssessmentVariableDto> assessmentVariables = variableResolverService
