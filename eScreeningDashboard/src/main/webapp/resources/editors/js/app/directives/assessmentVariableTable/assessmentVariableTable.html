@@ -10,7 +10,7 @@
 
     <table ng-table="assessmentVariableTable" class="table table-hover">
         <tr ng-repeat="item in $data | filter:assessmentVariableSearchCriteria" ng-class-odd="'odd'" ng-class-even="'even'">
-            <td data-title="'Variable Name'">{{item.description}}</td>
+            <td data-title="'Variable Name'">{{item.name}}</td>
             <td data-title="'Name'">{{item.displayName}}</td>
             <td data-title="'Type'">{{item.type}}</td>
             <td data-title="'Insert'">

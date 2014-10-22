@@ -4,7 +4,9 @@
     angular.module('EscreeningDashboardApp.services.assessmentVariable').directive('mheAssessmentVarDropdownMenuDir', [function() {
         return {
             restrict: 'EA',
-            scope: {},
+            scope: {
+                guid: '='
+            },
             transclude: true,
             controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
                 var toggleAssessmentVariableSelectionTable = function() {
@@ -18,7 +20,15 @@
                 };
 
                 $rootScope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
-                    if($scope.guid === data) {
+                    if(!Object.isDefined(data)) {
+                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
+                    }
+
+                    if($scope.guid === data.guid) {
+                        if(!Object.isDefined(data.selectedVariableName)){
+                            throw new BytePushers.exceptions.NullPointerException("data.selectedVariableName parameter can not be undefined or null.");
+                        }
+                        $('#assessmentVariableMenuLabel').text(" " + data.selectedVariableName);
                         toggleAssessmentVariableSelectionTable();
                     }
                 });

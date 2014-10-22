@@ -20,9 +20,9 @@
                      {id: 4, type: "Formula", displayName: "Formula"}*/
                 ];
 
-                $scope.selectAssessmentVariable = function(assessmentVariable, guid) {
+                $scope.selectAssessmentVariable = function(assessmentVariable) {
                     $scope.assessmentVariable = assessmentVariable;
-                    $scope.$emit('closeAssessmentVariableMenuRequested', guid);
+                    $scope.$emit('closeAssessmentVariableMenuRequested', {guid: $scope.guid, selectedVariableName: $scope.assessmentVariable.getName()});
                 };
 
                 $scope.searchObj = {
