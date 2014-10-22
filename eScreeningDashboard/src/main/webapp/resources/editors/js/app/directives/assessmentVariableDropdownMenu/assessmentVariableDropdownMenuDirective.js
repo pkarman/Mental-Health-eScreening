@@ -23,7 +23,7 @@
                     }
                 });
             }],
-            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDrondownMenu.html',
+            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
             link: function(scope, element, attributes, controller) {
                 element.addClass("assessmentVariableSelection");
             }
