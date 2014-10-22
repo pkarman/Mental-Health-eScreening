@@ -193,3 +193,4 @@ Editors.run(['$rootScope', '$state', '$stateParams', '$modal', 'Restangular', fu
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
 Editors.value('Template', new EScreeningDashboardApp.models.Template());
+Editors.value('AssessmentVariableInfo', new EScreeningDashboardApp.models.AssessmentVariableInfo());

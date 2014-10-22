@@ -58,10 +58,9 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
              */
             setSelectedType : function(currentTemplateType){ 
                 this.currentTemplateType = currentTemplateType; 
-                },
-            getSelectedType : function(){ 
+            },
+            getSelectedType : function(){
                 return this.currentTemplateType; 
-                } 
+            }
         }
     }]);
-        

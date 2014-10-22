@@ -52,3 +52,4 @@ curl -X PUT -H "Content-Type: application/json" -H "Accepts: application/json" -
 
 
 curl -X GET -H "Accepts: application/json" -i surveyId=26 http://localhost:8080/escreeningdashboard/dashboard/services/templateTypes.json?surveyId=26
+curl -X GET -H "Accepts: application/json" -i surveyId=26 http://localhost:8080/escreeningdashboard/dashboard/services/assessmentVariables.json?surveyId=26
