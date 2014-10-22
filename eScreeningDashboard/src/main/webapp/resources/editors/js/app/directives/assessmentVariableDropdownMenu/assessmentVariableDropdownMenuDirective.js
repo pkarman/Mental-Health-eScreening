@@ -10,7 +10,7 @@
                 var toggleAssessmentVariableSelectionTable = function() {
                     $scope.showAssessmentVariableSelectionTable = ($scope.showAssessmentVariableSelectionTable)? false: true;
                 };
-                $scope.guid = "assessment-variable-menu-" + new Date().getTime();
+                //$scope.guid = "assessment-variable-menu-" + new Date().getTime();
                 $scope.showAssessmentVariableSelectionTable = false;
 
                 $scope.displayAssessmentVariableSelectionTable = function (){

@@ -9,7 +9,8 @@
         return {
             restrict: 'EA',
             scope: {
-                assessmentVariable: '='
+                assessmentVariable: '=',
+                guid: '='
             },
             controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', function ($scope, $rootScope, $filter, ngTableParams) {
                 var data = [
