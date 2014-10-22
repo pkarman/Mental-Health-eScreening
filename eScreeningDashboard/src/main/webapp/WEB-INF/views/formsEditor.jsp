@@ -154,7 +154,7 @@
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableSelection/assessmentVariableDropdownMenuDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
 

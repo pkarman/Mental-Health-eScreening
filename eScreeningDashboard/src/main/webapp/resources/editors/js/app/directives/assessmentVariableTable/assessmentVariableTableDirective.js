@@ -11,7 +11,7 @@
             scope: {
                 assessmentVariable: '='
             },
-            controller: ['$scope', '$filter', 'ngTableParams', function ($scope, $filter, ngTableParams) {
+            controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', function ($scope, $rootScope, $filter, ngTableParams) {
                 var data = [
                     {
                         "id" : "87",                // the value of assessment_variable.assessment_variable_id
@@ -86,7 +86,6 @@
                     }
                 ];
 
-                $scope.assessmentVariables = data;
                 $scope.assessmentVariableTypes = ['1', '2', '3', '4'
                     /*{id: 1, type: "Measure", displayName: "Question"},
                      {id: 2, type: "Measure Answer", displayName: "Question"},
@@ -94,11 +93,9 @@
                      {id: 4, type: "Formula", displayName: "Formula"}*/
                 ];
 
-                $scope.selectAssessmentVariable = function(assessmentVariable) {
-                    console.log("assessmentVariable: " + assessmentVariable);
-
+                $scope.selectAssessmentVariable = function(assessmentVariable, guid) {
                     $scope.assessmentVariable = assessmentVariable;
-                    $scope.displayAssessmentVariableSelectionTable();
+                    $scope.$emit('closeAssessmentVariableMenuRequested', guid);
                 };
 
                 $scope.searchObj = {
@@ -128,7 +125,7 @@
                         getData: function ($defer, params) {
                             // use build-in angular filter
                             //params.total(data.length);
-                            var filteredData = params.filter() ? $filter('filter')($scope.assessmentVariables, params.filter()) : $scope.assessmentVariables;
+                            var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
                             params.total(filteredData.length); // set total for recalc pagination
                             $defer.resolve(filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                         }
