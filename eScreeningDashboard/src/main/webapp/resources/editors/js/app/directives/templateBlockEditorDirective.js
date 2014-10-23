@@ -37,7 +37,7 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {
 
-                var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children" variables=“assessmentVariables”></template-block-editor>';
+                var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children" assessment-variables="assessmentVariables"></template-block-editor>';
 
                 /*
                  The compile function cannot handle directives that recursively use themselves
