@@ -55,11 +55,11 @@ Editors.config(function(RestangularProvider, $provide) {
     $provide.decorator('taOptions', ['taRegisterTool', 'taSelectableElements', 'taCustomRenderers', '$delegate', '$modal', function(taRegisterTool, taSelectableElements, taCustomRenderers, $delegate, $modal){
 
 	    // Add <code></code> as selectable element
-	    taSelectableElements.push('code');
+	    taSelectableElements.push('mhe-insert-variable');
 
 	    // Add code with class attribute ta-insert-variable as custom renderer
 	    taCustomRenderers.push({
-		    selector: 'code',
+		    selector: 'mhe-insert-variable',
 		    customAttribute: 'ta-insert-variable',
 		    renderLogic: function(element){}
 	    });
@@ -73,7 +73,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var addVariableTool = this;
 
-				var embed = '<code class="ta-insert-variable">(no_selection)</code>&nbsp;';
+				var embed = '<mhe-insert-variable class="ta-insert-variable">(no_selection)</mhe-insert-variable>&nbsp;';
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -84,7 +84,7 @@ Editors.config(function(RestangularProvider, $provide) {
 						$scope.assessmentVariable = {};
 
 						$scope.close = function() {
-							$modalInstance.close($scope.assessmentVariable);
+							$modalInstance.close($scope.assvar);
 						};
 
 						$scope.cancel = function() {
@@ -98,14 +98,14 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					var variableName;
 
-					if (assessmentVariable.id) {
+					if (assessmentVariable && assessmentVariable.id) {
 						// TODO add this logic to domain object
 						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
-						embed = '<code class="ta-insert-variable">(' + variableName  + ')</code>&nbsp;';
+						embed = '<mhe-insert-variable class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + variableName  + ')</mhe-insert-variable>&nbsp;';
 
 					} else {
-						embed = '<code class="ta-insert-variable">(updated_empty)</code>&nbsp;';
+						embed = '<mhe-insert-variable class="ta-insert-variable">(updated_empty)</mhe-insert-variable>&nbsp;';
 					}
 
 					console.log(embed);
@@ -114,7 +114,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				});
 
-				return addVariableTool;
+				// return addVariableTool;
 
 			},
 			activeState: function(commonElement){
@@ -122,7 +122,7 @@ Editors.config(function(RestangularProvider, $provide) {
 				return this.$editor().queryCommandState('ta-insert-variable');
 			},
 			onElementSelect: {
-				element: 'code',
+				element: 'mhe-insert-variable',
 				action: function (event, $element, editorScope) {
 					// Setup the editor toolbar
 					// Edit bar logic based upon http://hackerwins.github.io/summernote
@@ -138,20 +138,38 @@ Editors.config(function(RestangularProvider, $provide) {
 						event.preventDefault();
 
 						var modalInstance = $modal.open({
-
 							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-							controller: function($scope, $modalInstance, $timeout) {
+							controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
 
-								$timeout(function() {
-									$modalInstance.close();
-								}, 5000);
+								$scope.assessmentVariables = AssessmentVariableService.list;
 
-								$scope.updateVariable = function() {
-									$element.text('updated_var');
-									editorScope.updateTaBindtaTextElement();
-								}
+								// TODO get the assessment variable out of the selected item
+								$scope.assessmentVariable = {};
+
+								$scope.close = function() {
+									$modalInstance.close($scope.assessmentVariable);
+								};
+
+								$scope.cancel = function() {
+									$modalInstance.dismiss();
+								};
+
+							}]
+						});
+
+						modalInstance.result.then(function(assessmentVariable) {
+
+							if (assessmentVariable && assessmentVariable.id) {
+
+								$element.text(assessmentVariable.getName());
+
+								$element.attr('attribute-id', assessmentVariable.id);
+
+								editorScope.updateTaBindtaTextElement();
+
 							}
 						});
+
 						editorScope.hidePopover();
 					});
 					buttonGroup.append(reLinkButton);
