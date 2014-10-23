@@ -141,7 +141,7 @@ Editors.config(function(RestangularProvider, $provide) {
 							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 							controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
 
-								$scope.assessmentVariables = AssessmentVariableService.list;
+								$scope.assessmentVariables = AssessmentVariableService.cachedResults;
 
 								// TODO get the assessment variable out of the selected item
 								$scope.assessmentVariable = {};
