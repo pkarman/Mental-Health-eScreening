@@ -16,15 +16,25 @@ public class VeteranAssessmentSmrList {
 
 	private ThreadLocal<List<SurveyMeasureResponse>> t = new ThreadLocal<List<SurveyMeasureResponse>>();
 
-	public List<SurveyMeasureResponse> fetchCachedSmr() {
-		return t.get();
+	public List<SurveyMeasureResponse> fetchCachedSmr(int vetAssId) {
+		List<SurveyMeasureResponse> smrList = t.get();
+		if (smrList == null) {
+			t.set(smrr.findForVeteranAssessmentId(vetAssId));
+			return fetchCachedSmr(vetAssId);
+		} else {
+			return smrList;
+		}
 	}
 
-	public void loadSmrFromDb(int vetAssId) {
-		t.set(smrr.findForVeteranAssessmentId(vetAssId));
-	}
-	
-	public void clearSmrFromCache(){
+	/**
+	 * clear the thread with its weight as we are in a thread pool
+	 */
+	public void clearSmrFromCache() {
+		List<SurveyMeasureResponse> smrList = t.get();
+		if (smrList != null && !smrList.isEmpty()) {
+			smrList.clear();
+		}
+
 		t.remove();
 	}
 }
