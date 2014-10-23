@@ -47,11 +47,13 @@
                         counts: [],
                         total: 0,
                         getData: function ($defer, params) {
-                            if(Object.isArray($scope.data.$object)){
-                                params.total($scope.data.$object.length);
-                                var data = params.filter() ? $filter('filter')($scope.data.$object, params.filter()) : $scope.data.$object;
-                                params.total(data.length); // set total for recalc pagination
-                                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                            if(Object.isDefined($scope.data)) {
+                                $scope.data.then(function (assessmentVariables) {
+                                    params.total(assessmentVariables.length);
+                                    var data = params.filter() ? $filter('filter')(assessmentVariables, params.filter()) : assessmentVariables;
+                                    params.total(data.length); // set total for recalc pagination
+                                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                                });
                             } else if(Object.isNumber($scope.surveyId)){
                                 AssessmentVariableService.query({surveyId: $scope.surveyId}).then(function(data) {
                                     // use build-in angular filter
