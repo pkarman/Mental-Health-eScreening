@@ -12,19 +12,7 @@
 	    ];
 
         function getBlockTypes(type) {
-            switch(type) {
-                case 'if':
-                    return blockTypes.slice(1);
-                    break;
-                case 'elseif':
-                    return blockTypes.slice(2);
-                    break;
-                case 'else':
-                    return blockTypes.slice(3);
-                    break;
-                default:
-                    return blockTypes;
-            }
+	        return (type) ? blockTypes.slice(3) : blockTypes;
         }
 
         return {
