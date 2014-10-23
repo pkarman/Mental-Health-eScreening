@@ -21,7 +21,7 @@
                 guid: '='
             },
             transclude: true,
-            controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
+            controller: ['$scope', '$rootScope', 'limitToWithEllipsisFilter', function ($scope, $rootScope, limitToWithEllipsisFilter) {
                 var toggleAssessmentVariableSelectionTable = function() {
                     $scope.showAssessmentVariableSelectionTable = ($scope.showAssessmentVariableSelectionTable)? false: true;
                 };
@@ -44,7 +44,7 @@
                         if(!Object.isDefined(data.selectedVariableName)){
                             throw new BytePushers.exceptions.NullPointerException("data.selectedVariableName parameter can not be undefined or null.");
                         }
-                        $('#assessmentVariableMenuLabel').text(" " + data.selectedVariableName);
+                        $('#assessmentVariableMenuLabel').text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
                         toggleAssessmentVariableSelectionTable();
                     }
                 });
