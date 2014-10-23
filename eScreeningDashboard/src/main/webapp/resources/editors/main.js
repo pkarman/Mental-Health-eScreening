@@ -98,11 +98,11 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					var variableName;
 
-					if (assessmentVariable.id) {
+					if (assessmentVariable && assessmentVariable.id) {
 						// TODO add this logic to domain object
 						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
-						embed = '<mhe-insert-variable class="ta-insert-variable" id="' + assessmentVariable.id + '">(' + variableName  + ')</mhe-insert-variable>&nbsp;';
+						embed = '<mhe-insert-variable class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + variableName  + ')</mhe-insert-variable>&nbsp;';
 
 					} else {
 						embed = '<mhe-insert-variable class="ta-insert-variable">(updated_empty)</mhe-insert-variable>&nbsp;';
@@ -147,7 +147,7 @@ Editors.config(function(RestangularProvider, $provide) {
 								$scope.assessmentVariable = {};
 
 								$scope.close = function() {
-									$modalInstance.close($scope.assvar);
+									$modalInstance.close($scope.assessmentVariable);
 								};
 
 								$scope.cancel = function() {
@@ -159,8 +159,15 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						modalInstance.result.then(function(assessmentVariable) {
 
-							$element.text(assessmentVariable.getName());
-							editorScope.updateTaBindtaTextElement();
+							if (assessmentVariable && assessmentVariable.id) {
+
+								$element.text(assessmentVariable.getName());
+
+								$element.attr('attribute-id', assessmentVariable.id);
+
+								editorScope.updateTaBindtaTextElement();
+
+							}
 						});
 
 						editorScope.hidePopover();
