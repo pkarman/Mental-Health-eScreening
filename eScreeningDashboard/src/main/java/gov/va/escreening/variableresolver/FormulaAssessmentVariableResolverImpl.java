@@ -175,12 +175,20 @@ public class FormulaAssessmentVariableResolverImpl implements FormulaAssessmentV
     		
         for(AssessmentVariable answerVariable : answerTypeList) {
         	Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(answerVariable.getMeasureAnswer().getMeasure().getMeasureId());
+        	if(answer == null) 
+       		{
+       			return Optional.absent();
+       		}
    	    	String value = measureAnswerVariableResolver.resolveCalculationValue(answerVariable, answer);
    	    	rootFormula.getVariableValueMap().put(answerVariable.getAssessmentVariableId(), value);
        	}
         	
        	for(AssessmentVariable measureVariable : measureTypeList) {
        		Pair<Measure, gov.va.escreening.dto.ae.Measure> answer = responseMap.get(measureVariable.getMeasure().getMeasureId());
+       		if(answer == null) 
+       		{
+       			return Optional.absent();
+       		}
         	String value = measureVariableResolver.resolveCalculationValue(measureVariable, answer, measureAnswerHash);
     	    if(value!=null)
     	    {

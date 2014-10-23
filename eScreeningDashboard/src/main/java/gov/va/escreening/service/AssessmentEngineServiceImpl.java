@@ -187,10 +187,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			objectIds.add(m.getMeasureId());
 			Measure userAnswer = null;
 			for (Measure answer : assessmentRequest.getUserAnswers()) {
-				if (answer.getMeasureId().intValue() == m.getMeasureId()) {
-					userAnswer = answer;
-					break;
-				}
+				if (answer.getMeasureId().intValue() == m.getMeasureId()){
+
+					if (answer.getIsVisible() == null || answer.getIsVisible()) {
+						userAnswer = answer;
+					}
+				break;
+			}
 			}
 
 			if (userAnswer != null) {
@@ -211,13 +214,19 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
 		for (Rule r : rules) {
 			try {
-				if (ruleProcessorService.evaluate(r, responseMap)) {
-					for (Event e : r.getEvents()) {
-						if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+				boolean result = ruleProcessorService.evaluate(r, responseMap);
+
+				for (Event e : r.getEvents()) {
+					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+						if (result) {
 							visibilityMap.put(e.getRelatedObjectId(), true);
+						} else if (!visibilityMap.containsKey(e
+								.getRelatedObjectId())) {
+							visibilityMap.put(e.getRelatedObjectId(), false);
 						}
 					}
 				}
+
 			} catch (Throwable ex) {
 				logger.warn("rule evaluation exception", ex);
 			}
