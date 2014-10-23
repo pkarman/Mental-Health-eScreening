@@ -5,6 +5,8 @@ import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.service.AssessmentVariableService;
+import gov.va.escreening.service.AvModelBuilder;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -26,13 +30,19 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
-@Service("dataDictionaryHelper")
+@Component("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
+
+	public final String SALT_DEFAULT = "0";
+
+	@Resource(name = "assessmentVariableService")
+	AssessmentVariableService avs;
+
 	interface ExportNameExtractor {
 		String extractExportName(AssessmentVarChildren avc);
 	}
 
-	class MaNameExtractor implements ExportNameExtractor {
+	class MeasureAnswerNameExtractor implements ExportNameExtractor {
 		public String extractExportName(AssessmentVarChildren avc) {
 			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
 			String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
@@ -50,8 +60,8 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static final String EXPORT_NAME_KEY_PREFIX = "mId_";
-	public static final String FORMULA_KEY_PREFIX = "surveyId_";
+	public final String EXPORT_NAME_KEY_PREFIX = "EXPORT";
+	public final String FORMULA_KEY_PREFIX = "FORMULA";
 	MessageSource msgSrc;
 
 	Map<Integer, Resolver> resolverMap;
@@ -60,37 +70,41 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
 	}
 
+	public String getPlainText(String htmlString) {
+		return htmlString != null ? htmlString.replaceAll("\\<.*?>", "") : "";
+	}
+
 	public void buildDataDictionaryFor(Survey s,
 			Table<String, String, String> t, Collection<Measure> smList,
 			Multimap mvMap, Collection<AssessmentVariable> avList,
 			Set<String> avUsed) {
 		for (Measure m : smList) {
-			addDictionaryRowsFor(m, s, mvMap, t);
+			addDictionaryRowsFor(m, s, mvMap, t, SALT_DEFAULT);
 		}
 
 		addFormulaeFor(s, t, smList, avList, avUsed);
 	}
 
-	public void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
-			Table<String, String, String> t) {
-		findResolver(m).addDictionaryRows(s, m, mvMap, t);
+	void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
+			Table<String, String, String> t, String salt) {
+		findResolver(m).addDictionaryRows(s, m, mvMap, t, salt);
 	}
 
 	private void addFormulaeFor(Survey s, Table<String, String, String> t,
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			Set<String> avUsed) {
 
-		Set<String> formulae = Sets.newLinkedHashSet();
-		buildFormulaeFor(s, formulae, avUsed, smList, avList);
+		Set<String> tgtFormulaeSet = Sets.newLinkedHashSet();
+		buildFormulaeFor(s, tgtFormulaeSet, avUsed, smList, avList);
 
-		if (formulae != null) {
-			int i = 0;
-			for (String formula : formulae) {
+		if (tgtFormulaeSet != null) {
+			int index = 0;
+			for (String formula : tgtFormulaeSet) {
 				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
-				String indexAsStr = String.valueOf(FORMULA_KEY_PREFIX + s.getSurveyId()) + "_" + i++;
+				String indexAsStr = String.format("%s_%s_%s", FORMULA_KEY_PREFIX, s.getSurveyId(), index++);
 
 				t.put(indexAsStr, msg("ques.type"), "formula");
-				t.put(indexAsStr, msg("ques.desc"), formulaTokens.next());
+				t.put(indexAsStr, msg("ques.desc"), getPlainText(formulaTokens.next()));
 				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
 
 				if (formulaTokens.hasNext()) {
@@ -122,91 +136,41 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-	void buildFormulaeFor(Survey survey, Set<String> surveyFormulae,
-			Set<String> avUsed, Collection<Measure> smList,
-			Collection<AssessmentVariable> avList) {
+	void buildFormulaeFor(Survey survey, final Set<String> surveyFormulae,
+			final Set<String> avUsed, Collection<Measure> smList,
+			Collection<AssessmentVariable> avLstWithFormulae) {
 
-		for (AssessmentVariable av : avList) {
-			for (Measure m : smList) {
-				for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-					if (compareMeasure(avc.getVariableChild(), m)) {
-						surveyFormulae.add(useM2FormulaPlusExportName(av));
-						avUsed.add(av.getDisplayName());
-					} else if (compareMeasureAnswer(avc.getVariableChild(), m)) {
-						surveyFormulae.add(useMa2FormulaPlusExportName(av));
-						avUsed.add(av.getDisplayName());
-					}
-				}
-				if (!m.getChildren().isEmpty()) {
-					buildFormulaeFor(survey, surveyFormulae, avUsed, m.getChildren(), avList);
-				}
+		AvModelBuilder avmd = new AvModelBuilder() {
+			@Override
+			public void buildFromMeasureAnswer(
+					AssessmentVariable avWithFormula,
+					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
+				surveyFormulae.add(buildXportNameFromMeasureAnswer(avWithFormula));
+				avUsed.add(avWithFormula.getDisplayName());
 			}
 
-		}
-	}
-
-	/**
-	 * recursively search that AssessmentVariable belongs to the MeasurementAnswer of passed in Measure
-	 * 
-	 * @param av
-	 * @param m
-	 * @return
-	 */
-	private boolean compareMeasureAnswer(AssessmentVariable av, Measure m) {
-		if (av == null) {
-			return false;
-		} else if (av.getMeasureAnswer() != null && m.equals(av.getMeasureAnswer().getMeasure())) {
-			return true;
-		} else {
-			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-				return compareMeasureAnswer(avc.getVariableChild(), m);
+			@Override
+			public void buildFromMeasure(AssessmentVariable avWithFormula,
+					AssessmentVarChildren avc, Measure m) {
+				surveyFormulae.add(buildXportNameFromMeasure(avWithFormula));
+				avUsed.add(avWithFormula.getDisplayName());
 			}
-		}
-		return false;
-	}
 
-	/**
-	 * recursively search that AssessmentVariable belongs to the Measure
-	 * 
-	 * @param av
-	 * @param m
-	 * @return
-	 */
-	private boolean compareMeasure(AssessmentVariable av, Measure m) {
-		if (av == null) {
-			return false;
-		} else if (m.equals(av.getMeasure())) {
-			return true;
-		} else {
-			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-				return compareMeasure(avc.getVariableChild(), m);
+			@Override
+			public Object getResult() {
+				return null;
 			}
-		}
-		return false;
+		};
+
+		avs.filterBySurvey(survey, avmd, smList, avLstWithFormulae);
 	}
 
-	private String useMa2FormulaPlusExportName(AssessmentVariable av) {
-		String formula = extractFormula(av, new MaNameExtractor());
+	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {
+		String formula = extractFormula(av, new MeasureAnswerNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
 
-	// private String extractFormulaUsingMeasureAnswer(AssessmentVariable av) {
-	// String dbFormula = av.getFormulaTemplate();
-	// String displayableFormula = dbFormula;
-	// for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-	// MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
-	// String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
-	// String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
-	// displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
-	// }
-	// displayableFormula = displayableFormula.replaceAll("[$]", "");
-	// if (logger.isDebugEnabled()) {
-	// logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
-	// }
-	// return displayableFormula;
-	// }
-
-	private String useM2FormulaPlusExportName(AssessmentVariable av) {
+	private String buildXportNameFromMeasure(AssessmentVariable av) {
 		String formula = extractFormula(av, new MeasureNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
@@ -224,17 +188,19 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1:0", "");
+		//displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0", "").replaceAll(">=\\s*1", "");
+		//displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
+		displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
+		
 		if (logger.isDebugEnabled()) {
 			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
 		}
 		return displayableFormula;
 	}
 
-	public String msg(String propertySuffix) {
+	String msg(String propertySuffix) {
 		return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
 	}
-
 }
 
 abstract class Resolver {
@@ -249,8 +215,8 @@ abstract class Resolver {
 	}
 
 	public final void addDictionaryRows(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
-		addDictionaryRowsNow(s, m, mvMap, t);
+			Table<String, String, String> t, String salt) {
+		addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 
 	String getValuesRange(Measure m, MeasureAnswer ma) {
@@ -262,14 +228,15 @@ abstract class Resolver {
 	}
 
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
+			Table<String, String, String> t, String salt) {
+
 		int index = 0;
-		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), index++, false);
+		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), index++, false, salt);
 
 		// compensate measure answer of other type
 		for (MeasureAnswer ma : m.getMeasureAnswerList()) {
 			if ("other".equals(ma.getAnswerType())) {
-				addSingleRow(s, m, mvMap, t, ma, index++, true);
+				addSingleRow(s, m, mvMap, t, ma, index++, true, salt);
 			}
 		}
 
@@ -277,12 +244,13 @@ abstract class Resolver {
 
 	protected final void addSingleRow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t, MeasureAnswer ma, int index,
-			boolean other) {
-		int mId = m.getMeasureId();
-		String indexAsStr = String.valueOf(DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX + mId) + "_" + index;
+			boolean other, String salt) {
+
+		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + m.getMeasureId() + salt) : salt);
+		String indexAsStr = String.format("%s_%s_%s", ddh.EXPORT_NAME_KEY_PREFIX, mId, index);
 
 		t.put(indexAsStr, ddh.msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
-		t.put(indexAsStr, ddh.msg("ques.desc"), index == 0 ? m.getMeasureText() : ma.getAnswerText());
+		t.put(indexAsStr, ddh.msg("ques.desc"), ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText()));
 
 		if (ma != null) {
 			t.put(indexAsStr, ddh.msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
@@ -316,14 +284,14 @@ class MultiSelectResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
+			Table<String, String, String> t, String salt) {
 
 		int index = 0;
-		addSingleRow(s, m, mvMap, t, null, index++, false);
+		addSingleRow(s, m, mvMap, t, null, index++, false, salt);
 		for (MeasureAnswer ma : m.getMeasureAnswerList()) {
-			addSingleRow(s, m, mvMap, t, ma, index++, false);
+			addSingleRow(s, m, mvMap, t, ma, index++, false, salt);
 			if ("other".equals(ma.getAnswerType())) {
-				addSingleRow(s, m, mvMap, t, ma, index++, true);
+				addSingleRow(s, m, mvMap, t, ma, index++, true, salt);
 			}
 		}
 	}
@@ -413,17 +381,23 @@ class SelectOneMatrixResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
+			Table<String, String, String> t, String salt) {
 
-		super.addDictionaryRowsNow(s, m, mvMap, t);
+		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 
 		// collect all children here. find all measures which (whose parent_id) points to this measure (m)
 		// Collection<Measure> children = findChildren(m);
 		Collection<Measure> mc = m.getChildren();
 
+		int parentId = m.getMeasureId();
+		int index = 1;
 		for (Measure cm : mc) {
 			// let the framework take care of rest
-			ddh.addDictionaryRowsFor(cm, s, mvMap, t);
+			// all children must have a id (similar to dob) after parent as kids are born after parents
+			// if not than we have to make kids' id show after
+			int childId = cm.getMeasureId();
+			salt = childId < parentId ? String.valueOf(parentId) + index++ : salt;
+			ddh.addDictionaryRowsFor(cm, s, mvMap, t, salt);
 		}
 	}
 }
@@ -435,8 +409,8 @@ class SelectMultiMatrixResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
-		super.addDictionaryRowsNow(s, m, mvMap, t);
+			Table<String, String, String> t, String salt) {
+		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }
 
@@ -447,7 +421,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t) {
-		super.addDictionaryRowsNow(s, m, mvMap, t);
+			Table<String, String, String> t, String salt) {
+		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }

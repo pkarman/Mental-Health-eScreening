@@ -29,6 +29,7 @@
     <link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript">
       $(function() {
+        $("input[type=text]:first").focus();
         $("#assessmentLoginForm").submit(function(event){ 
             showLoading();
             event.preventDefault();

@@ -173,12 +173,12 @@ ${MODULE_START}
 		<#assign score = empty>
 		<#assign cutoff = empty>
 		
-		<#if (var2000?? && var2000.children?? && var2000.children?size>0) >
-			<#if (var2000.children[0].key == "var762")>
+		<#if (var2001?? && var2001.children?? && var2001.children?size>0) >
+			<#if (var2001.children[0].key == "var772")>
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Positive">
-			<#elseif (var2000.children[0].key == "var761") >
+			<#elseif (var2001.children[0].key == "var771") >
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Negative">
@@ -769,3 +769,33 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 20;
+
+
+update template set template_file = '<#include "clinicalnotefunctions"> <#if (var1599)?? > <#assign score = getCustomVariableDisplayText(var1599)> <#-- Template start --> ${MODULE_TITLE_START} Depression ${MODULE_TITLE_END} ${GRAPH_SECTION_START} ${GRAPH_BODY_START} {"type": "stacked", "title": "My Depression Score", "footer": "*a score of 10 or greater is a positive screen", "data": { "graphStart": 0,"ticks": [0, 4, 10, 15, 20, 27],"intervals": {"Minimal":4, "Mild":10, "Moderate":15, "Moderately Severe":20, "Severe":27 }, "score": ${score} } } ${GRAPH_BODY_END} ${GRAPH_SECTION_END}  ${MODULE_START} Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.${LINE_BREAK} <#if score?number == 999><b>Veteran declined to respond<b></#if><#if score?number != 999><b>Recommendation:</b> <#if score?number lt 10>Contact a clinician if in the future if you ever feel you may have a problem with depression</#if><#if score?number gt 9>Ask your clinician for further evaluation and treatment options</#if> ${MODULE_END}</#if></#if>' 
+where template_id=308;
+
+update template set template_file = '<#include "clinicalnotefunctions"> <#if var1929??> <#assign score = getCustomVariableDisplayText(var1929)>  <#-- Template start --> ${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}  ${GRAPH_SECTION_START}  ${GRAPH_BODY_START} { "type": "stacked", "title": "My PTSD Score", "footer": "", "data": { "graphStart": 17, "ticks": [17,35,50,65,85], "intervals": { "Negative": 49, "Positive":85 }, "score": ${score} } } ${GRAPH_BODY_END} ${GRAPH_SECTION_END}  ${MODULE_START} PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK} <#if score?number == 999><b>Veteran declined to respond<b></#if><#if score?number != 999><b>Recommendation:</b> <#if score?number gt 49>Ask your clinician for further evaluation and treatment options</#if><#if score?number lt 50>You may ask a clinician for help in the future if you feel you may have symptoms of PTSD</#if> ${MODULE_END} </#if></#if>' 
+where template_id=310;
+
+
+
+/*
+t692
+There is an issue with housing. The rule was: If HomelessCR_stable_house =1 then insert “stable housing”, if =0 “unstable housing/at risk”, if equal to 999 omit module. 
+However, this won’t work because the Veteran could have stable housing now and be worried about the future, which would mean they need assistance. 
+The changed rule is: 
+====>>> if HomelessCR_stable_worry =1 then insert “unstable housing/at risk”, if =0 “no housing concerns”, if equal to 999 insert “declined”.
+*/
+update variable_template set assessment_variable_id=771 where variable_template_id=10511;
+update variable_template set assessment_variable_id=772 where variable_template_id=10512;
+update variable_template set assessment_variable_id=2001 where variable_template_id=10510;
+delete from variable_template where variable_template_id=10513;
+
+update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> <#if (var2001)?? && (var2001.children)?? && ((var2001.children)?size > 0)> ${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END} ${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} ${LINE_BREAK} <b>Results:</b>${NBSP} <#if isSelectedAnswer(var2001,var772)> unstable housing/at risk ${LINE_BREAK} <b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. <#elseif isSelectedAnswer(var2001,var771)> stable housing </#if>  ${MODULE_END} </#if>' 
+where template_id=301;
+
+/*
+update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> ${MODULE_TITLE_START} Tobacco Use ${MODULE_TITLE_END} ${MODULE_START} The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications. ${LINE_BREAK} ${LINE_BREAK} <b> Results:</b> ${NBSP} <#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)> <#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)> negative screen <#elseif isSelectedAnswer(var600,var603)> current user ${LINE_BREAK} <b> Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed. </#if> <#else><b> Declined<b> </#if> ${MODULE_END}' 
+where template_id=306;
+*/
+ 
