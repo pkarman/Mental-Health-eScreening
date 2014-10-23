@@ -199,6 +199,7 @@ angular.module('Editors')
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
                     resolve: {
                         templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateTypeService', function($rootScope, $stateParams, $q, TemplateTypeService) {
+                            
                             var deferred = $q.defer();
 
                             if(Object.isDefined($stateParams) &&
@@ -902,10 +903,13 @@ angular.module('Editors')
                                         deferred.resolve(templateObj);
                                     }
                                     else{ //test code. please remove
-                                        console.error("There is no currently selected template type.");
+                                        console.log("There is no currently selected template type. Redirecting to module template list.");
                                         var msg = "No template type is has been set. Call support.";
-                                        $rootScope.addMessage($rootScope.createErrorMessage(msg));
-                                        deferred.reject(msg);
+                                        //$rootScope.addMessage($rootScope.createErrorMessage(msg));
+                                        deferred.resolve({});
+//                                        $state.go('modules.templates', $stateParams).catch(function(error){
+//                                            console.log("Error going to module template list: " + error);
+//                                        });
                                     }
                                 }
                                 else{
@@ -938,10 +942,13 @@ angular.module('Editors')
                                             deferred.resolve(emptyTemplate);
                                         }
                                         else{
-                                            console.error("There is no currently selected template type.");
-                                            var msg = "No template type is has been set. Call support.";
-                                            $rootScope.addMessage($rootScope.createErrorMessage(msg));
-                                            deferred.reject(msg);
+                                            console.log("There is no currently selected template type. Redirecting to module template list.");
+                                            var msg = "No template type has been set. Call support.";
+                                            //$rootScope.addMessage($rootScope.createErrorMessage(msg));
+                                            deferred.resolve({});
+//                                            $state.go('modules.templates', $stateParams).catch(function(error){
+//                                                console.log("Error going to module template list: " + error);
+//                                            });
                                         }
                                     }
                                 }

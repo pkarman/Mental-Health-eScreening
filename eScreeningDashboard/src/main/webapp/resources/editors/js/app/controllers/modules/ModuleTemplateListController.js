@@ -5,27 +5,13 @@ Editors.controller('ModuleTemplateListController',
         ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'TemplateTypeService', 'templateTypes',
          function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
- 
-    TemplateTypeService.registerTypes($scope, templateTypes);
-    
-    if($stateParams.saved == "true"){
-        $rootScope.addInterstateMessage(
-                $rootScope.createSuccessSaveMessage("All template changes have been saved."));
+    if(!Object.isDefined($rootScope.messageHandler)){
+        console.log("rootScope has been reset. Redirecting to Editors page.")
+        $state.go("home");
     }
-
-    if($scope.templateTypes.length == 0){
-        console.log("No template types received from server. Redirecting back to module.");
-        backToModule();
-    }
-
-    //set target object which is related to the templates we will be editing
-    if(!Object.isDefined($stateParams) 
-            || !Object.isDefined($stateParams.selectedSurveyId) 
-            || !Object.isDefined($stateParams.selectedSurveyName)){
-            //redirect back to module list
-        console.log("No module is selected. Redirecting to module list.");
-        $state.go('modules.list');
-    }        
+            
+    //register types list
+    TemplateTypeService.registerTypes($scope, templateTypes);          
 
     var setTable = function(arguments) {
         console.log('template list setTable');
@@ -104,5 +90,27 @@ Editors.controller('ModuleTemplateListController',
         console.log("Canceling edit of module's template. Going back to editor for module");
         backToModule();
     };
+    
+    /*  Check state to make sure we can proceed */
+    
+    //redirect if we have lost state
+    if(!Object.isDefined($scope.templateTypes) || $scope.templateTypes.length == 0){
+        console.log("No template types received from server. Redirecting back to module.");
+        backToModule();
+    }
+    
+    //set target object which is related to the templates we will be editing
+    if(!Object.isDefined($stateParams) 
+            || !Object.isDefined($stateParams.selectedSurveyId) 
+            || !Object.isDefined($stateParams.selectedSurveyName)){
+            //redirect back to module list
+        console.log("No module is selected. Redirecting to module list.");
+        backToModule();
+    }  
+    
+    if($stateParams.saved == "true"){
+        $rootScope.addInterstateMessage(
+                $rootScope.createSuccessSaveMessage("All template changes have been saved."));
+    }
     
 }]);

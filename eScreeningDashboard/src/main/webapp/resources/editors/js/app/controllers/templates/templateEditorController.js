@@ -1,5 +1,5 @@
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', 'TemplateService', 'TemplateTypeService', 'template', 
-                                          function($scope, $state, $stateParams, TemplateService, TemplateTypeService, template) {
+Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', 'TemplateService', 'TemplateTypeService', 'template', 
+                                          function($rootScope, $scope, $state, $stateParams, TemplateService, TemplateTypeService, template) {
 
     console.log("In templateEditorController");
     
@@ -11,7 +11,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
         id : $stateParams.selectedSurveyId,
         name : decodeURIComponent($stateParams.selectedSurveyName),
         type : "module"
-    };
+    };    
     
     $scope.save = function(){
         console.log("Save clicked");
@@ -22,7 +22,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     };
     
     $scope.done = function(wasSaved){
-        console.log("Cancel edit");
+        console.log("Redirecting to module templates");
         if($scope.relatedObj.type == "module"){
             var stateParams = angular.copy($stateParams);
             if(wasSaved){
@@ -48,8 +48,10 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     
     $scope.removeBlock = function(blockScope){
         var block = blockScope.$modelValue;
-        console.log("remove block: " + block.title);
+        console.log("removing block: " + block.title);
+        blockScope.remove();
         $scope.templateChanged();
+        
     };
     
     $scope.editBlock = function(blockScope){
@@ -61,7 +63,6 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     //ng-tree options
     $scope.treeOptions = {
             dropped : function(event){
-                $scope.template.updateSections();
                 $scope.templateChanged();
             },
     };
@@ -70,7 +71,22 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     //only a couple of places that a change occurs and after one has happened we don't care about new updates 
     $scope.templateChanged = function(){
         console.log("template changed");
+        $scope.template.updateSections();
         $scope.hasChanged = true;
     } 
+    
+    //if we have lost state redirect
+    if(!Object.isDefined(template) 
+            || !Object.isDefined(template.type)){
+        console.log("There is no currently selected template type.");
+        
+        if(!Object.isDefined($rootScope.messageHandler)){
+            console.log("rootScope has been reset. Redirecting to Editors page.")
+            $state.go("home");
+        }
+        else{
+            $scope.done();
+        }
+    }
     
 }]);
