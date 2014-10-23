@@ -48,6 +48,9 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
 
                 return results;
             },
+            getCachedResults: function(queryParams) {
+                return this.cachedResults[queryParams];
+            },
             clearCachedResults: function () {
                 this.cachedResults = [];
             }

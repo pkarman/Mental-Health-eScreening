@@ -78,13 +78,60 @@ Editors.config(function(RestangularProvider, $provide) {
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
+                        $scope.assessmentVariables = AssessmentVariableService.getCachedResults({surveyId: 26});
 
-						$scope.assessmentVariables = AssessmentVariableService.list;
+                        $scope.assessmentVariable = {
+                            id: null,
+                            answerId: null,
+                            measureId: null,
+                            measureTypeId: null,
+                            typeId: null,
+                            name: null,
+                            displayName: null,
+                            getName: function () {
+                                return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
+                            },
+                            setType: function () {
+                                switch (this.typeId) {
+                                    case 1:
+                                        this.type = "Measure";
+                                        break;
+                                    case 2:
+                                        this.type = "Measure Answer"
+                                        break;
+                                    case 3:
+                                        this.type = "Custom";
+                                        break;
+                                    case 4:
+                                        this.type = "Formula";
+                                        break;
+                                    default:
+                                        this.type = "Other";
+                                }
+                            },
+                            toString: function () {
+                                return "AssessmentVariable [id: " + this.id +
+                                    ", answerId: " + this.answerId +
+                                    ", measureId: " + this.measureId +
+                                    ", measureTypeId: " + this.measureTypeId +
+                                    ", typeId: " + this.typeId +
+                                    ", name: " + this.name +
+                                    ", displayName: " + this.displayName + "]";
+                            }
+                        };
 
-						$scope.assessmentVariable = {};
+                        // Passing in true to third param of $watch for deep collection checking
+                        $scope.$watch('assessmentVariable', function(newValue, oldValue) {
+                            if(newValue === oldValue) {
+                                console.log("assessmentVariable: newValue === oldValue:\n" + oldValue.toString());
+                            } else {
+                                console.log('assessmentVariable newValue: ', newValue.toString());
+                                console.log('assessmentVariable oldValue: ', oldValue.toString());
+                            }
+                        }, true);
 
-						$scope.close = function() {
-							$modalInstance.close($scope.assvar);
+                        $scope.close = function() {
+							$modalInstance.close($scope.assessmentVariable);
 						};
 
 						$scope.cancel = function() {
@@ -139,14 +186,20 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						var modalInstance = $modal.open({
 							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-							controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
+							controller: ['$scope', '$controller', '$modalInstance', 'AssessmentVariableService', function($scope, $controller, $modalInstance, AssessmentVariableService) {
 
-								$scope.assessmentVariables = AssessmentVariableService.cachedResults;
+								$scope.assessmentVariables = AssessmentVariableService.getCachedResults({surveyId: 26});
 
 								// TODO get the assessment variable out of the selected item
-								$scope.assessmentVariable = {};
+                                $scope.assessmentVariable = {};
 
-								$scope.close = function() {
+                                // Passing in true to third param of $watch for deep collection checking
+                                $scope.$watch('assessmentVariable', function(newValue, oldValue) {
+                                    console.log('2 newValue', newValue);
+                                    console.log('2 oldValue', oldValue);
+                                }, true);
+
+                                $scope.close = function() {
 									$modalInstance.close($scope.assessmentVariable);
 								};
 
