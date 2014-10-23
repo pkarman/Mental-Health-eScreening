@@ -1,6 +1,6 @@
-
 $(document).ready(function() {
-
+  tabsLoad("userManagement");
+  
 	// Configure the data table.
 	$("#userListDataTable").dataTable( {
 		"bProcessing": false,

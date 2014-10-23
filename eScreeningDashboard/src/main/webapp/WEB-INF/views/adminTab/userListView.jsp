@@ -3,11 +3,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags" %>
-
 <!DOCTYPE html>
 <html>
-
 <head>
+  <title>User List View</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -28,15 +27,6 @@
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
-	
-	
-	<title>User List View</title>
-	
-	<script type="text/javascript">
-		$(document).ready(function() {
-			tabsLoad("userManagement");
-		});
-	</script>
 </head>
 <body>
 	<a href="#skip" class="offscreen">Skip to main content</a>
@@ -65,8 +55,6 @@
 	</div>
 
 	<div class="container left-right-shadow">
-		
-    
     <div class="row">
 			<div class="col-md-3 pull-right">
 				<s:url var="addUserUrl" value="/dashboard/userEditView" htmlEscape="true"></s:url>
@@ -78,7 +66,7 @@
 		<div class="clear-fix"></div>
 		
 		<div id="mainContent">
-			<table id="userListDataTable" name="userListDataTable" class="table table-striped  table-hover dataTables_wrapper">
+			<table id="userListDataTable" name="userListDataTable" class="table table-striped  table-hover dataTables_wrapper" summary="User Management Table"> 
 				<thead>
 					<tr>
 						<th scope="col">Login ID</th>
@@ -96,10 +84,9 @@
 	</div>
 
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+  
+  <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/adminTab/userListView.js" />"></script>
+
 </body>
-
-
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/adminTab/userListView.js" />"></script>
-
 </html>
