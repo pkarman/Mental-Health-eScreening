@@ -55,11 +55,11 @@ Editors.config(function(RestangularProvider, $provide) {
     $provide.decorator('taOptions', ['taRegisterTool', 'taSelectableElements', 'taCustomRenderers', '$delegate', '$modal', function(taRegisterTool, taSelectableElements, taCustomRenderers, $delegate, $modal){
 
 	    // Add <code></code> as selectable element
-	    taSelectableElements.push('mhe-insert-variable');
+	    taSelectableElements.push('button');
 
 	    // Add code with class attribute ta-insert-variable as custom renderer
 	    taCustomRenderers.push({
-		    selector: 'mhe-insert-variable',
+		    selector: 'button',
 		    customAttribute: 'ta-insert-variable',
 		    renderLogic: function(element){}
 	    });
@@ -73,7 +73,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var addVariableTool = this;
 
-				var embed = '<mhe-insert-variable class="ta-insert-variable">(no_selection)</mhe-insert-variable>&nbsp;';
+				var embed = '<button class="ta-insert-variable">(no_selection)</button>&nbsp;';
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -102,10 +102,10 @@ Editors.config(function(RestangularProvider, $provide) {
 						// TODO add this logic to domain object
 						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
 
-						embed = '<mhe-insert-variable class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + variableName  + ')</mhe-insert-variable>&nbsp;';
+						embed = '<button class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + variableName  + ')</button>&nbsp;';
 
 					} else {
-						embed = '<mhe-insert-variable class="ta-insert-variable">(updated_empty)</mhe-insert-variable>&nbsp;';
+						embed = '<button class="ta-insert-variable">(updated_empty)</button>&nbsp;';
 					}
 
 					console.log(embed);
@@ -122,7 +122,7 @@ Editors.config(function(RestangularProvider, $provide) {
 				return this.$editor().queryCommandState('ta-insert-variable');
 			},
 			onElementSelect: {
-				element: 'mhe-insert-variable',
+				element: 'button',
 				action: function (event, $element, editorScope) {
 					// Setup the editor toolbar
 					// Edit bar logic based upon http://hackerwins.github.io/summernote
