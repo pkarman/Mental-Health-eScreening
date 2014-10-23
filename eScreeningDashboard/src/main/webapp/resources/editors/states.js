@@ -805,6 +805,9 @@ angular.module('Editors')
                     },
                     controller: "templateEditorController",
                     resolve : {
+                        assessmentVariableService: ['AssessmentVariableService', function(AssessmentVariableService) {
+                            return AssessmentVariableService;
+                        }],
                         template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
                                    function($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
                             var deferred = $q.defer();
@@ -903,6 +906,10 @@ angular.module('Editors')
                              }                          
                             return deferred.promise;
                         }]
+                    },
+                    onExit: function (AssessmentVariableService){
+                        console.log("leaving template.moduleeditor state.");
+                        AssessmentVariableService.clearCachedResults();
                     }
                         
                 })

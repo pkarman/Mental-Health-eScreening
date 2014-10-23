@@ -25,14 +25,31 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             /**
              * Will retrieve the list of assessment variables given the query parameter.
              */
-	        list: [],
-            query: function (queryParams) {
+	        cachedResults: [],
+            query: function (queryParams, useQueryCache) {
+                var results = [];
+                useQueryCache = (Object.isBoolean(useQueryCache))? useQueryCache: false;
+
                 if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
-	                this.list = service.getList(queryParams);
-                    return this.list;
+                    if(useQueryCache) {
+                        if(Object.isDefined(this.cachedResults[queryParams])){
+                            results = this.cachedResults[queryParams];
+                        } else {
+                            this.cachedResults[queryParams] = service.getList(queryParams);
+                            results = this.cachedResults[queryParams];
+                        }
+                    } else {
+                        this.cachedResults[queryParams] = service.getList(queryParams);
+                        results = this.cachedResults[queryParams];
+                    }
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
                 }
+
+                return results;
+            },
+            clearCachedResults: function () {
+                this.cachedResults = [];
             }
         }
     }]);
