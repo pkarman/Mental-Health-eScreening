@@ -47,20 +47,20 @@
                         counts: [],
                         total: 0,
                         getData: function ($defer, params) {
-                            if(Object.isArray($scope.data)){
-                                params.total($scope.data.length);
-                                var data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
+                            if(Object.isArray($scope.data.$object)){
+                                params.total($scope.data.$object.length);
+                                var data = params.filter() ? $filter('filter')($scope.data.$object, params.filter()) : $scope.data.$object;
                                 params.total(data.length); // set total for recalc pagination
                                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                            }/* else if(Object.isNumber($scope.surveyId)){*/
-                                AssessmentVariableService.query({surveyId: 26}).then(function(data) {
+                            } else if(Object.isNumber($scope.surveyId)){
+                                AssessmentVariableService.query({surveyId: $scope.surveyId}).then(function(data) {
                                     // use build-in angular filter
                                     //params.total(data.length);
                                     data = params.filter() ? $filter('filter')(data, params.filter()) : data;
                                     params.total(data.length); // set total for recalc pagination
                                     $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                                 });
-                            //}
+                            }
 
                         }
                     });

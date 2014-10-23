@@ -14,9 +14,9 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     };
 
     if ($scope.relatedObj.type === "module") {
-        AssessmentVariableService.query({surveyId: $scope.relatedObj.id}).then(function(assessmentVariables) {
+        $scope.assessmentVariables = AssessmentVariableService.query({surveyId: $scope.relatedObj.id})/*.then(function(assessmentVariables) {
             $scope.assessmentVariables = assessmentVariables;
-        });
+        });*/
     }
 
     $scope.save = function () {
@@ -185,7 +185,8 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 		// Create the modal
 		var modalInstance = $modal.open({
 			templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
-			resolve: {
+            scope: $scope,
+            resolve: {
 				templateName: function() {
 					return $scope.relatedObj.name
 				},
