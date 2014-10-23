@@ -27,3 +27,6 @@
     margin-bottom:30px;
 }
 
+.modal-content {
+    min-height: inherit;
+}
