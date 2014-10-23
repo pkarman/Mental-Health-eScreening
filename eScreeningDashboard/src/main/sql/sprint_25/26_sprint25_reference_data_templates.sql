@@ -12,7 +12,8 @@ ${MODULE_START}
 			<#assign scoreText = "positive">
 		</#if>
 	</#if>
-	<#if !var10714?? || (var10714?? && !10715??) || (var10715?? && !var10716??) || (var10716?? && !var10717??)>
+	<#if (var10714?? && var10714.value=="0" && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022.value=="false")
+		||(var10716?? && var10716.value=="0" && var2030.value=="false") || (var10717?? && var10717.value=="0" && var2037.value=="false") >
 		<#assign scoreText = "not calculated due to the Veteran declining to answer some or all of the questions">			
 	</#if>			
 	The Veteran\'s TBI screen was ${scoreText}. ${NBSP}
@@ -29,6 +30,11 @@ ${MODULE_START}
 ${MODULE_END}
 '
 where template_id = 30;
+
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2016, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2022, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2030, 30);
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2037, 30);
 
 /* ********************************************** */
 /* template   UPDATES */
@@ -730,3 +736,36 @@ ${MODULE_START}
 	</#if>
 ${MODULE_END}'
 where template_id = 17;
+
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PAIN:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var2300.children)?? && (var2300.children?size>0) || (var2330.children)?? || (var2334?? && ((var2334.value) == "true"))>  
+			<#--  --> 
+			<#assign fragments = []>
+			<#assign text ="notset">  
+	 <#if (var2300.children)?? && (var2300.children?size>0)>
+			<#assign level = getSelectOneDisplayText(var2300)!("-1"?number)>
+			Over the past month, the Veteran\'s reported pain level was ${level} of 10.
+	 </#if>
+	 <#if var2330.children?? && (var2330.children?size>0) && var2334??>
+			<#assign bodyParts = getTableMeasureValueDisplayText(var2330)!"">
+			<#if !(bodyParts?has_content) && ((var2334.value) == "true")>
+				<#assign bodyParts = "none">
+			</#if>
+			
+			<#if bodyParts != "none">
+				The pain was located in: ${bodyParts}.
+			</#if>
+		</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 20;
