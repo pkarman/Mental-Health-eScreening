@@ -40,7 +40,7 @@ Editors.controller('ModuleTemplateListController',
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
             console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
-            $state.go('modules.detail', {selectedSurveyId: $scope.relatedObj.id});
+            $state.go('modules.detail', $stateParams);
         }
         else{
             console.log('No module selected. Redirecting back to module list');
@@ -66,7 +66,7 @@ Editors.controller('ModuleTemplateListController',
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
            };
         
-        $state.go('template.moduleeditor', editorParams);
+        $state.go('modules.templateeditor', editorParams);
     };
 
     $scope.deleteTemplate = function(templateType){
@@ -107,10 +107,5 @@ Editors.controller('ModuleTemplateListController',
         console.log("No module is selected. Redirecting to module list.");
         backToModule();
     }  
-    
-    if($stateParams.saved == "true"){
-        $rootScope.addInterstateMessage(
-                $rootScope.createSuccessSaveMessage("All template changes have been saved."));
-    }
     
 }]);

@@ -18,7 +18,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
         console.log("Save clicked");
         
         $scope.template.saveFor($scope.relatedObj).then(function(response){
-            $scope.done(true);
+            $scope.done(true).then(function(){
+                $rootScope.addMessage(
+                  $rootScope.createSuccessSaveMessage("All template changes have been saved."));
+            })
         });       
     };
     
@@ -29,7 +32,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             if(wasSaved){
                 stateParams.saved = wasSaved;
             }
-            $state.go('modules.templates', stateParams);
+            return $state.go('modules.templates', stateParams);
         }
     };
     
@@ -61,6 +64,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
         $scope.templateChanged();
     };
     
+    //helper function for debugging drag and drop rules (only when we want tons of logs)
     function log(msg){
         if($scope.debug)
             console.log(msg);

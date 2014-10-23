@@ -102,8 +102,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             }
 
             return selectedMenuOptionIndex;
-        },
-        surveyUIObject = getSurveyUIObject();
+        };
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
@@ -111,8 +110,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
 
-    $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
-
+    //initialize selected survey object if needed
+    if(! Object.isDefined($scope.selectedSurveyUIObject)){
+        var surveyUIObject = getSurveyUIObject()
+        $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
+    }
+    
     if (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0) {
         $scope.setPageQuestionItems(pageQuestionItems);
     } else {
