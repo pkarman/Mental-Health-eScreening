@@ -68,9 +68,7 @@ Editors.config(function(RestangularProvider, $provide) {
 	    // $delegate is the taOptions we are decorating
 		taRegisterTool('addVariable', {
 			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
-			tooltiptext: {
-				tooltip: 'Insert / edit assessment variable'
-			},
+			tooltiptext: 'Insert / edit assessment variable',
 			action: function() {
 
 				var addVariableTool = this;
@@ -79,7 +77,9 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
+
+						$scope.assessmentVariables = AssessmentVariableService.list;
 
 						$scope.assessmentVariable = {};
 

@@ -25,9 +25,11 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             /**
              * Will retrieve the list of assessment variables given the query parameter.
              */
+	        list: [],
             query: function (queryParams) {
                 if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
-                    return service.getList(queryParams);
+	                this.list = service.getList(queryParams);
+                    return this.list;
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
                 }
