@@ -36,6 +36,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
     this.right;
 
     if(jsonConfig){
+        this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
         this.section = (Object.isDefined(jsonConfig.section))? jsonConfig.section: null;
         this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
         this.type = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;

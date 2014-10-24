@@ -28,12 +28,14 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
+    this.guid = new Date().getTime();
     this.connector;
     this.left;
     this.operator;
     this.right;
 
     if(Object.isDefined(jsonConfig)) {
+        this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
         this.connector = (Object.isDefined(jsonConfig.connector))? jsonConfig.connector: null;
         this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
@@ -41,7 +43,8 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
     }
 
     this.toString = function () {
-        return "TemplateCondition [connector: " + this.connector +
+        return "TemplateCondition [guid: " + guid +
+            ", connector: " + this.connector +
             ", left variable: " + this.left +
             ", operator: " + this.operator +
             ", right operator: " + this.operator + "]";
