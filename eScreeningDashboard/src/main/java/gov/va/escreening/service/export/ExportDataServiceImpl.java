@@ -27,7 +27,6 @@ import gov.va.escreening.variableresolver.VariableResolverService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -98,7 +97,13 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		return false;
 	}
 
-	private void adjustMultiSelects(
+	/**
+	 * method to find a response of 1 in multi-select type responses. If user has responded to any question, then all
+	 * other unanswered question must be marked 999. All this method does is that it changes those 999 to 0
+	 * 
+	 * @param multiSelectMap
+	 */
+	private void find1AndChangeResponses(
 			Multimap<String, DataExportCell> multiSelectMap) {
 		for (String key : multiSelectMap.keySet()) {
 			Collection<DataExportCell> cells = multiSelectMap.get(key);
@@ -125,19 +130,19 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			VeteranAssessment assessment, Integer identifiedExportType,
 			Map<String, Map<String, String>> preFetchedData) {
 
-		Map<String, String> formulaeMap = preFetchedData.get(prepareFormulaKey(assessment));
+		Map<String, String> formulaeMap = preFetchedData.get(formulaKey(assessment));
 
 		// has user asked to show the ppi info or not
 		boolean show = ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
 
-		// quickly gather mandatory columns data
+		// gather mandatory columns data
 		List<DataExportCell> exportDataRowCells = buildMandatoryColumns(assessment, show);
 
-		for (String surveyName : preFetchedData.get(prepareSurveyNames()).keySet()) {
-			Map<String, String> usrRespMap = preFetchedData.get(prepareUsrRespKey(assessment, surveyName));
-			Map<String, String> surveyDictionary = preFetchedData.get(prepareDictHdrKey(surveyName));
+		for (String surveyName : preFetchedData.get(surveyNamesKey()).keySet()) {
+			Map<String, String> usrRespMap = preFetchedData.get(usrRespKey(assessment, surveyName));
+			Map<String, String> surveyDictionary = preFetchedData.get(dictHdrKey(surveyName));
 
-			// traverse through each exportName, and try to find the run time response for the exportName. In case the
+			// traverse through each exportName, and try to find the veteran's response for the exportName. In case the
 			// user has not responded, leave 999
 			Multimap<String, DataExportCell> multiSelectMap = HashMultimap.create();
 			for (Entry<String, String> surveyEntry : surveyDictionary.entrySet()) {
@@ -148,19 +153,19 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 						logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
 					}
 					exportDataRowCells.add(aCell);
-					saveMultiSelects(multiSelectMap, surveyEntry, aCell);
+					saveMultiSelectResponses(multiSelectMap, surveyEntry, aCell);
 				}
 			}
-			adjustMultiSelects(multiSelectMap);
+			find1AndChangeResponses(multiSelectMap);
 		}
 		return exportDataRowCells;
 	}
 
-	private String prepareSurveyNames() {
+	private String surveyNamesKey() {
 		return "DATA_DICTIONARY_SURVEY";
 	}
 
-	private String prepareDictHdrKey(String surveyName) {
+	private String dictHdrKey(String surveyName) {
 		return String.format("SURVEY_DICTIONARY_KEY_%s", surveyName);
 	}
 
@@ -173,7 +178,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 		for (VeteranAssessment va : matchingAssessments) {
 			Iterable<AssessmentVariableDto> avFormulaeList = vrs.resolveVariablesFor(va.getVeteranAssessmentId(), avFormulaeEntities);
-			formulaeMap.put(prepareFormulaKey(va), createFormulaeMap(avFormulaeList));
+			formulaeMap.put(formulaKey(va), createFormulaeMap(avFormulaeList));
 		}
 		return formulaeMap;
 	}
@@ -266,7 +271,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 		// try to find the user response
 		String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
-		// if value of export name was an formulae (sum, avg, or some other formula derived value)
+		// if value of export name was a formula (sum, avg, or some other formula derived value)
 		exportVal = srh.getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
 		return new DataExportCell(exportName, exportVal);
 	}
@@ -469,20 +474,22 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	 * 
 	 * <ol>
 	 * 
-	 * <li>traverses every Assessment and for every Assessment, it traverses every Survey, collects the user Response,
-	 * and then adjust the Survey Dictionary for Survey. This saves the longest dictionary, ie, survey with maximum
-	 * export names (export names can vary depending on the table questions). This is very necessary to collect and save
-	 * dictionary with maximum export names to allows aligning veteran rows. It saves set of optimized survey dictionary
-	 * with a key of "SURVEY_DISTIONARY_FOR_<surveyName></li>
+	 * <li>
+	 * traverses every Assessment and for every Assessment, it traverses every Survey, collects the user Response, and
+	 * then adjust the Survey Dictionary for Survey. This merges export names (export names can vary for each assessment
+	 * depending on the table questions). This is necessary to merge and collect distinct columns of each assessment's
+	 * export names to allows aligning veteran rows. It saves set of merged survey columns with a key of
+	 * "SURVEY_DICTIONARY_KEY_<surveyName></li>
 	 * 
 	 * <li>
 	 * since this method captures the optimized survey dictionary, while doing so, it has to collect user responses for
 	 * the survey, which is time consuming--so this method also saves those user responses under the key of
-	 * VID_SN_<veteranAssessmentId>_<surveyName></li>
-	 * </ol>
+	 * USR_RESPONSE_KEY_<veteranAssessmentId>_<surveyName></li>
 	 * 
 	 * <li>and just before returning, it also captures Variable formulae for every assessments under the key of
-	 * FORMULAE_<veteranAssessmentId></li>
+	 * FORMULAE_KEY_<veteranAssessmentId></li>
+	 * 
+	 * </ol>
 	 * 
 	 * PS: all the data this method captures for future processing is a transaction data, except the survey dictionary,
 	 * which is mostly static data
@@ -514,7 +521,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 					continue;
 				}
 
-				miscDataMap.put(prepareUsrRespKey(assessment, surveyName), usrRespMap);
+				miscDataMap.put(usrRespKey(assessment, surveyName), usrRespMap);
 
 				// get the table data (one sheet) for this survey
 				Table<String, String, String> dataDictionary = masterDataDictionary.get(surveyName);
@@ -524,20 +531,21 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 				buildDictionaryHeaderFor(surveyName, syncTableQ(usrRespMap, ddColumnData), miscDataMap);
 
-				surveyNamesMap.put(surveyName, miscDataMap.get(prepareDictHdrKey(surveyName)).toString());
+				surveyNamesMap.put(surveyName, miscDataMap.get(dictHdrKey(surveyName)).toString());
 			}
 		}
 
 		// collect all the formulae for these matching Assessments
 		miscDataMap.putAll(buildFormulaeMapForMatchingAssessments(matchingAssessments));
-		miscDataMap.put(prepareSurveyNames(), surveyNamesMap);
+		miscDataMap.put(surveyNamesKey(), surveyNamesMap);
 		return miscDataMap;
 	}
 
 	private void buildDictionaryHeaderFor(String surveyName,
-			Map<String, String> syncTableQ, Map<String, Map<String, String>> miscDataMap) {
+			Map<String, String> syncTableQ,
+			Map<String, Map<String, String>> miscDataMap) {
 
-		String surveyDictionaryKey = prepareDictHdrKey(surveyName);
+		String surveyDictionaryKey = dictHdrKey(surveyName);
 		Map<String, String> currentSurveyDictionary = miscDataMap.get(surveyDictionaryKey);
 
 		if (currentSurveyDictionary == null) {
@@ -547,17 +555,16 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		}
 	}
 
-	private String prepareFormulaKey(VeteranAssessment va) {
+	private String formulaKey(VeteranAssessment va) {
 		return String.format("FORMULAE_KEY_%s", va.getVeteranAssessmentId());
 	}
 
-	private String prepareUsrRespKey(VeteranAssessment assessment,
-			String surveyName) {
-		return String.format("VID_SN_KEY_%s_%s", assessment.getVeteranAssessmentId(), surveyName);
+	private String usrRespKey(VeteranAssessment assessment, String surveyName) {
+		return String.format("USR_RESPONSE_KEY_%s_%s", assessment.getVeteranAssessmentId(), surveyName);
 
 	}
 
-	private void saveMultiSelects(
+	private void saveMultiSelectResponses(
 			Multimap<String, DataExportCell> multiSelectMap,
 			Entry<String, String> entry, DataExportCell oneCell) {
 
@@ -591,38 +598,73 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	private Map<String, String> syncTableQ(Map<String, String> usrRespMap,
 			Map<String, String> dataDictionarySurveyColumns) {
 
+		// map of data dictionary row id and column name (no values)
 		Map<String, String> ddColumnData = Maps.newTreeMap();
 		ddColumnData.putAll(dataDictionarySurveyColumns);
 
+		// keep data for modified column data and will merge with ddColumnData after finishing the traversing
 		Map<String, String> modColumnData = Maps.newTreeMap();
+		// keep track of rows to delete from ddColumn--the rows will be deleted as they are modified and preserved in
+		// modColumnData
 		List<String> toBeDelKeys = Lists.newArrayList();
 
+		Map<String, String> tableQuestionResponseCntr = Maps.newHashMap();
+
 		Set<String> usrRespExportNames = usrRespMap.keySet();
+
 		for (String usrRespExportName : usrRespExportNames) {
 			if (usrRespExportName.contains("~")) {
 				String[] exportNamesParts = Strings.split(usrRespExportName, '~');
 
 				String usrExportName = exportNamesParts[0];
 				String usrTQIndex = exportNamesParts[1];
+
 				// now look for this export name in the columnData []
 				for (Entry<String, String> entry : ddColumnData.entrySet()) {
+
 					if (entry.getValue().equals(usrExportName)) {
-						modColumnData.put(entry.getKey().replaceAll(DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX, DataDictionaryHelper.EXPORT_NAME_KEY_PREFIX + usrTQIndex + "_"), usrRespExportName);
+						String expotNameKeyPrefix = dds.getExportNameKeyPrefix();
+						modColumnData.put(entry.getKey().replaceAll(expotNameKeyPrefix, expotNameKeyPrefix + usrTQIndex + "_"), usrRespExportName);
 						toBeDelKeys.add(entry.getKey());
 					}
 				}
+
+				// also update userRespMap with TableQuestion response counter. Data Dictionary has a table Question
+				// response counter for this export name
+				// try to create the same export name here. we may end up having some redundant names here but thats ok.
+				// as far as we have the one that matches with data dictionary table question response counter we are
+				// fine
+				handleTableQuestionResponse(usrExportName, tableQuestionResponseCntr, Integer.parseInt(usrTQIndex));
 			}
 		}
 
-		// truncate the ddColumnData
+		// merge table question response counter with usrRespMap
+		usrRespMap.putAll(tableQuestionResponseCntr);
+
+		// truncate the ddColumnData (remove all keys which are to be replaced with Table Questions Tabular rows)
 		for (String key : toBeDelKeys) {
 			ddColumnData.remove(key);
 		}
 
+		// update the data dictionary row-id with the set of new row id and column names with the new column names
 		ddColumnData.putAll(modColumnData);
 
 		return ddColumnData;
+	}
 
+	private void handleTableQuestionResponse(String usrExportName,
+			Map<String, String> tableQuestionResponseCntr, int usrTQIndex) {
+
+		String keyName = dds.createTableResponseVarName(usrExportName);
+		String existingIndexAsStr = tableQuestionResponseCntr.get(keyName);
+
+		int nextIndex = usrTQIndex + 1; // incoming index is zero based and we want to use this as a counter
+
+		if (existingIndexAsStr != null) {
+			int existingIndex = Integer.parseInt(existingIndexAsStr);
+			nextIndex = Math.max(existingIndex, nextIndex);
+		}
+		tableQuestionResponseCntr.put(keyName, String.valueOf(nextIndex));
 	}
 
 }

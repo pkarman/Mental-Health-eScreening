@@ -1,7 +1,6 @@
 package gov.va.escreening.util;
 
 import gov.va.escreening.domain.ExportDataDefaultValuesEnum;
-import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.service.export.DataExtractor;
 
@@ -33,8 +32,9 @@ public class SurveyResponsesHelper {
 			List<SurveyMeasureResponse> rawLst, boolean show) {
 
 		List<SurveyMeasureResponse> smrLst = new ArrayList<SurveyMeasureResponse>();
+		
 		for (SurveyMeasureResponse smr : rawLst) {
-			// the assessment' 'survey measure response' (smr) should be part of looked up survey && also (very
+			// the assessment 'survey measure response' (smr) should be part of looked up survey && also (very
 			// important)
 			// DO NOT EXPORT A QUESTION WHEN THE QUESTION HAS THE ISMEASUREPPI ATTRIBUTE SET TO TRUE AND EXPORT TYPE IS
 			// DE-IDENTIFIED!!!
@@ -84,14 +84,6 @@ public class SurveyResponsesHelper {
 		return duration == null ? "" : String.valueOf(duration);
 	}
 
-	public int getIntFromStr(String strVal) {
-		return strVal == null ? 0 : Integer.parseInt(strVal.trim());
-	}
-
-	public float getFloatFromStr(String strVal) {
-		return strVal == null ? 0.00F : Float.parseFloat(strVal.trim());
-	}
-
 	public String buildExportName(SurveyMeasureResponse smr, String xportName) {
 		if (xportName == null) {
 			return null;
@@ -103,7 +95,8 @@ public class SurveyResponsesHelper {
 		Integer tabularIndex = "null".equals(tr) ? null : tr;
 
 		// if tabular row is not null than we will append the index to the export name. The export name will turn into a
-		// exportName plus the index
+		// exportName plus the index (this will happen later down the road just before returning--keep following this
+		// code)
 		xportName += (tabularIndex != null ? "~" + tabularIndex : "");
 
 		return xportName;

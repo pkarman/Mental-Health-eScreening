@@ -28,6 +28,7 @@
       <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css"/>
       <script type="text/javascript">
           $(function() {
+            $("input[type=text]:first").focus(); 
             $("#dashboardLoginForm").submit(function(event){  // delay form submit for 3 sec.
               var formId = this.id;
                   var form = this;

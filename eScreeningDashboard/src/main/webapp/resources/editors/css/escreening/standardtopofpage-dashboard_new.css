@@ -271,7 +271,7 @@ footer{
 	            box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container{
-	background-color:#082f54;
+	background-color:#061a43;
 	margin-top:6px;
 	padding:10px 10px;
 	line-height:24px;
@@ -574,6 +574,23 @@ a.offscreen:focus, a.offscreen:active {
   background-color:#d4d4d4;
 }
 
+.red-color{
+  color:red  !important;
+}
+.odd-class-grid{
+  background-color:#EDEDED;
+}
+
+.even-class-grid{
+  background-color:#FFFFFF;
+}
+
+.border-bottom-3-gray{
+  border-bottom:3px solid #ADADAD;
+}
+.pagination{
+  margin: 0px;
+}
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 
