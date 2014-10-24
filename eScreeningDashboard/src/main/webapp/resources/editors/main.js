@@ -73,8 +73,6 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var addVariableTool = this;
 
-				var embed = '<button class="ta-insert-variable">(no_selection)</button>&nbsp;';
-
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
@@ -97,7 +95,7 @@ Editors.config(function(RestangularProvider, $provide) {
                                         this.type = "Measure";
                                         break;
                                     case 2:
-                                        this.type = "Measure Answer"
+                                        this.type = "Measure Answer";
                                         break;
                                     case 3:
                                         this.type = "Custom";
@@ -121,18 +119,25 @@ Editors.config(function(RestangularProvider, $provide) {
                         };
 
                         // Passing in true to third param of $watch for deep collection checking
-                        $scope.$watch('assessmentVariable', function(newValue, oldValue) {
-                            if(newValue === oldValue) {
-                                console.log("assessmentVariable: newValue === oldValue:\n" + oldValue.toString());
-                            } else {
-                                console.log('assessmentVariable newValue: ', newValue.toString());
-                                console.log('assessmentVariable oldValue: ', oldValue.toString());
-                            }
-                        }, true);
+                        $scope.$watch('assessmentVariable', function(newValue) {
 
-                        $scope.close = function() {
-							$modalInstance.close($scope.assessmentVariable);
-						};
+	                        var variableName;
+	                        var embed;
+
+	                        if (newValue && newValue.id) {
+
+		                        console.log('new new value', newValue.toString());
+
+		                        variableName = newValue.name || newValue.displayName || 'var' + newValue.id;
+
+		                        embed = '<button class="ta-insert-variable" variable-id="' + newValue.id + '">(' + variableName + ')</button>&nbsp;';
+
+		                        addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
+
+		                        $modalInstance.dismiss();
+	                        }
+
+                        }, true);
 
 						$scope.cancel = function() {
 							$modalInstance.dismiss();
@@ -140,28 +145,6 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					}]
 				});
-
-				modalInstance.result.then(function(assessmentVariable) {
-
-					var variableName;
-
-					if (assessmentVariable && assessmentVariable.id) {
-						// TODO add this logic to domain object
-						variableName = assessmentVariable.name || assessmentVariable.displayName || 'var' + assessmentVariable.id;
-
-						embed = '<button class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + variableName  + ')</button>&nbsp;';
-
-					} else {
-						embed = '<button class="ta-insert-variable">(updated_empty)</button>&nbsp;';
-					}
-
-					console.log(embed);
-
-					addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
-
-				});
-
-				// return addVariableTool;
 
 			},
 			activeState: function(commonElement){

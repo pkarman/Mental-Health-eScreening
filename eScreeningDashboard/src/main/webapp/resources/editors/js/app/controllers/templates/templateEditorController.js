@@ -126,133 +126,30 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
         $scope.hasChanged = true;
     };
 
-	var tempBlock = {
-		section: "1",
-		name: "if_example",
-		type: 'if',
-		summary: "if some_name > 9",
-	      left: {
-	          type: "var",
-	          content: {
-	              "id" : 123,
-	              "typeId" : 2,
-	              "name": "demo_email",
-	              "displayName":  "This is a longer body of text",
-	              "answerId": "##",
-	              "measureId": "##",
-	              "measureTypeId" : "3",
-	              "transformations":  [
-	                  { name: "func1", params: [''] } ,
-	                  { name: "func2", params: ['', ''] }
-	              ]
-	          }
-	      },
-	      operator: 'gt',
-	          right: {
-	          type: "text",
-	              content: "8"
-	      },
-	      conditions: [
-	          {
-	              connector: 'and',
-	              left: {
-	                  type: "var",
-	                  content: {
-	                      "id" : 123,
-	                      "typeId" : 2,
-	                      "name": "demo_email",
-	                      "displayName":  "This is a longer body of text",
-	                      "answerId": "##",
-	                      "measureId": "##",
-	                      "measureTypeId" : "3",
-	                      "transformations":  [
-	                          { name: "func1", params: [''] } ,
-	                          { name: "func2", params: ['', ''] }
-	                      ]
-	                  }
-	              },
-	              operator: 'lt',
-	              right: {
-	                  type: "text",
-	                  content: "7"
-	              },
-	              conditions: [
-	                  {
-	                      connector: 'and',
-	                      left: {
-	                          type: "var",
-	                          content: {
-	                              "id" : 123,
-	                              "typeId" : 2,
-	                              "name": "demo_email",
-	                              "displayName":  "This is a longer body of text",
-	                              "answerId": "##",
-	                              "measureId": "##",
-	                              "measureTypeId" : "3",
-	                              "transformations":  [
-	                                  { name: "func1", params: [''] } ,
-	                                  { name: "func2", params: ['', ''] }
-	                              ]
-	                          }
-	                      },
-	                      operator: 'gt',
-	                      right: {
-	                          type: "text",
-	                          content: "6"
-	                      }
-	                  }
-	              ]
-	          },
+	$scope.deleteBlock = function (index) {
+		$scope.template.blocks.splice(index, 1);
+	};
 
-	          {
-	              connector: 'or',
-	              left: {
-	                  type: "var",
-	                  content: {
-	                      "id" : 123,
-	                      "typeId" : 2,
-	                      "name": "demo_email",
-	                      "displayName":  "This is a longer body of text",
-	                      "answerId": "##",
-	                      "measureId": "##",
-	                      "measureTypeId" : "3",
-	                      "transformations":  [
-	                          { name: "func1", params: [''] } ,
-	                          { name: "func2", params: ['', ''] }
-	                      ]
-	                  }
-	              },
-	              operator: 'gt',
-	              right: {
-	                  type: "text",
-	                  content: "5"
-	              },
-	              conditions: []
-	          }
-	      ]
-	  };
+	$scope.updateBlock = function(selectedBlock){
 
-	$scope.updateBlock = function(selectedBlock, editing){
+		// Defaulting to hasChanged for now
+		$scope.templateChanged();
+
 		// Create the modal
 		var modalInstance = $modal.open({
 			templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
             scope: $scope,
             resolve: {
-				templateName: function() {
-					return $scope.relatedObj.name
-				},
-				block: function() {
-					// If we are creating a new block, create a new block instance from Restangular
-					return selectedBlock || tempBlock;
-				},
-				editing: editing
+	            template:  function() {
+		            return $scope.template;
+	            }
 			},
-			controller: function($scope, $modalInstance, templateName, block, editing) {
+			controller: function($scope, $modalInstance, template) {
 
-				$scope.templateName = templateName;
+				$scope.templateName = template.name;
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = angular.copy(block);
+				$scope.block = (selectedBlock) ? angular.copy(selectedBlock) : {};
 
 				// Dismiss modal
 				$scope.cancel = function() {
@@ -261,20 +158,16 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 
 				// Close modal and pass updated block to the page
 				$scope.close = function() {
-					$modalInstance.close($scope.block, editing);
+
+					if (selectedBlock) {
+						selectedBlock = $scope.block;
+					} else {
+						template.blocks.push($scope.block)
+					}
+					$modalInstance.close();
 				};
 			}
 
-		});
-
-		// Update the dashboard on the scope
-		modalInstance.result.then(
-			function(block, editing) {
-				// Update blocks array with updated or new block
-				console.log('block', block, editing);
-			},
-			function() {
-				// Error
 		});
 	};
 
