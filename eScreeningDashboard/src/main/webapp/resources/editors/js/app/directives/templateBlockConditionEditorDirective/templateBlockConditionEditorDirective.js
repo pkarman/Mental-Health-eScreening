@@ -52,6 +52,9 @@
                             content: {
 
                             }
+                        },
+                        right: {
+                            type: "text"
                         }
                     };
 
@@ -68,6 +71,9 @@
                             content: {
 
                             }
+                        },
+                        right: {
+                            type: "text"
                         }
                     };
                     if(selectedCondition.children) {

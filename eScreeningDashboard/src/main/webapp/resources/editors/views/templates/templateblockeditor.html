@@ -23,7 +23,7 @@
               </div>
               <div class="col-md-4">
               <div class="form-group">
-                  <select class="form-control" ng-model="block.operator" ng-options="operator.name group by operator.category for operator in operators">
+                  <select class="form-control" ng-model="block.operator" ng-options="operator.value group by operator.category for operator in operators">
                       <option value="">-- Operator -- </option>
                   </select>
               </div>
@@ -32,7 +32,7 @@
               <div class="col-md-4">
               <div class="form-group">
                   <label class="sr-only" for="blockvalue">Enter Value</label>
-                  <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.content">
+                  <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.right.content">
               </div>
               </div>
               </div>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <select class="form-control" ng-model="condition.operator" ng-options="operator.name group by operator.category for operator in operators">
+                            <select class="form-control" ng-model="condition.operator" ng-options="operator.value group by operator.category for operator in operators">
                                 <option value="">-- Operator -- </option>
                             </select>
                         </div>
@@ -86,7 +86,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="sr-only" for="conditionvalue">Enter Value</label>
-                            <input type="text" class="form-control" id="conditionvalue" placeholder="Enter Value" ng-model="condition.content">
+                            <input type="text" class="form-control" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content">
                         </div>
                     </div>
                 </div>

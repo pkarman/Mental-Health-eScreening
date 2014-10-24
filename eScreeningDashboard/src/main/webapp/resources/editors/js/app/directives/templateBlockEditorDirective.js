@@ -64,8 +64,18 @@
                 ];
 
                 scope.addBlock = function(selectedBlock) {
+                    var addBlockFactoryConfig = {
+                        left: {
+                            content: {
+
+                            }
+                        },
+                        right: {
+                            type: "text"
+                        }
+                    };
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock({left:{content: {}}}));
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock());
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock) {
