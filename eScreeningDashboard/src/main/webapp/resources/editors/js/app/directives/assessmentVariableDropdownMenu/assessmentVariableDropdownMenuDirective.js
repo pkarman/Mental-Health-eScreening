@@ -44,7 +44,7 @@
                         if(!Object.isDefined(data.selectedVariableName)){
                             throw new BytePushers.exceptions.NullPointerException("data.selectedVariableName parameter can not be undefined or null.");
                         }
-                        $('#assessmentVariableMenuLabel').text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
+                        $(".assessmentVariableSelection[guid=\""+data.guid+"\"").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
                         toggleAssessmentVariableSelectionTable();
                     }
                 });
@@ -52,6 +52,7 @@
             templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
             link: function(scope, element, attributes, controller) {
                 element.addClass("assessmentVariableSelection");
+                element.attr("guid", scope.guid);
             }
         };
 
