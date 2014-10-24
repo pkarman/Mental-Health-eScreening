@@ -1,12 +1,15 @@
 Editors.controller('testModalCtrl', ['$scope', function($scope) {
 }]);
-Editors.controller('templateEditorController', ['$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'template', function($scope, $state, $stateParams, $modal, AssessmentVariableService, template) {
+Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'template', function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, template) {
 
     console.log("In templateEditorController");
 
     $scope.template = template;
     $scope.hasChanged = false;
     $scope.assessmentVariables = [];
+    $scope.variableHash = {};
+    //remove as soon as possible
+    $scope.variableNamedHash = {};
     $scope.debug = false;
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
@@ -17,9 +20,16 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
     };    
 
     if ($scope.relatedObj.type === "module") {
-        $scope.assessmentVariables = AssessmentVariableService.query({surveyId: $scope.relatedObj.id})/*.then(function(assessmentVariables) {
-            $scope.assessmentVariables = assessmentVariables;
-        });*/
+        
+        $scope.assessmentVariables = AssessmentVariableService.query({surveyId: $scope.relatedObj.id})
+            .then(function(assessmentVariables) {
+                assessmentVariables.forEach(function(variable){
+                        $scope.variableHash[variable.id] = variable;
+                        $scope.variableNamedHash[variable.getName()] = variable;
+                    });
+                    
+                    return assessmentVariables;
+                });
     }
 
     $scope.save = function () {
@@ -222,9 +232,6 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 
 	$scope.updateBlock = function(selectedBlock){
 
-		// Defaulting to hasChanged for now
-		$scope.templateChanged();
-
 		// Create the modal
 		var modalInstance = $modal.open({
 			templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
@@ -249,13 +256,53 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 				// Close modal and pass updated block to the page
 				$scope.close = function() {
 
+				    transformTextContent($scope.block);
+				    
 					if (selectedBlock) {
 						selectedBlock = $scope.block;
 					} else {
 						template.blocks.push($scope.block)
 					}
+					
+			        $scope.templateChanged();
 					$modalInstance.close();
 				};
+				
+				function transformTextContent(block){
+				    if(!Object.isDefined(block))
+				        return;
+				    
+				   // "<code class="ta-insert-variable" variable-id="123" >(ESCREENING_PACKET_VERSION)</code> <br/><p>&#160;&#160;&#160; <br/></p>"
+				    
+				    if(block.type == "text"){
+				        var tag = '<code class="ta-insert-variable">';
+				        var contents = [];
+				        var fragments = block.content.split(/<code class="ta-insert-variable">\s*\(([^\(\)]+)\)\s*<\/code>/);
+				        
+				        fragments.forEach(function(frag){
+				            var varName = $scope.variableNamedHash[frag];
+				            
+				            content = (varName) ? createVarContent(varName) : createTextContent(frag);
+				            contents.push(content);			            
+				        });
+				        block.contents = contents;
+				        delete(block.content);
+				    }
+				     
+				     if(Object.isDefined(block.children)){
+				        block.children.forEach(function(block){ transformTextContent(block); });
+				     }
+				}
+				function createTextContent(text){
+				    return { type: "text", 
+			                 content: text };
+				}
+				
+				function createVarContent(variable){
+				    
+                    return { type: "var",
+                             content: variable};
+                }
 			}
 		});
 	};
