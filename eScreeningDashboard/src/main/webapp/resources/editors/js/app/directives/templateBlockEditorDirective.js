@@ -66,16 +66,16 @@
                 scope.addBlock = function(selectedBlock) {
                     var addBlockFactoryConfig = {
                         left: {
-                            content: {
-
-                            }
+                            type: "var",
+                            content: {}
                         },
                         right: {
-                            type: "text"
+                            type: "text",
+                            content: ""
                         }
                     };
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock());
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(addBlockFactoryConfig));
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock) {
@@ -83,9 +83,11 @@
                         connector: "and",
                         left: {
                             type: "var",
-                            content: {
-
-                            }
+                            content: {}
+                        },
+                        right: {
+                            type: "text",
+                            content: ""
                         },
                         conditions: []
                     };
@@ -99,9 +101,11 @@
                         connector: "or",
                         left: {
                             type: "var",
-                            content: {
-
-                            }
+                            content: {}
+                        },
+                        right: {
+                            type: "text",
+                            content: ""
                         },
                         conditions: []
                     };

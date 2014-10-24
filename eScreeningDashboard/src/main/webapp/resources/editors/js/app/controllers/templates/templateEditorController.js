@@ -245,7 +245,16 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
 				$scope.templateName = template.name;
                 $scope.createTemplateBlock = function () {
-                    var factoryConfig = {left:{content: {}}};
+                    var factoryConfig = {
+                        left: {
+                            type: "var",
+                            content: {}
+                        },
+                        right: {
+                            text: "var",
+                            content: ""
+                        }
+                    };
                     return new EScreeningDashboardApp.models.TemplateBlock(factoryConfig);
                 };
 
