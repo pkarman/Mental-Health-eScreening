@@ -49,12 +49,11 @@ public class SurveyPage implements Serializable {
     private Survey survey;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @OrderBy("displayOrder")
+    @OrderColumn(name = "display_order")
     @JoinTable(
             name = "survey_page_measure",
             joinColumns = @JoinColumn(name = "survey_page_id", referencedColumnName = "survey_page_id"),
-            inverseJoinColumns = @JoinColumn(name = "measure_id", referencedColumnName = "measure_id", unique = true)
-            )
+            inverseJoinColumns = @JoinColumn(name = "measure_id", referencedColumnName = "measure_id", unique = true))
     private List<Measure> measures;
 
     public SurveyPage() {
