@@ -306,6 +306,8 @@ public class TemplateServiceImpl implements TemplateService {
 			
 			TemplateFileDTO dto = new TemplateFileDTO();
 			
+			dto.setJson(t.getJsonFile());
+			
 			if (t.getJsonFile() != null)
 			{
 				// now parsing the template file
