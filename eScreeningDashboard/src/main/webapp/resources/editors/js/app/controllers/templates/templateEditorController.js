@@ -352,8 +352,24 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				            }
 				        }
 				    }
+//				    if(block.type == "if" ||block.type == "else" ||block.type == "ifelse"){
+//				        
+//				        if(block.contents){
+//				            block.contents.forEach(function(content){
+//				                if(content.left && content.left.content ){
+//    	                            var contentObj =  new EScreeningDashboardApp.models.TemplateVariableContent(content.left.content);
+//    	                            
+//    	                            var message =  contentObj.getName();
+//    	                            block.summary = message;
+//    	                            block.name = block.name && block.name.trim().length >0 ? block.name : message;
+//				                }  
+//				            });
+//				        }
+//				            
+//				         
+//				    }
 				    
-				    if(Object.isDefined(block.children)){
+			    if(Object.isDefined(block.children)){
                         block.children.forEach(function(block){ transformTextContent(block); });
                     }
 				}
