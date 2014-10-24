@@ -68,6 +68,43 @@
                     selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock({left:{content: {}}}));
                 };
 
+                scope.addAndBlock = function(selectedBlock) {
+                    var andConditionFactoryConfig = {
+                        conditions: [
+                            {
+                                connector: "and",
+                                left: {
+                                    type: "var",
+                                    content: {
+
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    selectedBlock.children = selectedBlock.children || [];
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(andConditionFactoryConfig));
+                };
+
+                scope.addOrBlock = function(selectedBlock) {
+                    var orConditionFactoryConfig = {
+                        conditions: [
+                            {
+                                connector: "or",
+                                left: {
+                                    type: "var",
+                                    content: {
+
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    selectedBlock.children = selectedBlock.children || [];
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(orConditionFactoryConfig));
+                };
+
             }
         };
 
