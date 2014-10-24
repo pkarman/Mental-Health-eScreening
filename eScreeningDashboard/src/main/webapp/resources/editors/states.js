@@ -219,246 +219,253 @@ angular.module('Editors')
                     controller: 'ModuleTemplateListController'
                 })
                 
-                .state('modules.templateeditor',{
-                    url:"/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId/:isTesting",
-                    templateUrl:'resources/editors/views/templates/templateeditor.html',
+                .state('modules.templateeditor', {
+                    url: "/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId/:isTesting",
+                    templateUrl: 'resources/editors/views/templates/templateeditor.html',
                     data: {
                         displayName: 'Template Editor'
                     },
                     controller: "templateEditorController",
-                    resolve : {
+                    resolve: {
+                        assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
+                            return AssessmentVariableService;
+                        }],
                         template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
-                                   function($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
-                            var deferred = $q.defer();
-                            if(Object.isDefined($stateParams) 
-                                    && Object.isDefined($stateParams.selectedSurveyId) 
+                            function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
+                                var deferred = $q.defer();
+                                if (Object.isDefined($stateParams)
+                                    && Object.isDefined($stateParams.selectedSurveyId)
                                     && $stateParams.selectedSurveyId > -1
                                     && Object.isDefined($stateParams.typeId)) {
-                                
-                                //test code. please remove
-                                if(Object.isDefined($stateParams.isTesting) && $stateParams.isTesting == "test"){
-                                    var selectedTemplateType = TemplateTypeService.getSelectedType();
-                                    if(Object.isDefined(selectedTemplateType)){
-                                        
-                                        var templateObj = new EScreeningDashboardApp.models.Template(selectedTemplateType);
-                                        templateObj.templateId=45;
-                                        templateObj.blocks = [
-                                                         { 
-                                                             section: "1.",
-                                                             title: "depression_screening",
-                                                             summary: "Depression Screening: was calculated and has a score of:",
-                                                             type: "text",
-                                                             contents: [
 
-                                                               { type: "text", 
-                                                                 content: "Depression Screening: "
-                                                               },
-                                                               { type: "text", 
-                                                                 content: "was calculated and has a score of: "
-                                                               },
-                                                               { type: "var",
-                                                                 content: { id : 123,
-                                                                            name : "test_name",
-                                                                            displayName : "question text which is long",
-                                                                            typeId : 2,
-                                                                            measureId : 123, 
-                                                                            measureTypeId : 3,
-                                                                            measureAnswerId : null
-                                                                           }
-                                                               }
-                                                             ],
-                                                             children: []
-                                                         },
-                                                         {
-                                                             section: "2.",
-                                                             title: "if_dep_score_phq2",
-                                                             summary: "dep_score > 9",
-                                                             type: "if",
-                                                             left: 'var1599.value?number', 
-                                                             operator: 'gt', 
-                                                             right: 9,
-                                                             conditions: [
-                                                                { connector: 'and', 
-                                                                  left: 'var1599.value?number', 
-                                                                  operator: 'gt', 
-                                                                  right: 9,
-                                                                  conditions: [ 
-                                                                                {connector: 'and', 
-                                                                                 left: 'var1599.value?number', 
-                                                                                 operator: 'gt', 
-                                                                                 right: 9}
-                                                                              ]
-                                                                },
-                                                                { connector: 'or', 
-                                                                  left: 'var1599.value?number', 
-                                                                  operator: 'gt', 
-                                                                  right: 9
-                                                                }
-                                                             ],
-                                                             children: [
-                                                                        {
-                                                                            section: "2.1",
-                                                                            title: "Yes_NURSING",
-                                                                            summary: "Yes.  NURSING/NON-PROVIDER: Follow-up:",
-                                                                            type: "text",
-                                                                            content:  "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Yes.${LINE_BREAK} ${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}NURSING/NON-PROVIDER: Follow-up:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}The following action was taken: Patient\'s provider,${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}(Assigned Clincian), was notified for immediate intervention.${LINE_BREAK}",
-                                                                            children: []
-                                                                        },
-                                                                        {
-                                                                            section: "2.2",
-                                                                            title: "else_if_block_1",
-                                                                            summary: "var1599 > 9",
-                                                                            type: "elseif",
-                                                                            left: 'var1599', 
-                                                                            operator: 'gt', 
-                                                                            right: 9,
-                                                                            content:  "",
-                                                                            children: [
-                                                                                        {
-                                                                                            section: "2.2.1",
-                                                                                            summary: "No.",
-                                                                                            title: "else if text 1",
-                                                                                            type: "text",
-                                                                                            content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
-                                                                                            children: []
-                                                                                        }
-                                                                                       ]
-                                                                        },
-                                                                        {
-                                                                            section: "2.3",
-                                                                            title: "else_if_block_2",
-                                                                            summary: "var1599 > 9",
-                                                                            type: "elseif",
-                                                                            left: 'var1599', 
-                                                                            operator: 'gt', 
-                                                                            right: 9,
-                                                                            content:  "",
-                                                                            children: [
-                                                                                        {
-                                                                                            section: "2.3.1",
-                                                                                            title: "else if text 2",
-                                                                                            summary: "else if: No.",
-                                                                                            type: "text",
-                                                                                            content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
-                                                                                            children: []
-                                                                                        }
-                                                                                       ]
-                                                                        },
-                                                                        {
-                                                                            section: "2.4",
-                                                                            title: "else_block",
-                                                                            summary: "else",
-                                                                            type: "else",
-                                                                            content:  "",
-                                                                            children: [
-                                                                                        {
-                                                                                            section: "2.4.1",
-                                                                                            title: "else text block",
-                                                                                            summary: "else: No.",
-                                                                                            type: "text",
-                                                                                            content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
-                                                                                            children: []
-                                                                                        }
-                                                                                       ]
-                                                                        }                                                              
-                                                                       ]
-                                                         },
-                                                         {
-                                                             section: "3.",
-                                                             title: "if_other",
-                                                             summary: "dep_score > 9",
-                                                             type: "if",
-                                                             left: 'var1599.value?number', 
-                                                             operator: 'gt', 
-                                                             right: 9,
-                                                             conditions: [
-                                                                { connector: 'and', 
-                                                                  left: 'var1599.value?number', 
-                                                                  operator: 'gt', 
-                                                                  right: 9,
-                                                                  conditions: [ 
-                                                                                {connector: 'and', 
-                                                                                 left: 'var1599.value?number', 
-                                                                                 operator: 'gt', 
-                                                                                 right: 9}
-                                                                              ]
-                                                                },
-                                                                { connector: 'or', 
-                                                                  left: 'var1599.value?number', 
-                                                                  operator: 'gt', 
-                                                                  right: 9
-                                                                }
-                                                             ],
-                                                             children: [
-                                                                {
-                                                                    section: "3.1",
-                                                                    title: "else_block",
-                                                                    summary: "else",
-                                                                    type: "else",
-                                                                    content:  "",
-                                                                    children: [
-                                                                                {
-                                                                                    section: "3.1.1",
-                                                                                    title: "else text block",
-                                                                                    summary: "else: No.",
-                                                                                    type: "text",
-                                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
-                                                                                    children: []
-                                                                                }
-                                                                               ]
-                                                                }     
-                                                              ]
-                                                         }
-                                                        ];
-                                        
-                                        deferred.resolve(templateObj);
-                                    }
-                                    else{ //test code. please remove
-                                        console.log("There is no currently selected template type. Redirecting to module template list.");
-                                        var msg = "No template type is has been set. Call support.";
-                                        deferred.resolve({});
-                                    }
-                                }
-                                else{
-                                    if(Object.isDefined($stateParams.templateId) 
-                                            && $stateParams.templateId != -1 
-                                            && $stateParams.templateId.length > 0){
-                                        console.log("Getting template from server with ID: " + $stateParams.templateId);
-                                        
-                                        TemplateService.get($stateParams.templateId).then(function (template) {
-                                            deferred.resolve(template);
-                                        }, function(responseError) {
-                                            //TODO: we really need to setup an error martialling interceptor to create an error response no matter what the server sends us
-                                            var msg = "Unknown server error";
-                                            if(Object.isDefined(responseError.getMessage)){
-                                                msg = responseError.getMessage();
-                                            }
-                                            else if(Object.isDefined(responseError.statusText)){
-                                                msg = responseError.statusText;
-                                            }
-                                            
-                                            $rootScope.addMessage($rootScope.createErrorMessage(msg));
-                                            deferred.reject(msg);
-                                        });
-                                    }
-                                    else{
-                                        console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
+                                    //test code. please remove
+                                    if (Object.isDefined($stateParams.isTesting) && $stateParams.isTesting == "test") {
                                         var selectedTemplateType = TemplateTypeService.getSelectedType();
-                                        if(Object.isDefined(selectedTemplateType)){
-                                            var emptyTemplate =  new EScreeningDashboardApp.models.Template(selectedTemplateType);
-                                            deferred.resolve(emptyTemplate);
+                                        if (Object.isDefined(selectedTemplateType)) {
+
+                                            var templateObj = new EScreeningDashboardApp.models.Template(selectedTemplateType);
+                                            templateObj.templateId = 45;
+                                            templateObj.blocks = [
+                                                {
+                                                    section: "1.",
+                                                    title: "depression_screening",
+                                                    summary: "Depression Screening: was calculated and has a score of:",
+                                                    type: "text",
+                                                    contents: [
+
+                                                        { type: "text",
+                                                            content: "Depression Screening: "
+                                                        },
+                                                        { type: "text",
+                                                            content: "was calculated and has a score of: "
+                                                        },
+                                                        { type: "var",
+                                                            content: { id: 123,
+                                                                name: "test_name",
+                                                                displayName: "question text which is long",
+                                                                typeId: 2,
+                                                                measureId: 123,
+                                                                measureTypeId: 3,
+                                                                measureAnswerId: null
+                                                            }
+                                                        }
+                                                    ],
+                                                    children: []
+                                                },
+                                                {
+                                                    section: "2.",
+                                                    title: "if_dep_score_phq2",
+                                                    summary: "dep_score > 9",
+                                                    type: "if",
+                                                    left: 'var1599.value?number',
+                                                    operator: 'gt',
+                                                    right: 9,
+                                                    conditions: [
+                                                        { connector: 'and',
+                                                            left: 'var1599.value?number',
+                                                            operator: 'gt',
+                                                            right: 9,
+                                                            conditions: [
+                                                                {connector: 'and',
+                                                                    left: 'var1599.value?number',
+                                                                    operator: 'gt',
+                                                                    right: 9}
+                                                            ]
+                                                        },
+                                                        { connector: 'or',
+                                                            left: 'var1599.value?number',
+                                                            operator: 'gt',
+                                                            right: 9
+                                                        }
+                                                    ],
+                                                    children: [
+                                                        {
+                                                            section: "2.1",
+                                                            title: "Yes_NURSING",
+                                                            summary: "Yes.  NURSING/NON-PROVIDER: Follow-up:",
+                                                            type: "text",
+                                                            content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}Yes.${LINE_BREAK} ${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}NURSING/NON-PROVIDER: Follow-up:${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}The following action was taken: Patient\'s provider,${LINE_BREAK}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}(Assigned Clincian), was notified for immediate intervention.${LINE_BREAK}",
+                                                            children: []
+                                                        },
+                                                        {
+                                                            section: "2.2",
+                                                            title: "else_if_block_1",
+                                                            summary: "var1599 > 9",
+                                                            type: "elseif",
+                                                            left: 'var1599',
+                                                            operator: 'gt',
+                                                            right: 9,
+                                                            content: "",
+                                                            children: [
+                                                                {
+                                                                    section: "2.2.1",
+                                                                    summary: "No.",
+                                                                    title: "else if text 1",
+                                                                    type: "text",
+                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
+                                                                    children: []
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            section: "2.3",
+                                                            title: "else_if_block_2",
+                                                            summary: "var1599 > 9",
+                                                            type: "elseif",
+                                                            left: 'var1599',
+                                                            operator: 'gt',
+                                                            right: 9,
+                                                            content: "",
+                                                            children: [
+                                                                {
+                                                                    section: "2.3.1",
+                                                                    title: "else if text 2",
+                                                                    summary: "else if: No.",
+                                                                    type: "text",
+                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
+                                                                    children: []
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            section: "2.4",
+                                                            title: "else_block",
+                                                            summary: "else",
+                                                            type: "else",
+                                                            content: "",
+                                                            children: [
+                                                                {
+                                                                    section: "2.4.1",
+                                                                    title: "else text block",
+                                                                    summary: "else: No.",
+                                                                    type: "text",
+                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
+                                                                    children: []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    section: "3.",
+                                                    title: "if_other",
+                                                    summary: "dep_score > 9",
+                                                    type: "if",
+                                                    left: 'var1599.value?number',
+                                                    operator: 'gt',
+                                                    right: 9,
+                                                    conditions: [
+                                                        { connector: 'and',
+                                                            left: 'var1599.value?number',
+                                                            operator: 'gt',
+                                                            right: 9,
+                                                            conditions: [
+                                                                {connector: 'and',
+                                                                    left: 'var1599.value?number',
+                                                                    operator: 'gt',
+                                                                    right: 9}
+                                                            ]
+                                                        },
+                                                        { connector: 'or',
+                                                            left: 'var1599.value?number',
+                                                            operator: 'gt',
+                                                            right: 9
+                                                        }
+                                                    ],
+                                                    children: [
+                                                        {
+                                                            section: "3.1",
+                                                            title: "else_block",
+                                                            summary: "else",
+                                                            type: "else",
+                                                            content: "",
+                                                            children: [
+                                                                {
+                                                                    section: "3.1.1",
+                                                                    title: "else text block",
+                                                                    summary: "else: No.",
+                                                                    type: "text",
+                                                                    content: "${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}${NBSP}No.${LINE_BREAK}",
+                                                                    children: []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ];
+
+                                            deferred.resolve(templateObj);
                                         }
-                                        else{
+                                        else { //test code. please remove
                                             console.log("There is no currently selected template type. Redirecting to module template list.");
+                                            var msg = "No template type is has been set. Call support.";
                                             deferred.resolve({});
                                         }
                                     }
+                                    else {
+                                        if (Object.isDefined($stateParams.templateId)
+                                            && $stateParams.templateId != -1
+                                            && $stateParams.templateId.length > 0) {
+                                            console.log("Getting template from server with ID: " + $stateParams.templateId);
+
+                                            TemplateService.get($stateParams.templateId).then(function (template) {
+                                                deferred.resolve(template);
+                                            }, function (responseError) {
+                                                //TODO: we really need to setup an error martialling interceptor to create an error response no matter what the server sends us
+                                                var msg = "Unknown server error";
+                                                if (Object.isDefined(responseError.getMessage)) {
+                                                    msg = responseError.getMessage();
+                                                }
+                                                else if (Object.isDefined(responseError.statusText)) {
+                                                    msg = responseError.statusText;
+                                                }
+
+                                                $rootScope.addMessage($rootScope.createErrorMessage(msg));
+                                                deferred.reject(msg);
+                                            });
+                                        }
+                                        else {
+                                            console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
+                                            var selectedTemplateType = TemplateTypeService.getSelectedType();
+                                            if (Object.isDefined(selectedTemplateType)) {
+                                                var emptyTemplate = new EScreeningDashboardApp.models.Template(selectedTemplateType);
+                                                deferred.resolve(emptyTemplate);
+                                            }
+                                            else {
+                                                console.log("There is no currently selected template type. Redirecting to module template list.");
+                                                deferred.resolve({});
+                                            }
+                                        }
+                                    }
                                 }
-                             }                          
-                            return deferred.promise;
-                        }]
+                                return deferred.promise;
+                            }]
+                    },
+                    onExit: function (AssessmentVariableService) {
+                        console.log("leaving template.moduleeditor state.");
+                        AssessmentVariableService.clearCachedResults();
+
                     }
-                        
                 })
 
                 .state('modules.detail',{
@@ -1039,11 +1046,5 @@ angular.module('Editors')
                     controller:['$rootScope','$scope','$state',
                     function($rootScope,$scope,$state){  /*placeholder*/  }]
                 })
-                        assessmentVariableService: ['AssessmentVariableService', function(AssessmentVariableService) {
-                            return AssessmentVariableService;
-                        }],
-                    },
-                    onExit: function (AssessmentVariableService){
-                        console.log("leaving template.moduleeditor state.");
-                        AssessmentVariableService.clearCachedResults();
+
 }]);
