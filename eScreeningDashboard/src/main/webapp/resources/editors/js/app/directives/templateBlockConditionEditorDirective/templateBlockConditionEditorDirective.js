@@ -12,7 +12,7 @@
             templateUrl: 'resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditor.html',
             link: function(scope, element) {
 
-                var collectionTemplate = '<template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in block.conditions" assessment-variables="assessmentVariables"></template-block-condition-editor>';
+                var collectionTemplate = '<template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in parentBlock.conditions" assessment-variables="assessmentVariables"></template-block-condition-editor>';
 
                 /*
                  The compile function cannot handle directives that recursively use themselves
