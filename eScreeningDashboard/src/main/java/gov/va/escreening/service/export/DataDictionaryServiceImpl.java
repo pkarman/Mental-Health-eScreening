@@ -191,6 +191,11 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
 	@Override
 	public String getExportNameKeyPrefix() {
-		return ddh.EXPORT_NAME_KEY_PREFIX;
+		return ddh.EXPORT_KEY_PREFIX;
+	}
+
+	@Override
+	public String createTableResponseVarName(String exportName) {
+		return ddh.createTableResponseVarName(exportName);
 	}
 }

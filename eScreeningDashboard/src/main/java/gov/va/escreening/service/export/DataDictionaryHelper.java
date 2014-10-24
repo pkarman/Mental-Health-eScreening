@@ -33,7 +33,7 @@ import com.google.common.collect.Table;
 @Component("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
 
-	public final String SALT_DEFAULT = "0";
+	public final String SALT_DEFAULT = "1";
 
 	@Resource(name = "assessmentVariableService")
 	AssessmentVariableService avs;
@@ -60,7 +60,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public final String EXPORT_NAME_KEY_PREFIX = "EXPORT";
+	public final String EXPORT_KEY_PREFIX = "EXPORT";
 	public final String FORMULA_KEY_PREFIX = "FORMULA";
 	MessageSource msgSrc;
 
@@ -88,6 +88,12 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
 			Table<String, String, String> t, String salt) {
 		findResolver(m).addDictionaryRows(s, m, mvMap, t, salt);
+	}
+
+	public String createTableResponseVarName(String exportName) {
+		int pos = exportName.lastIndexOf("_");
+		String tableResponseVarName = (pos > -1 ? exportName.substring(0, exportName.lastIndexOf("_")) : exportName) + "_count";
+		return tableResponseVarName;
 	}
 
 	private void addFormulaeFor(Survey s, Table<String, String, String> t,
@@ -188,10 +194,11 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		//displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0", "").replaceAll(">=\\s*1", "");
-		//displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
+		// displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0",
+		// "").replaceAll(">=\\s*1", "");
+		// displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
 		displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
 		}
@@ -246,20 +253,39 @@ abstract class Resolver {
 			Table<String, String, String> t, MeasureAnswer ma, int index,
 			boolean other, String salt) {
 
-		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + m.getMeasureId() + salt) : salt);
-		String indexAsStr = String.format("%s_%s_%s", ddh.EXPORT_NAME_KEY_PREFIX, mId, index);
+		String rowId = generateRowId("" + m.getMeasureId(), salt, index);
 
-		t.put(indexAsStr, ddh.msg("ques.type"), index == 0 ? m.getMeasureType().getName() : "");
-		t.put(indexAsStr, ddh.msg("ques.desc"), ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText()));
+		String quesType = index == 0 ? m.getMeasureType().getName() : "";
+		String quesDesc = ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText());
+		boolean addMore = ma != null;
+		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+		String valsRange = addMore ? getValuesRange(m, ma) : "";
+		String valsDesc = addMore ? getValuesDescription(m, ma) : "";
+		String dataVal = addMore ? getValidationDescription(m, mvMap) : "";
+		String followup = addMore ? "todo" : "";
+		String skiplevel = addMore ? getSkipLevel(m) : "";
 
-		if (ma != null) {
-			t.put(indexAsStr, ddh.msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
-			t.put(indexAsStr, ddh.msg("vals.range"), getValuesRange(m, ma));
-			t.put(indexAsStr, ddh.msg("vals.desc"), getValuesDescription(m, ma));
-			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(m, mvMap));
-			t.put(indexAsStr, ddh.msg("followup"), "todo");
-			t.put(indexAsStr, ddh.msg("skiplevel"), getSkipLevel(m));
-		}
+		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel);
+	}
+
+	protected String generateRowId(String partialRowId, String salt, int index) {
+		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + partialRowId + salt) : salt);
+		String rowId = String.format("%s_%s_%s", ddh.EXPORT_KEY_PREFIX, mId, index);
+		return rowId;
+	}
+
+	protected void addRow(Table<String, String, String> t, String rowId,
+			String quesType, String quesDesc, String varName, String valsRange,
+			String valsDesc, String dataVal, String followup, String skiplevel) {
+
+		t.put(rowId, ddh.msg("ques.type"), quesType);
+		t.put(rowId, ddh.msg("ques.desc"), quesDesc);
+		t.put(rowId, ddh.msg("var.name"), varName);
+		t.put(rowId, ddh.msg("vals.range"), valsRange);
+		t.put(rowId, ddh.msg("vals.desc"), valsDesc);
+		t.put(rowId, ddh.msg("data.val"), dataVal);
+		t.put(rowId, ddh.msg("followup"), followup);
+		t.put(rowId, ddh.msg("skiplevel"), skiplevel);
 	}
 
 	private String getSkipLevel(Measure m) {
@@ -393,8 +419,8 @@ class SelectOneMatrixResolver extends Resolver {
 		int index = 1;
 		for (Measure cm : mc) {
 			// let the framework take care of rest
-			// all children must have a id (similar to dob) after parent as kids are born after parents
-			// if not than we have to make kids' id show after
+			// all dependent record's pk must have a number after the parent
+			// if not than we have to some how make sure that the id comes after the parent
 			int childId = cm.getMeasureId();
 			salt = childId < parentId ? String.valueOf(parentId) + index++ : salt;
 			ddh.addDictionaryRowsFor(cm, s, mvMap, t, salt);
@@ -422,6 +448,9 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t, String salt) {
+		String saltForResponseRowCounter = m.getMeasureId() + "0";
+		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getExportName());
+		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "");
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }

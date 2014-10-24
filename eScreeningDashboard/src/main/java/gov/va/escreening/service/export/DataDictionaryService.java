@@ -10,4 +10,6 @@ public interface DataDictionaryService {
 
 	public String getExportNameKeyPrefix();
 
+	public String createTableResponseVarName(String exportName);
+
 }
