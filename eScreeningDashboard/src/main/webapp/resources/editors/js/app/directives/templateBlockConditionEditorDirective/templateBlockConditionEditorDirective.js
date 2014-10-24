@@ -9,7 +9,6 @@
                 parentBlock: '=',
                 assessmentVariables: '='
             },
-            transclude: true,
             templateUrl: 'resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditor.html',
             link: function(scope, element) {
 
