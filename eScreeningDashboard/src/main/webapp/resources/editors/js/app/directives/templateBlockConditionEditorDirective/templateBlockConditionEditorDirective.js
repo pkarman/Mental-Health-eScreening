@@ -52,7 +52,7 @@
                             content: {}
                         },
                         right: {
-                            type: "type",
+                            type: "text",
                             content: ""
                         }
                     };
@@ -70,7 +70,7 @@
                             content: {}
                         },
                         right: {
-                            type: "type",
+                            type: "text",
                             content: ""
                         }
                     };
