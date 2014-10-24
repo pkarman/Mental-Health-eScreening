@@ -45,6 +45,3 @@ EScreeningDashboardApp.models.TemplateType = function (jsonConfig) {
     };
 
 };
-EScreeningDashboardApp.models.TemplateType.create = function () {
-    return new EScreeningDashboardApp.models.TemplateType();
-};

@@ -38,6 +38,3 @@ EScreeningDashboardApp.models.TemplateTextContent = function (jsonConfig) {
         return "TemplateTextContent [value: " + this.value + "]";
     };
 };
-EScreeningDashboardApp.models.TemplateTextContent.create = function () {
-    return new EScreeningDashboardApp.models.TemplateTextContent();
-};

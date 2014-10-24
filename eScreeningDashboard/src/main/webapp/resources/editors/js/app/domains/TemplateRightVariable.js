@@ -18,16 +18,16 @@ var EScreeningDashboardApp = EScreeningDashboardApp || {};
 EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
 
 /**
- * Constructor method for the TemplateLeftVariable class.  The properties of this class can be initialized with
+ * Constructor method for the TemplateRightVariable class.  The properties of this class can be initialized with
  * the jsonConfig.
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about the user.
- * @param {String}  jsonConfig  Represents the JSON representation of an TemplateLeftVariable object.
+ * @param {String}  jsonConfig  Represents the JSON representation of an TemplateRightVariable object.
  * @constructor
  * @author Tonté Pouncil
  */
-EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
+EScreeningDashboardApp.models.TemplateRightVariable = function (jsonConfig) {
     this.type;
     this.templateContent;
 
@@ -44,6 +44,15 @@ EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
     }
 
     this.toString = function () {
-        return "TemplateLeftVariable [type: " + this.type + ", content: " + this.templateContent + "]";
+        return "TemplateRightVariable [type: " + this.type + ", content: " + this.templateContent + "]";
     };
+};
+EScreeningDashboardApp.models.TemplateRightVariable.create = function (factoryConfig){
+    var templateLeftVariable = new EScreeningDashboardApp.models.TemplateRightVariable(factoryConfig);
+
+    if(factoryConfig.templateContent){
+
+    }
+
+    return templateLeftVariable;
 };

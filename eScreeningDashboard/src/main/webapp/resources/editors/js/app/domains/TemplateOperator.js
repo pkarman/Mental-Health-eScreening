@@ -42,6 +42,3 @@ EScreeningDashboardApp.models.TemplateOperator = function (jsonConfig) {
         return "TemplateOperator [name: " + this.name + ", value: " + this.value + ", category: " + this.category + "]";
     };
 };
-EScreeningDashboardApp.models.TemplateOperator.create = function () {
-    return new EScreeningDashboardApp.models.TemplateOperator();
-};

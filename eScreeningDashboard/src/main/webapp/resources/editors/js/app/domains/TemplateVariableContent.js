@@ -82,6 +82,3 @@ EScreeningDashboardApp.models.TemplateVariableContent = function (jsonConfig) {
             ", transformations: " + this.templateTransformations + "]";
     };
 };
-EScreeningDashboardApp.models.TemplateVariableContent.create = function () {
-    return new EScreeningDashboardApp.models.TemplateVariableContent();
-};

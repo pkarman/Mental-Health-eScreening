@@ -40,6 +40,3 @@ EScreeningDashboardApp.models.TemplateTransformation = function (jsonConfig) {
         return "TemplateTransformation [name: " + this.name + ", params: " + this.params + "]";
     };
 };
-EScreeningDashboardApp.models.TemplateTransformation.create = function (){
-    return new EScreeningDashboardApp.models.TemplateTransformation();
-};

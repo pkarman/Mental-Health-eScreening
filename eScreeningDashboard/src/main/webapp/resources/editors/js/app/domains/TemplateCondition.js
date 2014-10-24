@@ -28,25 +28,22 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
-    this.templateConnector;
+    this.connector;
     this.templateLeftVariable;
     this.templateOperator;
     this.templateRightVariable;
 
     if(Object.isDefined(jsonConfig)) {
-        this.templateConnector = (Object.isDefined(jsonConfig.templateConnector))? jsonConfig.templateConnector: null;
+        this.connector = (Object.isDefined(jsonConfig.connector))? jsonConfig.connector: null;
         this.templateLeftVariable = (Object.isDefined(jsonConfig.templateLeftVariable))? jsonConfig.templateLeftVariable: null;
         this.templateOperator = (Object.isDefined(jsonConfig.templateOperator))? jsonConfig.templateOperator: null;
         this.templateRightVariable = (Object.isDefined(jsonConfig.templateRightVariable))? jsonConfig.templateRightVariable: null;
     }
 
     this.toString = function () {
-        return "TemplateCondition [connector: " + this.templateConnector +
+        return "TemplateCondition [connector: " + this.connector +
             ", left variable: " + this.templateLeftVariable +
             ", operator: " + this.templateOperator +
             ", right operator: " + this.templateOperator + "]";
     };
-};
-EScreeningDashboardApp.models.TemplateCondition.create = function () {
-    return new EScreeningDashboardApp.models.TemplateCondition();
 };
