@@ -10,8 +10,8 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	}
 
 	private String operator;
-	private String left;
-	private String right;
+	private TemplateBaseContent left;
+	private TemplateBaseContent right;
 	
 	private List<TemplateFollowingConditionBlock> conditions;
 	
@@ -23,19 +23,19 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 		this.operator = operator;
 	}
 
-	public String getLeft() {
+	public TemplateBaseContent getLeft() {
 		return left;
 	}
 
-	public void setLeft(String left) {
+	public void setLeft(TemplateBaseContent left) {
 		this.left = left;
 	}
 
-	public String getRight() {
+	public TemplateBaseContent getRight() {
 		return right;
 	}
 
-	public void setRight(String right) {
+	public void setRight(TemplateBaseContent right) {
 		this.right = right;
 	}
 

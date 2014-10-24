@@ -152,12 +152,17 @@ Editors.config(function(RestangularProvider, $provide) {
 					// Setup the editor toolbar
 					// Edit bar logic based upon http://hackerwins.github.io/summernote
 					event.preventDefault();
+
 					editorScope.displayElements.popover.css('width', '100px');
+
 					var container = editorScope.displayElements.popoverContainer;
+
 					container.empty();
 					container.css('line-height', '28px');
+
 					var buttonGroup = angular.element('<div class="btn-group">');
 					var reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
+
 					reLinkButton.on('click', function (event) {
 
 						event.preventDefault();
@@ -165,6 +170,7 @@ Editors.config(function(RestangularProvider, $provide) {
 						var modalInstance = $modal.open({
 							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 							controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
+
 								$scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
 								$scope.assessmentVariable = {
@@ -211,6 +217,7 @@ Editors.config(function(RestangularProvider, $provide) {
 								$scope.$watch('assessmentVariable', function(assessmentVariable) {
 
 									if (assessmentVariable && assessmentVariable.id) {
+
 										$element.text(assessmentVariable.getName());
 
 										$element.attr('attribute-id', assessmentVariable.id);
@@ -231,7 +238,9 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						editorScope.hidePopover();
 					});
+
 					buttonGroup.append(reLinkButton);
+
 					var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
 					// directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
 					unLinkButton.on('click', function (event) {

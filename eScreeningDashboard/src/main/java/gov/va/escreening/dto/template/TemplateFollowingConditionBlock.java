@@ -4,19 +4,19 @@ import java.util.List;
 
 public class TemplateFollowingConditionBlock{
 	
-	private String left;
+	private TemplateBaseContent left;
 
 	private String operator;
 
-	private String right;
+	private TemplateBaseContent right;
 
 	private List<TemplateFollowingConditionBlock> conditions;
 
-	public String getLeft() {
+	public TemplateBaseContent getLeft() {
 		return left;
 	}
 
-	public void setLeft(String left) {
+	public void setLeft(TemplateBaseContent left) {
 		this.left = left;
 	}
 
@@ -28,11 +28,11 @@ public class TemplateFollowingConditionBlock{
 		this.operator = operator;
 	}
 
-	public String getRight() {
+	public TemplateBaseContent getRight() {
 		return right;
 	}
 
-	public void setRight(String right) {
+	public void setRight(TemplateBaseContent right) {
 		this.right = right;
 	}
 
