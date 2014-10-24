@@ -70,7 +70,7 @@
                             content: {}
                         },
                         right: {
-                            type: "text",
+                            type: "type",
                             content: ""
                         }
                     };
@@ -86,7 +86,7 @@
                             content: {}
                         },
                         right: {
-                            type: "text",
+                            type: "type",
                             content: ""
                         },
                         conditions: []
@@ -104,7 +104,7 @@
                             content: {}
                         },
                         right: {
-                            type: "text",
+                            type: "type",
                             content: ""
                         },
                         conditions: []

@@ -251,7 +251,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                             content: {}
                         },
                         right: {
-                            text: "var",
+                            type: "var",
                             content: ""
                         }
                     };
