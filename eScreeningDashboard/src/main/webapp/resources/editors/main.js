@@ -69,7 +69,7 @@ Editors.config(function(RestangularProvider, $provide) {
 		taRegisterTool('addVariable', {
 			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
 			tooltiptext: 'Insert / edit assessment variable',
-			action: function() {
+			action: function(deferred) {
 
 				var addVariableTool = this;
 
@@ -127,7 +127,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 		                        embed = '<code class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + assessmentVariable.getName() + ')</code>&nbsp;';
 
-		                        addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
+		                        deferred.resolve(addVariableTool.$editor().wrapSelection('insertHTML', embed, true));
 
 		                        $modalInstance.close();
 	                        }
@@ -140,6 +140,8 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					}]
 				});
+
+				return false;
 
 			},
 			activeState: function(commonElement){
