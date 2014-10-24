@@ -13,21 +13,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 	})
 public abstract class TemplateBaseContent {
 	
-	private String type;
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
 	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right)
 	{
 		
 		
-		if (inLeft.getType().equals("text"))
+		if (inLeft instanceof TemplateTextContent)
 		{
 			return ((TemplateTextContent)inLeft).getContent();
 		}

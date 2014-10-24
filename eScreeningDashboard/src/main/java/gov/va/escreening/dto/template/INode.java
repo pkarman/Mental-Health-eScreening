@@ -15,10 +15,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public interface INode {
 	
-	public void setType(String type);
-	
-	public String getType();
-	
 	public String toFreeMarkerFormat();
 
 }

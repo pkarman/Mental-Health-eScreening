@@ -2,11 +2,6 @@ package gov.va.escreening.dto.template;
 
 public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 	
-	public TemplateElseBlockDTO()
-	{
-		setType("else");
-	}
-
 	@Override
 	public String toFreeMarkerFormat()
 	{

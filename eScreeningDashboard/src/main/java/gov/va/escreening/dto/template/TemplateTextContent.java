@@ -4,11 +4,6 @@ public class TemplateTextContent extends TemplateBaseContent{
 	
 	private String content;
 	
-	public TemplateTextContent()
-	{
-		setType("text");
-	}
-
 	public String getContent() {
 		return content;
 	}

@@ -4,11 +4,6 @@ import java.util.List;
 
 public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	
-	public TemplateIfBlockDTO()
-	{
-		setType("if");
-	}
-
 	private String operator;
 	private TemplateBaseContent left;
 	private TemplateBaseContent right;

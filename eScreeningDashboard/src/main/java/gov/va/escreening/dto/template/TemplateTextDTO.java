@@ -9,10 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class TemplateTextDTO extends TemplateBaseBlockDTO {
 	private List<TemplateBaseContent> contents;
 
-	public TemplateTextDTO() {
-		setType("text");
-	}
-
 	public List<TemplateBaseContent> getContents() {
 		return contents;
 	}

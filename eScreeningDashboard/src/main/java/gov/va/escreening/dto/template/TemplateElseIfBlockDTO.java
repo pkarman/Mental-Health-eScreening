@@ -2,10 +2,6 @@ package gov.va.escreening.dto.template;
 
 public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 
-	public TemplateElseIfBlockDTO() {
-		setType("elsif");
-	}
-
 	@Override
 	public String toFreeMarkerFormat() {
 
