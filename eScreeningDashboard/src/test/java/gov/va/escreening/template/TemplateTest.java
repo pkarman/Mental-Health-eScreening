@@ -36,7 +36,7 @@ public class TemplateTest {
 	{
 		ObjectMapper om = new ObjectMapper();
 		
-		TemplateIfBlockDTO ifBlock = new TemplateIfBlockDTO();
+	/*	TemplateIfBlockDTO ifBlock = new TemplateIfBlockDTO();
 		
 		TemplateTextContent ttc = new TemplateTextContent();
 		ttc.setContent("testVar1");
@@ -85,7 +85,7 @@ public class TemplateTest {
 		
 		ifBlock = om.readValue(jSonStr, TemplateIfBlockDTO.class);
 		
-		System.out.println("freeMarker:"+ifBlock.toFreeMarkerFormat());
+		System.out.println("freeMarker:"+ifBlock.toFreeMarkerFormat());*/
 		
 		TemplateFileDTO fileDTO = new TemplateFileDTO();
 		
@@ -93,8 +93,38 @@ public class TemplateTest {
 		
 		fileDTO.setId(40);;
 		fileDTO.setIsGraphical(template.getIsGraphical());
+
 		fileDTO.setBlocks(new ArrayList<INode>());
-		fileDTO.getBlocks().add(ifBlock);
+		
+		TemplateTextDTO text1 = new TemplateTextDTO();
+		text1.setName("Depression Screening");
+		text1.setSection("1.");
+		TemplateTextContent textC1 = new TemplateTextContent();
+		textC1.setContent("1. Little interest or pleasure in doing things");
+		text1.setContents(new ArrayList<TemplateBaseContent>());
+		text1.getContents().add(textC1);
+		fileDTO.getBlocks().add(text1);
+		
+		
+		text1 = new TemplateTextDTO();
+		text1.setName(null);
+		text1.setSection("2.");
+		textC1 = new TemplateTextContent();
+		textC1.setContent("2. Feeling down, depressed, or hopeless");
+		text1.setContents(new ArrayList<TemplateBaseContent>());
+		text1.getContents().add(textC1);
+		fileDTO.getBlocks().add(text1);
+		
+		text1 = new TemplateTextDTO();
+		text1.setName(null);
+		text1.setSection("3.");
+		textC1 = new TemplateTextContent();
+		textC1.setContent("3. Trouble falling or staying asleep, or sleeping too much");
+		text1.setContents(new ArrayList<TemplateBaseContent>());
+		text1.getContents().add(textC1);
+		fileDTO.getBlocks().add(text1);
+		
+		
 		TemplateTypeDTO typeDTO = new TemplateTypeDTO();
 		typeDTO.setId(template.getTemplateType().getTemplateTypeId());
 		typeDTO.setTemplateId(40);
@@ -102,6 +132,8 @@ public class TemplateTest {
 		fileDTO.setType(typeDTO);
 		
 		System.out.println(om.writeValueAsString(fileDTO));
+		for(int i=0; i<3; i++)
+		System.out.println(fileDTO.getBlocks().get(i).toFreeMarkerFormat());
 	}
 	
 	

@@ -49,6 +49,13 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	{
 		StringBuffer sb = new StringBuffer();
 		
+		if (this.getName()!=null)
+			sb.append("<#-- NAME:"+this.getName()+"-->\n");
+		if (this.getSection()!=null)
+			sb.append("<#-- SECTION:"+getSection()+" -->\n");
+		if (this.getSummary()!=null)
+			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
+		
 		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right)).append(")");
 		
 		if (conditions != null && conditions.size() > 0)
