@@ -78,7 +78,7 @@ Editors.config(function(RestangularProvider, $provide) {
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
-                        $scope.assessmentVariables = AssessmentVariableService.getCachedResults({surveyId: 26});
+                        $scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
                         $scope.assessmentVariable = {
                             id: null,
@@ -188,7 +188,7 @@ Editors.config(function(RestangularProvider, $provide) {
 							templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 							controller: ['$scope', '$controller', '$modalInstance', 'AssessmentVariableService', function($scope, $controller, $modalInstance, AssessmentVariableService) {
 
-								$scope.assessmentVariables = AssessmentVariableService.getCachedResults({surveyId: 26});
+								$scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
 								// TODO get the assessment variable out of the selected item
                                 $scope.assessmentVariable = {};

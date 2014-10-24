@@ -25,22 +25,23 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             /**
              * Will retrieve the list of assessment variables given the query parameter.
              */
-	        cachedResults: [],
+            cachedResults: [],
+	        cachedHashResults: [],
             query: function (queryParams, useQueryCache) {
                 var results = [];
                 useQueryCache = (Object.isBoolean(useQueryCache))? useQueryCache: false;
 
                 if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
                     if(useQueryCache) {
-                        if(Object.isDefined(this.cachedResults[queryParams])){
-                            results = this.cachedResults[queryParams];
+                        if(Object.isDefined(this.cachedHashResults[queryParams])){
+                            results = this.cachedHashResults[queryParams];
                         } else {
-                            this.cachedResults[queryParams] = service.getList(queryParams);
-                            results = this.cachedResults[queryParams];
+                            this.cachedResults.push(this.cachedHashResults[queryParams] = service.getList(queryParams));
+                            results = this.cachedHashResults[queryParams];
                         }
                     } else {
-                        this.cachedResults[queryParams] = service.getList(queryParams);
-                        results = this.cachedResults[queryParams];
+                        this.cachedResults.push(this.cachedHashResults[queryParams] = service.getList(queryParams));
+                        results = this.cachedHashResults[queryParams];
                     }
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
@@ -49,9 +50,13 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
                 return results;
             },
             getCachedResults: function(queryParams) {
-                return this.cachedResults[queryParams];
+                return this.cachedHashResults[queryParams];
+            },
+            getLastCachedResults: function(){
+                return this.cachedResults[this.cachedResults.length - 1];
             },
             clearCachedResults: function () {
+                this.cachedHashResults = [];
                 this.cachedResults = [];
             }
         }
