@@ -70,7 +70,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
     $scope.removeBlock = function (blockScope) {
         var block = blockScope.$modelValue;
-        console.log("removing block: " + block.title);
+        console.log("removing block: " + block.name);
         blockScope.remove();
         $scope.templateChanged();
         
@@ -78,7 +78,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
     $scope.editBlock = function (blockScope) {
         var block = blockScope.$modelValue;
-        console.log("edit block: " + block.title);
+        console.log("edit block: " + block.name);
         $scope.templateChanged();
     };
 
@@ -261,7 +261,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.close = function() {
 
 				    transformTextContent($scope.block);
-				    generateSummary($scope.block);
+				    autoGenerateFields($scope.block);
 				    
 					if (selectedBlock) {
 						selectedBlock = $scope.block;
@@ -311,21 +311,33 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                              content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
                 }
 				
-				function generateSummary(block){
+				function autoGenerateFields(block){
 				    if(!Object.isDefined(block))
                         return;
 				    
 				    if(block.type == "text"){
 				        block.summary = "";
+				        block.name = Object.isDefined(block.name) ? block.name :"";
+				        var setTitle = block.name.trim() == "";
 				        
-				        for(var i=0; i< block.contents.length && block.summary.length < 50; i++){
+				        for(var i=0; ((setTitle && block.name < 10) || block.summary.length < 50) 
+				                    &&  i< block.contents.length; i++){
 				            var blockContent = block.contents[i];
 				            if(blockContent.type == "text"){
 				                block.summary += blockContent.content;
 				                
+				                if(setTitle && block.name.length < 10){
+				                    var neededChars = 10 - block.name.length; 
+				                    block.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
+				                }
 				            }
 				            if(blockContent.type == "var"){
-				                block.summary += blockContent.content.getName();
+				                var varName = blockContent.content.getName();
+				                block.summary += varName;
+				                
+				                if(setTitle && block.name.length < 10){
+                                    block.name += varName;
+                                }
 				            }
 				        }
 				    }
@@ -334,6 +346,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                         block.children.forEach(function(block){ transformTextContent(block); });
                     }
 				}
+				
 			}
 		});
 	};
