@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.template;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 			@Type(value = TemplateElseBlockDTO.class, name = "else")
 			})
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface INode {
 	
 	public String toFreeMarkerFormat();

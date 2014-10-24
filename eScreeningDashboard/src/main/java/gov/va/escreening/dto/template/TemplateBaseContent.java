@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.template;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 @JsonSubTypes({ @Type(value = TemplateTextContent.class, name = "text"), 
 	@Type(value = TemplateVariableContent.class, name = "var")
 	})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
 	
 	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right)

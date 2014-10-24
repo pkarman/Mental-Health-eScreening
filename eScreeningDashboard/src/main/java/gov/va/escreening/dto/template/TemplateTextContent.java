@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTextContent extends TemplateBaseContent{
 	
 	private String content;

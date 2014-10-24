@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 	
 	@Override

@@ -2,6 +2,9 @@ package gov.va.escreening.dto.template;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	
 	private String operator;
