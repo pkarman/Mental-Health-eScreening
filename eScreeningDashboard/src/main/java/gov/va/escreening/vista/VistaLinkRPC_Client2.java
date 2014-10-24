@@ -560,7 +560,9 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 					params.add(locationParam);
 					params.add(painScale);
 
-					return params;
+					List<Object> rpcParams =new ArrayList<>(1);
+					rpcParams.add(params);
+					return rpcParams;
 				}
 
 				@Override
@@ -575,8 +577,12 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 				String result = rpcInvolker.invokeRpc(getConnection(),
 						getRequest(), "ORQQVI2 VITALS VAL & STORE");
 				logger.info("Save vitals result= " + result);
-				if (!result.equals("1")) {
+				if (!result.trim().equals("1")) {
 					logger.error("Save vitals failed");
+				}
+				else
+				{
+					return true; //success
 				}
 			} catch (VistaLinkClientException ex) {
 				logger.warn("Exception occurred during save vitals", ex);
