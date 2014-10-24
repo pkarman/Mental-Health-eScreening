@@ -125,7 +125,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 	                        if (assessmentVariable && assessmentVariable.id) {
 
-		                        embed = '"<code class="ta-insert-variable">&#160;&#160;&#160;&#160; (Clinician assigned to the eScreening)</code> <code class="ta-insert-variable">(2-3 times per week answer)</code> <code class="ta-insert-variable">(2-4 times per month answer)</code> <br/><p>ddddddddddddddddddddd&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p>"';
+		                        embed = '<code class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + assessmentVariable.getName() + ')</code>&nbsp;';
 
 		                        addVariableTool.$editor().wrapSelection('insertHTML', embed, true);
 

@@ -261,6 +261,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.close = function() {
 
 				    transformTextContent($scope.block);
+				    generateSummary($scope.block);
 				    
 					if (selectedBlock) {
 						selectedBlock = $scope.block;
@@ -272,6 +273,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 					$modalInstance.close();
 				};
 				
+				
+				//TODO: This should be moved into the correct domain object
 				function transformTextContent(block){
 				    if(!Object.isDefined(block))
 				        return;
@@ -305,8 +308,32 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				function createVarContent(variable){
 				    
                     return { type: "var",
-                             content: variable};
+                             content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
                 }
+				
+				function generateSummary(block){
+				    if(!Object.isDefined(block))
+                        return;
+				    
+				    if(block.type == "text"){
+				        block.summary = "";
+				        
+				        for(var i=0; i< block.contents.length && block.summary.length < 50; i++){
+				            var blockContent = block.contents[i];
+				            if(blockContent.type == "text"){
+				                block.summary += blockContent.content;
+				                
+				            }
+				            if(blockContent.type == "var"){
+				                block.summary += blockContent.content.getName();
+				            }
+				        }
+				    }
+				    
+				    if(Object.isDefined(block.children)){
+                        block.children.forEach(function(block){ transformTextContent(block); });
+                    }
+				}
 			}
 		});
 	};
