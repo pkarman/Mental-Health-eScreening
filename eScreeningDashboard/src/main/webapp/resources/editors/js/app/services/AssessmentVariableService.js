@@ -4,7 +4,7 @@
  * @author Tonté Pouncil
  */
 angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangular'])
-    .factory('AssessmentVariableService', ['Restangular', 'AssessmentVariableInfo', function (Restangular, AssessmentVariableInfo){
+    .factory('AssessmentVariableService', ['Restangular', 'TemplateVariableContent', function (Restangular, TemplateVariableContent){
         "use strict";
 
         var restAngular = Restangular.withConfig(function(Configurer) {
@@ -14,7 +14,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             service = restAngular.service("services/assessmentVariables");
 
         restAngular.extendModel("services/assessmentVariables", function(model) {
-            model = angular.extend(model, AssessmentVariableInfo);
+            model = angular.extend(model, TemplateVariableContent);
             model.setType();
             return model;
         });
