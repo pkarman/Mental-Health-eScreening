@@ -49,12 +49,11 @@
                         connector: "and",
                         left: {
                             type: "var",
-                            content: {
-
-                            }
+                            content: {}
                         },
                         right: {
-                            type: "text"
+                            type: "text",
+                            content: ""
                         }
                     };
 
@@ -68,12 +67,11 @@
                         connector: "or",
                         left: {
                             type: "var",
-                            content: {
-
-                            }
+                            content: {}
                         },
                         right: {
-                            type: "text"
+                            type: "text",
+                            content: ""
                         }
                     };
                     if(selectedCondition.children) {
