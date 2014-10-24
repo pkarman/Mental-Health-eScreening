@@ -60,7 +60,7 @@
 	                { name: 'Has No Result',   value: 'nresult', category: 'formula' },
 
 	                { name: 'Response is',     value: 'response',  category: 'select' },
-	                { name: 'Response isn\t',  value: 'nresponse', category: 'select' }
+	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
 
                 scope.addBlock = function(selectedBlock) {
