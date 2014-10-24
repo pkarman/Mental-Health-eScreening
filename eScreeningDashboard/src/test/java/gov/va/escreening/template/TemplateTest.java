@@ -6,10 +6,14 @@ import javax.annotation.Resource;
 
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
+import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
+import gov.va.escreening.dto.template.TemplateBaseContent;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.dto.template.TemplateFollowingConditionBlock;
 import gov.va.escreening.dto.template.TemplateIfBlockDTO;
+import gov.va.escreening.dto.template.TemplateTextContent;
 import gov.va.escreening.dto.template.TemplateTextDTO;
+import gov.va.escreening.dto.template.TemplateVariableContent;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.repository.TemplateRepository;
 
@@ -34,8 +38,14 @@ public class TemplateTest {
 		
 		TemplateIfBlockDTO ifBlock = new TemplateIfBlockDTO();
 		
-		ifBlock.setLeft("testVar1");
-		ifBlock.setRight("testVar2");
+		TemplateTextContent ttc = new TemplateTextContent();
+		ttc.setContent("testVar1");
+		
+		TemplateTextContent ttc1 = new TemplateTextContent();
+		ttc.setContent("testVar2");
+		
+		ifBlock.setLeft(ttc);
+		ifBlock.setRight(ttc1);
 		ifBlock.setOperator("eq");
 		
 		ifBlock.setChildren(new ArrayList<INode>());
@@ -44,12 +54,21 @@ public class TemplateTest {
 		
 		
 		TemplateTextDTO text = new TemplateTextDTO();
-		text.setContent("Here comes test 1");
+		TemplateTextContent textC = new TemplateTextContent();
+		textC.setContent("Here comes test 1");
+		text.setContents(new ArrayList<TemplateBaseContent>());
+		text.getContents().add(textC);
 		
 		ifBlock.getChildren().add(text);
 		
 		TemplateFollowingConditionBlock tfcb = new TemplateFollowingConditionBlock();
-		tfcb.setLeft("testVar1");
+		TemplateVariableContent left = new TemplateVariableContent();
+		TemplateAssessmentVariableDTO assessmentVar = new TemplateAssessmentVariableDTO();
+		assessmentVar.setId(999);
+		assessmentVar.setMeasureTypeId(3);
+		assessmentVar.setTypeId(3);
+		left.setContent(assessmentVar);
+		tfcb.setLeft(left);
 		tfcb.setOperator("result");
 		tfcb.setConnector("AND");
 		
@@ -83,8 +102,6 @@ public class TemplateTest {
 		fileDTO.setType(typeDTO);
 		
 		System.out.println(om.writeValueAsString(fileDTO));
-	
-		
 	}
 	
 	

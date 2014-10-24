@@ -16,34 +16,29 @@ public class FormulaUtil {
 		return sb.toString();
 	}*/
 	
-	public static String createFormula(String operator, String left,
-			String right) {
+	public static String createFormula(String operand, TemplateBaseContent left,
+			TemplateBaseContent right) {
 		
-		switch (operator) {
+		switch (operand) {
 		case "eq":
-			return left + " = " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " = " + TemplateBaseContent.translate(null, right, null);
 		case "neq":
-			return left + " != " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " != " + TemplateBaseContent.translate(null, right, null);
 		case "gt":
-			return left + " > " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " > " + TemplateBaseContent.translate(null, right, null);
 		case "lt":
-			return left + " < " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " < " + TemplateBaseContent.translate(null, right, null);
 		case "gte":
-			return left + " >= " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " >= " + TemplateBaseContent.translate(null, right, null);
 		case "lte":
-			return left + " <= " + right;
+			return TemplateBaseContent.translate(operand, left, right) + " <= " + TemplateBaseContent.translate(null, right, null);
 		case "answered":
-			return left + "??";
 		case "nanswered":
-			return "!" + left + "??";
 		case "result":
-			return "hasValue(" + left + ")";
 		case "nresult":
-			return "!hasValue(" + left + ")";
 		case "response":
-			return "";
 		case "nresponse":
-			return "";
+			return TemplateBaseContent.translate(operand, left, right);
 		default:
 			return "";
 		}
