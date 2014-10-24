@@ -257,8 +257,10 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
 					$modalInstance.close();
 				};
 			}
-    
-    //if we have lost state redirect
+		});
+	};
+
+	//if we have lost state redirect
     if(!Object.isDefined(template) 
             || !Object.isDefined(template.type)){
         console.log("There is no currently selected template type.");
@@ -271,8 +273,4 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
             $scope.done();
         }
     }
-
-		});
-	};
-
 }]);
