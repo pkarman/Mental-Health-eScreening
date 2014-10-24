@@ -205,7 +205,7 @@ Editors.controller('templateEditorController', ['$scope', '$state', '$stateParam
                 
                 log("Allowed to drop here");
                 return true;
-            },
+            }
     };
 
     //this could use $watch but this might be overkill for large templates since there are
