@@ -2,35 +2,30 @@ package gov.va.escreening.dto.template;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateBaseBlockDTO implements INode{
 	private String summary;
-	private String title;
+	private String name;
 	private String section;
-	private String type;
 	private List<INode> children;
 	
 	
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setName(String title) {
+		this.name = title;
 	}
 	public String getSection() {
 		return section;
 	}
 	public void setSection(String section) {
 		this.section = section;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
 	}
 	
 	public List<INode> getChildren() {

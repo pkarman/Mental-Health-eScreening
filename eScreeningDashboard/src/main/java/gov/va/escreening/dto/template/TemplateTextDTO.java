@@ -2,16 +2,14 @@ package gov.va.escreening.dto.template;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTextDTO extends TemplateBaseBlockDTO {
 	private List<TemplateBaseContent> contents;
-
-	public TemplateTextDTO() {
-		setType("text");
-	}
 
 	public List<TemplateBaseContent> getContents() {
 		return contents;
@@ -23,6 +21,12 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 
 	public String toFreeMarkerFormat() {
 		StringBuffer sb = new StringBuffer();
+		if (this.getName()!=null)
+			sb.append("<#-- NAME:"+this.getName()+"-->\n");
+		if (this.getSection()!=null)
+			sb.append("<#-- SECTION:"+getSection()+" -->\n");
+		if (this.getSummary()!=null)
+			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
 
 		for (TemplateBaseContent content : contents) {
 			if(content instanceof TemplateTextContent)

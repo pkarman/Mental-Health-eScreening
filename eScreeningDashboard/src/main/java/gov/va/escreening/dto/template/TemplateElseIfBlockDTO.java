@@ -1,10 +1,9 @@
 package gov.va.escreening.dto.template;
 
-public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-	public TemplateElseIfBlockDTO() {
-		setType("elsif");
-	}
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 
 	@Override
 	public String toFreeMarkerFormat() {

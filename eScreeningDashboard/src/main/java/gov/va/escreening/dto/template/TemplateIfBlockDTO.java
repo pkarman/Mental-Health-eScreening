@@ -2,13 +2,11 @@ package gov.va.escreening.dto.template;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	
-	public TemplateIfBlockDTO()
-	{
-		setType("if");
-	}
-
 	private String operator;
 	private TemplateBaseContent left;
 	private TemplateBaseContent right;
@@ -53,6 +51,13 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	public String toFreeMarkerFormat()
 	{
 		StringBuffer sb = new StringBuffer();
+		
+		if (this.getName()!=null)
+			sb.append("<#-- NAME:"+this.getName()+"-->\n");
+		if (this.getSection()!=null)
+			sb.append("<#-- SECTION:"+getSection()+" -->\n");
+		if (this.getSummary()!=null)
+			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
 		
 		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right)).append(")");
 		
