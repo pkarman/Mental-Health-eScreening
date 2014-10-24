@@ -244,9 +244,13 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 			controller: function($scope, $modalInstance, template) {
 
 				$scope.templateName = template.name;
+                $scope.createTemplateBlock = function () {
+                    var factoryConfig = {left:{content: {}}};
+                    return new EScreeningDashboardApp.models.TemplateBlock(factoryConfig);
+                };
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock) ? angular.copy(selectedBlock) : {};
+				$scope.block = (selectedBlock) ? angular.copy(selectedBlock) : $scope.createTemplateBlock();
 
 				// Dismiss modal
 				$scope.cancel = function() {

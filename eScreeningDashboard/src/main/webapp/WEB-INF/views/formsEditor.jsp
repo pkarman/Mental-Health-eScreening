@@ -56,7 +56,6 @@
 
     <!-- Domain Object -->
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/AssessmentVariableInfo.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageUIObjectItemWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageTransformer.js"></script>
@@ -67,7 +66,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySection.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionsTransformer.js"></script>
-
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Question.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionUIObjectItemWrapper.js"></script>
@@ -94,8 +92,17 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
 	
 	<!-- Template Domain -->
-	<script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
+
 	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateBlock.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateCondition.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateOperator.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTextContent.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
