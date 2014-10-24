@@ -10,7 +10,6 @@ public class TemplateBaseBlockDTO implements INode{
 	private String summary;
 	private String title;
 	private String section;
-	private String type;
 	private List<INode> children;
 	
 	
@@ -25,12 +24,6 @@ public class TemplateBaseBlockDTO implements INode{
 	}
 	public void setSection(String section) {
 		this.section = section;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
 	}
 	
 	public List<INode> getChildren() {

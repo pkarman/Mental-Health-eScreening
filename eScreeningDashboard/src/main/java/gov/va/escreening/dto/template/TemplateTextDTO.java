@@ -19,6 +19,12 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 
 	public String toFreeMarkerFormat() {
 		StringBuffer sb = new StringBuffer();
+		if (this.getTitle()!=null)
+			sb.append("<#-- TITLE:"+this.getTitle()+"-->\n");
+		if (this.getSection()!=null)
+			sb.append("<#-- SECTION:"+getSection()+" -->\n");
+		if (this.getSummary()!=null)
+			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
 
 		for (TemplateBaseContent content : contents) {
 			if(content instanceof TemplateTextContent)
