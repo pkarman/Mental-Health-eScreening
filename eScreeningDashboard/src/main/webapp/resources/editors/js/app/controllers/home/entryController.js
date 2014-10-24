@@ -6,9 +6,22 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
 
     $rootScope.messageHandler = MessageHandler;
 
+    
     $rootScope.addMessage = function(message) {
         if(Object.isDefined(message)) {
             $rootScope.messageHandler.addMessage(message);
+        }
+    };
+    
+    /**
+     * Adds a message which will stay around for the next state.
+     * Needed if you want to:
+     *  - pass a message to another state because the action both makes a change and also transitions state
+     *  - you want to set a message when a controller is being initialized
+     */
+    $rootScope.addInterstateMessage = function(message) {
+        if(Object.isDefined(message)) {
+            $rootScope.messageHandler.addMessage(message, null, 1);
         }
     };
 
@@ -94,4 +107,14 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         $rootScope.messageHandler.clearMessages();
     });
+    
+    //some error logging to reduce the amount of hair I pull out of my head :)
+    $rootScope.$on('$stateChangeError', 
+        function(event, toState, toParams, fromState, fromParams, error){
+            console.log("Error transitioning from " + JSON.stringify(fromState) 
+                    + "\n to state: " + JSON.stringify(toState)
+                    + "\n with error: " + JSON.stringify(error));
+        });
+    
+    
 }]);

@@ -88,7 +88,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	@Resource(name="veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
 	
-	private static final String FILE_ENCODING = "UTF-8";
+	static final String FILE_ENCODING = "UTF-8";
 	private static final Logger logger = LoggerFactory.getLogger(TemplateProcessorServiceImpl.class);
 	
 	private static final Pattern freemarkerTags = Pattern.compile("\\s*(</*#[\\p{Graph}\\p{Space}&&[^>]]+>)\\s*");
@@ -102,7 +102,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	// may be modified so we will not worry about caching.
 	private Configuration freemarkerConfiguration = null;
 
-	private synchronized Configuration getFreemarkerConfiguration() throws IOException {
+	synchronized Configuration getFreemarkerConfiguration() throws IOException {
 		if (freemarkerConfiguration == null)
 			freemarkerConfiguration = initializeFreemarkerConfig();
 		return freemarkerConfiguration;
@@ -358,7 +358,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			.toAdmin(technicalMessage).throwIt();
 	}
 
-	private String processTemplate(String templateText,
+	String processTemplate(String templateText,
 			List<AssessmentVariableDto> assessmentVariables, int templateId) throws IOException, TemplateException {
 
 		// populate the root object which holds all beans to be merged with the

@@ -2,6 +2,13 @@
  * Created by pouncilt on 8/4/14.
  */
 Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state', 'SurveyService', 'QuestionService', 'SurveyPageService', 'pageQuestionItems', 'surveySectionDropDownMenuOptions', function($rootScope, $scope, $state, SurveyService, QuestionService, SurveyPageService, pageQuestionItems, surveySectionDropDownMenuOptions){
+    
+    
+    if(!Object.isDefined($rootScope.messageHandler)){
+        console.log("rootScope has been reset. Redirecting to Editors page.")
+        $state.go("home");
+    }
+    
     var tmpList = [],
         getSurveyUIObject = function () {
             var selectedSurveyUIObject = null;
@@ -95,8 +102,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             }
 
             return selectedMenuOptionIndex;
-        },
-        surveyUIObject = getSurveyUIObject();
+        };
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
@@ -104,8 +110,12 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     };
 
 
-    $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
-
+    //initialize selected survey object if needed
+    if(! Object.isDefined($scope.selectedSurveyUIObject)){
+        var surveyUIObject = getSurveyUIObject()
+        $scope.setSelectedSurveyUIObject((Object.isDefined(surveyUIObject)) ? surveyUIObject: $scope.createModule().toUIObject());
+    }
+    
     if (Object.isArray(pageQuestionItems) && pageQuestionItems.length > 0) {
         $scope.setPageQuestionItems(pageQuestionItems);
     } else {
@@ -305,4 +315,5 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             //$scope.sortingLog.push('Stop: ' + logEntry);
         }
     };
+    
 }]);

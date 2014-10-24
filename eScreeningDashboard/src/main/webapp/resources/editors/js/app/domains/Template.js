@@ -78,7 +78,24 @@ EScreeningDashboardApp.models.Template = function (templateType) {
         var deferred = $q.defer();
         deferred.reject(userMsg);
         return deferred.promise;
-    }
+    };
+    
+    /**
+     * Updates the section numbering of all blocks
+     */
+    this.updateSections = function(){
+        
+        function updateSection(children, parentSection){
+            if(Object.isDefined(children)){
+                for (var i = 0; i < children.length; i++){
+                    var sectionIndex = i + 1;
+                    children[i].section = parentSection == "" ? parentSection + sectionIndex : parentSection + "." + sectionIndex;
+                    updateSection(children[i].children, children[i].section);
+                }
+            }
+        }
+        return updateSection(this.blocks, "");
+    };
     
     this.toString = function () {
         return "Template {id: " + this.id + ", type: " + this.type + ", isGraphical: " + this.isGraphical + ", with " + blocks.length + " blocks.}";
