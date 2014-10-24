@@ -259,8 +259,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 };
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock) ? angular.copy(selectedBlock) : $scope.createTemplateBlock();
-
+				$scope.block = (selectedBlock) ? angular.copy(selectedBlock.$modelValue) : $scope.createTemplateBlock();
+				sentTextContent($scope.block);
+				
+				
 				// Dismiss modal
 				$scope.cancel = function() {
 					$modalInstance.dismiss('cancel');
@@ -354,6 +356,24 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				    if(Object.isDefined(block.children)){
                         block.children.forEach(function(block){ transformTextContent(block); });
                     }
+				}
+				
+				function sentTextContent(block){
+				    block.content = "";
+				    
+				    if(block.contents){    
+				        block.contents.forEach(function(content){
+				            if(content.type == "text"){
+				                //horrible naming.. sorry no time
+				                block.content += content.content;
+				            }
+				            if(content.type == "var"){
+				                var varObj = new EScreeningDashboardApp.models.TemplateVariableContent(content.content);
+				                
+				                block.content += '<code class="ta-insert-variable" variable-id="' + varObj.id + '">(' + varObj.getName() + ')</code>&nbsp;';
+				            }
+				        })
+				    }
 				}
 				
 			}

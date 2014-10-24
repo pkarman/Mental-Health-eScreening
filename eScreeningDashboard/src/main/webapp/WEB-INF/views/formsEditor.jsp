@@ -30,7 +30,6 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js'></script>
     <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
@@ -108,6 +107,7 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular-sanitize.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
