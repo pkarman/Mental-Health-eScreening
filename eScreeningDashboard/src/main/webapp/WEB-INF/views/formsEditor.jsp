@@ -164,7 +164,7 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
 
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>
