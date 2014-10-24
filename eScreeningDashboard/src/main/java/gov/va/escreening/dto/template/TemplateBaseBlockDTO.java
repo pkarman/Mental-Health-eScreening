@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 public class TemplateBaseBlockDTO implements INode{
+	private String summary;
 	private String title;
 	private String section;
 	private String type;
@@ -38,6 +39,13 @@ public class TemplateBaseBlockDTO implements INode{
 
 	public void setChildren(List<INode> childrens) {
 		this.children = childrens;
+	}
+	
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 	
 	@Override

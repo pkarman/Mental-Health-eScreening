@@ -9,6 +9,7 @@ import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.dto.template.TemplateFollowingConditionBlock;
 import gov.va.escreening.dto.template.TemplateIfBlockDTO;
+import gov.va.escreening.dto.template.TemplateTextContent;
 import gov.va.escreening.dto.template.TemplateTextDTO;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.repository.TemplateRepository;
@@ -34,8 +35,14 @@ public class TemplateTest {
 		
 		TemplateIfBlockDTO ifBlock = new TemplateIfBlockDTO();
 		
-		ifBlock.setLeft("testVar1");
-		ifBlock.setRight("testVar2");
+		TemplateTextContent ttc = new TemplateTextContent();
+		ttc.setContent("testVar1");
+		
+		TemplateTextContent ttc1 = new TemplateTextContent();
+		ttc.setContent("testVar2");
+		
+		ifBlock.setLeft(ttc);
+		ifBlock.setRight(ttc1);
 		ifBlock.setOperator("eq");
 		
 		ifBlock.setChildren(new ArrayList<INode>());
@@ -44,12 +51,12 @@ public class TemplateTest {
 		
 		
 		TemplateTextDTO text = new TemplateTextDTO();
-		text.setContent("Here comes test 1");
+		//text.setContent("Here comes test 1");
 		
 		ifBlock.getChildren().add(text);
 		
 		TemplateFollowingConditionBlock tfcb = new TemplateFollowingConditionBlock();
-		tfcb.setLeft("testVar1");
+		//tfcb.setLeft("testVar1");
 		tfcb.setOperator("result");
 		tfcb.setConnector("AND");
 		
@@ -83,8 +90,6 @@ public class TemplateTest {
 		fileDTO.setType(typeDTO);
 		
 		System.out.println(om.writeValueAsString(fileDTO));
-	
-		
 	}
 	
 	

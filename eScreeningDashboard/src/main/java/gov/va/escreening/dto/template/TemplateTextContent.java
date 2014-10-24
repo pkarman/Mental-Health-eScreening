@@ -1,13 +1,10 @@
 package gov.va.escreening.dto.template;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
-public class TemplateTextDTO extends TemplateBaseBlockDTO{
+public class TemplateTextContent extends TemplateBaseContent{
+	
 	private String content;
 	
-	public TemplateTextDTO()
+	public TemplateTextContent()
 	{
 		setType("text");
 	}
@@ -20,7 +17,7 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO{
 		this.content = content;
 	}
 	
-	public String toFreeMarkerFormat()
+	public String toFreeMarkerString()
 	{
 		return content.replace("<br/>", "${LINE_BREAK}").replace("&nbsp;", "${NBSP}");
 	}
