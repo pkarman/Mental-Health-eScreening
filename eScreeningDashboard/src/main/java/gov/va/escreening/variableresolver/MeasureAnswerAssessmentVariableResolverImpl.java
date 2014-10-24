@@ -291,8 +291,19 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 	@Override
 	public String resolveCalculationValue(AssessmentVariable answerVariable,
 			Pair<gov.va.escreening.entity.Measure, Measure> answer) {
-		
-		String resolvedValue = 
+		MeasureAnswer measureAnswer = answerVariable.getMeasureAnswer();
+		  
+		  String answerValue = null;
+		  for(Answer ans : answer.getRight().getAnswers())
+		  {
+			  if(ans.getAnswerId().intValue() == measureAnswer.getMeasureAnswerId())
+			  {
+				  answerValue = ans.getAnswerResponse();
+				  break;
+			  }
+		  }
+		String resolvedValue = measureAnswer.getCalculationType() == null ?
+		        answerValue :
 		        resolveResponseUsingCalculationType(answerVariable, answer);
 		        
 		return resolvedValue;        
