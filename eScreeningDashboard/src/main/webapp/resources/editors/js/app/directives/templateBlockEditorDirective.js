@@ -22,10 +22,11 @@
                 parentBlock: '=',
                 assessmentVariables: '='
             },
+            transclude: true,
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {
 
-                var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
+                var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"><div ng-transclude><template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in block.conditions" assessment-variables="assessmentVariables"><div ng-transclude><template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in block.conditions" assessment-variables="assessmentVariables"></div></template-block-condition-editor></div></template-block-condition-editor></template-block-editor>';
 
                 /*
                  The compile function cannot handle directives that recursively use themselves
@@ -68,41 +69,35 @@
                     selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock({left:{content: {}}}));
                 };
 
-                scope.addAndBlock = function(selectedBlock) {
+                scope.addAndConditionBlock = function(selectedBlock) {
                     var andConditionFactoryConfig = {
-                        conditions: [
-                            {
-                                connector: "and",
-                                left: {
-                                    type: "var",
-                                    content: {
+                        connector: "and",
+                        left: {
+                            type: "var",
+                            content: {
 
-                                    }
-                                }
                             }
-                        ]
+                        },
+                        conditions: []
                     };
 
-                    selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(andConditionFactoryConfig));
+                    selectedBlock.conditions = selectedBlock.conditions || [];
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(andConditionFactoryConfig));
                 };
 
-                scope.addOrBlock = function(selectedBlock) {
+                scope.addOrConditionBlock = function(selectedBlock) {
                     var orConditionFactoryConfig = {
-                        conditions: [
-                            {
-                                connector: "or",
-                                left: {
-                                    type: "var",
-                                    content: {
+                        connector: "or",
+                        left: {
+                            type: "var",
+                            content: {
 
-                                    }
-                                }
                             }
-                        ]
+                        },
+                        conditions: []
                     };
-                    selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(orConditionFactoryConfig));
+                    selectedBlock.conditions = selectedBlock.conditions || [];
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
                 };
 
             }

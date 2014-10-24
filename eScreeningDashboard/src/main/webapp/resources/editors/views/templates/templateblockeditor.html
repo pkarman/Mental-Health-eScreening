@@ -40,8 +40,8 @@
         </div>
          <div class="col-md-2 pull-right">
              <div class="pull-right blockLableMarginTop">
-                 <button title="AND" class="btn btn-default" ng-click="addAndBlock(block)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND</button>
-                 <button title="OR" class="btn btn-default" ng-click="addOrBlock(block)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">OR</button>
+                 <button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(block)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND</button>
+                 <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(block)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">OR</button>
                  <button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button>
              </div>
              <div class="clearfix"></div>
