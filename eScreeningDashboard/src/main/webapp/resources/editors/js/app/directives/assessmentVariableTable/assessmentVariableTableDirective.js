@@ -17,7 +17,7 @@
             controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
                 $scope.assessmentVariableTypes = ['Measure', 'Measure Answer', 'Custom', 'Formula'];
 
-                $scope.selectAssessmentVariable = function(someAssessmentVariable, guid) {
+                $scope.selectAssessmentVariable = function(someAssessmentVariable) {
                     angular.copy(someAssessmentVariable,$scope.assessmentVariable);
 
                     $scope.$emit('closeAssessmentVariableMenuRequested', {guid: $scope.guid, selectedVariableName: $scope.assessmentVariable.getName()});

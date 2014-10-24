@@ -65,7 +65,7 @@
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push({guid: new Date().getTime()});
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock({left:{content: {}}}));
                 };
 
             }

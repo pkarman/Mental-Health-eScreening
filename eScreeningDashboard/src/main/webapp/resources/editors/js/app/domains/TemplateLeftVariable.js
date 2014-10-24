@@ -29,21 +29,21 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  */
 EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
     this.type;
-    this.templateContent;
+    this.content;
 
     if(Object.isDefined(jsonConfig)) {
         this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
-        this.templateContent = (Object.isDefined(jsonConfig.templateContent))? jsonConfig.templateContent: null;
-        if(!Object.isDefined(this.templateContent)) {
+        this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: null;
+        if(!Object.isDefined(this.content)) {
             if (this.type === "text") {
-                this.templateContent = new EScreeningDashboardApp.models.TemplateTextContent.create(jsonConfig.templateContent);
+                this.content = new EScreeningDashboardApp.models.TemplateTextContent.create(jsonConfig.content);
             } else if (this.type === "var") {
-                this.templateContent = new EScreeningDashboardApp.models.TemplateVariableContent.create(jsonConfig.templateContent);
+                this.content = new EScreeningDashboardApp.models.TemplateVariableContent.create(jsonConfig.content);
             }
         }
     }
 
     this.toString = function () {
-        return "TemplateLeftVariable [type: " + this.type + ", content: " + this.templateContent + "]";
+        return "TemplateLeftVariable [type: " + this.type + ", content: " + this.content + "]";
     };
 };
