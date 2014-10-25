@@ -1,13 +1,12 @@
 /******* Homelessness followup question rules update ***************/
 
 /** combine rule 2&3, remove rule 3 **/
-update rule set name='Show worried', expression='[2000]==0 || ([2000]==1 && [2001]==1)' where rule_id=2;
-delete from rule_event where rule_id=3;
+update rule set expression='[2000]==1 && [2001]==1' where rule_id=3;
 
 update rule set expression = concat('([2000]==0 || ([2000]==1 && [2001]==1)) && ', expression) where rule_id between 4 and 11;
 
 insert into rule_assessment_variable(rule_id, assessment_variable_id) values 
-(2, 2001),(4,2000),(4,2001),(5,2000),(5,2001),(6,2000),(6,2001),(7,2000),(7,2001),(8,2000),(8,2001),(9,2000),(9,2001),(10,2000),(10,2001),(11,2000),(11,2001);
+(3, 2000),(4,2000),(4,2001),(5,2000),(5,2001),(6,2000),(6,2001),(7,2000),(7,2001),(8,2000),(8,2001),(9,2000),(9,2001),(10,2000),(10,2001),(11,2000),(11,2001);
 
 /******* Tobacco Followup Rules update ****************/
 

@@ -214,15 +214,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		for (Rule r : rules) {
 			try {
 				boolean result = ruleProcessorService.evaluate(r, responseMap);
-
+				
 				for (Event e : r.getEvents()) {
 					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
 						if (result) {
 							visibilityMap.put(e.getRelatedObjectId(), true);
-							if(responseMap.containsKey(e.getRelatedObjectId()))
-							{
-								responseMap.get(e.getRelatedObjectId()).getRight().setIsVisible(true);
-							}
 						} else if (!visibilityMap.containsKey(e
 								.getRelatedObjectId())) {
 							visibilityMap.put(e.getRelatedObjectId(), false);
