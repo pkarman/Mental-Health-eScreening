@@ -80,6 +80,26 @@ public class RepositoryTest {
     }
     
     @Test
+    public void checkSurveyPage()
+    {
+    	List<SurveyPage> all = surveyPageRepo.findAll();
+    	
+    	for(SurveyPage p : all)
+    	{
+    		if(p.getMeasures() !=null)
+    		{
+    			for(Measure m : p.getMeasures())
+    			{
+    				if(m==null)
+    				{
+    					fail("page has null measures: "+p.getSurveyPageId());
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    @Test
     public void testgetSurveyMeasureResponse()
     {
         smrRepo.getForVeteranAssessmentAndSurvey(56, 2);
