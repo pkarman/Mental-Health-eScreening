@@ -416,13 +416,13 @@ class SelectOneMatrixResolver extends Resolver {
 		Collection<Measure> mc = m.getChildren();
 
 		int parentId = m.getMeasureId();
-		int index = 1;
+		int modifiedSaltAsInt = Integer.parseInt(ddh.SALT_DEFAULT)+1;
 		for (Measure cm : mc) {
 			// let the framework take care of rest
 			// all dependent record's pk must have a number after the parent
 			// if not than we have to some how make sure that the id comes after the parent
 			int childId = cm.getMeasureId();
-			salt = childId < parentId ? String.valueOf(parentId) + index++ : salt;
+			salt = childId < parentId ? String.valueOf(parentId) + modifiedSaltAsInt++ : salt;
 			ddh.addDictionaryRowsFor(cm, s, mvMap, t, salt);
 		}
 	}
@@ -448,7 +448,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t, String salt) {
-		String saltForResponseRowCounter = m.getMeasureId() + "0";
+	    String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
 		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getExportName());
 		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "");
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
