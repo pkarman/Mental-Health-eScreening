@@ -65,6 +65,38 @@ public class RepositoryTest {
     {
         List<SurveyPage> result =surveyPageRepo.getSurveyPagesForVeteranAssessmentId(59);
         assertNotNull(result);
+        
+        int[] measureIdInOrder = {341,342,343,344,346,347,348,349,350};
+        
+        //test measure ordering
+        SurveyPage sp = surveyPageRepo.findOne(51);
+        
+        List<Measure> measures = sp.getMeasures();
+        
+        for(int i=0; i<measureIdInOrder.length; i++)
+        {
+        	assertTrue(measureIdInOrder[i] == measures.get(i).getMeasureId());
+        }
+    }
+    
+    @Test
+    public void checkSurveyPage()
+    {
+    	List<SurveyPage> all = surveyPageRepo.findAll();
+    	
+    	for(SurveyPage p : all)
+    	{
+    		if(p.getMeasures() !=null)
+    		{
+    			for(Measure m : p.getMeasures())
+    			{
+    				if(m==null)
+    				{
+    					fail("page has null measures: "+p.getSurveyPageId());
+    				}
+    			}
+    		}
+    	}
     }
     
     @Test

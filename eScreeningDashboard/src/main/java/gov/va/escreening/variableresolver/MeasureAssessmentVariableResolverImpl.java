@@ -1,6 +1,7 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -396,5 +398,64 @@ public class MeasureAssessmentVariableResolverImpl implements
 				&& assessmentVariable.getMeasure().getDisplayOrder() != null)
 			return assessmentVariable.getMeasure().getDisplayOrder();
 		return AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN;
+	}
+
+	@Override
+	public String resolveCalculationValue(AssessmentVariable measureVariable,
+			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer,
+			Map<Integer, AssessmentVariable> measureAnswerHash) {
+		
+		String result = null;
+		int measureTypeId = measureVariable.getMeasure().getMeasureType()
+				.getMeasureTypeId();
+		switch (measureTypeId) {
+		case MEASURE_TYPE_ID_FREETEXT:
+			result = answer.getRight().getAnswers().get(0).getAnswerResponse();
+			break;
+		case MEASURE_TYPE_ID_SELECTONE:
+			result = resolveSelectOneCalculationValue(measureVariable,
+					answer);
+			break;
+		case MEASURE_TYPE_ID_SELECTONEMATRIX:
+			result = resolveSelectOneCalculationValue(measureVariable,
+					answer);
+			break;
+		case MEASURE_TYPE_ID_SELECTMULTI:
+		case MEASURE_TYPE_ID_SELECTMULTIMATRIX:
+		case MEASURE_TYPE_ID_TABLEQUESTION:
+		case MEASURE_TYPE_ID_READONETEXT:
+		case MEASURE_TYPE_ID_INSTRUCTION:
+		default:
+			throw new UnsupportedOperationException(
+					String.format(
+							"Resolution of calculation value for measure type of: %s is not supported.",
+							measureTypeId));
+		}
+
+//		if (result == null)
+//			
+//		 throw new CouldNotResolveVariableValueException(String.format("Was unable to resolve the calculation value for measureid: %s",
+//		     measureId));
+
+		return result;
+	}
+
+	private String resolveSelectOneCalculationValue(
+			AssessmentVariable measureVariable,
+			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer) {
+		
+		String result = null;
+
+		// look for the true value then call answer to pull the value
+		for (Answer answerVal : answer.getRight().getAnswers()) {
+			if(answerVal.getAnswerResponse()!=null && answerVal.getAnswerResponse().equalsIgnoreCase("true"))
+			{
+				// call the answer level to resolve the value
+				result = measureAnswerVariableResolver.resolveCalculationValue(answer.getLeft(), answerVal);
+				break;
+			}
+		}
+
+		return result;
 	}
 }

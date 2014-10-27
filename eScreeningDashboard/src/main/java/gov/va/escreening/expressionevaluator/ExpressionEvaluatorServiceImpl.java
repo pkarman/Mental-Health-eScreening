@@ -36,7 +36,7 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     	}
     	else {
     		answer = parser.parseExpression(workingTemplate).getValue(String.class);	
-    		logger.debug("parsing expression {} returned {}", workingTemplate, answer);
+    		//logger.debug("parsing expression {} returned {}", workingTemplate, answer);
     	}
     	
     	return answer;

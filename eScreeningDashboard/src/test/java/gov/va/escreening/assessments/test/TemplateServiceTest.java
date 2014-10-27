@@ -1,12 +1,5 @@
 package gov.va.escreening.assessments.test;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.Template;
@@ -18,6 +11,11 @@ import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 

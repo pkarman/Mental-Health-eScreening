@@ -5,6 +5,9 @@ import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
 import java.util.Collection;
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service class used to query, manipulate, and evaluate Events and Rules (e.g. evaluate expressions, fire events).
@@ -33,5 +36,9 @@ public interface RuleService {
     void updateVisibilityForQuestions(Integer veteranAssessmentId, Collection<Measure> questions);
 
     public abstract boolean evaluate(Integer veteranAssessmentId, Rule rule);
+
+	public boolean evaluate(
+			Rule r,
+			Map<Integer, Pair<gov.va.escreening.entity.Measure, gov.va.escreening.dto.ae.Measure>> responseMap);
     
 }

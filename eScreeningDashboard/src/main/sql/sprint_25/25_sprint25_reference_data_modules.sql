@@ -6,3 +6,9 @@ INSERT INTO survey_page_measure (survey_page_id, measure_id, display_order) VALU
 Update survey_page_measure set display_order=1 where survey_page_id=56 and measure_id=382;
 Update survey_page_measure set display_order=2 where survey_page_id=56 and measure_id=381;
 
+/** The following two lines fixes the display order gap problem **********/
+update survey_page_measure set display_order = 2 where survey_page_measure_id = 126;
+update survey_page_measure set display_order = (display_order -1) where survey_page_id=51;
+
+
+
