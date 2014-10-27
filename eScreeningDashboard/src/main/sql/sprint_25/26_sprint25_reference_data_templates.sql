@@ -889,4 +889,107 @@ ${MODULE_START}
 ${MODULE_END}' 
 where template_id=310;
 
+
+/****************** TICKET 680 CHANGES BELOW *********************************/
+/*** Exposures skip logic tiket-589 ***/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+EXPOSURES:
+${MODULE_TITLE_END}
+${MODULE_START}
+	 <#-- var2200: ${var2200}<br><br>  var2230: ${var2230}<br><br>  var2240: ${var2240}<br><br>  var2250: ${var2250}<br><br> var2260: ${var2260}<br><br>  -->
+	
+    <#assign nextLine = "">
+	<#if (var10540.children)??  && ((var10540.children)?size > 0) || (var2200.children)?? || ((var2230.children)?? && (var2240.children)?? && (var2250.children)??) || (var2260.children)?? || (var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound") > 
+	 	
+	 	<#if (var10540.children)??  && ((var10540.children)?size > 0)>
+	 	<#if isSelectedAnswer(var10540,var10541)>
+	 		The Veteran is not concerned about, but may have been exposed
+	 	<#elseif isSelectedAnswer(var10540,var10542)>
+	 		The Veteran reported persistent major concerns related to the effects of exposure
+	 	</#if>
+	  	<#if (var2200.children)?? && hasValue(var2200) && getSelectMultiDisplayText(var2200)!= "notfound"> 	
+			${NBSP}to ${getSelectMultiDisplayText(var2200)}
+            <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		</#if>
+		.
+		</#if>
+	
+	    <#if var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound">
+		<#assign score = getFormulaDisplayText(var2289)>
+		<#assign scoreText = "notset">
+	
+		<#if (score?number >= 1) >
+				<#assign scoreText = "being exposed">
+		<#elseif score?number == 0>
+			<#assign scoreText = "no exposure">
+		</#if> 
+        ${nextLine}The Veteran reported ${scoreText} to animal contact during a deployment in the past 18 months that could result in rabies.
+        <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">	
+		</#if>
+		<#if (var2260.children)??  && hasValue(var2260)> 	
+			<#assign combat = getSelectMultiDisplayText(var2260)>
+			<#if combat != "notfound">
+				${nextLine}The Veteran reported the following types of combat experience: ${combat}.
+			</#if>
+		</#if>
+
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 15;
+
+/*** ticket 680 comment #9 *********/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SLEEP:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if var2189?? && var2189.value??>
+	<#assign score = var2189.value?number>
+	<#if score??> 	
+		<#if (score >= 0 && score <= 7) >
+			<#assign scoreText = "negative">
+			<#assign text = "no clinically significant insomnia">
+		<#elseif (score >= 8) && (score <= 14)>
+			<#assign scoreText = "negative">
+			<#assign text = "subthreshold insomnia">
+		<#elseif (score >= 15) && (score <= 21)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderate insomnia">
+		<#elseif (score >= 22) && (score <= 998)>  <#-- if score = 999 then veteran did not answer the question -->
+			<#assign scoreText = "positive">
+			<#assign text = "severe insomnia">
+		</#if>
+	</#if>
+	
+	<#if score??>
+		<#if (score >=0) && (score <= 998)>
+			<#t>The Veteran\'s ISI was ${scoreText} indicating ${text} for the past week.${NBSP}
+		<#elseif score >= 999>
+			<#-- this is score 999 -->
+			<#t>The Veteran did not complete the ISI screen.${NBSP}>
+		</#if>
+	</#if>
+	
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 37;
+
+delete from variable_template where template_id = 37;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2189, 37);
+
+
+
  
