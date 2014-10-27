@@ -14,6 +14,11 @@ a:focus, input:focus, select:focus, .checkSwitch:focus{
    box-shadow: 0 0 10px #0f3049 !important;
 }
 */
+.selectMultiCheckbox:focus, .checkSwitch:focus{
+   outline: none  !important;
+   border-color: #0f3049  !important;
+   box-shadow: 0 0 10px #0f3049 !important;
+}
 
 #header, #footer {
 	margin-left: -206px; /* LC full width */
@@ -1080,6 +1085,7 @@ outline:#FF0004 dotted;
 		min-width:95%;
 
 	}
+  
 }
 
 @media (min-width: 992px) {
@@ -1134,5 +1140,8 @@ outline:#FF0004 dotted;
 	}
 
 }
+
+
+
 
 
