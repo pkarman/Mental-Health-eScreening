@@ -713,17 +713,22 @@ $(document).ready(function() {
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / xMax) * xCurrent;
+		var xPos = parseFloat(width / (xMax - graphStart)) * ( xCurrent - graphStart ) ;
+    console.log("graphStart " + graphStart);
+    console.log("width " + width);
+    console.log("xMax "+ xMax);
+    console.log("xCurrent " + xCurrent);
 		var yPos = 0;
 		
+
 		pointer = svg.append('rect')
         .attr('fill', pointerColor)
         .attr('width', pointerWidth)
-        .attr('height',pointerHeight)
+        .attr('height', pointerHeight)
         .attr('x', xPos - (pointerWidth/2))
         .attr('y', -40)
         .attr('class', 'pointerBlock');
-
+    
 
 	    svg.append('rect')
 	        .attr('fill', 'black')
