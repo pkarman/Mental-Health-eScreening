@@ -44,8 +44,7 @@
                         if(!Object.isDefined(data.selectedVariableName)){
                             throw new BytePushers.exceptions.NullPointerException("data.selectedVariableName parameter can not be undefined or null.");
                         }
-                        var e = $(".assessmentVariableSelection[guid=\""+data.guid+"\"]");
-                        e.find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
+                        $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
                         toggleAssessmentVariableSelectionTable();
                     }
                 });
