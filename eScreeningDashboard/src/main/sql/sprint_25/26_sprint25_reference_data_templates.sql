@@ -991,5 +991,104 @@ delete from variable_template where template_id = 37;
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2189, 37);
 
 
+/********** t680 MDQ ****************/
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var10720?? && var10720.value??>
+${MODULE_TITLE_START}
+Mood Disorder:
+${MODULE_TITLE_END}
+${MODULE_START}
+			<#assign t = "negative">
+			<#assign text2 = "">
+			<#assign fragments = []>
+		
+			<#if var10720.value?number == 1>
+					<#assign t = "positive indicating that the Veteran may benefit from further assessment for possible symptoms of mania or other mood disorders">
+				
+					<#if (getScore(var2660) > 0)>
+						<#assign fragments = fragments + ["so hyper got into trouble"]>
+					</#if>
+					<#if (getScore(var2670) > 0)>
+						<#assign fragments = fragments + ["so irritable started fights"]>
+					</#if>
+					<#if (getScore(var2680) > 0)>
+						<#assign fragments = fragments + ["felt much more self-confident than usual"]>
+					</#if>
+					<#if (getScore(var2690) > 0)>
+						<#assign fragments = fragments + ["got less sleep"]>
+					</#if>
+					<#if (getScore(var2700) > 0)>
+						<#assign fragments = fragments + ["was much more talkative/spoke much faster"]>
+					</#if>
+					<#if (getScore(var2710) > 0)>
+						<#assign fragments = fragments + ["racing thoughts"]>
+					</#if>
+					<#if (getScore(var2720) > 0)>
+						<#assign fragments = fragments + ["could not concentrate"]>
+					</#if>
+					<#if (getScore(var2730) > 0)>
+						<#assign fragments = fragments + ["more energy"]>
+					</#if>
+					<#if (getScore(var2740) > 0)>
+						<#assign fragments = fragments + ["more active/did more things"]>
+					</#if>
+					<#if (getScore(var2750) > 0)>
+						<#assign fragments = fragments + ["more social/outgoing"]>
+					</#if>
+					<#if (getScore(var2760) > 0)>
+						<#assign fragments = fragments + ["much more interested in sex"]>
+					</#if>
+					<#if (getScore(var2770) > 0)>
+						<#assign fragments = fragments + ["was excessive/foolish/risky"]>
+					</#if>
+					<#if (getScore(var2780) > 0)>
+						<#assign fragments = fragments + ["got in trouble spending money"]>
+					</#if>
+				
+					<#assign text2 = createSentence(fragments)>
+				</#if>
+				
+				The MDQ (Hyper mood) screen was ${t}.
+			
+				<#if text2?has_content>
+					${LINE_BREAK}${LINE_BREAK}Symptoms endorsed: ${text2}.
+				</#if>
+${MODULE_END}
+</#if> '
+where template_id = 32;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+MST:
+${MODULE_TITLE_END}
+${MODULE_START}
+	  
+	<#if var2003?? && var2003.value??>
+	<#assign mstMilitaryScore = var2003.value?number>
+		
+		<#if (mstMilitaryScore == 0) >
+			The Veteran\s MST screen was negative.
+		<#elseif (mstMilitaryScore == 1) >	
+			The Veteran\s MST screen was positive.
+			<#if var1640?? && var1640.value??>
+				<#if var1640.value?number == 0>
+				The Veteran declined a referral to discuss the sexual trauma further.${NBSP}
+				<#elseif var1640.value?number == 1>
+				The Veteran requests a referral to discuss the sexual trauma further.${NBSP}
+				</#if>
+			</#if>
+		<#elseif (mstMilitaryScore == 2)>
+			The Veteran declined to answer the MST screen.
+		</#if>
+	<#else>
+	The Veteran declined to answer some or all of the questions of the MST screen.
+	</#if>
+${MODULE_END}
+'
+where template_id = 33;
 
  
