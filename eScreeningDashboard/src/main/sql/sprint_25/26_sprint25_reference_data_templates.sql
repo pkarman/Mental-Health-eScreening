@@ -795,7 +795,7 @@ ${MODULE_START}
 			<b>Recommendations:</b> Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed. 
 		</#if> 
 	<#else>
-		<b>Veteran declined to respond</b>
+		${NBSP}Veteran declined to respond
 	</#if> 	
 ${MODULE_END}' 
 where template_id=306;
@@ -829,7 +829,7 @@ ${LINE_BREAK}
 		stable housing 
 	</#if>  
 <#else>
-	<b>Veteran declined to respond</b>
+	${NBSP}Veteran declined to respond
 </#if>
 ${MODULE_END}' 
 where template_id=301;
@@ -852,7 +852,7 @@ ${MODULE_START}
 	${LINE_BREAK} 
 	<b>Recommendation:</b> 
 	<#if score = "notfound">
-		<b>Veteran declined to respond</b>
+		${NBSP}Veteran declined to respond
 	<#elseif score?number lt 10>
 		Contact a clinician if in the future if you ever feel you may have a problem with depression
 	<#elseif score?number gt 9>
@@ -880,7 +880,7 @@ ${MODULE_START}
 	${LINE_BREAK} 
 	<b>Recommendation:</b> 
 	<#if score = "notfound">
-		<b>Veteran declined to respond</b>
+		${NBSP}Veteran declined to respond
 	<#elseif score?number gt 49>
 		Ask your clinician for further evaluation and treatment options
 	<#elseif score?number lt 50>
@@ -888,6 +888,114 @@ ${MODULE_START}
 	</#if> 
 ${MODULE_END}' 
 where template_id=310;
+
+/* TBI changes: If tbi_consult=1 then insert “You have requested further assessment” if TBI_consult =0 insert “you have declined further assessment” if =999 then omit recommendation.  */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#function calcScore obj> 
+	<#assign result = 0> 
+	<#if (obj.children)?? && ((obj.children)?size > 0)> 
+		<#list obj.children as c> 
+			<#if c.overrideText != "none"> 
+				<#assign result = result + 1> 
+				<#break> 
+		</#if> 
+	</#list> 
+	</#if> 
+	<#return result> 
+</#function>  
+<#assign score = 0>  
+<#assign isQ2Complete = false> 
+<#assign isQ2None = false> 
+<#if (var3400.children)?? && ((var3400.children)?size > 0)> 
+	<#assign isQ2Complete = true> 
+	<#if isSelectedAnswer(var3400, var2016)!false> 
+		<#assign isQ2None = true> 
+	<#else> 
+		<#assign score = score + calcScore(var3400)> 
+	</#if> 
+</#if>  
+<#assign isQ3Complete = false> 
+<#assign isQ3None = false> 
+<#if isQ2Complete> 
+	<#if isQ2None> 
+		<#assign isQ3Complete = true> 
+	<#else> 
+		<#if (var3410.children)?? && ((var3410.children)?size > 0) > 
+			<#if isSelectedAnswer(var3410, var2022)!false> 
+				<#assign isQ3None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3410)> 
+			</#if> 
+			<#assign isQ3Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ4Complete = false> 
+<#assign isQ4None = false> 
+<#if isQ3Complete> 
+	<#if isQ2None || isQ3None> 
+		<#assign isQ4Complete = true> 
+	<#else> 
+		<#if (var3420.children)?? && ((var3420.children)?size > 0) > 
+			<#if isSelectedAnswer(var3420, var2030)!false> 
+				<#assign isQ4None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3420)> 
+			</#if> 
+			<#assign isQ4Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ5Complete = false> 
+<#assign isQ5None = false> 
+<#if isQ4Complete> 
+	<#if isQ2None || isQ3None || isQ4None> 
+		<#assign isQ5Complete = true> 
+	<#else> 
+		<#if (var3430.children)?? && ((var3430.children)?size > 0) > 
+			<#if isSelectedAnswer(var3430, var2037)!false> 
+				<#assign isQ5None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3430)> 
+			</#if> 
+			<#assign isQ5Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isComplete = false> 
+<#if isQ2Complete && isQ3Complete && isQ4Complete && isQ5Complete> 
+	<#assign isComplete = true> 
+</#if>  
+${MODULE_TITLE_START} 
+	Traumatic Brain Injury (TBI) 
+${MODULE_TITLE_END} 
+
+${MODULE_START}  
+	<#assign showRec = false> <#assign tbi_consult_text = ""> 
+	<#if isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3442)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have requested further assessment"> 
+	<#elseif isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3441)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have declined further assessment">
+	</#if> 
+	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI. ${LINE_BREAK} 
+	${LINE_BREAK} 
+	<#if isComplete> 
+		<b>Results:</b>${NBSP} 
+		<#if (score >= 0) && (score <= 3)> 
+			negative screen 
+		<#elseif (score >= 4 )> 
+			positive screen
+		</#if> 
+	</#if>  
+	<#if isComplete && showRec> 
+		${LINE_BREAK} 
+		<b>Recommendation:</b> 
+			${tbi_consult_text}. 
+	</#if> 
+${MODULE_END} ' 
+where template_id=307;
 
 
 /****************** TICKET 680 CHANGES BELOW *********************************/
@@ -991,5 +1099,104 @@ delete from variable_template where template_id = 37;
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2189, 37);
 
 
+/********** t680 MDQ ****************/
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var10720?? && var10720.value??>
+${MODULE_TITLE_START}
+Mood Disorder:
+${MODULE_TITLE_END}
+${MODULE_START}
+			<#assign t = "negative">
+			<#assign text2 = "">
+			<#assign fragments = []>
+		
+			<#if var10720.value?number == 1>
+					<#assign t = "positive indicating that the Veteran may benefit from further assessment for possible symptoms of mania or other mood disorders">
+				
+					<#if (getScore(var2660) > 0)>
+						<#assign fragments = fragments + ["so hyper got into trouble"]>
+					</#if>
+					<#if (getScore(var2670) > 0)>
+						<#assign fragments = fragments + ["so irritable started fights"]>
+					</#if>
+					<#if (getScore(var2680) > 0)>
+						<#assign fragments = fragments + ["felt much more self-confident than usual"]>
+					</#if>
+					<#if (getScore(var2690) > 0)>
+						<#assign fragments = fragments + ["got less sleep"]>
+					</#if>
+					<#if (getScore(var2700) > 0)>
+						<#assign fragments = fragments + ["was much more talkative/spoke much faster"]>
+					</#if>
+					<#if (getScore(var2710) > 0)>
+						<#assign fragments = fragments + ["racing thoughts"]>
+					</#if>
+					<#if (getScore(var2720) > 0)>
+						<#assign fragments = fragments + ["could not concentrate"]>
+					</#if>
+					<#if (getScore(var2730) > 0)>
+						<#assign fragments = fragments + ["more energy"]>
+					</#if>
+					<#if (getScore(var2740) > 0)>
+						<#assign fragments = fragments + ["more active/did more things"]>
+					</#if>
+					<#if (getScore(var2750) > 0)>
+						<#assign fragments = fragments + ["more social/outgoing"]>
+					</#if>
+					<#if (getScore(var2760) > 0)>
+						<#assign fragments = fragments + ["much more interested in sex"]>
+					</#if>
+					<#if (getScore(var2770) > 0)>
+						<#assign fragments = fragments + ["was excessive/foolish/risky"]>
+					</#if>
+					<#if (getScore(var2780) > 0)>
+						<#assign fragments = fragments + ["got in trouble spending money"]>
+					</#if>
+				
+					<#assign text2 = createSentence(fragments)>
+				</#if>
+				
+				The MDQ (Hyper mood) screen was ${t}.
+			
+				<#if text2?has_content>
+					${LINE_BREAK}${LINE_BREAK}Symptoms endorsed: ${text2}.
+				</#if>
+${MODULE_END}
+</#if> '
+where template_id = 32;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+MST:
+${MODULE_TITLE_END}
+${MODULE_START}
+	  
+	<#if var2003?? && var2003.value??>
+	<#assign mstMilitaryScore = var2003.value?number>
+		
+		<#if (mstMilitaryScore == 0) >
+			The Veteran\s MST screen was negative.
+		<#elseif (mstMilitaryScore == 1) >	
+			The Veteran\s MST screen was positive.
+			<#if var1640?? && var1640.value??>
+				<#if var1640.value?number == 0>
+				The Veteran declined a referral to discuss the sexual trauma further.${NBSP}
+				<#elseif var1640.value?number == 1>
+				The Veteran requests a referral to discuss the sexual trauma further.${NBSP}
+				</#if>
+			</#if>
+		<#elseif (mstMilitaryScore == 2)>
+			The Veteran declined to answer the MST screen.
+		</#if>
+	<#else>
+	The Veteran declined to answer some or all of the questions of the MST screen.
+	</#if>
+${MODULE_END}
+'
+where template_id = 33;
 
  
