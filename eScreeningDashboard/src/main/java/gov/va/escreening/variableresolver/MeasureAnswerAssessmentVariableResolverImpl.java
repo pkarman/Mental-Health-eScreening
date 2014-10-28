@@ -195,8 +195,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		//If this answer has a mapped AssessmentVariable use that, otherwise use the parent id.
 		Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
 		if(measureAnswerHash.containsKey(measureAnswerId)) {
-			VariableTemplate variableTemplate = measureAnswerHash.get(measureAnswerId).getVariableTemplateList().get(0);
-			return variableTemplate.getVariableTemplateId();
+			return measureAnswerHash.get(measureAnswerId).getAssessmentVariableId();
 		}
 
 		//It hasn't been mapped so use the parent's id

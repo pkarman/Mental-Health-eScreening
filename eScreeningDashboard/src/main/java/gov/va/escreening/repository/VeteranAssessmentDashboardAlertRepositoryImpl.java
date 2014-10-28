@@ -46,9 +46,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	}
 
 	/**
-	 * fetches data from multiple columns and returns data as a List of Array.
-	 * Array index 0 represents the Dash-board Alert Name, index 1 represents
-	 * the count of the alert
+	 * fetches data from multiple columns and returns data as a List of Array. Array index 0 represents the Dash-board
+	 * Alert Name, index 1 represents the count of the alert
 	 */
 	@Override
 	public List findAlertsByProgram(int programId) {
