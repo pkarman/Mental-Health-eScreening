@@ -107,45 +107,29 @@ Editors.config(function(RestangularProvider, $provide) {
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
                         $scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
-                        $scope.assessmentVariable = {
-                            id: null,
-                            answerId: null,
-                            measureId: null,
-                            measureTypeId: null,
-                            typeId: null,
-                            name: null,
-                            displayName: null,
-                            getName: function () {
-                                return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
-                            },
-                            setType: function () {
-                                switch (this.typeId) {
-                                    case 1:
-                                        this.type = "Measure";
-                                        break;
-                                    case 2:
-                                        this.type = "Measure Answer";
-                                        break;
-                                    case 3:
-                                        this.type = "Custom";
-                                        break;
-                                    case 4:
-                                        this.type = "Formula";
-                                        break;
-                                    default:
-                                        this.type = "Other";
-                                }
-                            },
-                            toString: function () {
-                                return "AssessmentVariable [id: " + this.id +
-                                    ", answerId: " + this.answerId +
-                                    ", measureId: " + this.measureId +
-                                    ", measureTypeId: " + this.measureTypeId +
-                                    ", typeId: " + this.typeId +
-                                    ", name: " + this.name +
-                                    ", displayName: " + this.displayName + "]";
-                            }
-                        };
+						$scope.assessmentVariable = {
+
+							setType: function () {
+								switch (this.typeId) {
+									case 1:
+										this.type = "Measure";
+										break;
+									case 2:
+										this.type = "Measure Answer";
+										break;
+									case 3:
+										this.type = "Custom";
+										break;
+									case 4:
+										this.type = "Formula";
+										break;
+									default:
+										this.type = "Other";
+								}
+							}
+						};
+
+						angular.extend($scope.assessmentVariable, new EScreeningDashboardApp.models.AssessmentVariable());
 
                         // Passing in true to third param of $watch for deep collection checking
                         $scope.$watch('assessmentVariable', function(assessmentVariable) {
@@ -209,16 +193,7 @@ Editors.config(function(RestangularProvider, $provide) {
 								$scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
 								$scope.assessmentVariable = {
-									id: null,
-									answerId: null,
-									measureId: null,
-									measureTypeId: null,
-									typeId: null,
-									name: null,
-									displayName: null,
-									getName: function () {
-										return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
-									},
+
 									setType: function () {
 										switch (this.typeId) {
 											case 1:
@@ -236,17 +211,10 @@ Editors.config(function(RestangularProvider, $provide) {
 											default:
 												this.type = "Other";
 										}
-									},
-									toString: function () {
-										return "AssessmentVariable [id: " + this.id +
-											", answerId: " + this.answerId +
-											", measureId: " + this.measureId +
-											", measureTypeId: " + this.measureTypeId +
-											", typeId: " + this.typeId +
-											", name: " + this.name +
-											", displayName: " + this.displayName + "]";
 									}
 								};
+
+								angular.extend($scope.assessmentVariable, new EScreeningDashboardApp.models.AssessmentVariable());
 
 								// Passing in true to third param of $watch for deep collection checking
 								$scope.$watch('assessmentVariable', function(assessmentVariable) {

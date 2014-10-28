@@ -101,6 +101,9 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
+
+    <!--  AsessmentVariable Domain -->
+    <script type="text/javascript" src="resources/editors/js/app/domains/AssessmentVariable.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
