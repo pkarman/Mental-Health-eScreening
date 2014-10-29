@@ -230,7 +230,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 		$scope.template.blocks.splice(index, 1);
 	};
 
-	$scope.updateBlock = function(selectedBlock){
+	$scope.updateBlock = function(selectedBlock, isAdding){
 
 		// Create the modal
 		var modalInstance = $modal.open({
@@ -246,7 +246,9 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.templateName = template.name;
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = selectedBlock || new EScreeningDashboardApp.models.TemplateBlock();
+				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock();
+
+				if (isAdding) $scope.parentBlock = selectedBlock;
 
 				$scope.block.sentTextContent();
 
@@ -260,6 +262,11 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
 					$scope.block.transformTextContent($scope.variableNamedHash);
 					$scope.block.autoGenerateFields($scope.variableNamedHash);
+
+					if (isAdding) {
+						if (!angular.isArray(selectedBlock.children)) selectedBlock.children = [];
+						selectedBlock.children.push($scope.block);
+					}
 
 					if (!selectedBlock) template.blocks.push($scope.block);
 
