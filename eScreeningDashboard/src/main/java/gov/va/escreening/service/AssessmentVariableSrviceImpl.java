@@ -178,15 +178,21 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				break;
 			}
 		}
-		Preconditions.checkNotNull(measures, String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
-		Preconditions.checkNotNull(survey, String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
-
-		Collection<AssessmentVariable> avList = avr.findAll();
+		// Preconditions.checkNotNull(measures,
+		// String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
+		// Preconditions.checkNotNull(survey,
+		// String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
 
 		Table<String, String, Object> assessments = TreeBasedTable.create();
-		AvModelBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
-		filterBySurvey(survey, avModelBldr, measures, avList);
-		return (Table<String, String, Object>) avModelBldr.getResult();
+
+		if (measures != null && survey != null) {
+			Collection<AssessmentVariable> avList = avr.findAll();
+			AvModelBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
+			filterBySurvey(survey, avModelBldr, measures, avList);
+			return (Table<String, String, Object>) avModelBldr.getResult();
+		} else {
+			return assessments;
+		}
 	}
 
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
