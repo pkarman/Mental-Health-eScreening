@@ -34,7 +34,7 @@
 					<script type="text/ng-template" id="block_renderer.html">
                         <div ui-tree-handle>
                             <div class="col-md-3">
-                               {{block.section}} {{block.title | limitToWithEllipsis:30 }}
+                               {{block.section}} {{block.name | limitToWithEllipsis:30 }}
                             </div>
                             <div class="col-md-7">
                                <span class="label label-default label-default-{{block.type}}">{{block.type}}</span>
@@ -44,12 +44,12 @@
 
                                 <span class="pull-right btn btn-xs block-btn-margin" 
                                     ng-really-click="removeBlock(this);" 
-                                    ng-really-message="Are you sure you want to delete this block?" data-nodrag title="Delete  {{block.title}}">
+                                    ng-really-message="Are you sure you want to delete this block?" data-nodrag title="Delete  {{block.name}}">
                                     <i class="glyphicon glyphicon-remove-circle delete-red"></i>
                                 </span>
 
 
-                                <span class="pull-right btn btn-xs block-btn-margin" ng-click="editBlock(this);" data-nodrag title="Edit {{block.title}}">
+                                <span class="pull-right btn btn-xs block-btn-margin" ng-click="editBlock(this);" data-nodrag title="Edit {{block.name}}">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </span>
 
