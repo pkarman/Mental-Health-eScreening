@@ -27,6 +27,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
