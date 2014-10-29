@@ -315,7 +315,6 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
             jsonAnswers =  (serializeCollections)? "\"answers\": " + generateJsonStringForAnswers() : "",
             jsonValidations = (serializeCollections)? ",\"validations\": " + generateJsonStringForValidations(): "",
             jsonChildMeasures = (serializeCollections) ? ",\"childQuestions\": " + generateJsonStringForChildQuestions() : "",
-            jsonTableAnswers = (serializeCollections) ? ",\"tableAnswers\": " + generateJsonStringForTableAnswers() : "",
             json = "{" +
                 "\"id\": " + jsonId + "," +
                 "\"text\": " + jsonText + "," +
@@ -329,7 +328,6 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
                 jsonAnswers + 
                 jsonValidations + 
                 jsonChildMeasures + 
-                jsonTableAnswers +
             "}";
 
         return json;
