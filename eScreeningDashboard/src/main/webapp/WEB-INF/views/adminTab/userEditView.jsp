@@ -155,14 +155,14 @@
 								maxlength="30" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter the Login ID for the user" required="required" />
+								placeholder="Enter the Login ID for the user" />
 							<form:errors path="loginId" cssClass="help-inline"/>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
 							<form:label path="selectedRoleId">Role *</form:label>
-							<form:select path="selectedRoleId" cssClass="form-control"  required="required">
+							<form:select path="selectedRoleId" cssClass="form-control"  >
 								<form:option value="" label="Please Select a Role"/>
 								<form:options items="${roleList}" itemValue="stateId" itemLabel="stateName"/>
 							</form:select>
@@ -172,7 +172,7 @@
 					<div class="col-md-4">
 						<div class="form-group">
 							<form:label path="selectedUserStatusId">Status *</form:label>
-							<form:select path="selectedUserStatusId" cssClass="form-control"  required="required">
+							<form:select path="selectedUserStatusId" cssClass="form-control"  >
 								<form:option value="" label="Please Select a Status"/>
 								<form:options items="${userStatusList}" itemValue="stateId" itemLabel="stateName"/>
 							</form:select>
@@ -189,10 +189,8 @@
 								maxlength="30" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter the First Name"
-                required="required"
-                />
-							<form:errors path="firstName" cssClass="help-inline"  required="required" />
+								placeholder="Enter the First Name" />
+							<form:errors path="firstName" cssClass="help-inline" />
 						</div>
 					</div>
 					<div class="col-md-4">
@@ -213,7 +211,7 @@
 								maxlength="30" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter the Last Name" required="required" />
+								placeholder="Enter the Last Name" />
 							<form:errors path="lastName" cssClass="help-inline"/>
 						</div>
 					</div>
@@ -226,10 +224,8 @@
 								maxlength="10" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter a Phone Number"
-                required="required"
-                />
-							<form:errors path="phoneNumber" cssClass="help-inline"  required="required" />
+								placeholder="Enter a Phone Number" />
+							<form:errors path="phoneNumber" cssClass="help-inline" />
 						</div>
 					</div>
 					<div class="col-md-2">
@@ -276,7 +272,6 @@
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
 								placeholder="Enter an alternate Email Address"
-                required="required"
                 type="email"
                 />
 							<form:errors path="emailAddress" cssClass="help-inline"/>
@@ -290,7 +285,6 @@
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
 								placeholder="Enter an alternate Email Address"
-                required="required"
                 type="email"
                 />
 							<form:errors path="emailAddress2" cssClass="help-inline"/>
@@ -308,7 +302,6 @@
 									cssClass="inputStyle form-control"
 									cssErrorClass="errorInputStyle  form-control"
 									placeholder="Enter a Password" type="password"
-                  required="required" 
                   />
 								<form:errors path="password" cssClass="help-inline"/>
 							</div>
@@ -321,7 +314,6 @@
 									cssClass="inputStyle form-control"
 									cssErrorClass="errorInputStyle  form-control"
 									placeholder="Reenter the Password" type="password"
-                  required="required" 
                   />
 								<form:errors path="passwordConfirmed" cssClass="help-inline"  />
 							</div>
