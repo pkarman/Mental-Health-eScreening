@@ -63,6 +63,34 @@
 	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
 
+                scope.filteredOperators = scope.operators;
+                var filterOperators = function(operator) {
+                    var selectMeasureIds = [2, 3, 6, 7];
+                    var includeOperator = false;
+                    if(operator.category.toLowerCase() === "nonselect" && (scope.block.left.content.type.toUpperCase() === "QUESTION")) {
+                        if(selectMeasureIds.indexOf(scope.block.left.content.measureTypeId) <= -1){
+                            includeOperator = true;
+                        }
+                    } else if(operator.category.toLowerCase() === "question" && (scope.block.left.content.type.toUpperCase() === "ANSWER")) {
+                        if(Object.isDefined(scope.block.left.content.measureTypeId)){
+                            includeOperator = true;
+                        }
+                    } else if(operator.category.toLowerCase() === "formula" && (scope.block.left.content.type.toUpperCase() === "FORMULA")) {
+                        includeOperator = true;
+                    } else if(operator.category.toLowerCase() === "select" && (scope.block.left.content.type.toUpperCase() === "CUSTOM")) {
+                        includeOperator = true;
+                    }
+                    return includeOperator;
+                };
+
+                scope.$watch('block.left.content', function (currentlySelectedAssessmentVariable, previouslySelectedAssessmentVariable) {
+                    if (currentlySelectedAssessmentVariable === previouslySelectedAssessmentVariable){
+
+                    } else {
+                        scope.filteredOperators = scope.operators.filter(filterOperators);
+                    }
+                }, true);
+
                 scope.addBlock = function(selectedBlock) {
                     var addBlockFactoryConfig = {
                         left: {
