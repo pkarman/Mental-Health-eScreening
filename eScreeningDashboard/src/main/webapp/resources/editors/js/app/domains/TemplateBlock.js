@@ -33,22 +33,105 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
     this.left;
     this.operator;
     this.conditions;
+	this.content;
     this.right;
 
     if(jsonConfig){
         this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
         this.section = (Object.isDefined(jsonConfig.section))? jsonConfig.section: null;
         this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
-        this.type = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
+        this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
         this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
+        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: { type: "var", content: {} };
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
         this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: null;
+	    this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
+        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: { type: "text", content: "" };
     }
 
+	function createTextContent(text){
+		return { type: "text",
+			content: text };
+	}
 
-    this.toString = function () {
+	/* TODO: Decouple from TemplateVariableContent */
+	function createVarContent(variable){
+		return { type: "var",
+			content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
+	}
+
+	function transformTextContent(variableNamedHash){
+
+		if(this.type == "text"){
+			var tag = '<code class="ta-insert-variable">';
+			var contents = [];
+			var fragments = this.content.split(/<code class="ta-insert-variable">\s*\(([^\(\)]+)\)\s*<\/code>/);
+
+			fragments.forEach(function(frag){
+				var varName = variableNamedHash[frag];
+
+				var content = (varName) ? createVarContent(varName) : createTextContent(frag);
+				contents.push(content);
+			});
+			this.contents = contents;
+			delete(this.content);
+		}
+	}
+
+	function autoGenerateFields(variableNamedHash){
+
+		if(this.type == "text"){
+			this.summary = "";
+			this.name = Object.isDefined(this.name) ? this.name :"";
+			var setTitle = this.name.trim() == "";
+
+			for(var i=0; ((setTitle && this.name < 10) || this.summary.length < 50)
+				&&  i< this.contents.length; i++){
+				var blockContent = this.contents[i];
+				if(blockContent.type == "text"){
+					this.summary += blockContent.content;
+
+					if(setTitle && this.name.length < 10){
+						var neededChars = 10 - this.name.length;
+						this.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
+					}
+				}
+				if(blockContent.type == "var"){
+					var varName = blockContent.content.getName();
+					this.summary += varName;
+
+					if(setTitle && this.name.length < 10){
+						this.name += varName;
+					}
+				}
+			}
+		}
+
+		if(Object.isDefined(this.children)){
+			this.children.forEach(function(block){ transformTextContent.call(block, variableNamedHash); });
+		}
+	}
+
+	/* TODO: Decouple from TemplateVariableContent */
+	function sentTextContent(){
+		this.content = "";
+
+		if(this.contents){
+			this.contents.forEach(function(content){
+				if(content.type == "text"){
+					//horrible naming.. sorry no time
+					this.content += content.content;
+				}
+				if(content.type == "var"){
+					var varObj = new EScreeningDashboardApp.models.TemplateVariableContent(content.content);
+
+					this.content += '<code class="ta-insert-variable" variable-id="' + varObj.id + '">(' + varObj.getName() + ')</code>&nbsp;';
+				}
+			}, this);
+		}
+	}
+
+    function toString() {
         return "TemplateBlock [guid: " + guid +
             ",section: " + this.section +
             ", name: " + this.name +
@@ -58,5 +141,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
             ", operator: " + this.operator +
             ", rightVariable: " + this.right +
             ", conditions: " + this.conditions + "]";
-    };
+    }
+
+	this.autoGenerateFields = autoGenerateFields;
+	this.sentTextContent = sentTextContent;
+	this.toString = toString;
+	this.transformTextContent = transformTextContent;
 };

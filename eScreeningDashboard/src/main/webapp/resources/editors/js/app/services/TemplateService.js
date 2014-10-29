@@ -14,6 +14,13 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             service = restAngular.service("services/template");
 
         restAngular.extendModel("services/template", function(model) {
+
+
+	        angular.forEach(model.blocks, function(block) {
+		        /* Adding the TemplateBlock subclass to each block, rather reluctantly */
+		        angular.extend(block, new EScreeningDashboardApp.models.TemplateBlock(block));
+	        });
+
             return angular.extend(model, Template);
         });
         
@@ -26,4 +33,3 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             }
         }
     }]);
-        

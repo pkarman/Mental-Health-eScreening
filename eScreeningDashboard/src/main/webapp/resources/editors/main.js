@@ -107,38 +107,15 @@ Editors.config(function(RestangularProvider, $provide) {
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
                         $scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
-						$scope.assessmentVariable = {
+						$scope.assessmentVariable = {};
 
-							setType: function () {
-								switch (this.typeId) {
-									case 1:
-										this.type = "Measure";
-										break;
-									case 2:
-										this.type = "Measure Answer";
-										break;
-									case 3:
-										this.type = "Custom";
-										break;
-									case 4:
-										this.type = "Formula";
-										break;
-									default:
-										this.type = "Other";
-								}
-							}
-						};
+						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-						angular.extend($scope.assessmentVariable, new EScreeningDashboardApp.models.AssessmentVariable());
+							var embed;
 
-                        // Passing in true to third param of $watch for deep collection checking
-                        $scope.$watch('assessmentVariable', function(assessmentVariable) {
+							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
 
-	                        var embed;
-
-	                        if (assessmentVariable && assessmentVariable.id) {
-
-		                        embed = '<code class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + assessmentVariable.getName() + ')</code>&nbsp;';
+		                        embed = '<code class="ta-insert-variable" variable-id="' + $scope.assessmentVariable.id + '">(' + $scope.assessmentVariable.getName() + ')</code>&nbsp;';
 
 		                        // Manualy insert embed at current position
 		                        $('textarea').insertAtCaret( embed );
@@ -164,7 +141,8 @@ Editors.config(function(RestangularProvider, $provide) {
 			activeState: function(commonElement){
 				var result = false;
 				return this.$editor().queryCommandState('ta-insert-variable');
-			},
+			}
+			/*,
 			onElementSelect: {
 				element: 'code',
 				action: function (event, $element, editorScope) {
@@ -192,45 +170,22 @@ Editors.config(function(RestangularProvider, $provide) {
 
 								$scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
-								$scope.assessmentVariable = {
+								$scope.assessmentVariable = {};
 
-									setType: function () {
-										switch (this.typeId) {
-											case 1:
-												this.type = "Measure";
-												break;
-											case 2:
-												this.type = "Measure Answer";
-												break;
-											case 3:
-												this.type = "Custom";
-												break;
-											case 4:
-												this.type = "Formula";
-												break;
-											default:
-												this.type = "Other";
-										}
-									}
-								};
+								$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-								angular.extend($scope.assessmentVariable, new EScreeningDashboardApp.models.AssessmentVariable());
+									if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
 
-								// Passing in true to third param of $watch for deep collection checking
-								$scope.$watch('assessmentVariable', function(assessmentVariable) {
+										$element.text($scope.assessmentVariable.getName());
 
-									if (assessmentVariable && assessmentVariable.id) {
-
-										$element.text(assessmentVariable.getName());
-
-										$element.attr('attribute-id', assessmentVariable.id);
+										$element.attr('attribute-id', $scope.assessmentVariable.id);
 
 										editorScope.updateTaBindtaHtmlElement();
 
 										$modalInstance.close();
 									}
 
-								}, true);
+								});
 
 								$scope.cancel = function() {
 									$modalInstance.dismiss();
@@ -257,6 +212,7 @@ Editors.config(function(RestangularProvider, $provide) {
 					editorScope.showPopover($element);
 				}
 			}
+			*/
 		});
 		// add the button to the default toolbar definition
 		$delegate.toolbar[$delegate.toolbar.length] = ['addVariable'];

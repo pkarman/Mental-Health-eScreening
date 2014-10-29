@@ -244,154 +244,29 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 			controller: function($scope, $modalInstance, template) {
 
 				$scope.templateName = template.name;
-                $scope.createTemplateBlock = function () {
-                    var factoryConfig = {
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        }
-                    };
-                    return new EScreeningDashboardApp.models.TemplateBlock(factoryConfig);
-                };
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock) ? angular.copy(selectedBlock.$modelValue) : $scope.createTemplateBlock();
-				sentTextContent($scope.block);
-				
-				
+				$scope.block = selectedBlock || new EScreeningDashboardApp.models.TemplateBlock();
+
+				$scope.block.sentTextContent();
+
 				// Dismiss modal
-				$scope.cancel = function() {
+				$scope.cancel = function () {
 					$modalInstance.dismiss('cancel');
 				};
 
 				// Close modal and pass updated block to the page
-				$scope.close = function() {
+				$scope.close = function () {
 
-				    transformTextContent($scope.block);
-				    autoGenerateFields($scope.block);
-				    
-					if (selectedBlock) {
-						selectedBlock = $scope.block;
-					} else {
-						template.blocks.push($scope.block)
-					}
-					
-			        $scope.templateChanged();
+					$scope.block.transformTextContent($scope.variableNamedHash);
+					$scope.block.autoGenerateFields($scope.variableNamedHash);
+
+					if (!selectedBlock) template.blocks.push($scope.block);
+
+					$scope.templateChanged();
 					$modalInstance.close();
 				};
-				
-				
-				//TODO: This should be moved into the correct domain object
-				function transformTextContent(block){
-				    if(!Object.isDefined(block))
-				        return;
-				    
-				   // "<code class="ta-insert-variable" variable-id="123" >(ESCREENING_PACKET_VERSION)</code> <br/><p>&#160;&#160;&#160; <br/></p>"
-				    
-				    if(block.type == "text"){
-				        var tag = '<code class="ta-insert-variable">';
-				        var contents = [];
-				        var fragments = block.content.split(/<code class="ta-insert-variable">\s*\(([^\(\)]+)\)\s*<\/code>/);
-				        
-				        fragments.forEach(function(frag){
-				            var varName = $scope.variableNamedHash[frag];
-				            
-				            content = (varName) ? createVarContent(varName) : createTextContent(frag);
-				            contents.push(content);			            
-				        });
-				        block.contents = contents;
-				        delete(block.content);
-				    }
-				     
-				     if(Object.isDefined(block.children)){
-				        block.children.forEach(function(block){ transformTextContent(block); });
-				     }
-				}
-				function createTextContent(text){
-				    return { type: "text", 
-			                 content: text };
-				}
-				
-				function createVarContent(variable){
-				    
-                    return { type: "var",
-                             content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
-                }
-				
-				function autoGenerateFields(block){
-				    if(!Object.isDefined(block))
-                        return;
-				    
-				    if(block.type == "text"){
-				        block.summary = "";
-				        block.name = Object.isDefined(block.name) ? block.name :"";
-				        var setTitle = block.name.trim() == "";
-				        
-				        for(var i=0; ((setTitle && block.name < 10) || block.summary.length < 50) 
-				                    &&  i< block.contents.length; i++){
-				            var blockContent = block.contents[i];
-				            if(blockContent.type == "text"){
-				                block.summary += blockContent.content;
-				                
-				                if(setTitle && block.name.length < 10){
-				                    var neededChars = 10 - block.name.length; 
-				                    block.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
-				                }
-				            }
-				            if(blockContent.type == "var"){
-				                var varName = blockContent.content.getName();
-				                block.summary += varName;
-				                
-				                if(setTitle && block.name.length < 10){
-                                    block.name += varName;
-                                }
-				            }
-				        }
-				    }
-//				    if(block.type == "if" ||block.type == "else" ||block.type == "ifelse"){
-//				        
-//				        if(block.contents){
-//				            block.contents.forEach(function(content){
-//				                if(content.left && content.left.content ){
-//    	                            var contentObj =  new EScreeningDashboardApp.models.TemplateVariableContent(content.left.content);
-//    	                            
-//    	                            var message =  contentObj.getName();
-//    	                            block.summary = message;
-//    	                            block.name = block.name && block.name.trim().length >0 ? block.name : message;
-//				                }  
-//				            });
-//				        }
-//				            
-//				         
-//				    }
-				    
-			    if(Object.isDefined(block.children)){
-                        block.children.forEach(function(block){ transformTextContent(block); });
-                    }
-				}
-				
-				function sentTextContent(block){
-				    block.content = "";
-				    
-				    if(block.contents){    
-				        block.contents.forEach(function(content){
-				            if(content.type == "text"){
-				                //horrible naming.. sorry no time
-				                block.content += content.content;
-				            }
-				            if(content.type == "var"){
-				                var varObj = new EScreeningDashboardApp.models.TemplateVariableContent(content.content);
-				                
-				                block.content += '<code class="ta-insert-variable" variable-id="' + varObj.id + '">(' + varObj.getName() + ')</code>&nbsp;';
-				            }
-				        })
-				    }
-				}
-				
+
 			}
 		});
 	};
