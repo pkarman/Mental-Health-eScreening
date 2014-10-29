@@ -52,35 +52,6 @@ Editors.directive('ngReallyClick', [function() {
 
 Editors.config(function(RestangularProvider, $provide) {
 
-	// jQuery insertAtCaret plugin - can you say haaaaaack??!!
-	jQuery.fn.extend({
-		insertAtCaret: function(myValue){
-			return this.each(function(i) {
-				if (document.selection) {
-					//For browsers like Internet Explorer
-					this.focus();
-					var sel = document.selection.createRange();
-					sel.text = myValue;
-					this.focus();
-				}
-				else if (this.selectionStart || this.selectionStart == '0') {
-					//For browsers like Firefox and Webkit based
-					var startPos = this.selectionStart;
-					var endPos = this.selectionEnd;
-					var scrollTop = this.scrollTop;
-					this.value = this.value.substring(0, startPos)+myValue+this.value.substring(endPos,this.value.length);
-					this.focus();
-					this.selectionStart = startPos + myValue.length;
-					this.selectionEnd = startPos + myValue.length;
-					this.scrollTop = scrollTop;
-				} else {
-					this.value += myValue;
-					this.focus();
-				}
-			});
-		}
-	});
-
     $provide.decorator('taOptions', ['taRegisterTool', 'taSelectableElements', 'taCustomRenderers', '$delegate', '$modal', function(taRegisterTool, taSelectableElements, taCustomRenderers, $delegate, $modal){
 
 	    // Add <code></code> as selectable element
@@ -107,54 +78,15 @@ Editors.config(function(RestangularProvider, $provide) {
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
                         $scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
-                        $scope.assessmentVariable = {
-                            id: null,
-                            answerId: null,
-                            measureId: null,
-                            measureTypeId: null,
-                            typeId: null,
-                            name: null,
-                            displayName: null,
-                            getName: function () {
-                                return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
-                            },
-                            setType: function () {
-                                switch (this.typeId) {
-                                    case 1:
-                                        this.type = "Measure";
-                                        break;
-                                    case 2:
-                                        this.type = "Measure Answer";
-                                        break;
-                                    case 3:
-                                        this.type = "Custom";
-                                        break;
-                                    case 4:
-                                        this.type = "Formula";
-                                        break;
-                                    default:
-                                        this.type = "Other";
-                                }
-                            },
-                            toString: function () {
-                                return "AssessmentVariable [id: " + this.id +
-                                    ", answerId: " + this.answerId +
-                                    ", measureId: " + this.measureId +
-                                    ", measureTypeId: " + this.measureTypeId +
-                                    ", typeId: " + this.typeId +
-                                    ", name: " + this.name +
-                                    ", displayName: " + this.displayName + "]";
-                            }
-                        };
+						$scope.assessmentVariable = {};
 
-                        // Passing in true to third param of $watch for deep collection checking
-                        $scope.$watch('assessmentVariable', function(assessmentVariable) {
+						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-	                        var embed;
+							var embed;
 
-	                        if (assessmentVariable && assessmentVariable.id) {
+							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
 
-		                        embed = '<code class="ta-insert-variable" variable-id="' + assessmentVariable.id + '">(' + assessmentVariable.getName() + ')</code>&nbsp;';
+		                        embed = '<code class="ta-insert-variable" variable-id="' + $scope.assessmentVariable.id + '">(' + $scope.assessmentVariable.getName() + ')</code>&nbsp;';
 
 		                        // Manualy insert embed at current position
 		                        $('textarea').insertAtCaret( embed );
@@ -180,7 +112,8 @@ Editors.config(function(RestangularProvider, $provide) {
 			activeState: function(commonElement){
 				var result = false;
 				return this.$editor().queryCommandState('ta-insert-variable');
-			},
+			}
+			/*,
 			onElementSelect: {
 				element: 'code',
 				action: function (event, $element, editorScope) {
@@ -208,61 +141,22 @@ Editors.config(function(RestangularProvider, $provide) {
 
 								$scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
 
-								$scope.assessmentVariable = {
-									id: null,
-									answerId: null,
-									measureId: null,
-									measureTypeId: null,
-									typeId: null,
-									name: null,
-									displayName: null,
-									getName: function () {
-										return (Object.isDefined(this.name))? this.name : (Object.isDefined(this.displayName)? this.displayName: 'var' + this.id);
-									},
-									setType: function () {
-										switch (this.typeId) {
-											case 1:
-												this.type = "Measure";
-												break;
-											case 2:
-												this.type = "Measure Answer";
-												break;
-											case 3:
-												this.type = "Custom";
-												break;
-											case 4:
-												this.type = "Formula";
-												break;
-											default:
-												this.type = "Other";
-										}
-									},
-									toString: function () {
-										return "AssessmentVariable [id: " + this.id +
-											", answerId: " + this.answerId +
-											", measureId: " + this.measureId +
-											", measureTypeId: " + this.measureTypeId +
-											", typeId: " + this.typeId +
-											", name: " + this.name +
-											", displayName: " + this.displayName + "]";
-									}
-								};
+								$scope.assessmentVariable = {};
 
-								// Passing in true to third param of $watch for deep collection checking
-								$scope.$watch('assessmentVariable', function(assessmentVariable) {
+								$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-									if (assessmentVariable && assessmentVariable.id) {
+									if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
 
-										$element.text(assessmentVariable.getName());
+										$element.text($scope.assessmentVariable.getName());
 
-										$element.attr('attribute-id', assessmentVariable.id);
+										$element.attr('attribute-id', $scope.assessmentVariable.id);
 
 										editorScope.updateTaBindtaHtmlElement();
 
 										$modalInstance.close();
 									}
 
-								}, true);
+								});
 
 								$scope.cancel = function() {
 									$modalInstance.dismiss();
@@ -289,6 +183,7 @@ Editors.config(function(RestangularProvider, $provide) {
 					editorScope.showPopover($element);
 				}
 			}
+			*/
 		});
 		// add the button to the default toolbar definition
 		$delegate.toolbar[$delegate.toolbar.length] = ['addVariable'];
