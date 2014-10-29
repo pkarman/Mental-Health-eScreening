@@ -21,6 +21,7 @@ import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -314,7 +316,7 @@ public class TemplateServiceImpl implements TemplateService {
 				ObjectMapper om = new ObjectMapper();
 				try
 				{
-					dto.setBlocks((List<INode>) om.readValue(t.getJsonFile(), List.class));
+					dto.setBlocks(Arrays.asList( om.readValue(t.getJsonFile(), INode[].class)));
 				}catch(IOException e)
 				{
 					e.printStackTrace();

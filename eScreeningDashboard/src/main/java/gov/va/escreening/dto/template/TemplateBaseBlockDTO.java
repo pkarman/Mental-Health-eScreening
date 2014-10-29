@@ -4,10 +4,19 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
+@JsonSubTypes({ @Type(value = TemplateTextDTO.class, name = "text"), 
+			@Type(value = TemplateIfBlockDTO.class, name = "if"),
+			@Type(value = TemplateElseIfBlockDTO.class, name = "elseif"),
+			@Type(value = TemplateElseBlockDTO.class, name = "else")
+			})
 public class TemplateBaseBlockDTO implements INode{
 	private String summary;
 	private String name;

@@ -3,6 +3,7 @@ package gov.va.escreening.dto.template;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
@@ -80,6 +81,9 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 		
 		return sb.toString();
 	}
+	
+	@JsonProperty("type")
+	private String nodeType(){return "if";}
 	
 	
 }

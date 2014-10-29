@@ -5,10 +5,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+
 public class TemplateTextDTO extends TemplateBaseBlockDTO {
+	
+	@JsonProperty("type")
+	private String nodeType(){return "text";}
 	private List<TemplateBaseContent> contents;
 
 	public List<TemplateBaseContent> getContents() {
