@@ -116,7 +116,7 @@
 		width: 98%;
 	}
 .progressEntry{
-    width: 128px !important;
+    width: 112px !important;
     height: 76px !important;
     padding-top:4px !important;
   
@@ -146,6 +146,14 @@
   th.matrixQuestion{
     width: 18%;
   }
+  
+  
+  div.progressEntry{
+    padding: 10px 0 12%;
+    margin-top: 4px;
+  }
+
+  
 }
 
 @media all and (max-width: 700px) {

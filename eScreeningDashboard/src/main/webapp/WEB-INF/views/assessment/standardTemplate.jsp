@@ -75,7 +75,11 @@
 			}
 		</style>
 		
-		
+		<script type="text/javascript">
+          $(function() {
+        	 
+          });
+      </script>
 		
 	</head>
 	<body>
