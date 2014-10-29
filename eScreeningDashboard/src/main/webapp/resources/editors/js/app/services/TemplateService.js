@@ -14,7 +14,11 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             service = restAngular.service("services/template");
 
         restAngular.extendModel("services/template", function(model) {
-            return angular.extend(model, Template);
+            //this is done because during a put the server does not return the same object that was saved.
+            if(typeof(model) == "object"){
+                return angular.extend(model, Template);
+            }
+            return model;
         });
         
         return {

@@ -92,7 +92,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 }
                 
                 //allow dropping at the top of all blocks for text and if types
-                if(destIsRoot ){
+                if(destIsRoot){
                     log("In root; if dragging text or if then drop, otherwise no drop");
                     return dragType == "text" || dragType == "if";
                 }
@@ -151,7 +151,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     if(destParent.type == "if"){
                         log("destIndex: " + destIndex + " <= firstElseIndex: " + firstElseIndex);
                         //PLEASE NOTE: there seems to be a bug in ui-tree which gives the wrong index if 
-                        // you quickly move from the first node under the if to right under an elseif of the same if the index is still 1 which is incorrect
+                        // you quickly move from the first node under the if to right under an elseif of 
+                        // the same if the index is still 1 which is incorrect (could not reproduce this with Chrome)
                         return destIndex <= firstElseIndex;
                     }
                 }
@@ -194,6 +195,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 // So even though this operation should be allowed it is not at this time. The strange thing is that if the last 
                 // element of the If block is a text block, it will allow you to drop the else as a sibling
                 
+                //There is also a bug in ui-tree which, when using Chrome, it doesn't allow for an else to be dragged from below an else even 
+                //though this function allows it. 
                 
                 log("Allowed to drop here");
                 return true;
