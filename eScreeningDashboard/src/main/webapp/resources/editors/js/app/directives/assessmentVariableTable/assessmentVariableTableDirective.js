@@ -18,7 +18,10 @@
                 $scope.assessmentVariableTypes = ['Question', 'Answer', 'Custom', 'Formula'];
 
                 $scope.selectAssessmentVariable = function(someAssessmentVariable) {
-                    // Adding this here because the code above doesn'ter trigger a change on $scope.$watch
+	                // This is needed to trigger a change on $scope.$watch
+	                angular.copy(someAssessmentVariable,$scope.assessmentVariable);
+
+                    // This is also needed to the populate the $scope.assessmentVariable
 	                $scope.assessmentVariable = someAssessmentVariable;
 
                     $scope.$emit('closeAssessmentVariableMenuRequested', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
