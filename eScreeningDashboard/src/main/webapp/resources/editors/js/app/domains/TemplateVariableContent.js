@@ -78,7 +78,7 @@ EScreeningDashboardApp.models.TemplateVariableContent = function (jsonConfig) {
             ", displayName: " + this.displayName +
             ", answerId: " + this.answerId +
             ", measureId: " + this.measureId +
-            ", measureTypeId: " + this.measureTypeid +
+            ", measureTypeId: " + this.measureTypeId +
             ", transformations: " + this.transformations + "]";
     };
 };
