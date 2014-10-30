@@ -149,6 +149,13 @@
                     selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
                 };
 
+                scope.removeConditionBlock = function(selectedBlockConditions, selectedCondition) {
+                    var selectedConditionIndex = selectedBlockConditions.indexOf(selectedCondition);
+                    if(selectedConditionIndex > -1) {
+                        selectedBlockConditions.splice(selectedConditionIndex, 1);
+                    }
+                };
+
             }
         };
 

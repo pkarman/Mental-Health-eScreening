@@ -94,8 +94,9 @@
         </div>
         <div class="col-md-2 pull-right">
             <div class="pull-right blockLableMarginTop">
-                <button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
-                <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button>
+                <!--button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
+                <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button-->
+                <button title="MINUS" class="btn btn-default" ng-click="removeConditionBlock(block.conditions, condition)"><i class="fa fa-minus"></i></button>
             </div>
             <div class="clearfix"></div>
         </div>
