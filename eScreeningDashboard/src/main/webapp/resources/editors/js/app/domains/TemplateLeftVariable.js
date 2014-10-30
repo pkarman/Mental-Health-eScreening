@@ -36,7 +36,7 @@ EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: null;
         if(!Object.isDefined(this.content)) {
             if (this.type === "text") {
-                this.content = new EScreeningDashboardApp.models.TemplateTextContent.create(jsonConfig.content);
+                this.content = jsonConfig.content;
             } else if (this.type === "var") {
                 this.content = new EScreeningDashboardApp.models.TemplateVariableContent.create(jsonConfig.content);
             }
