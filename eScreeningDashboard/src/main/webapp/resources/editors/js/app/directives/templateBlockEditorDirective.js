@@ -46,12 +46,12 @@
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
-	                { name: 'Equals',                    value: 'eq',    category: 'nonselect' },
-	                { name: 'Doesn\'t Equals',           value: 'neq',   category: 'nonselect' },
-	                { name: 'Is Less Than',              value: 'lt',    category: 'nonselect' },
-	                { name: 'Is Greater Than',           value: 'gt',    category: 'nonselect' },
-	                { name: 'Is Less Than or Equals',    value: 'lte',   category: 'nonselect' },
-	                { name: 'Is Greater Than or Equals', value: 'gte',   category: 'nonselect' },
+	                { name: 'Equals',                    value: 'eq',    category: 'numerical' },
+	                { name: 'Doesn\'t Equals',           value: 'neq',   category: 'numerical' },
+	                { name: 'Is Less Than',              value: 'lt',    category: 'numerical' },
+	                { name: 'Is Greater Than',           value: 'gt',    category: 'numerical' },
+	                { name: 'Is Less Than or Equals',    value: 'lte',   category: 'numerical' },
+	                { name: 'Is Greater Than or Equals', value: 'gte',   category: 'numerical' },
 
 	                { name: 'Was Answered',     value: 'answered',   category: 'question' },
 	                { name: 'Wasn\'t Answered', value: 'nanswered', category: 'question' },
@@ -79,20 +79,21 @@
                 };
 
                 var filterOperators = function(operator) {
-                    var selectMeasureIds = [2, 3, 6, 7];
                     var includeOperator = false;
-                    if(operator.category.toLowerCase() === "nonselect" && (this.type.toUpperCase() === "QUESTION")) {
-                        if(selectMeasureIds.indexOf(this.measureTypeId) <= -1){
+                    if(operator.category.toLowerCase() === "numerical") {
+                        if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
+                            includeOperator = true;
+                        } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
                             includeOperator = true;
                         }
-                    } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "ANSWER")) {
-                        if(Object.isDefined(this.measureTypeId)){
-                            includeOperator = true;
-                        }
+                    } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
+                        includeOperator = true;
                     } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
                         includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "CUSTOM")) {
-                        includeOperator = true;
+                    } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
+                        if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
+                            includeOperator = true;
+                        }
                     }
                     return includeOperator;
                 };
