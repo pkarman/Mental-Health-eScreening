@@ -75,11 +75,7 @@
 			}
 		</style>
 		
-		<script type="text/javascript">
-          $(function() {
-        	 
-          });
-      </script>
+		
 		
 	</head>
 	<body>
@@ -186,6 +182,10 @@
         		Please answer each question before creating a new entry
         	</div>
         </div>
-        
+
+
+     
+      
+              
 	</body>
 </html>

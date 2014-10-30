@@ -1,11 +1,11 @@
+/*
 body {
-	/*
 	margin: 0;
 	padding-left: 205px;
 	padding-right: 70px;
 	min-width: 240px;
-	*/
-}
+	
+}*/
 
 /* JH - Focus add 
 a:focus, input:focus, select:focus, .checkSwitch:focus{ 
@@ -16,7 +16,6 @@ a:focus, input:focus, select:focus, .checkSwitch:focus{
 .selectMultiInput:focus{
   border:3px solid red;
 }
-
 div:focus{
    outline: none  !important;
    border-color: #9ecaed !important;
@@ -28,7 +27,24 @@ div:focus{
    border-color: #9ecaed  !important;
    box-shadow: 0 0 10px #9ecaed !important;
 }
- */
+*/
+/*
+div.checkSwitch:focus + div:before { 
+    outline: none !important;
+    border-color: #9ecaed !important;
+    box-shadow: 0 0 10px #9ecaed !important;
+    border:1px solid red;
+}
+*/
+
+/* JH - add Focus  for Checkbox (for JQuery) + Radio Buttons */
+.checkFocus, .ui-button:focus{
+  outline: none !important;
+  border-color: #9ecaed !important;
+  box-shadow: 0 0 20px #9ecaed !important;
+}
+
+
 
 #header, #footer {
 	margin-left: -206px; /* LC full width */
@@ -658,7 +674,14 @@ div.selectOneInput > input[type="radio"] + div:before {
 div.selectOneInput > input[type="radio"]:checked + div:before { 
 	background-position: -36px -133px;
 	background-color: red; 
-} 
+}
+
+div.selectOneInput > input[type="radio"]:focus + div:before { 
+    outline: none !important;
+    border-color: #9ecaed !important;
+    box-shadow: 0 0 20px #9ecaed !important;  
+}
+
 div.selectOneInput > input[type="radio"]:hover:checked + div:before,
 div.selectOneInput > input[type="radio"]:focus:checked + div:before  { 
 	background-position: -36px -166px; 
@@ -688,8 +711,8 @@ ul.selectMulti li, ul.selectOne li{
   	float: left;
   	clear: none;
   	/* width: 260px; */ /* JH */ 
-	width: 30%;
-	min-width:260px;
+    width: 30%;
+    min-width:260px;
 }
 
 ul.selectMulti li{
@@ -1147,6 +1170,7 @@ outline:#FF0004 dotted;
 		/* width: 260px; */ /* JH */ 
 		width: 30%;
 		min-width:260px;
+    margin-left:10px;
 	}
 
 }
