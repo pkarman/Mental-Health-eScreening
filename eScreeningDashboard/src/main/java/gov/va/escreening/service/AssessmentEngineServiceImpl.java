@@ -27,6 +27,7 @@ import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
@@ -50,9 +51,11 @@ import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -436,6 +439,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				}
 			}
 		}
+		
+		if(measureVisibilityMap.isEmpty())
+		{
+			page.setHasVisibilityRules(false);
+		}
 		return page;
 	}
 
@@ -523,16 +531,20 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
 
-		Map<Integer, Boolean> visMap = measureVisibilityRepository
+		Map<Integer, Boolean> visMap = new HashMap<Integer, Boolean>();
+		List<Integer> measuresToDelete = new ArrayList<Integer>();
+		/*measureVisibilityRepository
 				.getVisibilityMapForSurveyPage(
 						assessmentRequest.getAssessmentId(),
-						assessmentRequest.getPageId());
+						assessmentRequest.getPageId());*/
 
-		AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
-				visMap).setErrorResponse(errorResponse);
+//		AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
+//				visMap).setErrorResponse(errorResponse);
 		Set<gov.va.escreening.entity.Measure> tableMeasures = new HashSet<gov.va.escreening.entity.Measure>();
 		for (Measure measure : assessmentRequest.getUserAnswers()) {
-
+			visMap.put(measure.getMeasureId(), measure.getIsVisible());
+			AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
+					visMap).setErrorResponse(errorResponse);
 			// Get the data validation for this measure.
 			gov.va.escreening.entity.Measure dbMeasure = measureRepository
 					.findOne(measure.getMeasureId());
@@ -556,13 +568,17 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			// set the new measure
 			submissionBuilder.setMeasure(measure, dbMeasure);
 
-			if (measure.getAnswers() != null) {
+			if (measure.getIsVisible() && measure.getAnswers() != null) {
 				// Now, for each answer, we need to validate and then save add
 				// response to surveyMeasureResponseList.
 				prepareSurveyResponseList(surveyMeasureResponseList,
 						errorResponse, assessmentRequest, measure,
 						submissionBuilder, veteranAssessment, surveyPage,
 						dbMeasure);
+			}
+			else
+			{
+				measuresToDelete.add(measure.getMeasureId());
 			}
 		}
 
@@ -587,7 +603,23 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 					surveyMeasureResponseRepository.update(response);
 				}
 			}
-
+			
+			List<VeteranAssessmentMeasureVisibility> visList = measureVisibilityRepository.getVisibilityListFor(assessmentRequest.getAssessmentId());
+			for(VeteranAssessmentMeasureVisibility vis : visList)
+			{
+				if(visMap.containsKey(vis.getMeasure().getMeasureId()) && 
+						(vis.getIsVisible().booleanValue() != visMap.get(vis.getMeasure().getMeasureId())))
+				{
+					vis.setIsVisible(visMap.get(vis.getMeasure().getMeasureId()));
+					measureVisibilityRepository.update(vis);
+				}
+			}
+			
+			//now, delete the measure answers that are not valid anymore
+			if(!measuresToDelete.isEmpty())
+			{
+				surveyMeasureResponseRepository.deleteResponsesForMeasures(assessmentRequest.getAssessmentId(), measuresToDelete);
+			}
 			// TODO: Currently only a Veteran can take the assessment, person
 			// type will need to be detected once a
 			// user can take an assessment to properly track the person_id

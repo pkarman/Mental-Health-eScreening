@@ -104,7 +104,7 @@ public class RuleServiceImpl implements RuleService {
 		for (SurveyMeasureResponse r : responses) {
 			measureCollection.add(r.getMeasure());
 		}
-		updateVisibilityForQuestions(veteranAssessmentId, measureCollection);
+		//updateVisibilityForQuestions(veteranAssessmentId, measureCollection);
 
 		List<Rule> rules = ruleRepository
 				.getRuleForAssessment(veteranAssessmentId);
