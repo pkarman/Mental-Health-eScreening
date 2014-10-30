@@ -282,6 +282,9 @@ $.ajax({
         <div class="clear-fix"></div>
       </div>
       
+
+</div>
+
       <!-- Modal -->
       <div class="modal fade" id="modal_confirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -328,7 +331,7 @@ $.ajax({
       </div>
     </form>
   </div>
-</div>
+
 
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 

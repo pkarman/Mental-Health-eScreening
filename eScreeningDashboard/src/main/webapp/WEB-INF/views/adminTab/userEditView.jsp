@@ -47,7 +47,7 @@
 				</nav><!--/.nav-collapse -->
 			</div>
 		</div>
-	</div>
+	
 
 	<div class="container left-right-shadow">
 
@@ -344,6 +344,7 @@
 		</div>
 
 	</div>
+  </div>
 
 	  <!-- Modal for ChangeP assword-->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">

@@ -24,12 +24,9 @@
 	type="text/css" />
 
 <!-- Bootstrap -->
-<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />"
-	rel="stylesheet" type="text/css" />
-<link
-	href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />"
-	rel="stylesheet" type="text/css">
-
+<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
+<link href="resources/vendor-libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript"
 	src="resources/js/jquery/jquery-1.10.2.min.js"></script>
@@ -134,17 +131,14 @@
 						<div id="mainContent">
 							<div align="right">
 								<a href="#" class="btn btn-default btn-xs"
-									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/csv" />')"><img
-									src="resources/images/csvIcon2.png" class="exportImg"
-									alt="CSV File">&nbsp;CSV</a> <a href="#"
-									class="btn btn-default btn-xs"
-									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/xls" />')"><img
-									src="resources/images/xlsIcon1.png" class="exportImg"
-									alt="Excel File">&nbsp;Excel</a> <a href="#"
-									class="btn btn-default btn-xs"
-									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/pdf" />')"><img
-									src="resources/images/pdfIcon4.png" class="exportImg"
-									alt="PDF File">&nbsp;PDF</a>
+									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/csv" />')"><i class="fa fa-file-o" title="CSV File"></i> CSV </a>
+                  
+                  <a href="#" class="btn btn-default btn-xs"
+									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/xls" />')">
+                  <i class="fa fa-file-excel-o" title="Excel File"></i> &nbsp;Excel</a>
+                  <a href="#" class="btn btn-default btn-xs"
+									ng-click="exportDataGrid('<c:url value="/dashboard/veteranSearch/services/veterans/search/report/pdf" />')">
+                  <i class="fa fa-file-pdf-o" title="PDF"></i> &nbsp;PDF </a>
 							</div>
 							<table class="jqueryDataTable table table-striped  table-hover"
 								id="veteranSearchTable" name="veteranSearchTable"

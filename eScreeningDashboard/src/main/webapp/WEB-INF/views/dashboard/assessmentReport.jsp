@@ -57,7 +57,7 @@
         </nav><!--/.nav-collapse -->
       </div>
     </div>
-</div>
+
 <div class="container  left-right-shadow  nonPrintableArea">
   <div class="row">
     <div class="col-md-12">
@@ -213,6 +213,7 @@
       <br>
     </div>
   </div>
+</div>
 </div>
 <div class="clearfix"></div>
 <!-- Modal -->
