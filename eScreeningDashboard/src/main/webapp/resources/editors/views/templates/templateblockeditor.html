@@ -96,7 +96,8 @@
             <div class="pull-right blockLableMarginTop">
                 <!--button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
                 <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button-->
-                <button title="MINUS" class="btn btn-default" ng-click="removeConditionBlock(block.conditions, condition)"><i class="fa fa-minus"></i></button>
+                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
+                      ng-click="removeConditionBlock(block.conditions, condition)"></span>
             </div>
             <div class="clearfix"></div>
         </div>
