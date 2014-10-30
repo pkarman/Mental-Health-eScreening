@@ -73,6 +73,38 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     //ng-tree options
     $scope.treeOptions = {
             dropped : function(event){
+                //work around because of a bug that occurs in firefox where a text block is able to be dropped between two elseifs 
+                var dragBlock = event.source.nodeScope.$modelValue;
+                if(dragBlock.type == "text" && event.source.index != event.dest.index){
+                    //look at dropped nodesScope and make sure the dropped text block is before the first elseif
+                    var destNodesScope = event.dest.nodesScope;
+                    var foundElse = false;
+                    for(var i = 0; i < destNodesScope.$modelValue.length; i++){
+                        var destBlock = destNodesScope.$modelValue[i];
+                        if(destBlock.type == "elseif" || destBlock.type == "else"){
+                            foundElse = true;
+                        }
+                        //TODO: We're using section here but really we should use scope ID. Unfortunately I'm unable to get to ui-tree-nodes.$nodes
+                        // if ui-tree-nodes.$nodes becomes available in ui-tree then we should iterate over destNodesScope.$nodes in the for loop below
+                        // and use .$id instead of section.
+                        else if(destBlock.section == dragBlock.section){
+                            if(foundElse){
+                                log("found erroneous state allowed by ui-tree bug in firefox. Reverting drop");
+                                
+                                event.source.nodeScope.remove();
+                                
+                                var sourceBlocks = event.source.nodesScope.$modelValue;
+                                
+                                sourceBlocks.splice(event.source.index, 0, dragBlock);
+                                
+                                return;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                    }
+                }
                 $scope.templateChanged();
             },
             accept: function(dragNodeScope, destNodesScope, destIndex){
