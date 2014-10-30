@@ -63,10 +63,14 @@ public class AssessmentVariableController {
 			@RequestParam("surveyId") Integer surveyId) {
 
 		if (surveyId == null || surveyId < 0) {
-			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("Could not find the template types with the survey with ID: " + surveyId).setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 
 		Table<String, String, Object> t = avs.getAssessmentVarsFor(surveyId);
+
+		if (t.isEmpty()) {
+			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin(String.format("No Measures were found to be available for Survey with an Id of %s", surveyId)).setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+		}
 
 		List<Map<String, Object>> avs = Lists.newArrayList();
 
