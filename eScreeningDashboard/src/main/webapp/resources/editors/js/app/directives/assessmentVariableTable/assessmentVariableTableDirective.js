@@ -15,7 +15,7 @@
                 data: '=assessmentVariables'
             },
             controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
-                $scope.assessmentVariableTypes = ['Question', 'Answer', 'Custom', 'Formula'];
+                $scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
 
                 $scope.selectAssessmentVariable = function(someAssessmentVariable) {
 	                // This is needed to trigger a change on $scope.$watch
