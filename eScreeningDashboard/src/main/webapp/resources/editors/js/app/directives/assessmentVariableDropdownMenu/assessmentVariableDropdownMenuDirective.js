@@ -41,10 +41,12 @@
                     }
 
                     if($scope.guid === data.guid) {
-                        if(!Object.isDefined(data.selectedVariableName)){
-                            throw new BytePushers.exceptions.NullPointerException("data.selectedVariableName parameter can not be undefined or null.");
+                        if(!Object.isDefined(data.selectedAssessmentVariable)){
+                            throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
+                        } else if(!Object.isDefined(data.selectedAssessmentVariable.name)) {
+                            throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable.name parameter can not be undefined or null.");
                         }
-                        $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedVariableName, 20));
+                        $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedAssessmentVariable.name, 20));
                         toggleAssessmentVariableSelectionTable();
                     }
                 });

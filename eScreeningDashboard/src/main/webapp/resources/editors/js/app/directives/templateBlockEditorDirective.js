@@ -63,33 +63,51 @@
 	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
 
-                scope.filteredOperators = scope.operators;
+                var globalOperators = [];
+
+                scope.getOperators = function (blockId) {
+                    if(Object.isDefined(globalOperators[blockId])){
+                        return globalOperators[blockId];
+                    } else {
+                        globalOperators[blockId] = scope.operators;
+                        return globalOperators[blockId];
+                    }
+                };
+
+                scope.setOperators = function (blockId, operators) {
+                    globalOperators[blockId] = operators;
+                };
+
                 var filterOperators = function(operator) {
                     var selectMeasureIds = [2, 3, 6, 7];
                     var includeOperator = false;
-                    if(operator.category.toLowerCase() === "nonselect" && (scope.block.left.content.type.toUpperCase() === "QUESTION")) {
-                        if(selectMeasureIds.indexOf(scope.block.left.content.measureTypeId) <= -1){
+                    if(operator.category.toLowerCase() === "nonselect" && (this.type.toUpperCase() === "QUESTION")) {
+                        if(selectMeasureIds.indexOf(this.measureTypeId) <= -1){
                             includeOperator = true;
                         }
-                    } else if(operator.category.toLowerCase() === "question" && (scope.block.left.content.type.toUpperCase() === "ANSWER")) {
-                        if(Object.isDefined(scope.block.left.content.measureTypeId)){
+                    } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "ANSWER")) {
+                        if(Object.isDefined(this.measureTypeId)){
                             includeOperator = true;
                         }
-                    } else if(operator.category.toLowerCase() === "formula" && (scope.block.left.content.type.toUpperCase() === "FORMULA")) {
+                    } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
                         includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "select" && (scope.block.left.content.type.toUpperCase() === "CUSTOM")) {
+                    } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "CUSTOM")) {
                         includeOperator = true;
                     }
                     return includeOperator;
                 };
 
-                scope.$watch('block.left.content', function (currentlySelectedAssessmentVariable, previouslySelectedAssessmentVariable) {
-                    if (currentlySelectedAssessmentVariable === previouslySelectedAssessmentVariable){
-
-                    } else {
-                        scope.filteredOperators = scope.operators.filter(filterOperators);
+                scope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
+                    if(!Object.isDefined(data)) {
+                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
                     }
-                }, true);
+
+                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
+                });
+
+                scope.filterOperators = function() {
+                    return filterOperators;
+                };
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
