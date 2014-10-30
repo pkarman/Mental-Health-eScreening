@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.core.env.Environment;
-
 /**
  * Created by pouncilt on 4/9/14.
  */
@@ -73,4 +71,5 @@ public interface VistaLinkClient {
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
     void closeConnection();
+	boolean savePainScale(VeteranAssessment veteranAssessment, String visitDate);
 }

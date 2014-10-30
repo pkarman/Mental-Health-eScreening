@@ -1,5 +1,6 @@
 package gov.va.escreening.vista;
 
+import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_RequestParameters;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_VistaLinkRequest;
@@ -26,16 +27,18 @@ import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
-public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLinkClient {
-	protected static final Logger logger = LoggerFactory.getLogger(VistaLinkRPC_Client2.class);
-	
+public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
+		VistaLinkClient {
+	protected static final Logger logger = LoggerFactory
+			.getLogger(VistaLinkRPC_Client2.class);
+
 	/**
 	 * inline template driven component to abstract rpc call
 	 * 
-	 * to use this component, the inherited class will have to provide facility to return the input parameters and to be
-	 * able to construct the esoteric result from the raw response
+	 * to use this component, the inherited class will have to provide facility
+	 * to return the input parameters and to be able to construct the esoteric
+	 * result from the raw response
 	 * 
 	 * @author khalid rizvi
 	 * 
@@ -51,9 +54,13 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 		 * @return
 		 * @throws VistaLinkClientException
 		 */
-		protected String callRpcWithInputs(Map m) throws VistaLinkClientException {
-			if (logger.isDebugEnabled()){logger.debug("Rpc With Inputs -- {}", m);}
-			VistaLinkConnection vistaLinkConnection = (VistaLinkConnection) m.get("vistaLinkConnection");
+		protected String callRpcWithInputs(Map m)
+				throws VistaLinkClientException {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Rpc With Inputs -- {}", m);
+			}
+			VistaLinkConnection vistaLinkConnection = (VistaLinkConnection) m
+					.get("vistaLinkConnection");
 			String rpcName = (String) m.get("rpcName");
 			List<Object> reqParams = (List<Object>) m.get("inputParams");
 
@@ -72,19 +79,26 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 			} catch (FoundationsException e) {
 				throw new VistaLinkClientException(e);
 			}
-			if (logger.isDebugEnabled()){logger.debug("Raw result for {} -- {}", rpcName, vResp.getRawResponse());}
+			if (logger.isDebugEnabled()) {
+				logger.debug("Raw result for {} -- {}", rpcName,
+						vResp.getRawResponse());
+			}
 			String results = vResp.getResults();
-			if (logger.isDebugEnabled()){logger.debug("Refined result for {} -- {}", rpcName, results);}
+			if (logger.isDebugEnabled()) {
+				logger.debug("Refined result for {} -- {}", rpcName, results);
+			}
 
 			return results;
 		}
 
 		/**
-		 * method to call rpc in a well defined step by step sequence (based on template design pattern)
+		 * method to call rpc in a well defined step by step sequence (based on
+		 * template design pattern)
 		 */
 		@Override
 		public T invokeRpc(VistaLinkConnection vistaLinkConnection,
-				RpcRequest request, String rpcName) throws VistaLinkClientException {
+				RpcRequest request, String rpcName)
+				throws VistaLinkClientException {
 
 			// 1. prepare inputs for rpc call to use
 			List<Object> inputs = prepareReqParams();
@@ -117,26 +131,49 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 		}
 	}
 
-	public VistaLinkRPC_Client2(VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory, VistaLinkVpidConnectionSpec vpidConnectionSpec, String appProxyName, String rpcContext) throws VistaLinkClientException {
-		super(vistaLinkManagedConnectionFactory, vpidConnectionSpec, appProxyName, rpcContext);
+	public VistaLinkRPC_Client2(
+			VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory,
+			VistaLinkVpidConnectionSpec vpidConnectionSpec,
+			String appProxyName, String rpcContext)
+			throws VistaLinkClientException {
+		super(vistaLinkManagedConnectionFactory, vpidConnectionSpec,
+				appProxyName, rpcContext);
 	}
 
-	public VistaLinkRPC_Client2(VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory, VistaLinkVpidConnectionSpec vpidConnectionSpec, String appProxyName, String rpcContext, Boolean useProprietaryMessageFormat, int connectionTimeOut) throws VistaLinkClientException {
-		super(vistaLinkManagedConnectionFactory, vpidConnectionSpec, appProxyName, rpcContext, useProprietaryMessageFormat, connectionTimeOut);
+	public VistaLinkRPC_Client2(
+			VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory,
+			VistaLinkVpidConnectionSpec vpidConnectionSpec,
+			String appProxyName, String rpcContext,
+			Boolean useProprietaryMessageFormat, int connectionTimeOut)
+			throws VistaLinkClientException {
+		super(vistaLinkManagedConnectionFactory, vpidConnectionSpec,
+				appProxyName, rpcContext, useProprietaryMessageFormat,
+				connectionTimeOut);
 	}
 
-	public VistaLinkRPC_Client2(VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory, VistaLinkDuzConnectionSpec duzConnectionSpec, String appProxyName, String rpcContext) throws VistaLinkClientException {
-		super(vistaLinkManagedConnectionFactory, duzConnectionSpec, appProxyName, rpcContext);
+	public VistaLinkRPC_Client2(
+			VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory,
+			VistaLinkDuzConnectionSpec duzConnectionSpec, String appProxyName,
+			String rpcContext) throws VistaLinkClientException {
+		super(vistaLinkManagedConnectionFactory, duzConnectionSpec,
+				appProxyName, rpcContext);
 	}
 
-	public VistaLinkRPC_Client2(VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory, VistaLinkDuzConnectionSpec duzConnectionSpec, String appProxyName, String rpcContext, Boolean useProprietaryMessageFormat, int connectionTimeOut) throws VistaLinkClientException {
-		super(vistaLinkManagedConnectionFactory, duzConnectionSpec, appProxyName, rpcContext, useProprietaryMessageFormat, connectionTimeOut);
+	public VistaLinkRPC_Client2(
+			VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory,
+			VistaLinkDuzConnectionSpec duzConnectionSpec, String appProxyName,
+			String rpcContext, Boolean useProprietaryMessageFormat,
+			int connectionTimeOut) throws VistaLinkClientException {
+		super(vistaLinkManagedConnectionFactory, duzConnectionSpec,
+				appProxyName, rpcContext, useProprietaryMessageFormat,
+				connectionTimeOut);
 	}
 
 	/**
 	 * Implementation of Appendix D, Para D7 of CPRS Reminder Dialogs
 	 * 
-	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
+	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-
+	 *      iE9sIdHle5u79F0_qrU/edit#
 	 */
 	@Override
 	public Map<String, Long> getIENsMapForResponseList() {
@@ -154,19 +191,22 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				Map<String, Long> respMap = new HashMap<String, Long>();
 				for (String res : resRows) {
 					String[] resAry = res.split("\\^");
-					respMap.put(String.format("%sIEN", resAry[0]), Long.valueOf(resAry[1]));
+					respMap.put(String.format("%sIEN", resAry[0]),
+							Long.valueOf(resAry[1]));
 				}
 				return respMap;
 			}
 		};
 
-		return rpcInvoker.invokeRpc(getConnection(), getRequest(), "ORWDX DLGDEF");
+		return rpcInvoker.invokeRpc(getConnection(), getRequest(),
+				"ORWDX DLGDEF");
 	}
 
 	/**
 	 * Implementation of Appendix D, Para D3 of CPRS Reminder Dialogs
 	 * 
-	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
+	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-
+	 *      iE9sIdHle5u79F0_qrU/edit#
 	 */
 	@Override
 	public Map<String, Long> getConsultationServiceNameDataSet2(
@@ -190,19 +230,23 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				String[] strAry = rawResponse.split("\\n");
 				for (String row : strAry) {
 					String[] tokens = row.split("\\^");
-					responseMap.put(tokens[1].trim(), Long.valueOf(tokens[tokens.length - 1].toString().trim()));
+					responseMap.put(tokens[1].trim(), Long
+							.valueOf(tokens[tokens.length - 1].toString()
+									.trim()));
 				}
 				return responseMap;
 			}
 		};
 
-		return rpcInvoker.invokeRpc(getConnection(), getRequest(), "ORQQCN SVC W/SYNONYMS");
+		return rpcInvoker.invokeRpc(getConnection(), getRequest(),
+				"ORQQCN SVC W/SYNONYMS");
 	}
 
 	/**
 	 * Implementation of Appendix D, Para D5 of CPRS Reminder Dialogs
 	 * 
-	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
+	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-
+	 *      iE9sIdHle5u79F0_qrU/edit#
 	 */
 
 	@Override
@@ -211,19 +255,28 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 			Boolean partInpatient, String partSex, Integer partAge,
 			Long locationIEN) {
 
-		ORWDXM1_BLDQRSP_RequestParameters rp = new ORWDXM1_BLDQRSP_RequestParameters(quickOrderIen, partPatientIEN, partLocationIEN, partProviderIEN, partInpatient, partSex, partAge, 0L, "C", 0L, 0L, 0L, Boolean.valueOf(false), locationIEN);
-		VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters> rCtxt = new ORWDXM1_BLDQRSP_VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters>(getRequest(), getConnection(), rp);
+		ORWDXM1_BLDQRSP_RequestParameters rp = new ORWDXM1_BLDQRSP_RequestParameters(
+				quickOrderIen, partPatientIEN, partLocationIEN,
+				partProviderIEN, partInpatient, partSex, partAge, 0L, "C", 0L,
+				0L, 0L, Boolean.valueOf(false), locationIEN);
+		VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters> rCtxt = new ORWDXM1_BLDQRSP_VistaLinkRequestContext<ORWDXM1_BLDQRSP_RequestParameters>(
+				getRequest(), getConnection(), rp);
 
-		VistaLinkRequest<Map<String, Object>> vistaReq = new ORWDXM1_BLDQRSP_VistaLinkRequest(rCtxt);
+		VistaLinkRequest<Map<String, Object>> vistaReq = new ORWDXM1_BLDQRSP_VistaLinkRequest(
+				rCtxt);
 		Map<String, Object> response = vistaReq.sendRequest();
-		if (logger.isDebugEnabled()){logger.debug(String.format("TBIConsultDisplayGroupIEN Data %s", response));}
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("TBIConsultDisplayGroupIEN Data %s",
+					response));
+		}
 		return Long.valueOf(response.get("DisplayGroupIEN").toString());
 	}
 
 	/**
 	 * Implementation of Appendix D, Para D9 of CPRS Reminder Dialogs
 	 * 
-	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
+	 * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-
+	 *      iE9sIdHle5u79F0_qrU/edit#
 	 */
 	@Override
 	public Map<String, Object> saveTBIConsultOrders(
@@ -232,8 +285,8 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 
 		return new VistaLinkRpcInvoker<Map<String, Object>>() {
 			/**
-			 * Input Parameters being collected for RpcRequest as per Appendex D, Para D9 of CPRS Reminder Dialogs
-			 * Document
+			 * Input Parameters being collected for RpcRequest as per Appendex
+			 * D, Para D9 of CPRS Reminder Dialogs Document
 			 * 
 			 * @return
 			 */
@@ -242,12 +295,16 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 
 				List<Object> reqParams = new ArrayList<Object>();
 				// 1. DFN (IEN of the patient) (Should already be known)
-				reqParams.add(Long.parseLong(veteranAssessment.getVeteran().getVeteranIen()));
+				reqParams.add(Long.parseLong(veteranAssessment.getVeteran()
+						.getVeteranIen()));
 				// 2. Provider IEN (Should already be known)
-				reqParams.add(Long.parseLong(veteranAssessment.getClinician().getVistaDuz()));
+				reqParams.add(Long.parseLong(veteranAssessment.getClinician()
+						.getVistaDuz()));
 				// 3.Location IEN (Step D1)
-				// Ming Zhu suggested to not use this but getthe clinic location from the veteran Assessment
-				// Long vistaLocationIEN=findLocation("PRIMARY CARE", null, true).getIen();
+				// Ming Zhu suggested to not use this but getthe clinic location
+				// from the veteran Assessment
+				// Long vistaLocationIEN=findLocation("PRIMARY CARE", null,
+				// true).getIen();
 				reqParams.add(veteranAssessment.getClinic().getVistaIen());
 				// 4. Order Dialog (Should always be “GMRCOR CONSULT”)
 				reqParams.add(String.valueOf("GMRCOR CONSULT"));
@@ -258,7 +315,8 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				// 7. ORIFN - null if new order (Always be null for e-screening)
 				reqParams.add("");
 				// 8. Response List (Variables are defined in Step D7)
-				reqParams.add(getRefRespLst(veteranAssessment, exportColumnsMap));
+				reqParams
+						.add(getRefRespLst(veteranAssessment, exportColumnsMap));
 				// 9. ORDEA (Doesn’t seem to be used - Leave Blank)
 				reqParams.add("");
 				// 10. Appointment (Doesn’t seem to be used - Leave Blank)
@@ -281,36 +339,76 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				Map<String, Object> respLstMap = new LinkedHashMap<String, Object>();
 
 				// 1. ARRAY(OrderIEN,1)=IEN of Service (Step D3)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ORDERABLEIEN".toUpperCase()))), getConsultationServiceNameDataSet2("1", "1", true).get("TBI/POLYTRAUMA SUPPORT CLINIC TEAM"));
+				respLstMap
+						.put(RpcRequest.buildMultipleMSubscriptKey(String
+								.format("%s,1", respListMap.get("ORDERABLEIEN"
+										.toUpperCase()))),
+								getConsultationServiceNameDataSet2("1", "1",
+										true).get(
+										"TBI/POLYTRAUMA SUPPORT CLINIC TEAM"));
 				// 2. ARRAY(CommentIEN,1)=”ORDIALOG("”WP”",CommentIEN,1)”
 				Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", commentIEN)), String.format("ORDIALOG(\"WP\",%s,1)", commentIEN));
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1", commentIEN)), String.format(
+						"ORDIALOG(\"WP\",%s,1)", commentIEN));
 				// 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)), prepareTbiConsultReasonText(exportColumnsMap));
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("\"WP\",%s,1,1,0", commentIEN)),
+						prepareTbiConsultReasonText(exportColumnsMap));
 				// 4. ARRAY(ClassIEN,1)= Class(“O” or “I”)(Step D6a)
-				Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
-				Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ClassIEN".toUpperCase()))), partInpatient ? "I" : "O");
+				Long patientIen = Long.valueOf(veteranAssessment.getVeteran()
+						.getVeteranIen());
+				Boolean partInpatient = findPatientDemographics(patientIen)
+						.getInpatientStatus();
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("ClassIEN".toUpperCase()))),
+						partInpatient ? "I" : "O");
 
 				// 5. ARRAY(UrgencyIEN,1)=IEN for Urgency (Step D2)
 				Map<String, Map<String, String>> consultInfoMap = getConsultInfo("C");
-				Map<String, String> urgencyMap = partInpatient ? consultInfoMap.get("inpatient_urgencies") : consultInfoMap.get("outpatient_urgencies");
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("UrgencyIEN".toUpperCase()))), Long.valueOf(urgencyMap.get("ROUTINE")));
+				Map<String, String> urgencyMap = partInpatient ? consultInfoMap
+						.get("inpatient_urgencies") : consultInfoMap
+						.get("outpatient_urgencies");
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("UrgencyIEN".toUpperCase()))),
+						Long.valueOf(urgencyMap.get("ROUTINE")));
 				// 6. ARRAY(PlaceIEN,1)=IEN Place for Consult (Step D2)
-				Map<String, String> placeMap = partInpatient ? consultInfoMap.get("inpatient_places") : consultInfoMap.get("outpatient_places");
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("PlaceIEN".toUpperCase()))), placeMap.get("CONSULTANT'S CHOICE"));
+				Map<String, String> placeMap = partInpatient ? consultInfoMap
+						.get("inpatient_places") : consultInfoMap
+						.get("outpatient_places");
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("PlaceIEN".toUpperCase()))),
+						placeMap.get("CONSULTANT'S CHOICE"));
 				// 7. ARRAY(ProviderIEN,1)=IEN of Provider’s Attention (Step D4)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ProviderIEN".toUpperCase()))), "");
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("ProviderIEN".toUpperCase()))),
+						"");
 				// 8. ARRAY(EarliestIEN,1)=Earliest Appt Date (Step D6b)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("EarliestIEN".toUpperCase()))), "TODAY");
-				// 9. ARRAY(MiscIEN,1)=Provisional Diagnosis (Free Text) (Step D6c)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("MiscIEN".toUpperCase()))), "Positive OIF/OEF TBI screen.");
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("EarliestIEN".toUpperCase()))),
+						"TODAY");
+				// 9. ARRAY(MiscIEN,1)=Provisional Diagnosis (Free Text) (Step
+				// D6c)
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("MiscIEN".toUpperCase()))),
+						"Positive OIF/OEF TBI screen.");
 				// 10. ARRAY(CodeIEN,1)=Not used?
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("CodeIEN".toUpperCase()))), "");
+				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
+						.format("%s,1",
+								respListMap.get("CodeIEN".toUpperCase()))), "");
 				// 11. ARRAY("ORCHECK")=Num of order checks (Always “0” ?)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey("\"ORCHECK\""), 0);
+				respLstMap
+						.put(RpcRequest
+								.buildMultipleMSubscriptKey("\"ORCHECK\""), 0);
 				// 12. ARRAY("ORTS")=IEN of Treating Specialty (Always “0” ?)
-				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey("\"ORTS\""), 0);
+				respLstMap.put(
+						RpcRequest.buildMultipleMSubscriptKey("\"ORTS\""), 0);
 
 				return respLstMap;
 			}
@@ -325,11 +423,21 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 				sb.append("\tOIF/OEF deployment-related, suspected TBI.\n");
 				sb.append("\tPersistent symptoms.\n");
 				sb.append("\tPositive OIF/OEF TBI screen.\n");
-				sb.append("OIF/OEF TBI screen completed date: " + (new LocalDate()).toString("MMM dd,yyyy") + "\n");
+				sb.append("OIF/OEF TBI screen completed date: "
+						+ (new LocalDate()).toString("MMM dd,yyyy") + "\n");
 				sb.append("When & Where did the TBI occur:\n");
-				sb.append("\t" + (exportColumnsMap.get("TBI_consult_when") == null ? "Year not provided to determine when" : exportColumnsMap.get("TBI_consult_when")) + ", " + (exportColumnsMap.get("TBI_consult_where") == null ? "Not provided" : exportColumnsMap.get("TBI_consult_where")) + "\n");
+				sb.append("\t"
+						+ (exportColumnsMap.get("TBI_consult_when") == null ? "Year not provided to determine when"
+								: exportColumnsMap.get("TBI_consult_when"))
+						+ ", "
+						+ (exportColumnsMap.get("TBI_consult_where") == null ? "Not provided"
+								: exportColumnsMap.get("TBI_consult_where"))
+						+ "\n");
 				sb.append("How did the TBI occur:\n");
-				sb.append("\t" + (exportColumnsMap.get("TBI_consult_how") == null ? "Not Provided" : exportColumnsMap.get("TBI_consult_how")) + "\n");
+				sb.append("\t"
+						+ (exportColumnsMap.get("TBI_consult_how") == null ? "Not Provided"
+								: exportColumnsMap.get("TBI_consult_how"))
+						+ "\n");
 				sb.append("GOALS for TBI clinic evaluation:\n");
 				sb.append("\tPlease evaluate and refer on for additional services as necessary\n");
 
@@ -338,18 +446,34 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 
 			private Long getDlgGrpIEN(Long quickOrderIen,
 					VeteranAssessment veteranAssessment) {
-				Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
-				Long locationIen = Long.valueOf(veteranAssessment.getClinic().getVistaIen());
-				Long partProviderIEN = Long.valueOf(veteranAssessment.getClinician().getVistaDuz());
-				Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
-				String partSex = String.valueOf(veteranAssessment.getVeteran().getGender().charAt(0)).toUpperCase();
-				Integer partAge = Integer.valueOf(Years.yearsBetween(new LocalDate(veteranAssessment.getVeteran().getBirthDate()), new LocalDate()).getYears());
-				return getTBIConsultDisplayGroupIEN(quickOrderIen, patientIen, locationIen, partProviderIEN, partInpatient, partSex, partAge, locationIen);
+				Long patientIen = Long.valueOf(veteranAssessment.getVeteran()
+						.getVeteranIen());
+				Long locationIen = Long.valueOf(veteranAssessment.getClinic()
+						.getVistaIen());
+				Long partProviderIEN = Long.valueOf(veteranAssessment
+						.getClinician().getVistaDuz());
+				Boolean partInpatient = findPatientDemographics(patientIen)
+						.getInpatientStatus();
+				String partSex = String.valueOf(
+						veteranAssessment.getVeteran().getGender().charAt(0))
+						.toUpperCase();
+				Integer partAge = Integer.valueOf(Years.yearsBetween(
+						new LocalDate(veteranAssessment.getVeteran()
+								.getBirthDate()), new LocalDate()).getYears());
+				return getTBIConsultDisplayGroupIEN(quickOrderIen, patientIen,
+						locationIen, partProviderIEN, partInpatient, partSex,
+						partAge, locationIen);
 			}
 
 			@Override
 			protected Map<String, Object> prepareResponse(String rawReponse) {
-				return createResultMap(rawReponse, Arrays.asList("IFN", "Group", "OrderTime", "StartTime", "StopTime", "Status", "Signature", "Nurse", "Clerk", "ProviderIEN", "ProviderName", "ActDA", "Flagged", "DCType", "ChrtRev", "DEA", "ProviderVA", "DigSig", "LocationIEN", "DCOrigOrder", "Unused", "OrderTitleText"));
+				return createResultMap(rawReponse, Arrays.asList("IFN",
+						"Group", "OrderTime", "StartTime", "StopTime",
+						"Status", "Signature", "Nurse", "Clerk", "ProviderIEN",
+						"ProviderName", "ActDA", "Flagged", "DCType",
+						"ChrtRev", "DEA", "ProviderVA", "DigSig",
+						"LocationIEN", "DCOrigOrder", "Unused",
+						"OrderTitleText"));
 			}
 
 		}.invokeRpc(getConnection(), getRequest(), "ORWDX SAVE");
@@ -382,10 +506,89 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements VistaLi
 					String rawResponse) {
 				String[] resAry = rawResponse.split("\\n");
 
-				return ResponseHelper.createConsultInfoMap(Arrays.asList(resAry));
+				return ResponseHelper.createConsultInfoMap(Arrays
+						.asList(resAry));
 			}
 		};
 
-		return rpcInvoker.invokeRpc(getConnection(), getRequest(), "ORWDCN32 DEF");
+		return rpcInvoker.invokeRpc(getConnection(), getRequest(),
+				"ORWDCN32 DEF");
+	}
+
+	@Override
+	public boolean savePainScale(final VeteranAssessment veteranAssessment,
+			final String visitDate) {
+		final int basicPainSurveyID = 20;
+		Integer painScale = -1;
+		if (veteranAssessment.getSurveyMap().containsKey(basicPainSurveyID)) {
+			List<SurveyMeasureResponse> respList = veteranAssessment
+					.getSurveyMeasureResponseList();
+			for (SurveyMeasureResponse smr : respList) {
+				if (220 == smr.getMeasure().getMeasureId()
+						&& smr.getBooleanValue()) {
+					painScale = Integer.valueOf(smr.getMeasureAnswer()
+							.getCalculationValue());
+					break;
+				}
+			}
+		}
+
+		if (painScale >= 0) {
+			final int pain = painScale;
+			VistaLinkRpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {
+
+				@Override
+				protected List<Object> prepareReqParams() {
+					List<Object> params = new ArrayList<Object>();
+
+					String visitDateModified = visitDate.substring(0,
+							visitDate.indexOf(".") + 4);
+					String dateParam = "VST^DT^" + visitDateModified;
+
+					String patientParam = "VST^PT^"
+							+ veteranAssessment.getVeteran().getVeteranIen();
+
+					String locationParam = "VST^HL^"
+							+ veteranAssessment.getClinic().getVistaIen();
+
+					String painScale = "VIT^PN^^^" + pain + "^"
+							+ veteranAssessment.getClinician().getVistaDuz()
+							+ "^^^" + visitDateModified;
+
+					params.add(dateParam);
+					params.add(patientParam);
+					params.add(locationParam);
+					params.add(painScale);
+
+					List<Object> rpcParams =new ArrayList<>(1);
+					rpcParams.add(params);
+					return rpcParams;
+				}
+
+				@Override
+				protected String prepareResponse(String rawReponse) {
+					// TODO Auto-generated method stub
+					return rawReponse;
+				}
+			};
+
+			try {
+
+				String result = rpcInvolker.invokeRpc(getConnection(),
+						getRequest(), "ORQQVI2 VITALS VAL & STORE");
+				logger.info("Save vitals result= " + result);
+				if (!result.trim().equals("1")) {
+					logger.error("Save vitals failed");
+				}
+				else
+				{
+					return true; //success
+				}
+			} catch (VistaLinkClientException ex) {
+				logger.warn("Exception occurred during save vitals", ex);
+				return false;
+			}
+		}
+		return false;
 	}
 }
