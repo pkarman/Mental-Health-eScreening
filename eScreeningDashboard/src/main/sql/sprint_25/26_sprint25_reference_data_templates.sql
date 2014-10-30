@@ -1372,5 +1372,154 @@ ${MODULE_START}
 ${MODULE_END}'
 where template_id = 19;
 
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+ <#if (var300.children)?? && ((var300.children)?size > 0) >
+${MODULE_TITLE_START}
+Pragmatic Concerns: 
+${MODULE_TITLE_END}
+${MODULE_START}
+
+    <#if hasValue(getSelectMultiDisplayText(var300)) >
+      The Veteran reported the following legal concern(s): ${getSelectMultiDisplayText(var300)}.  ${NBSP}
+    </#if>
+    <#if hasValue(getSelectOneDisplayText(var320)) >
+      <#if doesValueOneEqualValueTwo(getSelectOneDisplayText(var320), "yes") >
+      	The Veteran reported having an Advance Directive.  ${NBSP}
+      </#if>
+    </#if>
+    <#if hasValue(getSelectOneDisplayText(var330)) >
+      <#if doesValueOneEqualValueTwo(getSelectOneDisplayText(var330), "yes") >
+      	The Veteran would like information about an Advance Directive.  ${NBSP}
+      </#if>
+    </#if>  
+${MODULE_END}
+</#if>
+' where template_id = 9;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Depression:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1550.children)?? && (var1560.children)?? && (var1570.children)?? && (var1580.children)?? && (var1590.children)??
+			&& ((var1550.children)?size > 0) && ((var1560.children)?size > 0) && ((var1570.children)?size > 0) 
+			&& ((var1580.children)?size > 0) && ((var1590.children)?size > 0)>
+	<#assign fragments = []>
+	<#assign text ="notset"> 
+	<#assign totScore = getFormulaDisplayText(var1599)>
+	<#assign score = -1>
+	<#assign scoreText ="notset">
+		
+	<#if totScore?? && totScore != "notfound"  && totScore != "notset"> 
+		<#assign score = totScore?number>
+		<#if (score == 0) >
+			<#assign scoreText = "negative">
+		<#elseif (score >= 1) && (score <= 4)>
+			<#assign scoreText = "positive">
+			<#assign text = "minimal depression">
+		<#elseif (score >= 5) && (score <= 9)>
+			<#assign scoreText = "positive">
+			<#assign text = "mild depression">
+		<#elseif (score >= 10) && (score <= 14)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderate depression">
+		<#elseif (score >= 15) && (score <= 19)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderately severe depression">
+		<#elseif (score >= 20) && (score <= 27)>
+			<#assign scoreText = "positive">
+			<#assign text = "severe depression">
+		</#if>
+
+		<#if (score >=1) && (score <= 27)>
+			<#t>The Veteran\'s PHQ-9 screen was ${scoreText}.${NBSP} The score was ${(score)?string} which is suggestive of ${text}.${NBSP}
+		<#elseif (score == 0)>
+			The Veteran\'s PHQ-9 screen was ${scoreText}. The score was ${(score)?string}.${NBSP}
+		</#if>
+		</#if>
+	<#else>
+		The Veteran\'s PHQ-9 screen was not calculated due to the Veteran declining to answer some or all of the questions.
+	</#if>
+${MODULE_END}
+' where template_id = 31;
+
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PCLC:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1750.children)?? && (var1760.children)?? && (var1770.children)?? && (var1780.children)?? 
+			&& (var1790.children)?? && (var1800.children)?? && (var1810.children)?? && (var1820.children)?? 
+			&& (var1830.children)?? && (var1840.children)?? && (var1850.children)?? && (var1860.children)?? 
+			&& (var1870.children)?? && (var1880.children)?? && (var1890.children)?? && (var1900.children)?? 
+			&& (var1910.children)?? 
+			&& ((var1750.children)?size > 0) && ((var1760.children)?size > 0) && ((var1770.children)?size > 0) && ((var1780.children)?size > 0) 
+			&& ((var1790.children)?size > 0) && ((var1800.children)?size > 0) && ((var1810.children)?size > 0) && ((var1820.children)?size > 0) 
+			&& ((var1830.children)?size > 0) && ((var1840.children)?size > 0) && ((var1850.children)?size > 0) && ((var1860.children)?size > 0) 
+			&& ((var1870.children)?size > 0) && ((var1880.children)?size > 0) && ((var1890.children)?size > 0) && ((var1900.children)?size > 0) 
+			&& ((var1910.children)?size > 0)>
+	 
+	<#assign fragments = []>
+	<#assign resolved_fragments ="">
+	<#assign text ="notset"> 
+	<#assign score = (getListScore([var1750,var1760,var1770,var1780,var1790,var1800,var1810,var1820,var1830,var1840,var1850,var1860,var1870,var1880,var1890,var1900,var1910]))!("-1"?number)>
+	<#assign scoreText ="notset">
+	
+	<#if score??> 	
+		<#if (score >= 0) && (score <= 49)>
+			<#assign scoreText = "negative">
+		<#elseif (score >= 50) && (score <= 998)><#-- value 999 means they didn\'t answer the question so to include would give a false positive-->
+			<#assign scoreText = "positive">
+		</#if>
+		
+		<#if (score >=0  && score <= 998)>
+			<#t>The Veteran\'s PCL-C Screen was ${scoreText!} with a PCL-C score of ${score!("-1"?number)}. ${NBSP}
+		</#if>
+	</#if>
+	
+	<#else>
+		<#t>The Veteran\'s PCL-C Screen could not be calculated because the Veteran declined to answer some or all of the questions.
+	</#if>
+${MODULE_END}
+' where template_id = 35;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PC-PTSD:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1940.children)?? && (var1950.children)?? && (var1960.children)?? && (var1970.children)??
+			&& ((var1940.children)?size > 0) && ((var1950.children)?size > 0) && ((var1960.children)?size > 0) && ((var1970.children)?size > 0)>
+
+	<#assign score = (getListScore([var1940,var1950,var1960,var1970]))!("-1"?number)>
+	<#assign scoreText ="notset">
+	 
+	<#if score??> 	
+		<#if (score >= 0) && (score <= 2)>
+			<#assign scoreText = "negative">
+		<#elseif (score >= 3) && (score <= 998)><#-- value 999 means they didn\'t answer the question so to include would give a false positive-->
+			<#assign scoreText = "positive">
+		</#if>
+		
+		<#if (score >=0  && score <= 998)>
+			<#t>The Veteran\'s PC-PTSD Screen was ${scoreText!} with a PC-PTSD score of ${score}. ${NBSP}
+		</#if>
+	</#if>
+	<#else>
+		<#t>The Veteran\'s PC-PTSD Screen could not be calculated because the Veteran declined to answer some or all of the questions.
+	</#if>
+
+${MODULE_END}'
+ where template_id = 36;
+
 
  
