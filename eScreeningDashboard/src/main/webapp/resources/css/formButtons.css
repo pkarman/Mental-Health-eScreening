@@ -12,9 +12,9 @@
 	    color: #FFFFFF;
 	    cursor: pointer;
 	    font-weight: bold;
-	   	min-width: 115px; 
-	   	height: 30px;
-	}
+	   	min-width: 120px; 
+	   	height: 45px;
+}
 .searchBtn:hover {
 		background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
 		background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
@@ -25,6 +25,15 @@
 		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
 		cursor:hand;
 		color:#ffffff;
+}
+.searchBtn:focus {
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
+input:focus, select:focus {
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
 }
 
 /* Index page button styles */
