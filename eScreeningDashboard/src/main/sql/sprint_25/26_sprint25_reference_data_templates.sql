@@ -1520,6 +1520,90 @@ ${MODULE_START}
 
 ${MODULE_END}'
  where template_id = 36;
+ 
+ update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+WHODAS 2.0: The Veteran was given the WHODAS 2.0, which covers six domains of assessing health status and disability on a scale of one to five. ${LINE_BREAK}${LINE_BREAK}
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#function getScoreText score>
+			<#assign text = "">
+			<#if (score?number >= 1) && (score?number < 2)>
+				<#assign text = "no">
+			<#elseif (score?number >= 2) && (score?number < 3)>
+				<#assign text = "mild">
+			<#elseif (score?number >= 3) && (score?number < 4)>
+				<#assign text = "moderate">
+			<#elseif (score?number >= 4) && (score?number < 5)>
+				<#assign text = "severe">
+			<#elseif (score?number >= 5) && (score?number < 6)>
+				<#assign text = "extreme">
+			</#if>
+
+			<#return text>
+	</#function>	
+
+		  <#t><b>Understanding and Communicating</b> - the Veteran
+		  <#if var4119?? && (var4119.value)??>
+			${NBSP}had an average score of ${var4119.value} which indicates ${getScoreText(var4119.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+		  <#else>
+		  	\'s score could not be calculated.
+		  </#if>
+		  ${LINE_BREAK}${LINE_BREAK}
+		  
+			<b>Mobility</b> - the Veteran${NBSP} 
+			<#if var4239?? && (var4239.value)??>
+			 ${NBSP}had an average score of ${var4239.value}, which indicates ${getScoreText(var4239.value)} disability.
+			<#else>\'s score could not be calculated.
+			</#if>
+			
+			${LINE_BREAK}${LINE_BREAK}
+			<b>Self-Care</b> - the Veteran ${NBSP} 
+			<#if var4319?? && var4319.value??>
+				${NBSP}had an average score of ${var4319.value} which indicates ${getScoreText(var4319.value)} disability.
+			<#else>
+				\'s score could not be calculated.
+			</#if>
+			${LINE_BREAK}${LINE_BREAK}		
+
+			<b>Getting Along</b> - the Veteran 
+			<#if var4419?? && var4419.value??>
+				${NBSP} had an average score of ${var4419.value} which indicates ${getScoreText(var4419.value)} disability.
+			<#else>\'s score could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Life Activities (Household/Domestic)</b> - the Veteran 
+			<#if var4499?? && var4499.value??>
+			 ${NBSP}had an average score of ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. 
+			<#else>\'s score could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK} 
+			
+			<#if var4200?? && ((var4200.children)?? && ((var4200.children)?size > 0))>
+				<#if isSelectedAnswer(var4200, var4202)>
+					<#if var4559?? && var4559.value??>
+					  <b>Life Activities (School /Work)</b> - the Veteran had an average score of ${var4559.value} which is a rating of ${getScoreText(var4559.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+					<#else>
+					  <b>Life Activities (School /Work)</b> - the Veteran\'s score could not be calculated.${LINE_BREAK}${LINE_BREAK}
+					</#if>      
+				<#elseif isSelectedAnswer(var4200, var4201)>
+					<b>Life Activities (School /Work)</b> - the Veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
+				</#if>
+			<#else>
+				<b>Life Activities (School /Work)</b> - the Veteran\'s score could not be calculated.${LINE_BREAK}${LINE_BREAK}
+			</#if>
+			
+			<b>Participation in Society</b> - the Veteran 
+			
+			<#if var4789?? && var4789.value??>
+			${NBSP}had an average score of ${var4789.value} which indicates ${getScoreText(var4789.value)} disability. ${NBSP} 
+			<#else>\'s score could not be calculated.
+			</#if>
+${MODULE_END}'
+where template_id = 24;
 
 
  
