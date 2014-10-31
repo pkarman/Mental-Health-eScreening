@@ -54,34 +54,6 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
         }
     };
 
-    /**
-     * @param parent is optional. If undefined then the block is added to the bottom of the template.
-     */
-    $scope.addBlock = function (parentScope) {
-        if (Object.isDefined(parentScope)) {
-            var parent = parentScope.$modelValue;
-            console.log("Add block under parent block: " + parent.title);
-        }
-        else {
-            console.log("Add block to bottom of template");
-        }
-        $scope.templateChanged();
-    };
-
-    $scope.removeBlock = function (blockScope) {
-        var block = blockScope.$modelValue;
-        console.log("removing block: " + block.name);
-        blockScope.remove();
-        $scope.templateChanged();
-        
-    };
-
-    $scope.editBlock = function (blockScope) {
-        var block = blockScope.$modelValue;
-        console.log("edit block: " + block.name);
-        $scope.templateChanged();
-    };
-
     //helper function for debugging drag and drop rules (only when we want tons of logs)
     function log(msg){
         if($scope.debug)
@@ -226,8 +198,11 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
         $scope.hasChanged = true;
     };
 
-	$scope.deleteBlock = function (index) {
-		$scope.template.blocks.splice(index, 1);
+	$scope.deleteBlock = function (blockScope) {
+	    var block = blockScope.$modelValue;
+	    console.log("removing block: " + block.name);
+	    blockScope.remove();
+	    $scope.templateChanged();
 	};
 
 	$scope.updateBlock = function(selectedBlock, isAdding){
@@ -246,10 +221,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.templateName = template.name;
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock();
-
-				if (isAdding) $scope.parentBlock = selectedBlock;
-
+				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock(null, selectedBlock);
+				
 				$scope.block.sentTextContent();
 
 				// Dismiss modal

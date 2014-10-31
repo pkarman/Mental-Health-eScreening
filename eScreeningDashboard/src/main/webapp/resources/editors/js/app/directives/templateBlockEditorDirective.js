@@ -11,20 +11,57 @@
 		    { name: 'Text', value: 'text' }
 	    ];
 
-        function getBlockTypes(type) {
-	        return (type) ? blockTypes.slice(3) : blockTypes;
+        function getBlockTypes(parentBlock) {
+            var types = [blockTypes[0], blockTypes[3]];
+            
+            //dropping at root
+            if(!Object.isDefined(parentBlock) || parentBlock.type == "else"){
+                return types;
+            }
+            
+            var grandParentType = parentBlock.parent ? parentBlock.parent.type : null;
+            var ifParent = null;
+            if(parentBlock.type == "if"){
+                ifParent = parentBlock;
+            }
+            else if(grandParentType == "if"){
+                ifParent = parentBlock.parent;
+            }
+            
+            // if we can't find a parent block that is an If then if and text
+            if(!ifParent){
+                return types;
+            }
+            
+            //at this point we know that elseif is going to make it
+            types.push(blockTypes[1]);
+            
+            //find out if the ifParent has an else
+            var hasElse = false;
+            ifParent.children.forEach(function(childBlock){
+                 if(childBlock.type == "else"){
+                     hasElse = true;
+                 }
+            });
+            
+            // if there is no other else then allow the adding of one
+            if(!hasElse){
+                types.push(blockTypes[2]);
+            }
+            
+            return types;
         }
 
         return {
             restrict: 'E',
             scope: {
                 block: '=',
-                parentBlock: '=',
                 assessmentVariables: '='
             },
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {
 
+                //TODO: parent-block is not needed anymore to figure out block types.  Please update this template and the one in templateBlockConditionEditorDirective.js
                 var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
 
                 /*
@@ -38,11 +75,7 @@
                     element.append(clonedTemplate);
                 });
 
-                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.type) : blockTypes;
-
-                scope.$watch('parentBlock.type', function(type) {
-                    scope.blockTypes = getBlockTypes(type);
-                });
+                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.parent) : blockTypes;
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [

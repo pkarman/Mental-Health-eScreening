@@ -12,6 +12,7 @@
             templateUrl: 'resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditor.html',
             link: function(scope, element) {
 
+                //TODO: parent-block is not needed anymore to figure out block types.  Please update this template and the one in templateBlockEditorDirective.js
                 var collectionTemplate = '<template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in parentBlock.conditions" assessment-variables="assessmentVariables"></template-block-condition-editor>';
 
                 /*

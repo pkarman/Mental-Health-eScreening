@@ -20,33 +20,36 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about the user.
- * @param {String}  jsonConfig  Represents the JSON representation of an TemplateBlock object.
+ * @param jsonConfig  Represents the JSON representation of an TemplateBlock object.
+ * @param parent optionally the parent block object
  * @constructor
  * @author Tonté Pouncil
  */
-EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
-    this.guid = new Date().getTime();
-    this.section;
-    this.name;
-    this.type;
-    this.summary;
-    this.left = { type: "var", content: {} };
-    this.operator;
-    this.conditions;
-	this.content;
-    this.right = { type: "text", content: "" };
+EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
+    this.parent = parent;
+    this.children = [];
 
-    if(jsonConfig){
-        this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
-        this.section = (Object.isDefined(jsonConfig.section))? jsonConfig.section: null;
-        this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
-        this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
-        this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: { type: "var", content: {} };
-        this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
-        this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
-	    this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: { type: "text", content: "" };
+    //doing this puts the defaults in one place
+    if(!jsonConfig)
+        jsonConfig = {};
+    
+    this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: new Date().getTime();
+    this.section = (Object.isDefined(jsonConfig.section))? jsonConfig.section: null;
+    this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
+    this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
+    this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
+    this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: { type: "var", content: {} };
+    this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
+    this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
+    this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
+    this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: { type: "text", content: "" };
+    
+    if(Object.isDefined(jsonConfig.children)){
+        angular.copy(jsonConfig.children, this.children);
+        var self = this;
+        this.children.forEach(function(childData){
+            angular.extend(childData, new EScreeningDashboardApp.models.TemplateBlock(childData, self));
+        });
     }
 
 	function createTextContent(text){
