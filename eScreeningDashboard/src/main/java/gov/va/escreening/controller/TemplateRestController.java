@@ -6,11 +6,11 @@ import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.ErrorResponseRuntimeException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
@@ -39,7 +38,8 @@ public class TemplateRestController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
-        logger.debug(enfe.getMessage());
+    	
+    	logger.debug(enfe.getMessage());
         return enfe.getErrorResponse();
     }
 
@@ -48,6 +48,13 @@ public class TemplateRestController {
     @ResponseBody
     public ErrorResponse handleIllegalArgumentException(Exception iae) {
         logger.debug(iae.getMessage());
+        
+        System.out.println(iae.getClass());
+        
+        if (iae instanceof ErrorResponseRuntimeException){
+        	return ((ErrorResponseRuntimeException)iae).getErrorResponse();
+        }
+        
         ErrorResponse er = new ErrorResponse();
 
         er.setDeveloperMessage(iae.getMessage());
@@ -126,12 +133,23 @@ public class TemplateRestController {
 			@PathVariable("templateId") Integer templateId,
 			@CurrentUser EscreenUser escreenUser) {
 		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
-		if (dto == null)
+		
+		if (dto == null){
 			 ErrorBuilder.throwing(EntityNotFoundException.class)
 	             .toUser("Could not find the template.")
 	             .toAdmin("Could not find the template with ID: " + templateId)
 	             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
 	             .throwIt();
+		}
+		
+		if (dto.getBlocks()== null){
+			ErrorResponse error = new ErrorResponse();
+			EntityNotFoundException ex = new EntityNotFoundException(error);
+			error.addMessage("The template you are attempting to edit is unsupported.");
+			error.setDeveloperMessage("The template you are attempting to edit is unsupported. Template ID: " + templateId);
+			error.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue());
+            throw ex;
+		}
 		return dto;
 	}
 	

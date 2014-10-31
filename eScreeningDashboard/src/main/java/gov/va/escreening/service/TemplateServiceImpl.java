@@ -318,7 +318,12 @@ public class TemplateServiceImpl implements TemplateService {
 					e.printStackTrace();
 					return null;
 				}
+			}else{
+				if (t.getTemplateFile() != null && t.getTemplateFile().length() > 0 ){
+					dto.setBlocks(null);
+				}
 			}
+				
 			
 			dto.setName(t.getName());
 			dto.setId(templateId);
