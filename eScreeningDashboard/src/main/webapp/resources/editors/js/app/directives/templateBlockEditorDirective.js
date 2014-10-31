@@ -102,6 +102,26 @@
                     if(!Object.isDefined(data)) {
                         throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
                     }
+                    if(!Object.isDefined(data.guid)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
+                    }
+
+                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
+                });
+
+                scope.$on('filterOperators', function(event, data) {
+                    if(!Object.isDefined(data)) {
+                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.guid)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
+                    }
 
                     scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
                 });
