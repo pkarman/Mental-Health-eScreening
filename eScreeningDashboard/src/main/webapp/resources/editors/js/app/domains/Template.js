@@ -86,20 +86,21 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
     };
     
     /**
-     * Updates the section numbering of all blocks
+     * Updates the section numbering of all blocks as well as each block's parent field
      */
     this.updateSections = function(){
         
-        function updateSection(children, parentSection){
+        function updateSection(children, parent){
             if(Object.isDefined(children)){
                 for (var i = 0; i < children.length; i++){
                     var sectionIndex = i + 1;
-                    children[i].section = parentSection == "" ? parentSection + sectionIndex : parentSection + "." + sectionIndex;
-                    updateSection(children[i].children, children[i].section);
+                    children[i].parent = parent;
+                    children[i].section = parent ? parent.section + "." + sectionIndex : "" + sectionIndex;
+                    updateSection(children[i].children, children[i]);
                 }
             }
         }
-        return updateSection(this.blocks, "");
+        return updateSection(this.blocks);
     };
     
     this.toString = function () {

@@ -11,8 +11,62 @@
 		    { name: 'Text', value: 'text' }
 	    ];
 
-        function getBlockTypes(type) {
-	        return (type) ? blockTypes.slice(3) : blockTypes;
+        function getBlockTypes(parentBlock) {
+            var types = [blockTypes[0], blockTypes[3]];
+            
+            //dropping at root
+            if(!Object.isDefined(parentBlock) || parentBlock.type == "else"){
+                return types;
+            }
+            
+            var grandParentType = parentBlock.parent ? parentBlock.parent.type : null;
+            var ifParent = null;
+            if(parentBlock.type == "if"){
+                ifParent = parentBlock;
+            }
+            else if(grandParentType == "if"){
+                ifParent = parentBlock.parent;
+            }
+            
+            // if we can't find a parent block that is an If then if and text
+            if(!ifParent){
+                return types;
+            }
+            
+            //if the parent is text and this isn't the last text, then we don't include else or elseif
+            var lastText;
+            if(parentBlock.type == 'text'){
+                lastText = parentBlock.parent.lastText().block;
+                
+                if(!lastText.equals(parentBlock)){
+                    return types;
+                }
+            }
+            
+            //at this point we know that elseif is going to make it
+            types.push(blockTypes[1]);
+            
+            // if there is another else then don't allow another one
+            if(ifParent.getElse().index != -1){
+                return types;
+            }
+            
+            var lastElseIf = ifParent.lastElseIf().block;
+            
+            //if parent is text and there is an elseIf not include else
+            if(parentBlock.type == 'text' && Object.isDefined(lastElseIf)){
+                return types;
+            }
+            
+            //if the parent is an elseif and this isn't the last elseif, then we don't include else
+            if(parentBlock.type == 'elseif' && !lastElseIf.equals(parentBlock)){
+                return types;
+            }
+
+            // add else
+            types.push(blockTypes[2]);
+            
+            return types;
         }
 
         return {
@@ -38,11 +92,7 @@
                     element.append(clonedTemplate);
                 });
 
-                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.type) : blockTypes;
-
-                scope.$watch('parentBlock.type', function(type) {
-                    scope.blockTypes = getBlockTypes(type);
-                });
+                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.parent) : blockTypes;
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [

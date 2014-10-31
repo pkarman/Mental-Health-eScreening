@@ -4,7 +4,7 @@
       <h1>Edit {{relatedObj.name}} | {{template.type.name}}</h1>
     </div>
     <div class="col-md-2">
-      <button title="Add New Block" ng-click="updateBlock();" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
+      <button title="Add New Block" ng-click="updateBlock(null, true);" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
     </div>
 </div>
     
@@ -43,7 +43,7 @@
                             <div class="col-md-2 pull-right">
 
                                 <span class="pull-right btn btn-xs block-btn-margin" 
-                                    ng-really-click="deleteBlock($index);"
+                                    ng-really-click="deleteBlock(this);"
                                     ng-really-message="Are you sure you want to delete this block?" data-nodrag title="Delete  {{block.name}}">
                                     <i class="glyphicon glyphicon-remove-circle delete-red"></i>
                                 </span>
