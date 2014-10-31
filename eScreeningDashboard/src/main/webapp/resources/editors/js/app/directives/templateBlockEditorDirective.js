@@ -34,15 +34,11 @@
             }
             
             //if the parent is text and this isn't the last text, then we don't include else or elseif
+            var lastText;
             if(parentBlock.type == 'text'){
-                var lastText; 
-                parentBlock.parent.children.forEach(function(child){
-                    if(child.type == 'text'){
-                        lastText = child;
-                    }
-                });
+                lastText = parentBlock.parent.lastText().block;
                 
-                if(lastText.section != parentBlock.section){
+                if(!lastText.equals(parentBlock)){
                     return types;
                 }
             }
@@ -50,33 +46,25 @@
             //at this point we know that elseif is going to make it
             types.push(blockTypes[1]);
             
+            // if there is another else then don't allow another one
+            if(ifParent.getElse().index != -1){
+                return types;
+            }
+            
+            var lastElseIf = ifParent.lastElseIf().block;
+            
+            //if parent is text and there is an elseIf not include else
+            if(parentBlock.type == 'text' && Object.isDefined(lastElseIf)){
+                return types;
+            }
             
             //if the parent is an elseif and this isn't the last elseif, then we don't include else
-            if(parentBlock.type == 'elseif'){
-                var lastElseIf; 
-                parentBlock.parent.children.forEach(function(child){
-                    if(child.type == 'elseif'){
-                        lastElseIf = child;
-                    }
-                });
-                
-                if(lastElseIf.section != parentBlock.section){
-                    return types;
-                }
+            if(parentBlock.type == 'elseif' && !lastElseIf.equals(parentBlock)){
+                return types;
             }
-            
-            //find out if the ifParent has an else
-            var hasElse = false;
-            ifParent.children.forEach(function(childBlock){
-                 if(childBlock.type == "else"){
-                     hasElse = true;
-                 }
-            });
-            
-            // if there is no other else then allow the adding of one
-            if(!hasElse){
-                types.push(blockTypes[2]);
-            }
+
+            // add else
+            types.push(blockTypes[2]);
             
             return types;
         }

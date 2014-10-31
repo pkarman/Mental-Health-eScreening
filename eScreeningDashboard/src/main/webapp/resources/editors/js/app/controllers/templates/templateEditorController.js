@@ -231,21 +231,127 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				};
 
 				// Close modal and pass updated block to the page
-				$scope.close = function () {
+                $scope.close = function () {
 
-					$scope.block.transformTextContent($scope.variableNamedHash);
-					$scope.block.autoGenerateFields($scope.variableNamedHash);
+                    $scope.block.transformTextContent($scope.variableNamedHash);
+                    $scope.block.autoGenerateFields($scope.variableNamedHash);
 
-					if (isAdding) {
-						if (!angular.isArray(selectedBlock.children)) selectedBlock.children = [];
-						selectedBlock.children.push($scope.block);
-					}
+                    if(isAdding) {
 
-					if (!selectedBlock) template.blocks.push($scope.block);
+                        if (!selectedBlock) template.blocks.push($scope.block);
+                        //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
+                        else if(selectedBlock.type == 'if'){
+                            if($scope.block.type == 'if'){
+                                insertAfterText(selectedBlock);
+                    	    }
+                    	    else if($scope.block.type == 'elseif' || $scope.block.type == 'else'){
+                    	        insertAfterTextAndElseIf(selectedBlock);
+                    	    }
+                    	    else if($scope.block.type == 'text'){
+                                //put it at top
+                                selectedBlock.children.splice(0,0, $scope.block);
+                            }
+                    	    else{
+                    	        log.error("Unsupported type to insert");
+                    	    }
+                    	}
+                    	else if(selectedBlock.type == 'elseif'){
+                    	    if($scope.block.type == 'if'){
+                                insertAfterText(selectedBlock);
+                            }
+                    	    else if($scope.block.type == 'elseif'){
+                    	        //insert right after this else if 
+                    	        selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                    	    }
+                    	    else if($scope.block.type == 'else'){
+                    	        //insert into parent IF after text and else if
+                                insertAfterTextAndElseIf(selectedBlock.parent);
+                            }
+                            else if($scope.block.type == 'text'){
+                                //add it to top of elseif's children
+                                selectedBlock.children.splice(0,0, $scope.block);
+                            }
+                    	    else{
+                                log.error("Unsupported type to insert");
+                            }
+                    	}
+                        else if(selectedBlock.type == 'else'){
+                            if($scope.block.type == 'if'){
+                                insertAfterText(selectedBlock);
+                            }
+                            else if($scope.block.type == 'text'){
+                                //add it to top of elseif's children
+                                selectedBlock.children.splice(0,0, $scope.block);
+                            }
+                            else{
+                                log.error("Unsupported type to insert");
+                            }
+                        }
+                        else if(selectedBlock.type == 'text'){
+                            if($scope.block.type == 'if' || $scope.block.type == 'text'){
+                                if(selectedBlock.parent){
+                                    //if we have a parent place the if after the text in that parent
+                                    selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                                }
+                                else{
+                                    //if we have no parent then add block as next sibling in template's blocks array
+                                    var textIndex = -1;
+                                    template.blocks.every(function(block, i){
+                                        if(selectedBlock.equals(block)){
+                                            textIndex = i;
+                                        }
+                                        return textIndex == -1;
+                                    });
+                                    template.blocks.splice(textIndex +1, 0, $scope.block);
+                                }
+                            }
+                            else if($scope.block.type == 'elseif'){
+                                //insert after all text blocks in the parent If 
+                                insertAfterText(selectedBlock.parent);
+                            }
+                            else if($scope.block.type == 'else'){
+                                insertAfterTextAndElseIf(selectedBlock.parent);
+                            }
+                            else{
+                                log.error("Unsupported type to insert");
+                            }
+                        }
+                    }
 
 					$scope.templateChanged();
 					$modalInstance.close();
 				};
+				
+				function insertAfterTextAndElseIf(parent){
+				    //put block after parent's elseifs and text
+                    var lastElseIfIndex = parent.lastElseIf().index;
+                    if(lastElseIfIndex != -1){
+                        parent.children.splice(lastElseIfIndex + 1, 0, $scope.block);
+                    }
+                    else{
+                        var lastText = parent.lastText().index;
+                        if(lastText != -1){
+                            parent.children.splice(lastText + 1, 0, $scope.block);
+                        }
+                        else{
+                          //put it at top
+                          parent.children.splice(0,0, $scope.block);
+                        }
+                    }
+				    
+				}
+				
+                function insertAfterText(parent){
+                    //place after text if there are any
+                    var lastText = parent.lastText().index;
+                    if(lastText != -1){
+                        parent.children.splice(lastText + 1, 0, $scope.block);
+                    }
+                    else{
+                        //put it at top
+                       parent.children.splice(0,0, $scope.block);
+                    }
+				}
 
 			}
 		});
