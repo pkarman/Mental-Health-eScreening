@@ -221,7 +221,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.templateName = template.name;
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock(null, selectedBlock);
+				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
 				
 				$scope.block.sentTextContent();
 

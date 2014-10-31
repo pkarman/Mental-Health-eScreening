@@ -12,7 +12,6 @@
             templateUrl: 'resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditor.html',
             link: function(scope, element) {
 
-                //TODO: parent-block is not needed anymore to figure out block types.  Please update this template and the one in templateBlockEditorDirective.js
                 var collectionTemplate = '<template-block-condition-editor condition="condition" parent-block="block" ng-repeat="condition in parentBlock.conditions" assessment-variables="assessmentVariables"></template-block-condition-editor>';
 
                 /*
@@ -46,37 +45,14 @@
                 ];
 
                 scope.addAndConditionBlock = function(selectedCondition) {
-                    var andConditionFactoryConfig = {
-                        connector: "and",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        }
-                    };
-
                     if(selectedCondition.children) {
-                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(andConditionFactoryConfig));
+                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
                     }
                 };
 
                 scope.addOrConditionBlock = function(selectedCondition) {
-                    var orConditionFactoryConfig = {
-                        connector: "or",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        }
-                    };
                     if(selectedCondition.children) {
-                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
+                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
                     }
                 };
 

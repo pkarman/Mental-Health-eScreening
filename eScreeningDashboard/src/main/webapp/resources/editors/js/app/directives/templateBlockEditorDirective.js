@@ -56,12 +56,12 @@
             restrict: 'E',
             scope: {
                 block: '=',
+                parentBlock: '=',
                 assessmentVariables: '='
             },
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {
 
-                //TODO: parent-block is not needed anymore to figure out block types.  Please update this template and the one in templateBlockConditionEditorDirective.js
                 var collectionTemplate = '<template-block-editor block="member" parent-block="block" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
 
                 /*
@@ -145,42 +145,17 @@
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock());
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock) {
-                    var andConditionFactoryConfig = {
-                        connector: "and",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        },
-                        conditions: []
-                    };
-
                     selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(andConditionFactoryConfig));
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
                 };
 
                 scope.addOrConditionBlock = function(selectedBlock) {
-                    var orConditionFactoryConfig = {
-                        connector: "or",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        },
-                        conditions: []
-                    };
                     selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
                 };
 
                 scope.removeConditionBlock = function(selectedBlockConditions, selectedCondition) {

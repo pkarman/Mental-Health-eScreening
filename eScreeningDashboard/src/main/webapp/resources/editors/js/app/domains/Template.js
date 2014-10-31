@@ -19,21 +19,21 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about Template Types.
- * @param {String}  jsonTemplateObject  Represents the JSON representation of a Template object.
+ * @param {JSON}  templateConfig  Represents the JSON representation of a Template object.
  * @constructor
  * @author Robin Carnow
  */
-EScreeningDashboardApp.models.Template = function (templateType) {
+EScreeningDashboardApp.models.Template = function (templateConfig) {
     this.isGraphical;
     this.type;
     this.name;
     this.blocks;
 
-    if(Object.isDefined(templateType)){
-        this.isGraphical = false;
-        this.type = templateType;
-        this.name = (Object.isDefined(templateType.name))? templateType.name: null;
-        this.blocks = [];
+    if(Object.isDefined(templateConfig)){
+        this.isGraphical = (Object.isBoolean(templateConfig.isGraphical))? templateConfig.isGraphical : false;
+        this.type = (Object.isDefined(templateConfig.type))? templateConfig.type: null;
+        this.name = (Object.isDefined(templateConfig.type) && Object.isDefined(templateConfig.type.name))? templateConfig.type.name: null;
+        this.blocks = (Object.isArray(templateConfig.blocks))? templateConfig.blocks: [];
     }
     
     /**

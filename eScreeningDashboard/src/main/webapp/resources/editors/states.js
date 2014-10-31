@@ -243,7 +243,7 @@ angular.module('Editors')
                                         var selectedTemplateType = TemplateTypeService.getSelectedType();
                                         if (Object.isDefined(selectedTemplateType)) {
 
-                                            var templateObj = new EScreeningDashboardApp.models.Template(selectedTemplateType);
+                                            var templateObj = new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
                                             templateObj.templateId = 45;
                                             templateObj.blocks = [
                                                 {
@@ -448,7 +448,7 @@ angular.module('Editors')
                                             console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
                                             var selectedTemplateType = TemplateTypeService.getSelectedType();
                                             if (Object.isDefined(selectedTemplateType)) {
-                                                var emptyTemplate = new EScreeningDashboardApp.models.Template(selectedTemplateType);
+                                                var emptyTemplate = new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
                                                 deferred.resolve(emptyTemplate);
                                             }
                                             else {
