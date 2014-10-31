@@ -8,6 +8,7 @@ import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 
 @Controller
@@ -75,7 +77,16 @@ public class AssessmentVariableController {
 		List<Map<String, Object>> avs = Lists.newArrayList();
 
 		for (String rowKey : t.rowKeySet()) {
-			avs.add(t.row(rowKey));
+			Map<String, Object> m = Maps.newHashMap(t.row(rowKey)); // need HashMap as it allows nulls as key or values
+
+			// replace all 0 with null
+			for (Entry<String, Object> e : m.entrySet()) {
+				if (e.getValue().equals(0)) {
+					e.setValue(null);
+				}
+			}
+
+			avs.add(m);
 		}
 
 		return avs;

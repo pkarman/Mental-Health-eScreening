@@ -133,7 +133,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			final Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avLstWithFormulae) {
 
-		AvModelBuilder avmd = new AvModelBuilder() {
+		AvModelBuilder avModelBldr = new AvModelBuilder() {
 			@Override
 			public void buildFromMeasureAnswer(AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
@@ -154,7 +154,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			}
 		};
 
-		avs.filterBySurvey(survey, avmd, smList, avLstWithFormulae);
+		avs.filterBySurvey(survey, avModelBldr, smList, avLstWithFormulae, false);
 	}
 
 	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {

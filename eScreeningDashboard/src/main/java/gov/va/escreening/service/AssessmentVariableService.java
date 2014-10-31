@@ -28,6 +28,7 @@ public interface AssessmentVariableService {
 
 	Collection<AssessmentVariable> findAllFormulae();
 
-	void filterBySurvey(Survey survey, AvModelBuilder dataExtractor,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList);
+	void filterBySurvey(Survey survey, AvModelBuilder avModelBldr,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList,
+			boolean filterMeasures);
 }

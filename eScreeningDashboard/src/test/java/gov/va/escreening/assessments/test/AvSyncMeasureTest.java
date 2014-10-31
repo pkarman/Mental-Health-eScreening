@@ -4,6 +4,7 @@ import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
@@ -23,7 +25,7 @@ import com.google.gson.Gson;
 // this is to ensure all tests do not leave trace, so they are repeatable.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
-public class AvSyncMeasureTest extends AssessmentTestBase {
+public class AvSyncMeasureTest {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource(type = AssessmentVariableService.class)
@@ -191,8 +193,18 @@ public class AvSyncMeasureTest extends AssessmentTestBase {
 		List<Map<String, Object>> avs = Lists.newArrayList();
 
 		for (String rowKey : assessments.rowKeySet()) {
-			avs.add(assessments.row(rowKey));
+			Map<String, Object> m = Maps.newHashMap(assessments.row(rowKey));
+
+			// replace all 0 with null
+			for (Entry<String, Object> e : m.entrySet()) {
+				if (e.getValue().equals(0)) {
+					e.setValue(null);
+				}
+			}
+
+			avs.add(m);
 		}
+
 
 		Gson gson = new Gson();
 		String json = gson.toJson(avs);
