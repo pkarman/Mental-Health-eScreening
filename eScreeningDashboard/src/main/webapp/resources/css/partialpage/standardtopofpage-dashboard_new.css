@@ -897,6 +897,10 @@ a.offscreen:focus, a.offscreen:active {
 .navbar-default .navbar-toggle .icon-bar{
   background-color: #fff;
 }
+
+.bg_head_table{
+  background-color:#303335;
+}
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
 	width: 100%;
