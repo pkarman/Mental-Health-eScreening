@@ -30,11 +30,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
     this.name;
     this.type;
     this.summary;
-    this.left = { type: "var", content: {} };
+    this.left;
     this.operator;
     this.conditions;
 	this.content;
-    this.right = { type: "text", content: "" };
+    this.right;
 
     if(jsonConfig){
         this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
@@ -42,11 +42,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
         this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
         this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
         this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: { type: "var", content: {} };
+        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
         this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
 	    this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: { type: "text", content: "" };
+        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: null;
     }
 
 	function createTextContent(text){
@@ -148,3 +148,14 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
 	this.toString = toString;
 	this.transformTextContent = transformTextContent;
 };
+EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig = {
+    left: {
+        type: "var",
+        content: {}
+    },
+    right: {
+        type: "text",
+        content: ""
+    }
+};
+
