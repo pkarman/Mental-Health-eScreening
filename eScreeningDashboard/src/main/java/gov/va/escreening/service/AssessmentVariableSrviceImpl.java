@@ -144,7 +144,10 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				handleMeasureType(av, filteredMeasures, avModelBldr);
 				break;
 			case 2:
-				handleMeasureAnswerType(av, smList, avModelBldr);
+				// if caller has asked to filter the measures (see case 1) then do not return measure answers
+				if (!filterMeasures) {
+					handleMeasureAnswerType(av, smList, avModelBldr);
+				}
 				break;
 			case 3:
 				handleCustomType(av, smList, avModelBldr);
