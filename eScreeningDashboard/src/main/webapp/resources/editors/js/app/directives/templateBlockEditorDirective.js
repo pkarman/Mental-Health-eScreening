@@ -112,7 +112,7 @@
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock());
+                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock) {
