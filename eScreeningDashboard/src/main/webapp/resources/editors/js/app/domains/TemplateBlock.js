@@ -30,11 +30,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig) {
     this.name;
     this.type;
     this.summary;
-    this.left;
+    this.left = { type: "var", content: {} };
     this.operator;
     this.conditions;
 	this.content;
-    this.right;
+    this.right = { type: "text", content: "" };
 
     if(jsonConfig){
         this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
