@@ -14,7 +14,7 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             service = restAngular.service("services/template");
 
         restAngular.extendModel("services/template", function(model) {
-            model = angular.extend(model, Template);
+            model = angular.extend({}, Template, model);
 
 	        angular.forEach(model.blocks, function(block) {
 		        /* Adding the TemplateBlock subclass to each block, rather reluctantly */

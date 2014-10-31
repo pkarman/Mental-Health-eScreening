@@ -20,7 +20,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about the user.
- * @param {String}  jsonConfig  Represents the JSON representation of an TemplateBlock object.
+ * @param {JSON}  jsonConfig  Represents the JSON representation of an TemplateBlock object.
  * @constructor
  * @author Tonté Pouncil
  */

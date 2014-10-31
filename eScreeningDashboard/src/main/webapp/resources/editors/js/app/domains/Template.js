@@ -19,7 +19,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about Template Types.
- * @param {String}  jsonTemplateObject  Represents the JSON representation of a Template object.
+ * @param {JSON}  templateConfig  Represents the JSON representation of a Template object.
  * @constructor
  * @author Robin Carnow
  */
