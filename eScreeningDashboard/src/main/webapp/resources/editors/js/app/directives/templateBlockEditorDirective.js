@@ -33,8 +33,37 @@
                 return types;
             }
             
+            //if the parent is text and this isn't the last text, then we don't include else or elseif
+            if(parentBlock.type == 'text'){
+                var lastText; 
+                parentBlock.parent.children.forEach(function(child){
+                    if(child.type == 'text'){
+                        lastText = child;
+                    }
+                });
+                
+                if(lastText.section != parentBlock.section){
+                    return types;
+                }
+            }
+            
             //at this point we know that elseif is going to make it
             types.push(blockTypes[1]);
+            
+            
+            //if the parent is an elseif and this isn't the last elseif, then we don't include else
+            if(parentBlock.type == 'elseif'){
+                var lastElseIf; 
+                parentBlock.parent.children.forEach(function(child){
+                    if(child.type == 'elseif'){
+                        lastElseIf = child;
+                    }
+                });
+                
+                if(lastElseIf.section != parentBlock.section){
+                    return types;
+                }
+            }
             
             //find out if the ifParent has an else
             var hasElse = false;
