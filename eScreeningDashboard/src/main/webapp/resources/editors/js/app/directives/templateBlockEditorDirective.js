@@ -116,38 +116,13 @@
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock) {
-                    var andConditionFactoryConfig = {
-                        connector: "and",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        },
-                        conditions: []
-                    };
-
                     selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(andConditionFactoryConfig));
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
                 };
 
                 scope.addOrConditionBlock = function(selectedBlock) {
-                    var orConditionFactoryConfig = {
-                        connector: "or",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        },
-                        conditions: []
-                    };
                     selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
+                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
                 };
 
                 scope.removeConditionBlock = function(selectedBlockConditions, selectedCondition) {

@@ -45,37 +45,14 @@
                 ];
 
                 scope.addAndConditionBlock = function(selectedCondition) {
-                    var andConditionFactoryConfig = {
-                        connector: "and",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        }
-                    };
-
                     if(selectedCondition.children) {
-                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(andConditionFactoryConfig));
+                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
                     }
                 };
 
                 scope.addOrConditionBlock = function(selectedCondition) {
-                    var orConditionFactoryConfig = {
-                        connector: "or",
-                        left: {
-                            type: "var",
-                            content: {}
-                        },
-                        right: {
-                            type: "text",
-                            content: ""
-                        }
-                    };
                     if(selectedCondition.children) {
-                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(orConditionFactoryConfig));
+                        selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
                     }
                 };
 

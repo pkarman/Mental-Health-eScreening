@@ -50,3 +50,27 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
             ", right operator: " + this.operator + "]";
     };
 };
+EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig = {
+    connector: "or",
+    left: {
+        type: "var",
+            content: {}
+    },
+    right: {
+        type: "text",
+            content: ""
+    },
+    conditions: []
+};
+EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig = {
+    connector: "and",
+    left: {
+        type: "var",
+        content: {}
+    },
+    right: {
+        type: "text",
+        content: ""
+    },
+    conditions: []
+};
