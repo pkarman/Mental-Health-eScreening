@@ -47,7 +47,7 @@
 <div class="nonPrintableArea">
 <a href="#skip" class="offscreen">Skip to main content</a>
 
-<div id="outerPageDiv" class="nonPrintableArea">
+<div class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
   <div class="navbar navbar-default navbar-update" role="navigation">
     <div class="container bg_transparent">
@@ -64,6 +64,8 @@
   
   <div class="container left-right-shadow nonPrintableArea">
     <form:form modelAttribute="assessmentSummaryFormBean" autocomplete="off" method="post">
+      
+      <div class=""  id="outerPageDiv" >
       <div class="row">
         <div class="col-md-5">
           <a name="skip" > </a >
@@ -346,6 +348,90 @@
         </div>
       </div>
       <!-- row --> 
+      </div>
+      
+      <!-- ### Modal Section Start Here ### -->
+      <!-- Modal Save to VistA -->
+      <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="save_to_vista_modal_label">Save to VistA</h4>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-warning">Are you sure you want to Save Data to VistA?</div>
+            </div>
+            <div class="modal-footer">
+              <input id="saveToVistaButton" name="saveToVistaButton" value="Save" type="submit" class="btn btn-primary" />
+              <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_close">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    
+      <!-- Modal Veteran Summary  -->
+      <div class="custom_modal veteran_summary_modal" >
+        <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header nonPrintableArea">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
+              </div>
+              <div class="modal-body printableArea">
+                  <div align="right" class="nonPrintableArea">
+                    <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
+                  </div>
+                  <div class="modal_contents">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+                
+                
+      <!-- Modal Review Assessment Preview -->
+      <div class="custom_modal" >
+        <div class="modal fade modal-wide" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header nonPrintableArea">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
+              </div>
+              <div class="modal-body printableArea">
+                <div class="modal_contents">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Health Factor Titles Modal -->
+      <div class="modal fade" id="healthFactorTitles" tabindex="-1" role="dialog" aria-labelledby="healthFactorTitles" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header nonPrintableArea">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="healthFactorTitlesLabel">View Health Factors</h4>
+            </div>
+            <div class="modal-body printableArea">
+              <div class="modal_contents">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ### Modal Section End Here ### -->
+
+    
+    
+    
+    
+    
+    
+    
     </form:form>
   </div>
 </div>
@@ -353,79 +439,10 @@
 
 
 <!-- ### Modal Section Start Here ### -->
-<!-- Modal Save to VistA -->
-<div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="save_to_vista_modal_label">Save to VistA</h4>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-warning">Are you sure you want to Save Data to VistA?</div>
-      </div>
-      <div class="modal-footer">
-        <input id="saveToVistaButton" name="saveToVistaButton" value="Save" type="submit" class="btn btn-primary" />
-        <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_close">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-            
-            
-<!-- Modal Veteran Summary  -->
-<div class="custom_modal veteran_summary_modal" >
-  <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header nonPrintableArea">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
-        </div>
-        <div class="modal-body printableArea">
-            <div align="right" class="nonPrintableArea">
-              <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
-            </div>
-            <div class="modal_contents">Loading...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-          
-          
-<!-- Modal Review Assessment Preview -->
-<div class="custom_modal" >
-  <div class="modal fade modal-wide" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header nonPrintableArea">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
-        </div>
-        <div class="modal-body printableArea">
-          <div class="modal_contents">Loading...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Health Factor Titles Modal -->
-<div class="modal fade" id="healthFactorTitles" tabindex="-1" role="dialog" aria-labelledby="healthFactorTitles" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header nonPrintableArea">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="healthFactorTitlesLabel">View Health Factors</h4>
-      </div>
-      <div class="modal-body printableArea">
-        <div class="modal_contents">Loading...</div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ### Modal Section End Here ### -->
+            
+            
+
 
 
 <div class="clear-fix"></div>
