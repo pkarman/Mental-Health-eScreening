@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
+import gov.va.escreening.domain.AssessmentExpirationDaysEnum;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.domain.VeteranAssessmentDto;
@@ -46,6 +47,7 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.util.VeteranUtil;
+import gov.va.escreening.validation.DateValidationHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,12 +62,14 @@ import java.util.TreeSet;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -109,6 +113,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	@Resource(name = "esVeteranAssessmentDashboardAlertRepository")
 	VeteranAssessmentDashboardAlertRepository vadar;
 
+	@Resource(name = "dateValidationHelper")
+	DateValidationHelper dvh;
+
 	@Override
 	public List<VeteranAssessment> getAvailableAssessmentsForVeteran(
 			Integer veteranId) {
@@ -119,7 +126,36 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		assessmentStatusIdList.add(AssessmentStatusEnum.CLEAN.getAssessmentStatusId());
 		assessmentStatusIdList.add(AssessmentStatusEnum.INCOMPLETE.getAssessmentStatusId());
 
-		return veteranAssessmentRepository.findByVeteranIdAndAssessmentStatusIdList(veteranId, assessmentStatusIdList);
+		List<VeteranAssessment> notVerifiedAssessments = veteranAssessmentRepository.findByVeteranIdAndAssessmentStatusIdList(veteranId, assessmentStatusIdList);
+
+		// the returned assessments from db are non verified against some business logic
+
+		List<VeteranAssessment> verifiedAssessments = Lists.newArrayList(notVerifiedAssessments);
+		if (notVerifiedAssessments != null) {
+			for (VeteranAssessment va : notVerifiedAssessments) {
+				verifyAssessment(va, verifiedAssessments);
+			}
+		}
+		return verifiedAssessments;
+
+	}
+
+	private void verifyAssessment(VeteranAssessment va,
+			List<VeteranAssessment> verifiedAssessments) {
+
+		if (isClean(va) && !isValidClean(va)) {
+			verifiedAssessments.remove(va);
+		}
+	}
+
+	private boolean isValidClean(VeteranAssessment va) {
+		List<LocalDate> validDates = dvh.validWorkingDates(AssessmentExpirationDaysEnum.CLEAN);
+		boolean valid = isClean(va) && validDates.contains(LocalDate.fromDateFields(va.getDateCreated()));
+		return valid;
+	}
+
+	private boolean isClean(VeteranAssessment va) {
+		return va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId();
 	}
 
 	@Override
@@ -353,7 +389,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 				if (veteranAssessment.getVeteran().getIsSensitive())
 					assessmentSearchResult.setSsnLastFour("XXXX");
-				else	
+				else
 					assessmentSearchResult.setSsnLastFour(veteranAssessment.getVeteran().getSsnLastFour());
 
 				if (veteranAssessment.getDuration() == null) {
