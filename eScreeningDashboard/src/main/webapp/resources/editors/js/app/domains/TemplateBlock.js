@@ -45,11 +45,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
         this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
         this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
-        this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
-        this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
+        this.left = (Object.isDefined(jsonConfig.left))? new EScreeningDashboardApp.models.TemplateLeftVariable(jsonConfig.left): null;
+        this.operator = (Object.isDefined(jsonConfig.operator))? new EScreeningDashboardApp.models.TemplateOperator(jsonConfig.operator): null;
+        this.conditions = (Object.isArray(jsonConfig.conditions))? EScreeningDashboardApp.models.TemplateCondition.createConditionsArray(jsonConfig.conditions): [];
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: null;
+        this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
         if(Object.isDefined(jsonConfig.children)){
             angular.copy(jsonConfig.children, this.children);
@@ -222,7 +222,15 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	this.equals = equals;
 	
 };
+EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(jsonTemplateBlocksConfig) {
+    var templateBlocks = [];
 
+    jsonTemplateBlocksConfig.forEach(function(jsonTemplateBlockConfig) {
+        templateBlocks.push(new EScreeningDashboardApp.models.TemplateBlock(jsonTemplateBlockConfig));
+    });
+
+    return templateBlocks;
+}
 EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig = {
     left: {
         type: "var",

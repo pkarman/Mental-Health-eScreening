@@ -14,9 +14,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             service = restAngular.service("services/assessmentVariables");
 
         restAngular.extendModel("services/assessmentVariables", function(model) {
-            model = angular.extend(model, TemplateVariableContent);
-            model.setType();
-            return model;
+            return angular.extend(model, TemplateVariableContent);
         });
 
         // Expose the public TemplateService API to the rest of the application.

@@ -40,3 +40,13 @@ EScreeningDashboardApp.models.TemplateTransformation = function (jsonConfig) {
         return "TemplateTransformation [name: " + this.name + ", params: " + this.params + "]";
     };
 };
+EScreeningDashboardApp.models.TemplateTransformation.createTemplateTransformationArray = function(jsonTemplateTransformationsConfig) {
+    var templateTransformations = [];
+
+    jsonTemplateTransformationsConfig.forEach(function(jsonTemplateTransformationConfig){
+        templateTransformations.push(new EScreeningDashboardApp.models.TemplateTransformation(jsonTemplateTransformationConfig));
+    });
+
+
+    return templateTransformations;
+};

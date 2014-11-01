@@ -4,7 +4,7 @@
  * @author Robin Carnow
  */
 angular.module('EscreeningDashboardApp.services.template', ['restangular'])
-    .factory('TemplateService', ['Restangular', 'Template', 'TemplateBlock', function (Restangular, Template, TemplateBlock){
+    .factory('TemplateService', ['Restangular', 'Template', function (Restangular, Template){
         "use strict";
 
         var restAngular = Restangular.withConfig(function(Configurer) {
@@ -14,14 +14,7 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             service = restAngular.service("services/template");
 
         restAngular.extendModel("services/template", function(model) {
-            model = angular.extend({}, Template, model);
-
-	        angular.forEach(model.blocks, function(block) {
-		        /* Adding the TemplateBlock subclass to each block, rather reluctantly */
-		        angular.extend(block, TemplateBlock);
-	        });
-
-            return model;
+            return angular.extend({}, Template, model);
         });
         
         return {

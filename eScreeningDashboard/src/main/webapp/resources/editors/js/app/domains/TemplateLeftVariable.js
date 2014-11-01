@@ -33,7 +33,7 @@ EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
 
     if(Object.isDefined(jsonConfig)) {
         this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
-        this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: null;
+        this.content = (Object.isDefined(jsonConfig.content))? new EScreeningDashboardApp.models.TemplateVariableContent(jsonConfig.content): null;
         if(!Object.isDefined(this.content)) {
             if (this.type === "text") {
                 this.content = jsonConfig.content;
