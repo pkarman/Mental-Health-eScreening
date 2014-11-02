@@ -62,7 +62,7 @@ Editors.config(function(RestangularProvider, $provide) {
 		    selector: 'img',
 		    customAttribute: 'ta-insert-variable',
 		    renderLogic: function(element){
-			    var img = angular.element('<img/>');
+			    var img = angular.element('<img src="" />');
 			    var attributes = element.prop("attributes");
 			    // loop through element attributes and apply them on img
 			    angular.forEach(attributes, function(attr) {
@@ -244,6 +244,7 @@ Editors.config(function(RestangularProvider, $provide) {
 								embed =
 									'<img ' +
 										'class="ta-insert-variable text-info" ' +
+										'id="' + $scope.assessmentVariable.id + '" ' +
 										'src="" ' +
 										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
 										'title="(' + $scope.assessmentVariable.getName() + ')"' +
@@ -254,6 +255,7 @@ Editors.config(function(RestangularProvider, $provide) {
 								embedAlt =
 									'<img ' +
 										'class="ta-insert-variable text-info" ' +
+										'id="' + $scope.assessmentVariable.id + '" ' +
 										'src="" ' +
 										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
 										'alt="(' + $scope.assessmentVariable.getName() +
