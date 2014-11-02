@@ -17,6 +17,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/vendors/textAngular/textAngular.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/menu-partial.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/userManagement.css" type="text/css">
@@ -109,8 +110,10 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular-sanitize.min.js'></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.2/textAngular.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngularSetup.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
