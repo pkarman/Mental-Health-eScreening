@@ -429,7 +429,7 @@ angular.module('Editors')
                                             console.log("Getting template from server with ID: " + $stateParams.templateId);
 
                                             TemplateService.get($stateParams.templateId).then(function (template) {
-                                                deferred.resolve(new EScreeningDashboardApp.models.Template(template));
+                                                deferred.resolve(template);
                                             }, function (responseError) {
                                                 //TODO: we really need to setup an error martialling interceptor to create an error response no matter what the server sends us
                                                 var msg = "Unknown server error";

@@ -11,6 +11,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     //remove as soon as possible
     $scope.variableNamedHash = {};
     $scope.debug = true;
+    $scope.logId=0;
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
@@ -98,7 +99,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 $scope.templateChanged();
             },
             accept: function(dragNodeScope, destNodesScope, destIndex){
-                log("*************");
+                log("****** LOG ID " + $scope.logId++ + " *******");
             	log("destIndex: " + destIndex);
             	
             	var destIsRoot = !Object.isDefined(destNodesScope.$nodeScope);
