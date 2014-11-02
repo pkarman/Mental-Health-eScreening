@@ -28,7 +28,7 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
     this.isGraphical = false;
     this.type;
     this.name;
-    this.blocks;
+    this.blocks = [];
 
     if(Object.isDefined(templateConfig)){
         this.id = Object.isDefined(templateConfig.id)? templateConfig.id : null;
@@ -36,6 +36,15 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
         this.type = (Object.isDefined(templateConfig.type))? templateConfig.type: null;
         this.name = (Object.isDefined(templateConfig.type) && Object.isDefined(templateConfig.type.name))? templateConfig.type.name: null;
         this.blocks = (Object.isArray(templateConfig.blocks))? EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(templateConfig.blocks): [];
+    }
+    
+    /**
+     * Runs any initialization tasks after a model extend
+     */
+    this.init = function(){
+        if(Object.isArray(this.blocks)){
+            this.blocks = EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(this.blocks);
+        }
     }
     
     /**

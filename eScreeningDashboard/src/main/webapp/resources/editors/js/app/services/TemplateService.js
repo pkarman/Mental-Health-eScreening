@@ -14,7 +14,9 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             service = restAngular.service("services/template");
 
         restAngular.extendModel("services/template", function(model) {
-            return angular.extend({}, Template, model);
+            var extendedModel = angular.extend({}, Template, model);
+            extendedModel.init();
+            return extendedModel;
         });
         
         return {
