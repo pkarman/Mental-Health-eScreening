@@ -1,9 +1,11 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.dto.TemplateTypeDTO;
+import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.TemplateType;
+import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
@@ -27,6 +29,9 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 	
 	@Autowired 
 	private SurveyRepository surveyRepository;
+	
+	@Autowired
+	private BatteryRepository batteryRepository;
 	
 	
 	@Autowired
@@ -57,6 +62,39 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 			
 			results.add(moduleTemplateTypeDTO);
 		}
+		
+		return results;
+	}
+	
+	@Override
+	public List<TemplateTypeDTO> getTemplateTypesByBattery(Integer batteryId){
+		Battery battery = batteryRepository.findOne(batteryId);
+		
+		Set<Template> templates = battery.getTemplates();
+		
+		List<TemplateType> templateTypes = templateTypeRepository.findAllTypeOrderByNameForBattery();
+		
+		List<TemplateTypeDTO> results = new ArrayList<>(templateTypes.size());
+		
+		for(TemplateType templateType : templateTypes)
+		{
+			TemplateTypeDTO moduleTemplateTypeDTO = new TemplateTypeDTO();
+			moduleTemplateTypeDTO.setId(templateType.getTemplateTypeId());
+			moduleTemplateTypeDTO.setName(templateType.getName());
+			moduleTemplateTypeDTO.setDescription(templateType.getDescription());
+			
+			for(Template template : templates)
+			{
+				if (templateType.getTemplateTypeId().intValue() == template.getTemplateType().getTemplateTypeId().intValue())
+				{
+					moduleTemplateTypeDTO.setTemplateId(template.getTemplateId());
+					break;
+				}
+			}
+			
+			results.add(moduleTemplateTypeDTO);
+		}
+		
 		
 		return results;
 	}

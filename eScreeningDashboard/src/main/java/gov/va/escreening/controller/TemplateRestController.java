@@ -93,6 +93,31 @@ public class TemplateRestController {
 	}
 	
 	
+	@RequestMapping(value ="/services/templateTypes/batteryId/{batteryId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<TemplateTypeDTO> getModuleTemplateTypesByBatteryId(@RequestParam("batteryId") Integer batteryId, @CurrentUser EscreenUser escreenUser) {
+        if(batteryId == null || batteryId < 0) {
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the battery with ID: " + batteryId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        List<TemplateTypeDTO> templateTypes = templateTypeService.getModuleTemplateTypesBySurvey(batteryId);
+
+        if(templateTypes == null || (templateTypes != null && templateTypes.isEmpty())){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin("Could not find the template types with the battery with ID: " + batteryId)
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+                    .throwIt();
+        }
+
+        return templateTypes;
+	}
+	
 	@RequestMapping(value="/services/templateTypes/{templateTypeId}/surveys/{surveyId}", method=RequestMethod.POST /*, consumes="application/json", produces="application/json"*/)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
@@ -114,17 +139,23 @@ public class TemplateRestController {
 	}
 		
 
-	//TODO: As soon as we have a templateService.saveTemplateFileForBattery method then please uncomment this
-//	@RequestMapping(value = "/services/templateTypes/{templateTypeId}/batteries/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @ResponseBody
-//	public Integer createTemplateForBattery(
-//			@PathVariable("batteryId") Integer batteryId,
-//	        @PathVariable("templateTypeId") Integer templateTypeId,
-//			@RequestBody TemplateFileDTO templateFile, 		
-//			@CurrentUser EscreenUser escreenUser) {
-//		return templateService.saveTemplateFileForBattery(templateDTO, templateTypeId, batteryId, false);
-//	}
+	@RequestMapping(value = "/services/templateTypes/{templateTypeId}/battery/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+	public Integer createTemplateForBattery(
+			@PathVariable("batteryId") Integer batteryId,
+	        @PathVariable("templateTypeId") Integer templateTypeId,
+			@RequestBody TemplateFileDTO templateFile, 		
+			@CurrentUser EscreenUser escreenUser) {
+		if (templateFile.getName() == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toUser("Template name can not be null.")
+            .toAdmin("Template name can not be null ")
+            .setCode(ErrorCodeEnum.DATA_VALIDATION.getValue())
+            .throwIt();
+		}
+		return templateService.saveTemplateFileForBattery(batteryId, templateTypeId, templateFile);
+	}
 	
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -239,5 +270,7 @@ public class TemplateRestController {
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
 	}
+	
+	
 
 }

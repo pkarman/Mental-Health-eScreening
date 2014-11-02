@@ -11,5 +11,7 @@ public interface TemplateTypeRepository extends RepositoryInterface<TemplateType
 	List<TemplateType> findAllOrderByName();
 
 	List<TemplateType> findAllModuleTypeOrderByName();
+	
+	public List<TemplateType> findAllTypeOrderByNameForBattery();
 
 }

@@ -485,62 +485,14 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Integer saveTemplateFileForSurvey(Integer surveyId, Integer templateTypeId, TemplateFileDTO templateFile){
-		//TODO: Can some of this be factored out so we an reuse the parts that don't deal with survey in a battery related version? 
 		
 		Survey survey = surveyRepository.findOne(surveyId);
 		
-		Template template = new Template();
-		
-		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateTypeId);
-		template.setTemplateType(templateType);
-		
-		template.setDateCreated(new Date());
-		template.setIsGraphical(templateFile.getIsGraphical());
-		template.setName(templateFile.getName());
-		
-		// save raw json file to the database
-		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
-		{
-			template.setJsonFile(null);
-		}
-		else
-		{
-			ObjectMapper om = new ObjectMapper();
-			try
-			{
-				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
-			}
-			catch(IOException e)
-			{
-				logger.error("Error setting json blocks into template", e); 
-				e.printStackTrace();
-				template.setJsonFile(null);
-			}
-			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
-		 }	
-		
-		if (template.getTemplateFile()==null)
-		{
-			template.setTemplateFile("");
-		}
-		/**
-		 * for survey one template per type
-		 */
-		for(Template t : survey.getTemplates())
-		{
-			if (t.getTemplateType().getTemplateTypeId().longValue() == templateFile.getType().getId().longValue())
-			{
-				survey.getTemplates().remove(t);
-				break;
-			}
-		}
-		
-		survey.getTemplates().add(template);
+		Integer templateId = createTemplate( templateTypeId,  templateFile,survey.getTemplates() );
 		
 		surveyRepository.update(survey);
 		
-		return template.getTemplateId();
+		return templateId;
 	}
 
 	private String generateFreeMarkerTemplateFile(List<INode> blocks) {
@@ -597,5 +549,73 @@ public class TemplateServiceImpl implements TemplateService {
 
 		templateRepository.update(template);
 		
+	}
+	
+	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ){
+		
+		Template template = new Template();
+		
+		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateTypeId);
+		template.setTemplateType(templateType);
+		
+		template.setDateCreated(new Date());
+		template.setIsGraphical(templateFile.getIsGraphical());
+		template.setName(templateFile.getName());
+		
+		// save raw json file to the database
+		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
+		{
+			template.setJsonFile(null);
+		}
+		else
+		{
+			ObjectMapper om = new ObjectMapper();
+			try
+			{
+				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+			}
+			catch(IOException e)
+			{
+				logger.error("Error setting json blocks into template", e); 
+				e.printStackTrace();
+				template.setJsonFile(null);
+			}
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+		 }	
+		
+		if (template.getTemplateFile()==null)
+		{
+			template.setTemplateFile("");
+		}
+		/**
+		 * for survey one template per type
+		 */
+		for(Template t : templates)
+		{
+			if (t.getTemplateType().getTemplateTypeId().longValue() == templateFile.getType().getId().longValue())
+			{
+				templates.remove(t);
+				break;
+			}
+		}
+		
+		templates.add(template);
+		
+		return template.getTemplateId();
+		
+		
+	}
+	
+
+	@Override
+	public Integer saveTemplateFileForBattery(Integer batteryId,
+			Integer templateTypeId, TemplateFileDTO templateFile) {
+		Battery battery = batteryRepository.findOne(batteryId);
+		
+		Integer templateId = createTemplate(templateTypeId, templateFile, battery.getTemplates());
+		batteryRepository.update(battery);
+		
+		return templateId;
 	}
 }
