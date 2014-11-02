@@ -26,6 +26,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
+    var myparent = parent;
     this.guid = new Date().getTime();
     this.section;
     this.name;
@@ -36,7 +37,6 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     this.conditions;
     this.content;
     this.right;
-    this.parent = parent;
     this.children = [];
 
     if(jsonConfig){
@@ -199,10 +199,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
      * @return the index of this block in it's parent's children array
      */
     function index(){
-        if(!this.parent || !angular.isArray(this.parent.children)){
+        if(!this.getParent() || !angular.isArray(this.getParent().children)){
             return -1;
         }
-        return this.parent.indexOf(this);
+        return this.getParent().indexOf(this);
     }
     
     function equals(otherBlock){
@@ -220,6 +220,9 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	this.indexOf = indexOf;
 	this.index = index;
 	this.equals = equals;
+	//keeping parent as a private field to avoid cyclic references 
+	this.getParent = function(){return myparent};
+	this.setParent = function(newParent){ myparent = newParent; }
 	
 };
 EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(jsonTemplateBlocksConfig) {

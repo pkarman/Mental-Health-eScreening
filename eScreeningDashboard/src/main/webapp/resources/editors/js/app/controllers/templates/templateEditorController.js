@@ -10,7 +10,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     $scope.variableHash = {};
     //remove as soon as possible
     $scope.variableNamedHash = {};
-    $scope.debug = false;
+    $scope.debug = true;
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
@@ -107,6 +107,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             	log("destParent type: " + (Object.isDefined(destParent) ? destParent.type : "null" ));
             	
             	var dragType = dragNodeScope.$modelValue.type;
+            	var dragIndex = dragNodeScope.$modelValue.index();
             	
             	
                 if(!destIsRoot){
@@ -131,6 +132,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 var lastElseIf = -1;
                 var elseIndex = -1;
                 var lastTextBlock = -1;
+                var destIsAfterDragInSameParent = false;
                 for(var i = 0; i < destNodesScope.$modelValue.length; i++){
                     
                     var type = destNodesScope.$modelValue[i].type;
@@ -145,6 +147,12 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     else if(type == "text"){
                         lastTextBlock = i;
+                    }
+                    if(dragNodeScope.$modelValue.equals(destNodesScope.$modelValue[i])){
+                        if(destIndex > i){
+                            log("destIndex is greater than dragged index and in same parent");
+                            destIsAfterDragInSameParent = true;
+                        }
                     }
                 }
                 
@@ -171,11 +179,13 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     //3. between an If and the first else or else if
                     if(destParent.type == "if"){
-                        log("destIndex: " + destIndex + " <= firstElseIndex: " + firstElseIndex);
+                        var firstElse = firstElseIndex; // destIsAfterDragInSameParent ? firstElseIndex - 1 : firstElseIndex;
+                        log("adjusted firstElseIndex:" + firstElse);
+                        log("source/drag index is: " + dragIndex);
+                        log("returning:  destIndex: " + destIndex + " <= firstElseIndex: " + firstElse);
                         //PLEASE NOTE: there seems to be a bug in ui-tree which gives the wrong index if 
-                        // you quickly move from the first node under the if to right under an elseif of 
-                        // the same if the index is still 1 which is incorrect (could not reproduce this with Chrome)
-                        return destIndex <= firstElseIndex;
+                        // you quickly move from the first node under the if to right under an elseif of the same if the index is still 1 which is incorrect
+                        return destIndex <= firstElse;
                     }
                 }
                 
@@ -296,11 +306,11 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                             }
                     	    else if($scope.block.type == 'elseif'){
                     	        //insert right after this else if 
-                    	        selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                    	        selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
                     	    }
                     	    else if($scope.block.type == 'else'){
                     	        //insert into parent IF after text and else if
-                                insertAfterTextAndElseIf(selectedBlock.parent);
+                                insertAfterTextAndElseIf(selectedBlock.getParent());
                             }
                             else if($scope.block.type == 'text'){
                                 //add it to top of elseif's children
@@ -324,9 +334,9 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                         }
                         else if(selectedBlock.type == 'text'){
                             if($scope.block.type == 'if' || $scope.block.type == 'text'){
-                                if(selectedBlock.parent){
+                                if(selectedBlock.getParent()){
                                     //if we have a parent place the if after the text in that parent
-                                    selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                                    selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
                                 }
                                 else{
                                     //if we have no parent then add block as next sibling in template's blocks array
@@ -342,10 +352,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                             }
                             else if($scope.block.type == 'elseif'){
                                 //insert after all text blocks in the parent If 
-                                insertAfterText(selectedBlock.parent);
+                                insertAfterText(selectedBlock.getParent());
                             }
                             else if($scope.block.type == 'else'){
-                                insertAfterTextAndElseIf(selectedBlock.parent);
+                                insertAfterTextAndElseIf(selectedBlock.getParent());
                             }
                             else{
                                 log.error("Unsupported type to insert");

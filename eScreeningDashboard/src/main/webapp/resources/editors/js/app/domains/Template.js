@@ -94,7 +94,7 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
             if(Object.isDefined(children)){
                 for (var i = 0; i < children.length; i++){
                     var sectionIndex = i + 1;
-                    children[i].parent = parent;
+                    children[i].setParent(parent);
                     children[i].section = parent ? parent.section + "." + sectionIndex : "" + sectionIndex;
                     updateSection(children[i].children, children[i]);
                 }
