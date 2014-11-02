@@ -52,7 +52,7 @@
                     }
                 });
 
-                if(Object.isDefined($scope.assessmentVariable.id)) {
+                if(Object.isDefined($scope.assessmentVariable) && Object.isDefined($scope.assessmentVariable.id)) {
                     $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter($scope.assessmentVariable.name, 20));
                     $scope.$emit('filterOperators', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
                 }
