@@ -23,13 +23,14 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 @Repository("esVeteranAssessmentDashboardAlertRepository")
 public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHibernateRepository<VeteranAssessmentDashboardAlert> implements VeteranAssessmentDashboardAlertRepository {
-
 	@Resource(name = "dateValidationHelper")
 	DateValidationHelper dvh;
 
@@ -57,6 +58,9 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	 */
 	@Override
 	public List findAlertsByProgram(int programId) {
+
+		archiveStaleAssessments();
+
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT da.name, count(vada), va.veteranAssessmentId ");
 		sqlBldr.append("FROM VeteranAssessmentDashboardAlert as vada ");
@@ -71,8 +75,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		// except Created=1 and Finalized=5
-		sqlBldr.append("WHERE vas.assessmentStatusId not in (1,5)  ");
-		sqlBldr.append("AND date(va.dateUpdated) in (:workingDates) ");
+		sqlBldr.append("WHERE va.dateArchived is null ");
+		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -85,9 +89,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != 99) {
 			query.setParameter("programId", programId);
 		}
-
-		query.setParameter("workingDates", dvh.validWorkingDates(AssessmentExpirationDaysEnum.FINALIZED));
-
+		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
 		List resultList = query.getResultList();
 
 		return resultList;
@@ -96,6 +98,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Override
 	public List<Map<String, Object>> findNearingCompletionAssessments(
 			int programId, int totalRequestedRecords) {
+
+		archiveStaleAssessments();
 
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT vet.lastName, vet.ssnLastFour, va ");
@@ -110,8 +114,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		sqlBldr.append("WHERE va.percentComplete > 0 ");
-		sqlBldr.append("AND date(va.dateUpdated) in (:workingDates) ");
-		sqlBldr.append("AND vas.assessmentStatusId not in (1,5)  ");
+		sqlBldr.append("AND va.dateArchived is null ");
+		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -124,7 +128,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != 99) {
 			query.setParameter("programId", programId);
 		}
-		query.setParameter("workingDates", dvh.validWorkingDates(AssessmentExpirationDaysEnum.FINALIZED));
+		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
 
 		List resultList = query.getResultList();
 
@@ -134,6 +138,9 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Override
 	public List<Map<String, Object>> findSlowMovingAssessments(int programId,
 			int totalRequestedRecords) {
+
+		archiveStaleAssessments();
+
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT vet.lastName, vet.ssnLastFour, va ");
 		sqlBldr.append("FROM VeteranAssessment as va ");
@@ -147,8 +154,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		sqlBldr.append("WHERE va.duration > 0 ");
-		sqlBldr.append("AND date(va.dateUpdated) in (:workingDates) ");
-		sqlBldr.append("AND vas.assessmentStatusId not in (1,5) ");
+		sqlBldr.append("AND va.dateArchived is null ");
+		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -161,7 +168,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != 99) {
 			query.setParameter("programId", programId);
 		}
-		query.setParameter("workingDates", dvh.validWorkingDates(AssessmentExpirationDaysEnum.FINALIZED));
+		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
+
 		List resultList = query.getResultList();
 
 		return createResponseItems(resultList);
@@ -189,8 +197,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		return listOfResponses;
 	}
 
-	@Override
-	public SearchResult<VeteranAssessment> searchVeteranAssessment(
+	private SearchResult<VeteranAssessment> searchFilteredVeteranAssessment(
 			Integer programId, SearchAttributes searchAttributes) {
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT va ");
@@ -202,7 +209,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.clinician as clinician ");
 		sqlBldr.append("inner JOIN va.createdByUser as user ");
 
-		sqlBldr.append("WHERE vas.assessmentStatusId not in (:deletedState) ");
+		sqlBldr.append("WHERE va.dateArchived is null ");
 		// if user wants data for only certain program Id then use programId in
 		// the sql else ignore it
 		if (programId != null) {
@@ -219,14 +226,11 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != null) {
 			query.setParameter("programId", programId);
 		}
-		query.setParameter("deletedState", AssessmentStatusEnum.DELETED.getAssessmentStatusId());
 
 		query.setFirstResult(searchAttributes.getRowStartIndex()).setMaxResults(searchAttributes.getPageSize());
 		List<VeteranAssessment> resultList = query.getResultList();
 
-		int filterCnt = filterByAssessmentStatusAndWorkingDays(resultList);
-
-		int totalRecsFound = getCountOfThisAboveQuery(programId) - filterCnt;
+		int totalRecsFound = getTotalRecords(programId);
 
 		SearchResult<VeteranAssessment> searchResult = new SearchResult<VeteranAssessment>();
 		searchResult.setTotalNumRowsFound(totalRecsFound);
@@ -235,12 +239,13 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		return searchResult;
 	}
 
-	private int getCountOfThisAboveQuery(Integer programId) {
+	private int getTotalRecords(Integer programId) {
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT count(va) ");
 		sqlBldr.append("FROM VeteranAssessment as va ");
+		sqlBldr.append("WHERE va.dateArchived is null ");
 		if (programId != null) {
-			sqlBldr.append("WHERE program.programId = :programId ");
+			sqlBldr.append("AND program.programId = :programId ");
 		}
 
 		Query query = entityManager.createQuery(sqlBldr.toString());
@@ -250,41 +255,6 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		}
 		Long result = (Long) query.getSingleResult();
 		return result.intValue();
-	}
-
-	private int filterByAssessmentStatusAndWorkingDays(
-			List<VeteranAssessment> resultList) {
-
-		final List<LocalDate> xpireDaysFinalizedState = dvh.validWorkingDates(AssessmentExpirationDaysEnum.FINALIZED);
-		final List<LocalDate> xpireDaysCleanState = dvh.validWorkingDates(AssessmentExpirationDaysEnum.CLEAN);
-
-		// get a list of those assessment which have been in Finalized state from more than 2 days
-		Predicate<VeteranAssessment> statEqFinalized_AliveMoreThan2Days_Predicate = new Predicate<VeteranAssessment>() {
-			@Override
-			public boolean apply(VeteranAssessment input) {
-				return input.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.FINALIZED.getAssessmentStatusId() && !xpireDaysFinalizedState.contains(LocalDate.fromDateFields(input.getDateUpdated()));
-			}
-		};
-		Collection<VeteranAssessment> finalizedWithMoreThan2DaysList = Collections2.filter(resultList, statEqFinalized_AliveMoreThan2Days_Predicate);
-		// take the size and save in a local variable as removing data from resultList will remove from
-		// finalizedWithMoreThan2DaysList too as Collections2.filter returns a reference
-		int finalizedWithMoreThan2DaysListCnt = finalizedWithMoreThan2DaysList.size();
-
-		// get a list of those assessment which have been in Clean state from more than 5 days
-		Predicate<VeteranAssessment> statEqClean_AliveMoreThan5Days_Predicate = new Predicate<VeteranAssessment>() {
-			@Override
-			public boolean apply(VeteranAssessment input) {
-				return input.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId() && !xpireDaysCleanState.contains(LocalDate.fromDateFields(input.getDateCreated()));
-			}
-		};
-		Collection<VeteranAssessment> cleanWithMoreThan5DaysList = Collections2.filter(resultList, statEqClean_AliveMoreThan5Days_Predicate);
-		int cleanWithMoreThan5DaysListCnt = cleanWithMoreThan5DaysList.size();
-
-		// now we have these two lists --- we will go and remove these records from the list
-		resultList.removeAll(finalizedWithMoreThan2DaysList);
-		resultList.removeAll(cleanWithMoreThan5DaysList);
-
-		return (cleanWithMoreThan5DaysListCnt + finalizedWithMoreThan2DaysListCnt);
 	}
 
 	private String getOrderByDirection(SearchAttributes searchAttributes) {
@@ -325,4 +295,63 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 
 		return orderByColumn;
 	}
+
+	@Override
+	public SearchResult<VeteranAssessment> searchVeteranAssessment(
+			Integer programId, SearchAttributes searchAttributes) {
+
+		archiveStaleAssessments();
+
+		return searchFilteredVeteranAssessment(programId, searchAttributes);
+	}
+
+	/**
+	 * method to
+	 * <ol>
+	 * <li>archive records which are in Clean state and have not been attended for the last
+	 * {@link AssessmentExpirationDaysEnum#CLEAN} days</li>
+	 * <li>archive records which are in FINALIZED state and have not been attended for the last
+	 * {@link AssessmentExpirationDaysEnum#FINALIZED} days</li>
+	 * </ol>
+	 * 
+	 * PS: THis method has to be called as part os an existing Transaction
+	 */
+	@Transactional(readOnly = false, propagation = Propagation.MANDATORY)
+	private final void archiveStaleAssessments() {
+		{
+			// take the smallest possible date allowed for clean assessments to be available
+			String smallestDate = getSmallestPossibleAllowedDateAsStr(dvh.validWorkingDates(AssessmentExpirationDaysEnum.CLEAN));
+			String updateSql = String.format("update veteran_assessment set date_archived = now() where date_archived is null and assessment_status_id = 1 and date_created < %s", smallestDate);
+			Query archiveUnAttendedCleanSql = entityManager.createNativeQuery(updateSql);
+			int recsUpdated1 = archiveUnAttendedCleanSql.executeUpdate();
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("%s records were archived as their assessment status is CLEAN and they have not been attended for more than %s days", recsUpdated1, AssessmentExpirationDaysEnum.CLEAN.getExpirationDays()));
+			}
+		}
+
+		{
+			// take all valid dates allowed for finalized assessments to be available
+			String smallestDate = getSmallestPossibleAllowedDateAsStr(dvh.validWorkingDates(AssessmentExpirationDaysEnum.FINALIZED));
+			String updateSql = String.format("update veteran_assessment set date_archived = now() where date_archived is null and assessment_status_id = 5 and date_updated < %s", smallestDate);
+			Query archiveUnAttendedFinalizedSql = entityManager.createNativeQuery(updateSql);
+			int recsUpdated2 = archiveUnAttendedFinalizedSql.executeUpdate();
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("%s records were archived as their assessment status is FINALIZED and they have not been attended for more than %s days", recsUpdated2, AssessmentExpirationDaysEnum.FINALIZED.getExpirationDays()));
+			}
+		}
+	}
+
+	private String getSmallestPossibleAllowedDateAsStr(
+			Collection<LocalDate> validWorkingDates) {
+		LocalDate smallestDate = null;
+		for (Iterator<LocalDate> iter = validWorkingDates.iterator(); iter.hasNext();) {
+			LocalDate d = iter.next();
+			if (!iter.hasNext()) {
+				smallestDate = d;
+			}
+		}
+		Preconditions.checkNotNull(smallestDate);
+		return String.format("str_to_date('%s', '%s')", smallestDate.toString("yyyy-MM-dd"), "%Y-%m-%d");
+	}
+
 }

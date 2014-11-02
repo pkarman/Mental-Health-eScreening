@@ -126,36 +126,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		assessmentStatusIdList.add(AssessmentStatusEnum.CLEAN.getAssessmentStatusId());
 		assessmentStatusIdList.add(AssessmentStatusEnum.INCOMPLETE.getAssessmentStatusId());
 
-		List<VeteranAssessment> notVerifiedAssessments = veteranAssessmentRepository.findByVeteranIdAndAssessmentStatusIdList(veteranId, assessmentStatusIdList);
-
-		// the returned assessments from db are non verified against some business logic
-
-		List<VeteranAssessment> verifiedAssessments = Lists.newArrayList(notVerifiedAssessments);
-		if (notVerifiedAssessments != null) {
-			for (VeteranAssessment va : notVerifiedAssessments) {
-				verifyAssessment(va, verifiedAssessments);
-			}
-		}
-		return verifiedAssessments;
-
-	}
-
-	private void verifyAssessment(VeteranAssessment va,
-			List<VeteranAssessment> verifiedAssessments) {
-
-		if (isClean(va) && !isValidClean(va)) {
-			verifiedAssessments.remove(va);
-		}
-	}
-
-	private boolean isValidClean(VeteranAssessment va) {
-		List<LocalDate> validDates = dvh.validWorkingDates(AssessmentExpirationDaysEnum.CLEAN);
-		boolean valid = isClean(va) && validDates.contains(LocalDate.fromDateFields(va.getDateCreated()));
-		return valid;
-	}
-
-	private boolean isClean(VeteranAssessment va) {
-		return va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId();
+		return veteranAssessmentRepository.findByVeteranIdAndAssessmentStatusIdList(veteranId, assessmentStatusIdList);
 	}
 
 	@Override
