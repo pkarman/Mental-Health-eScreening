@@ -19,7 +19,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             return model;
         });
 
-        // Expose the public TemplateService API to the rest of the application.
+        // Expose the public AssessmentVariableService API to the rest of the application.
         //return service;
         return {
             /**
