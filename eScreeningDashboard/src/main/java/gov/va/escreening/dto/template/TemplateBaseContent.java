@@ -70,15 +70,15 @@ public abstract class TemplateBaseContent {
 				"lt".equals(operand) || "gt".equals(operand) || "lte".equals(operand) 
 				|| "gte".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1)			
+			if (left.getMeasureId()!=null && left.getMeasureTypeId() == 1)			
 			{
 				translatedVar =  "getResponse("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar =  "asNumber(getCustomValue("+inStr+"))";
 			}
-			else if (left.getTypeId() == 4)
+			else if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar = "getFormulaValue("+inStr+")";
 			}
