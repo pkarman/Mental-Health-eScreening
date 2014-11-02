@@ -63,6 +63,38 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     //ng-tree options
     $scope.treeOptions = {
             dropped : function(event){
+                //work around because of a bug that occurs in firefox where a text block is able to be dropped between two elseifs 
+                var dragBlock = event.source.nodeScope.$modelValue;
+                if(dragBlock.type == "text" && event.source.index != event.dest.index){
+                    //look at dropped nodesScope and make sure the dropped text block is before the first elseif
+                    var destNodesScope = event.dest.nodesScope;
+                    var foundElse = false;
+                    for(var i = 0; i < destNodesScope.$modelValue.length; i++){
+                        var destBlock = destNodesScope.$modelValue[i];
+                        if(destBlock.type == "elseif" || destBlock.type == "else"){
+                            foundElse = true;
+                        }
+                        //TODO: We're using section here but really we should use scope ID. Unfortunately I'm unable to get to ui-tree-nodes.$nodes
+                        // if ui-tree-nodes.$nodes becomes available in ui-tree then we should iterate over destNodesScope.$nodes in the for loop below
+                        // and use .$id instead of section.
+                        else if(destBlock.section == dragBlock.section){
+                            if(foundElse){
+                                log("found erroneous state allowed by ui-tree bug in firefox. Reverting drop");
+                                
+                                event.source.nodeScope.remove();
+                                
+                                var sourceBlocks = event.source.nodesScope.$modelValue;
+                                
+                                sourceBlocks.splice(event.source.index, 0, dragBlock);
+                                
+                                return;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                    }
+                }
                 $scope.templateChanged();
             },
             accept: function(dragNodeScope, destNodesScope, destIndex){
@@ -82,7 +114,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 }
                 
                 //allow dropping at the top of all blocks for text and if types
-                if(destIsRoot ){
+                if(destIsRoot){
                     log("In root; if dragging text or if then drop, otherwise no drop");
                     return dragType == "text" || dragType == "if";
                 }
@@ -141,7 +173,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     if(destParent.type == "if"){
                         log("destIndex: " + destIndex + " <= firstElseIndex: " + firstElseIndex);
                         //PLEASE NOTE: there seems to be a bug in ui-tree which gives the wrong index if 
-                        // you quickly move from the first node under the if to right under an elseif of the same if the index is still 1 which is incorrect
+                        // you quickly move from the first node under the if to right under an elseif of 
+                        // the same if the index is still 1 which is incorrect (could not reproduce this with Chrome)
                         return destIndex <= firstElseIndex;
                     }
                 }
@@ -184,6 +217,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 // So even though this operation should be allowed it is not at this time. The strange thing is that if the last 
                 // element of the If block is a text block, it will allow you to drop the else as a sibling
                 
+                //There is also a bug in ui-tree which, when using Chrome, it doesn't allow for an else to be dragged from below an else even 
+                //though this function allows it. 
                 
                 log("Allowed to drop here");
                 return true;

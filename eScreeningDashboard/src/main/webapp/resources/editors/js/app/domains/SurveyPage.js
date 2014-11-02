@@ -44,18 +44,6 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         return questionJson;
     };
 
-    var generateQuestionUIObjects = function(){
-        var questionsUIObjects = [];
-
-        if (Object.isArray(questions)){
-            questions.forEach(function (question) {
-                questionsUIObjects.push(this.questions.toUIObject());
-            });
-        }
-
-        return questionsUIObjects;
-    };
-
     this.getId = function(){
         return id;
     };

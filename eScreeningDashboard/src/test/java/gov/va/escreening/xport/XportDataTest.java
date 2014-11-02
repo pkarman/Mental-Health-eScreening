@@ -639,11 +639,6 @@ public class XportDataTest {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
 		}
 	}
-
-	@Test
-	public void testPhq9VistaQATemplateCorrectness() throws Exception {
-		assertTrue("PHQ-9 Vista QA template rendering failed", invokeSurveyTemplateReview("phq9.json",  minimum, TemplateType.VISTA_QA, 30));
-	}
 	
 	@Rollback(value = false)
 	@Test

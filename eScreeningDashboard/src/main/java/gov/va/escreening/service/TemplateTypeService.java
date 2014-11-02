@@ -10,5 +10,7 @@ public interface TemplateTypeService {
 
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurvey(
 			Integer surveyId);
+	
+	public List<TemplateTypeDTO> getTemplateTypesByBattery(Integer batteryId);
 
 }
