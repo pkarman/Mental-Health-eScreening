@@ -10,7 +10,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     $scope.variableHash = {};
     //remove as soon as possible
     $scope.variableNamedHash = {};
-    $scope.debug = false;
+    $scope.debug = true;
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
@@ -63,6 +63,38 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     //ng-tree options
     $scope.treeOptions = {
             dropped : function(event){
+                //work around because of a bug that occurs in firefox where a text block is able to be dropped between two elseifs 
+                var dragBlock = event.source.nodeScope.$modelValue;
+                if(dragBlock.type == "text" && event.source.index != event.dest.index){
+                    //look at dropped nodesScope and make sure the dropped text block is before the first elseif
+                    var destNodesScope = event.dest.nodesScope;
+                    var foundElse = false;
+                    for(var i = 0; i < destNodesScope.$modelValue.length; i++){
+                        var destBlock = destNodesScope.$modelValue[i];
+                        if(destBlock.type == "elseif" || destBlock.type == "else"){
+                            foundElse = true;
+                        }
+                        //TODO: We're using section here but really we should use scope ID. Unfortunately I'm unable to get to ui-tree-nodes.$nodes
+                        // if ui-tree-nodes.$nodes becomes available in ui-tree then we should iterate over destNodesScope.$nodes in the for loop below
+                        // and use .$id instead of section.
+                        else if(destBlock.section == dragBlock.section){
+                            if(foundElse){
+                                log("found erroneous state allowed by ui-tree bug in firefox. Reverting drop");
+                                
+                                event.source.nodeScope.remove();
+                                
+                                var sourceBlocks = event.source.nodesScope.$modelValue;
+                                
+                                sourceBlocks.splice(event.source.index, 0, dragBlock);
+                                
+                                return;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                    }
+                }
                 $scope.templateChanged();
             },
             accept: function(dragNodeScope, destNodesScope, destIndex){
@@ -75,6 +107,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             	log("destParent type: " + (Object.isDefined(destParent) ? destParent.type : "null" ));
             	
             	var dragType = dragNodeScope.$modelValue.type;
+            	var dragIndex = dragNodeScope.$modelValue.index();
             	
             	
                 if(!destIsRoot){
@@ -82,7 +115,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 }
                 
                 //allow dropping at the top of all blocks for text and if types
-                if(destIsRoot ){
+                if(destIsRoot){
                     log("In root; if dragging text or if then drop, otherwise no drop");
                     return dragType == "text" || dragType == "if";
                 }
@@ -99,6 +132,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 var lastElseIf = -1;
                 var elseIndex = -1;
                 var lastTextBlock = -1;
+                var destIsAfterDragInSameParent = false;
                 for(var i = 0; i < destNodesScope.$modelValue.length; i++){
                     
                     var type = destNodesScope.$modelValue[i].type;
@@ -113,6 +147,12 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     else if(type == "text"){
                         lastTextBlock = i;
+                    }
+                    if(dragNodeScope.$modelValue.equals(destNodesScope.$modelValue[i])){
+                        if(destIndex > i){
+                            log("destIndex is greater than dragged index and in same parent");
+                            destIsAfterDragInSameParent = true;
+                        }
                     }
                 }
                 
@@ -139,10 +179,13 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     //3. between an If and the first else or else if
                     if(destParent.type == "if"){
-                        log("destIndex: " + destIndex + " <= firstElseIndex: " + firstElseIndex);
+                        var firstElse = firstElseIndex; // destIsAfterDragInSameParent ? firstElseIndex - 1 : firstElseIndex;
+                        log("adjusted firstElseIndex:" + firstElse);
+                        log("source/drag index is: " + dragIndex);
+                        log("returning:  destIndex: " + destIndex + " <= firstElseIndex: " + firstElse);
                         //PLEASE NOTE: there seems to be a bug in ui-tree which gives the wrong index if 
                         // you quickly move from the first node under the if to right under an elseif of the same if the index is still 1 which is incorrect
-                        return destIndex <= firstElseIndex;
+                        return destIndex <= firstElse;
                     }
                 }
                 
@@ -184,6 +227,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 // So even though this operation should be allowed it is not at this time. The strange thing is that if the last 
                 // element of the If block is a text block, it will allow you to drop the else as a sibling
                 
+                //There is also a bug in ui-tree which, when using Chrome, it doesn't allow for an else to be dragged from below an else even 
+                //though this function allows it. 
                 
                 log("Allowed to drop here");
                 return true;
@@ -261,11 +306,11 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                             }
                     	    else if($scope.block.type == 'elseif'){
                     	        //insert right after this else if 
-                    	        selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                    	        selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
                     	    }
                     	    else if($scope.block.type == 'else'){
                     	        //insert into parent IF after text and else if
-                                insertAfterTextAndElseIf(selectedBlock.parent);
+                                insertAfterTextAndElseIf(selectedBlock.getParent());
                             }
                             else if($scope.block.type == 'text'){
                                 //add it to top of elseif's children
@@ -289,9 +334,9 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                         }
                         else if(selectedBlock.type == 'text'){
                             if($scope.block.type == 'if' || $scope.block.type == 'text'){
-                                if(selectedBlock.parent){
+                                if(selectedBlock.getParent()){
                                     //if we have a parent place the if after the text in that parent
-                                    selectedBlock.parent.children.splice(selectedBlock.index() + 1, 0, $scope.block);
+                                    selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
                                 }
                                 else{
                                     //if we have no parent then add block as next sibling in template's blocks array
@@ -307,10 +352,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                             }
                             else if($scope.block.type == 'elseif'){
                                 //insert after all text blocks in the parent If 
-                                insertAfterText(selectedBlock.parent);
+                                insertAfterText(selectedBlock.getParent());
                             }
                             else if($scope.block.type == 'else'){
-                                insertAfterTextAndElseIf(selectedBlock.parent);
+                                insertAfterTextAndElseIf(selectedBlock.getParent());
                             }
                             else{
                                 log.error("Unsupported type to insert");
