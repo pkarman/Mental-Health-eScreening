@@ -63,11 +63,11 @@ EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig = {
     connector: "or",
     left: {
         type: "var",
-            content: {}
+        content: {}
     },
     right: {
         type: "text",
-            content: ""
+        content: ""
     },
     conditions: []
 };
