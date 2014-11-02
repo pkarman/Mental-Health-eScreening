@@ -26,6 +26,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
+    var myparent = parent;
     this.guid = new Date().getTime();
     this.section;
     this.name;
@@ -36,7 +37,6 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     this.conditions;
     this.content;
     this.right;
-    this.parent = parent;
     this.children = [];
 
     if(jsonConfig){
@@ -45,11 +45,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
         this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
         this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
-        this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
-        this.conditions = (Object.isArray(jsonConfig.conditions))? jsonConfig.conditions: [];
+        this.left = (Object.isDefined(jsonConfig.left))? new EScreeningDashboardApp.models.TemplateLeftVariable(jsonConfig.left): null;
+        this.operator = (Object.isDefined(jsonConfig.operator))? new EScreeningDashboardApp.models.TemplateOperator(jsonConfig.operator): null;
+        this.conditions = (Object.isArray(jsonConfig.conditions))? EScreeningDashboardApp.models.TemplateCondition.createConditionsArray(jsonConfig.conditions): [];
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: null;
+        this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
         if(Object.isDefined(jsonConfig.children)){
             angular.copy(jsonConfig.children, this.children);
@@ -199,10 +199,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
      * @return the index of this block in it's parent's children array
      */
     function index(){
-        if(!this.parent || !angular.isArray(this.parent.children)){
+        if(!this.getParent() || !angular.isArray(this.getParent().children)){
             return -1;
         }
-        return this.parent.indexOf(this);
+        return this.getParent().indexOf(this);
     }
     
     function equals(otherBlock){
@@ -220,9 +220,20 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	this.indexOf = indexOf;
 	this.index = index;
 	this.equals = equals;
+	//keeping parent as a private field to avoid cyclic references 
+	this.getParent = function(){return myparent};
+	this.setParent = function(newParent){ myparent = newParent; }
 	
 };
+EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(jsonTemplateBlocksConfig) {
+    var templateBlocks = [];
 
+    jsonTemplateBlocksConfig.forEach(function(jsonTemplateBlockConfig) {
+        templateBlocks.push(new EScreeningDashboardApp.models.TemplateBlock(jsonTemplateBlockConfig));
+    });
+
+    return templateBlocks;
+}
 EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig = {
     left: {
         type: "var",

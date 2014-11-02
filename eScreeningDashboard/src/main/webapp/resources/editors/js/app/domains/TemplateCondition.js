@@ -37,9 +37,9 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
     if(Object.isDefined(jsonConfig)) {
         this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
         this.connector = (Object.isDefined(jsonConfig.connector))? jsonConfig.connector: null;
-        this.left = (Object.isDefined(jsonConfig.left))? jsonConfig.left: null;
+        this.left = (Object.isDefined(jsonConfig.left))? new EScreeningDashboardApp.models.TemplateLeftVariable(jsonConfig.left): null;
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
-        this.right = (Object.isDefined(jsonConfig.right))? jsonConfig.right: null;
+        this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
     }
 
     this.toString = function () {
@@ -50,15 +50,24 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
             ", right operator: " + this.operator + "]";
     };
 };
+EScreeningDashboardApp.models.TemplateCondition.createConditionsArray = function(jsonConditionsConfig) {
+    var conditions = [];
+
+    jsonConditionsConfig.forEach(function (jsonConditionConfig){
+        conditions.push(new EScreeningDashboardApp.models.TemplateCondition(jsonConditionConfig));
+    });
+
+    return conditions;
+};
 EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig = {
     connector: "or",
     left: {
         type: "var",
-            content: {}
+        content: {}
     },
     right: {
         type: "text",
-            content: ""
+        content: ""
     },
     conditions: []
 };

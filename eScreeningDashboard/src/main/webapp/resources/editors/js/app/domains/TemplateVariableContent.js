@@ -44,7 +44,7 @@ EScreeningDashboardApp.models.TemplateVariableContent = function (jsonConfig) {
         this.answerId = (Object.isDefined(jsonConfig.answerId))? jsonConfig.answerId: null;
         this.measureId = (Object.isDefined(jsonConfig.measureId))? jsonConfig.measureId: null;
         this.measureTypeId = (Object.isDefined(jsonConfig.measureTypeId))? jsonConfig.measureTypeId: null;
-        this.transformations = (Object.isArray(jsonConfig.transformations))? jsonConfig.transformations: [];
+        this.transformations = (Object.isArray(jsonConfig.transformations))? new EScreeningDashboardApp.models.TemplateTransformation.createTemplateTransformationArray(jsonConfig.transformations): [];
     }
 
     this.getName = function () {
@@ -81,4 +81,8 @@ EScreeningDashboardApp.models.TemplateVariableContent = function (jsonConfig) {
             ", measureTypeId: " + this.measureTypeId +
             ", transformations: " + this.transformations + "]";
     };
+
+    if(Object.isNumber(this.typeId)) {
+        this.setType();
+    }
 };

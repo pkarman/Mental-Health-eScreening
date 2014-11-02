@@ -369,6 +369,5 @@ Editors.run(['$rootScope', '$state', '$stateParams', '$modal', 'Restangular', fu
 }]);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('Template', new EScreeningDashboardApp.models.Template());
-Editors.value('TemplateBlock', new EScreeningDashboardApp.models.TemplateBlock());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
 Editors.value('TemplateVariableContent', new EScreeningDashboardApp.models.TemplateVariableContent());

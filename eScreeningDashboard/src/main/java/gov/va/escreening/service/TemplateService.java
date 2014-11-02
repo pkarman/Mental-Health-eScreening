@@ -36,6 +36,8 @@ public interface TemplateService {
 	TemplateFileDTO getTemplateFileAsTree(Integer templateId);
 
 	Integer saveTemplateFileForSurvey(Integer surveyId, Integer templateTypeId, TemplateFileDTO templateFile);
+	
+	Integer saveTemplateFileForBattery(Integer batteryId, Integer templateTypeId, TemplateFileDTO templateFile);
 
 	void updateTemplateFile(Integer templateId, TemplateFileDTO templateFile);
 

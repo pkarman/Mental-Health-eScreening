@@ -29,7 +29,7 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
             }, true);
         };
  
-        // Expose the public TemplateService API to the rest of the application.
+        // Expose the public TemplateTypeService API to the rest of the application.
         //return service;
         return {
             /**

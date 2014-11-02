@@ -18,7 +18,8 @@
         return {
             restrict: 'EA',
             scope: {
-                guid: '='
+                guid: '=',
+                assessmentVariable: '='
             },
             transclude: true,
             controller: ['$scope', '$rootScope', 'limitToWithEllipsisFilter', function ($scope, $rootScope, limitToWithEllipsisFilter) {
@@ -50,6 +51,11 @@
                         toggleAssessmentVariableSelectionTable();
                     }
                 });
+
+                if(Object.isDefined($scope.assessmentVariable) && Object.isDefined($scope.assessmentVariable.id)) {
+                    $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter($scope.assessmentVariable.name, 20));
+                    $scope.$emit('filterOperators', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
+                }
             }],
             templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
             link: function(scope, element, attributes, controller) {

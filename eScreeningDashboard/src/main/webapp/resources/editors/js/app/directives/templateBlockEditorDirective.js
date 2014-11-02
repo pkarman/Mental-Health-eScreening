@@ -19,13 +19,13 @@
                 return types;
             }
             
-            var grandParentType = parentBlock.parent ? parentBlock.parent.type : null;
+            var grandParentType = parentBlock.getParent() ? parentBlock.getParent().type : null;
             var ifParent = null;
             if(parentBlock.type == "if"){
                 ifParent = parentBlock;
             }
             else if(grandParentType == "if"){
-                ifParent = parentBlock.parent;
+                ifParent = parentBlock.getParent();
             }
             
             // if we can't find a parent block that is an If then if and text
@@ -36,7 +36,7 @@
             //if the parent is text and this isn't the last text, then we don't include else or elseif
             var lastText;
             if(parentBlock.type == 'text'){
-                lastText = parentBlock.parent.lastText().block;
+                lastText = parentBlock.getParent().lastText().block;
                 
                 if(!lastText.equals(parentBlock)){
                     return types;
@@ -92,7 +92,7 @@
                     element.append(clonedTemplate);
                 });
 
-                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.parent) : blockTypes;
+                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
@@ -151,6 +151,26 @@
                 scope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
                     if(!Object.isDefined(data)) {
                         throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.guid)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
+                    }
+
+                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
+                });
+
+                scope.$on('filterOperators', function(event, data) {
+                    if(!Object.isDefined(data)) {
+                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.guid)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
+                    }
+                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
+                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
                     }
 
                     scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
