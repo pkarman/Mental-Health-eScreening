@@ -38,6 +38,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     this.content;
     this.right;
     this.children = [];
+    this.contents = [];
 
     if(jsonConfig){
         this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
@@ -49,6 +50,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.operator = (Object.isDefined(jsonConfig.operator))? new EScreeningDashboardApp.models.TemplateOperator(jsonConfig.operator): null;
         this.conditions = (Object.isArray(jsonConfig.conditions))? EScreeningDashboardApp.models.TemplateCondition.createConditionsArray(jsonConfig.conditions): [];
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
+        this.contents = (Object.isArray(jsonConfig.contents))? jsonConfig.contents: [];
         this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
         if(Object.isDefined(jsonConfig.children)){

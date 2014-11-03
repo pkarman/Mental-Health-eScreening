@@ -15,7 +15,11 @@ var EScreeningDashboardApp = EScreeningDashboardApp || {};
 EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
 /**
  * Constructor method for the Template class.  The properties of this class can be initialized with
- * the jsonTemplateObject.
+ * the jsonTemplateObject.  
+ * Please Note: This is used for both instantiating new objects and for extending Restangular models.  Because of this there cannot 
+ * be any fields defined unless we are creating a new instance.  Currently if we are creating an instance the templateCondig must be
+ * given with the type of the template so we can save it. When that happens the fields will have default values set. 
+ *
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about Template Types.
@@ -24,11 +28,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Robin Carnow
  */
 EScreeningDashboardApp.models.Template = function (templateConfig) {
-    this.id;
-    this.isGraphical = false;
-    this.type;
-    this.name;
-    this.blocks = [];
+
 
     if(Object.isDefined(templateConfig)){
         this.id = Object.isDefined(templateConfig.id)? templateConfig.id : null;
