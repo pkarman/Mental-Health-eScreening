@@ -27,7 +27,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  */
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var myparent = parent;
-    this.guid = new Date().getTime();
+    this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
     this.name;
     this.type;

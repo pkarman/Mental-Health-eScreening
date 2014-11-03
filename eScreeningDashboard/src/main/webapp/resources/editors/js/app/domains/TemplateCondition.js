@@ -28,7 +28,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
-    this.guid = new Date().getTime();
+    this.guid = EScreeningDashboardApp.getInstance().guid();
     this.connector;
     this.left;
     this.operator;
