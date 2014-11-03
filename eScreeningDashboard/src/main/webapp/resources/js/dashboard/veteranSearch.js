@@ -64,7 +64,7 @@ function veteranSearchController($scope,$element,$http,$window) {
 	$scope.searchDatabase = function() {
 		var oTable = $('.jqueryDataTable').dataTable();
 		oTable.dataTable().fnDraw(true);
-    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger '>No matching records found</div>";
+    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger' aria-hidden='false'>No matching records found</div>";
 	};
 
 	$scope.getDataForSearch = function( sSource, aoData, fnCallback, oSettings ) {
