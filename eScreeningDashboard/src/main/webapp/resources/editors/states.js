@@ -427,18 +427,6 @@ angular.module('Editors')
                                         
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
-                                        }, function(responseError) {
-                                            //TODO: we really need to setup an error martialling interceptor to create an error response no matter what the server sends us
-                                            var msg = "Unknown server error";
-                                            if(Object.isDefined(responseError.getMessage)){
-                                                msg = responseError.getMessage();
-                                            }
-                                            else if(Object.isDefined(responseError.statusText)){
-                                                msg = responseError.statusText;
-                                            }
-                                            
-                                            $rootScope.addMessage($rootScope.createErrorMessage(msg));
-                                            deferred.reject(msg);
                                         });
                                     }
                                     else{
