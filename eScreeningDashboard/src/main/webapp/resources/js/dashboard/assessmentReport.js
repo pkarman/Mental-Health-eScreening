@@ -74,7 +74,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 	$scope.searchDatabase = function() {
 		var oTable = $('#assessmentReportTable').dataTable();
 		oTable.dataTable().fnDraw(true);
-    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger '>No matching records found</div>";
+    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger' aria-hidden='false' aria-label='No matching records found'>No matching records found</div>";
 	};
 
 	$scope.getDataForSearch = function( sSource, aoData, fnCallback, oSettings ) {

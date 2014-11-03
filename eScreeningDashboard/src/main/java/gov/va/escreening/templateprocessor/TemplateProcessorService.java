@@ -1,7 +1,9 @@
 package gov.va.escreening.templateprocessor;
 
+import java.io.IOException;
 import java.util.EnumSet;
 
+import freemarker.template.Template;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.exception.IllegalSystemStateException;
@@ -41,6 +43,20 @@ public interface TemplateProcessorService {
 	 * @param veteranAssessmentId
 	 * @return HTML of the veteran summary printout
 	 */
-	public String generateVeteranPrintout(int veteranAssessmentId) throws IllegalSystemStateException, TemplateProcessorException;	
+	public String generateVeteranPrintout(int veteranAssessmentId) throws IllegalSystemStateException, TemplateProcessorException;
+	
+	/**
+	 * Renders a template of the given type using responses in the given assessment
+	 * @param surveyId the id of the survey to render a template for
+	 * @param type TemplateType to render
+	 * @param veteranAssessmentId
+	 * @return rendered text
+	 * @throws IllegalSystemStateException 
+	 * @throw IllegalStateException if a template of the given type does not exist for the given survey
+	 */
+	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException;
+
+	Template getTemplate(Integer templateId, String templateText)
+			throws IOException;
 	
 }
