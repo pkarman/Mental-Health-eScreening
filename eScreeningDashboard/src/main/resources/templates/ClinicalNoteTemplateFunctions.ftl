@@ -72,49 +72,20 @@
 	</#if>
 </#function>
 
-<#-- checks if a specific answer was selected given a question -->
-<#function  isSelectedAnswer variableObj1 variableObj2 > 
-	<#if (variableObj1.children)?? && (variableObj2)??> 
-	<#list variableObj1.children as v>
-		<#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
-			<#return true>
-		</#if>
-	</#list>
-	</#if>
-	<#return false>
-</#function>
-
-
-<#-- delimits the children of a variable using the prefix and suffix given, 
-boolean indicates if the suffix should be appended at the end of the list --> 
-<#function delimitChildren variableObj=DEFAULT_VALUE prefix='' suffix='' includeSuffixAtEnd=true > 
-    <#assign result = ''>
-    <#if (variableObj != DEFAULT_VALUE) && (variableObj.children)??> 
-    <#list variableObj.children as child>
-        <#assign result = result + prefix + child.value>
-        <#if child_has_next || includeSuffixAtEnd>
-            <#assign result = result + suffix>
-        </#if>
-    </#list>
-    </#if>
-    <#return result>
-</#function>
-
-<#-- get a question's score -->
+<#-- get a select question's score -->
 <#-- example: "getScore(var1)"-->
 <#function  getScore variableObj > 
-	<#assign total = 0>
-	<#if (variableObj)?? > 
-		<#list variableObj.children as v>
-			<#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>	
-				<#assign num = (v.calculationValue)?number>
-				<#assign total = total + num>
-			</#if>
-		</#list>
-	</#if>
-	<#return total>
+    <#assign total = 0>
+    <#if (variableObj)?? > 
+        <#list variableObj.children as v>
+            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
+                <#assign num = (v.calculationValue)?number>
+                <#assign total = total + num>
+            </#if>
+        </#list>
+    </#if>
+    <#return total>
 </#function>
-
 
 <#-- get a list of question's score. (it is the same as getScore() with the exception that this f(x) takes a list of obj's instead of a single obj as a param.)-->
 <#-- example: "getListScore([var1, var2, var3, var4])"-->
@@ -167,49 +138,6 @@ boolean indicates if the suffix should be appended at the end of the list -->
        </#if>
      </#list>
      <#return false>
-  </#if>
-</#function>
-
-<#function getFreeTextAnswer variableObj='notset' deflt=''>
-    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
-        <#-- The object was not found -->
-        <#return deflt>
-    </#if>
-    
-    <#assign answer = variableObj.children[0]>
-    
-    <#assign result = getVariableDisplayText(answer)>
-    <#if result != 'notfound'>
-        <#return result>
-    </#if>
-    
-    <#if (answer.value)?? >
-        <#return answer.value>
-    </#if>
-    
-    <#return deflt>
-    
-</#function>
-
-<#function getVariableDisplayText variableObj='notset'>
-  <#if variableObj = 'notset'>
-    <#-- The object was not found -->
-    <#return 'notfound'>
-  <#else>
-    <#-- If there is an other value use that before anything else -->
-    <#if variableObj.otherText?? && !(variableObj.otherText='') >
-      <#return variableObj.otherText >
-    </#if>
-    <#-- If there is an override value use that before the default value -->
-    <#if variableObj.overrideText?? && !(variableObj.overrideText='') >
-      <#return variableObj.overrideText >
-    </#if>
-    <#-- Use the default text -->
-    <#if variableObj.displayText?? && !(variableObj.displayText='') >
-      <#return variableObj.displayText >
-    </#if>
-    <#-- The object does not have text to return -->
-    <#return 'notfound' >
   </#if>
 </#function>
 
@@ -378,7 +306,7 @@ boolean indicates if the suffix should be appended at the end of the list -->
 
 </#function>
 
-<#function isSet str>
+<#function isSet str='notset'>
 	<#if str?? && (str?has_content) && ( (str?trim) != "notset") &&  ((str?trim) != "notfound")>
 		<#return true>
 	<#else>
@@ -447,3 +375,353 @@ boolean indicates if the suffix should be appended at the end of the list -->
 	
 	<#return rows>
 </#function>
+
+<#function getVariableDisplayText variableObj='notset'>
+  <#if variableObj = 'notset'>
+    <#-- The object was not found -->
+    <#return 'notfound'>
+  <#else>
+    <#-- If there is an other value use that before anything else -->
+    <#if variableObj.otherText?? && !(variableObj.otherText='') >
+      <#return variableObj.otherText >
+    </#if>
+    <#-- If there is an override value use that before the default value -->
+    <#if variableObj.overrideText?? && !(variableObj.overrideText='') >
+      <#return variableObj.overrideText >
+    </#if>
+    <#-- Use the default text -->
+    <#if variableObj.displayText?? && !(variableObj.displayText='') >
+      <#return variableObj.displayText >
+    </#if>
+    <#-- The object does not have text to return -->
+    <#return 'notfound' >
+  </#if>
+</#function>
+
+<#function getFreeTextAnswer variableObj='notset' deflt=''>
+    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
+        <#-- The object was not found -->
+        <#return deflt>
+    </#if>
+    
+    <#assign answer = variableObj.children[0]>
+    
+    <#assign result = getVariableDisplayText(answer)>
+    <#if result != 'notfound'>
+        <#return result>
+    </#if>
+    
+    <#if (answer.value)?? >
+        <#return answer.value>
+    </#if>
+    
+    <#return deflt>
+    
+</#function>
+
+
+<#-- ***********************  Template Editor Helper functions ************************* -->
+
+<#-- checks if a specific answer was selected given a question -->
+<#function isSelectedAnswer variableObj1 variableObj2 > 
+    <#if (variableObj1.children)?? && (variableObj2)??> 
+    <#list variableObj1.children as v>
+        <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
+            <#return true>
+        </#if>
+    </#list>
+    </#if>
+    <#return false>
+</#function>
+
+<#-- sum all of the calculation values of all selected options -->
+<#function  sumCalcValues variableObj > 
+    <#assign total = 0>
+    <#if (variableObj)?? > 
+        <#list variableObj.children as v>
+            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
+                <#assign num = (v.calculationValue)?number>
+                <#assign total = total + num>
+            </#if>
+        </#list>
+    </#if>
+    <#return total>
+</#function>
+
+<#-- delimits the children of a variable using the prefix and suffix given, 
+boolean indicates if the suffix should be appended at the end of the list --> 
+<#function delimitChildren variableObj=DEFAULT_VALUE prefix='' suffix='' includeSuffixAtEnd=true> 
+    <#assign result = ''>
+    <#if (variableObj != DEFAULT_VALUE) && (variableObj.children)??> 
+    <#list variableObj.children as child>
+        <#assign result = result + prefix + child.value>
+        <#if child_has_next || includeSuffixAtEnd>
+            <#assign result = result + suffix>
+        </#if>
+    </#list>
+    </#if>
+    <#return result>
+</#function>
+
+<#function getFreeTextAnswer variableObj='notset' deflt=''>
+    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
+        <#-- The object was not found -->
+        <#return deflt>
+    </#if>
+    
+    <#assign answer = variableObj.children[0]>
+    
+    <#assign result = getResponseText(answer)>
+    <#if result != 'notset'>
+        <#return result>
+    </#if>
+    
+    <#if (answer.value)?? >
+        <#return answer.value>
+    </#if>
+    
+    <#return deflt>
+    
+</#function>
+
+<#function getSelectOneResponse variableObj='notset'>
+  <#if variableObj='notset' || !(variableObj.children??) || !(variableObj.children?size=1) >
+    <#-- The object was not found or there was a problem with the list -->
+    <#return 'notset'>
+  <#else>
+    <#return getResponseText(variableObj.children[0]) >
+  </#if>
+</#function>
+
+<#function getResponseText variableObj='notset'>
+  <#if variableObj = 'notset'>
+    <#-- The object was not found -->
+    <#return 'notset'>
+  <#else>
+    <#-- If there is an other value use that before anything else -->
+    <#if variableObj.otherText?? && !(variableObj.otherText='') >
+      <#return variableObj.otherText >
+    </#if>
+    <#-- If there is an override value use that before the default value -->
+    <#if variableObj.overrideText?? && !(variableObj.overrideText='') >
+      <#return variableObj.overrideText >
+    </#if>
+    <#-- Use the default text -->
+    <#if variableObj.displayText?? && !(variableObj.displayText='') >
+      <#return variableObj.displayText >
+    </#if>
+    <#-- The object does not have text to return -->
+    <#return 'notset' >
+  </#if>
+</#function>
+
+
+<#-- ***********************  Only  Template Editor functions under this line ************************* -->
+
+
+
+<#-- 
+Supports the retrieval of a numerical value from a question (of types 1,2,3) or casting a value to be a number.
+If measureTypeId is null then just casts the given value as number but if var is null, "not set" is returned.  
+The var is tested to make sure it is not an object.
+if measureTypeId==2 or 3:  return the calculated value  -->
+<#function asNumber var='notset' measureTypeId='notset'>
+    <#if var == 'notset'>
+        <#return var>
+    </#if> 
+    
+    <#if measureTypeId == 'notset'>
+        <#if (var.value)?? >
+            <#return var.value?number>
+        
+        <#elseif (var.calculationValue)?? >
+            <#return var.calculationValue?number>
+            
+        <#elseif (var.otherText)?? >
+            <#return var.otherText?number>
+            
+        </#if>
+        
+        <#return var?number>
+        
+    </#if>
+    
+    <#if measureTypeId == 1 >
+        <#assign result = getFreeTextAnswer(var, 'notset') >
+        <#if result == 'notset'>
+            <#return result>
+        </#if>
+        <#return result?number>
+        
+    <#elseif measureTypeId == 2 || measureTypeId == 3 > 
+        <#return (sumCalcValues(var))?number >
+    </#if>
+    
+    <#return '[Error: unsupported question type]'>
+    
+</#function>
+
+
+<#-- 
+retrieves a value for the given Measure typed variable which is of the given measure type. 
+For single select the answer's text should be returned
+If the answer's type is "other" then the other value should be returned 
+For multi select - returns a comma delimited list
+-->
+<#function getResponse var='notset' measureTypeId='notset'> 
+    <#if var == 'notset'>
+        <#return var > 
+    </#if>
+    
+    <#if measureTypeId == 1 >
+        <#return getFreeTextAnswer(var, 'notset') >
+        
+    <#elseif measureTypeId == 2 >
+        <#return getSelectOneResponse(var) >
+    <#elseif measureTypeId == 3 > 
+        <#assign result = delimitChildren( var, '', ',', false)>
+        <#if result == ''>
+            <#return 'notset'>
+        </#if>
+        <#return result >
+    </#if>
+    
+    <#return '[Error: unsupported question type]'>
+    
+</#function>
+
+  
+<#--
+takes a custom variable and returns its value which can be a string, number, or array. 
+    The variable ID is enough to know which custom variable we are getting. -->
+<#function getCustomValue var='notset'> 
+    <#if var == 'notset'>
+        <#return var>
+    </#if>
+    
+    <#if var.variableId?? && var.variableId == 6>
+        <#assign result = delimitChildren( var, '', ', ', false)>
+        <#if result == ''>
+            <#return 'notset'>
+        </#if>
+        <#return result >
+    </#if> 
+    
+    <#return getResponseText(var) >
+</#function>
+
+
+<#-- 
+returns the numerical value of the response or "not set" if it cannot be evaluated.
+-->
+<#function getFormulaValue var='notset'> 
+    <#if var == 'notset' || !(var.value)?? || !((var.value)?has_content) >
+        <#return 'notset'>
+    </#if> 
+    
+    <#return var.value?number>
+    
+</#function>
+
+
+<#--
+returns true if the variable is defined and has a value. 
+If type == 3 then at least one option must be set to true.
+ -->
+<#function wasAnswered var='notset' measureTypeId='notset'> 
+    <#if var == 'notset'>
+        <#return false>
+    </#if>
+    
+    <#return getResponse(var, measureTypeId) != 'notset'>
+    
+</#function>
+
+<#--
+returns the negation of wasAnswered or 'notset'
+ -->
+<#function wasntAnswered var='notset' measureTypeId='notset'> 
+    <#return !(wasAnswered(var, measureTypeId)) > 
+</#function>
+
+
+<#--
+returns true if the formula can be evaluated 
+-->
+<#function formulaHasResult var='notset' > 
+    <#if var == 'notset'>
+        <#return false>
+    </#if>
+    
+    <#return getFormulaValue(var) != 'notset'>
+    
+</#function>
+
+
+<#-- returns the negation of formulaHasResult -->
+<#function formulaHasNoResult var='notset'> 
+    <#return !(formulaHasResult(var)) > 
+</#function>
+
+
+<#-- returns true if the custom variable has some value -->
+<#function customHasResult var='notset' > 
+    <#if var == 'notset'>
+        <#return false>
+    </#if>
+    
+    <#return getCustomValue(var) != 'notset'>
+    
+</#function>
+ 
+<#--
+returns the negation of customHasResult
+ -->
+<#function customHasNoResult var='notset' > 
+    <#return !(customHasResult(var)) > 
+</#function>
+
+
+<#--
+ returns true if one of the given variable's responses is equal to right. 
+ measureTypeId can be:
+  2 - selectOne or 
+  3 - selectMulti.  
+  If var123 is null then false is returned.
+  
+  param right can be an answer object (not supported in UI right now), or an integer
+-->
+<#function responseIs var='notset' right='notset' measureTypeId='notset'> 
+    <#if var == 'notset' || right == 'notset'>
+        <#return false>
+    </#if>
+    
+    <#if measureTypeId == 2 || measureTypeId == 3>
+        <#if (right.variableId)??>
+            <#return isSelectedAnswer(var, right)>
+        </#if>    
+         
+        <#if (var.children)?? >
+            <#list var.children as v>
+                <#if (v.calculationValue)?? && (v.calculationValue)?has_content 
+                  && (v.value)?? && v.value = 'true' && v.calculationValue == right >   
+                    <#return true>
+               </#if>
+            </#list>
+        </#if>
+        
+        <#return false>
+    </#if>
+    
+    <#return '[Error: unsupported question type]'>
+    
+</#function>
+
+<#--
+returns the negation of responseIs
+-->
+<#function responseIsnt var='notset' right='notset' measureTypeId='notset'> 
+    <#return !(responseIs(var, right, measureTypeId)) > 
+</#function>
+
+

@@ -1,6 +1,6 @@
 <div class="container">
-  <h1> Select Battery </h1>
   <!--
+  <div class="page-header">
   <div class="row">
     <div class="col-md-12">
       <ul class="breadcrumb">
@@ -9,7 +9,9 @@
       </ul>
     </div>
   </div>
+  </div>
   -->
+<h1> Select Battery </h1>
   <div class="clearfix"></div>
   <div class="row">
     <div class="col-md-12" > 
@@ -21,11 +23,14 @@
           <td data-title="'Description'"  class="col-md-5"> {{battery.description}} </td>
           <td data-title="Actions"  class="col-md-2"><div class="pull-right"> <button  ng-click="editBattery(battery);" class="btn btn-default btn-xs"  title="Edit {{battery.name}}"><span class="glyphicon glyphicon-edit"></span> Edit</button> &nbsp;&nbsp; 
               <!--span  ng-really-message="This will delete the Battery, and it will not be available in the future. Click 'OK' to permanently delete it." ng-really-click="deleteBattery(battery);" class="cursor-pointer">
-                <span class="glyphicon glyphicon-remove-circle cursor-pointer" title="Delete" style="color:red;"></span> Delete</span--></div></td>
+                <span class="glyphicon glyphicon-remove-circle cursor-pointer" title="Delete" style="color:red;"></span> Delete</span-->
+            </div>
+        </td>
         </tr>
       </table>
     </div>
     <!--- /ngTable --->
+  <div class="clearfix"></div>
   </div>
   <!--
   <div class="row">
@@ -33,6 +38,6 @@
   </div>
   <div class="clearfix"></div>
   <br>
-  
   -->
+  
 </div>

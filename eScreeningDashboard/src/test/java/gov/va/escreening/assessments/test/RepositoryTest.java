@@ -6,8 +6,10 @@ import java.util.List;
 
 import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
@@ -18,6 +20,7 @@ import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.service.BatteryService;
@@ -38,6 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class RepositoryTest {
     @Resource
     SurveyPageRepository surveyPageRepo;
+    
+    @Resource
+    SurveyRepository surveyRepo;
     
     @Resource
     SurveyMeasureResponseRepository smrRepo;
@@ -205,6 +211,18 @@ public class RepositoryTest {
     	
     	v = veteranRepo.findOne(17);
     	assertTrue(v.getIsSensitive());
+    }
+    
+    @Test
+    public void testSurveyBatteryTemplate()
+    {
+    	List<Survey> surveys = surveyRepo.findByTemplateId(25);
+    	assertEquals(1, surveys.size());
+    	assertEquals(24, surveys.get(0).getSurveyId().intValue());
+    	
+    	List<Battery> batteries = batteryRepo.findByTemplateId(1);
+    	assertEquals(1, batteries.size());
+    	
     }
     
     @Test
