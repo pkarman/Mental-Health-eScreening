@@ -276,6 +276,11 @@ public class VeteranServiceImpl implements VeteranService {
         veteran.setGender(veteranDto.getGender());
         veteran.setDateRefreshedFromVista(new Date());
         veteran.setIsSensitive(veteranDto.getIsSensitive());
+        
+        // t574 -- save first name and middle name retrieved from vista in vista columns
+        veteran.setVistaFirstName(veteranDto.getFirstName());
+        veteran.setVistaMiddleName(veteranDto.getMiddleName());
+        
 
         // Save it.
         veteranRepository.create(veteran);
