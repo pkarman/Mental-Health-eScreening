@@ -35,7 +35,6 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
     this.right;
 
     if(Object.isDefined(jsonConfig)) {
-        //this.guid = (Object.isDefined(jsonConfig.guid))? jsonConfig.guid: this.guid;
         this.connector = (Object.isDefined(jsonConfig.connector))? jsonConfig.connector: null;
         this.left = (Object.isDefined(jsonConfig.left))? new EScreeningDashboardApp.models.TemplateLeftVariable(jsonConfig.left): null;
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
