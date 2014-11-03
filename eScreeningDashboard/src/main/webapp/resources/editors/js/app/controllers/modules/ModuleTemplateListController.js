@@ -74,9 +74,8 @@ Editors.controller('ModuleTemplateListController',
 
         // send delete rest call
         TemplateService.remove(templateType.templateId).then(function(template){
-            template = new EScreeningDashboardApp.models.Template(template);
             console.log("Successfully deleted template type: " + templateType.name + " which has ID: " + templateType.templateId);
-            
+
             $rootScope.addMessage($rootScope.createSuccessDeleteMessage(templateType.name + " template was successfully deleted."));
             
             delete(templateType.templateId);
