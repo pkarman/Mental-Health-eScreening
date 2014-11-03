@@ -422,33 +422,21 @@ angular.module('Editors')
                                             deferred.resolve({});
                                         }
                                     }
-                                    else {
-                                        if (Object.isDefined($stateParams.templateId)
-                                            && $stateParams.templateId != -1
-                                            && $stateParams.templateId.length > 0) {
+                                    else{
+                                        if(Object.isDefined($stateParams.templateId) 
+                                                && $stateParams.templateId != -1 
+                                                && $stateParams.templateId.length > 0){
                                             console.log("Getting template from server with ID: " + $stateParams.templateId);
-
+                                            
                                             TemplateService.get($stateParams.templateId).then(function (template) {
                                                 deferred.resolve(template);
-                                            }, function (responseError) {
-                                                //TODO: we really need to setup an error martialling interceptor to create an error response no matter what the server sends us
-                                                var msg = "Unknown server error";
-                                                if (Object.isDefined(responseError.getMessage)) {
-                                                    msg = responseError.getMessage();
-                                                }
-                                                else if (Object.isDefined(responseError.statusText)) {
-                                                    msg = responseError.statusText;
-                                                }
-
-                                                $rootScope.addMessage($rootScope.createErrorMessage(msg));
-                                                deferred.reject(msg);
                                             });
                                         }
-                                        else {
+                                        else{
                                             console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
                                             var selectedTemplateType = TemplateTypeService.getSelectedType();
-                                            if (Object.isDefined(selectedTemplateType)) {
-                                                var emptyTemplate = new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
+                                            if(Object.isDefined(selectedTemplateType)){
+                                                var emptyTemplate =  new EScreeningDashboardApp.models.Template(selectedTemplateType);
                                                 deferred.resolve(emptyTemplate);
                                             }
                                             else {
