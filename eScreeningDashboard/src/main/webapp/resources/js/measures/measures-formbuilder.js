@@ -476,6 +476,7 @@ function SelectBuilder(formBuilder){
 			.attr("name", groupName)
 			.attr("type", "radio")
 			.attr("id", inputId)
+      .attr("class", "selectOneInput")
 			.prop("checked", answer.answerResponse === "true")
 			.appendTo(inputDiv);
 		

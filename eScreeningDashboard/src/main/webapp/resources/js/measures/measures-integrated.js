@@ -87,15 +87,27 @@ $(document).ready(function(e) {
     
     
     
-    /* Matrix Table - In case of TD empty remove the parent TH */
+
     $("#assessmentContainer").bind("DOMSubtreeModified", function() {
-		$( ".matrixQuestionText" ).each(function( index ) {
-			  var matrixQuestionText = $("#assessmentContainer").find(".matrixQuestionText").html();
-				 if (matrixQuestionText == '') {
-					$(this).addClass("empty");
-					$(this).closest('table').find('th').eq(0).addClass("empty");
-				}	  
-		});
+      
+      /* Radio buttons and Checkbox Focus */
+      $('input.checkSwitch').on('focus', function () {
+        $(this).parent().addClass('checkFocus');
+      });
+      $('input.checkSwitch').on('blur', function () {
+        $(this).parent().removeClass('checkFocus');
+      });
+      
+      
+      
+      /* Matrix Table - In case of TD empty remove the parent TH */
+      $( ".matrixQuestionText" ).each(function( index ) {
+          var matrixQuestionText = $("#assessmentContainer").find(".matrixQuestionText").html();
+           if (matrixQuestionText == '') {
+            $(this).addClass("empty");
+            $(this).closest('table').find('th').eq(0).addClass("empty");
+          }	  
+      });
 	});
     
 });
