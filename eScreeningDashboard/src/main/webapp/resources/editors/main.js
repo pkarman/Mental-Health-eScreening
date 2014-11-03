@@ -274,7 +274,7 @@ Editors.config(function(RestangularProvider, $provide) {
 											$scope.assessmentVariable.getName()+
 									'</code>';
 
-								$modalInstance.close(embed);
+								$modalInstance.close(embedAlt);
 	                        }
 
                         }, true);

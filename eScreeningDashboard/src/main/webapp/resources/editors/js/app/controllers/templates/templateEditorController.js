@@ -279,8 +279,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				// Close modal and pass updated block to the page
                 $scope.close = function () {
 
-                    $scope.block.transformTextContent($scope.variableNamedHash);
-                    $scope.block.autoGenerateFields($scope.variableNamedHash);
+                    $scope.block.transformTextContent($scope.variableHash);
+                    $scope.block.autoGenerateFields($scope.variableHash);
 
                     if(isAdding) {
 

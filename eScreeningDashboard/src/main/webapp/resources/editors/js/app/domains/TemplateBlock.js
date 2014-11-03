@@ -78,7 +78,8 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		if(this.type == "text"){
 			var tag = '<code class="ta-insert-variable">';
 			var contents = [];
-			var fragments = this.content.split(/<code class="ta-insert-variable">\s*\(([^\(\)]+)\)\s*<\/code>/);
+			
+			var fragments = this.content.split(/<img.+id="(\d+)"[^>]+>/);
 
 			fragments.forEach(function(frag){
 				var varName = variableNamedHash[frag];
