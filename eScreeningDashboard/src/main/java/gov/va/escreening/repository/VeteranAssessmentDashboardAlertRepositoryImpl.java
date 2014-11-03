@@ -59,8 +59,6 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Override
 	public List findAlertsByProgram(int programId) {
 
-		archiveStaleAssessments();
-
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT da.name, count(vada), va.veteranAssessmentId ");
 		sqlBldr.append("FROM VeteranAssessmentDashboardAlert as vada ");
@@ -75,8 +73,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		// except Created=1 and Finalized=5
-		sqlBldr.append("WHERE va.dateArchived is null ");
-		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
+		sqlBldr.append("WHERE vas.assessmentStatusId not in :assessmentStatusToFilter ");
+		sqlBldr.append("AND date(va.dateUpdated) in :workingDates ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -90,6 +88,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			query.setParameter("programId", programId);
 		}
 		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
+		query.setParameter("workingDates", dvh.validWorkingDatesForSQL(AssessmentExpirationDaysEnum.FINALIZED));
 		List resultList = query.getResultList();
 
 		return resultList;
@@ -98,8 +97,6 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Override
 	public List<Map<String, Object>> findNearingCompletionAssessments(
 			int programId, int totalRequestedRecords) {
-
-		archiveStaleAssessments();
 
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT vet.lastName, vet.ssnLastFour, va ");
@@ -114,8 +111,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		sqlBldr.append("WHERE va.percentComplete > 0 ");
-		sqlBldr.append("AND va.dateArchived is null ");
 		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
+		sqlBldr.append("AND date(va.dateUpdated) in :workingDates ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -129,6 +126,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			query.setParameter("programId", programId);
 		}
 		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
+		query.setParameter("workingDates", dvh.validWorkingDatesForSQL(AssessmentExpirationDaysEnum.FINALIZED));
 
 		List resultList = query.getResultList();
 
@@ -138,8 +136,6 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Override
 	public List<Map<String, Object>> findSlowMovingAssessments(int programId,
 			int totalRequestedRecords) {
-
-		archiveStaleAssessments();
 
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT vet.lastName, vet.ssnLastFour, va ");
@@ -154,8 +150,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
 
 		sqlBldr.append("WHERE va.duration > 0 ");
-		sqlBldr.append("AND va.dateArchived is null ");
 		sqlBldr.append("AND vas.assessmentStatusId not in :assessmentStatusToFilter ");
+		sqlBldr.append("AND date(va.dateUpdated) in :workingDates ");
 
 		if (programId != 99) {
 			sqlBldr.append("AND program.programId = :programId ");
@@ -169,6 +165,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			query.setParameter("programId", programId);
 		}
 		query.setParameter("assessmentStatusToFilter", Lists.newArrayList(AssessmentStatusEnum.CLEAN.getAssessmentStatusId(), AssessmentStatusEnum.FINALIZED.getAssessmentStatusId()));
+		query.setParameter("workingDates", dvh.validWorkingDatesForSQL(AssessmentExpirationDaysEnum.FINALIZED));
 
 		List resultList = query.getResultList();
 
@@ -351,7 +348,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			}
 		}
 		Preconditions.checkNotNull(smallestDate);
-		return String.format("str_to_date('%s', '%s')", smallestDate.toString("yyyy-MM-dd"), "%Y-%m-%d");
+		return dvh.transformJoda2SqlDt(smallestDate);
 	}
 
 }

@@ -58,13 +58,17 @@ public class DateValidationHelper {
 		Function<LocalDate, Date> func = new Function<LocalDate, Date>() {
 			@Override
 			public Date apply(LocalDate input) {
-				Date d = input.toDate();
-				return d;
+				return input.toDate();
 			}
 		};
 
 		Collection<Date> localJavaDates = Collections2.transform(localDates, func);
 		return localJavaDates;
+	}
+
+	public String transformJoda2SqlDt(LocalDate date) {
+		String strToDate = String.format("str_to_date('%s', '%s')", date.toString("yyyy-MM-dd"), "%Y-%m-%d");
+		return strToDate;
 	}
 
 }
