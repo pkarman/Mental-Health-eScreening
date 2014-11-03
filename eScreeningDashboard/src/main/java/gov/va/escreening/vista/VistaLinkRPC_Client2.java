@@ -424,7 +424,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 				sb.append("\tPersistent symptoms.\n");
 				sb.append("\tPositive OIF/OEF TBI screen.\n");
 				sb.append("OIF/OEF TBI screen completed date: "
-						+ (new LocalDate()).toString("MMM dd,yyyy") + "\n");
+						+ LocalDate.now().toString("MMM dd,yyyy") + "\n");
 				sb.append("When & Where did the TBI occur:\n");
 				sb.append("\t"
 						+ (exportColumnsMap.get("TBI_consult_when") == null ? "Year not provided to determine when"
@@ -458,8 +458,8 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 						veteranAssessment.getVeteran().getGender().charAt(0))
 						.toUpperCase();
 				Integer partAge = Integer.valueOf(Years.yearsBetween(
-						new LocalDate(veteranAssessment.getVeteran()
-								.getBirthDate()), new LocalDate()).getYears());
+						LocalDate.fromDateFields(veteranAssessment.getVeteran()
+								.getBirthDate()), LocalDate.now()).getYears());
 				return getTBIConsultDisplayGroupIEN(quickOrderIen, patientIen,
 						locationIen, partProviderIEN, partInpatient, partSex,
 						partAge, locationIen);

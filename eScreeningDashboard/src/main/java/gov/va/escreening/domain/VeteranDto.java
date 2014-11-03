@@ -247,7 +247,7 @@ public class VeteranDto implements Serializable {
 
     @Override
     public String toString() {
-        return "VeteranDto [veteranId=" + veteranId + ", firstName=" + firstName + ", middleName=" + middleName
+        return "[veteranId=" + veteranId + ", firstName=" + firstName + ", middleName=" + middleName
                 + ", lastName=" + lastName + ", ssnLastFour=" + ssnLastFour + ", birthDate=" + birthDate
                 + ", bestTimeToCall=" + bestTimeToCall + ", bestTimeToCallOther=" + bestTimeToCallOther + ", suffix="
                 + suffix + ", email=" + email + ", phone=" + phone + ", dateCreated=" + dateCreated + ", gender="
