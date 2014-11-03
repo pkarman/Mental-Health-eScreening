@@ -37,7 +37,7 @@
               </div>
   
               <div class="col-md-4">
-              <div class="form-group">
+              <div class="form-group" ng-hide="hideBlockConditionRight(block.operator)">
                   <label class="sr-only" for="blockvalue">Enter Value</label>
                   <input type="text" class="form-control" id="blockvalue" placeholder="Enter Value" ng-model="block.right.content">
               </div>
@@ -91,7 +91,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)">
                             <label class="sr-only" for="conditionvalue">Enter Value</label>
                             <input type="text" class="form-control" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content">
                         </div>

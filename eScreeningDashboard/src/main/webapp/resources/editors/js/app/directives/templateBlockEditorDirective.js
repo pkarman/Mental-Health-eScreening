@@ -202,6 +202,19 @@
                     }
                 };
 
+	            scope.hideBlockConditionRight = function(operatorValue) {
+		            var result = false;
+		            angular.forEach(scope.operators, function(operator) {
+			            if (operator.value === "" + operatorValue) {
+				            if (operator.category === 'formula' || operator.category === 'question') {
+					            result = true;
+					            return true;
+				            }
+			            }
+		            });
+		            return result;
+	            }
+
             }
         };
 

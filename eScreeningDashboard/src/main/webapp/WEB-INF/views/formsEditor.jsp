@@ -100,7 +100,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateOperator.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
