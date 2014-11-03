@@ -897,22 +897,22 @@
 }
 #u80 {
   position:absolute;
-  left:539px;
-  top:194px;
-  width:116px;
-  height:28px;
+  left:20px;
+  top:401px;
+  width:310px;
+  height:25px;
 }
-#u80_img {
+#u80_input {
   position:absolute;
   left:0px;
   top:0px;
-  width:116px;
-  height:28px;
-}
-#u81 {
-  position:absolute;
-  left:0px;
-  top:0px;
-  width:116px;
-  white-space:nowrap;
+  width:310px;
+  height:25px;
+  font-family:'Arial Regular', 'Arial';
+  font-weight:700;
+  font-style:normal;
+  font-size:13px;
+  text-decoration:none;
+  color:#000000;
+  text-align:center;
 }

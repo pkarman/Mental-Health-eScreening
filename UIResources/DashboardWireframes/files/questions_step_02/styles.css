@@ -4,7 +4,7 @@
   touch-action:none;
   position:relative;
   left:-0px;
-  width:1200px;
+  width:1198px;
   margin-left:auto;
   margin-right:auto;
   text-align:left;
@@ -3357,4 +3357,60 @@
   top:0px;
   width:400px;
   word-wrap:break-word;
+}
+#u260 {
+  position:absolute;
+  left:-5px;
+  top:125px;
+  width:10px;
+  height:745px;
+}
+#u260_start {
+  position:absolute;
+  left:-5px;
+  top:0px;
+  width:20px;
+  height:18px;
+}
+#u260_end {
+  position:absolute;
+  left:-5px;
+  top:728px;
+  width:20px;
+  height:18px;
+}
+#u260_line {
+  position:absolute;
+  left:5px;
+  top:0px;
+  width:1px;
+  height:745px;
+}
+#u261 {
+  position:absolute;
+  left:1193px;
+  top:125px;
+  width:10px;
+  height:745px;
+}
+#u261_start {
+  position:absolute;
+  left:-5px;
+  top:0px;
+  width:20px;
+  height:18px;
+}
+#u261_end {
+  position:absolute;
+  left:-5px;
+  top:728px;
+  width:20px;
+  height:18px;
+}
+#u261_line {
+  position:absolute;
+  left:5px;
+  top:0px;
+  width:1px;
+  height:745px;
 }

@@ -31,4 +31,7 @@ public interface AssessmentEngineService {
 
 	boolean transitionAssessmentStatusTo(Integer veteranAssessmentId,
 			AssessmentStatusEnum requestedState);
+
+	Map<Integer, Boolean> getUpdatedVisibilityInMemory(
+			AssessmentRequest assessmentRequest);
 }

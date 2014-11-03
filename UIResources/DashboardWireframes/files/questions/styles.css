@@ -4,7 +4,7 @@
   touch-action:none;
   position:relative;
   left:-0px;
-  width:1200px;
+  width:1198px;
   margin-left:auto;
   margin-right:auto;
   text-align:left;
@@ -2374,4 +2374,60 @@
   top:0px;
   width:68px;
   white-space:nowrap;
+}
+#u186 {
+  position:absolute;
+  left:-5px;
+  top:130px;
+  width:10px;
+  height:700px;
+}
+#u186_start {
+  position:absolute;
+  left:-5px;
+  top:0px;
+  width:20px;
+  height:18px;
+}
+#u186_end {
+  position:absolute;
+  left:-5px;
+  top:683px;
+  width:20px;
+  height:18px;
+}
+#u186_line {
+  position:absolute;
+  left:5px;
+  top:0px;
+  width:1px;
+  height:700px;
+}
+#u187 {
+  position:absolute;
+  left:1193px;
+  top:130px;
+  width:10px;
+  height:700px;
+}
+#u187_start {
+  position:absolute;
+  left:-5px;
+  top:0px;
+  width:20px;
+  height:18px;
+}
+#u187_end {
+  position:absolute;
+  left:-5px;
+  top:683px;
+  width:20px;
+  height:18px;
+}
+#u187_line {
+  position:absolute;
+  left:5px;
+  top:0px;
+  width:1px;
+  height:700px;
 }

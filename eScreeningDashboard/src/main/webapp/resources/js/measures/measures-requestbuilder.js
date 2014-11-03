@@ -69,7 +69,9 @@ function evaluateAndBuildTypes(formHTML /*HTMLElement with children*/)/* returns
                     answer.rowId = row;
                 });
             }
-        
+            
+            measureObj.isVisible = isVisible(currLI);
+        	
             answers.push(measureObj);
         }
 	});

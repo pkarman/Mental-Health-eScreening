@@ -25,13 +25,6 @@
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
     <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
-    
-    <script type="text/javascript">
-        $(document).ready(function() {
-            
-        });
-        
-    </script>
 </head>
 <body>
 	<a href="#skip" class="offscreen">Skip to main content</a>
@@ -275,7 +268,7 @@
 								maxlength="50" 
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
-								placeholder="Enter an alternate Email Address"
+								placeholder="Enter an Email Address"
                 required="required"
                 type="email"
                 />
@@ -290,7 +283,7 @@
 								cssClass="inputStyle form-control"
 								cssErrorClass="errorInputStyle  form-control"
 								placeholder="Enter an alternate Email Address"
-                required="required"
+                
                 type="email"
                 />
 							<form:errors path="emailAddress2" cssClass="help-inline"/>

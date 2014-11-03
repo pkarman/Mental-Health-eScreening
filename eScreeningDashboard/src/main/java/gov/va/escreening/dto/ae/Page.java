@@ -14,8 +14,17 @@ public class Page implements Serializable {
     private List<Measure> measures;
     private int pageNumber;
     private String description;
+    private boolean hasVisibilityRules;
 
-    public String getPageTitle() {
+    public boolean getHasVisibilityRules() {
+		return hasVisibilityRules;
+	}
+
+	public void setHasVisibilityRules(boolean hasVisibilityRules) {
+		this.hasVisibilityRules = hasVisibilityRules;
+	}
+
+	public String getPageTitle() {
         return pageTitle;
     }
 
