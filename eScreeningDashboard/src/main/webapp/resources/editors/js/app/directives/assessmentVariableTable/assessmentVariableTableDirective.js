@@ -68,7 +68,9 @@
                                     $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                                 });
                             }
-
+                            if(Object.isDefined($scope.assessmentVariable) && Object.isDefined($scope.assessmentVariable.id)) {
+                                $scope.$emit('filterOperators', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
+                            }
                         }
                     });
                 };

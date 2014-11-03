@@ -34,7 +34,7 @@ public abstract class TemplateBaseContent {
 		
 		if (operand == null)
 		{
-			if (left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.getTypeId()!=null && left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 				
 			{
 				if (right instanceof TemplateTextContent)
@@ -57,11 +57,11 @@ public abstract class TemplateBaseContent {
 				
 				
 			}
-			else if (left.getTypeId() == 4 )
+			else if (left.getTypeId()!=null && left.getTypeId() == 4 )
 			{
 				translatedVar =  "getFormulaValue("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar =  "getCustomValue("+inStr+")";
 			}
@@ -85,14 +85,14 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("answered".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "wasAnswered("+inStr+", "+left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nanswered".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "wasntAnswered("+inStr+", "+left.getMeasureTypeId()+")";
 			}
@@ -100,22 +100,22 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("result".equals(operand))
 		{
-			if (left.getTypeId() == 4)
+			if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar= "formulaHasResult("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar= "customHasResult("+inStr+")";
 			}
 		}
 		else if ("nresult".equals(operand))
 		{
-			if (left.getTypeId() == 4)
+			if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar= "formulaHasNoResult("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar= "customHasNoResult("+inStr+")";
 			}
@@ -123,14 +123,14 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("response".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() !=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId()!=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
 			}

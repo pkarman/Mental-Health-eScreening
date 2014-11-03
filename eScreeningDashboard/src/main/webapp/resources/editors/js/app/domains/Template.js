@@ -45,7 +45,7 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
         if(Object.isArray(this.blocks)){
             this.blocks = EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(this.blocks);
         }
-    }
+    };
     
     /**
      * Because of some of the awkward nature of our endpoints and pre-restangular, UI code we have to do this for now

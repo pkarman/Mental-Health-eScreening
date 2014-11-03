@@ -303,6 +303,27 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				});
 
+				/*
+					Credit:
+					http://stackoverflow.com/questions/7280738/drag-and-drop-event-in-a-contenteditable-element
+				 */
+				/*
+				 TODO: Remove original DOM node when dragged and duplicated
+				 el.addEventListener("DOMNodeInserted", function(e) {
+				    console.log('e', e);
+					 console.log('e.relatedNode.nodeName', e.relatedNode.nodeName);
+					 console.log('e.originalTarget.src', e.originalTarget.src);
+					 if (e.originalTarget && e.originalTarget.nodeName === 'IMG' && !e.originalTarget.src) {
+						 console.log('e.originalEvent', e.originalTarget);
+						 //el.removeChild(e.originalTarget);
+						 e.originalTarget.parentNode.removeChild(e.originalTarget);
+						 e.originalTarget.replaceWith(e.originalTarget.contents());
+				        addVariableTool.updateTaBindtaTextElement();
+					 }
+				 }, false);
+				 */
+
+
 				return false;
 
 			},
