@@ -71,7 +71,7 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
             console.log("Saving new template of type " + this.type.id  + " for survey with ID: " + relatedObject.id)
             //TODO: if/when we move to a more OO restful end point structure we should remove this in favor of:
             // var templateTypes = module.getList('templateTypes');
-            // ... at some point: new EScreeningDashboardApp.models.Template(selectedTemplateType);
+            // ... at some point: new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
             // this.type.post(this);  
             // The goal would be to have "this" sent to either:
             //  -  POST: /services/surveys/{surveyId}/templateTypes/{templateTypeId}
