@@ -458,27 +458,12 @@ update template
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
+<#if (var3389)?? && (getFormulaDisplayText(var3389) != "notfound")>
 ${MODULE_TITLE_START}
 AGGRESSION: 
 ${MODULE_TITLE_END}
 ${MODULE_START}
 
-    	<#if (var3200.children)?? && (var3210.children)?? && (var3220.children)?? && (var3230.children)?? && (var3240.children)?? 
-				&& (var3250.children)?? && (var3260.children)?? && (var3270.children)?? && (var3280.children)?? && (var3290.children)?? 
-				&& (var3300.children)?? && (var3310.children)?? && (var3320.children)?? && (var3330.children)?? && (var3340.children)?? 
-				&& (var3350.children)??
-				&& ((var3200.children)?size > 0) && ((var3210.children)?size > 0) && ((var3220.children)?size > 0) && ((var3230.children)?size > 0) && ((var3240.children)?size > 0) 
-				&& ((var3250.children)?size > 0) && ((var3260.children)?size > 0) && ((var3270.children)?size > 0) && ((var3280.children)?size > 0) && ((var3290.children)?size > 0) 
-				&& ((var3300.children)?size > 0) && ((var3310.children)?size > 0) && ((var3320.children)?size > 0) && ((var3330.children)?size > 0) && ((var3340.children)?size > 0) 
-				&& ((var3350.children)?size > 0)>
-	
-			<#if !(getScore(var3200) == 999 ||  getScore(var3210) == 999 ||  getScore(var3220) == 999  || getScore(var3230) == 999  ||  getScore(var3240) == 999  || getScore(var3250) == 999  ||  getScore(var3260) == 999  
-				|| getScore(var3270) == 999  ||  getScore(var3280) == 999  || getScore(var3290) == 999)  ||  getScore(var3300) == 999 ||  getScore(var3310) == 999  || getScore(var3320) == 999  ||  getScore(var3330) == 999  
-				|| getScore(var3340) == 999  ||  getScore(var3350) == 999  >
-			
-			  <#if (var3389)?? && (getFormulaDisplayText(var3389) != "notfound") && (getFormulaDisplayText(var3389)?number == 0)>       <#-- veteran answered no to all questions" -->
-				${getAnsweredNeverAllText("Aggression")}.${NBSP}
-			  <#else>
     			The Veteran had a score of ${getFormulaDisplayText(var3389)} on the Retrospective Overt Aggression Scale (range 0-240).${LINE_BREAK}${LINE_BREAK}
     			
     			<#assign fragments = []>
@@ -561,15 +546,11 @@ ${MODULE_START}
 					<#assign physicalAggressionOthersText = "Physical aggression towards others (" + createSentence(physicalAggressionOthersSubText) + ")">
 					<#assign fragments = fragments + [physicalAggressionOthersText]  >
 				</#if>
+			 <#if fragments?has_content>
 				The Veteran indicated the following concerning aggressive behaviors in the past month: ${createSentence(fragments)}.${NBSP}
 			  </#if>
-    		<#else>
-    			${getNotCompletedText()}
-    		</#if>
-    	<#else>
-    		${getNotCompletedText()}
-    	</#if>
 ${MODULE_END}
+</#if>
 '
 where template_id = 38;
 
@@ -1496,6 +1477,101 @@ ${MODULE_START}
 			</#if>
 ${MODULE_END}'
 where template_id = 24;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Service Injuries:
+${MODULE_TITLE_END}
+${MODULE_START}
+		
+		<#assign answerTextHash = {"var1380":"blast injury", "var1390":"injury to spine or back", "var1400":"burn (second, 3rd degree)", 
+									"var1410":"nerve damage", "var1420":"Loss or damage to vision", "var1430":"loss or damage to hearing", 
+									"var1440":"amputation", "var1450":"broken/fractured bone(s)", "var1460":"joint or muscle damage", 
+									"var1470":"internal or abdominal injuries", "var1480":"other", "var1490":"other"}>
+		
+		<#-- must have answer questions -->
+		<#assign questions1 = [var1380, var1390, var1400, var1410, var1420, var1430, var1440, var1450, var1460, var1470]>
+
+		<#-- organize answers in a way to facilitate output -->
+		<#assign noneAnswers = []>
+		<#assign combatAnswers = []>
+		<#assign nonCombatAnswers = []>
+		<#assign otherAnswers = []>
+		<#list questions1 as q>
+			<#if q?? && q.children?? && (q.children?size > 0) && (q.children[0])?? >
+				<#assign key = (q.key)!"">
+				<#assign text = (q.children[0].overrideText)!""> 
+				<#if text == "none">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign noneAnswers = noneAnswers + [answer]> 
+				<#elseif text == "combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign combatAnswers = combatAnswers + [answer]> 
+				<#elseif text == "non-combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign nonCombatAnswers = nonCombatAnswers + [answer]> 
+				<#elseif text == "other">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign otherAnswers = otherAnswers + [answer]> 
+				</#if>
+			</#if>
+		</#list>
+
+					<#if var1480?? && var1481?? && (var1480.children?size > 0)>
+						<#assign otherAnswer = var1481.otherText!"">
+						<#if otherAnswer != "">
+						<#list var1480.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+						</#if>
+					</#if>
+				
+					<#if var1490?? && var1491?? && (var1490.children?size > 0)>
+						<#assign otherAnswer = var1491.otherText!"">
+						<#if otherAnswer != "">
+						<#list var1490.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+						</#if>
+					</#if>	
+		
+		
+		<#-- build first two sentences -->
+		<#if combatAnswers?has_content>
+			The following injuries were reported during combat deployment: ${createSentence(combatAnswers)}.${LINE_BREAK}
+		</#if>
+		
+		<#if nonCombatAnswers?has_content>
+			The following injuries were reported during other service period or training: ${createSentence(nonCombatAnswers)}.${LINE_BREAK}
+		</#if>
+		
+		<#if var1510?? && (var1510.children)?? && (var1510.children?size>0)>
+			<#assign frag = "">
+			<#if isSelectedAnswer(var1510,var1512)>
+				<#assign frag = "has">
+			<#elseif isSelectedAnswer(var1510,var1511)>
+				<#assign frag = "does not have">
+			<#elseif isSelectedAnswer(var1510,var1513)>
+				<#assign frag = "has the intent to file for, or has filed for">
+			</#if>
+			The Veteran ${frag} a service connected disability rating.
+		</#if>
+${MODULE_END}'
+where template_id = 16;
 
 
  
