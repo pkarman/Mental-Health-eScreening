@@ -78,7 +78,9 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element) {
 
-                var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
+                /* Temporarily disabled until further notice: 11/03/14
+                 var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
+                  */
 
                 /*
                  The compile function cannot handle directives that recursively use themselves
@@ -86,10 +88,12 @@
                  in an infinite loop and a stack overflow errors. This can be avoided by manually
                  using $compile in the postLink function to imperatively compile a directive's template
                  */
+				/* Temporarily disabled until further notice: 11/03/14
                 $compile(collectionTemplate)(scope, function (clonedTemplate, scope) {
                     // Append the template and pass in the cloned scope
                     element.append(clonedTemplate);
                 });
+                */
 
                 scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
 
