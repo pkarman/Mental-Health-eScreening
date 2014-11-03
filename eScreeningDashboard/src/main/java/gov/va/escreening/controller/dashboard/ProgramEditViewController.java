@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.common.collect.Lists;
+
 @Controller
 @RequestMapping(value = "/dashboard")
 public class ProgramEditViewController {
@@ -100,8 +102,7 @@ public class ProgramEditViewController {
 	}
 
 	/**
-	 * Saves the data by either creating a new record or updating an existing
-	 * one.
+	 * Saves the data by either creating a new record or updating an existing one.
 	 * 
 	 * @param programEditViewFormBean
 	 * @param result
@@ -126,13 +127,13 @@ public class ProgramEditViewController {
 		if (programEditViewFormBean.getProgramId() != null && programEditViewFormBean.getProgramId() > 0) {
 			logger.debug("Edit mode");
 
-			Integer progId=programEditViewFormBean.getProgramId();
-			String progName=programEditViewFormBean.getName();
-			boolean progDisabled=programEditViewFormBean.getIsDisabled();
-			List<Integer> selectedBatteryIds=programEditViewFormBean.getSelectedBatteryIdList();
-			List<Integer> selectedClinicIds=programEditViewFormBean.getSelectedClinicIdList();
-			List<Integer> selectedNoteTitleIds=programEditViewFormBean.getSelectedNoteTitleIdList();
-			
+			Integer progId = programEditViewFormBean.getProgramId();
+			String progName = programEditViewFormBean.getName();
+			boolean progDisabled = programEditViewFormBean.getIsDisabled();
+			List<Integer> selectedBatteryIds = (List<Integer>) (programEditViewFormBean.getSelectedBatteryIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedBatteryIdList());
+			List<Integer> selectedClinicIds = (List<Integer>) (programEditViewFormBean.getSelectedClinicIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedClinicIdList());
+			List<Integer> selectedNoteTitleIds = (List<Integer>) (programEditViewFormBean.getSelectedNoteTitleIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedNoteTitleIdList());
+
 			programService.updateProgram(progId, progName, progDisabled, selectedBatteryIds, selectedClinicIds, selectedNoteTitleIds);
 		} else {
 			logger.debug("Add mode");
