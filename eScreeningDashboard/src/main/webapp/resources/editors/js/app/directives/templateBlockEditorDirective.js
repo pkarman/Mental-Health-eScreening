@@ -1,7 +1,7 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', function($compile) {
+    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', function($compile, limitToWithEllipsisFilter) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -172,6 +172,7 @@
                         throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
                     }
 
+                    $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedAssessmentVariable.name, 20));
                     scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
                 });
 

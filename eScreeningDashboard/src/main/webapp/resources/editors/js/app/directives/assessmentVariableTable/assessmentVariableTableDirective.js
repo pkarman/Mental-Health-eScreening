@@ -14,7 +14,7 @@
                 surveyId: '@',
                 data: '=assessmentVariables'
             },
-            controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', 'limitToWithEllipsisFilter', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService, limitToWithEllipsisFilter) {
+            controller: ['$scope', '$rootScope', '$filter', 'ngTableParams', 'AssessmentVariableService', function ($scope, $rootScope, $filter, ngTableParams, AssessmentVariableService) {
                 $scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
 
                 $scope.selectAssessmentVariable = function(someAssessmentVariable) {
@@ -52,10 +52,6 @@
                         counts: [],
                         total: 0,
                         getData: function ($defer, params) {
-                            if(Object.isDefined($scope.assessmentVariable) && Object.isDefined($scope.assessmentVariable.id)) {
-                                $(".assessmentVariableSelection[guid=\""+$scope.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter($scope.assessmentVariable.name, 20));
-                                $scope.$emit('filterOperators', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
-                            }
                             if(Object.isDefined($scope.data)) {
                                 $scope.data.then(function (assessmentVariables) {
                                     params.total(assessmentVariables.length);
@@ -72,7 +68,9 @@
                                     $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                                 });
                             }
-
+                            if(Object.isDefined($scope.assessmentVariable) && Object.isDefined($scope.assessmentVariable.id)) {
+                                $scope.$emit('filterOperators', {guid: $scope.guid, selectedAssessmentVariable: $scope.assessmentVariable});
+                            }
                         }
                     });
                 };
