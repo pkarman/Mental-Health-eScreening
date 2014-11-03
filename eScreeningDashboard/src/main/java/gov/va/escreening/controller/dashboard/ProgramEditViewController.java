@@ -12,6 +12,7 @@ import gov.va.escreening.service.NoteTitleService;
 import gov.va.escreening.service.ProgramService;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -34,25 +35,10 @@ public class ProgramEditViewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProgramEditViewController.class);
 
+	private BatteryService batteryService;
 	private ClinicService clinicService;
 	private NoteTitleService noteTitleService;
 	private ProgramService programService;
-	private BatteryService batteryService;
-
-	@Autowired
-	public void setClinicService(ClinicService clinicService) {
-		this.clinicService = clinicService;
-	}
-
-	@Autowired
-	public void setNoteTitleService(NoteTitleService noteTitleService) {
-		this.noteTitleService = noteTitleService;
-	}
-
-	@Autowired
-	public void setProgramService(ProgramService programService) {
-		this.programService = programService;
-	}
 
 	/**
 	 * Returns the backing bean for the form.
@@ -65,33 +51,8 @@ public class ProgramEditViewController {
 		return new ProgramEditViewFormBean();
 	}
 
-	/**
-	 * Initialize and setup page.
-	 * 
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value = "/programEditView", method = RequestMethod.GET)
-	public String setUpPageProgramEditView(Model model,
-			@ModelAttribute ProgramEditViewFormBean programEditViewFormBean,
-			@RequestParam(value = "pid", required = false) Integer programId,
-			@CurrentUser EscreenUser escreenUser) {
-
-		logger.debug("In setUpPageProgramEditView");
-		logger.debug("pid: " + programId);
-
-		populateModel(model);
-
-		if (programId != null) {
-			programEditViewFormBean = programService.getProgramEditViewFormBean(programId);
-			model.addAttribute("programEditViewFormBean", programEditViewFormBean);
-		}
-
-		return "systemTab/programEditView";
-	}
-
 	private void populateModel(Model model) {
-		List<BatteryDto> batteryList = batteryService.getBatteryDtoList();
+		Set<BatteryDto> batteryList = batteryService.getBatteryDtoSet();
 		model.addAttribute("batteryList", batteryList);
 
 		List<ClinicDto> clinicList = clinicService.getClinicDtoList();
@@ -99,6 +60,20 @@ public class ProgramEditViewController {
 
 		List<DropDownObject> noteTitleList = noteTitleService.getNoteTitleList();
 		model.addAttribute("noteTitleList", noteTitleList);
+	}
+
+	/**
+	 * User clicked on the cancel button. Redirect to list view page.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "cancelButton")
+	public String processCancel(Model model) {
+
+		logger.debug("In processCancel");
+
+		return "redirect:/dashboard/programListView";
 	}
 
 	/**
@@ -145,22 +120,48 @@ public class ProgramEditViewController {
 		return "redirect:/dashboard/programListView";
 	}
 
+	@Autowired
+	public void setBatteryService(BatteryService batteryService) {
+		this.batteryService = batteryService;
+	}
+
+	@Autowired
+	public void setClinicService(ClinicService clinicService) {
+		this.clinicService = clinicService;
+	}
+
+	@Autowired
+	public void setNoteTitleService(NoteTitleService noteTitleService) {
+		this.noteTitleService = noteTitleService;
+	}
+
+	@Autowired
+	public void setProgramService(ProgramService programService) {
+		this.programService = programService;
+	}
+
 	/**
-	 * User clicked on the cancel button. Redirect to list view page.
+	 * Initialize and setup page.
 	 * 
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "cancelButton")
-	public String processCancel(Model model) {
+	@RequestMapping(value = "/programEditView", method = RequestMethod.GET)
+	public String setUpPageProgramEditView(Model model,
+			@ModelAttribute ProgramEditViewFormBean programEditViewFormBean,
+			@RequestParam(value = "pid", required = false) Integer programId,
+			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In processCancel");
+		logger.debug("In setUpPageProgramEditView");
+		logger.debug("pid: " + programId);
 
-		return "redirect:/dashboard/programListView";
-	}
+		populateModel(model);
 
-	@Autowired
-	public void setBatteryService(BatteryService batteryService) {
-		this.batteryService = batteryService;
+		if (programId != null) {
+			programEditViewFormBean = programService.getProgramEditViewFormBean(programId);
+			model.addAttribute("programEditViewFormBean", programEditViewFormBean);
+		}
+
+		return "systemTab/programEditView";
 	}
 }
