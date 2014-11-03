@@ -50,6 +50,8 @@ public class Template implements Serializable {
     @Lob
     @Column(name = "template_file")
     private String templateFile;
+    @Column(name="json_file")
+    private String jsonFile;
     @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
@@ -139,8 +141,15 @@ public class Template implements Serializable {
     	this.isGraphical = isGraphical;
     }
     
+    public String getJsonFile() {
+		return jsonFile;
+	}
 
-    @Override
+	public void setJsonFile(String jsonFile) {
+		this.jsonFile = jsonFile;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (templateId != null ? templateId.hashCode() : 0);

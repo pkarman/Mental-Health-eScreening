@@ -15,3 +15,12 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10720, 32);
 
 update variable_template set override_display_value = 'no' where variable_template_id=2551;
+
+-- Needed variables for ticket 642
+
+-- update phq9 score assessment variable so it has the correct display name
+UPDATE assessment_variable SET display_name='dep_score_phq9', description='PHQ-9 Score' 
+WHERE assessment_variable_id=1599;
+
+
+
