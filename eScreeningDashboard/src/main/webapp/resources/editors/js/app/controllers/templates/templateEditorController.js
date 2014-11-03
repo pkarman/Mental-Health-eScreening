@@ -8,9 +8,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     $scope.hasChanged = false;
     $scope.assessmentVariables = [];
     $scope.variableHash = {};
-    //remove as soon as possible
-    $scope.variableNamedHash = {};
-    $scope.debug = true;
+    $scope.debug = false;
     $scope.logId=0;
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
@@ -26,7 +24,6 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             .then(function(assessmentVariables) {
                 assessmentVariables.forEach(function(variable){
                         $scope.variableHash[variable.id] = variable;
-                        $scope.variableNamedHash[variable.getName()] = variable;
                     });
                     
                     return assessmentVariables;

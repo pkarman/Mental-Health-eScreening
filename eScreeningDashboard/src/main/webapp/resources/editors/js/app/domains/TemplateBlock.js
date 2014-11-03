@@ -73,7 +73,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 			content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
 	}
 
-	function transformTextContent(variableNamedHash){
+	function transformTextContent(variableHash){
 
 		if(this.type == "text"){
 			var tag = '<code class="ta-insert-variable">';
@@ -82,7 +82,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 			var fragments = this.content.split(/<img.+id="(\d+)"[^>]+>/);
 
 			fragments.forEach(function(frag){
-				var varName = variableNamedHash[frag];
+				var varName = variableHash[frag];
 
 				var content = (varName) ? createVarContent(varName) : createTextContent(frag);
 				contents.push(content);
@@ -92,7 +92,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		}
 	}
 
-	function autoGenerateFields(variableNamedHash){
+	function autoGenerateFields(variableHash){
 
 		if(this.type == "text"){
 			this.summary = "";
@@ -122,7 +122,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		}
 
 		if(Object.isDefined(this.children)){
-			this.children.forEach(function(block){ transformTextContent.call(block, variableNamedHash); });
+			this.children.forEach(function(block){ transformTextContent.call(block, variableHash); });
 		}
 	}
 
