@@ -771,31 +771,755 @@ ${MODULE_END}
 where template_id = 20;
 
 
-update template set template_file = '<#include "clinicalnotefunctions"> <#if (var1599)?? > <#assign score = getCustomVariableDisplayText(var1599)> <#-- Template start --> ${MODULE_TITLE_START} Depression ${MODULE_TITLE_END} ${GRAPH_SECTION_START} ${GRAPH_BODY_START} {"type": "stacked", "title": "My Depression Score", "footer": "*a score of 10 or greater is a positive screen", "data": { "graphStart": 0,"ticks": [0, 4, 10, 15, 20, 27],"intervals": {"Minimal":4, "Mild":10, "Moderate":15, "Moderately Severe":20, "Severe":27 }, "score": ${score} } } ${GRAPH_BODY_END} ${GRAPH_SECTION_END}  ${MODULE_START} Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.${LINE_BREAK} <#if score?number == 999><b>Veteran declined to respond<b></#if><#if score?number != 999><b>Recommendation:</b> <#if score?number lt 10>Contact a clinician if in the future if you ever feel you may have a problem with depression</#if><#if score?number gt 9>Ask your clinician for further evaluation and treatment options</#if> ${MODULE_END}</#if></#if>' 
-where template_id=308;
+/*tobacco decline template */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#-- Template start --> 
+${MODULE_TITLE_START} 
+	Tobacco Use 
+${MODULE_TITLE_END} 
 
-update template set template_file = '<#include "clinicalnotefunctions"> <#if var1929??> <#assign score = getCustomVariableDisplayText(var1929)>  <#-- Template start --> ${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}  ${GRAPH_SECTION_START}  ${GRAPH_BODY_START} { "type": "stacked", "title": "My PTSD Score", "footer": "", "data": { "graphStart": 17, "ticks": [17,35,50,65,85], "intervals": { "Negative": 49, "Positive":85 }, "score": ${score} } } ${GRAPH_BODY_END} ${GRAPH_SECTION_END}  ${MODULE_START} PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. ${LINE_BREAK} <#if score?number == 999><b>Veteran declined to respond<b></#if><#if score?number != 999><b>Recommendation:</b> <#if score?number gt 49>Ask your clinician for further evaluation and treatment options</#if><#if score?number lt 50>You may ask a clinician for help in the future if you feel you may have symptoms of PTSD</#if> ${MODULE_END} </#if></#if>' 
-where template_id=310;
+${MODULE_START}  
+	The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications. 
 
+	${LINE_BREAK} 
+	${LINE_BREAK} 
 
+	<b>Results:</b>${NBSP} 
+	
+	<#if (var600.children)?? && ((var600.children)?size gt 0)> 
+		<#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)> 
+			negative screen 
+		<#elseif isSelectedAnswer(var600,var603)> 
+			current user 
+			${LINE_BREAK} 
+			<b>Recommendations:</b> Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed. 
+		</#if> 
+	<#else>
+		${NBSP}Veteran declined to respond
+	</#if> 	
+${MODULE_END}' 
+where template_id=306;
 
+ 
 /*
 t692
 There is an issue with housing. The rule was: If HomelessCR_stable_house =1 then insert “stable housing”, if =0 “unstable housing/at risk”, if equal to 999 omit module. 
 However, this won’t work because the Veteran could have stable housing now and be worried about the future, which would mean they need assistance. 
 The changed rule is: 
-====>>> if HomelessCR_stable_worry =1 then insert “unstable housing/at risk”, if =0 “no housing concerns”, if equal to 999 insert “declined”.
+====>>> if HomelessCR_stable_worry =1 then insert “unstable housing/at risk”, if =0 “no housing concerns”, if equal to 999 insert “Veteran declined to respond”.
+====>>> also if user declined to respond then show Veteran declined to respond
 */
 update variable_template set assessment_variable_id=771 where variable_template_id=10511;
 update variable_template set assessment_variable_id=772 where variable_template_id=10512;
 update variable_template set assessment_variable_id=2001 where variable_template_id=10510;
 delete from variable_template where variable_template_id=10513;
 
-update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> <#if (var2001)?? && (var2001.children)?? && ((var2001.children)?size > 0)> ${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END} ${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} ${LINE_BREAK} <b>Results:</b>${NBSP} <#if isSelectedAnswer(var2001,var772)> unstable housing/at risk ${LINE_BREAK} <b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. <#elseif isSelectedAnswer(var2001,var771)> stable housing </#if>  ${MODULE_END} </#if>' 
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#-- Template start --> 
+${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END} 
+${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} 
+${LINE_BREAK} 
+<b>Results:</b>${NBSP} 
+<#if (var2001)?? && (var2001.children)?? && ((var2001.children)?size > 0)> 
+	<#if isSelectedAnswer(var2001,var772)> 
+		unstable housing/at risk 
+		${LINE_BREAK} 
+		<b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. 
+	<#elseif isSelectedAnswer(var2001,var771)> 
+		stable housing 
+	</#if>  
+<#else>
+	${NBSP}Veteran declined to respond
+</#if>
+${MODULE_END}' 
 where template_id=301;
 
-/*
-update template set template_file = '<#include "clinicalnotefunctions"> <#-- Template start --> ${MODULE_TITLE_START} Tobacco Use ${MODULE_TITLE_END} ${MODULE_START} The use of tobacco causes harm to nearly every organ in the body. Quitting greatly lowers your risk of death from cancers, heart disease, stroke, and emphysema. There are many options, such as in-person and telephone counseling, nicotine replacement, and prescription medications. ${LINE_BREAK} ${LINE_BREAK} <b> Results:</b> ${NBSP} <#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)> <#if isSelectedAnswer(var600,var601) || isSelectedAnswer(var600,var602)> negative screen <#elseif isSelectedAnswer(var600,var603)> current user ${LINE_BREAK} <b> Recommendations: Prepare a plan to reduce or quit the use of tobacco. Get support from family and friends, and ask your clinician for help if needed. </#if> <#else><b> Declined<b> </#if> ${MODULE_END}' 
-where template_id=306;
-*/
+ 
+/* depression declined template */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#assign score = getCustomVariableDisplayText(var1599)> 
+<#-- Template start --> 
+${MODULE_TITLE_START} Depression ${MODULE_TITLE_END} 
+<#if score != "notfound">
+	${GRAPH_SECTION_START} 
+	${GRAPH_BODY_START} 
+		{"type": "stacked", "title": "My Depression Score", "footer": "*a score of 10 or greater is a positive screen", "data": { "graphStart": 0,"ticks": [0, 4, 10, 15, 20, 27],"intervals": {"Minimal":4, "Mild":10, "Moderate":15, "Moderately Severe":20, "Severe":27 }, "score": ${score} } } 
+	${GRAPH_BODY_END} 
+	${GRAPH_SECTION_END}  
+</#if>
+${MODULE_START} 
+	Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.
+	${LINE_BREAK} 
+	<b>Recommendation:</b> 
+	<#if score = "notfound">
+		${NBSP}Veteran declined to respond
+	<#elseif score?number lt 10>
+		Contact a clinician if in the future if you ever feel you may have a problem with depression
+	<#elseif score?number gt 9>
+		Ask your clinician for further evaluation and treatment options
+	</#if> 
+${MODULE_END}' 
+where template_id=308;
+
+/* PTSD declined template */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#assign score = getCustomVariableDisplayText(var1929)>  
+<#-- Template start --> 
+${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}  
+
+<#if score != "notfound">
+	${GRAPH_SECTION_START}  
+	${GRAPH_BODY_START} 
+	{ "type": "stacked", "title": "My PTSD Score", "footer": "", "data": { "graphStart": 17, "ticks": [17,35,50,65,85], "intervals": { "Negative": 49, "Positive":85 }, "score": ${score} } } 
+	${GRAPH_BODY_END} 
+	${GRAPH_SECTION_END}  
+</#if>
+
+${MODULE_START} 
+	PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irresistible, or numb. 
+	${LINE_BREAK} 
+	<b>Recommendation:</b> 
+	<#if score = "notfound">
+		${NBSP}Veteran declined to respond
+	<#elseif score?number gt 49>
+		Ask your clinician for further evaluation and treatment options
+	<#elseif score?number lt 50>
+		You may ask a clinician for help in the future if you feel you may have symptoms of PTSD
+	</#if> 
+${MODULE_END}' 
+where template_id=310;
+
+/* TBI changes: If tbi_consult=1 then insert “You have requested further assessment” if TBI_consult =0 insert “you have declined further assessment” if =999 then omit recommendation.  */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#function calcScore obj> 
+	<#assign result = 0> 
+	<#if (obj.children)?? && ((obj.children)?size > 0)> 
+		<#list obj.children as c> 
+			<#if c.overrideText != "none"> 
+				<#assign result = result + 1> 
+				<#break> 
+		</#if> 
+	</#list> 
+	</#if> 
+	<#return result> 
+</#function>  
+<#assign score = 0>  
+<#assign isQ2Complete = false> 
+<#assign isQ2None = false> 
+<#if (var3400.children)?? && ((var3400.children)?size > 0)> 
+	<#assign isQ2Complete = true> 
+	<#if isSelectedAnswer(var3400, var2016)!false> 
+		<#assign isQ2None = true> 
+	<#else> 
+		<#assign score = score + calcScore(var3400)> 
+	</#if> 
+</#if>  
+<#assign isQ3Complete = false> 
+<#assign isQ3None = false> 
+<#if isQ2Complete> 
+	<#if isQ2None> 
+		<#assign isQ3Complete = true> 
+	<#else> 
+		<#if (var3410.children)?? && ((var3410.children)?size > 0) > 
+			<#if isSelectedAnswer(var3410, var2022)!false> 
+				<#assign isQ3None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3410)> 
+			</#if> 
+			<#assign isQ3Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ4Complete = false> 
+<#assign isQ4None = false> 
+<#if isQ3Complete> 
+	<#if isQ2None || isQ3None> 
+		<#assign isQ4Complete = true> 
+	<#else> 
+		<#if (var3420.children)?? && ((var3420.children)?size > 0) > 
+			<#if isSelectedAnswer(var3420, var2030)!false> 
+				<#assign isQ4None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3420)> 
+			</#if> 
+			<#assign isQ4Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ5Complete = false> 
+<#assign isQ5None = false> 
+<#if isQ4Complete> 
+	<#if isQ2None || isQ3None || isQ4None> 
+		<#assign isQ5Complete = true> 
+	<#else> 
+		<#if (var3430.children)?? && ((var3430.children)?size > 0) > 
+			<#if isSelectedAnswer(var3430, var2037)!false> 
+				<#assign isQ5None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3430)> 
+			</#if> 
+			<#assign isQ5Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isComplete = false> 
+<#if isQ2Complete && isQ3Complete && isQ4Complete && isQ5Complete> 
+	<#assign isComplete = true> 
+</#if>  
+${MODULE_TITLE_START} 
+	Traumatic Brain Injury (TBI) 
+${MODULE_TITLE_END} 
+
+${MODULE_START}  
+	<#assign showRec = false> <#assign tbi_consult_text = ""> 
+	<#if isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3442)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have requested further assessment"> 
+	<#elseif isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3441)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have declined further assessment">
+	</#if> 
+	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI. ${LINE_BREAK} 
+	${LINE_BREAK} 
+	<#if isComplete> 
+		<b>Results:</b>${NBSP} 
+		<#if (score >= 0) && (score <= 3)> 
+			negative screen 
+		<#elseif (score >= 4 )> 
+			positive screen
+		</#if> 
+	</#if>  
+	<#if isComplete && showRec> 
+		${LINE_BREAK} 
+		<b>Recommendation:</b> 
+			${tbi_consult_text}. 
+	</#if> 
+${MODULE_END} ' 
+where template_id=307;
+
+
+/****************** TICKET 680 CHANGES BELOW *********************************/
+/*** Exposures skip logic tiket-589 ***/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+EXPOSURES:
+${MODULE_TITLE_END}
+${MODULE_START}
+	 <#-- var2200: ${var2200}<br><br>  var2230: ${var2230}<br><br>  var2240: ${var2240}<br><br>  var2250: ${var2250}<br><br> var2260: ${var2260}<br><br>  -->
+	
+    <#assign nextLine = "">
+	<#if (var10540.children)??  && ((var10540.children)?size > 0) || (var2200.children)?? || ((var2230.children)?? && (var2240.children)?? && (var2250.children)??) || (var2260.children)?? || (var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound") > 
+	 	
+	 	<#if (var10540.children)??  && ((var10540.children)?size > 0)>
+	 	<#if isSelectedAnswer(var10540,var10541)>
+	 		The Veteran is not concerned about, but may have been exposed
+	 	<#elseif isSelectedAnswer(var10540,var10542)>
+	 		The Veteran reported persistent major concerns related to the effects of exposure
+	 	</#if>
+	  	<#if (var2200.children)?? && hasValue(var2200) && getSelectMultiDisplayText(var2200)!= "notfound"> 	
+			${NBSP}to ${getSelectMultiDisplayText(var2200)}
+            <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">
+		</#if>
+		.
+		</#if>
+	
+	    <#if var2289?? 
+		&& getFormulaDisplayText(var2289) != "notset" && getFormulaDisplayText(var2289) != "notfound">
+		<#assign score = getFormulaDisplayText(var2289)>
+		<#assign scoreText = "notset">
+	
+		<#if (score?number >= 1) >
+				<#assign scoreText = "being exposed">
+		<#elseif score?number == 0>
+			<#assign scoreText = "no exposure">
+		</#if> 
+        ${nextLine}The Veteran reported ${scoreText} to animal contact during a deployment in the past 18 months that could result in rabies.
+        <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">	
+		</#if>
+		<#if (var2260.children)??  && hasValue(var2260)> 	
+			<#assign combat = getSelectMultiDisplayText(var2260)>
+			<#if combat != "notfound">
+				${nextLine}The Veteran reported the following types of combat experience: ${combat}.
+			</#if>
+		</#if>
+
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 15;
+
+/*** ticket 680 comment #9 *********/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+SLEEP:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if var2189?? && var2189.value??>
+	<#assign score = var2189.value?number>
+	<#if score??> 	
+		<#if (score >= 0 && score <= 7) >
+			<#assign scoreText = "negative">
+			<#assign text = "no clinically significant insomnia">
+		<#elseif (score >= 8) && (score <= 14)>
+			<#assign scoreText = "negative">
+			<#assign text = "subthreshold insomnia">
+		<#elseif (score >= 15) && (score <= 21)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderate insomnia">
+		<#elseif (score >= 22) && (score <= 998)>  <#-- if score = 999 then veteran did not answer the question -->
+			<#assign scoreText = "positive">
+			<#assign text = "severe insomnia">
+		</#if>
+	</#if>
+	
+	<#if score??>
+		<#if (score >=0) && (score <= 998)>
+			<#t>The Veteran\'s ISI was ${scoreText} indicating ${text} for the past week.${NBSP}
+		<#elseif score >= 999>
+			<#-- this is score 999 -->
+			<#t>The Veteran did not complete the ISI screen.${NBSP}>
+		</#if>
+	</#if>
+	
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}
+'
+where template_id = 37;
+
+delete from variable_template where template_id = 37;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (2189, 37);
+
+
+/********** t680 MDQ ****************/
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var10720?? && var10720.value??>
+${MODULE_TITLE_START}
+Mood Disorder:
+${MODULE_TITLE_END}
+${MODULE_START}
+			<#assign t = "negative">
+			<#assign text2 = "">
+			<#assign fragments = []>
+		
+			<#if var10720.value?number == 1>
+					<#assign t = "positive indicating that the Veteran may benefit from further assessment for possible symptoms of mania or other mood disorders">
+				
+					<#if (getScore(var2660) > 0)>
+						<#assign fragments = fragments + ["so hyper got into trouble"]>
+					</#if>
+					<#if (getScore(var2670) > 0)>
+						<#assign fragments = fragments + ["so irritable started fights"]>
+					</#if>
+					<#if (getScore(var2680) > 0)>
+						<#assign fragments = fragments + ["felt much more self-confident than usual"]>
+					</#if>
+					<#if (getScore(var2690) > 0)>
+						<#assign fragments = fragments + ["got less sleep"]>
+					</#if>
+					<#if (getScore(var2700) > 0)>
+						<#assign fragments = fragments + ["was much more talkative/spoke much faster"]>
+					</#if>
+					<#if (getScore(var2710) > 0)>
+						<#assign fragments = fragments + ["racing thoughts"]>
+					</#if>
+					<#if (getScore(var2720) > 0)>
+						<#assign fragments = fragments + ["could not concentrate"]>
+					</#if>
+					<#if (getScore(var2730) > 0)>
+						<#assign fragments = fragments + ["more energy"]>
+					</#if>
+					<#if (getScore(var2740) > 0)>
+						<#assign fragments = fragments + ["more active/did more things"]>
+					</#if>
+					<#if (getScore(var2750) > 0)>
+						<#assign fragments = fragments + ["more social/outgoing"]>
+					</#if>
+					<#if (getScore(var2760) > 0)>
+						<#assign fragments = fragments + ["much more interested in sex"]>
+					</#if>
+					<#if (getScore(var2770) > 0)>
+						<#assign fragments = fragments + ["was excessive/foolish/risky"]>
+					</#if>
+					<#if (getScore(var2780) > 0)>
+						<#assign fragments = fragments + ["got in trouble spending money"]>
+					</#if>
+				
+					<#assign text2 = createSentence(fragments)>
+				</#if>
+				
+				The MDQ (Hyper mood) screen was ${t}.
+			
+				<#if text2?has_content>
+					${LINE_BREAK}${LINE_BREAK}Symptoms endorsed: ${text2}.
+				</#if>
+${MODULE_END}
+</#if> '
+where template_id = 32;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+MST:
+${MODULE_TITLE_END}
+${MODULE_START}
+	  
+	<#if var2003?? && var2003.value??>
+	<#assign mstMilitaryScore = var2003.value?number>
+		
+		<#if (mstMilitaryScore == 0) >
+			The Veteran\s MST screen was negative.
+		<#elseif (mstMilitaryScore == 1) >	
+			The Veteran\s MST screen was positive.
+			<#if var1640?? && var1640.value??>
+				<#if var1640.value?number == 0>
+				The Veteran declined a referral to discuss the sexual trauma further.${NBSP}
+				<#elseif var1640.value?number == 1>
+				The Veteran requests a referral to discuss the sexual trauma further.${NBSP}
+				</#if>
+			</#if>
+		<#elseif (mstMilitaryScore == 2)>
+			The Veteran declined to answer the MST screen.
+		</#if>
+	<#else>
+	The Veteran declined to answer some or all of the questions of the MST screen.
+	</#if>
+${MODULE_END}
+'
+where template_id = 33;
+
+update template 
+set template_file = '
+<#include "clinicalnotefunctions">
+ <#-- Template start --> ${MODULE_TITLE_START} MILITARY DEPLOYMENTS AND HISTORY: ${MODULE_TITLE_END} 
+ ${MODULE_START} 
+ 
+ <#assign allAnswersNone = false> 
+ 
+  <#-- var5000 --> 
+  <#assign Q1_complete = false> <#assign Q1_isAnswerNone = false>
+  <#if (var5000.children)?? && ((var5000.children)?size > 0)>
+  	<#assign Q1_complete = true>
+  </#if>
+  <#if (var5001.value)?? && var5001.value = "true"> 
+  			<#assign Q1_isAnswerNone = true>
+  </#if> 
+  
+  <#-- var5020 --> 
+  <#assign Q2_complete = false> 
+  <#assign Q2_isAnswerNone = false>
+  <#if (var5020.children)?? && ((var5020.children)?size > 0)>
+  	<#assign Q2_complete = true>
+  </#if>
+   <#if (var5021.value)??  && var5021.value = "true"> 
+   			<#assign Q2_isAnswerNone = true> 
+   </#if> 
+   
+   <#-- var5130 --> 
+   <#assign Q3_complete = false> <#assign Q3_isAnswerNone = false> 
+   
+   <#if (var5131.value)?? && var5131.value = "true">
+        <#assign Q3_complete = true> 
+   		<#assign Q3_isAnswerNone = true>
+   </#if>
+    
+   <#assign counter = 0> 
+   <#assign all_rows = "">  
+   <#if !Q3_isAnswerNone && (var5130.children)?? && (var5130.children)?has_content> 
+   		<#assign rows = {}> 
+   
+   		<#list ((var5130.children)![]) as v> 
+   			<#if (v.children)?? > 
+   				<#list v.children as c> 
+   					<#if (c.row)??> 
+   						<#assign beg_months = ["var5061", "var5062", "var5063", "var5064", "var5065", "var5066", "var5067", "var5068", "var5069", "var5070", "var5071", "var5072"]>  
+   						<#assign end_months = ["var5101", "var5102", "var5103", "var5104", "var5105", "var5106", "var5107", "var5108", "var5109", "var5110", "var5111", "var5112"]>  
+   
+   						<#if beg_months?seq_contains(c.key)> <#assign row_key = "var5060"> 
+   						<#elseif end_months?seq_contains(c.key)> 
+   							<#assign row_key = "var5100"> 
+   						<#else> <#assign row_key = (c.key)?string> 
+   						</#if>  
+   						<#assign row_idx = (c.row)?string> 
+   						<#assign row_value = ((c.displayText)!"")?string> 
+   						<#assign r ={}> 
+   						<#assign row_name = ("row" + row_idx + "_" + row_key)?string > 
+   						<#assign rows =  rows + {row_name:row_value}> 
+   					</#if> 
+   				</#list> 
+   			</#if> 
+   		</#list>  
+   		<#assign uniqueRows = []> 
+   		<#assign e = []> 
+   		<#if (rows?keys)??> 
+   			<#list (rows?keys?sort) as k> 
+   				<#assign e = (k?split("_"))> 
+   				<#if !(uniqueRows?seq_contains(e[0]))> 
+   					<#assign uniqueRows = uniqueRows + [e[0]]> 
+   				</#if> 
+   			</#list> 
+   		</#if>  
+   		<#assign outputText = "">  
+   		<#if uniqueRows?has_content>
+    		<#assign innerNextLine = ""> 
+    		<#list uniqueRows as r> 
+    			<#assign loc = (rows[r + "_" + "var5041"])!"">  
+    			<#assign beg_month = (rows[r + "_" + "var5060"])!""> 
+    			<#assign beg_yr = (rows[r + "_" + "var5081"])!"">  
+    			<#assign end_month = (rows[r + "_" + "var5100"])!""> 
+    			<#assign end_yr = (rows[r + "_" + "var5121"])!"">  
+    			<#if (loc?has_content) && (beg_month?has_content) && (beg_yr?has_content) && (end_month?has_content) && (end_yr?has_content)> ${innerNextLine}
+    				<#assign all_rows = all_rows +	beg_month + "/" + beg_yr + "-"  + end_month + "/" + end_yr + ": "  + loc + LINE_BREAK> 
+    				<#assign innerNextLine = "${LINE_BREAK}"> 
+    				<#assign counter = counter + 1>  
+    			<#else> 
+    			<#-- if Q3 is missing any answers, reset everything  and set complete = false--> 
+    				<#assign Q3_complete = false> <#assign all_rows = ""> <#assign counter = 0> 
+    				<#break> 
+    			</#if> 
+    		</#list> 
+    		<#if (counter > 0)> 
+    			<#assign Q3_complete = true> 
+    		</#if> 
+    	</#if> 
+    </#if>  
+    
+    <#if Q1_isAnswerNone && Q2_isAnswerNone && Q3_isAnswerNone> 
+    	<#assign allAnswersNone = true> 
+    </#if>     
+    <#assign nextLine = ""> 
+   	<#if allAnswersNone> ${getAnsweredNoneAllText("Military Deployments History")} 
+   	<#else> 
+    	<#if Q1_isAnswerNone> The Veteran reported receiving no disciplinary actions. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
+    	<#elseif Q1_complete> The Veteran reported receiving the following disciplinary actions: ${getSelectMultiDisplayText(var5000)}. 
+  			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
+   		</#if>  
+    
+   		<#if Q2_isAnswerNone> ${nextLine}The Veteran reported receiving no personal awards or commendations. <#assign nextLine = "${LINE_BREAK}${LINE_BREAK}">     		
+   		<#elseif Q2_complete> ${nextLine}The Veteran reported receiving the following personal awards or commendations: ${getSelectMultiDisplayText(var5020)}. 
+    			<#assign nextLine = "${LINE_BREAK}${LINE_BREAK}"> 
+    	</#if>   
+    
+   		<#if Q3_complete>
+   			<#if Q3_isAnswerNone>
+   				${nextLine}The Veteran was not deployed in support of a combat operation.
+   			<#elseif (counter > 0)>
+   				<#if (counter == 1)> 
+   					<#assign frag = counter + " time"> <#assign frag2 = "area"> <#assign frag3 = "period"> 
+   				<#else> 
+   					<#assign frag = counter + " times"> <#assign frag2 = "areas"> <#assign frag3 = "periods">     		
+   				</#if> 		
+   				${nextLine}The Veteran was deployed ${frag}
+   				<#if (counter>0)> to the following ${frag2} during the following time ${frag3}:${LINE_BREAK}${LINE_BREAK} ${all_rows} 
+   				<#else>.
+   				</#if>
+    		</#if>
+    	</#if> 
+    </#if>
+    ${MODULE_END} 
+    '
+where template_id = 14;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Screen for Infectious Disease and Embedded Fragments:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var2500.children)?? && ((var2500.children)?size > 0) || ((var2501.children)?? && ((var2501.children)?size > 0))
+	 || ((var2502.children)?? && ((var2502.children)?size > 0)) || ((var2009.children)?? && ((var2009.children)?size > 0))>
+
+	<#-- ${createSentence(parts)}. -->
+	<#assign questions = [var2500,var2501,var2502,var2009]>
+	<#assign textHash = {"var2500": "chronic diarrhea or other gastrointestinal", 
+							"var2501": "pain, unexplained fevers", 
+							"var2502": "persistent popular or nodular skin rash that began after deployment to Southwest Asia", 
+							"var2009": "suspects that he/she has retained fragments or shrapnel as a result of injuries"}>
+	
+	<#assign parts = []>
+		
+	<#list questions as q >
+		<#if q.children?? && ((q.children)?size>0)>
+			<#assign child = q.children[0] >
+			<#if ((child.calculationValue?number) > 0)>
+				<#assign problem = textHash[q.key] >
+				<#assign part = problem + ", with symptoms of " + getVariableDisplayText(child) >
+				<#assign parts = parts + [part] >
+			</#if>
+		</#if>
+	</#list>
+	
+	<#if parts?has_content>
+		The Veteran endorsed other health problems of: ${createSentence(parts)}. ${NBSP}
+	<#else>
+		${getAnsweredNoAllText("OOO Infect & Embedded Fragment CR")}. ${NBSP}
+	</#if>
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 19;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+ <#if (var300.children)?? && ((var300.children)?size > 0) >
+${MODULE_TITLE_START}
+Pragmatic Concerns: 
+${MODULE_TITLE_END}
+${MODULE_START}
+
+    <#if hasValue(getSelectMultiDisplayText(var300)) >
+      The Veteran reported the following legal concern(s): ${getSelectMultiDisplayText(var300)}.  ${NBSP}
+    </#if>
+    <#if hasValue(getSelectOneDisplayText(var320)) >
+      <#if doesValueOneEqualValueTwo(getSelectOneDisplayText(var320), "yes") >
+      	The Veteran reported having an Advance Directive.  ${NBSP}
+      </#if>
+    </#if>
+    <#if hasValue(getSelectOneDisplayText(var330)) >
+      <#if doesValueOneEqualValueTwo(getSelectOneDisplayText(var330), "yes") >
+      	The Veteran would like information about an Advance Directive.  ${NBSP}
+      </#if>
+    </#if>  
+${MODULE_END}
+</#if>
+' where template_id = 9;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Depression:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1550.children)?? && (var1560.children)?? && (var1570.children)?? && (var1580.children)?? && (var1590.children)??
+			&& ((var1550.children)?size > 0) && ((var1560.children)?size > 0) && ((var1570.children)?size > 0) 
+			&& ((var1580.children)?size > 0) && ((var1590.children)?size > 0)>
+	<#assign fragments = []>
+	<#assign text ="notset"> 
+	<#assign totScore = getFormulaDisplayText(var1599)>
+	<#assign score = -1>
+	<#assign scoreText ="notset">
+		
+	<#if totScore?? && totScore != "notfound"  && totScore != "notset"> 
+		<#assign score = totScore?number>
+		<#if (score == 0) >
+			<#assign scoreText = "negative">
+		<#elseif (score >= 1) && (score <= 4)>
+			<#assign scoreText = "positive">
+			<#assign text = "minimal depression">
+		<#elseif (score >= 5) && (score <= 9)>
+			<#assign scoreText = "positive">
+			<#assign text = "mild depression">
+		<#elseif (score >= 10) && (score <= 14)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderate depression">
+		<#elseif (score >= 15) && (score <= 19)>
+			<#assign scoreText = "positive">
+			<#assign text = "moderately severe depression">
+		<#elseif (score >= 20) && (score <= 27)>
+			<#assign scoreText = "positive">
+			<#assign text = "severe depression">
+		</#if>
+
+		<#if (score >=1) && (score <= 27)>
+			<#t>The Veteran\'s PHQ-9 screen was ${scoreText}.${NBSP} The score was ${(score)?string} which is suggestive of ${text}.${NBSP}
+		<#elseif (score == 0)>
+			The Veteran\'s PHQ-9 screen was ${scoreText}. The score was ${(score)?string}.${NBSP}
+		</#if>
+		</#if>
+	<#else>
+		The Veteran\'s PHQ-9 screen was not calculated due to the Veteran declining to answer some or all of the questions.
+	</#if>
+${MODULE_END}
+' where template_id = 31;
+
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PCLC:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1750.children)?? && (var1760.children)?? && (var1770.children)?? && (var1780.children)?? 
+			&& (var1790.children)?? && (var1800.children)?? && (var1810.children)?? && (var1820.children)?? 
+			&& (var1830.children)?? && (var1840.children)?? && (var1850.children)?? && (var1860.children)?? 
+			&& (var1870.children)?? && (var1880.children)?? && (var1890.children)?? && (var1900.children)?? 
+			&& (var1910.children)?? 
+			&& ((var1750.children)?size > 0) && ((var1760.children)?size > 0) && ((var1770.children)?size > 0) && ((var1780.children)?size > 0) 
+			&& ((var1790.children)?size > 0) && ((var1800.children)?size > 0) && ((var1810.children)?size > 0) && ((var1820.children)?size > 0) 
+			&& ((var1830.children)?size > 0) && ((var1840.children)?size > 0) && ((var1850.children)?size > 0) && ((var1860.children)?size > 0) 
+			&& ((var1870.children)?size > 0) && ((var1880.children)?size > 0) && ((var1890.children)?size > 0) && ((var1900.children)?size > 0) 
+			&& ((var1910.children)?size > 0)>
+	 
+	<#assign fragments = []>
+	<#assign resolved_fragments ="">
+	<#assign text ="notset"> 
+	<#assign score = (getListScore([var1750,var1760,var1770,var1780,var1790,var1800,var1810,var1820,var1830,var1840,var1850,var1860,var1870,var1880,var1890,var1900,var1910]))!("-1"?number)>
+	<#assign scoreText ="notset">
+	
+	<#if score??> 	
+		<#if (score >= 0) && (score <= 49)>
+			<#assign scoreText = "negative">
+		<#elseif (score >= 50) && (score <= 998)><#-- value 999 means they didn\'t answer the question so to include would give a false positive-->
+			<#assign scoreText = "positive">
+		</#if>
+		
+		<#if (score >=0  && score <= 998)>
+			<#t>The Veteran\'s PCL-C Screen was ${scoreText!} with a PCL-C score of ${score!("-1"?number)}. ${NBSP}
+		</#if>
+	</#if>
+	
+	<#else>
+		<#t>The Veteran\'s PCL-C Screen could not be calculated because the Veteran declined to answer some or all of the questions.
+	</#if>
+${MODULE_END}
+' where template_id = 35;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PC-PTSD:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1940.children)?? && (var1950.children)?? && (var1960.children)?? && (var1970.children)??
+			&& ((var1940.children)?size > 0) && ((var1950.children)?size > 0) && ((var1960.children)?size > 0) && ((var1970.children)?size > 0)>
+
+	<#assign score = (getListScore([var1940,var1950,var1960,var1970]))!("-1"?number)>
+	<#assign scoreText ="notset">
+	 
+	<#if score??> 	
+		<#if (score >= 0) && (score <= 2)>
+			<#assign scoreText = "negative">
+		<#elseif (score >= 3) && (score <= 998)><#-- value 999 means they didn\'t answer the question so to include would give a false positive-->
+			<#assign scoreText = "positive">
+		</#if>
+		
+		<#if (score >=0  && score <= 998)>
+			<#t>The Veteran\'s PC-PTSD Screen was ${scoreText!} with a PC-PTSD score of ${score}. ${NBSP}
+		</#if>
+	</#if>
+	<#else>
+		<#t>The Veteran\'s PC-PTSD Screen could not be calculated because the Veteran declined to answer some or all of the questions.
+	</#if>
+
+${MODULE_END}'
+ where template_id = 36;
+
+
  

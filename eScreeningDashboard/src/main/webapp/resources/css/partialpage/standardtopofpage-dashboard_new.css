@@ -272,6 +272,12 @@ footer {
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	color: #000;
 }
+.btn-default-black:hover{
+  color: #000 !important;
+}
+.btn-default-white:hover{
+  color: #fff !important;
+}
 .ajax_loading {
 	background-image: url("../../images/ajax-loader.gif");
 	background-position: top left;
@@ -888,7 +894,9 @@ a.offscreen:focus, a.offscreen:active {
 .red-color{
   color:red !important;
 }
-
+.navbar-default .navbar-toggle .icon-bar{
+  background-color: #fff;
+}
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
 	width: 100%;

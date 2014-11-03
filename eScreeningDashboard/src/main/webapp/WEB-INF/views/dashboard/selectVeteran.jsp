@@ -20,11 +20,7 @@
     <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
 
     <title>Veteran Search</title>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            tabsLoad("createBattery");
-        });
-    </script>
+   
 <style type="text/css">
 
 .loading{
@@ -40,9 +36,7 @@
 <script type="text/javascript">
    
    $(document).ready(function() {
-	   
-	
-		
+	  
 	   $(".something").addClass("loading");
 	   $(".focus_input").select(); 
 	   
@@ -107,7 +101,7 @@
         </nav><!--/.nav-collapse -->
       </div>
     </div>
-</div>
+
 
 <div class="clearfix"></div>
 
@@ -256,11 +250,8 @@
 </div>
 
 
+</div>
 
-			<!-- Button trigger modal
-			<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-			  Launch demo modal
-			</button> -->
 			
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -298,7 +289,7 @@
 			      	</div>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-default  btn-default-white" data-dismiss="modal">Close</button>
 			      </div>
 			    </div>
 			  </div>
@@ -306,4 +297,5 @@
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/dashboard/selectVeteran.js?v=2" />"></script>
 </html>

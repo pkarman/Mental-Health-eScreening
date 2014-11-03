@@ -71,7 +71,7 @@ import com.google.gson.JsonSyntaxException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 public class XportDataTest {
-	public static int totalRuns = 2;
+	public static int totalRuns = 1;
 
 	class AssesmentTestData {
 		String testName;

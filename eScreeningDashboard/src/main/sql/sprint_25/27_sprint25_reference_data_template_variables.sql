@@ -11,3 +11,7 @@ INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (940, 10720, 2809);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (941, 10720, 2790);
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (942, 10720, 2800);
+
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10720, 32);
+
+update variable_template set override_display_value = 'no' where variable_template_id=2551;
