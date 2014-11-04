@@ -1807,7 +1807,72 @@ ${MODULE_END}
 </#if>
 ' where template_id = 39;
 
- 
+update template 
+set template_file =
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var1749?? && var1749.value??>
+${MODULE_TITLE_START}
+Anxiety:
+${MODULE_TITLE_END}
+${MODULE_START}
+
+		<#assign fragments = []>
+		<#assign resolved_fragments="">
+		<#assign score = var1749.value?number>
+		<#assign scoreText ="notset">
+		
+		<#if (getScore(var1660) > 1)>
+			<#assign fragments = fragments + ["feeling nervous"] >
+		</#if>
+	    <#if (getScore(var1670) > 1)>
+			<#assign fragments = fragments + ["can\'t control worrying"]>
+		</#if>
+		<#if (getScore(var1680) > 1)>
+			<#assign fragments = fragments +  ["worrying too much"]>
+		</#if>
+		<#if (getScore(var1690) > 1)>
+			<#assign fragments = fragments +  ["trouble relaxing"]>
+		</#if>
+		<#if (getScore(var1700) > 1)>
+			<#assign fragments = fragments +  ["restlessness"]>
+		</#if>
+		<#if (getScore(var1710) > 1)>
+			<#assign fragments = fragments + ["irritability"]>
+		</#if>
+		<#if (getScore(var1720) > 1)>
+			<#assign fragments = fragments + ["feeling afraid"] >
+		</#if>
+		
+		<#if (fragments?has_content) >
+			<#assign resolved_fragments = createSentence(fragments)>
+		<#else>
+			<#assign resolved_fragments = "None">
+		</#if>
+			
+		<#if score??> 	
+			<#if (score >= 0) && (score <= 9)>
+				<#assign scoreText = "negative">				
+			<#elseif (score >= 10)>
+				<#assign scoreText = "positive">
+			</#if>
+		</#if>
+		
+		<#if (score >=1) && (score <= 21)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			<#if resolved_fragments != "None">
+			The Veteran endorsed the following symptoms were occurring more than half of the days in the past two weeks: ${resolved_fragments}.${NBSP}
+			</#if>
+		<#elseif (score == 0)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			The Veteran reported having no anxiety symptoms in the past 2 weeks.${NBSP}
+		</#if>
+${MODULE_END}
+</#if>
+'
+where template_id = 34;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1749, 34);
+
  
 
  
