@@ -44,24 +44,8 @@ public abstract class TemplateBaseContent {
 			if (left.getTypeId()!=null && left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 				
 			{
-				if (right instanceof TemplateTextContent)
-				{
-					try
-					{
-						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber(getResponse("+inStr+", "+left.getMeasureTypeId()+"))";
-					}
-					catch(Exception e)
-					{
-						// right is not a number;
-						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
-					}
-				}
-				else
-				{
-					translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
-				}
 				
+				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
 				
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 4 )
