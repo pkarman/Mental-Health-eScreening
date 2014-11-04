@@ -1573,5 +1573,133 @@ ${MODULE_START}
 ${MODULE_END}'
 where template_id = 16;
 
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start --> 
+<#if (var3050.children)?? && (var3050.children?size > 0)>
+${MODULE_TITLE_START} 
+Caffeine: 
+${MODULE_TITLE_END} 
+${MODULE_START} 
+
+	<#if (getScore(var3050) == 0)> 
+		<#t>The Veteran reported consuming no caffeinated beverages per day.${NBSP} 
+	<#elseif (getScore(var3050) >= 1) && (getScore(var3050) <= 998)> 
+		<#t>The Veteran reported consuming ${getSelectOneDisplayText(var3050)} caffeinated beverages per day.${NBSP} 
+ 	</#if> 
+ ${MODULE_END}
+ </#if>' 
+ where template_id = 25;
+ 
+ update template set template_file = '
+ <#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var1010?? && var1010.value??>
+${MODULE_TITLE_START}
+Drugs:
+${MODULE_TITLE_END}
+${MODULE_START}
+			 
+	<#assign score = var1010.value?number> <#--getListScore([var1000,var1001,var1002,var1003,var1004,var1005,var1006,var1007,var1008,var1009])>-->
+	<#assign status ="notset"> 
+	<#assign statusText ="notset"> 
+	<#assign gender = "">
+	
+	<#if score?has_content && ((score?number) == 0)> 
+		<#assign status ="negative">
+		<#assign statusText ="no problems">
+	<#elseif (score)?has_content && ((score?number) >= 1) && ((score?number) <= 2)> 
+		<#assign status ="negative">
+		<#assign statusText ="a low level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 3) && ((score?number) <= 5)> 
+		<#assign status ="positive">
+		<#assign statusText ="a moderate level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 6) && ((score?number) <= 8)>
+		<#assign status ="positive">
+		<#assign statusText ="a substantial level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 9) && ((score?number) <= 10)>
+		<#assign status ="positive">
+		<#assign statusText ="a severe level of problems">
+	</#if> 
+	
+    The Veteran\'s Drug screen was ${status} with ${statusText} reported. ${NBSP}
+	
+${MODULE_END}
+</#if>'
+where template_id = 28;
+
+delete from variable_template where template_id=28;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1010, 28);
+
+ update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var2930?? && var2930.value??>
+${MODULE_TITLE_START}
+Resilience and Strengths:
+${MODULE_TITLE_END}
+${MODULE_START}
+	
+			<#assign score = getFormulaDisplayText(var2930)?number>
+			<#assign scoreText = "">
+			<#assign fragments = []>
+					<#if (getScore(var2820) >= 2) && (getScore(var2820) <= 998)  >
+						<#assign fragments = fragments + ["I am adaptable"]>
+					</#if>	
+					<#if (getScore(var2830) >= 2) && (getScore(var2830) <= 998)  >
+						<#assign fragments = fragments + ["I can deal with whatever"]>
+					</#if>	
+					<#if (getScore(var2840) >= 2) && (getScore(var2840) <= 998)  >
+						<#assign fragments = fragments + ["I find humor when faced with problems"]>
+					</#if>	
+					<#if (getScore(var2850) >= 2) && (getScore(var2850) <= 998)  >
+						<#assign fragments = fragments + ["coping with stress can make me stronger"]>
+					</#if>	
+					<#if (getScore(var2860) >= 2) && (getScore(var2860) <= 998)  >
+						<#assign fragments = fragments + ["I bounce back after hardships"]>
+					</#if>	
+					<#if (getScore(var2870) >= 2) && (getScore(var2870) <= 998) >
+						<#assign fragments = fragments + ["I believe I can achieve"]>
+					</#if>	
+					<#if (getScore(var2880) >= 2) && (getScore(var2880) <= 998)  >
+						<#assign fragments = fragments + ["focus under pressure"]>
+					</#if>	
+					<#if (getScore(var2890) >= 2) && (getScore(var2890) <= 998)  >
+						<#assign fragments = fragments + ["not easily discouraged by failure"]>
+					</#if>	
+					<#if (getScore(var2900) >= 2) && (getScore(var2900) <= 998)  >
+						<#assign fragments = fragments + ["think of myself as strong person"]>
+					</#if>	
+					<#if (getScore(var2910) >= 2) && (getScore(var2910) <= 998)  >
+						<#assign fragments = fragments + ["can handle unpleasant or painful feelings"]>
+					</#if>	
+		
+					<#if (score >= 0)  &&  (score <= 9)>
+						<#assign scoreText = "minimal resilience">
+					</#if>
+					<#if (score >= 10)  &&  (score <= 29)>
+						<#assign scoreText = "low resilience">
+					</#if>
+					<#if (score >= 20)  &&  (score <= 29)>
+						<#assign scoreText = "medium resilience">
+					</#if>
+					<#if (score >= 30)  &&  (score <= 998)>
+						<#assign scoreText = "high resilience">
+					</#if>
+				
+					The Veteran had a score of ${score} indicating ${scoreText}. ${LINE_BREAK}${LINE_BREAK}
+					
+					<#assign beliefs = "none">
+					<#if fragments?has_content >
+						<#assign beliefs = createSentence(fragments)>
+					</#if>
+					
+					The Veteran reported the following resilience beliefs at least sometimes during the past four weeks: ${beliefs}.${NBSP}
+${MODULE_END}
+</#if>
+' where template_id = 39;
+
+ 
+ 
 
  
