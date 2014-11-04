@@ -76,10 +76,8 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	function transformTextContent(variableHash){
 
 		if(this.type == "text"){
-			var tag = '<code class="ta-insert-variable">';
 			var contents = [];
-			
-			var fragments = this.content.split(/<img.+id="(\d+)"[^>]+>/);
+			var fragments = this.content.split(/<img[^>]+id="(\d+)"[^>]+>/);
 
 			fragments.forEach(function(frag){
 				var varName = variableHash[frag];
@@ -139,10 +137,24 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				if(content.type == "var"){
 					var varObj = new EScreeningDashboardApp.models.TemplateVariableContent(content.content);
 
-					this.content += '<code class="ta-insert-variable" variable-id="' + varObj.id + '">(' + varObj.getName() + ')</code>&nbsp;';
+					this.content += createContent(varObj) + '&nbsp;';
 				}
 			}, this);
 		}
+	}
+	
+	//TODO: this should be moved into a place where both this and the wysiwyg custom button code can access it (see main.js)
+	function createContent(varObj){
+	    return '<img ' +
+        'class="ta-insert-variable text-info" ' +
+        'id="' + varObj.id + '" ' +
+        'src="" ' +
+        'ta-insert-variable="' + varObj.id + '" ' +
+        'alt="(' + varObj.getName() +
+        ')" ' +
+        'title="(' + varObj.getName() + ')" ' +
+        'contenteditable="false" ' +
+    '/>';
 	}
 
     function toString() {

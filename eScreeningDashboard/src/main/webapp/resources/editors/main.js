@@ -224,9 +224,9 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var el = $("div[id^='taTextElement']").get(0);
 
-				var elCaret = getCaretCharacterOffsetWithin(el);
-
-				var selRange = saveSelection();
+				//var elCaret = getCaretCharacterOffsetWithin(el);
+				
+				//var selRange = saveSelection();
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -241,6 +241,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
 
+							    //TODO: Since there is code which takes a text template block and turns its contents into a string this code below should be in one place used by both (see TemplateBlock.js) 
 								embed =
 									'<img ' +
 										'class="ta-insert-variable text-info" ' +
@@ -293,12 +294,14 @@ Editors.config(function(RestangularProvider, $provide) {
 					    http://jsfiddle.net/aaronroberson/6pz5gjmo/1/
 					 */
 
-					restoreSelection(selRange);
+					//restoreSelection(selRange);
 
-					setCaret(el, elCaret);
+					//setCaret(el, elCaret);
 
-					insertHtmlAfterSelection(embed);
+					//insertHtmlAfterSelection(embed);
 
+				    $("div[id^='taTextElement']").find(".rangySelectionBoundary").replaceWith($(embed))
+				    
 					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
 
 				});
