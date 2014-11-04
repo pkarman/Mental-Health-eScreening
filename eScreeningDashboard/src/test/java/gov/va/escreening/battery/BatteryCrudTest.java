@@ -3,7 +3,7 @@ package gov.va.escreening.battery;
 import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.service.BatteryService;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -27,12 +27,12 @@ public class BatteryCrudTest {
 	//@Rollback(value = true)
 	//@Test
 	public void batteryDelete() {
-		List<BatteryDto> batteries = bs.getBatteryDtoList();
+		Set<BatteryDto> batteries = bs.getBatteryDtoSet();
 		int totalbatteiesBeforedelete = batteries.size();
 
 		bs.delete(4);
 
-		List<BatteryDto> batteries1 = bs.getBatteryDtoList();
+		Set<BatteryDto> batteries1 = bs.getBatteryDtoSet();
 		int totalbatteiesAfterdelete = batteries.size();
 
 		Assert.assertTrue(totalbatteiesAfterdelete == totalbatteiesBeforedelete - 1);
