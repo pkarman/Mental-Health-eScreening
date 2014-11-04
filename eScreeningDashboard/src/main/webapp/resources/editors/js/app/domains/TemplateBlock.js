@@ -92,31 +92,43 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 
 	function autoGenerateFields(variableHash){
 
-		if(this.type == "text"){
-			this.summary = "";
-			this.name = Object.isDefined(this.name) ? this.name :"";
+		var block = this;
+
+		if(block.type == "text"){
+			block.summary = "";
+			block.name = Object.isDefined(block.name) ? block.name :"";
 			var setTitle = this.name.trim() == "";
 
-			for(var i=0; ((setTitle && this.name < 10) || this.summary.length < 50)
-				&&  i< this.contents.length; i++){
-				var blockContent = this.contents[i];
+			for(var i=0; ((setTitle && block.name < 10) || block.summary.length < 50)
+				&&  i< block.contents.length; i++){
+				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-					this.summary += blockContent.content;
+					block.summary += blockContent.content;
 
-					if(setTitle && this.name.length < 10){
-						var neededChars = 10 - this.name.length;
-						this.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
+					if(setTitle && block.name.length < 10){
+						var neededChars = 10 - block.name.length;
+						block.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
 					}
 				}
 				if(blockContent.type == "var"){
 					var varName = blockContent.content.getName();
-					this.summary += varName;
+					block.summary += varName;
 
-					if(setTitle && this.name.length < 10){
-						this.name += varName;
+					if(setTitle && block.name.length < 10){
+						block.name += varName;
 					}
 				}
 			}
+		}
+
+		if (block.type !== 'text' && block.type !== 'else') {
+			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + " " + block.right.content;
+			block.conditions.forEach(function (condition) {
+				if (!condition.summary) {
+					condition.autoGenerateFields();
+					block.summary += " " + condition.summary;
+				}
+			});
 		}
 
 		if(Object.isDefined(this.children)){

@@ -48,6 +48,12 @@ EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
             ", operator: " + this.operator +
             ", right operator: " + this.operator + "]";
     };
+
+	function autoGenerateFields() {
+		this.summary = this.connector + " " + (this.left.content.displayName || this.left.content.name) + " " + this.operator + " " + this.right.content;
+	}
+
+	this.autoGenerateFields = autoGenerateFields;
 };
 EScreeningDashboardApp.models.TemplateCondition.createConditionsArray = function(jsonConditionsConfig) {
     var conditions = [];
