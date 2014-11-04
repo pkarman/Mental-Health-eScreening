@@ -254,6 +254,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 		var modalInstance = $modal.open({
 			templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
             scope: $scope,
+            backdrop: 'static',
+            keyboard: false,
             resolve: {
 	            template:  function() {
 		            return $scope.template;
