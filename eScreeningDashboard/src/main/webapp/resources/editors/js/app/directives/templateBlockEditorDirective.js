@@ -95,6 +95,8 @@
                 });
                 */
 
+	            scope.showValidationMessages = false;
+
                 scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
 
                 // TODO Move to service to be shared elsewhere?
@@ -189,14 +191,20 @@
                     selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
-                scope.addAndConditionBlock = function(selectedBlock) {
-                    selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+                scope.addAndConditionBlock = function(selectedBlock, form) {
+	                scope.showValidationMessages = true;
+	                if (form.$valid) {
+		                selectedBlock.conditions = selectedBlock.conditions || [];
+		                selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+	                }
                 };
 
-                scope.addOrConditionBlock = function(selectedBlock) {
-                    selectedBlock.conditions = selectedBlock.conditions || [];
-                    selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+                scope.addOrConditionBlock = function(selectedBlock, form) {
+	                scope.showValidationMessages = true;
+	                if (form.$valid) {
+		                selectedBlock.conditions = selectedBlock.conditions || [];
+		                selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+	                }
                 };
 
                 scope.removeConditionBlock = function(selectedBlockConditions, selectedCondition) {
