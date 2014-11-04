@@ -21,7 +21,14 @@ public abstract class TemplateBaseContent {
 		
 		if (inLeft instanceof TemplateTextContent)
 		{
-			return ((TemplateTextContent)inLeft).getContent();
+			try
+			{
+				Double.parseDouble(((TemplateTextContent)inLeft).getContent());
+				return ((TemplateTextContent)inLeft).getContent();
+			}
+			catch(Exception e)
+			{}
+			return "\""+((TemplateTextContent)inLeft).getContent()+"\"";
 		}
 		
 		TemplateVariableContent leftContent = (TemplateVariableContent) inLeft;
@@ -72,11 +79,25 @@ public abstract class TemplateBaseContent {
 		{
 			if (left.getMeasureId()!=null && left.getMeasureTypeId() == 1)			
 			{
-				translatedVar =  "getResponse("+inStr+")";
+				if (right instanceof TemplateTextContent)
+				{
+					try
+					{
+						Double.parseDouble(((TemplateTextContent)right).getContent());
+						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+") != \"notset\" && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+					}
+					catch(Exception e)
+					{
+						// right is not a number;
+						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+					}
+				}
+				else
+					translatedVar =  "getResponse("+inStr+")";
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
-				translatedVar =  "asNumber(getCustomValue("+inStr+"))";
+				translatedVar =  "asNumber(getCustomValue("+inStr+"))!= \"notset\" && asNumber(getCustomValue("+inStr+"))";
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
