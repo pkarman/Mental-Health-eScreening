@@ -1,0 +1,10 @@
+<div>
+    <link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.css">
+	<input type="hidden" name="selectedAssessmentVariable" ng-model="selectedAssessmentVariable" required>
+    <div mhe-hide-dropdown-menu="hideDropDownMenu()" ng-click="displayAssessmentVariableSelectionTable()">
+        <i class="fa fa-list"> </i> <span  id="assessmentVariableMenuLabel">Select Variable</span> 
+    </div>
+    <div mhe-hide-dropdown-menu="hideDropDownMenu()" ng-show="showAssessmentVariableSelectionTable" class="assessmentVariableSelectionTable" ng-transclude>
+
+    </div>
+</div>

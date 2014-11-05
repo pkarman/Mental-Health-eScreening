@@ -101,10 +101,17 @@ public class TemplateTagProcessor {
         noteText = noteText.replace(LINE_BREAK.xml(), "\n");
         noteText = noteText.replace(NBSP.xml(), " ");
         
+        noteText = noteText.replace("</p>", "\n");
+        noteText = noteText.replace("</li>","\n");
+        noteText = noteText.replace("</ol>", "\n");
+        
         noteText = textEmptyReplace.matcher(noteText).replaceAll("");
 
         //remove other tags (this is all we expect in the wysiwyg editor)
-        noteText = noteText.replaceAll("</*\\s*[BbIiuUsS(br)(BR)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("<p style=\"text-align: center;\">", "");
+        noteText = noteText.replaceAll("<p style=\"text-align: left;\">", "");
+        noteText = noteText.replaceAll("<p style=\"text-align: right;\">", "");
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();

@@ -17,6 +17,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/vendors/textAngular/textAngular.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/menu-partial.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/userManagement.css" type="text/css">
@@ -27,10 +28,10 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-sanitize.min.js'></script>
     <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
@@ -67,7 +68,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionsTransformer.js"></script>
 
-
     <script type="text/javascript" src="resources/editors/js/app/domains/Question.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionUIObjectItemWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
@@ -93,15 +93,26 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
 	
 	<!-- Template Domain -->
-	<script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
+
 	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateBlock.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateCondition.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/angular-texteditor.js"></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngularSetup.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
@@ -153,7 +164,12 @@
     
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
-    
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
+
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>
     

@@ -12,6 +12,7 @@ import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
@@ -21,6 +22,7 @@ import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -59,6 +62,9 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private TemplateProcessorService templateProcessorService;
+	
+	@Autowired
+	private AssessmentVariableRepository avRepository;
 
 	@SuppressWarnings("serial")
 	private static List<TemplateType> surveyTemplates = new ArrayList<TemplateType>() {
@@ -306,13 +312,15 @@ public class TemplateServiceImpl implements TemplateService {
 			
 			TemplateFileDTO dto = new TemplateFileDTO();
 			
+			dto.setJson(t.getJsonFile());
+			
 			if (t.getJsonFile() != null)
 			{
 				// now parsing the template file
 				ObjectMapper om = new ObjectMapper();
 				try
 				{
-					dto.setBlocks((List<INode>) om.readValue(t.getJsonFile(), List.class));
+					dto.setBlocks(Arrays.asList( om.readValue(t.getJsonFile(), INode[].class)));
 				}catch(IOException e)
 				{
 					e.printStackTrace();
@@ -494,8 +502,10 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		return templateId;
 	}
+	
+	
 
-	private String generateFreeMarkerTemplateFile(List<INode> blocks) {
+	private String generateFreeMarkerTemplateFile(List<INode> blocks, Set<Integer>ids) {
 		StringBuffer file = new StringBuffer();
 		file.append("<#include \"clinicalnotefunctions\">\n");
 		
@@ -503,7 +513,7 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		for(INode block : blocks)
 		{
-			file.append(block.toFreeMarkerFormat());
+			file.append(block.toFreeMarkerFormat(ids));
 		}
 		
 		return file.toString();
@@ -539,7 +549,24 @@ public class TemplateServiceImpl implements TemplateService {
 				template.setJsonFile(null);
 			}
 			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+			Set<Integer> ids = new HashSet<Integer>();
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
+			
+			if (ids.size()>0)
+			{
+				for(Integer id : ids){
+					VariableTemplate vt = new VariableTemplate();
+					vt.setDateCreated(new Date());
+					vt.setAssessmentVariableId(avRepository.findOne(id));
+					vt.setTemplateId(template);
+					if (template.getVariableTemplateList()==null)
+					{
+						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+					}
+					template.getVariableTemplateList().add(vt);
+				}
+			}
 		}
 		
 		if (template.getTemplateFile()==null)
@@ -580,8 +607,24 @@ public class TemplateServiceImpl implements TemplateService {
 				e.printStackTrace();
 				template.setJsonFile(null);
 			}
+			Set<Integer> ids = new HashSet<Integer>();
 			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks()));
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
+			
+			if (ids.size()>0)
+			{
+				for(Integer id : ids){
+					VariableTemplate vt = new VariableTemplate();
+					vt.setDateCreated(new Date());
+					vt.setAssessmentVariableId(avRepository.findOne(id));
+					vt.setTemplateId(template);
+					if (template.getVariableTemplateList()==null)
+					{
+						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+					}
+					template.getVariableTemplateList().add(vt);
+				}
+			}
 		 }	
 		
 		if (template.getTemplateFile()==null)
@@ -603,7 +646,6 @@ public class TemplateServiceImpl implements TemplateService {
 		templates.add(template);
 		
 		return template.getTemplateId();
-		
 		
 	}
 	

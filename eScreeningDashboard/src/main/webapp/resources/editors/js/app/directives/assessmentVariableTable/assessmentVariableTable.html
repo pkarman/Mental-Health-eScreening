@@ -1,0 +1,35 @@
+    <link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
+    
+    <div class="row">
+      <div class="col-md-6">
+        <label class="sr-only">Select Assessment Variable Type</label>
+        <select class="form-control" data-ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
+            <option value=""> -- Choose Type --</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="sr-only">Assessment Variable Search</label>
+        <input type="text" class="form-control" ng-model="assessmentVariableSearchCriteria" placeholder="Assessment Variable Search">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+    
+      <div class="col-md-12">
+      
+      <table ng-table="assessmentVariableTable" class="table table-hover">
+        <tr ng-repeat="item in $data | filter:assessmentVariableSearchCriteria" ng-class-odd="'odd'" ng-class-even="'even'">
+            <td data-title="'Variable Name'" class="col-md-4">{{item.name}}</td>
+            <td data-title="'Name'" class="col-md-4">{{item.displayName}}</td>
+            <td data-title="'Type'" class="col-md-2">{{item.type}}</td>
+            <td data-title="'Insert'" class="col-md-2">
+                <div class="cursor-pointer pull-right btn btn-link" ng-click="selectAssessmentVariable(item);">
+                    <i class="fa fa-arrow-circle-right" title="Edit"></i> Select 
+                </div>
+            </td>
+        </tr>
+      </table>
+    
+      </div>
+      
+    </div>

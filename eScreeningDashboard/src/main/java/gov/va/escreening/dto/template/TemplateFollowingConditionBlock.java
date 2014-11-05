@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -70,16 +71,16 @@ public class TemplateFollowingConditionBlock{
 		}
 	}
 	
-	public String toFreeMarkerFormatFormula()
+	public String toFreeMarkerFormatFormula(Set<Integer>ids)
 	{
 		StringBuffer sb = new StringBuffer();
-		sb.append(" ").append(getOperatorForConnector()).append(" (").append(FormulaUtil.createFormula(operator, left, right));
+		sb.append(" ").append(getOperatorForConnector()).append(" (").append(FormulaUtil.createFormula(operator, left, right, ids));
 		
 		if (conditions != null && conditions.size() > 0)
 		{
 			for(TemplateFollowingConditionBlock tfcb : conditions)
 			{
-				sb.append(tfcb.toFreeMarkerFormatFormula());
+				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
 			}
 		}
 		

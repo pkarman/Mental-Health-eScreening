@@ -17,6 +17,8 @@ public class TemplateFileDTO implements Serializable{
 	private boolean isGraphical;
 	private TemplateTypeDTO type;
 	private String name;
+	private String json;
+	
 	private List<INode> blocks = new ArrayList<>();
 	
 	public Integer getId() {
@@ -24,6 +26,12 @@ public class TemplateFileDTO implements Serializable{
 	}
 	public void setId(Integer templateId) {
 		this.id = templateId;
+	}
+	public String getJson() {
+		return json;
+	}
+	public void setJson(String json) {
+		this.json = json;
 	}
 	public TemplateTypeDTO getType() {
 		return type;

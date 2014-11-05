@@ -12,11 +12,13 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
                 Configurer.setRequestSuffix('.json');
             }),
             service = restAngular.service("services/template");
-
+        
         restAngular.extendModel("services/template", function(model) {
             //this is done because during a put the server does not return the same object that was saved.
             if(typeof(model) == "object"){
-                return angular.extend(model, Template);
+                angular.extend(model, Template);
+                model.init();
+                return model;
             }
             return model;
         });
@@ -30,4 +32,3 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
             }
         }
     }]);
-        
