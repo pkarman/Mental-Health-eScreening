@@ -16,7 +16,7 @@
             <div class="col-md-4">
               <div class="form-group">
                   <label class="sr-only">Select Variable</label>
-                  <mhe-assessment-var-dropdown-menu-dir guid="block.guid" assessment-variable="block.left.content">
+                  <mhe-assessment-var-dropdown-menu-dir guid="block.guid" assessment-variable="block.left.content" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
                       <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="block.left.content" guid="block.guid"/>
                   </mhe-assessment-var-dropdown-menu-dir>
               </div>
@@ -73,13 +73,13 @@
 	                    <div class="col-md-4">
 	                        <div class="form-group">
 	                            <label class="sr-only">Select Variable</label>
-	                            <mhe-assessment-var-dropdown-menu-dir guid="condition.guid">
+	                            <mhe-assessment-var-dropdown-menu-dir guid="condition.guid" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
 	                                <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="condition.left.content" guid="condition.guid"/>
 	                            </mhe-assessment-var-dropdown-menu-dir>
 	                        </div>
 	                    </div>
 	                    <div class="col-md-4">
-	                        <div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid && conditionForm.conditionOperator.$dirty &&
+	                        <div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid &&
 showValidationMessages}">
 	                            <select class="form-control" name="conditionOperator" ng-model="condition.operator" ng-options="operator.value as operator.name for operator in getOperators(condition.guid)" required>
 	                                <option value="">-- Operator -- </option>
@@ -88,7 +88,7 @@ showValidationMessages}">
 	                    </div>
 
 	                    <div class="col-md-4">
-	                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty && showValidationMessages}">
+	                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && && showValidationMessages}">
 	                            <label class="sr-only" for="conditionvalue">Enter Value</label>
 	                            <input type="text" class="form-control" name="conditionValue" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content" required>
 	                        </div>

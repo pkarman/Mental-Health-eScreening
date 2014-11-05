@@ -21,6 +21,7 @@
                 guid: '=',
                 assessmentVariable: '='
             },
+	        require: '^form',
             transclude: true,
             controller: ['$scope', '$rootScope', 'limitToWithEllipsisFilter', function ($scope, $rootScope, limitToWithEllipsisFilter) {
                 var toggleAssessmentVariableSelectionTable = function() {
@@ -48,14 +49,21 @@
                             throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable.name parameter can not be undefined or null.");
                         }
                         $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedAssessmentVariable.name, 20));
+	                    $scope.selectedAssessmentVariable = data.selectedAssessmentVariable;
                         toggleAssessmentVariableSelectionTable();
                     }
                 });
             }],
             templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
-            link: function(scope, element, attributes, controller) {
+            link: function(scope, element, attributes, formController) {
                 element.addClass("assessmentVariableSelection");
                 element.attr("guid", scope.guid);
+
+	            scope.selectedAssessmentVariable = '';
+
+	            // These are used for form validation from block and condition contexts
+	            scope.templateBlockEditorForm = formController;
+	            scope.conditionForm = formController;
             }
         };
 

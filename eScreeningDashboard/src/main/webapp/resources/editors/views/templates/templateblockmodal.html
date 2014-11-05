@@ -16,11 +16,11 @@
           </div>
         </div>
 
-        <template-block-editor block="block" assessment-variables="assessmentVariables"></template-block-editor>
+        <template-block-editor block="block" assessment-variables="assessmentVariables" show-validation-messages="validationMessage.show"></template-block-editor>
 	</form>
 
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-primary" ng-click="close()" ng-disabled="templateBlockEditorForm.$invalid">Insert</button>
+    <button type="button" class="btn btn-primary" ng-click="close(templateBlockEditorForm)">Insert</button>
     <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
 </div>

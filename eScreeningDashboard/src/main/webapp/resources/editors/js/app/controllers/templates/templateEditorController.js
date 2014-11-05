@@ -261,9 +261,13 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 		            return $scope.template;
 	            }
 			},
-			controller: function($scope, $modalInstance, template) {
+			controller: ['$scope', '$modalInstance', 'template', function($scope, $modalInstance, template) {
 
 				$scope.templateName = template.name;
+
+				$scope.validationMessage = {
+					show: false
+				};
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
 				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
@@ -276,95 +280,100 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				};
 
 				// Close modal and pass updated block to the page
-                $scope.close = function () {
+                $scope.close = function (form) {
 
-                    $scope.block.transformTextContent($scope.variableHash);
-                    $scope.block.autoGenerateFields($scope.variableHash);
+	                if (form.$valid) {
 
-                    if(isAdding) {
+		                $scope.block.transformTextContent($scope.variableHash);
+		                $scope.block.autoGenerateFields($scope.variableHash);
 
-                        if (!selectedBlock) template.blocks.push($scope.block);
-                        //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
-                        else if(selectedBlock.type == 'if'){
-                            if($scope.block.type == 'if'){
-                                insertAfterText(selectedBlock);
-                    	    }
-                    	    else if($scope.block.type == 'elseif' || $scope.block.type == 'else'){
-                    	        insertAfterTextAndElseIf(selectedBlock);
-                    	    }
-                    	    else if($scope.block.type == 'text'){
-                                //put it at top
-                                selectedBlock.children.splice(0,0, $scope.block);
-                            }
-                    	    else{
-                    	        log.error("Unsupported type to insert");
-                    	    }
-                    	}
-                    	else if(selectedBlock.type == 'elseif'){
-                    	    if($scope.block.type == 'if'){
-                                insertAfterText(selectedBlock);
-                            }
-                    	    else if($scope.block.type == 'elseif'){
-                    	        //insert right after this else if 
-                    	        selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
-                    	    }
-                    	    else if($scope.block.type == 'else'){
-                    	        //insert into parent IF after text and else if
-                                insertAfterTextAndElseIf(selectedBlock.getParent());
-                            }
-                            else if($scope.block.type == 'text'){
-                                //add it to top of elseif's children
-                                selectedBlock.children.splice(0,0, $scope.block);
-                            }
-                    	    else{
-                                log.error("Unsupported type to insert");
-                            }
-                    	}
-                        else if(selectedBlock.type == 'else'){
-                            if($scope.block.type == 'if'){
-                                insertAfterText(selectedBlock);
-                            }
-                            else if($scope.block.type == 'text'){
-                                //add it to top of elseif's children
-                                selectedBlock.children.splice(0,0, $scope.block);
-                            }
-                            else{
-                                log.error("Unsupported type to insert");
-                            }
-                        }
-                        else if(selectedBlock.type == 'text'){
-                            if($scope.block.type == 'if' || $scope.block.type == 'text'){
-                                if(selectedBlock.getParent()){
-                                    //if we have a parent place the if after the text in that parent
-                                    selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
-                                }
-                                else{
-                                    //if we have no parent then add block as next sibling in template's blocks array
-                                    var textIndex = -1;
-                                    template.blocks.every(function(block, i){
-                                        if(selectedBlock.equals(block)){
-                                            textIndex = i;
-                                        }
-                                        return textIndex == -1;
-                                    });
-                                    template.blocks.splice(textIndex +1, 0, $scope.block);
-                                }
-                            }
-                            else if($scope.block.type == 'elseif'){
-                                //insert after all text blocks in the parent If 
-                                insertAfterText(selectedBlock.getParent());
-                            }
-                            else if($scope.block.type == 'else'){
-                                insertAfterTextAndElseIf(selectedBlock.getParent());
-                            }
-                            else{
-                                log.error("Unsupported type to insert");
-                            }
-                        }
-                    }
+		                if (isAdding) {
 
-					$scope.templateChanged();
-					$modalInstance.close();
+			                if (!selectedBlock) template.blocks.push($scope.block);
+			                //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
+			                else if (selectedBlock.type == 'if') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'elseif' || $scope.block.type == 'else') {
+					                insertAfterTextAndElseIf(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //put it at top
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'elseif') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'elseif') {
+					                //insert right after this else if
+					                selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
+				                }
+				                else if ($scope.block.type == 'else') {
+					                //insert into parent IF after text and else if
+					                insertAfterTextAndElseIf(selectedBlock.getParent());
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //add it to top of elseif's children
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'else') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //add it to top of elseif's children
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'text') {
+				                if ($scope.block.type == 'if' || $scope.block.type == 'text') {
+					                if (selectedBlock.getParent()) {
+						                //if we have a parent place the if after the text in that parent
+						                selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
+					                }
+					                else {
+						                //if we have no parent then add block as next sibling in template's blocks array
+						                var textIndex = -1;
+						                template.blocks.every(function (block, i) {
+							                if (selectedBlock.equals(block)) {
+								                textIndex = i;
+							                }
+							                return textIndex == -1;
+						                });
+						                template.blocks.splice(textIndex + 1, 0, $scope.block);
+					                }
+				                }
+				                else if ($scope.block.type == 'elseif') {
+					                //insert after all text blocks in the parent If
+					                insertAfterText(selectedBlock.getParent());
+				                }
+				                else if ($scope.block.type == 'else') {
+					                insertAfterTextAndElseIf(selectedBlock.getParent());
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+		                }
+
+		                $scope.templateChanged();
+		                $modalInstance.close();
+	                } else {
+		                $scope.validationMessage.show = true;
+	                }
 				};
 				
 				function insertAfterTextAndElseIf(parent){
@@ -398,7 +407,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
 				}
 
-			}
+			}]
 		});
 	};
 
