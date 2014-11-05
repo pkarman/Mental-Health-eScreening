@@ -30,7 +30,7 @@
               </div>
 
               <div class="col-md-4">
-              <div class="form-group" ng-hide="hideBlockConditionRight(block.operator)" ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
+              <div class="form-group" ng-if="showBlockConditionRight(block.operator)" ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
                   <label class="sr-only" for="blockvalue">Enter Value</label>
                   <input type="text" class="form-control" name="blockValue" id="blockvalue" placeholder="Enter Value" ng-model="block.right.content" required>
               </div>
@@ -88,7 +88,7 @@ showValidationMessages}">
 	                    </div>
 
 	                    <div class="col-md-4">
-	                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
+	                        <div class="form-group" ng-if="showBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
 	                            <label class="sr-only" for="conditionvalue">Enter Value</label>
 	                            <input type="text" class="form-control" name="conditionValue" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content" required>
 	                        </div>

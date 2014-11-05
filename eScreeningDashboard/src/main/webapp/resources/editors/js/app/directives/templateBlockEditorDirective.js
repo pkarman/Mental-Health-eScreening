@@ -218,12 +218,12 @@
                     }
                 };
 
-	            scope.hideBlockConditionRight = function(operatorValue) {
-		            var result = false;
+	            scope.showBlockConditionRight = function(operatorValue) {
+		            var result = true;
 		            angular.forEach(scope.operators, function(operator) {
 			            if (operator.value === "" + operatorValue) {
 				            if (operator.category === 'formula' || operator.category === 'question') {
-					            result = true;
+					            result = false;
 					            return true;
 				            }
 			            }
