@@ -1,112 +1,110 @@
-<form name="templateBlockEditorForm">
-	<div class="border-radius-block-type bg-gray-light">
-	     <div class="row">
+<div class="border-radius-block-type bg-gray-light">
+     <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+              <label class="control-label">Block Type
+                <select class="form-control input-block-level" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
+                    <option value="">-- Select Type --</option>
+                </select>
+              </label>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
+            <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                  <label class="sr-only">Select Variable</label>
+                  <mhe-assessment-var-dropdown-menu-dir guid="block.guid" assessment-variable="block.left.content">
+                      <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="block.left.content" guid="block.guid"/>
+                  </mhe-assessment-var-dropdown-menu-dir>
+              </div>
+              </div>
+              <div class="col-md-4">
+              <div class="form-group" ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}">
+                  <select name="blockOperator" class="form-control" ng-model="block.operator" ng-options="operator.value as operator.name for operator in getOperators(block.guid)" required>
+                      <option value="">-- Operator -- </option>
+                  </select>
+              </div>
+              </div>
+
+              <div class="col-md-4">
+              <div class="form-group" ng-hide="hideBlockConditionRight(block.operator)" ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
+                  <label class="sr-only" for="blockvalue">Enter Value</label>
+                  <input type="text" class="form-control" name="blockValue" id="blockvalue" placeholder="Enter Value" ng-model="block.right.content" required>
+              </div>
+              </div>
+              </div>
+          </div>
+        </div>
+         <div class="col-md-2 pull-right">
+             <div class="pull-right blockLableMarginTop">
+                 <button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(block, templateBlockEditorForm)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND</button>
+                 <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(block, templateBlockEditorForm)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'" ng-disable="templateBlockEditorForm.$invalid">OR</button>
+                 <!--button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button-->
+             </div>
+             <div class="clearfix"></div>
+         </div>
+    </div>
+
+
+
+    <div class="clearfix form-group" ng-if="block.type === 'text'">
+        <hr />
+
+        <div text-angular="text-angular" ta-toolbar="[['h1','h2','h3'],['bold','italics', 'underline'], ['ol', 'ul'], ['justifyLeft', 'justifyCenter', 'justifyRight'], ['indent', 'outdent'], ['insertLink', 'insertVideo'], ['redo', 'undo'] , ['html'], ['insertVariable']]" ng-model="block.content" ta-toolbar-class="btn-toolbar"
+             ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
+             ta-toolbar-button-active-class="active" class="tab-content"></div>
+    </div>
+</div>
+<div class="border-radius-block-type bg-gray-light" ng-repeat="condition in block.conditions">
+	<ng-form name="conditionForm">
+	    <div class="row">
 	        <div class="col-md-2">
-	          <div class="form-group">
-	              <label class="control-label">Block Type
-	                <select class="form-control input-block-level" ng-model="block.type" ng-options="blocktype.value as blocktype.name for blocktype in blockTypes">
-	                    <option value="">-- Select Type --</option>
-	                </select>
-	              </label>
-	          </div>
+		        <div class="blockLableMarginTop">
+	                <button title="{{condition.connector | uppercase}}" class="btn btn-default" ng-bind="condition.connector | uppercase" disabled></button>
+			    </div>
 	        </div>
 
 	        <div class="col-md-8">
-	          <div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
-	            <div class="row">
-	            <div class="col-md-4">
-	              <div class="form-group">
-	                  <label class="sr-only">Select Variable</label>
-	                  <mhe-assessment-var-dropdown-menu-dir guid="block.guid" assessment-variable="block.left.content">
-	                      <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="block.left.content" guid="block.guid"/>
-	                  </mhe-assessment-var-dropdown-menu-dir>
-	              </div>
-	              </div>
-	              <div class="col-md-4">
-	              <div class="form-group" ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}">
-	                  <select name="blockOperator" class="form-control" ng-model="block.operator" ng-options="operator.value as operator.name for operator in getOperators(block.guid)" required>
-	                      <option value="">-- Operator -- </option>
-	                  </select>
-	              </div>
-	              </div>
+	            <div class="blockLableMarginTop">
+	                <div class="row">
+	                    <div class="col-md-4">
+	                        <div class="form-group">
+	                            <label class="sr-only">Select Variable</label>
+	                            <mhe-assessment-var-dropdown-menu-dir guid="condition.guid">
+	                                <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="condition.left.content" guid="condition.guid"/>
+	                            </mhe-assessment-var-dropdown-menu-dir>
+	                        </div>
+	                    </div>
+	                    <div class="col-md-4">
+	                        <div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid && conditionForm.conditionOperator.$dirty &&
+showValidationMessages}">
+	                            <select class="form-control" name="conditionOperator" ng-model="condition.operator" ng-options="operator.value as operator.name for operator in getOperators(condition.guid)" required>
+	                                <option value="">-- Operator -- </option>
+	                            </select>
+	                        </div>
+	                    </div>
 
-	              <div class="col-md-4">
-	              <div class="form-group" ng-hide="hideBlockConditionRight(block.operator)" ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
-	                  <label class="sr-only" for="blockvalue">Enter Value</label>
-	                  <input type="text" class="form-control" name="blockValue" id="blockvalue" placeholder="Enter Value" ng-model="block.right.content" required>
-	              </div>
-	              </div>
-	              </div>
-	          </div>
+	                    <div class="col-md-4">
+	                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty && showValidationMessages}">
+	                            <label class="sr-only" for="conditionvalue">Enter Value</label>
+	                            <input type="text" class="form-control" name="conditionValue" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content" required>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
 	        </div>
-	         <div class="col-md-2 pull-right">
-	             <div class="pull-right blockLableMarginTop">
-	                 <button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(block, templateBlockEditorForm)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND</button>
-	                 <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(block, templateBlockEditorForm)" ng-if="block.type && block.type !== 'text' && block.type !== 'else'" ng-disable="templateBlockEditorForm.$invalid">OR</button>
-	                 <!--button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button-->
-	             </div>
-	             <div class="clearfix"></div>
-	         </div>
+	        <div class="col-md-2">
+	            <div class="pull-right blockLableMarginTop">
+	                <!--button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
+	                <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button-->
+	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
+	                      ng-click="removeConditionBlock(block.conditions, condition)"></span>
+	            </div>
+	            <div class="clearfix"></div>
+	        </div>
 	    </div>
-
-
-
-	    <div class="clearfix form-group" ng-if="block.type === 'text'">
-	        <hr />
-
-	        <div text-angular="text-angular" ta-toolbar="[['h1','h2','h3'],['bold','italics', 'underline'], ['ol', 'ul'], ['justifyLeft', 'justifyCenter', 'justifyRight'], ['indent', 'outdent'], ['insertLink', 'insertVideo'], ['redo', 'undo'] , ['html'], ['insertVariable']]" ng-model="block.content" ta-toolbar-class="btn-toolbar"
-	             ta-toolbar-group-class="btn-group" ta-toolbar-button-class="btn btn-default"
-	             ta-toolbar-button-active-class="active" class="tab-content"></div>
-	    </div>
-	</div>
-	<div class="border-radius-block-type bg-gray-light" ng-repeat="condition in block.conditions">
-		<ng-form name="conditionForm">
-		    <div class="row">
-		        <div class="col-md-2">
-			        <div class="blockLableMarginTop">
-		                <button title="{{condition.connector | uppercase}}" class="btn btn-default" ng-bind="condition.connector | uppercase" disabled></button>
-				    </div>
-		        </div>
-
-		        <div class="col-md-8">
-		            <div class="blockLableMarginTop">
-		                <div class="row">
-		                    <div class="col-md-4">
-		                        <div class="form-group">
-		                            <label class="sr-only">Select Variable</label>
-		                            <mhe-assessment-var-dropdown-menu-dir guid="condition.guid">
-		                                <mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables" assessment-variable="condition.left.content" guid="condition.guid"/>
-		                            </mhe-assessment-var-dropdown-menu-dir>
-		                        </div>
-		                    </div>
-		                    <div class="col-md-4">
-		                        <div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid && conditionForm.conditionOperator.$dirty &&
-	showValidationMessages}">
-		                            <select class="form-control" name="conditionOperator" ng-model="condition.operator" ng-options="operator.value as operator.name for operator in getOperators(condition.guid)" required>
-		                                <option value="">-- Operator -- </option>
-		                            </select>
-		                        </div>
-		                    </div>
-
-		                    <div class="col-md-4">
-		                        <div class="form-group" ng-hide="hideBlockConditionRight(condition.operator)" ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty && showValidationMessages}">
-		                            <label class="sr-only" for="conditionvalue">Enter Value</label>
-		                            <input type="text" class="form-control" name="conditionValue" id="conditionvalue" placeholder="Enter Value" ng-model="condition.right.content" required>
-		                        </div>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		        <div class="col-md-2">
-		            <div class="pull-right blockLableMarginTop">
-		                <!--button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
-		                <button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button-->
-		                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
-		                      ng-click="removeConditionBlock(block.conditions, condition)"></span>
-		            </div>
-		            <div class="clearfix"></div>
-		        </div>
-		    </div>
-		</ng-form>
-	</div>
-</form>
+	</ng-form>
+</div>

@@ -71,12 +71,13 @@
 
         return {
             restrict: 'E',
+	        require: '^form',
             scope: {
                 block: '=',
                 assessmentVariables: '='
             },
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
-            link: function(scope, element) {
+            link: function(scope, element, attrs, formController) {
 
                 /* Temporarily disabled until further notice: 11/03/14
                  var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
@@ -94,6 +95,8 @@
                     element.append(clonedTemplate);
                 });
                 */
+
+	            scope.templateBlockEditorForm = formController;
 
 	            scope.showValidationMessages = false;
 
