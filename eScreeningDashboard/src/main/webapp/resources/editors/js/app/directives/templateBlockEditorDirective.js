@@ -80,8 +80,6 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
 
-	            console.log(scope.showValidationMessages);
-
                 /* Temporarily disabled until further notice: 11/03/14
                  var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
                   */
