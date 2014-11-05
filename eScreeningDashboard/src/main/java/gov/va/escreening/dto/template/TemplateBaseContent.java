@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -15,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
 	
-	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right)
+	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
 	{
 		
 		
@@ -36,6 +39,8 @@ public abstract class TemplateBaseContent {
 		TemplateAssessmentVariableDTO left = leftContent.getContent();
 		
 		String inStr = "var" + left.getId();
+		
+		ids.add(left.getId());
 		
 		String translatedVar = inStr;
 		
@@ -130,14 +135,14 @@ public abstract class TemplateBaseContent {
 		{
 			if (left.getMeasureTypeId() !=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
-				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operand))
 		{
 			if (left.getMeasureTypeId()!=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
-				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		

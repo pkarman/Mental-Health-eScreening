@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +13,7 @@ public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 	private String nodeType(){return "else";}
 	
 	@Override
-	public String toFreeMarkerFormat()
+	public String toFreeMarkerFormat(Set<Integer>ids)
 	{
 		StringBuffer sb = new StringBuffer();
 		
@@ -18,9 +21,10 @@ public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 		
 		for(INode child : getChildren())
 		{
-			sb.append(child.toFreeMarkerFormat());
+			sb.append(child.toFreeMarkerFormat(ids));
 		}
 		
 		return sb.toString();
 	}
+	
 }

@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -17,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface INode {
 	
-	public String toFreeMarkerFormat();
+	public String toFreeMarkerFormat(Set<Integer> ids);
+	
 
 }

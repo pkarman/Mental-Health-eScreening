@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,7 +54,7 @@ public class TemplateBaseBlockDTO implements INode{
 	}
 	
 	@Override
-	public String toFreeMarkerFormat() {
+	public String toFreeMarkerFormat(Set<Integer> ids) {
 		if (children == null || children.size()==0)
 		{
 			return "";
@@ -63,7 +64,7 @@ public class TemplateBaseBlockDTO implements INode{
 		
 		for(INode node : children)
 		{
-			sb.append(node.toFreeMarkerFormat());
+			sb.append(node.toFreeMarkerFormat(ids));
 		}
 		return sb.toString();
 	}

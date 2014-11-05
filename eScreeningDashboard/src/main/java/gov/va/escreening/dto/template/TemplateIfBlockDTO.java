@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -49,7 +50,7 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	}
 
 	@Override
-	public String toFreeMarkerFormat()
+	public String toFreeMarkerFormat(Set<Integer> ids)
 	{
 		StringBuffer sb = new StringBuffer();
 		
@@ -60,13 +61,13 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 		if (this.getSummary()!=null)
 			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
 		
-		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right)).append(")");
+		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right, ids)).append(")");
 		
 		if (conditions != null && conditions.size() > 0)
 		{
 			for(TemplateFollowingConditionBlock tfcb : conditions)
 			{
-				sb.append(tfcb.toFreeMarkerFormatFormula());
+				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
 			}
 		}
 		sb.append(" >\n");
@@ -74,7 +75,7 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 		{
 			for(INode child : getChildren())
 			{
-				sb.append(child.toFreeMarkerFormat());
+				sb.append(child.toFreeMarkerFormat(ids));
 			}
 		}
 		sb.append("\n</#if>\n");
