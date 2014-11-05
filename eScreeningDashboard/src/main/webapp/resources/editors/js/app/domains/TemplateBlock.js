@@ -122,7 +122,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		}
 
 		if (block.type !== 'text' && block.type !== 'else') {
-			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name);
+			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name) + "_" + block.operator + "_" + block.right.content;
 			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + " " + block.right.content;
 			block.conditions.forEach(function (condition) {
 				if (!condition.summary) {
