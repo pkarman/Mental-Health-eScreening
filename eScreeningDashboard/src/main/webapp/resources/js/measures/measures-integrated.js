@@ -87,9 +87,7 @@ $(document).ready(function(e) {
     
     
     
-
     $("#assessmentContainer").bind("DOMSubtreeModified", function() {
-      
       /* Radio buttons and Checkbox Focus */
       $('input.checkSwitch').on('focus', function () {
         $(this).parent().addClass('checkFocus');
@@ -97,8 +95,6 @@ $(document).ready(function(e) {
       $('input.checkSwitch').on('blur', function () {
         $(this).parent().removeClass('checkFocus');
       });
-      
-      
       
       /* Matrix Table - In case of TD empty remove the parent TH */
       $( ".matrixQuestionText" ).each(function( index ) {
@@ -191,10 +187,14 @@ function openRequiredDialog() {
 		draggable: false,
 		close:function( event, ui ) {
 			$(".ui-dialog").attr('aria-hidden', 'true');
+      $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+      $(".assessment-column-left").attr('aria-hidden', 'false');
 		},
 		buttons: {
           "Ok": function () {
         	  $(".ui-dialog").attr('aria-hidden', 'true');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+            $(".assessment-column-left").attr('aria-hidden', 'false');      
 						$(this).dialog('close');
           }
         },
@@ -202,6 +202,8 @@ function openRequiredDialog() {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
 						$(".ui-dialog").attr('aria-hidden', 'false');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
+            $(".assessment-column-left").attr('aria-hidden', 'true');
         }
 	});
 }
@@ -213,6 +215,8 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
 		draggable: false,
 		close:function( event, ui ) {
 			$(".ui-dialog").attr('aria-hidden', 'true');
+      $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+      $(".assessment-column-left").attr('aria-hidden', 'false');      
 		},
 		buttons: {
           "Yes, proceed to next page": function () {
@@ -233,6 +237,10 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
                 .addClass("customButtonsDialog");
 						$(this).parents().find('.ui-dialog')
 								.attr('aria-hidden', 'false');
+                
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
+            $(".assessment-column-left").attr('aria-hidden', 'true');
+            
         }
 	});
 }

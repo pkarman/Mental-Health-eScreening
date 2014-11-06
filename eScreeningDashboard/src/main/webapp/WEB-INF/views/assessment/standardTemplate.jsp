@@ -96,7 +96,7 @@
 	
 	
 		
-		<div id="left" class="column">
+		<div id="left" class="column assessment-column-left" aria-hidden="false">
         	<input id="veteranAssessmentId" type="hidden" value="<c:out value="${veteranAssessmentId}" />" />
         	
             <hr>
@@ -116,7 +116,7 @@
             </ul>
         </div>
 		<!-- Three columns, fixed-fluid-fixed -->
-        <div id="center" class="column contentAreaGrayRadial">
+        <div id="center" class="column contentAreaGrayRadial" aria-hidden="false">
         	
 			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
 			<!-- Dynamic Content Region -->
@@ -154,7 +154,10 @@
         </div>
         
         <div id="dialogRequired" class="hidden" title="Missing Required Fields" aria-hidden="true">
-        	<div class="dialogSkipInfo">  
+        	<div class="dialogSkipInfo"
+                title="Required inputs can not be empty. Required fields are denoted with an * in each required questions. Please answer the required fields."
+                aria-label="Required inputs can not be empty. Required fields are denoted with an * in each required questions. Please answer the required fields."
+                role="alert">  
         		Required inputs can not be empty. Required fields are denoted with an 
         		<span class="requiredIcon">* </span>in each required questions.
         		<div>Please answer the required fields.</div>
@@ -162,7 +165,7 @@
         </div>
         
         <div id="dialogSkip" class="hidden" title="Skipping Question(s)?" aria-hidden="true">
-        	<div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?">
+        	<div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?"  role="alert">
         		Some of the questions are not answered.
         		Do you want to skip the question(s)?
         	</div>
@@ -178,7 +181,8 @@
         </div>
         
         <div id="dialogTableQuestionEntryClicked" class="hidden" title="Unanswered Questions"  aria-hidden="true">
-        	<div class="dialogSkipInfo">
+        	<div class="dialogSkipInfo" title="Please answer each question before creating a new entry" aria-label="Please answer each question before creating a new entry"
+               role="alert">
         		Please answer each question before creating a new entry
         	</div>
         </div>
