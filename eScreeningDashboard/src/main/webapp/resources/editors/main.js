@@ -299,7 +299,7 @@ Editors.config(function(RestangularProvider, $provide) {
 					//setCaret(el, elCaret);
 
 					//insertHtmlAfterSelection(embed);
-
+					
 					var $taEl = $("div[id^='taTextElement']");
 
 					$taEl.find(".rangySelectionBoundary").replaceWith($(embed));
