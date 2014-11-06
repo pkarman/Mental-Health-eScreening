@@ -299,8 +299,13 @@ Editors.config(function(RestangularProvider, $provide) {
 					//setCaret(el, elCaret);
 
 					//insertHtmlAfterSelection(embed);
+					
+					var $taEl = $("div[id^='taTextElement']");
 
-				    $("div[id^='taTextElement']").find(".rangySelectionBoundary").replaceWith($(embed))
+					$taEl.find(".rangySelectionBoundary").replaceWith($(embed));
+
+					// Remove hanging break tags
+					$taEl.children('p').children('p br:last-child').remove();
 				    
 					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
 
