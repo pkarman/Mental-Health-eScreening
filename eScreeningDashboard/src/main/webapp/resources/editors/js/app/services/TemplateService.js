@@ -7,13 +7,13 @@ angular.module('EscreeningDashboardApp.services.template', ['restangular'])
     .factory('TemplateService', ['Restangular', 'Template', function (Restangular, Template){
         "use strict";
 
-        var restAngular = Restangular.withConfig(function(Configurer) {
-                Configurer.setBaseUrl('/escreeningdashboard/dashboard');
-                Configurer.setRequestSuffix('.json');
+        var restAngular = Restangular.withConfig(function(config) {
+                config.setBaseUrl('services/');
+                config.setRequestSuffix('.json');
             }),
-            service = restAngular.service("services/template");
+            service = restAngular.service("template");
         
-        restAngular.extendModel("services/template", function(model) {
+        restAngular.extendModel("template", function(model) {
             //this is done because during a put the server does not return the same object that was saved.
             if(typeof(model) == "object"){
                 angular.extend(model, Template);

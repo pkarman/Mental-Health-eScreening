@@ -7,13 +7,13 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
     .factory('AssessmentVariableService', ['Restangular', 'TemplateVariableContent', function (Restangular, TemplateVariableContent){
         "use strict";
 
-        var restAngular = Restangular.withConfig(function(Configurer) {
-                Configurer.setBaseUrl('/escreeningdashboard/dashboard');
-                Configurer.setRequestSuffix('.json');
+        var restAngular = Restangular.withConfig(function(config) {
+                config.setBaseUrl('services/');
+                config.setRequestSuffix('.json');
             }),
-            service = restAngular.service("services/assessmentVariables");
+            service = restAngular.service("assessmentVariables");
 
-        restAngular.extendModel("services/assessmentVariables", function(model) {
+        restAngular.extendModel("assessmentVariables", function(model) {
             model = angular.extend(model, TemplateVariableContent);
             model.setType();
             return model;

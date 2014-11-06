@@ -10,13 +10,13 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
         var currentTemplateTypes = [];
         var currentTemplateType = null;
         
-        var restAngular = Restangular.withConfig(function(Configurer) {
-                Configurer.setBaseUrl('/escreeningdashboard/dashboard');
-                Configurer.setRequestSuffix('.json');
+        var restAngular = Restangular.withConfig(function(config) {
+                config.setBaseUrl('services/');
+                config.setRequestSuffix('.json');
             }),
-            service = restAngular.service("services/templateTypes");
+            service = restAngular.service("templateTypes");
 
-        restAngular.extendModel("services/templateTypes", function(model) {
+        restAngular.extendModel("templateTypes", function(model) {
             return angular.extend(model, TemplateType);
         });
         
