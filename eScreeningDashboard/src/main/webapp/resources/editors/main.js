@@ -300,7 +300,12 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					//insertHtmlAfterSelection(embed);
 
-				    $("div[id^='taTextElement']").find(".rangySelectionBoundary").replaceWith($(embed))
+					var $taEl = $("div[id^='taTextElement']");
+
+					$taEl.find(".rangySelectionBoundary").replaceWith($(embed));
+
+					// Remove hanging break tags
+					$taEl.children('p').children('p br:last-child').remove();
 				    
 					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
 
