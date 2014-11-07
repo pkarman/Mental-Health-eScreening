@@ -194,12 +194,12 @@ h2{
 	/* box-shadow: -5px 0px 5px 4px #000; */
 }
 .landing_page h1{
- font-weight: normal;
-  color: #061a43;
-  font-size: 34px;
-  text-align: center;
-  text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
-  margin: 38px auto;
+	font-weight: normal;
+	color: #061a43;
+	font-size: 34px;
+	text-align: center;
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
+	margin:38px auto;
 }
 
 .landing_page h2{
@@ -596,6 +596,23 @@ a.offscreen:focus, a.offscreen:active {
 }
 .bg-gray-light{
   background-color: #F8F8F8;
+}
+.red-color{
+  color:red  !important;
+}
+.odd-class-grid{
+  background-color:#EDEDED;
+}
+
+.even-class-grid{
+  background-color:#FFFFFF;
+}
+
+.border-bottom-3-gray{
+  border-bottom:3px solid #ADADAD;
+}
+.pagination{
+  margin: 0px;
 }
 
 

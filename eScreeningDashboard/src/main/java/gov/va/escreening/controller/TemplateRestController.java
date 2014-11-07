@@ -1,6 +1,8 @@
 package gov.va.escreening.controller;
 
 import gov.va.escreening.domain.ErrorCodeEnum;
+import gov.va.escreening.dto.MeasureAnswerDTO;
+import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -271,6 +273,22 @@ public class TemplateRestController {
 		return Boolean.TRUE;
 	}
 	
+	@RequestMapping(value="/services/questions/{measureId}/answers/", method = RequestMethod.GET, consumes="application/json", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
+		
+		return templateService.getMeasureAnswerValues(measureId);
+	}
+	
+	
+	@RequestMapping(value="/services/questions/{measureId}/validations", method = RequestMethod.GET, consumes="application/json", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
+		
+		return templateService.getMeasureValidations(measureId);
+	}
 	
 
 }
