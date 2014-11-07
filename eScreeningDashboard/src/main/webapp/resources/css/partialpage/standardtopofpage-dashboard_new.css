@@ -181,7 +181,7 @@ h2 {
 	color: #061a43;
 	font-size: 34px;
 	text-align: center;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 	margin: 38px auto;
 }
 .landing_page h2 {
@@ -189,7 +189,7 @@ h2 {
 	color: #ffd800;
 	font-size: 22px;
 	text-align: left;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 }
 .container_box_white {
 	background-image: url(../../images/bg_trans_white.png);

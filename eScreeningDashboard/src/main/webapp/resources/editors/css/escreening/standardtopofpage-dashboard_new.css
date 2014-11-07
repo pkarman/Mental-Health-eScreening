@@ -198,7 +198,7 @@ h2{
 	color: #061a43;
 	font-size: 34px;
 	text-align: center;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 	margin:38px auto;
 }
 
@@ -207,7 +207,7 @@ h2{
 	color: #ffd800;
 	font-size: 22px;
 	text-align: left;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 }
 
 .container_box_white{
@@ -271,7 +271,7 @@ footer{
 	            box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container{
-	background-color:#061a43;
+	background-color:#082f54;
 	margin-top:6px;
 	padding:10px 10px;
 	line-height:24px;
@@ -566,12 +566,36 @@ a.offscreen:focus, a.offscreen:active {
   margin-top:10px;
 }
 /* Form Editor Start Here */
+
 .form_editor .list-group-item{
   padding:5px 10px;
 }
 
 .form_editor .highlight-item{
   background-color:#d4d4d4;
+}
+
+.form_editor .modal-dialog h1{
+  font-size:26px;
+}
+
+.border-radius-block-type{
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border: 1px solid #bbb;
+	padding: 5px 10px 0px;
+  margin: 10px 0;
+}
+.border-radius-block-type hr{
+  margin-top:0px;
+
+}
+.blockLableMarginTop{
+  margin-top:20px;
+}
+.bg-gray-light{
+  background-color: #F8F8F8;
 }
 
 .red-color{
