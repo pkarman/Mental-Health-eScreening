@@ -584,7 +584,7 @@
                         <configuration>
                             <srcFiles>
 	                            <srcFile>
-	                                src/main/sql/sprint_25/27_sprint25_reference_data_template_variables.sql
+	                                src/main/sql/sprint_25/27_patch1_sprint25_reference_data_template_variables.sql
 	                            </srcFile>
                             </srcFiles>
                         </configuration>
