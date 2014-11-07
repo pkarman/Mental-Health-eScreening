@@ -613,6 +613,7 @@ takes a custom variable and returns its value which can be a string, number, or 
 
 <#-- 
 returns the numerical value of the response or "not set" if it cannot be evaluated.
+This function can return a number or a string. 
 -->
 <#function getFormulaValue var='notset'> 
     <#if var == 'notset' || !(var.value)?? || !((var.value)?has_content) >
@@ -653,7 +654,7 @@ returns true if the formula can be evaluated
         <#return false>
     </#if>
     
-    <#return getFormulaValue(var) != 'notset'>
+    <#return getFormulaValue(var)?string != 'notset'>
     
 </#function>
 
