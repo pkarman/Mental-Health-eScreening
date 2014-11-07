@@ -458,27 +458,12 @@ update template
 set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
+<#if (var3389)?? && (getFormulaDisplayText(var3389) != "notfound")>
 ${MODULE_TITLE_START}
 AGGRESSION: 
 ${MODULE_TITLE_END}
 ${MODULE_START}
 
-    	<#if (var3200.children)?? && (var3210.children)?? && (var3220.children)?? && (var3230.children)?? && (var3240.children)?? 
-				&& (var3250.children)?? && (var3260.children)?? && (var3270.children)?? && (var3280.children)?? && (var3290.children)?? 
-				&& (var3300.children)?? && (var3310.children)?? && (var3320.children)?? && (var3330.children)?? && (var3340.children)?? 
-				&& (var3350.children)??
-				&& ((var3200.children)?size > 0) && ((var3210.children)?size > 0) && ((var3220.children)?size > 0) && ((var3230.children)?size > 0) && ((var3240.children)?size > 0) 
-				&& ((var3250.children)?size > 0) && ((var3260.children)?size > 0) && ((var3270.children)?size > 0) && ((var3280.children)?size > 0) && ((var3290.children)?size > 0) 
-				&& ((var3300.children)?size > 0) && ((var3310.children)?size > 0) && ((var3320.children)?size > 0) && ((var3330.children)?size > 0) && ((var3340.children)?size > 0) 
-				&& ((var3350.children)?size > 0)>
-	
-			<#if !(getScore(var3200) == 999 ||  getScore(var3210) == 999 ||  getScore(var3220) == 999  || getScore(var3230) == 999  ||  getScore(var3240) == 999  || getScore(var3250) == 999  ||  getScore(var3260) == 999  
-				|| getScore(var3270) == 999  ||  getScore(var3280) == 999  || getScore(var3290) == 999)  ||  getScore(var3300) == 999 ||  getScore(var3310) == 999  || getScore(var3320) == 999  ||  getScore(var3330) == 999  
-				|| getScore(var3340) == 999  ||  getScore(var3350) == 999  >
-			
-			  <#if (var3389)?? && (getFormulaDisplayText(var3389) != "notfound") && (getFormulaDisplayText(var3389)?number == 0)>       <#-- veteran answered no to all questions" -->
-				${getAnsweredNeverAllText("Aggression")}.${NBSP}
-			  <#else>
     			The Veteran had a score of ${getFormulaDisplayText(var3389)} on the Retrospective Overt Aggression Scale (range 0-240).${LINE_BREAK}${LINE_BREAK}
     			
     			<#assign fragments = []>
@@ -561,15 +546,11 @@ ${MODULE_START}
 					<#assign physicalAggressionOthersText = "Physical aggression towards others (" + createSentence(physicalAggressionOthersSubText) + ")">
 					<#assign fragments = fragments + [physicalAggressionOthersText]  >
 				</#if>
+			 <#if fragments?has_content>
 				The Veteran indicated the following concerning aggressive behaviors in the past month: ${createSentence(fragments)}.${NBSP}
 			  </#if>
-    		<#else>
-    			${getNotCompletedText()}
-    		</#if>
-    	<#else>
-    		${getNotCompletedText()}
-    	</#if>
 ${MODULE_END}
+</#if>
 '
 where template_id = 38;
 
@@ -649,18 +630,17 @@ ${MODULE_TITLE_START}
 Health Status:
 ${MODULE_TITLE_END}
 ${MODULE_START}
-	  <#if var1189?? && (var1020.children)?? && (var1030.children)?? && (var1040.children)?? && (var1050.children)?? && (var1060.children)?? 
-		&& (var1070.children)?? && (var1080.children)?? && (var1090.children)?? && (var1100.children)?? && (var1110.children)?? 
-		&& (var1120.children)?? && (var1130.children)?? && (var1140.children)?? && (var1150.children)?? && (var1160.children)??
-		&& ((var1020.children)?size > 0) && ((var1030.children)?size > 0) && ((var1040.children)?size > 0) && ((var1050.children)?size > 0) 
-		&& ((var1060.children)?size > 0) && ((var1070.children)?size > 0) && ((var1080.children)?size > 0) && ((var1090.children)?size > 0) 
-		&& ((var1100.children)?size > 0) && ((var1110.children)?size > 0) && ((var1120.children)?size > 0) && ((var1130.children)?size > 0) 
-		&& ((var1140.children)?size > 0) && ((var1150.children)?size > 0) && ((var1160.children)?size > 0)>  
-	
-	<#assign totalScore = getFormulaDisplayText(var1189)>
-	<#assign scoreText = "">
-	<#if totalScore != "notset" && totalScore != "notfound">
-		<#assign totalScore = totalScore?number>
+    <#assign totalScore = -1>
+    
+	<#if var1189?? && var1189.value??>
+		<#assign totalScore = var1189.value?number>
+	<#elseif var10800?? && var10800.value??>
+		<#assign totalScore = var10800.value?number>
+	</#if>
+
+	<#if totalScore != -1>
+		
+		<#assign scoreText = "---">
 		<#if (totalScore <= 4)>
 			<#assign scoreText = "minimal">
 		<#elseif (totalScore >= 5 &&  (totalScore <= 9))>
@@ -670,70 +650,66 @@ ${MODULE_START}
 		<#elseif (totalScore >= 15 &&  (totalScore <= 30))>
 			<#assign scoreText = "high number of">
 		</#if>
+	
+		The Veteran reported a ${scoreText} somatic symptoms. ${LINE_BREAK}${LINE_BREAK}
+	
 	</#if>
+
 
 	<#-- During the past 4 weeks, how much have you been bothered by any of the following problems -->
 	<#-- this is almost identical to Other Health Symptoms -->
 	<#assign fragments = []> 
-    <#if (getScore(var1150) > 1)>
+    <#if var1150?? && (getScore(var1150) > 1)>
 		<#assign fragments = fragments + ["stomach pain"] >
 	</#if>
-    <#if (getScore(var1160) > 1)>
+    <#if var1160?? && (getScore(var1160) > 1)>
 		<#assign fragments = fragments + ["back pain"] >
 	</#if>
-	<#if (getScore(var1020) > 1)>
+	<#if var1020?? && (getScore(var1020) > 1)>
 		<#assign fragments = fragments + ["pain in arms, legs or joints (knees, hips, etc.)"] >
 	</#if>
-	<#if (getScore(var1030) > 1)>
+	<#if var1030?? && (getScore(var1030) > 1)>
 		<#assign fragments = fragments + ["menstrual cramps or other problems with your periods"] >
 	</#if>
-	<#if (getScore(var1040) > 1)>
+	<#if var1040?? && (getScore(var1040) > 1)>
 		<#assign fragments = fragments + ["headaches"] >
 	</#if>
-	<#if (getScore(var1050) > 1)>
+	<#if var1050?? && (getScore(var1050) > 1)>
 		<#assign fragments = fragments + ["chest pain"] >
 	</#if>
-	<#if (getScore(var1060) > 1)>
+	<#if var1060?? && (getScore(var1060) > 1)>
 		<#assign fragments = fragments + ["dizziness"] >
 	</#if>
-	<#if (getScore(var1070) > 1)>
+	<#if var1070?? && (getScore(var1070) > 1)>
 		<#assign fragments = fragments + ["fainting spells"] >
 	</#if>
-	<#if (getScore(var1080) > 1)>
+	<#if var1080?? && (getScore(var1080) > 1)>
 		<#assign fragments = fragments + ["feeling your heart pound or race"] >
 	</#if>
-	<#if (getScore(var1090) > 1)>
+	<#if var1090?? && (getScore(var1090) > 1)>
 		<#assign fragments = fragments + ["shortness of breath"] >
 	</#if>
-	<#if (getScore(var1100) > 1)>
+	<#if var1100?? && (getScore(var1100) > 1)>
 		<#assign fragments = fragments + ["pain or problems during sexual intercourse"] >
 	</#if>
-	<#if (getScore(var1110) > 1)>
+	<#if var1110?? && (getScore(var1110) > 1)>
 		<#assign fragments = fragments + ["constipation, loose bowels or diarrhea"] >
 	</#if>
-	<#if (getScore(var1120) > 1)>
+	<#if var1120?? && (getScore(var1120) > 1)>
 		<#assign fragments = fragments + ["nausea, gas or indigestion"] >
 	</#if>
-	<#if (getScore(var1130) > 1)>
+	<#if var1130?? && (getScore(var1130) > 1)>
 		<#assign fragments = fragments + ["feeling tired or having low energy"] >
 	</#if>
-	<#if (getScore(var1140) > 1)>
+	<#if var1140?? && (getScore(var1140) > 1)>
 		<#assign fragments = fragments + ["trouble sleeping"] >
 	</#if>
 
 	<#if fragments?has_content  >
 		<#assign resolved_fragments =  createSentence(fragments)>
-	<#else>
-		<#assign resolved_fragments = "None">
+		The Veteran endorsed being bothered a lot by the following health symptoms over the past four weeks: ${resolved_fragments}.${NBSP}
 	</#if>
 
-	The Veteran reported a ${scoreText} somatic symptoms.${LINE_BREAK}${LINE_BREAK}
-	The Veteran endorsed being bothered a lot by the following health symptoms over the past four weeks: ${resolved_fragments}.${NBSP}
-
-	
-	<#else>
-		${getNotCompletedText()}
-	</#if>
 ${MODULE_END}'
 where template_id = 17;
 
@@ -1520,6 +1496,378 @@ ${MODULE_START}
 
 ${MODULE_END}'
  where template_id = 36;
+ 
+ update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+WHODAS 2.0: The Veteran was given the WHODAS 2.0, which covers six domains of assessing health status and disability on a scale of one to five. ${LINE_BREAK}${LINE_BREAK}
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#function getScoreText score>
+			<#assign text = "">
+			<#if (score?number >= 1) && (score?number < 2)>
+				<#assign text = "no">
+			<#elseif (score?number >= 2) && (score?number < 3)>
+				<#assign text = "mild">
+			<#elseif (score?number >= 3) && (score?number < 4)>
+				<#assign text = "moderate">
+			<#elseif (score?number >= 4) && (score?number < 5)>
+				<#assign text = "severe">
+			<#elseif (score?number >= 5) && (score?number < 6)>
+				<#assign text = "extreme">
+			</#if>
 
+			<#return text>
+	</#function>	
+
+		  <#t><b>Understanding and Communicating</b> - the Veteran
+		  <#if var4119?? && (var4119.value)??>
+			${NBSP}had an average score of ${var4119.value} which indicates ${getScoreText(var4119.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+		  <#else>
+		  	\'s score could not be calculated.
+		  </#if>
+		  ${LINE_BREAK}${LINE_BREAK}
+		  
+			<b>Mobility</b> - the Veteran${NBSP} 
+			<#if var4239?? && (var4239.value)??>
+			 ${NBSP}had an average score of ${var4239.value}, which indicates ${getScoreText(var4239.value)} disability.
+			<#else>\'s score could not be calculated.
+			</#if>
+			
+			${LINE_BREAK}${LINE_BREAK}
+			<b>Self-Care</b> - the Veteran ${NBSP} 
+			<#if var4319?? && var4319.value??>
+				${NBSP}had an average score of ${var4319.value} which indicates ${getScoreText(var4319.value)} disability.
+			<#else>
+				\'s score could not be calculated.
+			</#if>
+			${LINE_BREAK}${LINE_BREAK}		
+
+			<b>Getting Along</b> - the Veteran 
+			<#if var4419?? && var4419.value??>
+				${NBSP} had an average score of ${var4419.value} which indicates ${getScoreText(var4419.value)} disability.
+			<#else>\'s score could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK}
+
+			<b>Life Activities (Household/Domestic)</b> - the Veteran 
+			<#if var4499?? && var4499.value??>
+			 ${NBSP}had an average score of ${var4499.value} which is a rating of ${getScoreText(var4499.value)} disability. 
+			<#else>\'s score could not be calculated.
+			</#if>
+			 ${LINE_BREAK}${LINE_BREAK} 
+			
+			<#if var4200?? && ((var4200.children)?? && ((var4200.children)?size > 0))>
+				<#if isSelectedAnswer(var4200, var4202)>
+					<#if var4559?? && var4559.value??>
+					  <b>Life Activities (School /Work)</b> - the Veteran had an average score of ${var4559.value} which is a rating of ${getScoreText(var4559.value)} disability. ${LINE_BREAK}${LINE_BREAK}
+					<#else>
+					  <b>Life Activities (School /Work)</b> - the Veteran\'s score could not be calculated.${LINE_BREAK}${LINE_BREAK}
+					</#if>      
+				<#elseif isSelectedAnswer(var4200, var4201)>
+					<b>Life Activities (School /Work)</b> - the Veteran did not get a score because the veteran does not work or go to school. ${LINE_BREAK}${LINE_BREAK}   
+				</#if>
+			<#else>
+				<b>Life Activities (School /Work)</b> - the Veteran\'s score could not be calculated.${LINE_BREAK}${LINE_BREAK}
+			</#if>
+			
+			<b>Participation in Society</b> - the Veteran 
+			
+			<#if var4789?? && var4789.value??>
+			${NBSP}had an average score of ${var4789.value} which indicates ${getScoreText(var4789.value)} disability. ${NBSP} 
+			<#else>\'s score could not be calculated.
+			</#if>
+${MODULE_END}'
+where template_id = 24;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+Service Injuries:
+${MODULE_TITLE_END}
+${MODULE_START}
+		
+		<#assign answerTextHash = {"var1380":"blast injury", "var1390":"injury to spine or back", "var1400":"burn (second, 3rd degree)", 
+									"var1410":"nerve damage", "var1420":"Loss or damage to vision", "var1430":"loss or damage to hearing", 
+									"var1440":"amputation", "var1450":"broken/fractured bone(s)", "var1460":"joint or muscle damage", 
+									"var1470":"internal or abdominal injuries", "var1480":"other", "var1490":"other"}>
+		
+		<#-- must have answer questions -->
+		<#assign questions1 = [var1380, var1390, var1400, var1410, var1420, var1430, var1440, var1450, var1460, var1470]>
+
+		<#-- organize answers in a way to facilitate output -->
+		<#assign noneAnswers = []>
+		<#assign combatAnswers = []>
+		<#assign nonCombatAnswers = []>
+		<#assign otherAnswers = []>
+		<#list questions1 as q>
+			<#if q?? && q.children?? && (q.children?size > 0) && (q.children[0])?? >
+				<#assign key = (q.key)!"">
+				<#assign text = (q.children[0].overrideText)!""> 
+				<#if text == "none">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign noneAnswers = noneAnswers + [answer]> 
+				<#elseif text == "combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign combatAnswers = combatAnswers + [answer]> 
+				<#elseif text == "non-combat">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign nonCombatAnswers = nonCombatAnswers + [answer]> 
+				<#elseif text == "other">
+					<#assign answer = (answerTextHash[key])!"">
+					<#assign otherAnswers = otherAnswers + [answer]> 
+				</#if>
+			</#if>
+		</#list>
+
+					<#if var1480?? && var1481?? && (var1480.children?size > 0)>
+						<#assign otherAnswer = var1481.otherText!"">
+						<#if otherAnswer != "">
+						<#list var1480.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+						</#if>
+					</#if>
+				
+					<#if var1490?? && var1491?? && (var1490.children?size > 0)>
+						<#assign otherAnswer = var1491.otherText!"">
+						<#if otherAnswer != "">
+						<#list var1490.children as c>
+							<#if (c.overrideText == "combat")>
+								<#-- put in proper anser bucket -->
+								<#assign combatAnswers = combatAnswers + [otherAnswer]> 
+							<#elseif (c.overrideText == "non-combat")>
+								<#-- put in proper anser bucket -->
+								<#assign nonCombatAnswers = nonCombatAnswers + [otherAnswer]> 
+							</#if>
+						</#list>
+						</#if>
+					</#if>	
+		
+		
+		<#-- build first two sentences -->
+		<#if combatAnswers?has_content>
+			The following injuries were reported during combat deployment: ${createSentence(combatAnswers)}.${LINE_BREAK}
+		</#if>
+		
+		<#if nonCombatAnswers?has_content>
+			The following injuries were reported during other service period or training: ${createSentence(nonCombatAnswers)}.${LINE_BREAK}
+		</#if>
+		
+		<#if var1510?? && (var1510.children)?? && (var1510.children?size>0)>
+			<#assign frag = "">
+			<#if isSelectedAnswer(var1510,var1512)>
+				<#assign frag = "has">
+			<#elseif isSelectedAnswer(var1510,var1511)>
+				<#assign frag = "does not have">
+			<#elseif isSelectedAnswer(var1510,var1513)>
+				<#assign frag = "has the intent to file for, or has filed for">
+			</#if>
+			The Veteran ${frag} a service connected disability rating.
+		</#if>
+${MODULE_END}'
+where template_id = 16;
+
+update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start --> 
+<#if (var3050.children)?? && (var3050.children?size > 0)>
+${MODULE_TITLE_START} 
+Caffeine: 
+${MODULE_TITLE_END} 
+${MODULE_START} 
+
+	<#if (getScore(var3050) == 0)> 
+		<#t>The Veteran reported consuming no caffeinated beverages per day.${NBSP} 
+	<#elseif (getScore(var3050) >= 1) && (getScore(var3050) <= 998)> 
+		<#t>The Veteran reported consuming ${getSelectOneDisplayText(var3050)} caffeinated beverages per day.${NBSP} 
+ 	</#if> 
+ ${MODULE_END}
+ </#if>' 
+ where template_id = 25;
+ 
+ update template set template_file = '
+ <#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var1010?? && var1010.value??>
+${MODULE_TITLE_START}
+Drugs:
+${MODULE_TITLE_END}
+${MODULE_START}
+			 
+	<#assign score = var1010.value?number> <#--getListScore([var1000,var1001,var1002,var1003,var1004,var1005,var1006,var1007,var1008,var1009])>-->
+	<#assign status ="notset"> 
+	<#assign statusText ="notset"> 
+	<#assign gender = "">
+	
+	<#if score?has_content && ((score?number) == 0)> 
+		<#assign status ="negative">
+		<#assign statusText ="no problems">
+	<#elseif (score)?has_content && ((score?number) >= 1) && ((score?number) <= 2)> 
+		<#assign status ="negative">
+		<#assign statusText ="a low level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 3) && ((score?number) <= 5)> 
+		<#assign status ="positive">
+		<#assign statusText ="a moderate level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 6) && ((score?number) <= 8)>
+		<#assign status ="positive">
+		<#assign statusText ="a substantial level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 9) && ((score?number) <= 10)>
+		<#assign status ="positive">
+		<#assign statusText ="a severe level of problems">
+	</#if> 
+	
+    The Veteran\'s Drug screen was ${status} with ${statusText} reported. ${NBSP}
+	
+${MODULE_END}
+</#if>'
+where template_id = 28;
+
+delete from variable_template where template_id=28;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1010, 28);
+
+ update template set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var2930?? && var2930.value??>
+${MODULE_TITLE_START}
+Resilience and Strengths:
+${MODULE_TITLE_END}
+${MODULE_START}
+	
+			<#assign score = getFormulaDisplayText(var2930)?number>
+			<#assign scoreText = "">
+			<#assign fragments = []>
+					<#if (getScore(var2820) >= 2) && (getScore(var2820) <= 998)  >
+						<#assign fragments = fragments + ["I am adaptable"]>
+					</#if>	
+					<#if (getScore(var2830) >= 2) && (getScore(var2830) <= 998)  >
+						<#assign fragments = fragments + ["I can deal with whatever"]>
+					</#if>	
+					<#if (getScore(var2840) >= 2) && (getScore(var2840) <= 998)  >
+						<#assign fragments = fragments + ["I find humor when faced with problems"]>
+					</#if>	
+					<#if (getScore(var2850) >= 2) && (getScore(var2850) <= 998)  >
+						<#assign fragments = fragments + ["coping with stress can make me stronger"]>
+					</#if>	
+					<#if (getScore(var2860) >= 2) && (getScore(var2860) <= 998)  >
+						<#assign fragments = fragments + ["I bounce back after hardships"]>
+					</#if>	
+					<#if (getScore(var2870) >= 2) && (getScore(var2870) <= 998) >
+						<#assign fragments = fragments + ["I believe I can achieve"]>
+					</#if>	
+					<#if (getScore(var2880) >= 2) && (getScore(var2880) <= 998)  >
+						<#assign fragments = fragments + ["focus under pressure"]>
+					</#if>	
+					<#if (getScore(var2890) >= 2) && (getScore(var2890) <= 998)  >
+						<#assign fragments = fragments + ["not easily discouraged by failure"]>
+					</#if>	
+					<#if (getScore(var2900) >= 2) && (getScore(var2900) <= 998)  >
+						<#assign fragments = fragments + ["think of myself as strong person"]>
+					</#if>	
+					<#if (getScore(var2910) >= 2) && (getScore(var2910) <= 998)  >
+						<#assign fragments = fragments + ["can handle unpleasant or painful feelings"]>
+					</#if>	
+		
+					<#if (score >= 0)  &&  (score <= 9)>
+						<#assign scoreText = "minimal resilience">
+					</#if>
+					<#if (score >= 10)  &&  (score <= 29)>
+						<#assign scoreText = "low resilience">
+					</#if>
+					<#if (score >= 20)  &&  (score <= 29)>
+						<#assign scoreText = "medium resilience">
+					</#if>
+					<#if (score >= 30)  &&  (score <= 998)>
+						<#assign scoreText = "high resilience">
+					</#if>
+				
+					The Veteran had a score of ${score} indicating ${scoreText}. ${LINE_BREAK}${LINE_BREAK}
+					
+					<#assign beliefs = "none">
+					<#if fragments?has_content >
+						<#assign beliefs = createSentence(fragments)>
+					</#if>
+					
+					The Veteran reported the following resilience beliefs at least sometimes during the past four weeks: ${beliefs}.${NBSP}
+${MODULE_END}
+</#if>
+' where template_id = 39;
+
+update template 
+set template_file =
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if var1749?? && var1749.value??>
+${MODULE_TITLE_START}
+Anxiety:
+${MODULE_TITLE_END}
+${MODULE_START}
+
+		<#assign fragments = []>
+		<#assign resolved_fragments="">
+		<#assign score = var1749.value?number>
+		<#assign scoreText ="notset">
+		
+		<#if (getScore(var1660) > 1)>
+			<#assign fragments = fragments + ["feeling nervous"] >
+		</#if>
+	    <#if (getScore(var1670) > 1)>
+			<#assign fragments = fragments + ["can\'t control worrying"]>
+		</#if>
+		<#if (getScore(var1680) > 1)>
+			<#assign fragments = fragments +  ["worrying too much"]>
+		</#if>
+		<#if (getScore(var1690) > 1)>
+			<#assign fragments = fragments +  ["trouble relaxing"]>
+		</#if>
+		<#if (getScore(var1700) > 1)>
+			<#assign fragments = fragments +  ["restlessness"]>
+		</#if>
+		<#if (getScore(var1710) > 1)>
+			<#assign fragments = fragments + ["irritability"]>
+		</#if>
+		<#if (getScore(var1720) > 1)>
+			<#assign fragments = fragments + ["feeling afraid"] >
+		</#if>
+		
+		<#if (fragments?has_content) >
+			<#assign resolved_fragments = createSentence(fragments)>
+		<#else>
+			<#assign resolved_fragments = "None">
+		</#if>
+			
+		<#if score??> 	
+			<#if (score >= 0) && (score <= 9)>
+				<#assign scoreText = "negative">				
+			<#elseif (score >= 10)>
+				<#assign scoreText = "positive">
+			</#if>
+		</#if>
+		
+		<#if (score >=1) && (score <= 21)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			<#if resolved_fragments != "None">
+			The Veteran endorsed the following symptoms were occurring more than half of the days in the past two weeks: ${resolved_fragments}.${NBSP}
+			</#if>
+		<#elseif (score == 0)>
+			<#t>The Veteran\'s GAD-7 screen was ${scoreText}. ${NBSP}
+			The Veteran reported having no anxiety symptoms in the past 2 weeks.${NBSP}
+		</#if>
+${MODULE_END}
+</#if>
+'
+where template_id = 34;
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1749, 34);
+
+ 
 
  
