@@ -2,6 +2,8 @@ package gov.va.escreening.service;
 
 import java.util.List;
 
+import gov.va.escreening.dto.MeasureAnswerDTO;
+import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 
@@ -40,6 +42,10 @@ public interface TemplateService {
 	Integer saveTemplateFileForBattery(Integer batteryId, Integer templateTypeId, TemplateFileDTO templateFile);
 
 	void updateTemplateFile(Integer templateId, TemplateFileDTO templateFile);
+
+	List<MeasureAnswerDTO> getMeasureAnswerValues(Integer measureId);
+
+	List<MeasureValidationSimpleDTO> getMeasureValidations(Integer measureId);
 
 	
 
