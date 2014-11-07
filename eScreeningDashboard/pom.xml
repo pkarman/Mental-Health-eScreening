@@ -436,6 +436,8 @@
 					<username>${jdbc.username}</username>
 					<password>${jdbc.password}</password>
 				</configuration>
+				
+<!-- Commenting this so we don't remove DB during updates
 
 			   <executions>
 					<execution>
@@ -571,6 +573,8 @@
 						</configuration>
 					</execution>
 				</executions>
+ -->
+				
 			</plugin>
 		</plugins>
 	</build>
