@@ -574,6 +574,22 @@
 					</execution>
 				</executions>
  -->
+                <executions>
+                    <execution>
+                        <id>apply-sprint-25-patch</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <srcFiles>
+	                            <srcFile>
+	                                src/main/sql/sprint_25/27_sprint25_reference_data_template_variables.sql
+	                            </srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
+				</executions>
 				
 			</plugin>
 		</plugins>

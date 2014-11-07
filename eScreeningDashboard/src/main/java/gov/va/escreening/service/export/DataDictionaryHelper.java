@@ -135,7 +135,8 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 		AvModelBuilder avModelBldr = new AvModelBuilder() {
 			@Override
-			public void buildFromMeasureAnswer(AssessmentVariable avWithFormula,
+			public void buildFromMeasureAnswer(
+					AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
 				surveyFormulae.add(buildXportNameFromMeasureAnswer(avWithFormula));
 				avUsed.add(avWithFormula.getDisplayName());
