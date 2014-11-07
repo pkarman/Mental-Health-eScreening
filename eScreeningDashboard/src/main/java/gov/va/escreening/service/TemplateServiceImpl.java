@@ -692,6 +692,7 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 
 	@Override
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	public List<MeasureValidationSimpleDTO> getMeasureValidations(
 			Integer measureId) {
 		gov.va.escreening.entity.Measure measure = measureRepository.findOne(measureId);
