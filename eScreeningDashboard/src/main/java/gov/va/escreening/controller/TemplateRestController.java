@@ -273,7 +273,7 @@ public class TemplateRestController {
 		return Boolean.TRUE;
 	}
 	
-	@RequestMapping(value="/services/questions/{measureId}/answers", method = RequestMethod.GET, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/services/questions/{measureId}/answers", method = RequestMethod.GET, produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
@@ -281,7 +281,7 @@ public class TemplateRestController {
 	}
 	
 	
-	@RequestMapping(value="/services/questions/{measureId}/validations", method = RequestMethod.GET, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/services/questions/{measureId}/validations", method = RequestMethod.GET,  produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
