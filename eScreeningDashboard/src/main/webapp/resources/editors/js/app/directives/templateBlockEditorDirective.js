@@ -1,7 +1,7 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', function($compile, limitToWithEllipsisFilter) {
+    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'MeasureService', function($compile, limitToWithEllipsisFilter, MeasureService) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -229,7 +229,30 @@
 			            }
 		            });
 		            return result;
-	            }
+	            };
+
+	            scope.$watch('block.left.content', function(newAV, oldAV) {
+
+		            console.log('newAv',newAV);
+		            console.log('oldAV', oldAV);
+
+		            if (newAV.measureTypeId) {
+
+			            if (newAV.measureTypeId == 1) {
+
+				            MeasureService.one(newAV.measureId).getList('validations').then(function (validations) {
+					            scope.measureValidations = validations;
+				            });
+
+			            } else if (newAV.measureTypeId === 2 || newAV.measureTypeId === 3) {
+				            MeasureService.one(newAV.measureId).getList('answers').then(function (answers) {
+					            scope.measureAnswers = answers;
+				            });
+
+			            }
+
+		            }
+	            });
 
             }
         };
