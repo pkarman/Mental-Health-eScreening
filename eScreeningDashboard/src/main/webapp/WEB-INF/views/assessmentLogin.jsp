@@ -28,6 +28,45 @@
     <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript">
+    
+      $(document).ready(function() {	
+      // Check URL Querystring to play sound in case of timeout or complete
+      gup('reason');
+      function gup( name ){
+         name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+         var regexS = "[\\?&]"+name+"=([^&#]*)";
+         var regex = new RegExp( regexS );
+         var results = regex.exec( window.location.href );
+         if( results == null )
+            return "";
+         else
+            if((results[1] == "timeout") || (results[1] == "complete")){
+              setTimeout(function() {
+                  // Delay play sound
+                  play('beep');
+                }, 500);
+            }
+            return results[1];
+      }
+      
+      // Play sound beep
+      function play(sound) {
+        if (window.HTMLAudioElement) {
+          var snd = new Audio('');
+          if(snd.canPlayType('audio/ogg')) {
+            snd = new Audio('resources/sounds/' + sound + '.ogg');
+          }
+          else if(snd.canPlayType('audio/mp3')) {
+            snd = new Audio('resources/sounds/' + sound + '.mp3');
+          }
+          snd.play();
+        }
+        else {
+          alert('HTML5 Audio is not supported by your browser!');
+        }
+      }
+    });
+    
       $(function() {
         $("input[type=text]:first").focus();
         $("#assessmentLoginForm").submit(function(event){ 
