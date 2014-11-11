@@ -122,73 +122,33 @@
 	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
 
-                var globalOperators = [];
-
-                scope.getOperators = function (blockId) {
-                    if(Object.isDefined(globalOperators[blockId])){
-                        return globalOperators[blockId];
-                    } else {
-                        globalOperators[blockId] = scope.operators;
-                        return globalOperators[blockId];
-                    }
-                };
-
-                scope.setOperators = function (blockId, operators) {
-                    globalOperators[blockId] = operators;
-                };
-
                 var filterOperators = function(operator) {
                     var includeOperator = false;
-                    if(operator.category.toLowerCase() === "numerical") {
-                        if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
-                            includeOperator = true;
-                        } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
-                            includeOperator = true;
-                        }
-                    } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
-                        includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
-                        includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
-                        if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
-                            includeOperator = true;
-                        }
-                    }
+
+	                if (operator && this.type) {
+		                if(operator.category.toLowerCase() === "numerical") {
+			                if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
+				                includeOperator = true;
+			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
+				                includeOperator = true;
+			                }
+		                } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
+			                includeOperator = true;
+		                } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
+			                includeOperator = true;
+		                } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
+			                if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
+				                includeOperator = true;
+			                }
+		                }
+	                }
+
                     return includeOperator;
                 };
 
-                scope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
-                    if(!Object.isDefined(data)) {
-                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.guid)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
-                    }
-
-                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
-                });
-
-                scope.$on('filterOperators', function(event, data) {
-                    if(!Object.isDefined(data)) {
-                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.guid)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
-                    }
-
-                    $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedAssessmentVariable.name, 20));
-                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
-                });
-
-                scope.filterOperators = function() {
-                    return filterOperators;
-                };
+	            scope.filterOperators = function() {
+		            return filterOperators;
+	            };
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
@@ -219,7 +179,7 @@
                 };
 
 	            scope.showBlockConditionRight = function(operatorValue) {
-		            var result = true;
+		            var result = (operatorValue);
 		            angular.forEach(scope.operators, function(operator) {
 			            if (operator.value === "" + operatorValue) {
 				            if (operator.category === 'formula' || operator.category === 'question') {
@@ -231,29 +191,32 @@
 		            return result;
 	            };
 
-	            scope.$watch('block.left.content', function(newAV, oldAV) {
+	            scope.updateLogicalOptions = function(item) {
 
-		            console.log('newAv',newAV);
-		            console.log('oldAV', oldAV);
+		            var av = item.left.content;
 
-		            if (newAV.measureTypeId) {
+		            item.measureAnswers = [];
+		            item.measureValidations = [];
 
-			            if (newAV.measureTypeId == 1) {
+		            item.operators = scope.operators.filter(filterOperators, av);
 
-				            MeasureService.one(newAV.measureId).getList('validations').then(function (validations) {
-					            scope.measureValidations = validations;
+		            if (av.measureTypeId) {
+
+			            if (av.measureTypeId == 1) {
+
+				            MeasureService.one(av.measureId).getList('validations').then(function (response) {
+					            item.measureValidations = response;
 				            });
 
-			            } else if (newAV.measureTypeId === 2 || newAV.measureTypeId === 3) {
-				            MeasureService.one(newAV.measureId).getList('answers').then(function (answers) {
-					            scope.measureAnswers = answers;
-				            });
+			            } else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
 
+				            MeasureService.one(av.measureId).getList('answers').then(function (response) {
+					            item.measureAnswers = response;
+				            });
 			            }
 
 		            }
-	            });
-
+	            };
             }
         };
 
