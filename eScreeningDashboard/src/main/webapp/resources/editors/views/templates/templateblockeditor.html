@@ -48,7 +48,7 @@
 						     ng-if="showBlockConditionRight(block.operator)"
 						     ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
 							<label class="sr-only" for="blockvalue">Enter Value</label>
-							<div ng-switch on="block.measureValidation.value" ng-if="!block.measureAnswers || !block.measureAnswers.length">
+							<div ng-switch on="block.measureValidation[0].value" ng-if="!block.measureAnswers || !block.measureAnswers.length">
 								<div ng-switch-when="number">
 									<input type="number"
 									       class="form-control"
@@ -56,6 +56,8 @@
 									       id="blockvalue"
 									       placeholder="Enter Value"
 									       ng-model="block.right.content"
+									       min="{{block.measureValidation[1].value}}"
+									       max="{{block.measureValidation[2].value}}"
 									       required>
 								</div>
 								<div ng-switch-when="email">
@@ -181,7 +183,7 @@ showValidationMessages}">
 							     ng-if="showBlockConditionRight(condition.operator)"
 							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
 								<label class="sr-only" for="conditionValue">Enter Value</label>
-								<div ng-switch on="condition.measureValidation.value" ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
+								<div ng-switch on="condition.measureValidation[0].value" ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
 									<div ng-switch-when="number">
 										<input type="number"
 										       class="form-control"
@@ -189,6 +191,8 @@ showValidationMessages}">
 										       id="conditionvalue"
 										       placeholder="Enter Value"
 										       ng-model="condition.right.content"
+										       min="{{condition.measureValidation[1].value}}"
+										       max="{{condition.measureValidation[2].value}}"
 										       required>
 									</div>
 									<div ng-switch-when="email">

@@ -208,17 +208,15 @@
 			            if (av.measureTypeId == 1) {
 
 				            // Get the validations for freetext
-				            MeasureService.one(av.measureId).getList('validations').then(function (response) {
-					            item.measureValidation = response[0];
-
-					            console.log(response[0]);
+				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
+					            item.measureValidation = validations;
 				            });
 
 			            } else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
 
 				            // Get the answer list for multi or single select questions
-				            MeasureService.one(av.measureId).getList('answers').then(function (response) {
-					            item.measureAnswers = response;
+				            MeasureService.one(av.measureId).getList('answers').then(function (answers) {
+					            item.measureAnswers = answers;
 				            });
 			            }
 
