@@ -312,7 +312,8 @@ iframe {
 }
 #mainContent .ui-widget-header {
   background: none;
-  background-color: #f7f7f9;
+  /* background-color: #f7f7f9;*/
+  background-color: #fff;
   color: #000000;
   border: 0px solid #737681;
   line-height: 40px;
@@ -870,6 +871,10 @@ a.offscreen:focus, a.offscreen:active {
 }
 .bg_head_table {
   background-color: #303335;
+}
+
+.print{
+  margin:10px 0px;
 }
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {

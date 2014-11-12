@@ -1,0 +1,20 @@
+[
+  {
+    "status": null, 
+    "code": null, 
+    "errorMessages": [
+      {
+        "type": null, 
+        "name": null, 
+        "userMessage": {
+          "present": true
+        }, 
+        "description": "An error occured while processing one or more template.  Please contact the technical administrator for assistance."
+      }
+    ], 
+    "developerMessage": "Processing templateId: 311 for veteranassessmentid: 17 failed with the following exception: Can't compare values of these types. Allowed comparisons are between two numbers, two strings, two dates, or two booleans.\nLeft hand operand is a number (wrapper: f.t.SimpleNumber).\nRight hand operand is a string (wrapper: f.t.SimpleScalar).\nThe blamed expression:\n==> measureTypeId == 'notset'  [in template \"clinicalnotefunctions\" at line 533, column 10]\n\nThe failing instruction (print stack trace for 1 more):\n==> #if measureTypeId == \"notset\"  [in template \"clinicalnotefunctions\" in function \"asNumber\" at line 533, column 5]", 
+    "logMessage": "Error Message:  Processing templateId: 311 for veteranassessmentid: 17 failed with the following exception: Can't compare values of these types. Allowed comparisons are between two numbers, two strings, two dates, or two booleans.\nLeft hand operand is a number (wrapper: f.t.SimpleNumber).\nRight hand operand is a string (wrapper: f.t.SimpleScalar).\nThe blamed expression:\n==> measureTypeId == 'notset'  [in template \"clinicalnotefunctions\" at line 533, column 10]\n\nThe failing instruction (print stack trace for 1 more):\n==> #if measureTypeId == \"notset\"  [in template \"clinicalnotefunctions\" in function \"asNumber\" at line 533, column 5] \nError ID: 1415423494434_-817274121 \nError Code: null \nStatus: null \nError Property: null \nError Messages: \n\tErrorMessage [type=null, name=null, description=An error occured while processing one or more template.  Please contact the technical administrator for assistance.]", 
+    "property": null, 
+    "id": "1415423494434_-817274121"
+  }
+]
