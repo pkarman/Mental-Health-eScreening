@@ -83,7 +83,7 @@
 										close-text="Close"
 										required />
 								</div>
-								<div ng-if="!block.measureValidations['email' && 'number' && 'date']">
+								<div ng-if="!block.measureValidations['email'] && !block.measureValidations['date'] && !block.measureValidations['number']">
 									<input type="text"
 									       class="form-control"
 									       name="blockValue"
@@ -225,7 +225,7 @@ showValidationMessages}">
 											close-text="Close"
 											required />
 									</div>
-									<div ng-if="!condition.measureValidations['email' && 'number' && 'date']">
+									<div ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']">
 										<input type="text"
 										       class="form-control"
 										       name="conditionValue"
