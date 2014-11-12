@@ -48,14 +48,26 @@
 						     ng-if="showBlockConditionRight(block.operator)"
 						     ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
 							<label class="sr-only" for="blockvalue">Enter Value</label>
-							<input type="text"
-                                   class="form-control"
-                                   name="blockValue"
-                                   id="blockvalue"
-                                   placeholder="Enter Value"
-                                   ng-model="block.right.content"
-                                   ng-if="!block.measureAnswers || !block.measureAnswers.length"
-                                   required>
+							<div ng-switch on="block.measureValidation.value" ng-if="!block.measureAnswers || !block.measureAnswers.length">
+								<div ng-switch-when="date">
+									<input type="date"
+									       class="form-control"
+									       name="blockValue"
+									       id="blockvalue"
+									       placeholder="Enter Value"
+									       ng-model="block.right.content"
+									       required>
+								</div>
+								<div ng-switch-default>
+									<input type="text"
+									       class="form-control"
+									       name="blockValue"
+									       id="blockvalue"
+									       placeholder="Enter Value"
+									       ng-model="block.right.content"
+									       required>
+								</div>
+							</div>
 							<select class="form-control"
 							        name="blockValue"
 							        id="blockvalue"
@@ -151,23 +163,36 @@ showValidationMessages}">
 							     ng-if="showBlockConditionRight(condition.operator)"
 							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
 								<label class="sr-only" for="conditionValue">Enter Value</label>
-								<input type="text"
-                                       class="form-control"
-                                       name="conditionValue"
-                                       id="conditionvalue"
-                                       placeholder="Enter Value"
-                                       ng-model="condition.right.content"
-                                       ng-if="!condition.measureAnswers || !condition.measureAnswers.length"
-                                       required>
+								<div ng-switch on="condition.measureValidation.value" ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
+									<div ng-switch-when="'date'">
+										<input type="date"
+										       class="form-control"
+										       name="conditionValue"
+										       id="conditionvalue"
+										       placeholder="Enter Value"
+										       ng-model="condition.right.content"
+										       required>
+									</div>
+									<div ng-switch-default>
+										<input type="text"
+										       class="form-control"
+										       name="conditionValue"
+										       id="conditionvalue"
+										       placeholder="Enter Value"
+										       ng-model="condition.right.content"
+										       required>
+									</div>
+								</div>
 								<select
 									class="form-control"
 									name="blockValue"
+									id="conditionvalue"
 									ng-model="condition.right.content"
 									ng-if="condition.measureAnswers && condition.measureAnswers.length"
 									ng-options="answer.calculationValue as answer.answerText for answer in condition.measureAnswers"
 									required>
-								<option value="">-- Answer --</option>
-							</select>
+									<option value="">-- Answer --</option>
+								</select>
 							</div>
 						</div>
 					</div>

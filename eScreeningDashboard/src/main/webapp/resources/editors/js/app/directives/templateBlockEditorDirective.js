@@ -195,21 +195,28 @@
 
 		            var av = item.left.content;
 
+		            // (Re-)initialize the answers and validations
 		            item.measureAnswers = [];
-		            item.measureValidations = [];
+		            item.measureValidation = [];
 
+		            // Filter the operators and add the results to the item
 		            item.operators = scope.operators.filter(filterOperators, av);
 
+		            // Check if the assessment variable is a question
 		            if (av.measureTypeId) {
 
 			            if (av.measureTypeId == 1) {
 
+				            // Get the validations for freetext
 				            MeasureService.one(av.measureId).getList('validations').then(function (response) {
-					            item.measureValidations = response;
+					            item.measureValidation = response[0];
+
+					            console.log(response[0]);
 				            });
 
 			            } else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
 
+				            // Get the answer list for multi or single select questions
 				            MeasureService.one(av.measureId).getList('answers').then(function (response) {
 					            item.measureAnswers = response;
 				            });
