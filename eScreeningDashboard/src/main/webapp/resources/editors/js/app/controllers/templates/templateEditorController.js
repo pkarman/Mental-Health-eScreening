@@ -1,6 +1,7 @@
 Editors.controller('testModalCtrl', ['$scope', function($scope) {
 }]);
-Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'template', function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, template) {
+Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 
+                                                function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template) {
 
     console.log("In templateEditorController");
 
@@ -270,9 +271,9 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				};
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
-				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
+				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
 				
-				$scope.block.sentTextContent();
+				$scope.block.setTextContent(TemplateBlockService);
 
 				// Dismiss modal
 				$scope.cancel = function () {
@@ -284,7 +285,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
 	                if (form.$valid) {
 
-		                $scope.block.transformTextContent($scope.variableHash);
+		                $scope.block.transformTextContent(TemplateBlockService, $scope.variableHash);
 		                $scope.block.autoGenerateFields($scope.variableHash);
 
 		                if (isAdding) {

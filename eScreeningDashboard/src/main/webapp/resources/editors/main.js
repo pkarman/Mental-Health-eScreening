@@ -24,6 +24,7 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.assessmentVariable',
         'EscreeningDashboardApp.services.question',
 	    'EscreeningDashboardApp.services.MeasureService',
+        'EscreeningDashboardApp.services.templateBlock',
         'EscreeningDashboardApp.filters.messages',
         'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
         'EscreeningDashboardApp.filters.limitToWithEllipsis'
@@ -51,10 +52,13 @@ Editors.directive('ngReallyClick', [function() {
     };
 }]);
 
+
 Editors.config(function(RestangularProvider, $provide) {
 
-    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', '$delegate', '$modal', function(taRegisterTool, taCustomRenderers, taSelectableElements, $delegate, $modal){
-
+    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', '$delegate', '$modal', 'TemplateBlockService',
+                                     function(taRegisterTool, taCustomRenderers, taSelectableElements, $delegate, $modal, TemplateBlockService){
+        var variableSeed = 0;
+        
 	    // Add <code /> as an selectable element
 	    taSelectableElements.push('code');
 
@@ -225,7 +229,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var el = $("div[id^='taTextElement']").get(0);
 
-				//var elCaret = getCaretCharacterOffsetWithin(el);
+				var elCaret = getCaretCharacterOffsetWithin(el);
 				
 				//var selRange = saveSelection();
 
@@ -238,45 +242,10 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-							var embed, embedAlt, embedCode;
-
 							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
-
-							    //TODO: Since there is code which takes a text template block and turns its contents into a string this code below should be in one place used by both (see TemplateBlock.js) 
-								embed =
-									'<img ' +
-										'class="ta-insert-variable text-info" ' +
-										'id="' + $scope.assessmentVariable.id + '" ' +
-										'src="" ' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
-										'title="(' + $scope.assessmentVariable.getName() + ')"' +
-										'contenteditable="false" ' +
-									'/>';
-
-								// This version shows text in image for FF but if dragged, it will be duplicated
-								embedAlt =
-									'<img ' +
-										'class="ta-insert-variable text-info" ' +
-										'id="' + $scope.assessmentVariable.id + '" ' +
-										'src="" ' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
-										'alt="(' + $scope.assessmentVariable.getName() +
-										')" ' +
-										'title="(' + $scope.assessmentVariable.getName() + ')" ' +
-										'contenteditable="false" ' +
-									'/>';
-
-								// This is the code version and requires onElementSelect.element (below)
-								// to be set to 'code' for editing/deleting element
-								embedCode =
-									'<code + ' +
-										'class="ta-insert-variable text-info" +' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" +' +
-										'title="(' + $scope.assessmentVariable.getName() + ')">' +
-											$scope.assessmentVariable.getName()+
-									'</code>';
-
-								$modalInstance.close(embedAlt);
+							    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
+							    
+								$modalInstance.close(embed);
 	                        }
 
                         }, true);
@@ -297,41 +266,25 @@ Editors.config(function(RestangularProvider, $provide) {
 
 					//restoreSelection(selRange);
 
-					//setCaret(el, elCaret);
 
 					//insertHtmlAfterSelection(embed);
 					
 					var $taEl = $("div[id^='taTextElement']");
 
 					$taEl.find(".rangySelectionBoundary").replaceWith($(embed));
+					
+					//setCaret(el, elCaret + 1);
+					//el.setCursorPosition(elCaret + 1);
 
 					// Remove hanging break tags
 					$taEl.children('p').children('p br:last-child').remove();
 				    
 					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
-
 				});
 
-				/*
-					Credit:
-					http://stackoverflow.com/questions/7280738/drag-and-drop-event-in-a-contenteditable-element
-				 */
-				/*
-				 TODO: Remove original DOM node when dragged and duplicated
 				 el.addEventListener("DOMNodeInserted", function(e) {
-				    console.log('e', e);
-					 console.log('e.relatedNode.nodeName', e.relatedNode.nodeName);
-					 console.log('e.originalTarget.src', e.originalTarget.src);
-					 if (e.originalTarget && e.originalTarget.nodeName === 'IMG' && !e.originalTarget.src) {
-						 console.log('e.originalEvent', e.originalTarget);
-						 //el.removeChild(e.originalTarget);
-						 e.originalTarget.parentNode.removeChild(e.originalTarget);
-						 e.originalTarget.replaceWith(e.originalTarget.contents());
-				        addVariableTool.updateTaBindtaTextElement();
-					 }
+				     TemplateBlockService.avDragHandler(el, e);
 				 }, false);
-				 */
-
 
 				return false;
 

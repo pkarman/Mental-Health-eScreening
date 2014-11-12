@@ -1,7 +1,8 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'MeasureService', function($compile, limitToWithEllipsisFilter, MeasureService) {
+    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 
+                                              function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -152,7 +153,7 @@
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
+                    selectedBlock.children.push(TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock, form) {

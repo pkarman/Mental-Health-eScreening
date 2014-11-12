@@ -26,6 +26,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Tonté Pouncil
  */
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
+    var self = this;
     var myparent = parent;
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
@@ -50,45 +51,42 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator : null;
         this.conditions = (Object.isArray(jsonConfig.conditions))? EScreeningDashboardApp.models.TemplateCondition.createConditionsArray(jsonConfig.conditions): [];
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
-        this.contents = (Object.isArray(jsonConfig.contents))? jsonConfig.contents: [];
         this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
+        if(Object.isArray(jsonConfig.contents)){
+            jsonConfig.contents.forEach(function(blockData){
+                var contentObj = angular.copy(blockData);
+                if(contentObj.type == "var"){
+                    contentObj.content = new EScreeningDashboardApp.models.TemplateVariableContent(contentObj.content);
+                }
+                self.contents.push(contentObj);   
+            });
+        }
+        
         if(Object.isDefined(jsonConfig.children)){
             angular.copy(jsonConfig.children, this.children);
-            var self = this;
             this.children.forEach(function(childData){
                 angular.extend(childData, new EScreeningDashboardApp.models.TemplateBlock(childData, self));
             });
         }
     }
-    
-	function createTextContent(text){
-		return { type: "text",
-			content: text };
-	}
 
-	/* TODO: Decouple from TemplateVariableContent */
-	function createVarContent(variable){
-		return { type: "var",
-			content: new EScreeningDashboardApp.models.TemplateVariableContent(variable)};
-	}
-
-	function transformTextContent(variableHash){
+	function transformTextContent(TemplateBlockService, variableHash){
 
 		if(this.type == "text"){
-			var contents = [];
-			var fragments = this.content.split(/<img[^>]+id="(\d+)"[^>]+>/);
-
-			fragments.forEach(function(frag){
-				var varName = variableHash[frag];
-
-				var content = (varName) ? createVarContent(varName) : createTextContent(frag);
-				contents.push(content);
-			});
-			this.contents = contents;
+			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
 			delete(this.content);
 		}
+		
+		if(Object.isDefined(this.children)){
+            this.children.forEach(function(block){ 
+                block.transformTextContent(TemplateBlockService, variableHash); });
+        }
 	}
+	
+	function setTextContent(TemplateBlockService){
+        this.content = TemplateBlockService.joinContents(this.contents);
+    }
 
 	function autoGenerateFields(variableHash){
 
@@ -103,21 +101,24 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-					block.summary += blockContent.content;
+				    var text = blockContent.content.replace(/<\/*[^>]>/, "");
+					block.summary += text;
 
 					if(setTitle && block.name.length < 10){
 						var neededChars = 10 - block.name.length;
-						block.name += blockContent.content.replace(/<\/*[^>]/, "").slice(0, neededChars);
+						block.name += text.slice(0, neededChars);
 					}
 				}
-				if(blockContent.type == "var"){
-					var varName = blockContent.content.getName();
+				else if(blockContent.type == "var"){
+					var varName = "(" + blockContent.content.getName() + ")";
 					block.summary += varName;
 
 					if(setTitle && block.name.length < 10){
 						block.name += varName;
 					}
 				}
+				block.summary += " ";
+				block.name += " ";
 			}
 		}
 
@@ -131,43 +132,6 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				}
 			});
 		}
-
-		if(Object.isDefined(this.children)){
-			this.children.forEach(function(block){ transformTextContent.call(block, variableHash); });
-		}
-	}
-
-	/* TODO: Decouple from TemplateVariableContent */
-	function sentTextContent(){
-		this.content = "";
-
-		if(this.contents){
-			this.contents.forEach(function(content){
-				if(content.type == "text"){
-					//horrible naming.. sorry no time
-					this.content += content.content;
-				}
-				if(content.type == "var"){
-					var varObj = new EScreeningDashboardApp.models.TemplateVariableContent(content.content);
-
-					this.content += createContent(varObj) + '&nbsp;';
-				}
-			}, this);
-		}
-	}
-	
-	//TODO: this should be moved into a place where both this and the wysiwyg custom button code can access it (see main.js)
-	function createContent(varObj){
-	    return '<img ' +
-        'class="ta-insert-variable text-info" ' +
-        'id="' + varObj.id + '" ' +
-        'src="" ' +
-        'ta-insert-variable="' + varObj.id + '" ' +
-        'alt="(' + varObj.getName() +
-        ')" ' +
-        'title="(' + varObj.getName() + ')" ' +
-        'contenteditable="false" ' +
-    '/>';
 	}
 
     function toString() {
@@ -238,7 +202,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     }
     
 	this.autoGenerateFields = autoGenerateFields;
-	this.sentTextContent = sentTextContent;
+	this.setTextContent = setTextContent;
 	this.toString = toString;
 	this.transformTextContent = transformTextContent;
 	this.getLast = getLast;
