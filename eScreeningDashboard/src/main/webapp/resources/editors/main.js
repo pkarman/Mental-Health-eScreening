@@ -337,7 +337,7 @@ Editors.run(['$rootScope', '$state', '$stateParams', '$modal', 'Restangular', fu
         if(Object.isDefined(response) && Object.isDefined(response.data)){
             if(Object.isArray(response.data.errorMessages)){
                 response.data.errorMessages.forEach(function (errorMessage) {
-                    $rootScope.addMessage(new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: errorMessage.description}));
+                    //$rootScope.addMessage(new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: errorMessage.description}));
                 });
             }
         }

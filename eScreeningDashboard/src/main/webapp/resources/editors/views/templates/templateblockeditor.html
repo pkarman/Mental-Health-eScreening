@@ -48,19 +48,19 @@
 						     ng-if="showBlockConditionRight(block.operator)"
 						     ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
 							<label class="sr-only" for="blockvalue">Enter Value</label>
-							<div ng-switch on="block.measureValidation[0].value" ng-if="!block.measureAnswers || !block.measureAnswers.length">
-								<div ng-switch-when="number">
+							<div ng-if="!block.measureAnswers || !block.measureAnswers.length">
+								<div ng-if="block.measureValidations['number']">
 									<input type="number"
 									       class="form-control"
 									       name="blockValue"
 									       id="blockvalue"
 									       placeholder="Enter Value"
 									       ng-model="block.right.content"
-									       min="{{block.measureValidation[1].value}}"
-									       max="{{block.measureValidation[2].value}}"
+									       min="{{block.measureValidation['minValue']}}"
+									       max="{{block.measureValidation['maxValue']}}"
 									       required>
 								</div>
-								<div ng-switch-when="email">
+								<div ng-if="block.measureValidations['email']">
 									<input type="email"
 									       class="form-control"
 									       name="blockValue"
@@ -69,22 +69,29 @@
 									       ng-model="block.right.content"
 									       required>
 								</div>
-								<div ng-switch-when="date">
-									<input type="date"
-									       class="form-control"
-									       name="blockValue"
-									       id="blockvalue"
-									       placeholder="Enter Value"
-									       ng-model="block.right.content"
-									       required>
+								<div ng-if="block.measureValidations['date']">
+									<input
+										type="text"
+										class="form-control"
+										name="blockValue"
+										id="blockvalue"
+										placeholder="mm/dd/yyyy"
+										datepicker-popup="'mm/dd/yyyy"
+										ng-model="block.right.content"
+										is-open="opened"
+										datepicker-options="{ formatYear: 'yyyy', startingDay: 1}"
+										close-text="Close"
+										required />
 								</div>
-								<div ng-switch-default>
+								<div ng-if="!block.measureValidations['email' && 'number' && 'date']">
 									<input type="text"
 									       class="form-control"
 									       name="blockValue"
 									       id="blockvalue"
 									       placeholder="Enter Value"
 									       ng-model="block.right.content"
+									       ng-minlength="block.measureValidations['minLength']"
+									       ng-maxlength="block.measureValidations['maxLength']"
 									       required>
 								</div>
 							</div>
@@ -183,19 +190,19 @@ showValidationMessages}">
 							     ng-if="showBlockConditionRight(condition.operator)"
 							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
 								<label class="sr-only" for="conditionValue">Enter Value</label>
-								<div ng-switch on="condition.measureValidation[0].value" ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
-									<div ng-switch-when="number">
+								<div ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
+									<div ng-if="condition.measureValidations['number']">
 										<input type="number"
 										       class="form-control"
 										       name="conditionValue"
 										       id="conditionvalue"
 										       placeholder="Enter Value"
 										       ng-model="condition.right.content"
-										       min="{{condition.measureValidation[1].value}}"
-										       max="{{condition.measureValidation[2].value}}"
+										       min="{{condition.measureValidation['minValue']}}"
+										       max="{{condition.measureValidation['maxValue']}}"
 										       required>
 									</div>
-									<div ng-switch-when="email">
+									<div ng-if="condition.measureValidations['email']">
 										<input type="email"
 										       class="form-control"
 										       name="conditionValue"
@@ -204,22 +211,29 @@ showValidationMessages}">
 										       ng-model="condition.right.content"
 										       required>
 									</div>
-									<div ng-switch-when="date">
-										<input type="date"
-										       class="form-control"
-										       name="conditionValue"
-										       id="conditionvalue"
-										       placeholder="Enter Value"
-										       ng-model="condition.right.content"
-										       required>
+									<div ng-if="condition.measureValidations['date']">
+										<input
+											type="text"
+											class="form-control"
+											name="conditionValue"
+											id="conditionvalue"
+											placeholder="mm/dd/yyyy"
+											datepicker-popup="'mm/dd/yyyy"
+											ng-model="condition.right.content"
+											is-open="opened"
+											datepicker-options="{ formatYear: 'yyyy', startingDay: 1}"
+											close-text="Close"
+											required />
 									</div>
-									<div ng-switch-default>
+									<div ng-if="!condition.measureValidations['email' && 'number' && 'date']">
 										<input type="text"
 										       class="form-control"
 										       name="conditionValue"
 										       id="conditionvalue"
 										       placeholder="Enter Value"
 										       ng-model="condition.right.content"
+										       ng-minlength="{{condition.measureValidation['minLength']}}"
+										       ng-maglegnth="{{condition.measureValidation['maxLength']}}"
 										       required>
 									</div>
 								</div>

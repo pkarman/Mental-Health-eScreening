@@ -81,6 +81,8 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
 
+	            console.log('block', scope.block);
+
                 /* Temporarily disabled until further notice: 11/03/14
                  var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
                   */
@@ -198,7 +200,7 @@
 
 		            // (Re-)initialize the answers and validations
 		            item.measureAnswers = [];
-		            item.measureValidation = [];
+		            item.measureValidations = {};
 
 		            // Filter the operators and add the results to the item
 		            item.operators = scope.operators.filter(filterOperators, av);
@@ -210,7 +212,29 @@
 
 				            // Get the validations for freetext
 				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
-					            item.measureValidation = validations;
+					            angular.forEach(validations, function(validation) {
+						            console.log(validation);
+						            switch(validation.validateId) {
+							            case 1:
+								            item.measureValidations[validation.value] = validation.value;
+								            break;
+							            case 4:
+								            item.measureValidations['minLength'] = validation.value;
+								            break;
+							            case 5:
+								            item.measureValidations['maxLength'] = validation.value;
+								            break;
+							            case 6:
+								            item.measureValidations['minValue'] = validation.value;
+								            break;
+							            case 7:
+								            item.measureValidations['maxValue'] = validation.value;
+								            break;
+							            case 9:
+								            item.measureValidations['exactLength'] = validation.value;
+								            break;
+						            }
+					            });
 				            });
 
 			            } else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
