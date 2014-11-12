@@ -111,8 +111,7 @@
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngularSetup.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
@@ -126,6 +125,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
@@ -165,10 +165,12 @@
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
 
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>

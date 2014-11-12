@@ -1,7 +1,8 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', function($compile, limitToWithEllipsisFilter) {
+    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 
+                                              function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -80,6 +81,8 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
 
+	            console.log('block', scope.block);
+
                 /* Temporarily disabled until further notice: 11/03/14
                  var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
                   */
@@ -122,77 +125,37 @@
 	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
 
-                var globalOperators = [];
-
-                scope.getOperators = function (blockId) {
-                    if(Object.isDefined(globalOperators[blockId])){
-                        return globalOperators[blockId];
-                    } else {
-                        globalOperators[blockId] = scope.operators;
-                        return globalOperators[blockId];
-                    }
-                };
-
-                scope.setOperators = function (blockId, operators) {
-                    globalOperators[blockId] = operators;
-                };
-
                 var filterOperators = function(operator) {
                     var includeOperator = false;
-                    if(operator.category.toLowerCase() === "numerical") {
-                        if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
-                            includeOperator = true;
-                        } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
-                            includeOperator = true;
-                        }
-                    } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
-                        includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
-                        includeOperator = true;
-                    } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
-                        if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
-                            includeOperator = true;
-                        }
-                    }
+
+	                if (operator && this.type) {
+		                if(operator.category.toLowerCase() === "numerical") {
+			                if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
+				                includeOperator = true;
+			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
+				                includeOperator = true;
+			                }
+		                } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
+			                includeOperator = true;
+		                } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
+			                includeOperator = true;
+		                } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
+			                if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
+				                includeOperator = true;
+			                }
+		                }
+	                }
+
                     return includeOperator;
                 };
 
-                scope.$on('closeAssessmentVariableMenuRequested', function(event, data) {
-                    if(!Object.isDefined(data)) {
-                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.guid)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
-                    }
-
-                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
-                });
-
-                scope.$on('filterOperators', function(event, data) {
-                    if(!Object.isDefined(data)) {
-                        throw new BytePushers.exceptions.NullPointerException("data parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.guid)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.guid parameter can not be undefined or null.");
-                    }
-                    if(!Object.isDefined(data.selectedAssessmentVariable)) {
-                        throw new BytePushers.exceptions.NullPointerException("data.selectedAssessmentVariable parameter can not be undefined or null.");
-                    }
-
-                    $(".assessmentVariableSelection[guid=\""+data.guid+"\"]").find("#assessmentVariableMenuLabel").text(" " + limitToWithEllipsisFilter(data.selectedAssessmentVariable.name, 20));
-                    scope.setOperators(data.guid, scope.operators.filter(filterOperators, data.selectedAssessmentVariable));
-                });
-
-                scope.filterOperators = function() {
-                    return filterOperators;
-                };
+	            scope.filterOperators = function() {
+		            return filterOperators;
+	            };
 
                 scope.addBlock = function(selectedBlock) {
                     selectedBlock.children = selectedBlock.children || [];
-                    selectedBlock.children.push(new EScreeningDashboardApp.models.TemplateBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
+                    selectedBlock.children.push(TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
                 scope.addAndConditionBlock = function(selectedBlock, form) {
@@ -219,7 +182,7 @@
                 };
 
 	            scope.showBlockConditionRight = function(operatorValue) {
-		            var result = true;
+		            var result = (operatorValue);
 		            angular.forEach(scope.operators, function(operator) {
 			            if (operator.value === "" + operatorValue) {
 				            if (operator.category === 'formula' || operator.category === 'question') {
@@ -229,8 +192,60 @@
 			            }
 		            });
 		            return result;
-	            }
+	            };
 
+	            scope.updateLogicalOptions = function(item) {
+
+		            var av = item.left.content;
+
+		            // (Re-)initialize the answers and validations
+		            item.measureAnswers = [];
+		            item.measureValidations = {};
+
+		            // Filter the operators and add the results to the item
+		            item.operators = scope.operators.filter(filterOperators, av);
+
+		            // Check if the assessment variable is a question
+		            if (av.measureTypeId) {
+
+			            if (av.measureTypeId == 1) {
+
+				            // Get the validations for freetext
+				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
+					            angular.forEach(validations, function(validation) {
+						            switch(validation.validateId) {
+							            case 1:
+								            item.measureValidations[validation.value] = validation.value;
+								            break;
+							            case 4:
+								            item.measureValidations['minLength'] = validation.value;
+								            break;
+							            case 5:
+								            item.measureValidations['maxLength'] = validation.value;
+								            break;
+							            case 6:
+								            item.measureValidations['minValue'] = validation.value;
+								            break;
+							            case 7:
+								            item.measureValidations['maxValue'] = validation.value;
+								            break;
+							            case 9:
+								            item.measureValidations['exactLength'] = validation.value;
+								            break;
+						            }
+					            });
+				            });
+
+			            } else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
+
+				            // Get the answer list for multi or single select questions
+				            MeasureService.one(av.measureId).getList('answers').then(function (answers) {
+					            item.measureAnswers = answers;
+				            });
+			            }
+
+		            }
+	            };
             }
         };
 

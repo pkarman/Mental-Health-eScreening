@@ -693,19 +693,21 @@ returns the negation of customHasResult
   param right can be an answer object (not supported in UI right now), or an integer
 -->
 <#function responseIs var='notset' right='notset' measureTypeId='notset'> 
-    <#if var == 'notset' || right == 'notset'>
+    <#if var == 'notset' || (right?is_string && right == 'notset')>
         <#return false>
     </#if>
     
     <#if measureTypeId == 2 || measureTypeId == 3>
-        <#if (right.variableId)??>
+        <#if (!(right?is_number) && (right.variableId)??)>
             <#return isSelectedAnswer(var, right)>
         </#if>    
          
         <#if (var.children)?? >
             <#list var.children as v>
                 <#if (v.calculationValue)?? && (v.calculationValue)?has_content 
-                  && (v.value)?? && v.value = 'true' && v.calculationValue == right >   
+                  && (v.value)?? && v.value = 'true' && 
+                 ((right?is_number && v.calculationValue == right?string) 
+                  || (!(right?is_number) && v.calculationValue == right)) >   
                     <#return true>
                </#if>
             </#list>

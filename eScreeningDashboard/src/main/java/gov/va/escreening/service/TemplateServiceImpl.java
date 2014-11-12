@@ -703,7 +703,7 @@ public class TemplateServiceImpl implements TemplateService {
 			for(MeasureValidation mv : measure.getMeasureValidationList()){
 				MeasureValidationSimpleDTO sDTO = new MeasureValidationSimpleDTO();
 				
-				sDTO.setValidateId(mv.getMeasureValidationId());
+				sDTO.setValidateId(mv.getValidation().getValidationId());
 				if (mv.getBooleanValue()!=null){
 					sDTO.setValue(mv.getBooleanValue()+"");
 				}else if (mv.getNumberValue()!=null){

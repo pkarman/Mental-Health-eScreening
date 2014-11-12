@@ -23,6 +23,8 @@ var Editors = angular.module("Editors",
         'EscreeningDashboardApp.services.templateType',
         'EscreeningDashboardApp.services.assessmentVariable',
         'EscreeningDashboardApp.services.question',
+	    'EscreeningDashboardApp.services.MeasureService',
+        'EscreeningDashboardApp.services.templateBlock',
         'EscreeningDashboardApp.filters.messages',
         'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
         'EscreeningDashboardApp.filters.limitToWithEllipsis'
@@ -50,10 +52,13 @@ Editors.directive('ngReallyClick', [function() {
     };
 }]);
 
+
 Editors.config(function(RestangularProvider, $provide) {
 
-    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', '$delegate', '$modal', function(taRegisterTool, taCustomRenderers, taSelectableElements, $delegate, $modal){
-
+    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', '$delegate', '$modal', 'TemplateBlockService',
+                                     function(taRegisterTool, taCustomRenderers, taSelectableElements, $delegate, $modal, TemplateBlockService){
+        var variableSeed = 0;
+        
 	    // Add <code /> as an selectable element
 	    taSelectableElements.push('code');
 
@@ -80,45 +85,11 @@ Editors.config(function(RestangularProvider, $provide) {
 			tooltiptext: 'Insert Assessment Variable',
 			action: function(deferred) {
 
-				/*
-					Credit:
-				    http://jsfiddle.net/timdown/cCAWC/3/
-				    http://stackoverflow.com/questions/4687808/contenteditable-selected-text-save-and-restore
-				 */
-				function saveSelection() {
-					var sel;
-					if (window.getSelection) {
-						sel = window.getSelection();
-						if (sel.getRangeAt && sel.rangeCount) {
-							return sel.getRangeAt(0);
-						}
-					} else if (document.selection && document.selection.createRange) {
-						return document.selection.createRange();
-					}
-					return null;
-				}
-
-				/*
-					Note:
-					This is continued from above. Alternative approach would be to use Rangy:
-				    https://code.google.com/p/rangy/wiki/SelectionSaveRestoreModule
-				 */
-				function restoreSelection(range) {
-					if (range) {
-						if (window.getSelection) {
-							sel = window.getSelection();
-							sel.removeAllRanges();
-							sel.addRange(range);
-						} else if (document.selection && range.select) {
-							range.select();
-						}
-					}
-				}
-
 				/* Credit:
 					http://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
 				 */
 				function placeCaretAtEnd(el) {
+				    //TODO: Leaving this in but it is not being used
 					el.focus();
 					if (typeof window.getSelection != "undefined"
 						&& typeof document.createRange != "undefined") {
@@ -142,6 +113,7 @@ Editors.config(function(RestangularProvider, $provide) {
 				    http://stackoverflow.com/questions/6249095/how-to-set-caretcursor-position-in-contenteditable-element-div
 				 */
 				function setCaret(el, pos) {
+				    //TODO: Leaving this in but it is not being used
 					var range = document.createRange();
 					var sel = window.getSelection();
 
@@ -162,6 +134,7 @@ Editors.config(function(RestangularProvider, $provide) {
 					http://jsfiddle.net/timdown/JPb75/1/
 				*/
 				function insertHtmlAfterSelection(html) {
+				    //TODO: Leaving this in but it is not being used
 					var sel, range, expandedSelRange, node;
 					if (window.getSelection) {
 						sel = window.getSelection();
@@ -203,6 +176,7 @@ Editors.config(function(RestangularProvider, $provide) {
 				    http://stackoverflow.com/questions/16736680/get-caret-position-in-contenteditable-div-including-tags
 				 */
 				function getCaretCharacterOffsetWithin(element) {
+				    //TODO: Leaving this in but it is not being used
 					var caretOffset = 0;
 					if (typeof window.getSelection != "undefined") {
 						var range = window.getSelection().getRangeAt(0);
@@ -220,13 +194,12 @@ Editors.config(function(RestangularProvider, $provide) {
 					return caretOffset;
 				}
 
+				var textAngular = this;
+	            var savedSelection = rangy.saveSelection();
+	            
 				var addVariableTool = this;
 
 				var el = $("div[id^='taTextElement']").get(0);
-
-				//var elCaret = getCaretCharacterOffsetWithin(el);
-				
-				//var selRange = saveSelection();
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -237,45 +210,10 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
-							var embed, embedAlt, embedCode;
-
 							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
-
-							    //TODO: Since there is code which takes a text template block and turns its contents into a string this code below should be in one place used by both (see TemplateBlock.js) 
-								embed =
-									'<img ' +
-										'class="ta-insert-variable text-info" ' +
-										'id="' + $scope.assessmentVariable.id + '" ' +
-										'src="" ' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
-										'title="(' + $scope.assessmentVariable.getName() + ')"' +
-										'contenteditable="false" ' +
-									'/>';
-
-								// This version shows text in image for FF but if dragged, it will be duplicated
-								embedAlt =
-									'<img ' +
-										'class="ta-insert-variable text-info" ' +
-										'id="' + $scope.assessmentVariable.id + '" ' +
-										'src="" ' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" ' +
-										'alt="(' + $scope.assessmentVariable.getName() +
-										')" ' +
-										'title="(' + $scope.assessmentVariable.getName() + ')" ' +
-										'contenteditable="false" ' +
-									'/>';
-
-								// This is the code version and requires onElementSelect.element (below)
-								// to be set to 'code' for editing/deleting element
-								embedCode =
-									'<code + ' +
-										'class="ta-insert-variable text-info" +' +
-										'ta-insert-variable="' + $scope.assessmentVariable.id + '" +' +
-										'title="(' + $scope.assessmentVariable.getName() + ')">' +
-											$scope.assessmentVariable.getName()+
-									'</code>';
-
-								$modalInstance.close(embedAlt);
+							    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
+							    
+								$modalInstance.close(embed);
 	                        }
 
                         }, true);
@@ -289,48 +227,23 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				modalInstance.result.then(function(embed) {
 
-					/*
-						Credit:
-					    http://jsfiddle.net/aaronroberson/6pz5gjmo/1/
-					 */
-
-					//restoreSelection(selRange);
-
-					//setCaret(el, elCaret);
-
-					//insertHtmlAfterSelection(embed);
-					
 					var $taEl = $("div[id^='taTextElement']");
-
-					$taEl.find(".rangySelectionBoundary").replaceWith($(embed));
-
+					
+					$taEl.focus();					
+					$taEl.find(".rangySelectionBoundary").first().before($(embed));
+					rangy.restoreSelection(savedSelection);
+					
 					// Remove hanging break tags
 					$taEl.children('p').children('p br:last-child').remove();
 				    
 					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
-
+					
 				});
 
-				/*
-					Credit:
-					http://stackoverflow.com/questions/7280738/drag-and-drop-event-in-a-contenteditable-element
-				 */
-				/*
-				 TODO: Remove original DOM node when dragged and duplicated
 				 el.addEventListener("DOMNodeInserted", function(e) {
-				    console.log('e', e);
-					 console.log('e.relatedNode.nodeName', e.relatedNode.nodeName);
-					 console.log('e.originalTarget.src', e.originalTarget.src);
-					 if (e.originalTarget && e.originalTarget.nodeName === 'IMG' && !e.originalTarget.src) {
-						 console.log('e.originalEvent', e.originalTarget);
-						 //el.removeChild(e.originalTarget);
-						 e.originalTarget.parentNode.removeChild(e.originalTarget);
-						 e.originalTarget.replaceWith(e.originalTarget.contents());
-				        addVariableTool.updateTaBindtaTextElement();
-					 }
+				     TemplateBlockService.avDragHandler(el, e);
+				     //addVariableTool.$editor().updateTaBindtaTextElement();
 				 }, false);
-				 */
-
 
 				return false;
 
@@ -339,6 +252,8 @@ Editors.config(function(RestangularProvider, $provide) {
 				element: 'img',
 				onlyWithAttrs: ['ta-insert-variable'],
 				action: function (event, $element, editorScope) {
+				    console.log("adding editor toolbar");
+				    
 					// Setup the editor toolbar
 					// Edit bar logic based upon http://hackerwins.github.io/summernote
 					event.preventDefault();
