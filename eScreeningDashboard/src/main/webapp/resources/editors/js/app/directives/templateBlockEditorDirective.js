@@ -213,7 +213,6 @@
 				            // Get the validations for freetext
 				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
 					            angular.forEach(validations, function(validation) {
-						            console.log(validation);
 						            switch(validation.validateId) {
 							            case 1:
 								            item.measureValidations[validation.value] = validation.value;
