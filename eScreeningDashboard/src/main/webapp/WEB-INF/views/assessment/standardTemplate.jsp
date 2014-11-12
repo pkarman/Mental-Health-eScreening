@@ -104,7 +104,7 @@
   </div>
 </div>
 <div id="dialogSkip" class="hidden" title="Skipping Question(s)?" aria-hidden="true">
-  <div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?"  role="alert"> Some of the questions are not answered.
+  <div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?" role="alert" aria-hidden="false"> Some of the questions are not answered.
     Do you want to skip the question(s)? </div>
 </div>
 <div id="dialogLogoutTimer" class="hidden" title="Session will expire">
