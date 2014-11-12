@@ -28,6 +28,8 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
+    var cleanSummaryReg = /<\/*[^>]+>/g;
+    
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
     this.name;
@@ -101,7 +103,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-				    var text = blockContent.content.replace(/<\/*[^>]>/, "");
+				    var text = blockContent.content.replace(cleanSummaryReg, "");
 					block.summary += text;
 
 					if(setTitle && block.name.length < 10){
@@ -110,7 +112,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 					}
 				}
 				else if(blockContent.type == "var"){
-					var varName = "(" + blockContent.content.getName() + ")";
+					var varName = "(" + blockContent.content.getName().replace(/\s+/g, "_") + ")";
 					block.summary += varName;
 
 					if(setTitle && block.name.length < 10){

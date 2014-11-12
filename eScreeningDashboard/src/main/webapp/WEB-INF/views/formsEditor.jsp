@@ -111,8 +111,7 @@
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngularSetup.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
