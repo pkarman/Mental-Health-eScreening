@@ -186,7 +186,7 @@ h2 {
   color: #ffd800;
   font-size: 22px;
   text-align: left;
-  text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 }
 .container_box_white {
   background-image: url(../../images/bg_trans_white.png);
@@ -872,7 +872,9 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-
+.navbar-default .navbar-toggle .icon-bar{
+  background-color: #fff;
+}
 .print{
   margin:10px 0px;
 }

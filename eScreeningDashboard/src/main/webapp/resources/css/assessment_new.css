@@ -1,0 +1,25 @@
+.ui-progressbar-value {
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 15px;
+}
+.ui-progressbar {
+  height: 16px;
+  width: 100px;
+  overflow: hidden;
+  text-align: center;
+}
+.ui-widget-header {
+  background: #082f54;
+  border: 1px solid #aaaaaa;
+  color: #ffffff;
+  font-weight: bold;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-left, .ui-corner-top .ui-corner-br {
+  border-radius: 0px;
+}
+.empty {
+  background: red;
+  width: 10px !important;
+  display: none;
+}

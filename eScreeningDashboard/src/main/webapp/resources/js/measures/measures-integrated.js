@@ -105,9 +105,31 @@ $(document).ready(function(e) {
           }	  
       });
 	});
-    
+      
+      
+ 
+          
 });
 
+
+ // Play sound beep
+  function play(sound) {
+    if (window.HTMLAudioElement) {
+      var snd = new Audio('');
+      if(snd.canPlayType('audio/ogg')) {
+        snd = new Audio('resources/sounds/' + sound + '.ogg');
+      }
+      else if(snd.canPlayType('audio/mp3')) {
+        snd = new Audio('resources/sounds/' + sound + '.mp3');
+      }
+      snd.play();
+    }
+    else {
+      alert('HTML5 Audio is not supported by your browser!');
+    }
+  }
+  
+  
 function logout(reason){
 	var reasonQuery = "";
 	if(reason != null && typeof reason == "string" && reason != ""){
@@ -204,6 +226,8 @@ function openRequiredDialog() {
 						$(".ui-dialog").attr('aria-hidden', 'false');
             $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
             $(".assessment-column-left").attr('aria-hidden', 'true');
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);
         }
 	});
 }
@@ -236,11 +260,12 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
 						$(this).parents().find('.ui-dialog')
-								.attr('aria-hidden', 'false');
-                
+								.attr('aria-hidden', 'false');      
+          
             $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
             $(".assessment-column-left").attr('aria-hidden', 'true');
-            
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);       
         }
 	});
 }
@@ -272,6 +297,7 @@ function callMeasure(url, requestJSON, callbackSuccess)
 {
 	// Use post() shorthand method.
 	$.ajax({
+
 	  type: "POST",
 	  url: url,
       dataType: 'json',
@@ -451,6 +477,9 @@ function showLogoutCounter(logoutTimerValue) {
           }
         },
         open: function(event, ui) { 
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);
+            
             $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
         	autoLogoutTimer = setInterval(function () {
         		$("#counter").html(autoLogoutCounter--);
@@ -502,7 +531,6 @@ function calculateSectionProgress(surveyProgresses){
 	
 	return sectionProgresses;
 }
-	
 
 //Form Builder Methods.
 function buildFormFromJSON(json){
@@ -654,6 +682,8 @@ function displayServerError(message) {
 	            open: function (e, ui) {
 	                $(this).parent().find(".ui-dialog-buttonpane .ui-button")
 	                    .addClass("customButtonsDialog");
+                      // Delay play sound
+                      setTimeout(function() { play('beep'); }, 500);
 	            }
 	    	});
 	  });
@@ -679,6 +709,7 @@ function navto(requestObject){
 
 function page3(){
 	navto(
+
 			{
 				"pageId":3,
 				"currentPage":2,
@@ -851,8 +882,6 @@ function page4(){
     ]
 });
 }
-
-
 
 function page5(){
     navto(
@@ -1135,4 +1164,3 @@ function page7(){
     			]
     		});
 }
-

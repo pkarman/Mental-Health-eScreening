@@ -43,40 +43,7 @@
   		<script type="text/javascript" src="resources/js/measures/measures-formbuilder.js"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-validations.js?v=12"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-requestbuilder.js"></script>
-  		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>
-		
-	
-		<style type="text/css">
-			.ui-progressbar-value {
-			    font-size: 10px;
-		    	font-weight: bold;
-		    	line-height: 15px;
-			}
-			.ui-progressbar {
-			    height: 16px;
-			    width: 100px;
-			    overflow: hidden;
-			    text-align: center;
-			}
-			.ui-widget-header {
-			    background: #082f54;
-			    border: 1px solid #aaaaaa;
-			    color: #ffffff;
-			    font-weight: bold;
-			}
-			.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-left, .ui-corner-top .ui-corner-br {
-				border-radius: 0px;
-			}
-			
-			.empty{
-				background: red;
-				width: 10px !important;
-				display: none;
-			}
-		</style>
-		
-		
-		
+  		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
 	</head>
 	<body>
 
@@ -92,10 +59,6 @@
 		<div id="outerPageDiv">
 			<%@ include file="/WEB-INF/views/partialpage/surveyHeader.jsp" %>
 		</div>
-	
-	
-	
-		
 		<div id="left" class="column assessment-column-left" aria-hidden="false">
         	<input id="veteranAssessmentId" type="hidden" value="<c:out value="${veteranAssessmentId}" />" />
         	
@@ -117,7 +80,6 @@
         </div>
 		<!-- Three columns, fixed-fluid-fixed -->
         <div id="center" class="column contentAreaGrayRadial" aria-hidden="false">
-        	
 			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
 			<!-- Dynamic Content Region -->
 			<div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
@@ -157,15 +119,14 @@
         	<div class="dialogSkipInfo"
                 title="Required inputs can not be empty. Required fields are denoted with an * in each required questions. Please answer the required fields."
                 aria-label="Required inputs can not be empty. Required fields are denoted with an * in each required questions. Please answer the required fields."
-                role="alert">  
-        		Required inputs can not be empty. Required fields are denoted with an 
+                role="alert"> Required inputs can not be empty. Required fields are denoted with an 
         		<span class="requiredIcon">* </span>in each required questions.
         		<div>Please answer the required fields.</div>
         	</div>
         </div>
         
         <div id="dialogSkip" class="hidden" title="Skipping Question(s)?" aria-hidden="true">
-        	<div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?"  role="alert">
+        	<div class="dialogSkipInfo" title="Some of the questions are not answered. Do you want to skip the question(s)?"  role="alert"  aria-hidden="false">
         		Some of the questions are not answered.
         		Do you want to skip the question(s)?
         	</div>
