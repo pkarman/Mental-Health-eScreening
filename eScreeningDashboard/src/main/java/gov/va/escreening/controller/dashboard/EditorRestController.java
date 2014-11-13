@@ -93,7 +93,7 @@ public class EditorRestController {
     	}
         editorsViewDelegate.updateSurveyPages(surveyId, surveyPages);
         Map surveyPageInfoItems = new HashMap();
-        surveyPageInfoItems.put("surveyPages", new ArrayList<SurveyPageInfo>());
+        surveyPageInfoItems.put("surveyPages", surveyPages);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "The data is saved successfully."), surveyPageInfoItems);
     }
