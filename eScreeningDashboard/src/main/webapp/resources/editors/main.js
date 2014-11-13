@@ -194,11 +194,8 @@ Editors.config(function(RestangularProvider, $provide) {
 					return caretOffset;
 				}
 
-				var textAngular = this;
-	            var savedSelection = rangy.saveSelection();
-	            
 				var addVariableTool = this;
-
+				var savedSelection = rangy.saveSelection();
 				var el = $("div[id^='taTextElement']").get(0);
 
 				var modalInstance = $modal.open({
@@ -219,7 +216,7 @@ Editors.config(function(RestangularProvider, $provide) {
                         }, true);
 
 						$scope.cancel = function() {
-							$modalInstance.dismiss();
+						    $modalInstance.close("");
 						};
 
 					}]
@@ -242,7 +239,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				 el.addEventListener("DOMNodeInserted", function(e) {
 				     TemplateBlockService.avDragHandler(el, e);
-				     //addVariableTool.$editor().updateTaBindtaTextElement();
+				     addVariableTool.$editor().updateTaBindtaTextElement();
 				 }, false);
 
 				return false;
