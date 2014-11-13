@@ -104,6 +104,7 @@ public class TemplateTagProcessor {
         noteText = noteText.replace("</p>", "\n");
         noteText = noteText.replace("</li>","\n");
         noteText = noteText.replace("</ol>", "\n");
+        noteText = noteText.replace("</div>", "\n");
         
         noteText = textEmptyReplace.matcher(noteText).replaceAll("");
 
@@ -111,7 +112,8 @@ public class TemplateTagProcessor {
         noteText = noteText.replaceAll("style=\"text-align: center;\"", "");
         noteText = noteText.replaceAll("style=\"text-align: left;\"", "");
         noteText = noteText.replaceAll("style=\"text-align: right;\"", "");
-        noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)(span)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)(span)(div)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("<span class=\"[a-z]*\">", "");
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();
