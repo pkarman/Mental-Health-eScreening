@@ -113,7 +113,7 @@ public class TemplateTagProcessor {
         noteText = noteText.replaceAll("style=\"text-align: left;\"", "");
         noteText = noteText.replaceAll("style=\"text-align: right;\"", "");
         noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)(span)(div)]+\\s*/*>", "");
-        noteText = noteText.replaceAll("<span class=\"[a-z]*\">", "");
+        noteText = noteText.replaceAll("<span class=\"[a-z0-9]*\">", "");
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();
