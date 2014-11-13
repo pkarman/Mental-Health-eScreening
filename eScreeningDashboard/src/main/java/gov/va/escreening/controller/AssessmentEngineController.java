@@ -62,6 +62,12 @@ public class AssessmentEngineController {
 			return "redirect:/assessmentLogin";
 		}
 	}
+	
+	@RequestMapping(value = "/welcome_msg", method = RequestMethod.GET)
+	public @ResponseBody String getWelcomeMessage()
+	{
+		return assessmentDelegate.getWelcomeMessage();
+	}
 
 	@RequestMapping(value = "/services/assessments/active", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody

@@ -226,6 +226,14 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
+	public String getWelcomeMessage()
+	{
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
+		return veteranAssessment.getBattery().getWelcomeMessage();
+		
+	}
+	
+	@Override
 	public void markAssessmentAsComplete() {
 		Integer assessmentId = assessmentContext.getVeteranAssessmentId();
 		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
