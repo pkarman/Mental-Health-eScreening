@@ -72,7 +72,6 @@ Editors.config(function(RestangularProvider, $provide) {
 				var addVariableTool = this;
 		        
 		        deferred.promise.then(function(result){
-		            //textAngularManager.refreshEditor('text-block-editor');
 		            addVariableTool.$editor().updateTaBindtaTextElement();
 		            
 		            return addVariableTool.$editor().updateTaBindtaHtmlElement();
@@ -116,38 +115,6 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				return false;
 
-			},
-			onElementSelect: {
-				element: 'img',
-				onlyWithAttrs: ['ta-insert-variable'],
-				action: function (event, $element, editorScope) {
-				    console.log("adding editor toolbar");
-				    
-					// Setup the editor toolbar
-					// Edit bar logic based upon http://hackerwins.github.io/summernote
-					event.preventDefault();
-
-					editorScope.displayElements.popover.css('width', '62px');
-
-					var container = editorScope.displayElements.popoverContainer;
-
-					container.empty();
-					container.css('line-height', '28px');
-
-					var buttonGroup = angular.element('<div class="btn-group">');
-
-					var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-trash-o icon-trash-o"></i></button>');
-					// directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
-					unLinkButton.on('click', function (event) {
-						event.preventDefault();
-						$element.replaceWith($element.contents());
-						editorScope.updateTaBindtaTextElement();
-						editorScope.hidePopover();
-					});
-					buttonGroup.append(unLinkButton);
-					container.append(buttonGroup);
-					editorScope.showPopover($element);
-				}
 			}
 		});
 		// DO NOT add the button to the default toolbar definition, but if you did, this is how you would:

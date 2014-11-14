@@ -29,6 +29,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                 return changed;
             }
             else if(target.prop("tagName") === 'IMG'
+                 && target.hasClass('ta-insert-variable') 
                  && Object.isDefined(target.attr("src")) 
                  && target.attr("src") != "" 
                  && Object.isDefined(target.attr("id"))){
