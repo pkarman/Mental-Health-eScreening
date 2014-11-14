@@ -22,17 +22,20 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
             var varChildren = target.find(".ta-insert-variable");
             if (varChildren.size() > 0){
                 console.log("Item inserted contains variables. Checking for duplicates");
+                var changed = false;
                 varChildren.each(function(i, child){
-                    removeDuplicateBlockContent($(child), container); 
+                    changed |= removeDuplicateBlockContent($(child), container);
                 });
+                return changed;
             }
             else if(target.prop("tagName") === 'IMG'
+                 && target.hasClass('ta-insert-variable') 
                  && Object.isDefined(target.attr("src")) 
                  && target.attr("src") != "" 
                  && Object.isDefined(target.attr("id"))){
                     
                     console.log("Checking for duplicate after drag");
-                    
+                    var changed = false;
                     container
                      .find("[id="+ target.attr("id") + "]")
                      .each(function(){
@@ -42,8 +45,10 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                         else{
                             console.log("Remvoing old duplicate variable.");
                              $(this).remove();
+                             changed = true;
                         }
                      });
+                    return changed;
              }
         }
         
@@ -85,6 +90,13 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                         contents.push(content);
                     });
                 }
+                //remove extra line break
+                if(contents.length > 0){
+                    var lastContent = contents[contents.length-1];
+                    if(lastContent.type == "text" && lastContent.content.substr(-16) != "<div><br/></div>"){
+                        lastContent.content = lastContent.content.replace(/<\w*br\w*\/*>\w*(<[^>]+>\w*)$/, "$1");
+                    }
+                }
                 return contents;
             },
             
@@ -109,15 +121,17 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
              * Cleans up the given container after a drag and drop operation was carried out
              * @param containerElement - the DOM element which represents the editor which contains assessment variables
              * @param insertEvent - the event object for the dragged operation
+             * @return true if something was changed
              */
             avDragHandler : function(containerElement, event){
                 if(event.originalTarget){
                     var target = $(event.originalTarget);
                     var container = $(containerElement);
                     
-                    removeDuplicateBlockContent(target, container);
-                   
+                    return removeDuplicateBlockContent(target, container);
                 }
+                return false;
             }
+            
         }
     });

@@ -139,6 +139,7 @@
 		     ta-toolbar-button-class="btn btn-default"
 		     ta-toolbar-button-active-class="active"
 		     ta-default-wrap="div" 
+		     name="text-block-editor"
 		     class="tab-content"></div>
 	</div>
 </div>
@@ -165,6 +166,7 @@
 								       ng-change="updateLogicalOptions(condition)"
 								       update-hidden>
 								<mhe-assessment-var-dropdown-menu-dir guid="condition.guid"
+								                                      assessment-variable="condition.left.content"
 								                                      ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
 									<mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables"
 									                            assessment-variable="condition.left.content"

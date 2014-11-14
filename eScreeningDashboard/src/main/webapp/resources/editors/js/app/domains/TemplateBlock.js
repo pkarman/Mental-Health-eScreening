@@ -29,6 +29,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
     var cleanSummaryReg = /<\/*[^>]+>/g;
+    var TEXT_NAME_LENGTH = 20;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
@@ -99,15 +100,15 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 			block.name = Object.isDefined(block.name) ? block.name :"";
 			var setTitle = this.name.trim() == "";
 
-			for(var i=0; ((setTitle && block.name < 10) || block.summary.length < 50)
+			for(var i=0; ((setTitle && block.name < TEXT_NAME_LENGTH) || block.summary.length < 100)
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
 				    var text = blockContent.content.replace(cleanSummaryReg, "");
 					block.summary += text;
 
-					if(setTitle && block.name.length < 10){
-						var neededChars = 10 - block.name.length;
+					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
+						var neededChars = TEXT_NAME_LENGTH - block.name.length;
 						block.name += text.slice(0, neededChars);
 					}
 				}
@@ -115,7 +116,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 					var varName = "(" + blockContent.content.getName().replace(/\s+/g, "_") + ")";
 					block.summary += varName;
 
-					if(setTitle && block.name.length < 10){
+					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
 						block.name += varName;
 					}
 				}

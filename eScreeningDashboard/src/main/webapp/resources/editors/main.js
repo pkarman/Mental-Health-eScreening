@@ -54,152 +54,28 @@ Editors.directive('ngReallyClick', [function() {
 
 
 Editors.config(function(RestangularProvider, $provide) {
-
-    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', '$delegate', '$modal', 'TemplateBlockService',
-                                     function(taRegisterTool, taCustomRenderers, taSelectableElements, $delegate, $modal, TemplateBlockService){
-        var variableSeed = 0;
-        
-	    // Add <code /> as an selectable element
-	    taSelectableElements.push('code');
-
-	    // Add custom renderer for transforming the insert variable HTML
-	    taCustomRenderers.push({
-		    selector: 'img',
-		    customAttribute: 'ta-insert-variable',
-		    renderLogic: function(element){
-			    var img = angular.element('<img src="" />');
-			    var attributes = element.prop("attributes");
-			    // loop through element attributes and apply them on img
-			    angular.forEach(attributes, function(attr) {
-				    img.attr(attr.name, attr.value);
-			    });
-			    img.attr('alt', img.attr('title'));
-			    element.replaceWith(img);
-		    }
-	    });
-
+    
+    $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', 'textAngularManager', '$delegate', '$modal', 'TemplateBlockService',
+                                     function(taRegisterTool, taCustomRenderers, taSelectableElements, textAngularManager, $delegate, $modal, TemplateBlockService){
+	    
+	    $delegate.setup.textEditorSetup = function($element){
+	        $element.attr('template-block-text-editor', '');
+	    }	    
+	    
 		// Register the custom addVariable tool with textAngular
 	    // $delegate is the taOptions we are decorating
 		taRegisterTool('insertVariable', {
 			display: '<button title="Add Variable" class="btn btn-default"><i class="fa fa-plus"></i> Add Variable</button>',
 			tooltiptext: 'Insert Assessment Variable',
-			action: function(deferred) {
+			action: function(deferred, restoreSelection) {
 
-				/* Credit:
-					http://stackoverflow.com/questions/4233265/contenteditable-set-caret-at-the-end-of-the-text-cross-browser
-				 */
-				function placeCaretAtEnd(el) {
-				    //TODO: Leaving this in but it is not being used
-					el.focus();
-					if (typeof window.getSelection != "undefined"
-						&& typeof document.createRange != "undefined") {
-						var range = document.createRange();
-						range.selectNodeContents(el);
-						range.collapse(false);
-						var sel = window.getSelection();
-						sel.removeAllRanges();
-						sel.addRange(range);
-					} else if (typeof document.body.createTextRange != "undefined") {
-						var textRange = document.body.createTextRange();
-						textRange.moveToElementText(el);
-						textRange.collapse(false);
-						textRange.select();
-					}
-				}
-
-				/*
-					Credit:
-				    http://jsfiddle.net/timdown/vXnCM/
-				    http://stackoverflow.com/questions/6249095/how-to-set-caretcursor-position-in-contenteditable-element-div
-				 */
-				function setCaret(el, pos) {
-				    //TODO: Leaving this in but it is not being used
-					var range = document.createRange();
-					var sel = window.getSelection();
-
-					try {
-
-						range.setStart(el.childNodes[0].childNodes[0], pos);
-						range.collapse(true);
-						sel.removeAllRanges();
-						sel.addRange(range);
-						el.focus();
-					} catch(e) {
-						placeCaretAtEnd(el);
-					}
-				}
-
-				/*
-					Credit:
-					http://jsfiddle.net/timdown/JPb75/1/
-				*/
-				function insertHtmlAfterSelection(html) {
-				    //TODO: Leaving this in but it is not being used
-					var sel, range, expandedSelRange, node;
-					if (window.getSelection) {
-						sel = window.getSelection();
-						if (sel.getRangeAt && sel.rangeCount) {
-							range = window.getSelection().getRangeAt(0);
-							expandedSelRange = range.cloneRange();
-							range.collapse(false);
-
-							// Range.createContextualFragment() would be useful here but is
-							// non-standard and not supported in all browsers (IE9, for one)
-							var el = document.createElement("div");
-							el.innerHTML = html;
-							var frag = document.createDocumentFragment(), node, lastNode;
-							while ((node = el.firstChild)) {
-								lastNode = frag.appendChild(node);
-							}
-							range.insertNode(frag);
-
-							// Preserve the selection
-							if (lastNode) {
-								expandedSelRange.setEndAfter(lastNode);
-								sel.removeAllRanges();
-								sel.addRange(expandedSelRange);
-							}
-						}
-					} else if (document.selection && document.selection.createRange) {
-						range = document.selection.createRange();
-						expandedSelRange = range.duplicate();
-						range.collapse(false);
-						range.pasteHTML(html);
-						expandedSelRange.setEndPoint("EndToEnd", range);
-						expandedSelRange.select();
-					}
-				}
-
-				/*
-					Credit:
-				    http://jsfiddle.net/TjXEG/1/
-				    http://stackoverflow.com/questions/16736680/get-caret-position-in-contenteditable-div-including-tags
-				 */
-				function getCaretCharacterOffsetWithin(element) {
-				    //TODO: Leaving this in but it is not being used
-					var caretOffset = 0;
-					if (typeof window.getSelection != "undefined") {
-						var range = window.getSelection().getRangeAt(0);
-						var preCaretRange = range.cloneRange();
-						preCaretRange.selectNodeContents(element);
-						preCaretRange.setEnd(range.endContainer, range.endOffset);
-						caretOffset = preCaretRange.toString().length;
-					} else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
-						var textRange = document.selection.createRange();
-						var preCaretTextRange = document.body.createTextRange();
-						preCaretTextRange.moveToElementText(element);
-						preCaretTextRange.setEndPoint("EndToEnd", textRange);
-						caretOffset = preCaretTextRange.text.length;
-					}
-					return caretOffset;
-				}
-
-				var textAngular = this;
-	            var savedSelection = rangy.saveSelection();
-	            
 				var addVariableTool = this;
-
-				var el = $("div[id^='taTextElement']").get(0);
+		        
+		        deferred.promise.then(function(result){
+		            addVariableTool.$editor().updateTaBindtaTextElement();
+		            
+		            return addVariableTool.$editor().updateTaBindtaHtmlElement();
+		        });
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
@@ -219,66 +95,26 @@ Editors.config(function(RestangularProvider, $provide) {
                         }, true);
 
 						$scope.cancel = function() {
-							$modalInstance.dismiss();
+						    $modalInstance.close("");
 						};
 
 					}]
 				});
 
-				modalInstance.result.then(function(embed) {
-
+				modalInstance.result.then(function(embed) {                    
 					var $taEl = $("div[id^='taTextElement']");
 					
 					$taEl.focus();					
 					$taEl.find(".rangySelectionBoundary").first().before($(embed));
-					rangy.restoreSelection(savedSelection);
 					
-					// Remove hanging break tags
-					$taEl.children('p').children('p br:last-child').remove();
+					restoreSelection();
 				    
-					deferred.resolve(addVariableTool.$editor().updateTaBindtaHtmlElement());
+					deferred.resolve();
 					
 				});
 
-				 el.addEventListener("DOMNodeInserted", function(e) {
-				     TemplateBlockService.avDragHandler(el, e);
-				     //addVariableTool.$editor().updateTaBindtaTextElement();
-				 }, false);
-
 				return false;
 
-			},
-			onElementSelect: {
-				element: 'img',
-				onlyWithAttrs: ['ta-insert-variable'],
-				action: function (event, $element, editorScope) {
-				    console.log("adding editor toolbar");
-				    
-					// Setup the editor toolbar
-					// Edit bar logic based upon http://hackerwins.github.io/summernote
-					event.preventDefault();
-
-					editorScope.displayElements.popover.css('width', '62px');
-
-					var container = editorScope.displayElements.popoverContainer;
-
-					container.empty();
-					container.css('line-height', '28px');
-
-					var buttonGroup = angular.element('<div class="btn-group">');
-
-					var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-trash-o icon-trash-o"></i></button>');
-					// directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
-					unLinkButton.on('click', function (event) {
-						event.preventDefault();
-						$element.replaceWith($element.contents());
-						editorScope.updateTaBindtaTextElement();
-						editorScope.hidePopover();
-					});
-					buttonGroup.append(unLinkButton);
-					container.append(buttonGroup);
-					editorScope.showPopover($element);
-				}
 			}
 		});
 		// DO NOT add the button to the default toolbar definition, but if you did, this is how you would:

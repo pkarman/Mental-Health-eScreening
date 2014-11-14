@@ -476,18 +476,25 @@ $(document).ready(function() {
                 data = "[" + xhr.responseText + "]";
                 data = $.parseJSON(data);
           
-                var result = [];
+                var userMessage       = [];
+                var developerMessage  = [];
                 for (var i = 0; i < data.length; ++i) {                    
                   for (var j = 0; j < data[i].errorMessages.length; j++) {
                     errorMessages = data[i].errorMessages[j];
-                    result.push([errorMessages.description]);
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
                   }
                   if(data[i].developerMessage.length > 0){
-                    result.push("<div class='developerMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>");
-                    result.push("<div class='logMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>");             
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
                   }
                 }
-                var panelTemplate = '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">'+ result +'</div></div></div></div></div></div>';
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
                 $(modal_contents).show().html(panelTemplate);
           }
          
@@ -515,18 +522,25 @@ $(document).ready(function() {
                 data = "[" + xhr.responseText + "]";
                 data = $.parseJSON(data);
           
-                var result = [];
+                var userMessage       = [];
+                var developerMessage  = [];
                 for (var i = 0; i < data.length; ++i) {                    
                   for (var j = 0; j < data[i].errorMessages.length; j++) {
                     errorMessages = data[i].errorMessages[j];
-                    result.push([errorMessages.description]);
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
                   }
                   if(data[i].developerMessage.length > 0){
-                    result.push("<div class='developerMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>");
-                    result.push("<div class='logMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>");             
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
                   }
                 }
-                var panelTemplate = '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="cprsNoteAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#cprsNoteAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">'+ result +'</div></div></div></div></div></div>';
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
                 $(modal_contents).show().html(panelTemplate);
           }
    		   });
