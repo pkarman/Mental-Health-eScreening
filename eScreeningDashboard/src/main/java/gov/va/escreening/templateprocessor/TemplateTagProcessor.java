@@ -93,7 +93,7 @@ public class TemplateTagProcessor {
 	    noteText = noteText.replace(SECTION_TITLE_END.xml(), "\n" + dashedLine +"\n");
 	    
 	    noteText = noteText.replace(SECTION_START.xml(), "\n");
-	    noteText = noteText.replace(SECTION_END.xml(), dashedLine);
+	    noteText = noteText.replace(SECTION_END.xml(), "\n" + dashedLine);
         
         noteText = noteText.replace(MODULE_TITLE_END.xml(), " ");
         noteText = noteText.replace(MODULE_END.xml(), "\n\n");

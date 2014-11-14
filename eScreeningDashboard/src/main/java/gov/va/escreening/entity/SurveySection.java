@@ -142,7 +142,7 @@ public class SurveySection implements Serializable, SurveySectionBaseProperties 
 	@Override
 	public String toString() {
 		return "gov.va.escreening.entity.SurveySection[ surveySectionId="
-				+ surveySectionId + " ]";
+				+ surveySectionId + ", Name=" + name + " ]";
 	}
 
 }
