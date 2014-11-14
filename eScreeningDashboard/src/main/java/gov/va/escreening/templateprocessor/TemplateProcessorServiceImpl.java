@@ -629,5 +629,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return  fmConfiguration.getTemplate(templateCacheName);
 	}
 
+	public static void main(String[] args)
+	{
+		System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
+	}
 }
 
