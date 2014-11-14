@@ -173,12 +173,12 @@ ${MODULE_START}
 		<#assign score = empty>
 		<#assign cutoff = empty>
 		
-		<#if (var2001?? && var2001.children?? && var2001.children?size>0) >
-			<#if (var2001.children[0].key == "var772")>
+		<#if (var2001?? && var2001.value??) >
+			<#if (var2001.value?number == 1)>
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Positive">
-			<#elseif (var2001.children[0].key == "var771") >
+			<#elseif (var2001.value?number == 0) >
 				<#assign score = "N/A">
 				<#assign cutoff = "N/A">
 				<#assign status = "Negative">
