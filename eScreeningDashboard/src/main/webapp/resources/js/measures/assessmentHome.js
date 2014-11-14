@@ -6,7 +6,6 @@ $(document).ready(function(e) {
       url : 'welcome_msg',
       success : function(data)
         {
-          console.log(data);
           $("#assessmentWelcome").html(data);
         },
       error: function()
@@ -23,4 +22,3 @@ $(document).ready(function(e) {
       e.preventDefault();
   });
 });
-	
