@@ -59,7 +59,7 @@
                 element.addClass("assessmentVariableSelection");
                 element.attr("guid", scope.guid);
 
-	            scope.selectedAssessmentVariable = '';
+	            scope.selectedAssessmentVariable = scope.assessmentVariable || {};
 
 	            // These are used for form validation from block and condition contexts
 	            scope.templateBlockEditorForm = formController;

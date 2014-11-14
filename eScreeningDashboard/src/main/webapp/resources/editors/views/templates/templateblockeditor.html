@@ -165,6 +165,7 @@
 								       ng-change="updateLogicalOptions(condition)"
 								       update-hidden>
 								<mhe-assessment-var-dropdown-menu-dir guid="condition.guid"
+								                                      assessment-variable="condition.left.content"
 								                                      ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
 									<mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables"
 									                            assessment-variable="condition.left.content"
