@@ -203,6 +203,8 @@
 		            // Filter the operators and add the results to the item
 		            item.operators = scope.operators.filter(filterOperators, av);
 
+		            scope.dt = new Date();
+
 		            if (av.type && av.type.toLowerCase() === "formula") {
 			            // Assessment Variable is a formula, which must be a number
 			            item.measureValidations.number = 'number';
@@ -222,10 +224,10 @@
 								            item.measureValidations[validation.value] = validation.value;
 								            break;
 							            case 4:
-								            item.measureValidations['minLength'] = validation.value;
+								            item.measureValidations['minLength'] = validation.value || 0;
 								            break;
 							            case 5:
-								            item.measureValidations['maxLength'] = validation.value;
+								            item.measureValidations['maxLength'] = validation.value || 150;
 								            break;
 							            case 6:
 								            item.measureValidations['minValue'] = validation.value;

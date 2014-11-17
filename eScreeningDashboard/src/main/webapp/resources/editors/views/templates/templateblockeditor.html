@@ -56,8 +56,8 @@
 								       placeholder="Enter Value"
 								       ng-model="block.right.content"
 								       ng-if="block.measureValidations['number']"
-								       min="{{block.measureValidation['minValue']}}"
-								       max="{{block.measureValidation['maxValue']}}"
+								       min="{{block.measureValidations['minValue']}}"
+								       max="{{block.measureValidations['maxValue']}}"
 								       required>
 								<input type="email"
 								       class="form-control"
@@ -75,7 +75,7 @@
 										datepicker-popup="'MM/dd/yyyy"
 										ng-model="block.right.content"
 										ng-if="block.measureValidations['date']"
-										init-date="new Date()"
+										init-date="dt"
 										show-weeks="false"
 										is-open="opened"
 										datepicker-options="{ startingDay: 1}"
@@ -88,8 +88,8 @@
 								       placeholder="Enter Value"
 								       ng-model="block.right.content"
 								       ng-if="!block.measureValidations['email'] && !block.measureValidations['date'] && !block.measureValidations['number']"
-								       ng-minlength="block.measureValidations['minLength']"
-								       ng-maxlength="block.measureValidations['maxLength']"
+								       ng-minlength="{{ block.measureValidations['minLength'] || 0 }}"
+								       ng-maxlength="{{ block.measureValidations['maxLength'] || 150}}"
 								       required>
 							</div>
 							<select class="form-control"
@@ -198,8 +198,8 @@ conditionForm.conditionOperator.$dirty}">
 									       placeholder="Enter Value"
 									       ng-model="condition.right.content"
 									       ng-if="condition.measureValidations['number']"
-									       min="{{condition.measureValidation['minValue']}}"
-									       max="{{condition.measureValidation['maxValue']}}"
+									       min="{{condition.measureValidations['minValue']}}"
+									       max="{{condition.measureValidations['maxValue']}}"
 									       required>
 									<input type="email"
 									       class="form-control"
@@ -217,7 +217,7 @@ conditionForm.conditionOperator.$dirty}">
 											datepicker-popup="'MM/dd/yyyy"
 											ng-model="condition.right.content"
 											ng-if="condition.measureValidations['date']"
-											init-date="new Date()"
+											init-date="dt"
 											show-weeks="false"
 											is-open="opened"
 											datepicker-options="{ startingDay: 1}"
@@ -230,8 +230,8 @@ conditionForm.conditionOperator.$dirty}">
 									       placeholder="Enter Value"
 									       ng-model="condition.right.content"
 									       ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']"
-									       ng-minlength="{{condition.measureValidation['minLength']}}"
-									       ng-maglegnth="{{condition.measureValidation['maxLength']}}"
+									       ng-minlength="{{condition.measureValidations['minLength'] || 0}}"
+									       ng-maxlegnth="{{condition.measureValidations['maxLength'] || 150}}"
 									       required>
 								</div>
 								<select
