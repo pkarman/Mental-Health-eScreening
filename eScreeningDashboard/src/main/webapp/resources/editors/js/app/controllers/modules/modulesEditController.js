@@ -116,8 +116,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
     var surveySectionDropDownMenuOptionIndex = (Object.isDefined($scope.selectedSurveyUIObject.surveySection))? selectedMenuItemIndex(new EScreeningDashboardApp.models.MenuItemSurveySectionUIObjectWrapper($scope.selectedSurveyUIObject.surveySection), surveySectionDropDownMenuOptions) : -1;
     $scope.selectedSurveyUIObject.surveySection = (surveySectionDropDownMenuOptionIndex >= 0)? surveySectionDropDownMenuOptions[surveySectionDropDownMenuOptionIndex].item: null;
 
-
-
     $scope.$watch('selectedSurveyUIObject.surveySection', function (currentlySelectedSurveySectionItem, previouslySelectedSurveySectionItem) {
         if (currentlySelectedSurveySectionItem === previouslySelectedSurveySectionItem) {
             return;
@@ -274,7 +272,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return stateName;
     };
 
-    /*$scope.deleteQuestion = function(question){
+    $scope.deleteQuestion = function(question){
         $rootScope.messageHandler.clearMessages();
         QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
             setQuestionUIObjects();
@@ -284,7 +282,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         });
 
         $state.go('modules.detail.selectQuestionType');
-    };*/
+    };
 
     $scope.sortableOptions = {
         cancel: ".unsortable",

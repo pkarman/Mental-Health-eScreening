@@ -9,27 +9,31 @@
 angular.module('EscreeningDashboardApp.filters.messages', []).filter('uniqueMessage', function(){
     'use strict';
     return function (messages) {
-        var filtered = messages.filter(function(message, index, messageArray){
-            var existingMessages = [], filterResults = false;
+	    var filtered = messages;
 
-            if(index > 0){
-                existingMessages = messageArray.splice(0, index);
-            } else {
-                filterResults = true;
-            }
+	    if (angular.isArray(messages)) {
+		    filtered = messages.filter(function (message, index, messageArray) {
+			    var existingMessages = [], filterResults = false;
 
-            if(!filterResults){
-                filterResults = existingMessages.some(function(existingMessage) {
-                    if(Object.isDefined(existingMessage) && Object.isDefined(message)) {
-                        if(existingMessage.getValue() === message.getValue()) {
-                          return true;
-                        }
-                    }
-                });
-            }
+			    if (index > 0) {
+				    existingMessages = messageArray.splice(0, index);
+			    } else {
+				    filterResults = true;
+			    }
 
-            return filterResults;
-        });
+			    if (!filterResults) {
+				    filterResults = existingMessages.some(function (existingMessage) {
+					    if (Object.isDefined(existingMessage) && Object.isDefined(message)) {
+						    if (existingMessage.getValue() === message.getValue()) {
+							    return true;
+						    }
+					    }
+				    });
+			    }
+
+			    return filterResults;
+		    });
+        }
 
         return filtered;
     };
