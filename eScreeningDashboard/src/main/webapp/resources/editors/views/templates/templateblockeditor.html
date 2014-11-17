@@ -49,50 +49,46 @@
 						     ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
 							<label class="sr-only" for="blockvalue">Enter Value</label>
 							<div ng-if="!block.measureAnswers || !block.measureAnswers.length">
-								<div ng-if="block.measureValidations['number']">
-									<input type="number"
-									       class="form-control"
-									       name="blockValue"
-									       id="blockvalue"
-									       placeholder="Enter Value"
-									       ng-model="block.right.content"
-									       min="{{block.measureValidation['minValue']}}"
-									       max="{{block.measureValidation['maxValue']}}"
-									       required>
-								</div>
-								<div ng-if="block.measureValidations['email']">
-									<input type="email"
-									       class="form-control"
-									       name="blockValue"
-									       id="blockvalue"
-									       placeholder="Enter Value"
-									       ng-model="block.right.content"
-									       required>
-								</div>
-								<div ng-if="block.measureValidations['date']">
-									<input
+								<input type="number"
+								       class="form-control"
+								       name="blockValue"
+								       id="blockvalue"
+								       placeholder="Enter Value"
+								       ng-model="block.right.content"
+								       ng-if="block.measureValidations['number']"
+								       min="{{block.measureValidation['minValue']}}"
+								       max="{{block.measureValidation['maxValue']}}"
+								       required>
+								<input type="email"
+								       class="form-control"
+								       name="blockValue"
+								       id="blockvalue"
+								       placeholder="Enter Value"
+								       ng-model="block.right.content"
+								       ng-if="block.measureValidations['email']"
+								       required>
+								<input
 										type="text"
 										class="form-control"
 										name="blockValue"
 										id="blockvalue"
 										datepicker-popup="'mm/dd/yyyy"
 										ng-model="block.right.content"
+										ng-if="block.measureValidations['date']"
 										is-open="opened"
 										datepicker-options="{ startingDay: 1}"
 										close-text="Close"
 										required />
-								</div>
-								<div ng-if="!block.measureValidations['email'] && !block.measureValidations['date'] && !block.measureValidations['number']">
-									<input type="text"
-									       class="form-control"
-									       name="blockValue"
-									       id="blockvalue"
-									       placeholder="Enter Value"
-									       ng-model="block.right.content"
-									       ng-minlength="block.measureValidations['minLength']"
-									       ng-maxlength="block.measureValidations['maxLength']"
-									       required>
-								</div>
+								<input type="text"
+								       class="form-control"
+								       name="blockValue"
+								       id="blockvalue"
+								       placeholder="Enter Value"
+								       ng-model="block.right.content"
+								       ng-if="!block.measureValidations['email'] && !block.measureValidations['date'] && !block.measureValidations['number']"
+								       ng-minlength="block.measureValidations['minLength']"
+								       ng-maxlength="block.measureValidations['maxLength']"
+								       required>
 							</div>
 							<select class="form-control"
 							        name="blockValue"
@@ -167,7 +163,7 @@
 								       update-hidden>
 								<mhe-assessment-var-dropdown-menu-dir guid="condition.guid"
 								                                      assessment-variable="condition.left.content"
-								                                      ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
+								                                      ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}">
 									<mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables"
 									                            assessment-variable="condition.left.content"
 									                            guid="condition.guid" />
@@ -176,7 +172,7 @@
 						</div>
 						<div class="col-md-4">
 							<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid &&
-showValidationMessages}">
+conditionForm.conditionOperator.$dirty}">
 								<select class="form-control"
 								        name="conditionOperator"
 								        ng-model="condition.operator"
@@ -190,53 +186,49 @@ showValidationMessages}">
 						<div class="col-md-4">
 							<div class="form-group"
 							     ng-if="showBlockConditionRight(condition.operator)"
-							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && showValidationMessages}">
+							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty}">
 								<label class="sr-only" for="conditionValue">Enter Value</label>
 								<div ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
-									<div ng-if="condition.measureValidations['number']">
-										<input type="number"
-										       class="form-control"
-										       name="conditionValue"
-										       id="conditionvalue"
-										       placeholder="Enter Value"
-										       ng-model="condition.right.content"
-										       min="{{condition.measureValidation['minValue']}}"
-										       max="{{condition.measureValidation['maxValue']}}"
-										       required>
-									</div>
-									<div ng-if="condition.measureValidations['email']">
-										<input type="email"
-										       class="form-control"
-										       name="conditionValue"
-										       id="conditionvalue"
-										       placeholder="Enter Value"
-										       ng-model="condition.right.content"
-										       required>
-									</div>
-									<div ng-if="condition.measureValidations['date']">
-										<input
+									<input type="number"
+									       class="form-control"
+									       name="conditionValue"
+									       id="conditionvalue"
+									       placeholder="Enter Value"
+									       ng-model="condition.right.content"
+									       ng-if="condition.measureValidations['number']"
+									       min="{{condition.measureValidation['minValue']}}"
+									       max="{{condition.measureValidation['maxValue']}}"
+									       required>
+									<input type="email"
+									       class="form-control"
+									       name="conditionValue"
+									       id="conditionvalue"
+									       placeholder="Enter Value"
+									       ng-model="condition.right.content"
+									       ng-if="condition.measureValidations['email']"
+									       required>
+									<input
 											type="text"
 											class="form-control"
 											name="conditionValue"
 											id="conditionvalue"
 											datepicker-popup="'mm/dd/yyyy"
 											ng-model="condition.right.content"
+											ng-if="condition.measureValidations['date']"
 											is-open="opened"
 											datepicker-options="{ startingDay: 1}"
 											close-text="Close"
 											required />
-									</div>
-									<div ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']">
-										<input type="text"
-										       class="form-control"
-										       name="conditionValue"
-										       id="conditionvalue"
-										       placeholder="Enter Value"
-										       ng-model="condition.right.content"
-										       ng-minlength="{{condition.measureValidation['minLength']}}"
-										       ng-maglegnth="{{condition.measureValidation['maxLength']}}"
-										       required>
-									</div>
+									<input type="text"
+									       class="form-control"
+									       name="conditionValue"
+									       id="conditionvalue"
+									       placeholder="Enter Value"
+									       ng-model="condition.right.content"
+									       ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']"
+									       ng-minlength="{{condition.measureValidation['minLength']}}"
+									       ng-maglegnth="{{condition.measureValidation['maxLength']}}"
+									       required>
 								</div>
 								<select
 									class="form-control"

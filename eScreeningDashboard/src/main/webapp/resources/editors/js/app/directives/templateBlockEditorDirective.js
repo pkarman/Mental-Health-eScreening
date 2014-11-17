@@ -203,8 +203,14 @@
 		            // Filter the operators and add the results to the item
 		            item.operators = scope.operators.filter(filterOperators, av);
 
-		            // Check if the assessment variable is a question
-		            if (av.measureTypeId) {
+		            if (av.type && av.type.toLowerCase() === "formula") {
+			            // Assessment Variable is a formula, which must be a number
+			            item.measureValidations.number = 'number';
+			            item.measureValidations.minValue = '';
+			            item.measureValidations.maxValue = '';
+
+		            } else if (av.measureId && av.measureTypeId) {
+		                // Assessment variable is a question
 
 			            if (av.measureTypeId == 1) {
 
@@ -243,6 +249,7 @@
 			            }
 
 		            }
+
 	            };
             }
         };
