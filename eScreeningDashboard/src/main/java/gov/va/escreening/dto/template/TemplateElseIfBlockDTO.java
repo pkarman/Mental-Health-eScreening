@@ -30,7 +30,7 @@ public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 		{
 			for(INode child : getChildren())
 			{
-				sb.append(child.toFreeMarkerFormat(ids)+"\n");
+				sb.append(child.toFreeMarkerFormat(ids));
 			}
 		}
 		
