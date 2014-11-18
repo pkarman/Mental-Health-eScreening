@@ -194,7 +194,7 @@
 
 	            scope.updateLogicalOptions = function(item) {
 
-		            var av = item.left.content;
+		            var av = (item.left && item.left.content) ? item.left.content : {};
 
 		            // (Re-)initialize the answers and validations
 		            item.measureAnswers = [];
@@ -211,7 +211,7 @@
 			            item.measureValidations.minValue = '';
 			            item.measureValidations.maxValue = '';
 			            // Ensure right variable is numeric
-			            item.right.content = parseInt(item.right.content);
+			            if (item.right) item.right.content = parseInt(item.right.content);
 
 		            } else if (av.measureId && av.measureTypeId) {
 		                // Assessment variable is a question
@@ -243,7 +243,7 @@
 						            }
 						            if (validation.value === 'number') {
 							            // Ensure right variable is numeric
-							            item.right.content = parseInt(item.right.content);
+							            if (item.right) item.right.content = parseInt(item.right.content);
 						            }
 					            });
 				            });
