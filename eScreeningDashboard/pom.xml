@@ -436,6 +436,8 @@
 					<username>${jdbc.username}</username>
 					<password>${jdbc.password}</password>
 				</configuration>
+				
+	<!-- Commenting out so we do not recreate DB during build
 			    <executions>
 					<execution>
 						<id>recreate-db</id>
@@ -569,7 +571,8 @@
 							</fileset>
 						</configuration>
 					</execution>
-				</executions>				
+				</executions>	
+				 -->			
 			</plugin>
 		</plugins>
 	</build>
