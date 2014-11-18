@@ -210,6 +210,8 @@
 			            item.measureValidations.number = 'number';
 			            item.measureValidations.minValue = '';
 			            item.measureValidations.maxValue = '';
+			            // Ensure right variable is numeric
+			            item.right.content = parseInt(item.right.content);
 
 		            } else if (av.measureId && av.measureTypeId) {
 		                // Assessment variable is a question
@@ -239,6 +241,10 @@
 								            item.measureValidations['exactLength'] = validation.value;
 								            break;
 						            }
+						            if (validation.value === 'number') {
+							            // Ensure right variable is numeric
+							            item.right.content = parseInt(item.right.content);
+						            }
 					            });
 				            });
 
@@ -253,6 +259,10 @@
 		            }
 
 	            };
+
+	            if(scope.block) {
+		            scope.updateLogicalOptions(scope.block);
+	            }
             }
         };
 
