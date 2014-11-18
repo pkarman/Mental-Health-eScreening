@@ -62,7 +62,7 @@ public class VeteranAssessmentSurveyRepositoryImpl extends AbstractHibernateRepo
     @SuppressWarnings("unchecked")
     public List<Object[]> getMhaTestResponse(int veteranAssessmentId, int surveyId) {
 
-        String sql = "SELECT * FROM veteran_assessment";
+        String sql = "SELECT * FROM veteran_assessment where dateArchived is null ";
         
         return entityManager
                 .createNativeQuery(sql)

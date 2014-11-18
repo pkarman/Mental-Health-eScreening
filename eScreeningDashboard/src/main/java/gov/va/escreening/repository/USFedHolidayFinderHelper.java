@@ -3,7 +3,7 @@ package gov.va.escreening.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class USFedHolidayFinderHelper implements FedHolidayFinderHelper {
 	}
 
 	@Override
-	public boolean fedHoliday(DateTime date) {
+	public boolean fedHoliday(LocalDate date) {
 		for (FedHolidayFinder fhf : fedHolidayFinders) {
 			if (fhf.fedHoliday(date)) {
 				if (logger.isDebugEnabled()) {

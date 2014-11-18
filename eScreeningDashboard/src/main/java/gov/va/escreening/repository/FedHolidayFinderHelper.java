@@ -1,7 +1,7 @@
 package gov.va.escreening.repository;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public interface FedHolidayFinderHelper {
-	public boolean fedHoliday(DateTime date);
+	public boolean fedHoliday(LocalDate date);
 }

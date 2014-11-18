@@ -89,7 +89,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 		List<VeteranAssessment> veteranAssessments = veteranAssessmentService.getAvailableAssessmentsForVeteran(veteranId);
 
-		if (veteranAssessments == null || veteranAssessments.size() < 1) {
+		if (veteranAssessments == null || veteranAssessments.isEmpty()) {
 			return null;
 		} else {
 			for (VeteranAssessment assessment : veteranAssessments) {
