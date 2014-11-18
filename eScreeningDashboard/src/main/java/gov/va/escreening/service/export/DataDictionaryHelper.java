@@ -221,7 +221,12 @@ abstract class Resolver {
 		this.ddh = ddh;
 	}
 
-	String getValidationDescription(Measure m, Multimap mvMap) {
+	public String getValuesRange(boolean isOther, Measure m,
+			MeasureAnswer unusedMa) {
+		return "";
+	}
+
+	String getValidationDescription(boolean other, Measure m, Multimap mvMap) {
 		return "";
 	}
 
@@ -230,11 +235,8 @@ abstract class Resolver {
 		addDictionaryRowsNow(s, m, mvMap, t);
 	}
 
-	String getValuesRange(Measure m, MeasureAnswer ma) {
-		return "";
-	}
 
-	String getValuesDescription(Measure m, MeasureAnswer ma) {
+	String getValuesDescription(boolean other, Measure m, MeasureAnswer ma) {
 		return "";
 	}
 
@@ -263,9 +265,9 @@ abstract class Resolver {
 
 		if (ma != null) {
 			t.put(indexAsStr, ddh.msg("var.name"), !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()));
-			t.put(indexAsStr, ddh.msg("vals.range"), getValuesRange(m, ma));
-			t.put(indexAsStr, ddh.msg("vals.desc"), getValuesDescription(m, ma));
-			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(m, mvMap));
+			t.put(indexAsStr, ddh.msg("vals.range"), getValuesRange(other, m, ma));
+			t.put(indexAsStr, ddh.msg("vals.desc"), getValuesDescription(other, m, ma));
+			t.put(indexAsStr, ddh.msg("data.val"), getValidationDescription(other, m, mvMap));
 			t.put(indexAsStr, ddh.msg("followup"), "todo");
 			t.put(indexAsStr, ddh.msg("skiplevel"), getSkipLevel(m));
 		}
@@ -282,12 +284,12 @@ class MultiSelectResolver extends Resolver {
 	}
 
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer ma) {
-		return "0-1,999";
+	public String getValuesRange(boolean isOption, Measure m, MeasureAnswer ma) {
+		return isOption?"text":"0-1,999";
 	}
 
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer ma) {
+	public String getValuesDescription(boolean isOther, Measure m, MeasureAnswer ma) {
 		return "0= no, 1= yes, 999= missing";
 	}
 
@@ -315,7 +317,10 @@ class SelectOneResolver extends Resolver {
 	 * consolidate measure answers' ranges. The out put will be in following format 1-10,999
 	 */
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer unusedMa) {
+	public String getValuesRange(boolean isOther, Measure m, MeasureAnswer unusedMa) {
+		if (isOther){
+			return "text";
+		}
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
 		int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
 		if (calculationType == 1) {
@@ -338,7 +343,10 @@ class SelectOneResolver extends Resolver {
 	 * specify,999=missing
 	 */
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer unusedMa) {
+	public String getValuesDescription(boolean isOther, Measure m, MeasureAnswer unusedMa) {
+		if (isOther){
+			return "text, 999= missing";
+		}
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
 		int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
 		if (calculationType == 1) {
@@ -360,17 +368,17 @@ class FreeTextResolver extends Resolver {
 	}
 
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer ma) {
+	public String getValuesRange(boolean isOption, Measure m, MeasureAnswer ma) {
 		return "text";
 	}
 
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer ma) {
+	public String getValuesDescription(boolean isOther, Measure m, MeasureAnswer ma) {
 		return "text, 999= missing";
 	}
 
 	@Override
-	String getValidationDescription(Measure m, Multimap mvMap) {
+	String getValidationDescription(boolean isOther, Measure m, Multimap mvMap) {
 		Collection<String> validations = mvMap.get(m.getMeasureId());
 		String description = Joiner.on(", ").skipNulls().join(validations);
 		return description;
