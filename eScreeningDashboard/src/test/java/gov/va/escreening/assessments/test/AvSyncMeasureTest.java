@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -203,12 +204,17 @@ public class AvSyncMeasureTest {
 			}
 
 			avs.add(m);
-		}
 
+			if (m.get("typeId") != null && m.get("typeId").toString().equals("4")) {
+				Assert.assertTrue(String.format("measureId has to be NULL for AssessmentVariable of type 4--%s", m), m.get("measureId") == null);
+				Assert.assertTrue(String.format("measureTypeId has to be NULL for AssessmentVariable of type 4--%s", m), m.get("measureTypeId") == null);
+				Assert.assertTrue(String.format("answerId has to be NULL for AssessmentVariable of type 4--%s", m), m.get("answerId") == null);
+			}
+		}
 
 		Gson gson = new Gson();
 		String json = gson.toJson(avs);
-		logger.info(String.format("Asssessment Variables for Survey Id %s==>%s", surveyId, json));
+		logger.info(String.format("AV => sId %s==>%s", surveyId, json));
 	}
 
 	@Test
