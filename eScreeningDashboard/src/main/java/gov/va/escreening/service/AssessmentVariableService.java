@@ -28,7 +28,11 @@ public interface AssessmentVariableService {
 
 	Collection<AssessmentVariable> findAllFormulae();
 
-	void filterBySurvey(Survey survey, AvModelBuilder avModelBldr,
+	void filterBySurvey(Survey survey, AvBuilder avModelBldr,
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			boolean filterMeasures);
+
+	boolean compareMeasure(AssessmentVariable av, Measure m);
+
+	boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
 }
