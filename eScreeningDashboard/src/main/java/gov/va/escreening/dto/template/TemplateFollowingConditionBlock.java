@@ -61,7 +61,7 @@ public class TemplateFollowingConditionBlock{
 	
 	private String getOperatorForConnector()
 	{
-		if ("AND".equals(connector))
+		if ("AND".equalsIgnoreCase(connector))
 		{
 			return " && ";
 		}
