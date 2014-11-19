@@ -28,7 +28,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
-    var cleanSummaryReg = /<\/*[^>]+>/g;
+    var cleanSummaryReg = /(<\/*[^>]+>)|(&#[a-zA-Z0-9]+;)/g;
     var TEXT_NAME_LENGTH = 20;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
@@ -104,7 +104,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-				    var text = blockContent.content.replace(cleanSummaryReg, "");
+                    var text = blockContent.content.replace(cleanSummaryReg, "");
 					block.summary += text;
 
 					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
