@@ -94,7 +94,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
 		}
 	}
 
-	@Test
+	//@Test
 	public void generateMissingMeasureAvRecs() {
 		// new AbstractHibernateRepository<Measure>() {
 
