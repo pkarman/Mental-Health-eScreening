@@ -105,6 +105,9 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
                     var text = blockContent.content.replace(cleanSummaryReg, "");
+                    if(block.summary == ""){
+                        text = text.replace(/^\s+/, "");
+                    }
 					block.summary += text;
 
 					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
