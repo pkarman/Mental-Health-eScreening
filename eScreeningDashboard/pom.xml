@@ -545,6 +545,19 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-28-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<orderFile>ascending</orderFile>
+							<fileset> 
+								<basedir>src/main/sql/sprint_28</basedir>
+							</fileset>
+						"src/main/sql/sprint_28/27_sprint28_reference_data_template_variables.sql"</configuration>
+					</execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
