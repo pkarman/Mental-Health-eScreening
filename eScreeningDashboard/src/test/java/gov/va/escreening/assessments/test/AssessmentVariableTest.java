@@ -6,11 +6,14 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 @Transactional
@@ -90,6 +92,38 @@ public class AssessmentVariableTest extends AssessmentTestBase {
 		} else {
 			logger.warn(String.format("displayName=%s,  description=%s could not be added as %s has an update sql already", name, descr, avId));
 		}
+	}
+
+	@Test
+	public void generateMissingMeasureAvRecs() {
+		// new AbstractHibernateRepository<Measure>() {
+
+		/**
+		 * PLEASE READ:::: This is a code to generate one time insert statments for all missing AssessmentVariable
+		 * entities for some measures to run this script. Temporarily expose entity manager to the
+		 * AssessmentVariableRepository so fully primed entity manger by spring can be used here
+		 */
+
+		// Please read the above note and uncomment entityManager assignment. Replace the null assignment with the
+		// uncommented assignment
+		EntityManager entityMgr = null; // avr.getEntityManager();
+		String namedQuery = "select * from measure m where measure_id not in (select m2.measure_id from measure m2 join assessment_variable av on m2.measure_id=av.measure_id) and measure_type_id !=8";
+		Query query = entityMgr.createNativeQuery(namedQuery);
+		List result = query.getResultList();
+
+		StringBuilder sb = new StringBuilder();
+		int pkId = 10810;
+		for (Iterator iter = result.iterator(); iter.hasNext();) {
+			Object[] row = (Object[]) iter.next();
+			int measureId = (int) row[0];
+			String description = (String) row[2];
+
+			String insertStement = String.format("INSERT INTO assessment_variable " + "(assessment_variable_id,assessment_variable_type_id,display_name,description," + "measure_id)" + " VALUES (%s, %s, '%s', '%s', %s);", pkId++, 1, "test123", description, measureId);
+
+			sb.append(insertStement).append("\n");
+		}
+
+		String insertStatements = sb.toString();
 	}
 
 	@Test
