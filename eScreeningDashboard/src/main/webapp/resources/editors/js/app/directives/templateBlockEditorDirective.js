@@ -194,7 +194,7 @@
 
 	            scope.updateLogicalOptions = function(item) {
 
-		            var av = item.left.content;
+		            var av = (item.left && item.left.content) ? item.left.content : {};
 
 		            // (Re-)initialize the answers and validations
 		            item.measureAnswers = [];
@@ -203,8 +203,18 @@
 		            // Filter the operators and add the results to the item
 		            item.operators = scope.operators.filter(filterOperators, av);
 
-		            // Check if the assessment variable is a question
-		            if (av.measureTypeId) {
+		            scope.dt = new Date();
+
+		            if (av.type && av.type.toLowerCase() === "formula") {
+			            // Assessment Variable is a formula, which must be a number
+			            item.measureValidations.number = 'number';
+			            item.measureValidations.minValue = '';
+			            item.measureValidations.maxValue = '';
+			            // Ensure right variable is numeric
+			            if (item.right) item.right.content = parseInt(item.right.content);
+
+		            } else if (av.measureId && av.measureTypeId) {
+		                // Assessment variable is a question
 
 			            if (av.measureTypeId == 1) {
 
@@ -216,10 +226,10 @@
 								            item.measureValidations[validation.value] = validation.value;
 								            break;
 							            case 4:
-								            item.measureValidations['minLength'] = validation.value;
+								            item.measureValidations['minLength'] = validation.value || 0;
 								            break;
 							            case 5:
-								            item.measureValidations['maxLength'] = validation.value;
+								            item.measureValidations['maxLength'] = validation.value || 150;
 								            break;
 							            case 6:
 								            item.measureValidations['minValue'] = validation.value;
@@ -230,6 +240,10 @@
 							            case 9:
 								            item.measureValidations['exactLength'] = validation.value;
 								            break;
+						            }
+						            if (validation.value === 'number') {
+							            // Ensure right variable is numeric
+							            if (item.right) item.right.content = parseInt(item.right.content);
 						            }
 					            });
 				            });
@@ -243,7 +257,12 @@
 			            }
 
 		            }
+
 	            };
+
+	            if(scope.block) {
+		            scope.updateLogicalOptions(scope.block);
+	            }
             }
         };
 

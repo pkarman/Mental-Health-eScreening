@@ -14,7 +14,7 @@ public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("<#elseif ")
+		sb.append("\n<#elseif ")
 				.append("(")
 				.append(FormulaUtil.createFormula(getOperator(), getLeft(),
 						getRight(), ids)).append(")");
@@ -26,6 +26,14 @@ public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 		}
 		sb.append(" >\n");
 
+		if (getChildren()!=null)
+		{
+			for(INode child : getChildren())
+			{
+				sb.append(child.toFreeMarkerFormat(ids));
+			}
+		}
+		
 		return sb.toString();
 	}
 	

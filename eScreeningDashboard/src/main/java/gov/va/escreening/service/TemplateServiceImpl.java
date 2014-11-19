@@ -522,12 +522,14 @@ public class TemplateServiceImpl implements TemplateService {
 		StringBuffer file = new StringBuffer();
 		file.append("<#include \"clinicalnotefunctions\">\n");
 		
-		file.append("<#-- generated file. Do not change -->");
-		
+		file.append("<#-- generated file. Do not change -->\n");
+
+		file.append("${MODULE_START}\n");
 		for(INode block : blocks)
 		{
 			file.append(block.toFreeMarkerFormat(ids));
 		}
+		file.append("\n${MODULE_END}\n");
 		
 		return file.toString();
 	}
