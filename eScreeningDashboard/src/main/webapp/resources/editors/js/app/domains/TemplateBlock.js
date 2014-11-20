@@ -28,7 +28,7 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
-    var cleanSummaryReg = /(<\/*[^>]+>)|(&#[a-zA-Z0-9]+;)/g;
+    var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#[a-zA-Z0-9]+;)/g;
     var TEXT_NAME_LENGTH = 20;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
@@ -38,8 +38,8 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     this.summary;
     this.left;
     this.operator;
-    this.conditions;
-    this.content;
+    this.conditions = [];
+    this.content = '';
     this.right;
     this.children = [];
     this.contents = [];
@@ -73,6 +73,16 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
             });
         }
     }
+    
+    function reset(){
+        this.left = new EScreeningDashboardApp.models.TemplateLeftVariable(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig.left);
+        this.operator = null;
+        this.right = new EScreeningDashboardApp.models.TemplateRightVariable(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig.right);
+        this.conditions = [];
+        this.content = '';
+        this.children = [];
+        this.contents = [];
+    }
 
 	function transformTextContent(TemplateBlockService, variableHash){
 
@@ -104,7 +114,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-                    var text = blockContent.content.replace(cleanSummaryReg, "");
+                    var text = blockContent.content.replace(CLEAN_SUMMARY_REG, "");
+                    if(block.summary == ""){
+                        text = text.replace(/^\s+/, "");
+                    }
 					block.summary += text;
 
 					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
@@ -126,8 +139,15 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		}
 
 		if (block.type !== 'text' && block.type !== 'else') {
-			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name) + "_" + block.operator + "_" + block.right.content;
-			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + " " + block.right.content;
+		    var rightContentSummary = "";
+		    var rightContentName = "";
+		    
+		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
+		        rightContentSummary = " " + block.right.content;
+		        rightContentName = "_" + block.right.content;
+		    } 
+			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name) + "_" + block.operator + rightContentName;
+			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + rightContentSummary;
 			block.conditions.forEach(function (condition) {
 				if (!condition.summary) {
 					condition.autoGenerateFields();
@@ -204,6 +224,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         return otherBlock && this.section === otherBlock.section;
     }
     
+    this.reset = reset;
 	this.autoGenerateFields = autoGenerateFields;
 	this.setTextContent = setTextContent;
 	this.toString = toString;

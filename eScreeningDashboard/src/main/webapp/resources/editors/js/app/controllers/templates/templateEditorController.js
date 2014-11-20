@@ -262,9 +262,9 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 		            return $scope.template;
 	            }
 			},
-			controller: ['$scope', '$modalInstance', 'template', function($scope, $modalInstance, template) {
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template', function($scope, $modalInstance, eventBus, template) {
 
-				$scope.templateName = template.name;
+                $scope.templateName = template.name;
 
 				$scope.validationMessage = {
 					show: false
@@ -272,6 +272,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
 				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
+				$scope.isAdding = angular.isUndefined(isAdding) ? false : isAdding;
 				
 				$scope.block.setTextContent(TemplateBlockService);
 
@@ -279,6 +280,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.cancel = function () {
 					$modalInstance.dismiss('cancel');
 				};
+				
+				eventBus.onLocationChange($scope, function(next, current){
+				    $scope.cancel();
+				});
 
 				// Close modal and pass updated block to the page
                 $scope.close = function (form) {

@@ -126,6 +126,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
