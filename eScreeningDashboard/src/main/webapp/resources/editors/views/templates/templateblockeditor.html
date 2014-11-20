@@ -60,6 +60,7 @@
 								       ng-if="block.measureValidations['number']"
 								       min="{{block.measureValidations['minValue']}}"
 								       max="{{block.measureValidations['maxValue']}}"
+								       cast-integer
 								       required>
 								<input type="email"
 								       class="form-control"
@@ -100,6 +101,7 @@
 							        ng-model="block.right.content"
 							        ng-if="block.measureAnswers && block.measureAnswers.length && block.hasMultiSelectAnswer"
 							        ng-options="answer.measureAnswerId as answer.answerText for answer in block.measureAnswers"
+							        cast-integer
 							        required>
 								<option value="">-- Answer --</option>
 							</select>
@@ -211,6 +213,7 @@ conditionForm.conditionOperator.$dirty}">
 									       ng-if="condition.measureValidations['number']"
 									       min="{{condition.measureValidations['minValue']}}"
 									       max="{{condition.measureValidations['maxValue']}}"
+									       cast-integer
 									       required>
 									<input type="email"
 									       class="form-control"
@@ -252,6 +255,7 @@ conditionForm.conditionOperator.$dirty}">
 									ng-model="condition.right.content"
 									ng-if="condition.measureAnswers && condition.measureAnswers.length && condition.hasMultiSelectAnswer"
 									ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
+									cast-integer
 									required>
 									<option value="">-- Answer --</option>
 								</select>
