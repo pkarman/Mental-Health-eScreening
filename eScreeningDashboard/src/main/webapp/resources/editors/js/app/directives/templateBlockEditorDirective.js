@@ -263,6 +263,9 @@
 				            });
 			            }
 
+						// Flag for mutli-select
+			            item.hasMultiSelectAnswer = (av.measureTypeId === 2);
+
 		            }
 
 	            };

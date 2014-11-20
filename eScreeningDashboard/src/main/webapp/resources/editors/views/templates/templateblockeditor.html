@@ -98,7 +98,16 @@
 							        name="blockValue"
 							        id="blockvalue"
 							        ng-model="block.right.content"
-							        ng-if="block.measureAnswers && block.measureAnswers.length"
+							        ng-if="block.measureAnswers && block.measureAnswers.length && block.hasMultiSelectAnswer"
+							        ng-options="answer.measureAnswerId as answer.answerText for answer in block.measureAnswers"
+							        required>
+								<option value="">-- Answer --</option>
+							</select>
+							<select class="form-control"
+							        name="blockValue"
+							        id="blockvalue"
+							        ng-model="block.right.content"
+							        ng-if="block.measureAnswers && block.measureAnswers.length && !block.hasMultiSelectAnswer"
 							        ng-options="answer.calculationValue as answer.answerText for answer in block.measureAnswers"
 							        required>
 								<option value="">-- Answer --</option>
@@ -241,9 +250,19 @@ conditionForm.conditionOperator.$dirty}">
 									name="blockValue"
 									id="conditionvalue"
 									ng-model="condition.right.content"
-									ng-if="condition.measureAnswers && condition.measureAnswers.length"
-									ng-options="answer.calculationValue as answer.answerText for answer in condition.measureAnswers"
+									ng-if="condition.measureAnswers && condition.measureAnswers.length && condition.hasMultiSelectAnswer"
+									ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
 									required>
+									<option value="">-- Answer --</option>
+								</select>
+								<select
+										class="form-control"
+										name="blockValue"
+										id="conditionvalue"
+										ng-model="condition.right.content"
+										ng-if="condition.measureAnswers && condition.measureAnswers.length && !condition.hasMultiSelectAnswer"
+										ng-options="answer.calculationValue as answer.answerText for answer in condition.measureAnswers"
+										required>
 									<option value="">-- Answer --</option>
 								</select>
 							</div>
