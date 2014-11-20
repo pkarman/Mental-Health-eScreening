@@ -38,7 +38,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $scope.pageQuestionItems.forEach(function(item) {
             if(item.isPage()){
                 organizedPages.push(item.getItem());
-	            organizedPages[0].questions = [];
+                organizedPages[0].questions = [];
             } else if(organizedPages.length > 0){
                 organizedPages[organizedPages.length-1].questions.push(item.getItem());
             }
@@ -273,4 +273,14 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.goToCreateVar = function(){
         $state.go('modules.detail.createvariable.questionvariable');
     };
+    
+    $scope.editTemplates = function(){        
+        $state.go('modules.templates', 
+                {selectedSurveyId: $scope.selectedSurveyUIObject.id, 
+                 selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
+    };
+    
+    $scope.isModuleSaved = function(){
+        return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
+    }
 }]);
