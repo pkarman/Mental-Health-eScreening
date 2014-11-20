@@ -262,7 +262,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 		            return $scope.template;
 	            }
 			},
-			controller: ['$scope', '$modalInstance', 'template', function($scope, $modalInstance, template) {
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template', function($scope, $modalInstance, eventBus, template) {
 
                 $scope.templateName = template.name;
 
@@ -280,6 +280,10 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 				$scope.cancel = function () {
 					$modalInstance.dismiss('cancel');
 				};
+				
+				eventBus.onLocationChange($scope, function(next, current){
+				    $scope.cancel();
+				});
 
 				// Close modal and pass updated block to the page
                 $scope.close = function (form) {
