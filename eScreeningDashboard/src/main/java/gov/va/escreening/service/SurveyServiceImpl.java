@@ -334,6 +334,9 @@ public class SurveyServiceImpl implements SurveyService {
 					measure.setAssessmentVariableList(assessmentVariableList);
 					measureRepository.update(measure);
 					measures.add(measure);
+					
+					// update questionInfo's id with measure id
+					questionInfo.setId(measure.getMeasureId());
 				}
 			}
 			
