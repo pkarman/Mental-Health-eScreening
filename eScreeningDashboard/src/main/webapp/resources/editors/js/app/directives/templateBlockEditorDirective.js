@@ -147,6 +147,12 @@
 
                     return includeOperator;
                 };
+                
+                scope.$watch('block.type', function(newValue, oldValue) {
+                    if(newValue != null && oldValue != null && newValue != oldValue){
+                        scope.block.reset();
+                    }
+                });
 
 	            scope.filterOperators = function() {
 		            return filterOperators;
