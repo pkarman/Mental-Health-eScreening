@@ -264,7 +264,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 			},
 			controller: ['$scope', '$modalInstance', 'template', function($scope, $modalInstance, template) {
 
-				$scope.templateName = template.name;
+                $scope.templateName = template.name;
 
 				$scope.validationMessage = {
 					show: false
@@ -272,6 +272,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
 				// Copy the selected or new block so that potential changes in modal don't update object in page
 				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
+				$scope.isAdding = angular.isUndefined(isAdding) ? false : isAdding;
 				
 				$scope.block.setTextContent(TemplateBlockService);
 
