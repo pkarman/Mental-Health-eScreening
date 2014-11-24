@@ -713,26 +713,7 @@ returns the negation of customHasResult
         <#return false>
     </#if>
     
-    <#if measureTypeId == 2>
-        <#if (!(right?is_number) && (right.variableId)??)>
-            <#return isSelectedAnswer(var, right)>
-        </#if>    
-         
-        <#if (var.children)?? >
-            <#list var.children as v>
-                <#if (v.calculationValue)?? && (v.calculationValue)?has_content 
-                  && (v.value)?? && v.value = 'true' && 
-                 ((right?is_number && v.calculationValue == right?string) 
-                  || (!(right?is_number) && v.calculationValue == right)) >   
-                    <#return true>
-               </#if>
-            </#list>
-        </#if>
-        
-        <#return false>
-    </#if>
-    
-    <#if measureTypeId == 3>
+    <#if measureTypeId == 3 || measureTypeId == 2>
         <#if (!(right?is_number) && (right.variableId)??)>
             <#return isSelectedAnswer(var, right)>
         </#if>
