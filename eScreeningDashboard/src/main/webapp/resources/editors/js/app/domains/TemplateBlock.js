@@ -29,7 +29,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
     var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#*[a-zA-Z0-9]+;)/g;
-    var TEXT_NAME_LENGTH = 35;
+    var TEXT_NAME_LENGTH = 30;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
