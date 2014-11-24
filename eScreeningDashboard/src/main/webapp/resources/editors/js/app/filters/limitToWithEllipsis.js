@@ -8,16 +8,22 @@
 angular.module('EscreeningDashboardApp.filters.limitToWithEllipsis', [])
   .filter('limitToWithEllipsis', ['limitToFilter', function(limitTo){
     'use strict';
+    
+    //found a bug in limitTo which has issues with some white space chars
+    function workAroundLimitTo(text, limit){
+        return text.substring(0, limit);
+    }
+    
     return function (text, limit) {
         if(Object.isDefined(text) && Object.isDefined(limit) ){
             var filtered = text;
             if(text.length > limit){
                 if(limit >= 3){
-                    filtered = limitTo(text, limit - 3);
+                    filtered = workAroundLimitTo(text, limit - 3);
                     filtered += "...";
                 }
                 else {
-                    filtered = limitTo(text, limit);
+                    filtered = workAroundLimitTo(text, limit);
                 }
             }            
             return filtered;

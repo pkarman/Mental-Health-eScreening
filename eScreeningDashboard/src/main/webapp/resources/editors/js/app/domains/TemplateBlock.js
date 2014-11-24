@@ -28,8 +28,8 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
-    var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#[a-zA-Z0-9]+;)/g;
-    var TEXT_NAME_LENGTH = 20;
+    var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#*[a-zA-Z0-9]+;)/g;
+    var TEXT_NAME_LENGTH = 35;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
@@ -84,9 +84,26 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.contents = [];
     }
 
+    function swapNbspForSpaces(text){
+        var fragments = text.split(/(<[^>]+>)/);
+        var result = "";
+        fragments.forEach(function(frag){
+            var content = null;
+            if(frag.indexOf("<") != 0){
+                result += frag.replace(/\s/g, "&nbsp;"); 
+            }
+            else{
+                result += frag;
+            }
+        });
+        return result;
+    }
+    
+    
 	function transformTextContent(TemplateBlockService, variableHash){
 
 		if(this.type == "text"){
+		    this.content = swapNbspForSpaces(this.content);
 			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
 			delete(this.content);
 		}
@@ -114,7 +131,8 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-                    var text = blockContent.content.replace(CLEAN_SUMMARY_REG, "");
+                    var text = blockContent.content.replace(/&nbsp;|<\s*br\s*\/*>/g, " ");
+                    text = text.replace(CLEAN_SUMMARY_REG, "");
                     if(block.summary == ""){
                         text = text.replace(/^\s+/, "");
                     }
@@ -122,7 +140,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 
 					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
 						var neededChars = TEXT_NAME_LENGTH - block.name.length;
-						block.name += text.slice(0, neededChars);
+						block.name += text.substring(0, neededChars);
 					}
 				}
 				else if(blockContent.type == "var"){
@@ -134,7 +152,9 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 					}
 				}
 				block.summary += " ";
-				block.name += " ";
+				if(block.name.length+1 < TEXT_NAME_LENGTH){
+    				block.name += " ";
+				}
 			}
 		}
 
