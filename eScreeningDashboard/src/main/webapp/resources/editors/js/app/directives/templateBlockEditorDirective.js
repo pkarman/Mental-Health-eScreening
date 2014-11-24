@@ -255,11 +255,6 @@
 				            MeasureService.one(av.measureId).getList('answers').then(function (answers) {
 					            item.measureAnswers = answers;
 				            });
-			            }
-
-			            if (av.measureTypeId === 3) {
-				            // Flag for mutli-select
-				            item.hasMultiSelectAnswer = true;
 
 				            // Ensure right variable is numeric
 				            if (item.right) item.right.content = parseInt(item.right.content);
