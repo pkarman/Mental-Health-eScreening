@@ -163,8 +163,29 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		    var rightContentName = "";
 		    
 		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
-		        rightContentSummary = " " + block.right.content;
-		        rightContentName = "_" + block.right.content;
+		        var rightContent = block.right.content
+		        if(angular.isArray(block.measureAnswers)){
+		            block.measureAnswers.some(function(answer){
+		                if(answer.measureAnswerId === rightContent){
+		                    if(angular.isDefined(answer.answerText) && answer.answerText.trim().length > 0){
+		                        rightContent = answer.answerText;
+		                    }
+		                    else if(angular.isDefined(answer.exportName) && answer.exportName.trim().length > 0){
+		                        rightContent = answer.exportName;    
+		                    }
+		                    else if(angular.isDefined(answer.otherExportName) && answer.otherExportName.trim().length > 0){
+		                        rightContent = answer.otherExportName;
+		                    }
+		                    else if(angular.isDefined(answer.calculationValue) && answer.calculationValue.trim().length > 0){
+		                        rightContent = answer.calculationValue;
+		                    }
+		                    return true;
+		                }
+		                return false;
+		            });
+		        }
+		        rightContentSummary = " " + rightContent;
+		        rightContentName = "_" + rightContent;
 		    } 
 			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name) + "_" + block.operator + rightContentName;
 			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + rightContentSummary;
