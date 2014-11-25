@@ -247,6 +247,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 								measureAnswerHash);
 				questionVariableDto.getChildren().add(answerVariableDto);
 				questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
+				questionVariableDto.setValue(answerVariableDto.getCalculationValue());
 				break; // found what we were looking for
 			}
 		}
