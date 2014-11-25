@@ -28,8 +28,8 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     var self = this;
     var myparent = parent;
-    var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#[a-zA-Z0-9]+;)/g;
-    var TEXT_NAME_LENGTH = 20;
+    var CLEAN_SUMMARY_REG = /(<\/*[^>]+>)|(&#*[a-zA-Z0-9]+;)/g;
+    var TEXT_NAME_LENGTH = 30;
     
     this.guid = EScreeningDashboardApp.getInstance().guid();
     this.section;
@@ -84,9 +84,30 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.contents = [];
     }
 
+    function swapNbspForSpaces(text){
+		if(angular.isUndefined(text)){
+			return text;
+		}
+        
+        var fragments = text.split(/(<[^>]+>)/);
+        var result = "";
+        fragments.forEach(function(frag){
+            var content = null;
+            if(frag.indexOf("<") != 0){
+                result += frag.replace(/\s/g, "&nbsp;"); 
+            }
+            else{
+                result += frag;
+            }
+        });
+        return result;
+    }
+    
+    
 	function transformTextContent(TemplateBlockService, variableHash){
 
 		if(this.type == "text"){
+		    this.content = swapNbspForSpaces(this.content);
 			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
 			delete(this.content);
 		}
@@ -109,7 +130,8 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				&&  i< block.contents.length; i++){
 				var blockContent = block.contents[i];
 				if(blockContent.type == "text"){
-                    var text = blockContent.content.replace(CLEAN_SUMMARY_REG, "");
+                    var text = blockContent.content.replace(/&nbsp;|<\s*br\s*\/*>/g, " ");
+                    text = text.replace(CLEAN_SUMMARY_REG, "");
                     if(block.summary == ""){
                         text = text.replace(/^\s+/, "");
                     }
@@ -117,7 +139,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 
 					if(setTitle && block.name.length < TEXT_NAME_LENGTH){
 						var neededChars = TEXT_NAME_LENGTH - block.name.length;
-						block.name += text.slice(0, neededChars);
+						block.name += text.substring(0, neededChars);
 					}
 				}
 				else if(blockContent.type == "var"){
@@ -129,7 +151,9 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 					}
 				}
 				block.summary += " ";
-				block.name += " ";
+				if(block.name.length+1 < TEXT_NAME_LENGTH){
+    				block.name += " ";
+				}
 			}
 		}
 
@@ -138,8 +162,29 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		    var rightContentName = "";
 		    
 		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
-		        rightContentSummary = " " + block.right.content;
-		        rightContentName = "_" + block.right.content;
+		        var rightContent = block.right.content
+		        if(angular.isArray(block.measureAnswers)){
+		            block.measureAnswers.some(function(answer){
+		                if(answer.measureAnswerId === rightContent){
+		                    if(angular.isDefined(answer.answerText) && answer.answerText.trim().length > 0){
+		                        rightContent = answer.answerText;
+		                    }
+		                    else if(angular.isDefined(answer.exportName) && answer.exportName.trim().length > 0){
+		                        rightContent = answer.exportName;    
+		                    }
+		                    else if(angular.isDefined(answer.otherExportName) && answer.otherExportName.trim().length > 0){
+		                        rightContent = answer.otherExportName;
+		                    }
+		                    else if(angular.isDefined(answer.calculationValue) && answer.calculationValue.trim().length > 0){
+		                        rightContent = answer.calculationValue;
+		                    }
+		                    return true;
+		                }
+		                return false;
+		            });
+		        }
+		        rightContentSummary = " " + rightContent;
+		        rightContentName = "_" + rightContent;
 		    } 
 			if (!block.name) block.name = block.type + "_" + (block.left.content.displayName || block.left.content.name) + "_" + block.operator + rightContentName;
 			block.summary = (block.left.content.displayName || block.left.content.name) + " " + block.operator + rightContentSummary;
