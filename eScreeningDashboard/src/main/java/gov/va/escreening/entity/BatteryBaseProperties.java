@@ -10,4 +10,8 @@ public interface BatteryBaseProperties {
     void setDescription(String description);
     boolean isDisabled();
     void setDisabled(boolean disabled);
+	public abstract void setCompleteMessage(String completeMessage);
+	public abstract String getCompleteMessage();
+	public abstract void setWelcomeMessage(String welcomeMessage);
+	public abstract String getWelcomeMessage();
 }

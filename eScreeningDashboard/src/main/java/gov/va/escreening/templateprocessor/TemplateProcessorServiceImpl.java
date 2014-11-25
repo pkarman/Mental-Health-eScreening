@@ -585,5 +585,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return sb.toString();
 	}
 
+	public static void main(String[] args)
+	{
+		System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
+	}
 }
 
