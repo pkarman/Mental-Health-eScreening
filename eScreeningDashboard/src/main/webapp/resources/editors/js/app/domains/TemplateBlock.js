@@ -90,11 +90,6 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
 			delete(this.content);
 		}
-		
-		if(Object.isDefined(this.children)){
-            this.children.forEach(function(block){ 
-                block.transformTextContent(TemplateBlockService, variableHash); });
-        }
 	}
 	
 	function setTextContent(TemplateBlockService){
