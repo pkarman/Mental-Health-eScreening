@@ -13,7 +13,7 @@
 		            assessmentVariable: '=',
 		            show: '='
 	            },
-	            link: function (scope) {
+	            link: function (scope, element) {
 
 		            scope.searchObj = {type: ''};
 
@@ -25,8 +25,7 @@
 
 		            scope.select = function(e, av) {
 
-			            //e.stopPropagation();
-			            //e.preventDefault();
+			            e.stopPropagation();
 
 		                if(av.id !== scope.assessmentVariable.id) {
 			                // This is needed to trigger a change on $scope.$watch (unknown hack)
@@ -39,6 +38,11 @@
 		                // Hide table
 			            scope.show = false;
 	                };
+
+		            element.bind('click', function(e) {
+			            // Prevent bubbling
+			            e.stopPropagation();
+		            });
 
 	            },
 	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html'

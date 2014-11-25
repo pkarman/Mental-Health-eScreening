@@ -20,13 +20,15 @@
 			            show: false
 		            };
 
-		            $document.bind('click', function() {
-			            scope.avMenu.show = false;
+		            $document.bind('click', function(e) {
+			            scope.$apply(function() {
+				            scope.avMenu.show = false;
+			            });
 		            });
 
 		            scope.openSelections = function(e) {
-			            //e.stopPropagation();
-			            //e.preventDefault();
+			            // Stop bubbling
+			            e.stopPropagation();
 
 			            scope.avMenu.show = true;
 		            };
