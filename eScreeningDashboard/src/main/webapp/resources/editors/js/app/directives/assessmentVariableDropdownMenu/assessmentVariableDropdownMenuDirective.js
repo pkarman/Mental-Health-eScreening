@@ -9,7 +9,6 @@
 	                assessmentVariable: '='
 	            },
 		        require: '^form',
-	            transclude: true,
 	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
 	            link: function(scope, element, attributes, formController) {
 		            // These are used for form validation from block and condition contexts
