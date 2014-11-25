@@ -112,7 +112,7 @@
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
-    <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
+    <script type="text/javascript" src="resources/bower_components/ng-table/ng-table.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
