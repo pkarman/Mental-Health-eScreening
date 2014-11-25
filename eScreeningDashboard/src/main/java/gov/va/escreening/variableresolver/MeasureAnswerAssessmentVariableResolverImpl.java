@@ -62,7 +62,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
-		
+		variableDto.setAnswerId(measureAnswer.getMeasureAnswerId());
 		return variableDto;
 	}
     
@@ -74,6 +74,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String variableName = String.format("var%s", id);
 		String type = getVariableTypeString(response.getMeasureAnswer().getAnswerType());
 		String displayName = String.format("answer_%s", response.getMeasureAnswer().getMeasureAnswerId());
+		
 		String value = getValue(response, veteranAssessmentId);
 		String displayText = getDisplayText(type, response.getMeasureAnswer(), response, veteranAssessmentId);
 		String overrideText = getOverrideText(response, measureAnswerHash);  
@@ -84,6 +85,8 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String otherValue = response.getOtherValue();
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
+		
+		variableDto.setAnswerId(response.getMeasureAnswer().getMeasureAnswerId());
 		
 		return variableDto;
 	}

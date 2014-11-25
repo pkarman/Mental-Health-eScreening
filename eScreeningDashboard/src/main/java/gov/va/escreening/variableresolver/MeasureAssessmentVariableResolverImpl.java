@@ -244,10 +244,11 @@ public class MeasureAssessmentVariableResolverImpl implements
 								response, veteranAssessmentId,
 								measureAnswerHash);
 				questionVariableDto.getChildren().add(answerVariableDto);
+				questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
 				break; // found what we were looking for
 			}
 		}
-
+		
 		return questionVariableDto;
 	}
 

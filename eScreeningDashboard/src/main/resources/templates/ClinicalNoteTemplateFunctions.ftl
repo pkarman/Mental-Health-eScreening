@@ -469,7 +469,7 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#assign result = ''>
     <#if (variableObj != DEFAULT_VALUE) && (variableObj.children)??>
     <#list variableObj.children as child>
-        <#assign result = result + prefix + child.displayText>
+        <#assign result = result + prefix +' '+ child.displayText>
         <#if child_has_next || includeSuffixAtEnd>
             <#assign result = result + suffix>
         </#if>  
@@ -713,17 +713,26 @@ returns the negation of customHasResult
         <#return false>
     </#if>
     
-    <#if measureTypeId == 3 || measureTypeId == 2>
+    <#if measureTypeId == 2 >
+    	<#if (var.answerId)??>
+    		<#if (var.answerId = right) >
+    			<#return true>
+    		</#if>
+    	</#if>
+    	<#return false >
+    </#if>
+    
+    <#if measureTypeId == 3 >
         <#if (!(right?is_number) && (right.variableId)??)>
             <#return isSelectedAnswer(var, right)>
         </#if>
 
         <#if (var.children)?? >
             <#list var.children as v>
-                <#if (v.name)?has_content
+                <#if (v.answerId)??
                   && (v.value)?? && v.value = 'true' &&
-                 ((right?is_number && v.name[7..] = right?string)
-                  || (!(right?is_number) && v.name[7..]= right)) >
+                 ((right?is_number && v.answerId = right)
+                  || (!(right?is_number) && v.answerId?string = right)) >
                     <#return true>
                </#if>
             </#list>
