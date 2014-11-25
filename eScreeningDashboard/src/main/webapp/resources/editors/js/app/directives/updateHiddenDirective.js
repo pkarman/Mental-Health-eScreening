@@ -19,7 +19,7 @@
 
 					// Call ngChange()
 					scope.ngChange();
-				});
+				}, true);
 
 			}
 		}
