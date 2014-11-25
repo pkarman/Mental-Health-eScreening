@@ -37,6 +37,8 @@
 
 		                // Hide table
 			            scope.show = false;
+
+			            scope.tableParams.reload();
 	                };
 
 		            element.bind('click', function(e) {
