@@ -163,6 +163,7 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new IllegalArgumentException("Could not find template");
 		}
 		TemplateTransformer.copyToTemplate(templateDTO, template);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 		return TemplateTransformer.copyToTemplateDTO(template, null);
 	}
@@ -174,6 +175,7 @@ public class TemplateServiceImpl implements TemplateService {
 		Template template = TemplateTransformer.copyToTemplate(templateDTO,	null);
 
 		template.setTemplateType(templateTypeRepository.findOne(templateTypeId));
+		template.setModifiedDate(new Date());
 
 		if (parentId == null) {
 			templateRepository.create(template);
@@ -238,6 +240,7 @@ public class TemplateServiceImpl implements TemplateService {
 		List<VariableTemplate> variableTemplates = variableTemplateRepository
 				.findByIds(variableTemplateIds);
 		template.getVariableTemplateList().removeAll(variableTemplates);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 	}
 
@@ -249,6 +252,7 @@ public class TemplateServiceImpl implements TemplateService {
 		List<VariableTemplate> variableTemplates = variableTemplateRepository
 				.findByIds(variableTemplateIds);
 		template.setVariableTemplateList(variableTemplates);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 	}
 
@@ -601,6 +605,7 @@ public class TemplateServiceImpl implements TemplateService {
 		template.setTemplateType(templateType);
 		
 		template.setDateCreated(new Date());
+		template.setModifiedDate(new Date());
 		template.setIsGraphical(templateFile.getIsGraphical());
 		template.setName(templateFile.getName());
 		

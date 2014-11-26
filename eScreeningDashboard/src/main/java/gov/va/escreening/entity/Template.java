@@ -63,6 +63,9 @@ public class Template implements Serializable {
     private TemplateType templateType;
     @Column(name = "is_graphical")
     private boolean isGraphical;
+    @Column(name="date_modified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedDate;
 
     public Template() {
     }
@@ -149,6 +152,14 @@ public class Template implements Serializable {
 		this.jsonFile = jsonFile;
 	}
 
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	
 	@Override
     public int hashCode() {
         int hash = 0;
