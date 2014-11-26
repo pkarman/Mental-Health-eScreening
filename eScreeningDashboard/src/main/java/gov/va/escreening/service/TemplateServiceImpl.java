@@ -186,11 +186,13 @@ public class TemplateServiceImpl implements TemplateService {
 				survey.setTemplates(addTemplateToSet(templateSet, template,
 						surveyTemplates));
 				surveyRepository.update(survey);
+				template.setName("Survey "+template.getTemplateType().getName());
 			} else {
 				Battery battery = batteryRepository.findOne(parentId);
 				Set<Template> templateSet = battery.getTemplates();
 				battery.setTemplates(addTemplateToSet(templateSet, template,
 						batteryTemplates));
+				template.setName("Battery "+template.getTemplateType().getName());
 				batteryRepository.update(battery);
 			}
 		}
