@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -15,13 +18,20 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
 	
-	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right)
+	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
 	{
 		
 		
 		if (inLeft instanceof TemplateTextContent)
 		{
-			return ((TemplateTextContent)inLeft).getContent();
+			try
+			{
+				Double.parseDouble(((TemplateTextContent)inLeft).getContent());
+				return ((TemplateTextContent)inLeft).getContent();
+			}
+			catch(Exception e)
+			{}
+			return "\""+((TemplateTextContent)inLeft).getContent()+"\"";
 		}
 		
 		TemplateVariableContent leftContent = (TemplateVariableContent) inLeft;
@@ -30,38 +40,24 @@ public abstract class TemplateBaseContent {
 		
 		String inStr = "var" + left.getId();
 		
+		ids.add(left.getId());
+		
 		String translatedVar = inStr;
 		
 		if (operand == null)
 		{
-			if (left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.getTypeId()!=null && left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 				
 			{
-				if (right instanceof TemplateTextContent)
-				{
-					try
-					{
-						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber(getResponse("+inStr+", "+left.getMeasureTypeId()+"))";
-					}
-					catch(Exception e)
-					{
-						// right is not a number;
-						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
-					}
-				}
-				else
-				{
-					translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
-				}
 				
+				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
 				
 			}
-			else if (left.getTypeId() == 4 )
+			else if (left.getTypeId()!=null && left.getTypeId() == 4 )
 			{
 				translatedVar =  "getFormulaValue("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar =  "getCustomValue("+inStr+")";
 			}
@@ -70,29 +66,43 @@ public abstract class TemplateBaseContent {
 				"lt".equals(operand) || "gt".equals(operand) || "lte".equals(operand) 
 				|| "gte".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1)			
+			if (left.getMeasureId()!=null && left.getMeasureTypeId() == 1)			
 			{
-				translatedVar =  "getResponse("+inStr+")";
+				if (right instanceof TemplateTextContent)
+				{
+					try
+					{
+						Double.parseDouble(((TemplateTextContent)right).getContent());
+						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+") != \"notset\" && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+					}
+					catch(Exception e)
+					{
+						// right is not a number;
+						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+					}
+				}
+				else
+					translatedVar =  "getResponse("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
-				translatedVar =  "asNumber(getCustomValue("+inStr+"))";
+				translatedVar =  "asNumber(getCustomValue("+inStr+"))!= \"notset\" && asNumber(getCustomValue("+inStr+"))";
 			}
-			else if (left.getTypeId() == 4)
+			else if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar = "getFormulaValue("+inStr+")";
 			}
 		}
 		else if ("answered".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "wasAnswered("+inStr+", "+left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nanswered".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
 				translatedVar= "wasntAnswered("+inStr+", "+left.getMeasureTypeId()+")";
 			}
@@ -100,22 +110,22 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("result".equals(operand))
 		{
-			if (left.getTypeId() == 4)
+			if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar= "formulaHasResult("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar= "customHasResult("+inStr+")";
 			}
 		}
 		else if ("nresult".equals(operand))
 		{
-			if (left.getTypeId() == 4)
+			if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
 				translatedVar= "formulaHasNoResult("+inStr+")";
 			}
-			else if (left.getTypeId() == 3)
+			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
 				translatedVar= "customHasNoResult("+inStr+")";
 			}
@@ -123,16 +133,16 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("response".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId() !=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
-				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operand))
 		{
-			if (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3)
+			if (left.getMeasureTypeId()!=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
 			{
-				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		

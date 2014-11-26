@@ -15,21 +15,37 @@ var EScreeningDashboardApp = EScreeningDashboardApp || {};
 EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
 /**
  * Constructor method for the Template class.  The properties of this class can be initialized with
- * the jsonTemplateObject.
+ * the jsonTemplateObject.  
+ * Please Note: This is used for both instantiating new objects and for extending Restangular models.  Because of this there cannot 
+ * be any fields defined unless we are creating a new instance.  Currently if we are creating an instance the templateCondig must be
+ * given with the type of the template so we can save it. When that happens the fields will have default values set. 
+ *
  * @class
  * @classdesc   This class is a domain model class; which means it has both behavior and state
  *              information about Template Types.
- * @param {String}  jsonTemplateObject  Represents the JSON representation of a Template object.
+ * @param {JSON}  templateConfig  Represents the JSON representation of a Template object.
  * @constructor
  * @author Robin Carnow
  */
-EScreeningDashboardApp.models.Template = function (templateType) {
-    if(Object.isDefined(templateType)){
-        this.isGraphical = false;
-        this.type = templateType;
-        this.name = templateType.name;
-        this.blocks = [];
+EScreeningDashboardApp.models.Template = function (templateConfig) {
+
+
+    if(Object.isDefined(templateConfig)){
+        this.id = Object.isDefined(templateConfig.id)? templateConfig.id : null;
+        this.isGraphical = (Object.isBoolean(templateConfig.isGraphical))? templateConfig.isGraphical : false;
+        this.type = (Object.isDefined(templateConfig.type))? templateConfig.type: null;
+        this.name = (Object.isDefined(templateConfig.type) && Object.isDefined(templateConfig.type.name))? templateConfig.type.name: null;
+        this.blocks = (Object.isArray(templateConfig.blocks))? EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(templateConfig.blocks): [];
     }
+    
+    /**
+     * Runs any initialization tasks after a model extend
+     */
+    this.init = function(){
+        if(Object.isArray(this.blocks)){
+            this.blocks = EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(this.blocks);
+        }
+    };
     
     /**
      * Because of some of the awkward nature of our endpoints and pre-restangular, UI code we have to do this for now
@@ -55,7 +71,7 @@ EScreeningDashboardApp.models.Template = function (templateType) {
             console.log("Saving new template of type " + this.type.id  + " for survey with ID: " + relatedObject.id)
             //TODO: if/when we move to a more OO restful end point structure we should remove this in favor of:
             // var templateTypes = module.getList('templateTypes');
-            // ... at some point: new EScreeningDashboardApp.models.Template(selectedTemplateType);
+            // ... at some point: new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
             // this.type.post(this);  
             // The goal would be to have "this" sent to either:
             //  -  POST: /services/surveys/{surveyId}/templateTypes/{templateTypeId}
@@ -81,20 +97,21 @@ EScreeningDashboardApp.models.Template = function (templateType) {
     };
     
     /**
-     * Updates the section numbering of all blocks
+     * Updates the section numbering of all blocks as well as each block's parent field
      */
     this.updateSections = function(){
         
-        function updateSection(children, parentSection){
+        function updateSection(children, parent){
             if(Object.isDefined(children)){
                 for (var i = 0; i < children.length; i++){
                     var sectionIndex = i + 1;
-                    children[i].section = parentSection == "" ? parentSection + sectionIndex : parentSection + "." + sectionIndex;
-                    updateSection(children[i].children, children[i].section);
+                    children[i].setParent(parent);
+                    children[i].section = parent ? parent.section + "." + sectionIndex : "" + sectionIndex;
+                    updateSection(children[i].children, children[i]);
                 }
             }
         }
-        return updateSection(this.blocks, "");
+        return updateSection(this.blocks);
     };
     
     this.toString = function () {

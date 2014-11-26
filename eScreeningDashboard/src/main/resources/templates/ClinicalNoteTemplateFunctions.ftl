@@ -463,6 +463,22 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#return result>
 </#function>
 
+<#-- delimits the children of a variable using the prefix and suffix given, 
+boolean indicates if the suffix should be appended at the end of the list --> 
+<#function delimitChildrenDisplayText variableObj=DEFAULT_VALUE prefix='' suffix='' includeSuffixAtEnd=true> 
+    <#assign result = ''>
+    <#if (variableObj != DEFAULT_VALUE) && (variableObj.children)??>
+    <#list variableObj.children as child>
+        <#assign result = result + prefix +' '+ child.displayText>
+        <#if child_has_next || includeSuffixAtEnd>
+            <#assign result = result + suffix>
+        </#if>  
+    </#list>
+    </#if>
+    <#return result>
+</#function>
+
+
 <#function getFreeTextAnswer variableObj='notset' deflt=''>
     <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
         <#-- The object was not found -->
@@ -579,7 +595,7 @@ For multi select - returns a comma delimited list
     <#elseif measureTypeId == 2 >
         <#return getSelectOneResponse(var) >
     <#elseif measureTypeId == 3 > 
-        <#assign result = delimitChildren( var, '', ',', false)>
+        <#assign result = delimitChildrenDisplayText( var, '', ',', false)>
         <#if result == ''>
             <#return 'notset'>
         </#if>
@@ -613,6 +629,7 @@ takes a custom variable and returns its value which can be a string, number, or 
 
 <#-- 
 returns the numerical value of the response or "not set" if it cannot be evaluated.
+This function can return a number or a string. 
 -->
 <#function getFormulaValue var='notset'> 
     <#if var == 'notset' || !(var.value)?? || !((var.value)?has_content) >
@@ -653,7 +670,7 @@ returns true if the formula can be evaluated
         <#return false>
     </#if>
     
-    <#return getFormulaValue(var) != 'notset'>
+    <#return getFormulaValue(var)?string != 'notset'>
     
 </#function>
 
@@ -692,27 +709,38 @@ returns the negation of customHasResult
   param right can be an answer object (not supported in UI right now), or an integer
 -->
 <#function responseIs var='notset' right='notset' measureTypeId='notset'> 
-    <#if var == 'notset' || right == 'notset'>
+    <#if var == 'notset' || (right?is_string && right == 'notset')>
         <#return false>
     </#if>
     
-    <#if measureTypeId == 2 || measureTypeId == 3>
-        <#if (right.variableId)??>
+    <#if measureTypeId == 2 >
+    	<#if (var.answerId)??>
+    		<#if (var.answerId = right) >
+    			<#return true>
+    		</#if>
+    	</#if>
+    	<#return false >
+    </#if>
+    
+    <#if measureTypeId == 3 >
+        <#if (!(right?is_number) && (right.variableId)??)>
             <#return isSelectedAnswer(var, right)>
-        </#if>    
-         
+        </#if>
+
         <#if (var.children)?? >
             <#list var.children as v>
-                <#if (v.calculationValue)?? && (v.calculationValue)?has_content 
-                  && (v.value)?? && v.value = 'true' && v.calculationValue == right >   
+                <#if (v.answerId)??
+                  && (v.value)?? && v.value = 'true' &&
+                 ((right?is_number && v.answerId = right)
+                  || (!(right?is_number) && v.answerId?string = right)) >
                     <#return true>
                </#if>
             </#list>
         </#if>
-        
+
         <#return false>
     </#if>
-    
+
     <#return '[Error: unsupported question type]'>
     
 </#function>

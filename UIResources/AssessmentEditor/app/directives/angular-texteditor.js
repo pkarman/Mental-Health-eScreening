@@ -23,7 +23,7 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
         };
         // Here we set up the global display defaults, make sure we don't overwrite any that the user may have already set.
         $rootScope.textAngularOpts = deepExtend({
-            toolbar: [['h1', 'h2', 'h3', 'p', 'pre', 'quote'], ['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'], ['justifyLeft','justifyCenter','justifyRight'],['html', 'insertImage', 'insertLink', 'unlink']],
+            toolbar: [['h1', 'h2', 'h3', 'p', 'pre', 'quote'], ['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'], ['justifyLeft','justifyCenter','justifyRight'],['html', 'insertImage', 'insertLink', 'unlink', 'insertVariable']],
             classes: {
                 focussed: "focussed",
                 toolbar: "btn-toolbar",
@@ -211,6 +211,15 @@ textAngular.directive("textAngular", ['$compile', '$window', '$document', '$root
                 display: "<button type='button' ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-unlink'></i></button>",
                 action: function() {
                     return this.$parent.wrapSelection('unlink', null);
+                }
+            },
+            insertVariable: display: "<button type='button' ng-click='action()' ng-class='displayActiveToolClass(active)'><i class='fa fa-plus'></i></button>",
+                action: function() {
+                    var imageLink;
+                    imageLink = '<img class="ta-insert-variable" ta-insert-variable contenteditable="false" src="" allowfullscreen="true" frameborder="0" />';
+                    if (imageLink !== '') {
+                        return this.$parent.wrapSelection('insertImage', imageLink);
+                    }
                 }
             }
         }, ($rootScope.textAngularTools != null)? $rootScope.textAngularTools : {});

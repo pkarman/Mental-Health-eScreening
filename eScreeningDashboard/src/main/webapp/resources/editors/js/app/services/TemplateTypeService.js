@@ -10,13 +10,13 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
         var currentTemplateTypes = [];
         var currentTemplateType = null;
         
-        var restAngular = Restangular.withConfig(function(Configurer) {
-                Configurer.setBaseUrl('/escreeningdashboard/dashboard');
-                Configurer.setRequestSuffix('.json');
+        var restAngular = Restangular.withConfig(function(config) {
+                config.setBaseUrl('services/');
+                config.setRequestSuffix('.json');
             }),
-            service = restAngular.service("services/templateTypes");
+            service = restAngular.service("templateTypes");
 
-        restAngular.extendModel("services/templateTypes", function(model) {
+        restAngular.extendModel("templateTypes", function(model) {
             return angular.extend(model, TemplateType);
         });
         
@@ -29,7 +29,7 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
             }, true);
         };
  
-        // Expose the public TemplateService API to the rest of the application.
+        // Expose the public TemplateTypeService API to the rest of the application.
         //return service;
         return {
             /**
@@ -58,10 +58,9 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
              */
             setSelectedType : function(currentTemplateType){ 
                 this.currentTemplateType = currentTemplateType; 
-                },
-            getSelectedType : function(){ 
+            },
+            getSelectedType : function(){
                 return this.currentTemplateType; 
-                } 
+            }
         }
     }]);
-        

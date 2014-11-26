@@ -92,7 +92,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateAnswerUIObjects = function(){
     	var answerUIObjects = [];
 
-        escapeTags(answers).forEach(function(answer){
+        answers.forEach(function(answer){
             answerUIObjects.push(answer.toUIObject());
         });
 
@@ -115,7 +115,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateValidationUIObjects = function(){
     	var validationUIObjects = [];
     	
-    	escapeTags(validations).forEach(function(validation){
+    	validations.forEach(function(validation){
             validationUIObjects.push(validation.toUIObject());
         });
 
@@ -175,7 +175,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateTableAnswerUIObjects = function(){
     	var tableAnswerUIObjects = [];
 
-        escapeTags(tableAnswers).forEach(function (answers) {
+        tableAnswers.forEach(function (answers) {
             var answerUIObjects = [];
 
             answers.forEach(function (answer) {
@@ -302,35 +302,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     };
 
     this.toJSON = function (serializeCollections) {
-        serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-        var jsonId = (Object.isDefined(id) && id > 0)? id : null, //null
-            jsonText = (Object.isDefined(text))? "\"" + this.escapeTags(text) + "\"": null,
-            jsonType = (Object.isDefined(type))? "\"" + type + "\"" : null,
-            jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
-            jsonVisible = (Object.isDefined(visible))? visible : false,
-            jsonIsRequired = (Object.isDefined(required))? required : false,
-            jsonIsPpi = (Object.isDefined(ppi))? ppi : false,
-            jsonIsMha = (Object.isDefined(mha))? mha : false,
-            jsonVariableName = (Object.isDefined(variableName))? "\"" + variableName + "\"" : null,
-            jsonAnswers =  (serializeCollections)? "\"answers\": " + generateJsonStringForAnswers() : "",
-            jsonValidations = (serializeCollections)? ",\"validations\": " + generateJsonStringForValidations(): "",
-            jsonChildMeasures = (serializeCollections) ? ",\"childQuestions\": " + generateJsonStringForChildQuestions() : "",
-            json = "{" +
-                "\"id\": " + jsonId + "," +
-                "\"text\": " + jsonText + "," +
-                "\"type\": " + jsonType + "," +
-                "\"displayOrder\": " + jsonDisplayOrder + "," +
-                "\"visible\": " + jsonVisible + "," +
-                "\"required\": " + jsonIsRequired + "," +
-                "\"ppi\": " + jsonIsPpi + "," +
-                "\"mha\": " + jsonIsMha + "," +
-                "\"variableName\": " + jsonVariableName + "," +
-                jsonAnswers + 
-                jsonValidations + 
-                jsonChildMeasures + 
-            "}";
-
-        return json;
+        return angular.toJson(toUIObject(serializeCollections));
     };
     
     this.escapeTags = function(string){
@@ -347,13 +319,29 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     };
     
     
-    this.toUIObject = function(){
-    	var questionUIObject = JSON.parse(this.escapeTags(this.toJSON())),
-            existingValidation;
-
-        questionUIObject.textFormatDropDownMenu = null;
-
-    	return questionUIObject;
+    this.toUIObject = function(serializeCollections){
+        var uiObj = {
+            'id': id,
+            'text': text,
+            'type': type,
+            'displayOrder': displayOrder,
+            'visible': (Object.isDefined(visible))? visible : false,
+            'required': (Object.isDefined(required))? required : false,
+            'ppi': (Object.isDefined(ppi))? ppi : false,
+            'mha': (Object.isDefined(mha))? mha : false,
+            'variableName': variableName,
+            textFormatDropDownMenu: null
+        };
+        
+        //TODO: see if this flag is actually used
+        var includeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections)) ? serializeCollections : true;
+        if(includeCollections){
+            uiObj.answers = generateAnswerUIObjects();
+            uiObj.validations = generateValidationUIObjects(); 
+            uiObj.childQuestions = generateChildQuestionUIObjects();
+        }
+        
+        return uiObj;
     };
 };
 EScreeningDashboardApp.models.Question.toUIObjects = function(questions) {

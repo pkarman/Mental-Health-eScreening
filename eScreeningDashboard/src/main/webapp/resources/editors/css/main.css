@@ -184,6 +184,25 @@ to prevent collapsing during animation*/
   margin:0 5px;
 }
 
+.ta-insert-variable{
+  background-color:#003f72;
+  padding:2px 4px;
+  margin:4px 4px;
+  border-radius: 4px;
+  border:0px;
+  border:1px solid #003f72 !important;
+}
+fieldset {
+  border:0px !important;
+  border:1px solid #003f72 !important;
+}
+
+.text-info{
+  color:#fff;
+  border:1px solid #003f72;
+  font-size:13px;
+}
+
 @media (max-width: 600px) {
     .modal-huge {
         width: 580px;
@@ -228,6 +247,7 @@ to prevent collapsing during animation*/
     font-family: inherit;
     font-size: 100%;
     margin:20px 0;
+    line-height: 1.5em;
 }
 
 .app{
