@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.ae;
 
+//TODO: This seems to be very similar to ErrorCodeEnum.  We have to have all of these error code enums in one place.
 public enum MheExceptionCode {
 
     AUTHENTICATION_FAILED(1001, "Failed to authenticate"),

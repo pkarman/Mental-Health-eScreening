@@ -154,6 +154,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 	private Measure updateMeasureEntity(
 			gov.va.escreening.dto.ae.Measure measureDto) {
+		
+		try
+		{
 		Measure m = findOne(measureDto.getMeasureId());
 
 		copyFromDTO(m, measureDto);
@@ -167,6 +170,12 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 		return m;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
