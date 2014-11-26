@@ -69,11 +69,11 @@
 			<table id="userListDataTable" name="userListDataTable" class="table table-striped  table-hover dataTables_wrapper" summary="User Management Table"> 
 				<thead>
 					<tr>
-						<th scope="col">Login ID</th>
-						<th scope="col">Last Name</th>
-						<th scope="col">First Name</th>
-						<th scope="col">Status</th>
-						<th scope="col">Role</th>
+						<th scope="col" class="col-md-2">Login ID</th>
+						<th scope="col" class="col-md-2">Last Name</th>
+						<th scope="col" class="col-md-2">First Name</th>
+						<th scope="col" class="col-md-2">Status</th>
+						<th scope="col" class="col-md-4">Role</th>
 					</tr>
 				</thead>
 				<tbody>
