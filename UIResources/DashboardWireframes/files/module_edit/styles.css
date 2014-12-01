@@ -1,7 +1,6 @@
 ﻿body {
   margin:0px;
   background-image:none;
-  touch-action:none;
   position:relative;
   left:-0px;
   width:1198px;
@@ -3345,7 +3344,6 @@
   left:2px;
   top:11px;
   width:302px;
-  visibility:hidden;
   word-wrap:break-word;
 }
 #u275 {
@@ -3542,7 +3540,6 @@
   left:2px;
   top:11px;
   width:302px;
-  visibility:hidden;
   word-wrap:break-word;
 }
 #u291 {
