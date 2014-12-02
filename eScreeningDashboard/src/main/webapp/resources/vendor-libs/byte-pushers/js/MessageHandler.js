@@ -92,32 +92,47 @@ BytePushers.models.MessageHandler = function (jsonMessagesArrayObject) {
     this.clearMessages = function(type) {
         type = (Object.isDefined(type))? type : "all";
 
-        if(type === "all") {
-            messages = [];
-        }
-
         messages.forEach( function(message, index) {
-            if(message.getType().toLowerCase() === "error"){
-                messages.splice(index, 1);
-            } else if (message.getType().toLowerCase() === "success") {
-                messages.splice(index, 1);
+            if(type === "all" 
+                || message.getType().toLowerCase() === type){
+                removeMessage(index);
             }
         });
     };
 
-    this.addMessage = function (someMessage, addDuplicateMessages){
+    function removeMessage(index){
+        if(messages[index].numLives == 0){
+            messages.splice(index, 1);
+        }
+        else{
+            messages[index].numLives--;
+        }
+    }
+    
+    /**
+     * @param someMessage is the message object we are adding
+     * @param addDuplicateMessages flag to allow duplicates
+     * @param lives is an integer indicating how many times clearMessages() can be called 
+     * on the message without it being removed.  This is used for times when state transitions 
+     * happen and you want the message to stay around for the next state.
+     */
+    this.addMessage = function (someMessage, addDuplicateMessages, lives){
         addDuplicateMessages = (Object.isDefined(addDuplicateMessages))? addDuplicateMessages : false;
+        someMessage.numLives = Object.isDefined(lives) && parseInt(lives) == lives ? lives : 0;
+        
+        if(addDuplicateMessages){//we don't care if there are dups
+            messages.push(someMessage);
+        }
+        else{
+            var foundDuplicatedMessage = messages.some(function (message) {
+                if(message.getValue() === someMessage.getValue()) {
+                    return true;
+                }
+            });
 
-        var foundDuplicatedMessage = messages.some(function (message) {
-            if(message.getValue() === someMessage.getValue()) {
-                return true;
+            if(!foundDuplicatedMessage) {
+                messages.push(someMessage);
             }
-        });
-
-        if(addDuplicateMessages && foundDuplicatedMessage) {
-            messages.push(someMessage);
-        } else if (!addDuplicateMessages && !foundDuplicatedMessage) {
-            messages.push(someMessage);
         }
     };
 

@@ -31,31 +31,6 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
         createdDate = (Object.isDefined(jsonSurveyPageObject) && Object.isDate(jsonSurveyPageObject.createdDate))? (Object.isDate(jsonSurveyPageObject.createdDate)) ? jsonSurveyPageObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonSurveyPageObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
         questions = (Object.isDefined(jsonSurveyPageObject) && Object.isDefined(jsonSurveyPageObject.questions) && Object.isArray(jsonSurveyPageObject.questions))? EScreeningDashboardApp.models.QuestionsTransformer.transformJSONPayload({"questions": jsonSurveyPageObject.questions}) : [];
 
-    var generateJsonStringForQuestions = function () {
-        var questionJson = "[";
-
-        questions.forEach(function (question) {
-            questionJson += question.toJSON() + ",";
-        });
-
-        if (questions.length > 0) questionJson = questionJson.slice(0, questionJson.length-1);
-        questionJson += "]";
-
-        return questionJson;
-    };
-
-    var generateQuestionUIObjects = function(){
-        var questionsUIObjects = [];
-
-        if (Object.isArray(questions)){
-            questions.forEach(function (question) {
-                questionsUIObjects.push(this.questions.toUIObject());
-            });
-        }
-
-        return questionsUIObjects;
-    };
-
     this.getId = function(){
         return id;
     };
@@ -89,34 +64,34 @@ EScreeningDashboardApp.models.SurveyPage = function (jsonSurveyPageObject) {
             ", createdDate: " + createdDate + ", questions[" + questions + "]}";
     };
 
-    this.toJSON = function (serializeCollections) {
-        serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-
-        var jsonId = (Object.isDefined(id) && id > 0)? id : null,
-            jsonTitle = (Object.isDefined(title))? "\"" + title + "\"":  null,
-            jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
-            jsonPageNumber = (Object.isDefined(pageNumber))? pageNumber: null,
-            jsonCreatedDate = (Object.isDefined(createdDate))? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
-            jsonQuestions = (serializeCollections)? ",\"questions\": " + generateJsonStringForQuestions() : "",
-            json =  "{" +
-                "\"id\": " + jsonId + "," +
-                "\"title\": " + jsonTitle + "," +
-                "\"description\": " +  jsonDescription + "," +
-                "\"pageNumber\": " + jsonPageNumber+ "," +
-                "\"createdDate\": " + jsonCreatedDate +
-                jsonQuestions +
-                "}";
-
-        return json;
+    this.toJSON = function (serializeCollections) {   
+        var uiObj = this.toUIObject(serializeCollections);
+        if(Object.isDefined(uiObj.createdDate)){
+            var dateText = uiObj.createdDate.toISOString();
+            uiObj.jsonCreatedDate = dateText.substring(0, dateText.length-1);
+        }
+        return angular.toJson(uiObj);
     };
 
-    this.toUIObject = function(){
-        var surveyUIObject = JSON.parse(this.toJSON(true));
-        surveyUIObject.createdDate = this.getCreatedDate();
-        surveyUIObject.toString = function() {
+    this.toUIObject = function(includeCollections){
+        var incCollections = (Object.isDefined(includeCollections) && Object.isBoolean(includeCollections))? includeCollections : true;
+        
+        var uiObj = {
+            'id': id,
+            'title': title,
+            'description' : description,
+            'pageNumber': pageNumber,
+            'createdDate': createdDate,
+        };
+        
+        if(incCollections){
+            uiObj.questions = EScreeningDashboardApp.models.Question.toUIObjects(questions);
+        }
+        
+        uiObj.toString = function() {
             return id;
         };
-        return surveyUIObject;
+        return uiObj;
     };
 };
 EScreeningDashboardApp.models.SurveyPage.toJSON = function(surveyPages) {

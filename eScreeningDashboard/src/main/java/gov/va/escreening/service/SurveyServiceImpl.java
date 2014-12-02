@@ -370,6 +370,10 @@ public class SurveyServiceImpl implements SurveyService {
 		    spi.setQuestions(new ArrayList<QuestionInfo>());
 		    for(Measure measure : surveyPage.getMeasures())
 		    {
+		    	if (measure==null)
+		    	{
+		    		continue;
+		    	}
 		    	spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
 		    }
 		    surveyPageInfos.add(spi);

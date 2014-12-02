@@ -17,7 +17,10 @@ app.directive('reportTable', function() {
 	    	"sPaginationType": "full_numbers",
 	    	"sServerMethod": "POST",
 	    	"sAjaxSource": "assessmentReport/services/assessments/search",
-	    	"fnServerData": scope.$eval(attrs.fnDataCallback)
+	    	"fnServerData": scope.$eval(attrs.fnDataCallback),
+        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+          $(nRow).attr('role', "row");
+        }
         };
 
         var aoColumns = {};
@@ -74,6 +77,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 	$scope.searchDatabase = function() {
 		var oTable = $('#assessmentReportTable').dataTable();
 		oTable.dataTable().fnDraw(true);
+    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger' aria-hidden='false' aria-label='No matching records found' role='row'>No matching records found</div>";
 	};
 
 	$scope.getDataForSearch = function( sSource, aoData, fnCallback, oSettings ) {

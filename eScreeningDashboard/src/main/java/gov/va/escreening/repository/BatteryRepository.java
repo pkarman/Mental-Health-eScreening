@@ -11,4 +11,6 @@ public interface BatteryRepository extends RepositoryInterface<Battery> {
      * @return
      */
     List<Battery> getBatteryList();
+    
+	List<Battery> findByTemplateId(Integer templateId);
 }

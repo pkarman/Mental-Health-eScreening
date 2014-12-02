@@ -66,7 +66,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
-		
+		variableDto.setAnswerId(measureAnswer.getMeasureAnswerId());
 		return variableDto;
 	}
     
@@ -78,6 +78,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String variableName = String.format("var%s", id);
 		String type = getVariableTypeString(response.getMeasureAnswer().getAnswerType());
 		String displayName = String.format("answer_%s", response.getMeasureAnswer().getMeasureAnswerId());
+		
 		String value = getValue(response, veteranAssessmentId);
 		String displayText = getDisplayText(type, response.getMeasureAnswer(), response, veteranAssessmentId);
 		String overrideText = getOverrideText(response, measureAnswerHash);  
@@ -88,6 +89,8 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String otherValue = response.getOtherValue();
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
+		
+		variableDto.setAnswerId(response.getMeasureAnswer().getMeasureAnswerId());
 		
 		return variableDto;
 	}
@@ -259,11 +262,11 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 			return getValue(response, veteranAssessmentId);
 		}
 
-		if(!answerType.toLowerCase().equals("none"))
-			return measureAnswer.getAnswerText();
-		
-		//otherwise
-		return null;
+		//The constraint has been removed which would return null here if the answer is of type none. Template functions do not assume 
+		//this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the 
+		//delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to 
+		//show the text of the None answer so null should not be returned. 
+		return measureAnswer.getAnswerText();
 	}
 	
 	private String getValue(SurveyMeasureResponse response, Integer veteranAssessmentId) {

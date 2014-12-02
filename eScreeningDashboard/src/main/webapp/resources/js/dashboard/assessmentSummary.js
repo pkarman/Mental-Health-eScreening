@@ -1,4 +1,15 @@
 $(document).ready(function() {
+  // Load tab
+  tabsLoad("assessmentDashboard");
+  
+  // Wide Modal
+  $(".modal-wide").on("show.bs.modal", function() {
+      var height = $(window).height() - 200;
+      $(this).find(".modal-body").css("max-height", height);
+  });
+    
+    
+
   // Print Report
   var veteran_summary_modal       = ".veteran_summary_modal";
   var veteran_summary_modal_body  = ".veteran_summary_modal .modal-body";

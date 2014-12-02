@@ -4,6 +4,9 @@ import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.ErrorResponseException;
+import gov.va.escreening.exception.ErrorResponseRuntimeException;
+import gov.va.escreening.exception.FreemarkerRenderException;
+import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranAssessmentService;
@@ -16,11 +19,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -96,6 +102,7 @@ public class AssessmentSummaryRestController {
     }
     
     
+    
     @RequestMapping(value = "/assessmentSummary/assessments/{veteranAssessmentId}/veteranSummary", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
@@ -106,8 +113,14 @@ public class AssessmentSummaryRestController {
         try {
             progressNoteContent = templateProcessorService.generateVeteranPrintout(veteranAssessmentId);
         }
+        
         catch (Exception e) {
-            if(e instanceof ErrorResponseException){
+        	if (e instanceof TemplateProcessorException){
+        		ErrorResponse error = ((TemplateProcessorException) e).getErrorResponse();
+        		logger.error(error.getLogMessage());
+        		throw new FreemarkerRenderException(error);
+        	}
+        	else if(e instanceof ErrorResponseException){
                 ErrorResponse error = ((ErrorResponseException)e).getErrorResponse();
                 logger.error(error.getLogMessage());
                 //TODO: we should pass the ErrorResponse instead of a string
@@ -122,6 +135,22 @@ public class AssessmentSummaryRestController {
         logger.debug("Returrning note:\n{}", progressNoteContent);
 
         return progressNoteContent;
+    }
+    
+    @ExceptionHandler(FreemarkerRenderException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleFreemarkerRenderException(FreemarkerRenderException iae) {
+        if (iae instanceof ErrorResponseRuntimeException){
+        	return ((FreemarkerRenderException)iae).getErrorResponse();
+        }
+        
+        ErrorResponse er = new ErrorResponse();
+
+        er.setDeveloperMessage(iae.getMessage());
+        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
+        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return er;
     }
 
 }

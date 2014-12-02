@@ -429,7 +429,13 @@ public class XportDataTest {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierVetSummary(testTuple);
 	}
-
+	
+	private boolean invokeSurveyTemplateReview(String jsonFileName,
+			String root, TemplateType type, int surveyId) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return surveyTemplateRenderReview(surveyId, type, testTuple);
+	}
+	
 	private boolean mixTemplateTxtReview(String[] jsonFileName, String root) throws Exception {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierTypeTxt(testTuple);
@@ -515,6 +521,20 @@ public class XportDataTest {
 		return true;
 	}
 
+	private boolean surveyTemplateRenderReview(int surveyId, TemplateType type, Object[] testTuple) throws Exception {
+		VeteranAssessment va = (VeteranAssessment) testTuple[1];
+		String name = "templateProcessorService-->" + type + "-->assessment_" + va.getVeteranAssessmentId() + "-->survey_" + surveyId;
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 2; i++) {
+			sw.start("iter_" + i);
+			String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va.getVeteranAssessmentId(), ViewType.TEXT);
+			sw.stop();
+			assertTrue(!progressNoteContent.isEmpty());
+		}
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		return true;
+	}
+	
 	private boolean exportDataVerifierResult(AssesmentTestData atd,
 			List<DataExportCell> exportedData, boolean deidentified) {
 
@@ -637,7 +657,7 @@ public class XportDataTest {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
 		}
 	}
-
+	
 	@Rollback(value = false)
 	@Test
 	public void readExportLogById() {

@@ -6,7 +6,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.service.AssessmentVariableService;
-import gov.va.escreening.service.AvModelBuilder;
+import gov.va.escreening.service.AvBuilder;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -146,7 +146,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			final Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avLstWithFormulae) {
 
-		AvModelBuilder avmd = new AvModelBuilder() {
+		AvBuilder<Set<String>> avBldr = new AvBuilder<Set<String>>() {
 			@Override
 			public void buildFromMeasureAnswer(
 					AssessmentVariable avWithFormula,
@@ -163,12 +163,33 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			}
 
 			@Override
-			public Object getResult() {
-				return null;
+			public Set<String> getResult() {
+				return surveyFormulae;
+			}
+
+			@Override
+			public void buildFormula(Survey survey, AssessmentVariable av,
+					Collection<Measure> smList,
+					Collection<AssessmentVariable> avList,
+					boolean filterMeasures) {
+
+				for (Measure m : smList) {
+					for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+						AssessmentVariable av1 = avc.getVariableChild();
+						if (avs.compareMeasure(av1, m)) {
+							buildFromMeasure(av, avc, m);
+						} else if (avs.compareMeasureAnswer(av1, m)) {
+							buildFromMeasureAnswer(av, avc, m, av1.getMeasureAnswer());
+						}
+					}
+					if (!m.getChildren().isEmpty()) {
+						avs.filterBySurvey(survey, this, m.getChildren(), avList, filterMeasures);
+					}
+				}
 			}
 		};
 
-		avs.filterBySurvey(survey, avmd, smList, avLstWithFormulae);
+		avs.filterBySurvey(survey, avBldr, smList, avLstWithFormulae, false);
 	}
 
 	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {

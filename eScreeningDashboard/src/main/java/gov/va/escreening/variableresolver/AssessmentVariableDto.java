@@ -19,6 +19,16 @@ public class AssessmentVariableDto {
 	private String otherValue;
 	private String displayName;
 	
+	private Integer answerId;
+	
+	public Integer getAnswerId() {
+		return answerId;
+	}
+
+	public void setAnswerId(Integer answerId) {
+		this.answerId = answerId;
+	}
+
 	private List<AssessmentVariableDto> children = new ArrayList<AssessmentVariableDto>();
 	
 	public AssessmentVariableDto(){};

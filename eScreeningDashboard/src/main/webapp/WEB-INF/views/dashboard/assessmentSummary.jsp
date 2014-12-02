@@ -28,20 +28,6 @@
     
     <link href="<c:url value="/resources/css/partialpage/assessmentSummary.css" />" rel="stylesheet" type="text/css" />
     <title>Assessment Summary</title>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            tabsLoad("assessmentDashboard");
-            $(".modal-wide").on("show.bs.modal", function() {
-              var height = $(window).height() - 200;
-               $(this).find(".modal-body").css("max-height", height);
-              });
-            });
-    </script>
-    <style type="text/css">
-    
-    
-    
-    </style>
 </head>
 <body>
 <div class="nonPrintableArea">
@@ -404,6 +390,7 @@
           <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
         </div>
         <div class="modal-body printableArea">
+            
           <div class="modal_contents">Loading...</div>
         </div>
       </div>
@@ -441,12 +428,10 @@
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/assessmentSummary.js" />"></script>
 <script>
         
-$(document).ready(function() {
+$(document).ready(function() {              
     $(this).on("click", '#VeteranSummaryButton', function(e){
         e.preventDefault();
-
         var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
-
         $('#VeteranSummaryModal').modal('show');
         $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
 
@@ -456,26 +441,47 @@ $(document).ready(function() {
 		  	type : 'get',
 		  	contentType: 'application/json',
 		   	url : modal_url,
-	   		success : function(r)
-			{  
+	   		success : function(r){  
 	   		    $(modal_contents).show().html(r);
-            
-	            
 	            $(".graphicBody").each(function(graphId){
 	                var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
-	
-	                //clear the graph area
-	                $this.html("");
-	              
-	                //process graph request by type
+	                
+	                $this.html(""); //clear the graph area
+	                
+                  //process graph request by type
 	                if(graphObj.type == "stacked"){
 	                    graphStacked(graphId, graphObj, $this.parents(".moduleTemplate"));
 	                }
 	                //TODO: add more types 
-	                
 	            });
-			}
+			    },
+          error: function (xhr, exception, errorThrown) {
+                data = "[" + xhr.responseText + "]";
+                data = $.parseJSON(data);
+          
+                var userMessage       = [];
+                var developerMessage  = [];
+                for (var i = 0; i < data.length; ++i) {                    
+                  for (var j = 0; j < data[i].errorMessages.length; j++) {
+                    errorMessages = data[i].errorMessages[j];
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+                  }
+                  if(data[i].developerMessage.length > 0){
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
+                  }
+                }
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
+                $(modal_contents).show().html(panelTemplate);
+          }
+         
  	    });    
  	});
 						
@@ -495,9 +501,34 @@ $(document).ready(function() {
    		   		success : function(r)
    				 {  
    					 $(modal_contents).show().html(r);
-   				 }
+   				 },
+          error: function (xhr, exception, errorThrown) {
+                data = "[" + xhr.responseText + "]";
+                data = $.parseJSON(data);
+          
+                var userMessage       = [];
+                var developerMessage  = [];
+                for (var i = 0; i < data.length; ++i) {                    
+                  for (var j = 0; j < data[i].errorMessages.length; j++) {
+                    errorMessages = data[i].errorMessages[j];
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+                  }
+                  if(data[i].developerMessage.length > 0){
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
+                  }
+                }
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
+                $(modal_contents).show().html(panelTemplate);
+          }
    		   });
-	   	});
+   });
 	
 	
    	$(this).on("click", '#healthFactorTitlesButton', function(e){
