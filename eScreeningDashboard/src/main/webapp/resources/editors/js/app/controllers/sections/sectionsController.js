@@ -6,14 +6,14 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             $scope.isDirty = false;
             $scope.predicate = "-displayOrder";
             $scope.reverse = false;
-            
+
             $scope.setDirty = function(){
             	$scope.isDirty = true;
             };
-            
+
             $scope.$watch('sections',function(newVal, oldVal){
             	if ($scope.sections && $scope.sections.length > 0){
-            		
+
             		$scope.editSections = [];
             		for (var i=0;i<$scope.sections.length;i++){
             			$scope.editSections.push($scope.returnEditSection($scope.sections[i]));
@@ -22,7 +22,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             		$scope.editSections = [];
             	}
             });
-            
+
             $scope.$watch('editSections', function(newVal, oldVal){
                 if ($scope.editSections && $scope.editSections.length > 0){
                     $scope.editSections.forEach(function(section){
@@ -32,17 +32,18 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                             section.isExpanded = false;
                             section.visible = true;
                             section.surveys.forEach(function(surveyUI){
+                                .0
                                 surveyUI.visible = true;
                             });
                         }
                     });
                 }
             });
-            
+
             $scope.isAllExpanded = false;
-            
+
             $scope.secRemoveCopy = {};
-            
+
             $scope.deleteCheck = function(section){
             	if (section.surveys.length >0){
             		alert('This Section contains Modules. Please remove the Modules to other Section(s) before attempting to delete.');
@@ -54,7 +55,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             			return;
             	}
             };
-            
+
             /* @REFACTOR - Pending new JSON call structure. - JBH (7/8/2014) */
             /* @REFACTOR - Changing to a visible/invisible with flagging for removal, per new Save scheme. - JBH (7/30/2014) */
             $scope.removeSection = function(editorSurveySection){
@@ -69,7 +70,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             		// Section hasn't been saved, and this one doesn't create Sections, so return.
             		return;
             	}
-            	
+
             };
 
             $scope.expandAll = function(){
@@ -80,7 +81,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                 $scope.isAllExpanded = true;
                 $scope.$apply();
             };
-            
+
             $scope.collapseAll = function(){
             	console.log('Collapse All');
             	for (var i=0;i<$scope.editSections.length;i++){
@@ -89,7 +90,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             	$scope.isAllExpanded = false;
             	$scope.$apply();
             };
-            
+
             /* @REFACTORED - Pending new JSON call structure. - JBH (7/11/2014) */
             $scope.saveSection = function(editorSurveySection){
             	console.log('Save Section:: ' + JSON.stringify(editorSurveySection));
@@ -119,12 +120,12 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             		if (surveySection.isMarkedForDeletion()){
             			//alert('marked for deletion');
             			SurveySectionService.remove(SurveySectionService.setRemoveSurveySectionRequestParameter(surveySection.getId())).then(function(response){
-                            var section = response.getPayload();
                             SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
                                 var existingSurveySections = response.getPayload();
                                 existingSurveySections.forEach(function(existingSurveySection) {
                                     EScreeningDashboardApp.models.Survey.sortByDisplayOrder(existingSurveySection.getSurveys());
                                 });
+                                $scope.editSections = existingSurveySections;
                                 $scope.sections = existingSurveySections;
                                 console.log('Sections:: ' + existingSurveySections);
                                 $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
@@ -142,6 +143,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             			//delete sect.visible;
             			SurveySectionService.update(SurveySectionService.setUpdateSurveySectionRequestParameter(surveySection)).then(
                             function(response){
+                                var section=response.getPayload();
                                 var editSection = $scope.returnEditSection(section);
                                 $scope.sections.forEach(function (surveySection, index, array) {
                                     if(surveySection.getId() == section.getId()) {
@@ -173,9 +175,9 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                         $scope.saveSection($scope.editSections[i]);
             		}
             	}
-                $state.go('home');
+                $state.go('sections');
             };
-            
+
             $scope.returnEditSection = function(domainSection){
             	var secIsExpanded = false;
             	if (domainSection.getSurveys() === undefined)
@@ -195,7 +197,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                         markedForDeletion: domainSection.isMarkedForDeletion()
             		};
             };
-            
+
             $scope.returnEditSurveys = function(domainSurveys){
             	var surveys = [];
             	for (var i=0;i<domainSurveys.length;i++){
@@ -222,7 +224,7 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             		};
             		surveys.push(item);
             	}
-            	
+
             	return surveys;
             };
 
@@ -240,9 +242,14 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             };
 
             $scope.addSection = function() {
-                var secToAdd = $rootScope.createSection();
-                secToAdd.index = $scope.sections.length + 2;
-                $scope.sections.unshift($rootScope.createSection());
+                $scope.editSections.unshift({
+                    //sectionId:null,
+                    //title:'Enter Section Title',
+                    //modules:[],
+                    displayOrder:$scope.editSections.length+1
+                    //visible:true,
+                    //index:$scope.editSections.length + 2
+                });
             };
 
             $scope.sortableOptions = {
@@ -283,8 +290,8 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
                     $scope.expandAll();
         	    }
             };
-            
-            
+
+
             $scope.sortableSecOptions = {
                 connectWith: '.connected-sec-container',
                 update:function(e, ui){

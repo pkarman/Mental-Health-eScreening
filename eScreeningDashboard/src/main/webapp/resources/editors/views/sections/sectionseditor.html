@@ -4,11 +4,9 @@
       <h1>Manage Sections</h1>
     </div>
     <div class="col-md-6 h1_button">
-      <a href="javascript:void(0);" ng-show="!isAllExpanded" ng-click="expandAll();"><div class="pull-right"><div class="label label-primary"><span class="glyphicon glyphicon-plus"></span> Click to Expand All Sections</div></div></a> 
-      <a href="javascript:void(0);" ng-show="isAllExpanded" ng-click="collapseAll();"><div class="pull-right"><div class="label label-primary"><span class="glyphicon glyphicon-minus"></span> Click to Collapse All Sections</div></div></a>
-      <div class="pull-right">
-        <button class="btn btn-success" style="visibility:hidden;"> <span class="glyphicon glyphicon-plus"></span> Add Section </button>
-      </div>
+      <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right" type="button">Add Section</button>
+      <button ng-show="!isAllExpanded" ng-click="expandAll();" class="btn btn-link h1_button pull-right" type="button"><span class="glyphicon glyphicon-plus"></span> Click to Expand All Sections</button>
+      <button ng-show="isAllExpanded" ng-click="collapseAll();" class="btn btn-link h1_button pull-right" type="button"><span class="glyphicon glyphicon-minus"></span> Click to Collapse All Sections</button>
     </div>
   </div>
   <!-- Alerts and Messages -->
@@ -16,17 +14,17 @@
     <div class="col-md-12">
       <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()"> Error Message(s):<br>
         <br>
-        <div ng-repeat="error in messageHandler.getMessages()| filter:messageHandler.filterByErrorMessage"> {{error.getValue()}} </div>
+        <div ng-repeat="error in messageHandler.getMessages()"> {{error.getValue()}} </div>
       </div>
       <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
-        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessMessage"> {{message.getValue()}} </div>
+        <div ng-repeat="message in messageHandler.getMessages()"> {{message.getValue()}} </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <ul class="list-group app screen first connected-sec-container"  ui-sortable="sortableSecOptions" ng-model="editSections">
-        <li class="list-group-item border-bottom-3-gray" ng-model="editSections" ng-repeat="section in editSections|orderBy:'displayOrder'" ng-show="section.visible==true" ng-hide="section.visible==false"  style="cursor:move;" ng-class-odd="'odd-class-grid'" ng-class-even="'even-class-grid'">
+        <li class="list-group-item border-bottom-3-gray" ng-model="editSections" ng-repeat="section in editSections" style="cursor:move;" ng-class-odd="'odd-class-grid'" ng-class-even="'even-class-grid'">
           <form>
             <div class="row">
               <div class="col-md-4"> <span class="glyphicon glyphicon-align-justify pull-left cursor-pointer" style="margin-right:6px;"></span>

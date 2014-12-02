@@ -157,7 +157,7 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
                     {},
                     {
                         save: {
-                            method: 'PUT',
+                            method: 'POST',
                             params: {
                                 "surveySection": updateSurveySectionRequestParameter.surveySection
                             },

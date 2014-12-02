@@ -2,4 +2,9 @@
 /.classpath
 /.project
 /.settings
+/.idea
+/escreeningdashboard.iml
 /bin
+
+.idea
+escreeningdashboard.iml
