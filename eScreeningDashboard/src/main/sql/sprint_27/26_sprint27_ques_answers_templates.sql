@@ -1022,3 +1022,24 @@ INSERT INTO `variable_template` (`variable_template_id`,`assessment_variable_id`
 INSERT INTO `variable_template` (`variable_template_id`,`assessment_variable_id`,`template_id`,`override_display_value`,`date_created`) VALUES (19860,10818,320,NULL,'2014-12-02 10:58:18');
 INSERT INTO `variable_template` (`variable_template_id`,`assessment_variable_id`,`template_id`,`override_display_value`,`date_created`) VALUES (19861,2002,320,NULL,'2014-12-02 10:58:18');
 INSERT INTO `variable_template` (`variable_template_id`,`assessment_variable_id`,`template_id`,`override_display_value`,`date_created`) VALUES (19862,10816,320,NULL,'2014-12-02 10:58:18');
+
+
+/*
+-- Query: select * from survey_template where template_id in (select template_id from template where template_type_id=9)
+LIMIT 0, 1000
+
+-- Date: 2014-12-02 16:32
+*/
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (50,9,311,'2014-11-18 00:03:43');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (51,12,312,'2014-11-18 11:16:54');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (53,18,314,'2014-11-18 13:26:40');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (55,30,316,'2014-11-18 15:27:50');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (57,25,318,'2014-11-18 17:47:51');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (58,35,319,'2014-11-18 22:08:46');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (59,7,320,'2014-11-18 23:39:58');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (60,26,321,'2014-11-19 10:22:59');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (61,34,322,'2014-11-20 10:41:50');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (62,32,323,'2014-11-20 11:00:27');
+INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (63,29,324,'2014-11-20 14:32:20');
+
+
