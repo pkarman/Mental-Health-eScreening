@@ -7,9 +7,12 @@ import gov.va.escreening.util.SurveyResponsesHelper;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 public interface DataExtractor {
+	final Logger logger = LoggerFactory.getLogger(DataExtractor.class);
 	Map<String, String> apply(SurveyMeasureResponse smr, SurveyResponsesHelper srh);
 }
 
@@ -21,7 +24,10 @@ class ExportName implements DataExtractor {
 
 		// data export column we could be interested in
 		String xportName = srh.buildExportName(smr, ma.getExportName());
-
+		if (xportName==null){
+			logger.warn(String.format("%s export name is null--returning null from here", ma));
+			return null;
+		}
 		// user entered data
 		String textValue = smr.getTextValue();
 		Long numberValue = smr.getNumberValue();
