@@ -24,6 +24,7 @@
 		<quick.order.ien>51</quick.order.ien>
 		<vista.primaryStation>500</vista.primaryStation>
 		<sample.patient.ien>100022</sample.patient.ien>
+		<skip.db>true</skip.db>
 	</properties>
 	<dependencies>
 		<!-- Web Services -->
@@ -431,6 +432,7 @@
 
 				<!-- common configuration shared by all executions -->
 				<configuration>
+					<skip>${skip.db}</skip>
 					<driver>${jdbc.driver}</driver>
 					<url>${jdbc.url}</url>
 					<username>${jdbc.username}</username>
@@ -618,6 +620,18 @@
 				<jdbc.url>jdbc:mysql://localhost/escreening-test</jdbc.url>
 				<jdbc.db>escreening-test</jdbc.db>
 				<log.suffix>test</log.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>recreate_db</id>
+			<activation>
+				<property>
+					<name>recreate_db</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<skip.db>false</skip.db>
 			</properties>
 		</profile>
 		<profile>
