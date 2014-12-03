@@ -90,7 +90,7 @@ public abstract class TemplateBaseContent {
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
-				translatedVar = "getFormulaValue("+inStr+")";
+				translatedVar = "getFormulaValue("+inStr+")!= \"notset\" && getFormulaValue("+inStr+")";
 			}
 		}
 		else if ("answered".equals(operand))
