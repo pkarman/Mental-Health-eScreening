@@ -92,7 +92,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateAnswerUIObjects = function(){
     	var answerUIObjects = [];
 
-        escapeTags(answers).forEach(function(answer){
+        answers.forEach(function(answer){
             answerUIObjects.push(answer.toUIObject());
         });
 
@@ -115,7 +115,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateValidationUIObjects = function(){
     	var validationUIObjects = [];
     	
-    	escapeTags(validations).forEach(function(validation){
+    	validations.forEach(function(validation){
             validationUIObjects.push(validation.toUIObject());
         });
 
@@ -175,7 +175,7 @@ EScreeningDashboardApp.models.Question = function (jsonQuestionObject) {
     var generateTableAnswerUIObjects = function(){
     	var tableAnswerUIObjects = [];
 
-        escapeTags(tableAnswers).forEach(function (answers) {
+        tableAnswers.forEach(function (answers) {
             var answerUIObjects = [];
 
             answers.forEach(function (answer) {
