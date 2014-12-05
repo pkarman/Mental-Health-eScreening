@@ -33,65 +33,11 @@
   <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
 	
   <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
-    
-<script type="text/javascript">	
-   
-    
-    /*  
-	$.ajax({
-	    type: 'POST',
-	    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/filterOptions',
-	    data: '{}', // 
-	    success: function(data) { alert(JSON.stringify(data)); },
-	    contentType: "application/json",
-	    dataType: 'json'
-	});
-*/  
-/*
-$.ajax({
-	type: 'POST',
-	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-	url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/user/clinicians',
-	data: $.param({ "includeAll": true }),
-	success: function(data) { alert(JSON.stringify(data)); } 
-});
-*/
-/*
-$.ajax({
-    type: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/user/assessmentCreators',
-    data: $.param({ "includeAll": true }),
-    success: function(data) { alert(JSON.stringify(data)); } 
-});
-*/
-/*
-$.ajax({
-    type: 'POST',
-    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/exports/exportLog/30',
-    data: '{}', // 
-    success: function(data) { alert(JSON.stringify(data)); },
-    contentType: "application/json",
-    dataType: 'json'
-});
-*/
-/*
-$.ajax({
-    type: 'POST',
-    url: 'http://localhost:8080/escreeningdashboard/dashboard/exportData/services/user/programs',
-    data: '{}', // 
-    success: function(data) { alert(JSON.stringify(data)); },
-    contentType: "application/json",
-    dataType: 'json'
-});
-*/
-
-</script>
-<style type="text/css">
-.wrap{
-	white-space: normal !important;
-}
-</style>
+  <style type="text/css">
+  .wrap{
+    white-space: normal !important;
+  }
+  </style>
 </head>
 <body>
 
