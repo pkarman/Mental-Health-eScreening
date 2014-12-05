@@ -1,35 +1,14 @@
 package gov.va.escreening.service;
 
+import com.google.common.base.Function;
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
-import gov.va.escreening.dto.editors.QuestionInfo;
-import gov.va.escreening.dto.editors.SurveyInfo;
-import gov.va.escreening.dto.editors.SurveyPageInfo;
-import gov.va.escreening.dto.editors.SurveySectionInfo;
+import gov.va.escreening.dto.editors.*;
 import gov.va.escreening.entity.*;
-import gov.va.escreening.repository.AssessmentVariableRepository;
-import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.repository.SurveyPageRepository;
-import gov.va.escreening.repository.SurveyRepository;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.repository.*;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Transactional(readOnly=true)
 @Service
@@ -310,7 +295,7 @@ public class SurveyServiceImpl implements SurveyService {
 			List<Measure> measures = new ArrayList<Measure>();
 			surveyPage.setMeasures(measures);
 			
-			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
+			for(final QuestionInfo questionInfo : surveyPageInfo.getQuestions())
 			{
 				Integer measureId = questionInfo.getId();
 				if (measureId != null && measureId >-1)
@@ -320,18 +305,12 @@ public class SurveyServiceImpl implements SurveyService {
 				}
 				else
 				{
-					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));	
-					
+					gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
 					Measure measure = measureRepository.findOne(measureDTO.getMeasureId());
-					
-					AssessmentVariable av = new AssessmentVariable();
-					av.setMeasure(measure);
-					av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
-					av.setDisplayName(measure.getMeasureText());
-					assessmentVariableRepository.create(av);
-					List<AssessmentVariable> assessmentVariableList = new ArrayList<AssessmentVariable>();
-					assessmentVariableList.add(av);
-					measure.setAssessmentVariableList(assessmentVariableList);
+
+					attachMeasureAnswer(measure);
+					attachAssessmentVar(measure);
+
 					measureRepository.update(measure);
 					measures.add(measure);
 					
@@ -353,6 +332,29 @@ public class SurveyServiceImpl implements SurveyService {
 		System.out.println("aaaaaab");
 		survey.setSurveyPageList(surveyPageList);
 		surveyRepository.update(survey);
+	}
+
+	private void attachMeasureAnswer(Measure measure) {
+		if (MeasureTypeEnum.FREETEXT.getMeasureTypeId()==measure.getMeasureType().getMeasureTypeId()) {
+			MeasureAnswer ma = new MeasureAnswer();
+			ma.setMeasure(measure);
+			ma.setDisplayOrder(0);
+			ma.setExportName(measure.getVariableName());
+			List<MeasureAnswer> maList = new ArrayList<MeasureAnswer>();
+			maList.add(ma);
+			measure.setMeasureAnswerList(maList);
+		}
+	}
+
+	private void attachAssessmentVar(Measure measure) {
+		AssessmentVariable av = new AssessmentVariable();
+		av.setMeasure(measure);
+		av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
+		av.setDisplayName(measure.getMeasureText());
+		assessmentVariableRepository.create(av);
+		List<AssessmentVariable> assessmentVariableList = new ArrayList<AssessmentVariable>();
+		assessmentVariableList.add(av);
+		measure.setAssessmentVariableList(assessmentVariableList);
 	}
 
 	@Override
