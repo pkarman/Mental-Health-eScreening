@@ -13,7 +13,7 @@
 </div>
 
 
-<div class="modal fade" id="idletimeout" title="Your session is about to expire!">
+<div class="modal fade" id="idletimeout" title="Your session is about to expire!" tabindex="-1" role="dialog" aria-labelledby="idletimeout" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -33,9 +33,7 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
 <script src="resources/js/bootstrap/js/bootstrap.js" type="text/javascript"></script>
-
 <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script>
 <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script>
 <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script>
