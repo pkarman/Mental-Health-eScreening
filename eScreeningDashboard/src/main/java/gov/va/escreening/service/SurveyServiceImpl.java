@@ -313,7 +313,7 @@ public class SurveyServiceImpl implements SurveyService {
 			for(QuestionInfo questionInfo : surveyPageInfo.getQuestions())
 			{
 				Integer measureId = questionInfo.getId();
-				if (measureId != null)
+				if (measureId != null && measureId >-1)
 				{
 					measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
 					measures.add(measureRepository.findOne(questionInfo.getId()));			
@@ -334,6 +334,9 @@ public class SurveyServiceImpl implements SurveyService {
 					measure.setAssessmentVariableList(assessmentVariableList);
 					measureRepository.update(measure);
 					measures.add(measure);
+					
+					// update questionInfo's id with measure id
+					questionInfo.setId(measure.getMeasureId());
 				}
 			}
 			

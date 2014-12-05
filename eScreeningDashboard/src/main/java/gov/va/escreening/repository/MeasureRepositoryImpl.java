@@ -259,7 +259,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			
 		}
 
-		update(m);
+
+		//update(m);
 
 		if (measureDto.getChildMeasures() != null) {
 			for (gov.va.escreening.dto.ae.Measure child : measureDto

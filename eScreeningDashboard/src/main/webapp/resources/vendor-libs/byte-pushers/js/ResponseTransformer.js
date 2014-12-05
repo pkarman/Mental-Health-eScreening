@@ -79,7 +79,7 @@ BytePushers.models.ResponseTransformer.transformJSONResponse = function (jsonRes
         if (transFormPayload && !Object.isDefined(jsonResponse.payload)) {
             throw new BytePushers.exceptions.InvalidParameterException("jsonResponse.payload can not be null or undefined.");
         }
-        responsePayload = (transFormPayload)? payloadTransformer.transformJSONPayload(jsonResponse.payload, userId) : null;
+        responsePayload = (transFormPayload)? payloadTransformer.transformJSONPayload(jsonResponse.payload, userId) : jsonResponse.payload;
     }
 
     response = new BytePushers.models.Response(responseStatus, responsePayload);
