@@ -15,12 +15,16 @@ $(document).ready(function() {
           window.location = "handleLogoutRequest";
         },
         onIdle: function(dialog){
-          $("#outerPageDiv").attr('aria-hidden', true);
-          $(".offscreen").attr('aria-hidden', true);
-          $(".container").attr('aria-hidden', true);
-          $("#outerPageDiv").attr('aria-hidden', true);
+          var outerPageDiv        = "#outerPageDiv";
+          var offscreen           = ".offscreen";
+          var container           = ".container";
+          var modalBackdropLast   = ".modal-backdrop:last";
+          
+          $(outerPageDiv).attr('aria-hidden', true);
+          $(offscreen).attr('aria-hidden', true);
+          $(container).attr('aria-hidden', true);
 
-          $(".modal-backdrop:last").css("z-index", 1051);
+          $(modalBackdropLast).css("z-index", 1051);
           $(this).css("z-index", 1052);
   
           $(this).modal({
@@ -33,9 +37,14 @@ $(document).ready(function() {
           $(this).find("span.countdown").html( counter ); // update the counter
         },
         onResume: function(){
-          $(".modal-backdrop").css("z-index", 1040);
-          $("#outerPageDiv").attr('aria-hidden', false);
-          $(".offscreen").attr('aria-hidden', false);
+          var outerPageDiv        = "#outerPageDiv";
+          var offscreen           = ".offscreen";
+          var container           = ".container";
+          var modalBackdrop       = ".modal-backdrop";
+
+          $(modalBackdrop).css("z-index", 1040);
+          $(outerPageDiv).attr('aria-hidden', false);
+          $(offscreen).attr('aria-hidden', false);
           $(this).slideUp(); // hide the warning bar
           
           // Delay to update body 
