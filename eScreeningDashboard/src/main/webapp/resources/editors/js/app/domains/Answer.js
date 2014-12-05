@@ -56,10 +56,10 @@ EScreeningDashboardApp.models.Answer = function (jsonAnswerObject) {
     
     this.toUIObject = function(){
     	return {
-    		answerId : (Object.isDefined(id) && id > 0)? id : null,
-    		answerText : text,
-    		answerType : type,
-    		'exportName' : exportName,
+    		'id' : (Object.isDefined(id) && id > 0)? id : null,
+    		'text' : text,
+    		'type' : type,
+    		'exportName' : exportName
     	};
     };
 };
