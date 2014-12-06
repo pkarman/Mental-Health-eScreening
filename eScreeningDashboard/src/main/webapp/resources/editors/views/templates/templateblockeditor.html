@@ -23,13 +23,7 @@
 							       ng-model="block.left.content"
 							       ng-change="updateLogicalOptions(block)"
 							       update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir guid="block.guid"
-							                                      assessment-variable="block.left.content"
-							                                      ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}">
-								<mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables"
-								                            assessment-variable="block.left.content"
-								                            guid="block.guid" />
-							</mhe-assessment-var-dropdown-menu-dir>
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">
@@ -99,18 +93,9 @@
 							        name="blockValue"
 							        id="blockvalue"
 							        ng-model="block.right.content"
-							        ng-if="block.measureAnswers && block.measureAnswers.length && block.hasMultiSelectAnswer"
+							        ng-if="block.measureAnswers && block.measureAnswers.length"
 							        ng-options="answer.measureAnswerId as answer.answerText for answer in block.measureAnswers"
 							        cast-integer
-							        required>
-								<option value="">-- Answer --</option>
-							</select>
-							<select class="form-control"
-							        name="blockValue"
-							        id="blockvalue"
-							        ng-model="block.right.content"
-							        ng-if="block.measureAnswers && block.measureAnswers.length && !block.hasMultiSelectAnswer"
-							        ng-options="answer.calculationValue as answer.answerText for answer in block.measureAnswers"
 							        required>
 								<option value="">-- Answer --</option>
 							</select>
@@ -149,7 +134,6 @@
 		     ta-toolbar-group-class="btn-group"
 		     ta-toolbar-button-class="btn btn-default"
 		     ta-toolbar-button-active-class="active"
-		     ta-default-wrap="div" 
 		     name="text-block-editor"
 		     class="tab-content"></div>
 	</div>
@@ -176,13 +160,7 @@
 								       ng-model="condition.left.content"
 								       ng-change="updateLogicalOptions(condition)"
 								       update-hidden>
-								<mhe-assessment-var-dropdown-menu-dir guid="condition.guid"
-								                                      assessment-variable="condition.left.content"
-								                                      ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}">
-									<mhe-assessment-var-tbl-dir assessment-variables="assessmentVariables"
-									                            assessment-variable="condition.left.content"
-									                            guid="condition.guid" />
-								</mhe-assessment-var-dropdown-menu-dir>
+								<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -253,20 +231,10 @@ conditionForm.conditionOperator.$dirty}">
 									name="blockValue"
 									id="conditionvalue"
 									ng-model="condition.right.content"
-									ng-if="condition.measureAnswers && condition.measureAnswers.length && condition.hasMultiSelectAnswer"
+									ng-if="condition.measureAnswers && condition.measureAnswers.length"
 									ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
 									cast-integer
 									required>
-									<option value="">-- Answer --</option>
-								</select>
-								<select
-										class="form-control"
-										name="blockValue"
-										id="conditionvalue"
-										ng-model="condition.right.content"
-										ng-if="condition.measureAnswers && condition.measureAnswers.length && !condition.hasMultiSelectAnswer"
-										ng-options="answer.calculationValue as answer.answerText for answer in condition.measureAnswers"
-										required>
 									<option value="">-- Answer --</option>
 								</select>
 							</div>

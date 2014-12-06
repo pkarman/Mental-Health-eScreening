@@ -81,7 +81,10 @@ Editors.config(function(RestangularProvider, $provide) {
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
 					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance, AssessmentVariableService) {
-                        $scope.assessmentVariables = AssessmentVariableService.getLastCachedResults();
+
+						$scope.selections = {
+							show: true
+						};
 
 						$scope.assessmentVariable = {};
 

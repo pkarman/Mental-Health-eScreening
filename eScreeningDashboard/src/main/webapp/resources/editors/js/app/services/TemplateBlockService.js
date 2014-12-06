@@ -93,8 +93,8 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                 //remove extra line break
                 if(contents.length > 0){
                     var lastContent = contents[contents.length-1];
-                    if(lastContent.type == "text" && lastContent.content.substr(-16) != "<div><br/></div>"){
-                        lastContent.content = lastContent.content.replace(/<\w*br\w*\/*>\w*(<[^>]+>\w*)$/, "$1");
+                    if(lastContent.type == "text" && lastContent.content.search(/<p><br\/*><\/p>\w*$/) === -1){
+                        lastContent.content = lastContent.content.replace(/(>[^<]+)<\w*br\w*\/*>([^<]*<[^>]+>\w*)$/, "$1$2");
                     }
                 }
                 return contents;

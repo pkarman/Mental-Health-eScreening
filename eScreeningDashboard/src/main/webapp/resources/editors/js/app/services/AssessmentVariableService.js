@@ -4,7 +4,7 @@
  * @author Tonté Pouncil
  */
 angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangular'])
-    .factory('AssessmentVariableService', ['Restangular', 'TemplateVariableContent', function (Restangular, TemplateVariableContent){
+    .factory('AssessmentVariableService', ['Restangular', 'TemplateVariableContent', 'ngTableParams', '$filter', function (Restangular, TemplateVariableContent, ngTableParams, $filter){
         "use strict";
 
         var restAngular = Restangular.withConfig(function(config) {
@@ -58,6 +58,27 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             clearCachedResults: function () {
                 this.cachedHashResults = [];
                 this.cachedResults = [];
-            }
+            },
+	        getTableParams: function(searchObj, avs) {
+
+		        var assessmentVariables = this.getLastCachedResults().$object;
+
+		        return new ngTableParams({
+			        page: 1, // show first page
+			        count: 10, // count per page
+			        filter: searchObj
+		        }, {
+			        counts: [],
+			        total: 0,
+			        getData: function ($defer, params) {
+				        var filteredData = params.filter() ? $filter('filter')(assessmentVariables, params.filter()) : assessmentVariables;
+				        var avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+
+				        params.total(filteredData.length); // set total for recalc pagination
+				        $defer.resolve(avs);
+			        },
+			        $scope: { $data: {} }
+		        });
+	        }
         }
     }]);

@@ -247,7 +247,10 @@ fieldset {
     font-family: inherit;
     font-size: 100%;
     margin:20px 0;
-    line-height: 1.5em;
+}
+
+.ta-editor p{
+    margin:5px 0;
 }
 
 .app{

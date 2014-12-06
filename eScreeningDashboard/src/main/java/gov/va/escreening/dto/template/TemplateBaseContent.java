@@ -73,7 +73,7 @@ public abstract class TemplateBaseContent {
 					try
 					{
 						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+") != \"notset\" && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != \"notset\" && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
 					}
 					catch(Exception e)
 					{
@@ -86,11 +86,11 @@ public abstract class TemplateBaseContent {
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 3)
 			{
-				translatedVar =  "asNumber(getCustomValue("+inStr+"))!= \"notset\" && asNumber(getCustomValue("+inStr+"))";
+				translatedVar =  "asNumber(getCustomValue("+inStr+"))?string != \"notset\" && asNumber(getCustomValue("+inStr+"))";
 			}
 			else if (left.getTypeId()!=null && left.getTypeId() == 4)
 			{
-				translatedVar = "getFormulaValue("+inStr+")";
+				translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
 			}
 		}
 		else if ("answered".equals(operand))
