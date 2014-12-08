@@ -12,6 +12,7 @@ import gov.va.escreening.service.NoteTitleService;
 import gov.va.escreening.service.ProgramService;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -26,16 +27,103 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.common.collect.Lists;
+
 @Controller
 @RequestMapping(value = "/dashboard")
 public class ProgramEditViewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProgramEditViewController.class);
 
+	private BatteryService batteryService;
 	private ClinicService clinicService;
 	private NoteTitleService noteTitleService;
 	private ProgramService programService;
-	private BatteryService batteryService;
+
+	/**
+	 * Returns the backing bean for the form.
+	 * 
+	 * @return
+	 */
+	@ModelAttribute
+	public ProgramEditViewFormBean getProgramEditViewFormBean() {
+		logger.debug("Creating new ProgramEditViewFormBean");
+		return new ProgramEditViewFormBean();
+	}
+
+	private void populateModel(Model model) {
+		Set<BatteryDto> batteryList = batteryService.getBatteryDtoSet();
+		model.addAttribute("batteryList", batteryList);
+
+		List<ClinicDto> clinicList = clinicService.getClinicDtoList();
+		model.addAttribute("clinicList", clinicList);
+
+		List<DropDownObject> noteTitleList = noteTitleService.getNoteTitleList();
+		model.addAttribute("noteTitleList", noteTitleList);
+	}
+
+	/**
+	 * User clicked on the cancel button. Redirect to list view page.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "cancelButton")
+	public String processCancel(Model model) {
+
+		logger.debug("In processCancel");
+
+		return "redirect:/dashboard/programListView";
+	}
+
+	/**
+	 * Saves the data by either creating a new record or updating an existing one.
+	 * 
+	 * @param programEditViewFormBean
+	 * @param result
+	 * @param model
+	 * @param escreenUser
+	 * @return
+	 */
+	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "saveButton")
+	public String processSave(
+			@Valid @ModelAttribute ProgramEditViewFormBean programEditViewFormBean,
+			BindingResult result, Model model,
+			@CurrentUser EscreenUser escreenUser) {
+
+		logger.debug("In processSave");
+
+		// If there is an error, return the same view.
+		if (result.hasErrors()) {
+			populateModel(model);
+			return "systemTab/programEditView";
+		}
+
+		if (programEditViewFormBean.getProgramId() != null && programEditViewFormBean.getProgramId() > 0) {
+			logger.debug("Edit mode");
+
+			Integer progId = programEditViewFormBean.getProgramId();
+			String progName = programEditViewFormBean.getName();
+			boolean progDisabled = programEditViewFormBean.getIsDisabled();
+			List<Integer> selectedBatteryIds = (List<Integer>) (programEditViewFormBean.getSelectedBatteryIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedBatteryIdList());
+			List<Integer> selectedClinicIds = (List<Integer>) (programEditViewFormBean.getSelectedClinicIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedClinicIdList());
+			List<Integer> selectedNoteTitleIds = (List<Integer>) (programEditViewFormBean.getSelectedNoteTitleIdList() == null ? Lists.newArrayList() : programEditViewFormBean.getSelectedNoteTitleIdList());
+
+			programService.updateProgram(progId, progName, progDisabled, selectedBatteryIds, selectedClinicIds, selectedNoteTitleIds);
+		} else {
+			logger.debug("Add mode");
+			Integer programId = programService.createProgram(programEditViewFormBean.getName(), programEditViewFormBean.getIsDisabled(), programEditViewFormBean.getSelectedClinicIdList(), programEditViewFormBean.getSelectedNoteTitleIdList());
+
+			logger.debug("Created new Program with programId: " + programId);
+		}
+
+		return "redirect:/dashboard/programListView";
+	}
+
+	@Autowired
+	public void setBatteryService(BatteryService batteryService) {
+		this.batteryService = batteryService;
+	}
 
 	@Autowired
 	public void setClinicService(ClinicService clinicService) {
@@ -50,17 +138,6 @@ public class ProgramEditViewController {
 	@Autowired
 	public void setProgramService(ProgramService programService) {
 		this.programService = programService;
-	}
-
-	/**
-	 * Returns the backing bean for the form.
-	 * 
-	 * @return
-	 */
-	@ModelAttribute
-	public ProgramEditViewFormBean getProgramEditViewFormBean() {
-		logger.debug("Creating new ProgramEditViewFormBean");
-		return new ProgramEditViewFormBean();
 	}
 
 	/**
@@ -86,80 +163,5 @@ public class ProgramEditViewController {
 		}
 
 		return "systemTab/programEditView";
-	}
-
-	private void populateModel(Model model) {
-		List<BatteryDto> batteryList = batteryService.getBatteryDtoList();
-		model.addAttribute("batteryList", batteryList);
-
-		List<ClinicDto> clinicList = clinicService.getClinicDtoList();
-		model.addAttribute("clinicList", clinicList);
-
-		List<DropDownObject> noteTitleList = noteTitleService.getNoteTitleList();
-		model.addAttribute("noteTitleList", noteTitleList);
-	}
-
-	/**
-	 * Saves the data by either creating a new record or updating an existing
-	 * one.
-	 * 
-	 * @param programEditViewFormBean
-	 * @param result
-	 * @param model
-	 * @param escreenUser
-	 * @return
-	 */
-	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "saveButton")
-	public String processSave(
-			@Valid @ModelAttribute ProgramEditViewFormBean programEditViewFormBean,
-			BindingResult result, Model model,
-			@CurrentUser EscreenUser escreenUser) {
-
-		logger.debug("In processSave");
-
-		// If there is an error, return the same view.
-		if (result.hasErrors()) {
-			populateModel(model);
-			return "systemTab/programEditView";
-		}
-
-		if (programEditViewFormBean.getProgramId() != null && programEditViewFormBean.getProgramId() > 0) {
-			logger.debug("Edit mode");
-
-			Integer progId=programEditViewFormBean.getProgramId();
-			String progName=programEditViewFormBean.getName();
-			boolean progDisabled=programEditViewFormBean.getIsDisabled();
-			List<Integer> selectedBatteryIds=programEditViewFormBean.getSelectedBatteryIdList();
-			List<Integer> selectedClinicIds=programEditViewFormBean.getSelectedClinicIdList();
-			List<Integer> selectedNoteTitleIds=programEditViewFormBean.getSelectedNoteTitleIdList();
-			
-			programService.updateProgram(progId, progName, progDisabled, selectedBatteryIds, selectedClinicIds, selectedNoteTitleIds);
-		} else {
-			logger.debug("Add mode");
-			Integer programId = programService.createProgram(programEditViewFormBean.getName(), programEditViewFormBean.getIsDisabled(), programEditViewFormBean.getSelectedClinicIdList(), programEditViewFormBean.getSelectedNoteTitleIdList());
-
-			logger.debug("Created new Program with programId: " + programId);
-		}
-
-		return "redirect:/dashboard/programListView";
-	}
-
-	/**
-	 * User clicked on the cancel button. Redirect to list view page.
-	 * 
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "cancelButton")
-	public String processCancel(Model model) {
-
-		logger.debug("In processCancel");
-
-		return "redirect:/dashboard/programListView";
-	}
-
-	@Autowired
-	public void setBatteryService(BatteryService batteryService) {
-		this.batteryService = batteryService;
 	}
 }

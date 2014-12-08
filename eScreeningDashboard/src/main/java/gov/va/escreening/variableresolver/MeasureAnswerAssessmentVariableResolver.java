@@ -1,9 +1,13 @@
 package gov.va.escreening.variableresolver;
 
+import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MeasureAnswerAssessmentVariableResolver {
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, 
@@ -16,4 +20,9 @@ public interface MeasureAnswerAssessmentVariableResolver {
 			SurveyMeasureResponse response);
 	
 	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId);
+
+	String resolveCalculationValue(AssessmentVariable answerVariable,
+			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer);
+
+	String resolveCalculationValue(Measure left, Answer answerVal);
 }

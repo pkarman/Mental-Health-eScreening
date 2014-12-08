@@ -28,20 +28,6 @@
     
     <link href="<c:url value="/resources/css/partialpage/assessmentSummary.css" />" rel="stylesheet" type="text/css" />
     <title>Assessment Summary</title>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            tabsLoad("assessmentDashboard");
-            $(".modal-wide").on("show.bs.modal", function() {
-              var height = $(window).height() - 200;
-               $(this).find(".modal-body").css("max-height", height);
-              });
-            });
-    </script>
-    <style type="text/css">
-    
-    
-    
-    </style>
 </head>
 <body>
 <div class="nonPrintableArea">
@@ -60,7 +46,7 @@
       <!--/.nav-collapse --> 
     </div>
   </div>
-</div>
+
 <div class="container left-right-shadow nonPrintableArea">
   <form:form modelAttribute="assessmentSummaryFormBean" autocomplete="off" method="post">
     <div class="row">
@@ -332,11 +318,12 @@
             <div class="col-md-6">
               <div class="form-group text-right">
                 <input id="saveButton" name="saveButton" value="Save" type="submit" class="btn btn-primary" />
-                <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
+                <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default btn-default-black" />
               </div>
             </div>
           </div>
           
+         
           
           <!-- Modal Save to VistA -->
           <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
@@ -356,46 +343,7 @@
               </div>
             </div>
           </div>
-          
-          <!-- Modal Review Summary 
-                    <div class="modal fade" id="assessment_reminders_modal" tabindex="-1" role="dialog" aria-labelledby="assessment_reminders_modal_label" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="assessment_reminders_modal_label">Assessment Reminders</h4>
-                          </div>
-                          <div class="modal-body">
-                            Assessment Reminders Contents
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    --> 
-
-
-
-		          <!-- Modal Review Summary 
-                    <div class="modal fade" id="timeout_modal" tabindex="-1" role="dialog" aria-labelledby="timeout_modal_label" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="timeout_modal_label">Assessment Reminders</h4>
-                          </div>
-                          <div class="modal-body">
-                            Timeout
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    --> 
+                   
 
           <br />
         </div>
@@ -404,66 +352,73 @@
     <!-- row --> 
   </form:form>
 </div>
+</div>
+         <!-- ### Modal Section Start Here ### -->
+          
+          
 
-<!-- Modal Veteran Summary  -->
-<div class="custom_modal veteran_summary_modal" >
-  <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header nonPrintableArea">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
-        </div>
-        <div class="modal-body printableArea">
-            <div align="right" class="nonPrintableArea">
-              <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
+
+          <!-- Modal Veteran Summary  -->
+          <div class="custom_modal veteran_summary_modal" >
+            <div class="modal fade  modal-wide" id="VeteranSummaryModal" tabindex="-1" role="dialog" aria-labelledby="VeteranSummaryModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header nonPrintableArea">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="VeteranSummaryModalLabel">Veteran Summary</h4>
+                  </div>
+                  <div class="modal-body printableArea">
+                      <div align="right" class="nonPrintableArea">
+                        <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
+                      </div>
+                      <div class="modal_contents">Loading...</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="modal_contents">Loading...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+          </div>
+                    
+                    
+          <!-- Modal Review Assessment Preview -->
+          <div class="custom_modal" >
+            <div class="modal fade modal-wide" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header nonPrintableArea">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
+                  </div>
+                  <div class="modal-body printableArea">
+                      
+                    <div class="modal_contents">Loading...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           
+          <!-- Health Factor Titles Modal -->
           
-<!-- Modal Review Assessment Preview -->
-<div class="custom_modal" >
-  <div class="modal fade modal-wide" id="AssessmentReportPreview" tabindex="-1" role="dialog" aria-labelledby="AssessmentReportPreview" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header nonPrintableArea">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">Review Assessment Preview</h4>
-        </div>
-        <div class="modal-body printableArea">
-          <div class="modal_contents">Loading...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Health Factor Titles Modal -->
-
-<div class="modal fade" id="healthFactorTitles" tabindex="-1" role="dialog" aria-labelledby="healthFactorTitles" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header nonPrintableArea">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="healthFactorTitlesLabel">View Health Factors</h4>
-      </div>
-      <div class="modal-body printableArea">
-        <div class="modal_contents">Loading...</div>
-      </div>
-    </div>
-  </div>
-</div>
+          <div class="modal fade" id="healthFactorTitles" tabindex="-1" role="dialog" aria-labelledby="healthFactorTitles" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header nonPrintableArea">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title" id="healthFactorTitlesLabel">View Health Factors</h4>
+                </div>
+                <div class="modal-body printableArea">
+                  <div class="modal_contents">Loading...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
 <div class="clear-fix"></div>
 <div class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </div>
 
-  <!--  Work arounf to Solve Print Problem in Chrome  -->
+  <!--  Work around to Solve Print Problem in Chrome  -->
   <div>-</div>
 </div>
 <div class="printable"></div>
@@ -472,41 +427,60 @@
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/assessmentSummary.js" />"></script>
 <script>
         
-$(document).ready(function() {
+$(document).ready(function() {              
     $(this).on("click", '#VeteranSummaryButton', function(e){
         e.preventDefault();
-
         var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
-
         $('#VeteranSummaryModal').modal('show');
         $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
 
- 		var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+ 		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
  	    var modal_url = 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
  	    $.ajax({
 		  	type : 'get',
 		  	contentType: 'application/json',
 		   	url : modal_url,
-	   		success : function(r)
-			{  
+	   		success : function(r){  
 	   		    $(modal_contents).show().html(r);
-            
-	            
 	            $(".graphicBody").each(function(graphId){
 	                var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
-	
-	                //clear the graph area
-	                $this.html("");
-	              
-	                //process graph request by type
+	                
+	                $this.html(""); //clear the graph area
+	                
+                  //process graph request by type
 	                if(graphObj.type == "stacked"){
 	                    graphStacked(graphId, graphObj, $this.parents(".moduleTemplate"));
 	                }
 	                //TODO: add more types 
-	                
 	            });
-			}
+			    },
+          error: function (xhr, exception, errorThrown) {
+                data = "[" + xhr.responseText + "]";
+                data = $.parseJSON(data);
+          
+                var userMessage       = [];
+                var developerMessage  = [];
+                for (var i = 0; i < data.length; ++i) {                    
+                  for (var j = 0; j < data[i].errorMessages.length; j++) {
+                    errorMessages = data[i].errorMessages[j];
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+                  }
+                  if(data[i].developerMessage.length > 0){
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
+                  }
+                }
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
+                $(modal_contents).show().html(panelTemplate);
+          }
+         
  	    });    
  	});
 						
@@ -526,9 +500,34 @@ $(document).ready(function() {
    		   		success : function(r)
    				 {  
    					 $(modal_contents).show().html(r);
-   				 }
+   				 },
+          error: function (xhr, exception, errorThrown) {
+                data = "[" + xhr.responseText + "]";
+                data = $.parseJSON(data);
+          
+                var userMessage       = [];
+                var developerMessage  = [];
+                for (var i = 0; i < data.length; ++i) {                    
+                  for (var j = 0; j < data[i].errorMessages.length; j++) {
+                    errorMessages = data[i].errorMessages[j];
+                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+                  }
+                  if(data[i].developerMessage.length > 0){
+                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+                    developerMessage.push(result);
+                  }
+                }
+                var panelTemplate = userMessage;
+                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                    panelTemplate = panelTemplate + developerMessage;
+                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+                
+                $(modal_contents).show().html(panelTemplate);
+          }
    		   });
-	   	});
+   });
 	
 	
    	$(this).on("click", '#healthFactorTitlesButton', function(e){
@@ -713,7 +712,7 @@ $(document).ready(function() {
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / xMax) * xCurrent;
+		var xPos = parseFloat(width / (xMax - graphStart)) * ( xCurrent - graphStart ) ;
 		var yPos = 0;
 		
 		pointer = svg.append('rect')

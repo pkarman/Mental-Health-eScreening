@@ -1,11 +1,51 @@
+/*
 body {
-	/*
 	margin: 0;
 	padding-left: 205px;
 	padding-right: 70px;
 	min-width: 240px;
-	*/
+	
+}*/
+
+/* JH - Focus add 
+a:focus, input:focus, select:focus, .checkSwitch:focus{ 
+   outline: none  !important;
+   border-color: #9ecaed  !important;
+   box-shadow: 0 0 10px #9ecaed !important;
 }
+.selectMultiInput:focus{
+  border:3px solid red;
+}
+div:focus{
+   outline: none  !important;
+   border-color: #9ecaed !important;
+   box-shadow: 0 0 10px #9ecaed !important;
+}
+
+.selectMultiCheckbox:focus, .checkSwitch:focus{
+   outline: none  !important;
+   border-color: #9ecaed  !important;
+   box-shadow: 0 0 10px #9ecaed !important;
+}
+*/
+/*
+div.checkSwitch:focus + div:before { 
+    outline: none !important;
+    border-color: #9ecaed !important;
+    box-shadow: 0 0 10px #9ecaed !important;
+    border:1px solid red;
+}
+*/
+
+/* JH - add Focus  for Checkbox (for JQuery) + Radio Buttons */
+.checkFocus, .ui-button:focus{
+  outline: none !important;
+  border-color: #9ecaed !important;
+  box-shadow: 0 0 20px #9ecaed !important;
+}
+
+
+
 #header, #footer {
 	margin-left: -206px; /* LC full width */
 	margin-right: -70px; /* RC fullwidth + CC padding */
@@ -44,7 +84,7 @@ label {
     margin-left: 12px;
     margin-top: 32px;
     width: 180px;
-    z-index: 1000;
+    z-index: 100;
 	
 }
 #right{
@@ -136,14 +176,14 @@ label {
 #measuresProgress li{
 	text-align:left;
 	margin: 32px 0 20px 0px;
-	height: 80px;
+	height: 70px;
 }
 
 #measuresProgress li:hover{
 	cursor: pointer;
 }
 
-#measuresProgress li label{
+#measuresProgress li span{
 	color:#fff;
 	hsla(360, 100%, 100%, 1);
 	font-family:MyriadProRegular, Arial, sans-serif;
@@ -384,6 +424,10 @@ div.progressLabel{
 	line-height:28px;
 }
 
+.surveyQuestionText > label{
+	margin: 0;
+}
+
 .requiredIcon{
 	color: #000000;
 	margin-left: 4px;
@@ -489,6 +533,7 @@ label.tableQuestionCell{
 
 .entryLabelText {
 	font-size: 16px;
+  font-weight:bold;
 	margin:0;
 }
 
@@ -598,14 +643,14 @@ label.radioLabel {
 }
 
 div.selectOneInput > input[type="radio"] {
-    height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 	position:relative;
 	z-index: 10;
 	top: 10px;
 	left: 0;
 	opacity: 0;
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 div.selectOneInput > input[type="radio"] + div:before {
@@ -629,7 +674,14 @@ div.selectOneInput > input[type="radio"] + div:before {
 div.selectOneInput > input[type="radio"]:checked + div:before { 
 	background-position: -36px -133px;
 	background-color: red; 
-} 
+}
+
+div.selectOneInput > input[type="radio"]:focus + div:before { 
+    outline: none !important;
+    border-color: #9ecaed !important;
+    box-shadow: 0 0 20px #9ecaed !important;  
+}
+
 div.selectOneInput > input[type="radio"]:hover:checked + div:before,
 div.selectOneInput > input[type="radio"]:focus:checked + div:before  { 
 	background-position: -36px -166px; 
@@ -659,8 +711,8 @@ ul.selectMulti li, ul.selectOne li{
   	float: left;
   	clear: none;
   	/* width: 260px; */ /* JH */ 
-	width: 30%;
-	min-width:260px;
+    width: 30%;
+    min-width:260px;
 }
 
 ul.selectMulti li{
@@ -749,6 +801,16 @@ label.freeTextAnswer{
 	margin-top: 0;
 	margin-left: 10px;
 	width:auto;
+}
+
+span.freeTextAnswer{
+	/*width: 5em;*/
+	white-space: nowrap;
+	color: #666;
+	margin-top: 0;
+	padding-left:10px;
+	width:auto;
+  font-size:12px;
 }
 
 label.freeTextQuestion{
@@ -1027,6 +1089,20 @@ td.matrixQuestionText input.selectOther{
 	margin: 16px 0px;
 }
 
+.selectOneInputHidden{
+  display:none;
+}
+.checkSwitchHidden{
+  display:none;
+}
+.selectOtherHidden{
+  display:none;
+}
+
+/*input:focus,  div.selectOneInput:focus{
+outline:#FF0004 dotted;
+}*/
+
 @media (min-width: 768px) {
 	/* 
 	body{
@@ -1042,6 +1118,7 @@ td.matrixQuestionText input.selectOther{
 		min-width:95%;
 
 	}
+  
 }
 
 @media (min-width: 992px) {
@@ -1093,8 +1170,12 @@ td.matrixQuestionText input.selectOther{
 		/* width: 260px; */ /* JH */ 
 		width: 30%;
 		min-width:260px;
+    margin-left:10px;
 	}
 
 }
+
+
+
 
 

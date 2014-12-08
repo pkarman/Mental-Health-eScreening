@@ -1,6 +1,8 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -10,8 +12,10 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +66,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
-		
+		variableDto.setAnswerId(measureAnswer.getMeasureAnswerId());
 		return variableDto;
 	}
     
@@ -74,6 +78,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String variableName = String.format("var%s", id);
 		String type = getVariableTypeString(response.getMeasureAnswer().getAnswerType());
 		String displayName = String.format("answer_%s", response.getMeasureAnswer().getMeasureAnswerId());
+		
 		String value = getValue(response, veteranAssessmentId);
 		String displayText = getDisplayText(type, response.getMeasureAnswer(), response, veteranAssessmentId);
 		String overrideText = getOverrideText(response, measureAnswerHash);  
@@ -85,11 +90,31 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		AssessmentVariableDto variableDto = 
 			new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
 		
+		variableDto.setAnswerId(response.getMeasureAnswer().getMeasureAnswerId());
+		
 		return variableDto;
 	}
     
     @Override
     public String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId) {
+    	
+		MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
+		if(measureAnswer == null)
+			throw new AssessmentVariableInvalidValueException(String.format("AssessmentVariable of type MeasureAnswer did not reference a MeasureAnswer"
+			  + " VeteranAssessment id was: %s, AssessmentVariable id was: %s", veteranAssessmentId, assessmentVariable.getAssessmentVariableId()));
+
+    	SurveyMeasureResponse response = surveyMeasureResponseRepository.findSmrUsingPreFetch(veteranAssessmentId, measureAnswer.getMeasureAnswerId(), null);
+    		if(response == null)
+    			throw new CouldNotResolveVariableValueException(String.format("There was no MeasureAnswer reponse for MeasureAnswerId: %s, assessmentId: %s", 
+    				measureAnswer.getMeasureAnswerId(), veteranAssessmentId));
+    	
+    	String calcValue =  resolveCalculationValue(assessmentVariable, veteranAssessmentId, response);
+    	logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
+    	return calcValue;
+    }
+    
+    public String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, List<Measure> measureResp, 
+    		List<gov.va.escreening.entity.Measure> measures) {
     	
 		MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
 		if(measureAnswer == null)
@@ -195,8 +220,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		//If this answer has a mapped AssessmentVariable use that, otherwise use the parent id.
 		Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
 		if(measureAnswerHash.containsKey(measureAnswerId)) {
-			VariableTemplate variableTemplate = measureAnswerHash.get(measureAnswerId).getVariableTemplateList().get(0);
-			return variableTemplate.getVariableTemplateId();
+			return measureAnswerHash.get(measureAnswerId).getAssessmentVariableId();
 		}
 
 		//It hasn't been mapped so use the parent's id
@@ -238,11 +262,11 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 			return getValue(response, veteranAssessmentId);
 		}
 
-		if(!answerType.toLowerCase().equals("none"))
-			return measureAnswer.getAnswerText();
-		
-		//otherwise
-		return null;
+		//The constraint has been removed which would return null here if the answer is of type none. Template functions do not assume 
+		//this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the 
+		//delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to 
+		//show the text of the None answer so null should not be returned. 
+		return measureAnswer.getAnswerText();
 	}
 	
 	private String getValue(SurveyMeasureResponse response, Integer veteranAssessmentId) {
@@ -265,6 +289,112 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		//otherwise just return null;
 		return null;
 	}
-    
-    
+
+	@Override
+	public String resolveCalculationValue(AssessmentVariable answerVariable,
+			Pair<gov.va.escreening.entity.Measure, Measure> answer) {
+		MeasureAnswer measureAnswer = answerVariable.getMeasureAnswer();
+		  
+		  String answerValue = null;
+		  for(Answer ans : answer.getRight().getAnswers())
+		  {
+			  if(ans.getAnswerId().intValue() == measureAnswer.getMeasureAnswerId())
+			  {
+				  answerValue = ans.getAnswerResponse();
+				  break;
+			  }
+		  }
+		String resolvedValue = measureAnswer.getCalculationType() == null ?
+		        answerValue :
+		        resolveResponseUsingCalculationType(answerVariable, answer);
+		        
+		return resolvedValue;        
+	}
+
+	private String resolveResponseUsingCalculationType(
+			AssessmentVariable answerVariable,
+			Pair<gov.va.escreening.entity.Measure, Measure> answer) {
+		
+		  MeasureAnswer measureAnswer = answerVariable.getMeasureAnswer();
+		  
+		  String answerValue = null;
+		  for(Answer ans : answer.getRight().getAnswers())
+		  {
+			  if(ans.getAnswerId().intValue() == measureAnswer.getMeasureAnswerId())
+			  {
+				  answerValue = ans.getAnswerResponse();
+				  break;
+			  }
+		  }
+	       
+		  int calculationType = measureAnswer.getCalculationType().getCalculationTypeId();
+	        switch(measureAnswer.getCalculationType().getCalculationTypeId()) {
+	            case CALCULATION_TYPE_USER_ENTERED_NUMBER:
+	            	
+	                if(answerValue != null){ 
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf",answerValue);
+	                }
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_BOOLEAN:
+	                if(answerValue != null) 
+	                   return String.valueOf(answerValue);  
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_STRING:
+	                return answerValue;
+	            case CALCULATION_TYPE_NUMBER:               
+	                String calcValue = getMeasureAnswerCalculationValue(measureAnswer);
+	                if(calcValue != null)
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf", calcValue);
+	                break;
+	            default:
+	                throw new UnsupportedOperationException(String.format("Referenced calculation type of: %s is not supported.  AssessmentVariableid: %s", 
+	                    calculationType, answerVariable.getAssessmentVariableId()));
+	        }
+	        return null;
+	}
+
+	@Override
+	public String resolveCalculationValue(
+			gov.va.escreening.entity.Measure measure, Answer answerVal) {
+		MeasureAnswer measureAnswer =null;
+		for(MeasureAnswer ma : measure.getMeasureAnswerList())
+		{
+			if(ma.getMeasureAnswerId().intValue() == answerVal.getAnswerId())
+			{
+				measureAnswer = ma;
+				break;
+			}
+		}
+		
+		String answerValue = answerVal.getAnswerResponse();
+	       
+		  int calculationType = measureAnswer.getCalculationType().getCalculationTypeId();
+	        switch(measureAnswer.getCalculationType().getCalculationTypeId()) {
+	            case CALCULATION_TYPE_USER_ENTERED_NUMBER:
+	            	
+	                if(answerValue != null){ 
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf",answerValue);
+	                }
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_BOOLEAN:
+	                if(answerValue != null) 
+	                   return String.valueOf(answerValue);  
+	                break;
+	            case CALCULATION_TYPE_USER_ENTERED_STRING:
+	                return answerValue;
+	            case CALCULATION_TYPE_NUMBER:               
+	                String calcValue = getMeasureAnswerCalculationValue(measureAnswer);
+	                if(calcValue != null)
+	                    //treat numbers as floats to handle decimals when dividing numbers
+	                    return String.format("%sf", calcValue);
+	                break;
+	            default:
+	                throw new UnsupportedOperationException(String.format("Referenced calculation type of: %s is not supported.  measureAnswerId: %s", 
+	                    calculationType, measureAnswer.getMeasureAnswerId()));
+	        }
+	        return null;
+	}
 }

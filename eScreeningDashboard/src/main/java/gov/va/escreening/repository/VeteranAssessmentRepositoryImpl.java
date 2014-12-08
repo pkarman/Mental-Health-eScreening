@@ -41,7 +41,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
 
-		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.assessmentStatus ast WHERE v.veteranId = :veteranId AND ast.assessmentStatusId IN (:assessmentStatusIdList) ORDER BY va.veteranAssessmentId";
+		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.assessmentStatus ast WHERE va.dateArchived is null AND v.veteranId = :veteranId AND ast.assessmentStatusId IN (:assessmentStatusIdList) ORDER BY va.veteranAssessmentId";
 
 		if (assessmentStatusIdList != null && assessmentStatusIdList.size() > 0) {
 			TypedQuery<VeteranAssessment> query = entityManager.createQuery(sql, VeteranAssessment.class);
@@ -59,7 +59,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
 
-		String sql = "SELECT DISTINCT va FROM VeteranAssessment va JOIN va.program p WHERE p.programId IN (:programIdList)";
+		String sql = "SELECT DISTINCT va FROM VeteranAssessment va JOIN va.program p WHERE va.dateArchived is null AND p.programId IN (:programIdList)";
 
 		if (programIdList != null && programIdList.size() > 0) {
 			TypedQuery<VeteranAssessment> query = entityManager.createQuery(sql, VeteranAssessment.class);
@@ -299,7 +299,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
 
-		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v WHERE v.veteranId = :veteranId ORDER BY va.dateCreated DESC";
+		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v WHERE va.dateArchived is null AND v.veteranId = :veteranId ORDER BY va.dateCreated DESC";
 
 		TypedQuery<VeteranAssessment> query = entityManager.createQuery(sql, VeteranAssessment.class);
 		query.setParameter("veteranId", veteranId);
@@ -330,7 +330,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
 		List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
 
-		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.program p WHERE v.veteranId = :veteranId AND p.programId IN (:programIdList) ORDER BY va.veteranAssessmentId";
+		String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.program p WHERE va.dateArchived is null AND v.veteranId = :veteranId AND p.programId IN (:programIdList) ORDER BY va.veteranAssessmentId";
 
 		if (programIdList != null && programIdList.size() > 0) {
 			TypedQuery<VeteranAssessment> query = entityManager.createQuery(sql, VeteranAssessment.class);

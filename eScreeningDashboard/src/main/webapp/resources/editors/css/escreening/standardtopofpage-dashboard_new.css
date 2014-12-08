@@ -198,7 +198,7 @@ h2{
 	color: #061a43;
 	font-size: 34px;
 	text-align: center;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 	margin:38px auto;
 }
 
@@ -207,7 +207,7 @@ h2{
 	color: #ffd800;
 	font-size: 22px;
 	text-align: left;
-	text-shadow: 0px -1px 0px rgba(0,0,0, .9);
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 }
 
 .container_box_white{
@@ -565,7 +565,8 @@ a.offscreen:focus, a.offscreen:active {
 .margin_top_10{
   margin-top:10px;
 }
-/* Form Editor Start Here */
+/* JH | Form Editor Start Here */
+
 .form_editor .list-group-item{
   padding:5px 10px;
 }
@@ -574,6 +575,46 @@ a.offscreen:focus, a.offscreen:active {
   background-color:#d4d4d4;
 }
 
+.form_editor .modal-dialog h1{
+  font-size:26px;
+}
+
+.border-radius-block-type{
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border: 1px solid #bbb;
+	padding: 5px 10px 0px;
+  margin: 10px 0;
+}
+.border-radius-block-type hr{
+  margin-top:0px;
+
+}
+.blockLableMarginTop{
+  margin-top:20px;
+}
+.bg-gray-light{
+  background-color: #F8F8F8;
+}
+
+.red-color{
+  color:red  !important;
+}
+.odd-class-grid{
+  background-color:#EDEDED;
+}
+
+.even-class-grid{
+  background-color:#FFFFFF;
+}
+
+.border-bottom-3-gray{
+  border-bottom:3px solid #ADADAD;
+}
+.pagination{
+  margin: 0px;
+}
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 

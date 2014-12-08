@@ -2,21 +2,16 @@ package gov.va.escreening.domain;
 
 public enum AssessmentStatusEnum {
 
-    CLEAN(1),
-    INCOMPLETE(2),
-    COMPLETE(3),
-    REVIEWED(4),
-    FINALIZED(5),
-    ERROR(6);
+	CLEAN(1), INCOMPLETE(2), COMPLETE(3), REVIEWED(4), FINALIZED(5), ERROR(6), DELETED(7);
 
-    private final int assessmentStatusId;
+	private final int assessmentStatusId;
 
-    public int getAssessmentStatusId() {
-        return this.assessmentStatusId;
-    }
+	public int getAssessmentStatusId() {
+		return this.assessmentStatusId;
+	}
 
-    AssessmentStatusEnum(int assessmentStatusId) {
-        this.assessmentStatusId = assessmentStatusId;
-    }
+	AssessmentStatusEnum(int assessmentStatusId) {
+		this.assessmentStatusId = assessmentStatusId;
+	}
 
 }

@@ -92,6 +92,12 @@ public class Veteran implements Serializable {
     @Column(name = "veteran_ien")
     private String veteranIen;
 
+    @Column(name = "vista_first_name")
+    private String vistaFirstName;
+
+    @Column(name = "vista_middle_name")
+    private String vistaMiddleName;
+
     @Column(name = "date_refreshed_from_vista")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateRefreshedFromVista;
@@ -322,7 +328,22 @@ public class Veteran implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Veteran[ veteranId="
-                + veteranId + " ]";
+        return "[vetId=" + veteranId + "]";
     }
+
+	public String getVistaFirstName() {
+		return vistaFirstName;
+	}
+
+	public void setVistaFirstName(String vistaFirstName) {
+		this.vistaFirstName = vistaFirstName;
+	}
+
+	public String getVistaMiddleName() {
+		return vistaMiddleName;
+	}
+
+	public void setVistaMiddleName(String vistaMiddleName) {
+		this.vistaMiddleName = vistaMiddleName;
+	}
 }

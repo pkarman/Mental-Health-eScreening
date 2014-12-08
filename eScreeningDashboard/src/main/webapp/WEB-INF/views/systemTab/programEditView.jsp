@@ -149,7 +149,7 @@
           </div>
           <br />
           <input id="saveButton" name="saveButton" value="Save" type="submit" class="btn btn-primary" />
-          <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
+          <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default btn-default-black" />
         </form:form>
       </div>
     </div>

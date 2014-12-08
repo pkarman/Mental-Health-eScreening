@@ -108,7 +108,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="bottomContent" id="mainContent">
-                    <table id="assessmentDashboardTable" name="assessmentDashboardTable" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" summary="Assessment Dashboard Table">
+                    <table id="assessmentDashboardTable" name="assessmentDashboardTable" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover table-responsive" summary="Assessment Dashboard Table">
                       <thead>
                         <tr>
                           <th scope="col">Assessment Changed Date</th>

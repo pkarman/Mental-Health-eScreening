@@ -1,4 +1,15 @@
 $(document).ready(function() {
+  // Load tab
+  tabsLoad("assessmentDashboard");
+  
+  // Wide Modal
+  $(".modal-wide").on("show.bs.modal", function() {
+      var height = $(window).height() - 200;
+      $(this).find(".modal-body").css("max-height", height);
+  });
+    
+    
+
   // Print Report
   var veteran_summary_modal       = ".veteran_summary_modal";
   var veteran_summary_modal_body  = ".veteran_summary_modal .modal-body";
@@ -16,6 +27,23 @@ $(document).ready(function() {
           $(printable).hide();
       }, 1000);
   });
+  
+  
+  
+
+  // JH - 508 Set the other page elements hide while modal show to help AT tools
+  var modalBlock    = '.modal';
+  var outerPageDiv  = '#outerPageDiv';
+  
+  $(modalBlock).on('shown.bs.modal', function (e) {
+      $(outerPageDiv).attr('aria-hidden', 'true');
+  });
+  $(modalBlock).on('hidden.bs.modal', function (e) {
+      $(outerPageDiv).attr('aria-hidden', 'false');
+  });
+
+
+  
 
 
         

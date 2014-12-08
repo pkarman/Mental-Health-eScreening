@@ -1,0 +1,21 @@
+{
+  "name": "Mental-Health-eScreening",
+  "version": "0.0.0",
+  "homepage": "https://github.com/VHAINNOVATIONS/Mental-Health-eScreening",
+  "authors": [
+    "Triple-I"
+  ],
+  "main": "eScreeningDashboard/src/main/webapp/WEB-INF/views/index.jsp",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "eScreeningDashboard/src/main/webapp/resources/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-table": "~0.3.3"
+  }
+}

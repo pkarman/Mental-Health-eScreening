@@ -2,6 +2,7 @@ package gov.va.escreening.templateprocessor;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import gov.va.escreening.constants.TemplateConstants.ViewType;
@@ -93,7 +94,7 @@ public class TemplateTagProcessor {
 	    noteText = noteText.replace(SECTION_TITLE_END.xml(), "\n" + dashedLine +"\n");
 	    
 	    noteText = noteText.replace(SECTION_START.xml(), "\n");
-	    noteText = noteText.replace(SECTION_END.xml(), dashedLine);
+	    noteText = noteText.replace(SECTION_END.xml(), "\n" + dashedLine);
         
         noteText = noteText.replace(MODULE_TITLE_END.xml(), " ");
         noteText = noteText.replace(MODULE_END.xml(), "\n\n");
@@ -102,9 +103,20 @@ public class TemplateTagProcessor {
         noteText = noteText.replace(NBSP.xml(), " ");
         
         noteText = textEmptyReplace.matcher(noteText).replaceAll("");
+        
+        //replacing end of paragraph with new line (this can have a '\n' optionally before the end of the paragraph
+        //but it should take the \n and the </p> and turn them into *one* new line)
+        noteText = noteText.replaceAll("\\s*<\\s*/\\s*p\\s*>", "\n");
 
+        //remove line feeds (normally inserted by copy and paste from Word
+        noteText = noteText.replaceAll("&#[(xa)(10)(x9)(9)]+;", "");
+        
         //remove other tags (this is all we expect in the wysiwyg editor)
-        noteText = noteText.replaceAll("</*\\s*[BbIiuUsS(br)(BR)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(ol)(li)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)(span)(div)]+\\s*/*>", "");
+        noteText = noteText.replaceAll("<\\/*[^>]+>", "");
+        
+        //replace all &###; with unicode equivalents  
+        noteText = StringEscapeUtils.unescapeHtml4(noteText);
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();

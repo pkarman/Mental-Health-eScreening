@@ -6,6 +6,7 @@ import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.entity.Program;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BatteryService {
 
@@ -21,7 +22,7 @@ public interface BatteryService {
     BatteryInfo getBattery(int batteryId);
     void update(BatteryInfo batteryInfo);
 
-	List<BatteryDto> getBatteryDtoList();
+	Set<BatteryDto> getBatteryDtoSet();
 	List<Program> getProgramsForBattery(int batteryId);
 
 

@@ -18,6 +18,8 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.exception.IllegalSystemStateException;
+import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.ExportLogDataRepository;
 import gov.va.escreening.repository.ExportLogRepository;
@@ -69,6 +71,7 @@ import com.google.gson.JsonSyntaxException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 public class XportDataTest {
+	public static int totalRuns = 1;
 
 	class AssesmentTestData {
 		String testName;
@@ -426,7 +429,13 @@ public class XportDataTest {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierVetSummary(testTuple);
 	}
-
+	
+	private boolean invokeSurveyTemplateReview(String jsonFileName,
+			String root, TemplateType type, int surveyId) throws Exception {
+		Object[] testTuple = createTestAssessment(jsonFileName, root);
+		return surveyTemplateRenderReview(surveyId, type, testTuple);
+	}
+	
 	private boolean mixTemplateTxtReview(String[] jsonFileName, String root) throws Exception {
 		Object[] testTuple = createTestAssessment(jsonFileName, root);
 		return templateDataVerifierTypeTxt(testTuple);
@@ -462,56 +471,70 @@ public class XportDataTest {
 	}
 
 	private boolean templateDataVerifierTypeTxt(Object[] testTuple) throws Exception {
-		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
+		// AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 
 		String name = "templateProcessorService-->templateDataVerifierTypeTxt-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < totalRuns; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), TemplateConstants.ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">") && !progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 		return true;
 	}
 
 	private boolean templateDataVerifierTypeHtml(Object[] testTuple) throws Exception {
-		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
+		// AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierTypeHtml-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < totalRuns; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(va.getVeteranAssessmentId(), ViewType.HTML, EnumSet.of(TemplateType.ASSESS_SCORE_TABLE, TemplateType.VISTA_QA));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 		return true;
 	}
 
 	private boolean templateDataVerifierVetSummary(Object[] testTuple) throws Exception {
-		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
+		// AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
 		String name = "templateProcessorService-->templateDataVerifierVetSummary-->" + va.getVeteranAssessmentId();
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < totalRuns; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateVeteranPrintout(va.getVeteranAssessmentId());
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 		return true;
 	}
 
+	private boolean surveyTemplateRenderReview(int surveyId, TemplateType type, Object[] testTuple) throws Exception {
+		VeteranAssessment va = (VeteranAssessment) testTuple[1];
+		String name = "templateProcessorService-->" + type + "-->assessment_" + va.getVeteranAssessmentId() + "-->survey_" + surveyId;
+		StopWatch sw = new StopWatch(name);
+		for (int i = 0; i < 2; i++) {
+			sw.start("iter_" + i);
+			String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va.getVeteranAssessmentId(), ViewType.TEXT);
+			sw.stop();
+			assertTrue(!progressNoteContent.isEmpty());
+		}
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		return true;
+	}
+	
 	private boolean exportDataVerifierResult(AssesmentTestData atd,
 			List<DataExportCell> exportedData, boolean deidentified) {
 
@@ -532,7 +555,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void testEveryFileForExportData() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(minimum)) {
 			assertTrue(fileName, exportDataTesterIdentified(fileName, minimum));
@@ -540,7 +563,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void testEveryFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTesterIdentified(fileName, detail));
@@ -548,7 +571,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void testEveryFileForExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
 		for (String fileName : testFilesFor(detail)) {
 			assertTrue(fileName, exportDataTesterDeIdentified(fileName, detail));
@@ -556,7 +579,7 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
 	}
@@ -566,13 +589,28 @@ public class XportDataTest {
 		String name = "testSmrListResponseTimeForVet18";
 		StopWatch sw = new StopWatch(name);
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < totalRuns; i++) {
 			sw.start("iter_" + i);
-			smrLister.loadSmrFromDb(18);
+			smrLister.fetchCachedSmr(18);
 			sw.stop();
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+
+	}
+
+	@Test
+	public void testPrintSummaryForVeteran18() throws UnsupportedEncodingException, IOException, TemplateProcessorException, IllegalSystemStateException {
+		String name = "testPrintSummaryForVeteran18";
+		StopWatch sw = new StopWatch(name);
+
+		for (int i = 0; i < totalRuns; i++) {
+			sw.start(name+"_iter_" + i);
+			String vetSummary = templateProcessorService.generateVeteranPrintout(18);
+			sw.stop();
+			System.out.println(vetSummary);
+		}
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 	}
 
@@ -619,7 +657,7 @@ public class XportDataTest {
 			assertTrue(String.format("Veteran Summary document generation failed for %s", fileName), invokeVeteranSummaryTemplateReview(fileName, empty));
 		}
 	}
-
+	
 	@Rollback(value = false)
 	@Test
 	public void readExportLogById() {
@@ -675,19 +713,19 @@ public class XportDataTest {
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void mix__MIN__ForExportData() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsIdentified(testFilesFor(minimum), minimum));
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void mix__DETAIL__ExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsIdentified(testFilesFor(detail), detail));
 	}
 
 	// @Rollback(value = false)
-//	@Test
+	// @Test
 	public void mix__DETAIL__ExportDataDetailDeIdentified() throws UnsupportedEncodingException, IOException {
 		assertTrue(mixDataExportsDeIdentified(testFilesFor(detail), detail));
 	}
@@ -745,14 +783,14 @@ public class XportDataTest {
 	public void testVeteran18ForTemplatesCorrectnessWith__HTML() throws Exception {
 		String name = "templateProcessorService-->testVeteran18ForTemplatesCorrectnessWith__HTML-->18";
 		StopWatch sw = new StopWatch(name);
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < totalRuns; i++) {
 			sw.start("iter_" + i);
 			String progressNoteContent = templateProcessorService.generateCPRSNote(18, ViewType.HTML, EnumSet.of(TemplateType.VISTA_QA, TemplateType.ASSESS_SCORE_TABLE));
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 5);
+		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 	}
 
 	@Resource(type = ExportDataRestController.class)

@@ -17,7 +17,10 @@ app.directive('reportTable', function() {
 	    	"sPaginationType": "full_numbers",
 	    	"sServerMethod": "POST",
 	    	"sAjaxSource": "assessmentReport/services/assessments/search",
-	    	"fnServerData": scope.$eval(attrs.fnDataCallback)
+	    	"fnServerData": scope.$eval(attrs.fnDataCallback),
+        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+          $(nRow).attr('role', "row");
+        }
         };
 
         var aoColumns = {};
@@ -30,7 +33,7 @@ app.directive('reportTable', function() {
           { "mData": "veteranId","sClass":"numeric", "sWidth":"100px"},
           { "mData": "veteranName"},
           { "mData": "assessmentStatusName", "sWidth":"80px"},
-          { "mData": "veteranAssessmentId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#" vaidurl="assessmentPreview?vaid='+full.veteranAssessmentId+'" class="assessmentPreviewIFramePush" data-title="Assessment Report Preview"><img class="imgSize" src="../resources/images/Assess_icon.png" title="Link to View Assessment" alt="Link to View Assessment"></a>&nbsp;&nbsp;<a href="#"  class="assessmentNotePush" vaid='+full.veteranAssessmentId+' data-title="Review Note"><img class="imgSize" src="../resources/images/review.png" title="Link to Review Notes" alt="Link to Review Notes"></a>&nbsp;&nbsp;<a class="assessmentPreviewIFramePush" href="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" vaidurl="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" data-title="Audit Log"><img class="imgSize" src="../resources/images/auditLog.png" title="Link to View Audit Log" alt="Link to View Audit Log"></a>'; }}];
+          { "mData": "veteranAssessmentId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#" vaidurl="assessmentPreview?vaid='+full.veteranAssessmentId+'" class="assessmentPreviewIFramePush" data-title="Assessment Report Preview"> <i class="fa fa-file" title="Link to View Assessment"></i></a>&nbsp;&nbsp;<a href="#"  class="assessmentNotePush" vaid='+full.veteranAssessmentId+' data-title="Review Note"><i class="fa fa-search" title="Link to Review Notes"></i> </a>&nbsp;&nbsp;<a class="assessmentPreviewIFramePush" href="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" vaidurl="assessments/'+full.veteranAssessmentId+'/assessmentAuditLog/report/pdf" data-title="Audit Log"><i class="fa fa-file-pdf-o" title="Link to View Audit Log"></i> </a>'; }}];
 
         options["aoColumns"] = aoColumns;
 
@@ -74,6 +77,7 @@ function assessmentReportController($scope,$element,$http,$window) {
 	$scope.searchDatabase = function() {
 		var oTable = $('#assessmentReportTable').dataTable();
 		oTable.dataTable().fnDraw(true);
+    oTable.fnSettings().oLanguage.sEmptyTable = "<div class='alert alert-danger' aria-hidden='false' aria-label='No matching records found' role='row'>No matching records found</div>";
 	};
 
 	$scope.getDataForSearch = function( sSource, aoData, fnCallback, oSettings ) {
@@ -254,10 +258,20 @@ function assessmentReportController($scope,$element,$http,$window) {
 
 
 $(document).ready(function() {
-      
-  
   // Load current tab
   tabsLoad("assessmentReport");
+    
+  // JH - 508 Set the other page elements hide while modal show to help AT tools
+  var modalBlock    = '.modal';
+  var outerPageDiv  = '#outerPageDiv';
+  
+  $(modalBlock).on('shown.bs.modal', function (e) {
+      $(outerPageDiv).attr('aria-hidden', 'true');
+  });
+  $(modalBlock).on('hidden.bs.modal', function (e) {
+      $(outerPageDiv).attr('aria-hidden', 'false');
+  });
+
   
  var fromAssessmentDateGroup  = "#fromAssessmentDateGroup";
     var toAssessmentDateGroup    = "#toAssessmentDateGroup";
@@ -276,6 +290,7 @@ $(document).ready(function() {
     
     
   function showInDialog(obj) {
+    alert("In");
 		var wWidth                      = $(window).width();
 		var dWidth                      = wWidth * 0.98;
 		var wHeight                     = $(window).height();
@@ -293,8 +308,8 @@ $(document).ready(function() {
 								obj.getAttribute('href'));
             //$(assessmentPreviewIframe).attr('name', obj.getAttribute('data-title'));
             //$(assessmentPreviewIframe).attr('title', obj.getAttribute('data-title'));
-            $(assessmentPreviewIframe).attr('name', "aaaaaa");
-            $(assessmentPreviewIframe).attr('title', "bbbb");
+            //$(assessmentPreviewIframe).attr('name', "aaaaaa");
+            //$(assessmentPreviewIframe).attr('title', "bbbb");
             
 					}
 				});
