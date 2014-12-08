@@ -1,319 +1,98 @@
-Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$resource','$location', '$window', '$filter', 'SurveySectionService','sections',function($rootScope,$scope,$state,$resource,$location,$window,$filter,SurveySectionService,sections){
-            $scope.sections = sections;
-            $scope.editSections = [];
-            $scope.errors = [];
-            $scope.battery = $rootScope.selectedBattery;
-            $scope.isDirty = false;
-            $scope.predicate = "-displayOrder";
-            $scope.reverse = false;
+Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'SurveySectionService', function ($timeout, $scope, $state, SurveySectionService) {
+    $scope.alerts = [];
+    var reloadSSTimeout = undefined;
 
-            $scope.setDirty = function(){
-            	$scope.isDirty = true;
-            };
+    $scope.addSuccessMsg = function (reset, reason) {
+        addMsg(reset, 'success', reason);
+    };
 
-            $scope.$watch('sections',function(newVal, oldVal){
-            	if ($scope.sections && $scope.sections.length > 0){
+    var clearMsgs = function () {
+        $scope.alerts = [];
+    };
 
-            		$scope.editSections = [];
-            		for (var i=0;i<$scope.sections.length;i++){
-            			$scope.editSections.push($scope.returnEditSection($scope.sections[i]));
-            		}
-            	}else{
-            		$scope.editSections = [];
-            	}
-            });
+    var addMsg = function (reset, type, msg) {
+        if (reset) {
+            clearMsgs();
+        }
+        $scope.alerts.push({type: type, msg: msg});
+    }
 
-            $scope.$watch('editSections', function(newVal, oldVal){
-                if ($scope.editSections && $scope.editSections.length > 0){
-                    $scope.editSections.forEach(function(section){
-                        if (section.surveys && section.surveys.length == 0){
-                            section.isExpanded = true;
-                        }else{
-                            section.isExpanded = false;
-                            section.visible = true;
-                            section.surveys.forEach(function(surveyUI){
-                                .0
-                                surveyUI.visible = true;
-                            });
-                        }
-                    });
-                }
-            });
+    $scope.addDangerMsg = function (reset, reason) {
+        addMsg(reset, 'danger', reason);
+    };
 
-            $scope.isAllExpanded = false;
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
 
-            $scope.secRemoveCopy = {};
 
-            $scope.deleteCheck = function(section){
-            	if (section.surveys.length >0){
-            		alert('This Section contains Modules. Please remove the Modules to other Section(s) before attempting to delete.');
-            	} else {
-            		var rem = confirm("This will delete the Section, and it will not be available in the future. Click 'OK' to permanently delete it.");
-            		if (rem == true)
-            			$scope.removeSection(section);
-            		else
-            			return;
-            	}
-            };
+    $scope.addSection = function () {
+        $scope.ssRows.unshift({id: null, name: 'New Survey Section', description: ''});
+        $scope.addSuccessMsg(true, 'New Survey Section is added locally');
+    };
 
-            /* @REFACTOR - Pending new JSON call structure. - JBH (7/8/2014) */
-            /* @REFACTOR - Changing to a visible/invisible with flagging for removal, per new Save scheme. - JBH (7/30/2014) */
-            $scope.removeSection = function(editorSurveySection){
-                editorSurveySection.markedForDeletion = true;
-                editorSurveySection.visible = false;
-        		$scope.isDirty = true;
-            	var surveySection = new EScreeningDashboardApp.models.SurveySection(editorSurveySection);
-            	//sect.visible = editorSurveySection.visible;
-            	//sect.markedForDeletion = editorSurveySection.markedForDeletion;
-            	var ID = surveySection.getId();
-            	if (surveySection.getId()<0){
-            		// Section hasn't been saved, and this one doesn't create Sections, so return.
-            		return;
-            	}
 
-            };
+    SurveySectionService.readAllSS()
+        .then(function (ssRows) {
+            $scope.ssRows = ssRows;
+            $scope.addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
+        }, function error(reason) {
+            $scope.addDangerMsg(true, reason);
+        });
 
-            $scope.expandAll = function(){
-            	console.log('Expand All');
-                for (var i=0;i<$scope.editSections.length;i++){
-                    $scope.editSections[i].isExpanded=true;
-                }
-                $scope.isAllExpanded = true;
-                $scope.$apply();
-            };
 
-            $scope.collapseAll = function(){
-            	console.log('Collapse All');
-            	for (var i=0;i<$scope.editSections.length;i++){
-            		$scope.editSections[i].isExpanded = false;
-            	}
-            	$scope.isAllExpanded = false;
-            	$scope.$apply();
-            };
-
-            /* @REFACTORED - Pending new JSON call structure. - JBH (7/11/2014) */
-            $scope.saveSection = function(editorSurveySection){
-            	console.log('Save Section:: ' + JSON.stringify(editorSurveySection));
-                var surveySection = new EScreeningDashboardApp.models.SurveySection(editorSurveySection);
-                //sect.visible = editorSurveySection.visible;
-                //sect.markedForDeletion = editorSurveySection.markedForDeletion;
-
-            	if (surveySection.getId()<0){
-            		// Create.
-            		SurveySectionService.create(SurveySectionService.setCreateSurveySectionRequestParameter(surveySection)).then(
-                        function(response){
-                            var sectionDomainObject = response.getPayload();
-                            var editSection = $scope.returnEditSection(sectionDomainObject);
-                            for (var i=0;i<$scope.sections.length;i++){
-                                if ($scope.sections[i].getId() == sectionDomainObject.getId()){
-                                    // Perform inserts.
-                                    $scope.sections[i] = sectionDomainObject;
-                                    $scope.editSections[i] = editSection;
-                                }
-                            }
-                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                        }, function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                        });
-            	} else {
-            		// Update.
-            		if (surveySection.isMarkedForDeletion()){
-            			//alert('marked for deletion');
-            			SurveySectionService.remove(SurveySectionService.setRemoveSurveySectionRequestParameter(surveySection.getId())).then(function(response){
-                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                                var existingSurveySections = response.getPayload();
-                                existingSurveySections.forEach(function(existingSurveySection) {
-                                    EScreeningDashboardApp.models.Survey.sortByDisplayOrder(existingSurveySection.getSurveys());
-                                });
-                                $scope.editSections = existingSurveySections;
-                                $scope.sections = existingSurveySections;
-                                console.log('Sections:: ' + existingSurveySections);
-                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                            }, function(responseError) {
-                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            });
-                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                        }),
-                        function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                        };
-            		}else{
-            			//alert('marked for update');
-            			//delete sect.markedForDeletion;
-            			//delete sect.visible;
-            			SurveySectionService.update(SurveySectionService.setUpdateSurveySectionRequestParameter(surveySection)).then(
-                            function(response){
-                                var section=response.getPayload();
-                                var editSection = $scope.returnEditSection(section);
-                                $scope.sections.forEach(function (surveySection, index, array) {
-                                    if(surveySection.getId() == section.getId()) {
-                                        array[index] = section;
-                                    }
-                                });
-
-                                $scope.editSections.forEach(function(editSurveySection, index, array) {
-                                    if(editSurveySection.id == editSection.id){
-                                        array[index] = editSection;
-                                    }
-                                });
-                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                            }, function(responseError) {
-                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            }
-                        );
-            		}
-            	}
-            };
-
-            /* @REFACTORED - New JSON call structure. - JBH (7/10/2014) */
-            $scope.save = function(){
-            	console.log('Sections:: Save');
-            	if ($scope.isDirty){
-                    EScreeningDashboardApp.getInstance().sort($scope.editSections, "surveyArrayHasIncreased", "+");
-                    EScreeningDashboardApp.getInstance().sort($scope.editSections, "markedForDeletion", "-");
-            		for (var i=0; i<$scope.editSections.length;i++){
-                        $scope.saveSection($scope.editSections[i]);
-            		}
-            	}
-                $state.go('sections');
-            };
-
-            $scope.returnEditSection = function(domainSection){
-            	var secIsExpanded = false;
-            	if (domainSection.getSurveys() === undefined)
-            		secIsExpanded = true;
-            	else
-            		secIsExpanded = false;
-            	return {
-            			id:domainSection.getId(),
-            			name:domainSection.getName(),
-            			description:domainSection.getDescription(),
-            			createdDate:domainSection.getCreatedDate(),
-            			displayOrder:domainSection.getDisplayOrder(),
-            			isExpanded: secIsExpanded,
-            			surveys:$scope.returnEditSurveys(domainSection.getSurveys()),
-                        surveyArrayHasIncreased: domainSection.surveyArrayHasIncreased,
-                        visible: domainSection.isVisible(),
-                        markedForDeletion: domainSection.isMarkedForDeletion()
-            		};
-            };
-
-            $scope.returnEditSurveys = function(domainSurveys){
-            	var surveys = [];
-            	for (var i=0;i<domainSurveys.length;i++){
-            		var item = {
-            			id:domainSurveys[i].getId(),
-            			name:domainSurveys[i].getName(),
-            			description:domainSurveys[i].getDescription(),
-            			version:domainSurveys[i].getVersion(),
-            			displayOrder:domainSurveys[i].getDisplayOrder(),
-            			mha:domainSurveys[i].isMHA(),
-                        mhaTestName:domainSurveys[i].getMhaTestName(),
-                        mhaResultGroupIen:domainSurveys[i].getMhaResultGroupIen(),
-                        visible: domainSurveys[i].isVisible(),
-                        markedForDeletion: domainSurveys[i].isMarkedForDeletion(),
-            			createdDate:domainSurveys[i].getCreatedDate(),
-                        surveySection: {
-                            id: domainSurveys[i].getSurveySection().getId(),
-                            name: domainSurveys[i].getSurveySection().getName(),
-                            description: domainSurveys[i].getSurveySection().getDescription(),
-                            createdDate: domainSurveys[i].getSurveySection().getCreatedDate(),
-                            markedForDeletion: domainSurveys[i].getSurveySection().isMarkedForDeletion(),
-                            visible: domainSurveys[i].getSurveySection().isVisible()
-                        }
-            		};
-            		surveys.push(item);
-            	}
-
-            	return surveys;
-            };
-
-            $scope.cancel = function(){
-            	if (!$scope.isDirty)
-            		$state.go('home');
-            	else {
-            		var cancelConf = confirm('Discard changes and return to Editor Menu?');
-            		if (cancelConf == true)
-            			$state.go('home');
-            		else {
-            			return;
-            		}
-            	}
-            };
-
-            $scope.addSection = function() {
-                $scope.editSections.unshift({
-                    //sectionId:null,
-                    //title:'Enter Section Title',
-                    //modules:[],
-                    displayOrder:$scope.editSections.length+1
-                    //visible:true,
-                    //index:$scope.editSections.length + 2
+    $scope.delete = function (index) {
+        var section = $scope.ssRows[index];
+        if (section.surveys !== undefined && section.surveys.length > 0) {
+            $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' surveys and cannot be removed');
+        } else {
+            SurveySectionService.deleteSS(section)
+                .then(function () {
+                    $scope.addSuccessMsg(true, 'Survey Section ' + section.name + ' deleted successfully');
+                }, function error(reason) {
+                    $scope.addDangerMsg(true, reason);
                 });
-            };
+        }
+    }
 
-            $scope.sortableOptions = {
-                connectWith: ".connected-mods-container",
-            	update: function(e, ui) {
-                    $scope.isDirty = true;
-                    $scope.expandAll();
-            	},
-        	    stop: function(e, ui) {
-        	    	var itemUI = ui.item.scope();
-        	    	console.log('Item:: ' + itemUI);
-        	    	var toIndex = ui.item.sortable.dropindex;
-        	    	console.log('Drop Index:: ' + toIndex);
-        	    	var output = '';
-        	    	for (var property in itemUI) {
-        	    	  output += property + ': ' + itemUI[property]+'; ';
-        	    	}
-        	    	console.log(output);
-                    EScreeningDashboardApp.getInstance().checkWhetherSurveySectionSurveyArrayHasIncreased($scope.sections, $scope.editSections);
-                    for (var i=0;i<$scope.editSections.length;i++){
-                        var item = $scope.editSections[i];
-                        if (item.surveys.length == 0){
-                            item.isExpanded = true;
-                        }
+    $scope.update = function (section) {
+        SurveySectionService.updateSS(section)
+            .then(function (data) {
+                $scope.addSuccessMsg(true, 'Survey Section ' + section.name + ' modified successfully');
+            }, function error(reason) {
+                $scope.addDangerMsg(true, reason);
+            });
+    }
 
-                        item.displayOrder = i+1;
-                        for (var j=0;j<item.surveys.length;j++){
+    $scope.add = function (section) {
+        SurveySectionService.createSS(section)
+            .then(function (data) {
+                $scope.addSuccessMsg(true, 'Survey Section ' + section.name + ' added successfully');
+            }, function error(reason) {
+                $scope.addDangerMsg(true, reason);
+            });
+    }
 
-                            var surv = item.surveys[j];
-                            if (j==toIndex){
-                                item.isExpanded = true;
-                            }
-                            surv.displayOrder = j+1;
-                        }
-                    }
-                    $scope.isDirty = true;
-                    $scope.collapseAll();
-                    $scope.expandAll();
-        	    }
-            };
+    // on successful Create, Update, and Delete, SurveySectionService sends messages
+    var reloadSS = function () {
+        if (reloadSSTimeout) $timeout.cancel(reloadSSTimeout);
 
+        reloadSSTimeout = $timeout(function () {
 
-            $scope.sortableSecOptions = {
-                connectWith: '.connected-sec-container',
-                update:function(e, ui){
+            $scope.$apply(function () {
+                SurveySectionService.readAllSS()
+                    .then(function (ssRows) {
+                        $scope.ssRows = ssRows;
+                        //clearMsgs();
+                    }, function error(reason) {
+                        $scope.addDangerMsg(true, reason);
+                    });
+            });
+        }, 500);
+    }
 
-                },
-                stop:function(e, ui){
+    $scope.$on('ss:created', reloadSS);
+    $scope.$on('ss:deleted', reloadSS);
+    $scope.$on('ss:updated', reloadSS);
 
-                    for (var i=0;i<$scope.editSections.length;i++){
-                        var item = $scope.editSections[i];
-                        if (!item.surveys || item.surveys.length <= 0)
-                            item.isExpanded = true;
-                        item.displayOrder = i+1;
-                        for (var j=0;j<item.surveys.length;j++){
-                            var surv = item.surveys[j];
-                            surv.displayOrder = j+1;
-                        }
-
-                    }
-
-                    $scope.isDirty = true;
-                    $scope.collapseAll();
-                    $scope.expandAll();
-                }
-            };
-        }]);
+}]);
