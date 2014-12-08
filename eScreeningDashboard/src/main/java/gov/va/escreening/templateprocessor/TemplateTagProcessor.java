@@ -118,6 +118,9 @@ public class TemplateTagProcessor {
         //replace all &###; with unicode equivalents  
         noteText = StringEscapeUtils.unescapeHtml4(noteText);
         
+        //replace NO-BREAK SPACE (U+00A0) with regular space (U+0020)
+        noteText = noteText.replaceAll("\\u00A0", " ");
+        
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();
         String[] lines = noteText.split("\n");
