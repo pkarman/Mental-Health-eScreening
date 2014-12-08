@@ -615,6 +615,14 @@ a.offscreen:focus, a.offscreen:active {
 .pagination{
   margin: 0px;
 }
+
+.form_editor .accordion-toggle h4, .form_editor .accordion-toggle h5{
+  cursor:pointer;
+}
+.form_editor .panel-heading{
+  padding: 4px 10px;
+}
+
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 
