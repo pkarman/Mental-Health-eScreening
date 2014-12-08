@@ -72,30 +72,19 @@ EScreeningDashboardApp.models.Answer = function (jsonAnswerObject) {
     };
 
     this.toJSON = function () {
-        var jsonId = (Object.isDefined(id) && id > 0)? id : null,
-            jsonVistaText = (Object.isDefined(vistaText))? "\"" + vistaText + "\"": null,
-            jsonExportName = (Object.isDefined(exportName))? "\"" + exportName + "\"" : null,
-            jsonText = (Object.isDefined(text))? "\"" + text + "\"": null,
-            jsonType = (Object.isDefined(type))? "\"" + type + "\"": null,
-            jsonResponse = (Object.isDefined(response))? "\"" + response + "\"": null,
-            jsonOtherResponse =  (Object.isDefined(otherResponse))? "\"" + otherResponse + "\"" : null,
-            jsonRowId = (Object.isDefined(rowId))? rowId : null,
-            json = "{" +
-                "\"id\": " + jsonId + "," +
-                "\"vistaText\": " + jsonVistaText + "," +
-                "\"exportName\": " + jsonExportName + "," +
-                "\"text\": " + jsonText + "," +
-                "\"type\": " + jsonType + "," +
-                "\"response\": " + jsonResponse + "," +
-                "\"otherResponse\": " + jsonOtherResponse + "," +
-                "\"rowId\": " + jsonRowId +
-            "}";
-
-        return json;
+        return angular.toJson(this.toUIObject());
     };
     
     this.toUIObject = function(){
-    	var AnswerUIObject = JSON.parse(this.toJSON());
-    	return AnswerUIObject;
+    	return {
+    	    'id': id,
+            'vistaText': vistaText,
+            'exportName': exportName,
+            'text': text,
+            'type': type,
+            'response': response,
+            'otherResponse': otherResponse,
+            'rowId':  rowId
+    	}
     };
 };

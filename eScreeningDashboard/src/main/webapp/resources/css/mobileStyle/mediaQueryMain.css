@@ -60,11 +60,11 @@
 	#viewTitle {
 		font-size: 16px;
 	}
-	
 	.assessmentStartBody img{
 		text-align: center;
 		width: 100%;
 	}
+
 }
 
 
@@ -115,6 +115,45 @@
 	table.matrixQuestion {
 		width: 98%;
 	}
+.progressEntry{
+    width: 112px !important;
+    height: 76px !important;
+    padding-top:4px !important;
+  
+  }
+  
+  .progressEntry:hover{
+    border:1px solid #fff !important;
+  }
+    
+  .progressBar div{
+  
+  }
+  
+  
+  .progressBar{
+    width: 80% !important;
+    margin: 5px 5px !important;
+  }
+  .progressLabel{
+    height:auto !important; 
+  }   
+  
+  td.matrixQuestionText{
+    min-width:220px;
+  }
+  
+  th.matrixQuestion{
+    width: 18%;
+  }
+  
+  
+  div.progressEntry{
+    padding: 10px 0 12%;
+    margin-top: 4px;
+  }
+
+  
 }
 
 @media all and (max-width: 700px) {
@@ -128,6 +167,7 @@
 		padding-left: 8px;
 		width: 98%;
 	}
+
 }
 
 @media all and (max-width: 600px) {
@@ -163,4 +203,24 @@
 	.ddOther {
   		display: block !important;
   	}
+   
+   
 }
+
+
+/*
+@media (min-width: 768px) {
+  body{
+    border:4px solid #FF0004 ;  
+  }
+}
+@media (min-width: 992px) {
+   body{
+      border:4px solid #002CFF;   
+   }
+}
+@media (min-width: 1800px) {
+   body{
+      border:4px solid #00FF15;  
+   }
+}*/

@@ -32,6 +32,7 @@ import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
@@ -80,11 +81,14 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	
 	@Autowired
 	private SurveyMeasureResponseService surveyMeasureRespSvc;
+	
+	@Autowired
+	private SurveyRepository surveyRepository;
 
 	@Resource(name="veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
 	
-	private static final String FILE_ENCODING = "UTF-8";
+	static final String FILE_ENCODING = "UTF-8";
 	private static final Logger logger = LoggerFactory.getLogger(TemplateProcessorServiceImpl.class);
 	
 	private static final Pattern freemarkerTags = Pattern.compile("\\s*(</*#[\\p{Graph}\\p{Space}&&[^>]]+>)\\s*");
@@ -98,7 +102,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	// may be modified so we will not worry about caching.
 	private Configuration freemarkerConfiguration = null;
 
-	private synchronized Configuration getFreemarkerConfiguration() throws IOException {
+	synchronized Configuration getFreemarkerConfiguration() throws IOException {
 		if (freemarkerConfiguration == null)
 			freemarkerConfiguration = initializeFreemarkerConfig();
 		return freemarkerConfiguration;
@@ -124,6 +128,30 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return createDocument(veteranAssessmentId, viewType, DocumentType.CPRS_NOTE, optionalTemplates, true); 
 	}
 	
+	@Override
+	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException {
+		Survey survey = surveyRepository.findOne(surveyId);
+		checkArgument(survey != null, String.format("Module not found with ID %s", surveyId));
+		
+		for(Template t : survey.getTemplates()){
+			if(type.getId() == t.getTemplateType().getTemplateTypeId()){
+				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
+					.appendTemplate(t)
+					.generate();
+				logger.debug("Rendered template:\n{}", text);
+				return text;
+			}
+		}
+		
+		ErrorBuilder
+			.throwing(IllegalSystemStateException.class)
+			.toUser(String.format("No template of type %s is defined for module %s. Please have the technical administrator use the template editor to create one.", type, survey.getName()))
+			.toAdmin(String.format("No template of type %s is defined for module: %s. Please use the template editor to create one.", type, survey))
+			.throwIt();	
+		
+		//since last statement will throw an exception we will never get here
+		return null;
+	}
 	
 	/**
 	 * method to reset the {@link ThreadLocal} of VeteranAssessmentSmrList#clearSmrFromCache()}, as threads are not created here but served from the thread pool
@@ -186,6 +214,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			
 			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
+				
 				if (surveysTaken.containsKey(survey.getSurveyId())) {
 					for (Template template : survey.getTemplates()) {
 						if(!sectionStarted)
@@ -203,13 +232,17 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 								evaluator.appendModule(template);
 							}
 						}
+						else if (type.equals(TemplateType.VISTA_QA))
+						{
+							quesAndAnswers.append(processTemplate(template, veteranAssessmentId));
+						}
 					}
 					
-                    if (templateMap.containsKey(TemplateType.VISTA_QA) 
-                    		&& survey.getClinicalReminderSurveyList() != null 
-                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){
-                        quesAndAnswers.append(surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, veteranAssessmentId));
-                    }
+//                    if (templateMap.containsKey(TemplateType.VISTA_QA) && templateMap.
+//                    		&& survey.getClinicalReminderSurveyList() != null 
+//                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){                   	
+//                        quesAndAnswers.append(processTemplate(templateMap.get(TemplateType.VISTA_QA), veteranAssessmentId));
+//                    }
 				}
 			}
 		}
@@ -235,7 +268,6 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	private String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
 		String templateText = getTemplateText(template);
 		Integer templateId = template.getTemplateId();
-		
 		// It is valid to get an empty list of AssessmentVariables back as the
 		// questions might not have been answered yet.
         List<AssessmentVariableDto> assessmentVariables = variableResolverService
@@ -326,7 +358,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			.toAdmin(technicalMessage).throwIt();
 	}
 
-	private String processTemplate(String templateText,
+	String processTemplate(String templateText,
 			List<AssessmentVariableDto> assessmentVariables, int templateId) throws IOException, TemplateException {
 
 		// populate the root object which holds all beans to be merged with the
@@ -364,7 +396,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			ErrorBuilder
 				.throwing(IllegalSystemStateException.class)
 				.toUser("A needed template does not exist. Please contact the technical administrator.")
-				.toAdmin(String.format("A required template with ID: %s, could not be found in the database.", templateToProcess)).throwIt();
+				.toAdmin("A required template, could not be found in the database.").throwIt();
 
 		String templateText = templateToProcess.getTemplateFile();
 		if (templateText == null)
@@ -537,11 +569,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			return this;
 		}
 		
-	    private TemplateEvaluator appendQuestionsAndAnswers(String s){
+	    private TemplateEvaluator appendQuestionsAndAnswers(String qaTemplate) throws IllegalSystemStateException{
             endPreviousSection();
             logger.debug("Appending clinical reminder questions");
             startSection(new SurveySection(null, "CLINICAL REMINDERS", null));
-            text.append(s);
+            text.append(qaTemplate);
             endPreviousSection();
             logger.debug("Completed clinical reminder questions");
             return this;
@@ -584,6 +616,22 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 		return sb.toString();
 	}
+	
+	@Override
+	public freemarker.template.Template getTemplate(Integer templateId, String templateText)
+		throws IOException
+	{
+		// Convert the template to a string, load it into the freemarker
+				// configuration
+		Configuration fmConfiguration = getFreemarkerConfiguration();
+		String templateCacheName = String.format("template%s", templateId);
+		((StringTemplateLoader) fmConfiguration.getTemplateLoader()).putTemplate(templateCacheName, templateText);
+		return  fmConfiguration.getTemplate(templateCacheName);
+	}
 
+	public static void main(String[] args)
+	{
+		System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
+	}
 }
 

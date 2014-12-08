@@ -22,15 +22,18 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author jocchiuzzo
  */
 @Entity
-@Table(name = "variable_template")
+@Table(name = "variable_template", uniqueConstraints=
+@UniqueConstraint(columnNames = {"assessment_variable_id", "template_id"}))
 @NamedQueries({
     @NamedQuery(name = "VariableTemplate.findAll", query = "SELECT v FROM VariableTemplate v")})
+
 public class VariableTemplate implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

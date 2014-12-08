@@ -78,4 +78,6 @@ public interface AssessmentDelegate {
     void markAssessmentAsComplete();
 
 	CompletionResponse getCompletionResponse(int batteryId);
+
+	public abstract String getWelcomeMessage();
 }

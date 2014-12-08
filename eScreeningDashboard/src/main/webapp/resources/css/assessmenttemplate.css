@@ -320,6 +320,7 @@ li{
 	-webkit-box-shadow: 0 8px 6px -6px black;
 		-moz-box-shadow: 0 8px 6px -6px black;
 			box-shadow: 0 8px 6px -6px black;
+      z-index:1001;
 }
 .top_header{margin:0 auto; width:1000px; text-align:center; color:#349200; font-weight:bold; padding:15px; }
 .ico_loading{

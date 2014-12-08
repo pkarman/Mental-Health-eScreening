@@ -75,9 +75,9 @@ $(document).ready(function(e) {
     	}
 	});
     
-    $("#measuresProgress li label").parent().parent().click(function() {
+    $("#measuresProgress li span").parent().parent().click(function() {
     	if (surveyValidation.pageIsValid()){
-    		var sectionId = $(this).find("label").attr("for").match(/[0-9]+/g)[0];
+    		var sectionId = $(this).find("span").attr("for").match(/[0-9]+/g)[0];
 			callMeasure(measuresURL,
 				buildReqAdvBack('nextSkipped', buildJSONFromForm('nextSkipped'), sectionId),
 				initialPageCallback);
@@ -87,19 +87,49 @@ $(document).ready(function(e) {
     
     
     
-    /* Matrix Table - In case of TD empty remove the parent TH */
     $("#assessmentContainer").bind("DOMSubtreeModified", function() {
-		$( ".matrixQuestionText" ).each(function( index ) {
-			  var matrixQuestionText = $("#assessmentContainer").find(".matrixQuestionText").html();
-				 if (matrixQuestionText == '') {
-					$(this).addClass("empty");
-					$(this).closest('table').find('th').eq(0).addClass("empty");
-				}	  
-		});
+      /* Radio buttons and Checkbox Focus */
+      $('input.checkSwitch').on('focus', function () {
+        $(this).parent().addClass('checkFocus');
+      });
+      $('input.checkSwitch').on('blur', function () {
+        $(this).parent().removeClass('checkFocus');
+      });
+      
+      /* Matrix Table - In case of TD empty remove the parent TH */
+      $( ".matrixQuestionText" ).each(function( index ) {
+          var matrixQuestionText = $("#assessmentContainer").find(".matrixQuestionText").html();
+           if (matrixQuestionText == '') {
+            $(this).addClass("empty");
+            $(this).closest('table').find('th').eq(0).addClass("empty");
+          }	  
+      });
 	});
-    
+      
+      
+ 
+          
 });
 
+
+ // Play sound beep
+  function play(sound) {
+    if (window.HTMLAudioElement) {
+      var snd = new Audio('');
+      if(snd.canPlayType('audio/ogg')) {
+        snd = new Audio('resources/sounds/' + sound + '.ogg');
+      }
+      else if(snd.canPlayType('audio/mp3')) {
+        snd = new Audio('resources/sounds/' + sound + '.mp3');
+      }
+      snd.play();
+    }
+    else {
+      alert('HTML5 Audio is not supported by your browser!');
+    }
+  }
+  
+  
 function logout(reason){
 	var reasonQuery = "";
 	if(reason != null && typeof reason == "string" && reason != ""){
@@ -179,10 +209,14 @@ function openRequiredDialog() {
 		draggable: false,
 		close:function( event, ui ) {
 			$(".ui-dialog").attr('aria-hidden', 'true');
+      $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+      $(".assessment-column-left").attr('aria-hidden', 'false');
 		},
 		buttons: {
           "Ok": function () {
         	  $(".ui-dialog").attr('aria-hidden', 'true');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+            $(".assessment-column-left").attr('aria-hidden', 'false');      
 						$(this).dialog('close');
           }
         },
@@ -190,6 +224,10 @@ function openRequiredDialog() {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
 						$(".ui-dialog").attr('aria-hidden', 'false');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
+            $(".assessment-column-left").attr('aria-hidden', 'true');
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);
         }
 	});
 }
@@ -201,6 +239,8 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
 		draggable: false,
 		close:function( event, ui ) {
 			$(".ui-dialog").attr('aria-hidden', 'true');
+      $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+      $(".assessment-column-left").attr('aria-hidden', 'false');      
 		},
 		buttons: {
           "Yes, proceed to next page": function () {
@@ -221,6 +261,11 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
                 .addClass("customButtonsDialog");
 						$(this).parents().find('.ui-dialog')
 								.attr('aria-hidden', 'false');
+                
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
+            $(".assessment-column-left").attr('aria-hidden', 'true');
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);       
         }
 	});
 }
@@ -252,6 +297,7 @@ function callMeasure(url, requestJSON, callbackSuccess)
 {
 	// Use post() shorthand method.
 	$.ajax({
+
 	  type: "POST",
 	  url: url,
       dataType: 'json',
@@ -431,6 +477,9 @@ function showLogoutCounter(logoutTimerValue) {
           }
         },
         open: function(event, ui) { 
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);
+            
             $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
         	autoLogoutTimer = setInterval(function () {
         		$("#counter").html(autoLogoutCounter--);
@@ -482,7 +531,6 @@ function calculateSectionProgress(surveyProgresses){
 	
 	return sectionProgresses;
 }
-	
 
 //Form Builder Methods.
 function buildFormFromJSON(json){
@@ -508,7 +556,7 @@ function buildFormFromJSON(json){
 	// The matched page title will be wrapped with the triangle
 	
 	//move progress arrow
-	$("#measuresProgress li label").each(function(index) {
+	$("#measuresProgress li span").each(function(index) {
 		$(".progressEntry").removeClass("triangleWrapper");
 	});
 
@@ -634,6 +682,8 @@ function displayServerError(message) {
 	            open: function (e, ui) {
 	                $(this).parent().find(".ui-dialog-buttonpane .ui-button")
 	                    .addClass("customButtonsDialog");
+                      // Delay play sound
+                      setTimeout(function() { play('beep'); }, 500);
 	            }
 	    	});
 	  });
@@ -659,6 +709,7 @@ function navto(requestObject){
 
 function page3(){
 	navto(
+
 			{
 				"pageId":3,
 				"currentPage":2,
@@ -831,8 +882,6 @@ function page4(){
     ]
 });
 }
-
-
 
 function page5(){
     navto(
@@ -1115,4 +1164,3 @@ function page7(){
     			]
     		});
 }
-

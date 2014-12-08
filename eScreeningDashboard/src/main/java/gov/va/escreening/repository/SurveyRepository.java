@@ -31,5 +31,7 @@ public interface SurveyRepository extends RepositoryInterface<Survey> {
      */
     List<Survey> getSurveyList();
 
-    public abstract List<Survey> getMhaSurveyList();
+    List<Survey> getMhaSurveyList();
+
+	List<Survey> findByTemplateId(Integer templateId);
 }

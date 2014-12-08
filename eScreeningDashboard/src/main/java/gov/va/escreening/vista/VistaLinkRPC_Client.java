@@ -419,4 +419,5 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
         VistaProgressNote progressNote = request.sendRequest();
         return progressNote;
     }
+    
 }

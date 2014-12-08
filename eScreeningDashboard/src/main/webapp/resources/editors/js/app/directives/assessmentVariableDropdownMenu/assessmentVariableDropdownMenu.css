@@ -1,0 +1,38 @@
+
+.assessmentVariableSelection {
+    background-color: #DCE0E6;
+    display: inline-block;
+    height: 33px;
+    width: 100%;
+    padding: 5px;
+    vertical-align:middle;
+    text-align: center;
+    border-radius: 5px;
+    cursor:pointer;
+}
+
+.assessmentVariableSelection.error {
+    border: 1px solid #b94a48;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+
+.assessmentVariableSelectionTable {
+    background-color: #fff;
+    border: 1px solid #BDBDBD;
+    min-height: 150px;
+    min-width: 550px;
+    display:inline-block;
+    z-index:1;
+    position:relative;
+    margin-left: -5px;
+    margin-top: 7px;
+    padding: 5px;
+    text-align:left;
+    box-shadow: 6px 10px 7px rgba(0,0,0,.3);
+    margin-bottom:30px;
+}
+
+.modal-content {
+    min-height: inherit;
+}

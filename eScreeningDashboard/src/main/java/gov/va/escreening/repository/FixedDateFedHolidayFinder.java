@@ -1,6 +1,7 @@
 package gov.va.escreening.repository;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -20,7 +21,7 @@ public class FixedDateFedHolidayFinder extends FedHolidayFinder {
 	}
 
 	@Override
-	public boolean fedHoliday(DateTime date) {
+	public boolean fedHoliday(LocalDate date) {
 		int m = date.getMonthOfYear();
 		int d = date.getDayOfMonth();
 

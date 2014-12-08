@@ -1,10 +1,7 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-/**
- * Created by pouncilt on 8/4/14.
- */
-Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'SurveyService', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, SurveyService, surveys) {
+Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, surveys) {
     $scope.setSurveyUIObjects(EScreeningDashboardApp.models.Survey.toUIObjects(surveys));
     
     $scope.refreshTable = function () {
@@ -78,12 +75,12 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
 
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
-    	$scope.selectedSurveyUIObject = survey;
+    	$scope.setSelectedSurveyUIObject(survey);
         $state.go('modules.detail', {selectedSurveyId: survey.id});
     };
 
     $scope.addModule = function(){
-        $scope.selectedSurveyUIObject = $scope.createModule();
+        $scope.setSelectedSurveyUIObject($scope.createModule());
         $state.go('modules.detail.selectQuestionType');
     };
 
@@ -93,6 +90,6 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     };
 
     $scope.cancel = function(){
-        alert('Will take user back to Editors Entry View.');
+        $state.go('home');
     };
 }]);

@@ -62,6 +62,12 @@ public class AssessmentEngineController {
 			return "redirect:/assessmentLogin";
 		}
 	}
+	
+	@RequestMapping(value = "/welcome_msg", method = RequestMethod.GET)
+	public @ResponseBody String getWelcomeMessage()
+	{
+		return assessmentDelegate.getWelcomeMessage();
+	}
 
 	@RequestMapping(value = "/services/assessments/active", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
@@ -113,7 +119,24 @@ public class AssessmentEngineController {
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		return assessmentEngineService.getUpdatedVisibility(assessmentRequest);
+		long start = System.currentTimeMillis();
+		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
+		long end1 = System.currentTimeMillis();
+		
+		/*** The following section are here for testing purpose only **********/
+//		Map<Integer, Boolean> regular = assessmentEngineService.getUpdatedVisibility(assessmentRequest);
+//		long end2 = System.currentTimeMillis();
+		
+//		logger.info("INMEMORY TIME: "+ (end1-start)+ "   REGULAR TIME: "+ (end2-end1)); 
+//		for(Integer key : inMemory.keySet())
+//		{
+//			if(!regular.get(key).equals(inMemory.get(key)))
+//			{
+//				logger.warn("========= Don't match ==========  " + key);
+//			}
+//		}
+		
+		return inMemory;
 	}
 
 	@ExceptionHandler(AssessmentEngineDataValidationException.class)
