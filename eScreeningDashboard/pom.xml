@@ -666,6 +666,23 @@
 			</properties>
 		</profile>
 		<profile>
+            <id>bug</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>bug</value>
+                </property>
+            </activation>
+            <build>
+                <finalName>${project.artifactId}-bug</finalName>
+            </build>
+            <properties>
+                <jdbc.url>jdbc:mysql://localhost/escreening-bug</jdbc.url>
+                <jdbc.db>escreening-bug</jdbc.db>
+                <log.suffix>bug</log.suffix>
+            </properties>
+        </profile>
+		<profile>
 			<id>sandiego</id>
 			<activation>
 				<property>
