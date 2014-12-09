@@ -1,0 +1,8 @@
+.assessmentVariableTable {
+    min-height: 150px;
+    /* min-width: 550px; */
+    width:100%;
+    display:inline-block;
+    padding: 5px;
+    text-align:left;
+}

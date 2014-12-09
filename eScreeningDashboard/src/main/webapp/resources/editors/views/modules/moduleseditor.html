@@ -1,4 +1,15 @@
-<h1>Manage Module</h1>
+
+<div class="row">
+    <div class="col-md-6">
+      <h1>Manage Module</h1>
+    </div>
+    <div class="col-md-6">
+      <button ng-click="editTemplates();" ng-disabled="!isModuleSaved();" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
+    </div>
+</div>
+
+
+
 <!-- Alerts and Messages -->
 <div class="row">
     <div class="col-md-12">
@@ -17,11 +28,15 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- JH OOOCOMMENT
-        <div class="col-sm-12">
-        <div class="btn-group-sm pull-right"> <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a> <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> <a ui-sref="modules.detail.templatecaptureview" class="btn btn-info" href="#/modules/modules.detail/modules.addedt.templatecaptureview">Add/Edit Template</a> </div>
-        </div>
-        -->
+        <div class="btn-group-sm pull-right"> 
+            
+         
+          
+	        <!-- JH OOOCOMMENT              
+	        <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a>
+	        <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> 
+	        -->
+      </div>
         <form name="moduleDetailsForm" novalidate>
             <div class="border-radius-main-form gray-lighter">
                 <div class="row">

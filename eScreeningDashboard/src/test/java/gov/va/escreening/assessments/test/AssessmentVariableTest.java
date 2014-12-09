@@ -64,7 +64,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
 			StringBuffer sb) {
 		if (m.getChildren().isEmpty()) {
 			String name = m.getMeasureAnswerList().iterator().next().getExportName();
-			String descr = m.getMeasureAnswerList().iterator().next().getAnswerText();
+			String descr = m.getMeasureText();
 			addUpdateString(sb, name, descr, av.getAssessmentVariableId(), av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
 		} else {
 			for (Measure m1 : m.getChildren()) {

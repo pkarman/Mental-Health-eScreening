@@ -23,6 +23,8 @@ public class BatteryInfo implements Serializable, BatteryBaseProperties {
     private boolean isDisabled;
     private List<SurveyInfo> surveys = new ArrayList<SurveyInfo>();
     private Date dateCreated;
+    private String welcomeMessage;
+    private String completeMessage;
 
     @JsonProperty("id")
     public Integer getBatteryId() {
@@ -84,5 +86,21 @@ public class BatteryInfo implements Serializable, BatteryBaseProperties {
         return "BatteryItem [batteryId=" + batteryId + ", name=" + name + ", description=" + description
                 + ", isDisabled=" + isDisabled + ", surveys=" + surveys + ", dateCreated=" + dateCreated + "]";
     }
+
+	public void setCompleteMessage(String completeMessage) {
+		this.completeMessage = completeMessage;
+	}
+
+	public String getCompleteMessage() {
+		return completeMessage;
+	}
+
+	public void setWelcomeMessage(String welcomeMessage) {
+		this.welcomeMessage = welcomeMessage;
+	}
+
+	public String getWelcomeMessage() {
+		return this.welcomeMessage;
+	}
 
 }

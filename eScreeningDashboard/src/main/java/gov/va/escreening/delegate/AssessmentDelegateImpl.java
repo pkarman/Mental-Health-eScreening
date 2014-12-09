@@ -21,12 +21,14 @@ import gov.va.escreening.dto.ae.AssessmentResponse;
 import gov.va.escreening.dto.ae.CompletionResponse;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
@@ -74,6 +76,9 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	private SurveyRepository surveyRepository;
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
+	
+	@Autowired
+	private BatteryRepository batteryRepo;
 
 	@Resource(type = TemplateProcessorService.class)
 	private TemplateProcessorService templateProcessorService;
@@ -221,10 +226,20 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	@Override
 	public CompletionResponse getCompletionResponse(int batteryId) {
 		CompletionResponse response = new CompletionResponse();
-		response.setCompletionText(templateProcessorService.generateCompletionMsgFor(batteryId));
+		Battery b = batteryRepo.findOne(batteryId);
+		
+		response.setCompletionText(b.getCompleteMessage());
 		return response;
 	}
 
+	@Override
+	public String getWelcomeMessage()
+	{
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
+		return veteranAssessment.getBattery().getWelcomeMessage();
+		
+	}
+	
 	@Override
 	public void markAssessmentAsComplete() {
 		Integer assessmentId = assessmentContext.getVeteranAssessmentId();

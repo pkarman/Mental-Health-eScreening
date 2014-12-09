@@ -10,24 +10,38 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BatteryRepositoryImpl extends AbstractHibernateRepository<Battery> implements BatteryRepository {
+public class BatteryRepositoryImpl extends AbstractHibernateRepository<Battery>
+		implements BatteryRepository {
 
-    public BatteryRepositoryImpl() {
-        super();
+	public BatteryRepositoryImpl() {
+		super();
 
-        setClazz(Battery.class);
-    }
+		setClazz(Battery.class);
+	}
 
-    @Override
-    public List<Battery> getBatteryList() {
+	@Override
+	public List<Battery> getBatteryList() {
 
-        List<Battery> resultList = new ArrayList<Battery>();
-        String sql = "SELECT b FROM Battery b ORDER BY b.name";
+		List<Battery> resultList = new ArrayList<Battery>();
+		String sql = "SELECT b FROM Battery b ORDER BY b.name";
 
-        TypedQuery<Battery> query = entityManager.createQuery(sql, Battery.class);
+		TypedQuery<Battery> query = entityManager.createQuery(sql,
+				Battery.class);
 
-        resultList = query.getResultList();
+		resultList = query.getResultList();
 
-        return resultList;
-    }
+		return resultList;
+	}
+
+	@Override
+	public List<Battery> findByTemplateId(Integer templateId) {
+		String sql = " SELECT b FROM Battery b inner join b.templates t where t.templateId = :templateId";
+		
+		TypedQuery<Battery> query = entityManager.createQuery(sql,
+				Battery.class);
+		query.setParameter("templateId", templateId);
+
+		return query.getResultList();
+	}
+
 }

@@ -121,9 +121,12 @@ Editors.controller('sectionsController', ['$rootScope','$scope','$state', '$reso
             			SurveySectionService.remove(SurveySectionService.setRemoveSurveySectionRequestParameter(surveySection.getId())).then(function(response){
                             var section = response.getPayload();
                             SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                                var existingSections = response.getPayload();
-                                $scope.sections = existingSections;
-                                console.log('Sections:: ' + existingSections);
+                                var existingSurveySections = response.getPayload();
+                                existingSurveySections.forEach(function(existingSurveySection) {
+                                    EScreeningDashboardApp.models.Survey.sortByDisplayOrder(existingSurveySection.getSurveys());
+                                });
+                                $scope.sections = existingSurveySections;
+                                console.log('Sections:: ' + existingSurveySections);
                                 $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
                             }, function(responseError) {
                                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));

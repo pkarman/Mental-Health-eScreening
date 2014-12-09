@@ -95,7 +95,7 @@ public class EditorRestController {
         Map surveyPageInfoItems = new HashMap();
         surveyPageInfoItems.put("surveyPages", new ArrayList<SurveyPageInfo>());
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "The data is saved successfully."), surveyPageInfoItems);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "All module changes have been saved successfully."), surveyPageInfoItems);
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")
