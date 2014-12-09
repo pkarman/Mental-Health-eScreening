@@ -118,6 +118,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
             return selectedMenuOptionIndex;
         };
+        surveyUIObject = getSurveyUIObject();
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
