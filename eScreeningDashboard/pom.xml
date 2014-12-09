@@ -578,7 +578,6 @@
 							<goal>execute</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
 							<orderFile>ascending</orderFile>
 							<fileset> 
 								<basedir>src/main/sql/sprint_28</basedir>
