@@ -32,8 +32,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -564,20 +566,36 @@ public class TemplateServiceImpl implements TemplateService {
 				template.setJsonFile(null);
 			}
 			
-			Set<Integer> ids = new HashSet<Integer>();
+			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
 			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
 			
-			if (ids.size()>0)
-			{
-				for(Integer id : ids){
-					VariableTemplate vt = new VariableTemplate();
-					vt.setDateCreated(new Date());
-					vt.setAssessmentVariableId(avRepository.findOne(id));
-					vt.setTemplateId(template);
-					if (template.getVariableTemplateList()==null)
-					{
-						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+			//get current variable template entries for this template
+			Map<Integer, VariableTemplate> vtMap = new HashMap<>();
+			for(VariableTemplate vt : template.getVariableTemplateList()){
+				vtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
+			}
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));
+			
+			//clear out list of variable template entries
+			if (template.getVariableTemplateList()==null){
+				template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+			}
+			else{
+				template.getVariableTemplateList().clear();
+			}
+			
+			if (!assessmentVariableIds.isEmpty()){
+				
+				for(Integer id : assessmentVariableIds){
+					VariableTemplate vt;
+					if(vtMap.containsKey(id)){
+						vt = vtMap.get(id);
+					}
+					else{
+						vt = new VariableTemplate();
+						vt.setAssessmentVariableId(avRepository.findOne(id));
+						vt.setTemplateId(template);
 					}
 					template.getVariableTemplateList().add(vt);
 				}
