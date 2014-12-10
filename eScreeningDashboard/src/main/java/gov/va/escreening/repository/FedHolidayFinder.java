@@ -1,6 +1,6 @@
 package gov.va.escreening.repository;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public abstract class FedHolidayFinder {
 	private final String name;
@@ -11,7 +11,7 @@ public abstract class FedHolidayFinder {
 		this.description = description;
 	}
 
-	abstract public boolean fedHoliday(DateTime date);
+	abstract public boolean fedHoliday(LocalDate date);
 
 	public String getDescription() {
 		return description;

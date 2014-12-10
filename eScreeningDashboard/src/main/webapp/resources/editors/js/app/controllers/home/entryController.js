@@ -6,30 +6,59 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
 
     $rootScope.messageHandler = MessageHandler;
 
+    
     $rootScope.addMessage = function(message) {
         if(Object.isDefined(message)) {
             $rootScope.messageHandler.addMessage(message);
         }
     };
+    
+    /**
+     * Adds a message which will stay around for the next state.
+     * Needed if you want to:
+     *  - pass a message to another state because the action both makes a change and also transitions state
+     *  - you want to set a message when a controller is being initialized
+     */
+    $rootScope.addInterstateMessage = function(message) {
+        if(Object.isDefined(message)) {
+            $rootScope.messageHandler.addMessage(message, null, 1);
+        }
+    };
 
     $rootScope.createSuccessDeleteMessage = function(message) {
-        /*return (Object.isDefined(message)) ?
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: message.getValue()}) :
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: BytePushers.models.Message.SUCCESS_DELETE_MSG});*/
-
-        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: (Object.isDefined(message)? message.getValue() : BytePushers.models.Message.SUCCESS_DELETE_MSG)});
+        var msg = BytePushers.models.Message.SUCCESS_DELETE_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: msg});
     };
 
     $rootScope.createSuccessSaveMessage = function (message) {
-        /*return (Object.isDefined(message)) ?
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: message.getValue()}) :
-            new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: BytePushers.models.Message.SUCCESS_SAVE_MSG});*/
-
-        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: (Object.isDefined(message)? message.getValue() : BytePushers.models.Message.SUCCESS_SAVE_MSG)});
+        var msg = BytePushers.models.Message.SUCCESS_SAVE_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: msg});
     };
 
     $rootScope.createErrorMessage = function (message) {
-        return (Object.isDefined(message)) ? message : new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: BytePushers.models.Message.ERROR_MSG})
+        var msg = BytePushers.models.Message.ERROR_MSG;
+        if(Object.isDefined(message)){
+            if(Object.isDefined(message.getValue)){
+                msg = message.getValue();
+            }
+            else{ msg = message; }
+        }
+        
+        return new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: msg})
     };
 
     $rootScope.batteries = [];
@@ -78,4 +107,14 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         $rootScope.messageHandler.clearMessages();
     });
+    
+    //some error logging to reduce the amount of hair I pull out of my head :)
+    $rootScope.$on('$stateChangeError', 
+        function(event, toState, toParams, fromState, fromParams, error){
+            console.log("Error transitioning from " + JSON.stringify(fromState) 
+                    + "\n to state: " + JSON.stringify(toState)
+                    + "\n with error: " + JSON.stringify(error));
+        });
+    
+    
 }]);

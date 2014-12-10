@@ -26,20 +26,12 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
 EScreeningDashboardApp.models.Answer = function (jsonAnswerObject) {
     var that = this,
         id = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.id))? jsonAnswerObject.id : -1,
-        vistaText = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.vistaText)) ? jsonAnswerObject.vistaText : null,
         exportName = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.exportName)) ? jsonAnswerObject.exportName : null,
         text = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.text))? jsonAnswerObject.text : null,
-        type = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.type))? jsonAnswerObject.type : null,
-        response = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.response))? jsonAnswerObject.response : null,
-        otherResponse = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.otherResponse)) ? jsonAnswerObject.otherResponse : null,
-        rowId = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.rowId)) ? jsonAnswerObject.rowId : null;
+        type = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.type))? jsonAnswerObject.type : null;
 
     this.getId = function(){
         return id;
-    };
-    
-    this.getVistaText = function(){
-    	return vistaText;
     };
     
     this.getExportName = function(){
@@ -53,49 +45,21 @@ EScreeningDashboardApp.models.Answer = function (jsonAnswerObject) {
     this.getType = function() {
         return type;
     };
-
-    this.getResponse = function(){
-    	return response;
-    };
     
-    this.getOtherResponse = function(){
-    	return otherResponse;
-    };
-    
-    this.getRowId = function(){
-    	return rowId;
-    };
-
     this.toString = function() {
-        return "Answer{id: " + id + ", vistaText: " + vistaText + ", exportName: " + exportName + ", text: " + text + ", type: " + type + 
-            ", response: " + response + ", otherResponse: " + otherResponse + ", rowId: " + rowId + "}";
+        return "Answer{id: " + id + ", exportName: " + exportName + ", text: " + text + ", type: " + type + "}";
     };
 
     this.toJSON = function () {
-        var jsonId = (Object.isDefined(id) && id > 0)? id : null,
-            jsonVistaText = (Object.isDefined(vistaText))? "\"" + vistaText + "\"": null,
-            jsonExportName = (Object.isDefined(exportName))? "\"" + exportName + "\"" : null,
-            jsonText = (Object.isDefined(text))? "\"" + text + "\"": null,
-            jsonType = (Object.isDefined(type))? "\"" + type + "\"": null,
-            jsonResponse = (Object.isDefined(response))? "\"" + response + "\"": null,
-            jsonOtherResponse =  (Object.isDefined(otherResponse))? "\"" + otherResponse + "\"" : null,
-            jsonRowId = (Object.isDefined(rowId))? rowId : null,
-            json = "{" +
-                "\"id\": " + jsonId + "," +
-                "\"vistaText\": " + jsonVistaText + "," +
-                "\"exportName\": " + jsonExportName + "," +
-                "\"text\": " + jsonText + "," +
-                "\"type\": " + jsonType + "," +
-                "\"response\": " + jsonResponse + "," +
-                "\"otherResponse\": " + jsonOtherResponse + "," +
-                "\"rowId\": " + jsonRowId +
-            "}";
-
-        return json;
+        return angular.toJson(this.toUIObject());
     };
     
     this.toUIObject = function(){
-    	var AnswerUIObject = JSON.parse(this.toJSON());
-    	return AnswerUIObject;
+    	return {
+    		'id' : (Object.isDefined(id) && id > 0)? id : null,
+    		'text' : text,
+    		'type' : type,
+    		'exportName' : exportName
+    	};
     };
 };

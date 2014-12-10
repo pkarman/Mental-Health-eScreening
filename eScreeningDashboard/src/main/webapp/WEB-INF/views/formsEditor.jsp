@@ -7,15 +7,17 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10">
-    <link rel="icon" href="http://54.235.74.13/escreeningdashboard-test/dashboard/resources/images/valogo.ico" type="image/x-icon">
-    <link rel="SHORTCUT ICON" href="http://54.235.74.13/escreeningdashboard-test/dashboard/resources/images/valogo.ico" type="image/x-icon">
+    <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
+    <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     <title>VA Editors</title>
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/vendors/textAngular/textAngular.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/menu-partial.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/userManagement.css" type="text/css">
@@ -23,13 +25,15 @@
     <link rel="stylesheet" href="resources/editors/css/escreening/jquery-ui-1.10.3.custom.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard_new.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/css/main.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="resources/editors/vendors/angular/angular.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js'></script>
+    <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
+    <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     
     <!-- Utility classes and non-Angular, non-framework classes -->
@@ -64,7 +68,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySectionsTransformer.js"></script>
 
-
     <script type="text/javascript" src="resources/editors/js/app/domains/Question.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionUIObjectItemWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
@@ -88,28 +91,47 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/Battery.js"></script>
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteryTransformer.js"></script> 
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
-	   
+	
+	<!-- Template Domain -->
+
+	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateBlock.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateCondition.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/angular-animate.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/angular-texteditor.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/ngTable/ng-table.js"></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
+    <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
+    <script type="text/javascript" src="resources/bower_components/ng-table/ng-table.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
+    <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
     
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
     
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>
@@ -131,7 +153,7 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleSelectController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
 
     <!-- Questions View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>
@@ -140,6 +162,18 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleMatrixQuestionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/instructionQuestionController.js"></script>
     
+    <!-- Template View State(s) -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
+
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
@@ -270,7 +304,7 @@
             <!-- </div>-->
             		 <div class="row">
             		    <div class="col-md-12" ui-view></div>
-                </div>
+                    </div>
         		</div>
 	        </div>
         </div>
@@ -286,5 +320,31 @@
             </div>
         </footer>
     </div>
+    
+    
+    <div class="modal fade modal-custom-sm" id="idletimeout" title="Your session is about to expire!" role="dialog" aria-labelledby="idletimeout" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Session Time out</h4>
+          </div>
+          <div class="modal-body">
+            <p class="sessionTimeOutMessage">You will be logged off in <span class="countdown"><!-- countdown place holder --></span>&nbsp;seconds due to inactivity.</p>
+      
+          </div>
+          <div class="modal-footer">
+            <div class="text-center">
+              <a id="idletimeout-resume" href="#"  data-dismiss="modal" class="btn btn-primary">Continue using this page</a>
+              <a href="handleLogoutRequest" class="btn btn-default" id="btn-logout-timeout">Logout</a>
+            </div>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    
+    <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script> 	 	
+    <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script> 	 	
+    <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script> 	    
 </body>
 </html>

@@ -217,8 +217,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		// will take precedence over the clinician entered data
 
 		mandatoryIdendifiedData.addAll(Arrays.asList(new DataExportCell("vista_lastname", show ? srh.getOrMiss(v.getLastName()) : srh.miss()),//
-				new DataExportCell("vista_firstname", show ? srh.getOrMiss(v.getFirstName()) : srh.miss()),//
-				new DataExportCell("vista_midname", show ? srh.getOrMiss(v.getMiddleName()) : srh.miss()),//
+				new DataExportCell("vista_firstname", show ? srh.getOrMiss(v.getVistaFirstName()) : srh.miss()),//
+				new DataExportCell("vista_midname", show ? srh.getOrMiss(v.getVistaMiddleName()) : srh.miss()),//
 				new DataExportCell("vista_SSN", show ? srh.getOrMiss(v.getSsnLastFour()) : srh.miss()), new DataExportCell("vista_ien", v.getVeteranIen())));
 		return mandatoryIdendifiedData;
 	}

@@ -1,6 +1,6 @@
 package gov.va.escreening.repository;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public class LogicalDateFedHolidayFinder extends FedHolidayFinder {
 
@@ -17,7 +17,7 @@ public class LogicalDateFedHolidayFinder extends FedHolidayFinder {
 	}
 
 	@Override
-	public boolean fedHoliday(DateTime date) {
+	public boolean fedHoliday(LocalDate date) {
 		// extract info from passed in date
 		String txDayOfWeekAsText = date.dayOfWeek().getAsText();
 		String txMonthAsText = date.monthOfYear().getAsText();
@@ -32,19 +32,19 @@ public class LogicalDateFedHolidayFinder extends FedHolidayFinder {
 
 	}
 
-	protected String getRefDayOfMonthAsText(DateTime date) {
+	protected String getRefDayOfMonthAsText(LocalDate date) {
 		return this.monthAsText;
 	}
 
-	protected String getRefDayOfWeekAsText(DateTime date) {
+	protected String getRefDayOfWeekAsText(LocalDate date) {
 		return this.dayOfWeekAsText;
 	}
 
-	protected int getRefWeekOfMonth(DateTime date) {
+	protected int getRefWeekOfMonth(LocalDate date) {
 		return this.weekOfMonth;
 	}
 
-	protected int getWeekOfMonthFrom(DateTime date) {
+	protected int getWeekOfMonthFrom(LocalDate date) {
 		int dayOfMonth = date.getDayOfMonth();
 		int remainder = dayOfMonth % 7;
 		int weekOfMonth = dayOfMonth / 7 + (remainder > 0 ? 1 : 0);

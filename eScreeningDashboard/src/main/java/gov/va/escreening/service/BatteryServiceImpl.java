@@ -11,14 +11,17 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ProgramBatteryRepository;
 import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Sets;
 
 @Transactional
 @Service
@@ -148,9 +151,9 @@ public class BatteryServiceImpl implements BatteryService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<BatteryDto> getBatteryDtoList() {
+	public Set<BatteryDto> getBatteryDtoSet() {
 
-		List<BatteryDto> batteryDtoList = new ArrayList<BatteryDto>();
+		Set<BatteryDto> batteryDtoList = Sets.newTreeSet();
 
 		List<Battery> batteryList = batteryRepository.getBatteryList();
 
@@ -160,9 +163,7 @@ public class BatteryServiceImpl implements BatteryService {
 			batterycDto.setBatteryName(battery.getName());
 			batteryDtoList.add(batterycDto);
 		}
-
 		return batteryDtoList;
-
 	}
 
 	@Override

@@ -8,19 +8,21 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
+import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
@@ -28,7 +30,13 @@ import com.google.common.collect.TreeBasedTable;
 @Service("assessmentVariableService")
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
-	public class TableTypeAvModelBuilder implements AvModelBuilder {
+	@Resource(name = "filterMeasureTypes")
+	Set<Integer> filterMeasureTypes;
+
+	@Resource(type = SurveyRepository.class)
+	SurveyRepository sr;
+
+	public class TableTypeAvModelBuilder implements AvBuilder<Table<String, String, Object>> {
 		final Table<String, String, Object> assessments;
 
 		public TableTypeAvModelBuilder(Table<String, String, Object> assessments) {
@@ -41,15 +49,15 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			String avIdRowKey = String.format("avId_%s", avId);
 			this.assessments.put(avIdRowKey, "id", avId);
 			this.assessments.put(avIdRowKey, "typeId", av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
-			this.assessments.put(avIdRowKey, "description", av.getDescription());
-			this.assessments.put(avIdRowKey, "displayName", av.getDisplayName());
+			this.assessments.put(avIdRowKey, "name", av.getDisplayName());
+			this.assessments.put(avIdRowKey, "displayName", av.getDescription());
 			this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
 			this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
 			this.assessments.put(avIdRowKey, "measureTypeId", m != null ? m.getMeasureType().getMeasureTypeId() : 0);
 		}
 
 		@Override
-		public Object getResult() {
+		public Table<String, String, Object> getResult() {
 			return assessments;
 		}
 
@@ -65,6 +73,13 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			addAv2Table(av, m, ma);
 		}
 
+		@Override
+		public void buildFormula(Survey survey, AssessmentVariable av,
+				Collection<Measure> smList,
+				Collection<AssessmentVariable> avList, boolean ignoreAnswers) {
+
+			handleAvChilren(survey, av, smList, this, avList, ignoreAnswers);
+		}
 	}
 
 	@Resource(type = AssessmentVariableRepository.class)
@@ -90,8 +105,10 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	 * @param m
 	 * @return
 	 */
-	private boolean compareMeasure(AssessmentVariable av, Measure m) {
+	@Override
+	public boolean compareMeasure(AssessmentVariable av, Measure m) {
 		if (av == null) {
+			// ignore formula type, thi scan happen if a formula is pointing to another formula (agreegating)
 			return false;
 		} else if (m.equals(av.getMeasure())) {
 			return true;
@@ -110,7 +127,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	 * @param m
 	 * @return
 	 */
-	private boolean compareMeasureAnswer(AssessmentVariable av, Measure m) {
+	@Override
+	public boolean compareMeasureAnswer(AssessmentVariable av, Measure m) {
 		if (av == null) {
 			return false;
 		} else if (av.getMeasureAnswer() != null && m.equals(av.getMeasureAnswer().getMeasure())) {
@@ -124,22 +142,30 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 
 	@Override
-	public void filterBySurvey(Survey survey, AvModelBuilder avModelBldr,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList) {
+	public void filterBySurvey(Survey survey, AvBuilder avBldr,
+			Collection<Measure> smList, Collection<AssessmentVariable> avList,
+			boolean useFilteredMeasures) {
+		
+		boolean ignoreAnswers=useFilteredMeasures;
+		
 		for (AssessmentVariable av : avList) {
 			int avTypeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 			switch (avTypeId) {
 			case 1:
-				handleMeasureType(av, smList, avModelBldr);
+				Collection<Measure> filteredMeasures = useFilteredMeasures ? filterMeasures(smList, filterMeasureTypes) : smList;
+				handleMeasureType(av, filteredMeasures, avBldr);
 				break;
 			case 2:
-				handleMeasureAnswerType(av, smList, avModelBldr);
+				// if caller has asked to filter the measures (see case 1) then do not return measure answers
+				if (!ignoreAnswers) {
+					handleMeasureAnswerType(av, smList, avBldr);
+				}
 				break;
 			case 3:
-				handleCustomType(av, smList, avModelBldr);
+				handleCustomType(av, smList, avBldr);
 				break;
 			case 4:
-				handleFormulaType(survey, av, smList, avModelBldr, avList);
+				handleFormulaType(survey, av, smList, avBldr, avList, ignoreAnswers);
 				break;
 			default:
 				throw new IllegalStateException(String.format("The AssessmentVariable type of %s is not supported", avTypeId));
@@ -154,13 +180,20 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	@Override
 	@Transactional(readOnly = true)
+	/**
+	 * return assessment variables as perf following rules
+	 * return all Assessments Variables without any filtering except when the AssessmentVariable of type 1 (av_type=1) (Measure). 
+	 * If av_type=1 then only return those which belong to Measure Types of 1, 2, or 3
+	 */
 	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
+
+		// by default have empty set of measures assigned to the requested Survey
+		Collection<Measure> measures = Lists.newArrayList();
+		Survey survey = sr.findOne(surveyId);
 
 		// retrieve a list of all surveys along with their measures
 		Multimap<Survey, Measure> surveyMap = buildSurveyMeasuresMap();
 
-		Collection<Measure> measures = null;
-		Survey survey = null;
 		for (Survey s : surveyMap.keySet()) {
 			if (surveyId == s.getSurveyId()) {
 				measures = surveyMap.get(s);
@@ -168,41 +201,70 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				break;
 			}
 		}
-		Preconditions.checkNotNull(measures, String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
-		Preconditions.checkNotNull(survey, String.format("No Measures were found to be avilable for Survey with an Id of %s", surveyId));
-
-		Collection<AssessmentVariable> avList = avr.findAll();
 
 		Table<String, String, Object> assessments = TreeBasedTable.create();
-		AvModelBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
-		filterBySurvey(survey, avModelBldr, measures, avList);
+
+		Collection<AssessmentVariable> avList = avr.findAll();
+		AvBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
+		filterBySurvey(survey, avModelBldr, measures, avList, true);
 		return (Table<String, String, Object>) avModelBldr.getResult();
 	}
 
+	private Collection<Measure> filterMeasures(Collection<Measure> measures,
+			final Set<Integer> measureTypes) {
+
+		Predicate<Measure> predicate = new Predicate<Measure>() {
+			@Override
+			public boolean apply(Measure input) {
+				return measureTypes.contains(input.getMeasureType().getMeasureTypeId());
+			}
+		};
+		Collection<Measure> result = Collections2.filter(measures, predicate);
+		return result;
+	}
+
 	private void handleCustomType(AssessmentVariable av,
-			Collection<Measure> smList, AvModelBuilder avModelBldr) {
+			Collection<Measure> smList, AvBuilder avModelBldr) {
 		avModelBldr.buildFromMeasureAnswer(av, null, null, null);
 	}
 
 	private void handleFormulaType(Survey survey, AssessmentVariable av,
-			Collection<Measure> smList, AvModelBuilder avModelBldr,
-			Collection<AssessmentVariable> avList) {
+			Collection<Measure> smList, AvBuilder avBldr,
+			Collection<AssessmentVariable> avList, boolean ignoreAnswers) {
+
+		avBldr.buildFormula(survey, av, smList, avList, ignoreAnswers);
+	}
+
+	private void handleAvChilren(Survey survey, AssessmentVariable avFormula,
+			Collection<Measure> smList, AvBuilder avBldr,
+			Collection<AssessmentVariable> avList, boolean ignoreAnswers) {
+
+		List<AssessmentVarChildren> avcList = avFormula.getAssessmentVarChildrenList();
+		
 		for (Measure m : smList) {
-			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-				if (compareMeasure(avc.getVariableChild(), m)) {
-					avModelBldr.buildFromMeasure(av, avc, m);
-				} else if (compareMeasureAnswer(avc.getVariableChild(), m)) {
-					avModelBldr.buildFromMeasureAnswer(av, avc, m, avc.getVariableChild().getMeasureAnswer());
+			for (AssessmentVarChildren avc : avcList) {
+				AssessmentVariable av = avc.getVariableChild();
+
+				boolean isFormulaType = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == 4;
+
+				// no need to compare measure or compare measure answer if the av is a formula type
+				if (!isFormulaType && compareMeasure(av, m)) {
+					avBldr.buildFromMeasure(av, avc, m);
+					handleCustomType(avFormula, smList, avBldr);
+				} else if (!ignoreAnswers && !isFormulaType && compareMeasureAnswer(av, m)) {
+					avBldr.buildFromMeasureAnswer(av, avc, m, avc.getVariableChild().getMeasureAnswer());
+					handleCustomType(avFormula, smList, avBldr);
 				}
 			}
 			if (!m.getChildren().isEmpty()) {
-				filterBySurvey(survey, avModelBldr, m.getChildren(), avList);
+				filterBySurvey(survey, avBldr, m.getChildren(), avList, ignoreAnswers);
 			}
 		}
+
 	}
 
 	private void handleMeasureAnswerType(AssessmentVariable av,
-			Collection<Measure> smList, AvModelBuilder avModelBldr) {
+			Collection<Measure> smList, AvBuilder avModelBldr) {
 		for (Measure m : smList) {
 			if (compareMeasureAnswer(av, m)) {
 				avModelBldr.buildFromMeasureAnswer(av, null, m, av.getMeasureAnswer());
@@ -212,7 +274,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 
 	private void handleMeasureType(AssessmentVariable av,
-			Collection<Measure> smList, AvModelBuilder avModelBldr) {
+			Collection<Measure> smList, AvBuilder avModelBldr) {
 		for (Measure m : smList) {
 			if (compareMeasure(av, m)) {
 				avModelBldr.buildFromMeasure(av, null, m);
@@ -220,5 +282,4 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			}
 		}
 	}
-
 }

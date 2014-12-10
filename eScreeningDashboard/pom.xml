@@ -438,8 +438,7 @@
 					<username>${jdbc.username}</username>
 					<password>${jdbc.password}</password>
 				</configuration>
-
-			   <executions>
+			    <executions>
 					<execution>
 						<id>recreate-db</id>
 						<phase>process-test-resources</phase>
@@ -547,6 +546,46 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-26-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<orderFile>ascending</orderFile>
+							<fileset> 
+								<basedir>src/main/sql/sprint_26</basedir>
+							</fileset>
+                        </configuration>
+                    </execution>	
+					<execution>
+						<id>apply-sprint-27-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<orderFile>ascending</orderFile>
+							<fileset> 
+								<basedir>src/main/sql/sprint_27</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+                        <id>apply-ticket-related-data</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <orderFile>ascending</orderFile>
+                            <fileset> 
+                                <basedir>src/main/sql/ticketRelatedChanges</basedir>
+                            </fileset>
+                        </configuration>
+                    </execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -559,7 +598,7 @@
 							</fileset>
 						</configuration>
 					</execution>
-				</executions>
+				</executions>			
 			</plugin>
 		</plugins>
 	</build>

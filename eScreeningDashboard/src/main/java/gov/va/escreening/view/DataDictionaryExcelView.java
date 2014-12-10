@@ -86,7 +86,7 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 		HSSFRow surveyNameWithDateRow = excelSheet.createRow(row);
 
 		HSSFCell cell = surveyNameWithDateRow.createCell(0);
-		cell.setCellValue(String.format("%s as of %s", surveyName, new LocalDate().toString("dd-MMM-yyyy", Locale.US)));
+		cell.setCellValue(String.format("%s as of %s", surveyName, LocalDate.now().toString("dd-MMM-yyyy", Locale.US)));
 
 		return surveyNameWithDateRow;
 	}

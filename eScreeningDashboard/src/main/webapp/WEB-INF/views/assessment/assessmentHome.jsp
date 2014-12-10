@@ -27,7 +27,11 @@
         <link rel="stylesheet" type="text/css" href="resources/css/checkswitch.css">
          <link rel="stylesheet" type="text/css" href="resources/css/formButtons.css">
          <link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
-         
+
+
+  <script src="resources/js/jquery/jquery-1.10.2.min.js"></script>
+  <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+  <script type="text/javascript" src="resources/js/measures/assessmentHome.js"></script>
 </head>
 <body>
 	<a href="#skip" class="offscreen">Skip to main content</a>
@@ -44,12 +48,10 @@
                     <s:url var="imgUrl"
                             value="/resources/images/assessment_start_screen_capture_logo_01.png" />
                         <img src="${imgUrl}" name="VA HEALTH CARE | Defining Excellence in the 21st Century" title="VA HEALTH CARE | Defining Excellence in the 21st Century" alt="VA HEALTH CARE | Defining Excellence in the 21st Century" />
-                        
-                      <h1>Welcome to VA San Diego Healthcare System!</h1>
-                        <p>We thank you for your service to our country and look forward to assisting in your enrollment for VA healthcare and transition from active duty to Veteran status. </p>
-                        <p>The following eScreening Questionnaire will help your VA healthcare team to assess your needs and provide the best health and wellness options available to you. Please take your time and answer all questions as completely as possible. If you have any questions, please ask for assistance.</p>
-    
-                        
+                      
+                      <div id="assessmentWelcome">
+                        Loading...
+                      </div>
                         <div class="startAssessmentButton">
                             <a href="start" class="startAssessment">
                                 <input id="startAssessmentButton" class="indexButtons inputButton startAssessmentButton" type="button" value="Start Assessment">

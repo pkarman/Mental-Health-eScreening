@@ -10,8 +10,7 @@
 		http://www.springframework.org/schema/util 
         http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-	<context:component-scan
-		base-package="gov.va.escreening" />
+	<context:component-scan base-package="gov.va.escreening" />
 
 	<!-- declare beans -->
 	<bean id="assessmentVariableFactory"
@@ -53,7 +52,8 @@
 	<bean id="editorDelegate" class="gov.va.escreening.delegate.EditorsViewDelegateImpl" />
 	<!-- bean id="vistaDelegate" class="gov.va.escreening.delegate.VistaDelegateImpl"/ -->
 
-	<context:property-placeholder location="classpath:app-settings.properties" system-properties-mode="OVERRIDE" />
+	<context:property-placeholder location="classpath:app-settings.properties"
+		system-properties-mode="OVERRIDE" />
 	<bean id="vistaLinkManagedConnectionFactory"
 		class="gov.va.med.vistalink.adapter.spi.VistaLinkManagedConnectionFactory">
 		<property name="connectorJndiName" value="${vista.connector}" />
@@ -103,5 +103,10 @@
 		<value>Screen for PTSD</value>
 		<value>TBI Screening</value>
 	</util:list>
-	
+
+	<util:set id="filterMeasureTypes" value-type="java.lang.Integer">
+		<value>1</value>
+		<value>2</value>
+		<value>3</value>
+	</util:set>
 </beans>

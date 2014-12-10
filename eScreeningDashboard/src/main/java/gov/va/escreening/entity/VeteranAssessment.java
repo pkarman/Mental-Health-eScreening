@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableMap;
 
 @Entity
 @Table(name = "veteran_assessment")
-@NamedQueries({ @NamedQuery(name = "VeteranAssessment.findAll", query = "SELECT v FROM VeteranAssessment v") })
+@NamedQueries({ @NamedQuery(name = "VeteranAssessment.findAll", query = "SELECT v FROM VeteranAssessment v where dateArchived is null") })
 public class VeteranAssessment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -68,6 +68,10 @@ public class VeteranAssessment implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "veteran_assessment_dashboard_alert", joinColumns = { @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id") }, inverseJoinColumns = { @JoinColumn(name = "dashboard_alert_id", referencedColumnName = "dashboard_alert_id", unique = true) })
 	private Set<DashboardAlert> dashboardAlerts;
+
+	@Column(name = "date_archived")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateArchived;
 
 	@Column(name = "date_completed")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -125,8 +129,8 @@ public class VeteranAssessment implements Serializable {
 	private List<VeteranAssessmentNote> veteranAssessmentNoteList;
 
 	/**
-	 * Since we have state that must be tracked in the VeteranAssessmentSurvey
-	 * we cannot use a set of Survey here (which would have made more sense)
+	 * Since we have state that must be tracked in the VeteranAssessmentSurvey we cannot use a set of Survey here (which
+	 * would have made more sense)
 	 */
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "veteranAssessment")
 	private List<VeteranAssessmentSurvey> veteranAssessmentSurveyList;
@@ -145,9 +149,8 @@ public class VeteranAssessment implements Serializable {
 
 	/**
 	 * @param survey
-	 * @return true if the given survey is contained in this assessment. Will
-	 *         return false if the passed in survey's getSurveyId() method
-	 *         returns null;
+	 * @return true if the given survey is contained in this assessment. Will return false if the passed in survey's
+	 *         getSurveyId() method returns null;
 	 */
 	public boolean containsSurvey(@Nullable Survey survey) {
 		return survey != null && survey.getSurveyId() != null && getSurveyMap().containsKey(survey.getSurveyId());
@@ -199,6 +202,10 @@ public class VeteranAssessment implements Serializable {
 		return dashboardAlerts;
 	}
 
+	public Date getDateArchived() {
+		return dateArchived;
+	}
+
 	public Date getDateCompleted() {
 		return dateCompleted;
 	}
@@ -236,8 +243,7 @@ public class VeteranAssessment implements Serializable {
 	}
 
 	/**
-	 * @return a non-null, immutable map from survey IDs to the corresponding
-	 *         Survey object.
+	 * @return a non-null, immutable map from survey IDs to the corresponding Survey object.
 	 */
 	public ImmutableMap<Integer, Survey> getSurveyMap() {
 		if (surveyMap == null) {
@@ -257,9 +263,8 @@ public class VeteranAssessment implements Serializable {
 	}
 
 	/**
-	 * Used for iterating through the surveys of this assessment. If you need to
-	 * know if a survey exists in this assessment, it is faster to call
-	 * getSurveyMap() and use that.
+	 * Used for iterating through the surveys of this assessment. If you need to know if a survey exists in this
+	 * assessment, it is faster to call getSurveyMap() and use that.
 	 * 
 	 * @return
 	 */
@@ -280,9 +285,8 @@ public class VeteranAssessment implements Serializable {
 	}
 
 	/**
-	 * Please note: If a getter is added for veteranAssessmentSurveyList please
-	 * take into account the fact that surveyMap should be set to null after any
-	 * change of that list. This means that to make this work we would have to
+	 * Please note: If a getter is added for veteranAssessmentSurveyList please take into account the fact that
+	 * surveyMap should be set to null after any change of that list. This means that to make this work we would have to
 	 * return an ImmutableList from it.
 	 */
 	public ImmutableList<VeteranAssessmentSurvey> getVeteranAssessmentSurveyList() {
@@ -326,6 +330,10 @@ public class VeteranAssessment implements Serializable {
 
 	public void setDashboardAlerts(Set<DashboardAlert> dashboardAlerts) {
 		this.dashboardAlerts = dashboardAlerts;
+	}
+
+	public void setDateArchived(Date dateArchived) {
+		this.dateArchived = dateArchived;
 	}
 
 	public void setDateCompleted(Date dateCompleted) {
@@ -373,10 +381,9 @@ public class VeteranAssessment implements Serializable {
 	}
 
 	/**
-	 * This will update the contained List<VeteranAssessmentSurvey> to only
-	 * contain the surveys that are given.<br/>
-	 * If the current list contains a given survey that VeteranAssessmentSurvey
-	 * instance will be used; otherwise a new one is created.<br/>
+	 * This will update the contained List<VeteranAssessmentSurvey> to only contain the surveys that are given.<br/>
+	 * If the current list contains a given survey that VeteranAssessmentSurvey instance will be used; otherwise a new
+	 * one is created.<br/>
 	 * This process is not free so make it count :) <br/>
 	 * 
 	 * @param surveys
@@ -424,10 +431,9 @@ public class VeteranAssessment implements Serializable {
 	}
 
 	/**
-	 * Note: Normally you want to interact with the Surveys not with the
-	 * VeteranAssessmentSurveyList. If you don't need to access fields in the
-	 * join table itself your code will end up being much simpiler if you just
-	 * update the surveys using get/setSurvey methods.
+	 * Note: Normally you want to interact with the Surveys not with the VeteranAssessmentSurveyList. If you don't need
+	 * to access fields in the join table itself your code will end up being much simpiler if you just update the
+	 * surveys using get/setSurvey methods.
 	 */
 	public void setVeteranAssessmentSurveyList(
 			List<VeteranAssessmentSurvey> veteranAssessmentSurveyList) {
@@ -437,6 +443,6 @@ public class VeteranAssessment implements Serializable {
 
 	@Override
 	public String toString() {
-		return "gov.va.escreening.entity.VeteranAssessment[ veteranAssessmentId=" + veteranAssessmentId + " ]";
+		return "[vaId=" + veteranAssessmentId + "]";
 	}
 }
