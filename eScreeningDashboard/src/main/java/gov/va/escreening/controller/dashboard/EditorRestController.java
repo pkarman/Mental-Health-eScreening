@@ -397,27 +397,24 @@ public class EditorRestController {
     public List getSections(@CurrentUser EscreenUser escreenUser) {
         logger.debug("getSections");
 
-        List<SurveySectionInfo> surveySectionInfoList = editorsViewDelegate.getSections();
-
-        return surveySectionInfoList;
+        return editorsViewDelegate.getSections();
     }
 
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Map getSection(
+    public SurveySectionInfo getSection(
             @PathVariable("sectionId") Integer sectionId,
             @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSection");
 
         // Call service class here instead of hard coding it.
-        SurveySectionInfo surveySectionInfo = editorsViewDelegate.getSection(sectionId);
 
-        return createSectionResponse(surveySectionInfo);
+        return editorsViewDelegate.getSection(sectionId);
     }
 
     @RequestMapping(value = "/services/surveySections", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public Map addSection(
+    public SurveySectionInfo addSection(
             @RequestBody SurveySectionInfo surveySectionInfo,
             @CurrentUser EscreenUser escreenUser) {
         logger.debug("addSection");
@@ -446,12 +443,12 @@ public class EditorRestController {
             throw new AssessmentEngineDataValidationException(errorResponse);
         }
 
-        return createSectionResponse(surveySectionInfo);
+        return surveySectionInfo;
     }
 
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = {RequestMethod.PUT}, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public Map updateSection(
+	public SurveySectionInfo updateSection(
 			@PathVariable("sectionId") Integer sectionId,
 			@RequestBody SurveySectionInfo surveySectionInfo,
 			@CurrentUser EscreenUser escreenUser) {
@@ -477,50 +474,22 @@ public class EditorRestController {
             updatedSurveySectionInfo = editorsViewDelegate.updateSection(surveySectionInfo);
         }
 
-        return createSectionResponse(updatedSurveySectionInfo);
+        return updatedSurveySectionInfo;
 	}
 
 	@RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Map deleteSection(
+	public int deleteSection(
 			@PathVariable("sectionId") Integer sectionId,
 			@CurrentUser EscreenUser escreenUser) {
 		editorsViewDelegate.deleteSection(sectionId);
-        return createDeleteSectionSuccessfulResponse();
-	}
-
-	private Map asMap(List<SurveySectionInfo> ssiLst) {
-
-		Map status = new HashMap();
-		status.put("message", String.format("Found %s survey sections", ssiLst!=null?ssiLst.size():0));
-		status.put("status", ssiLst != null && !ssiLst.isEmpty() ? "succeeded" : "failed");
-
-		Map surveySectionItems = new HashMap();
-		surveySectionItems.put("surveySections", ssiLst);
-
-		Map responseMap = new HashMap();
-		responseMap.put("status", status);
-		responseMap.put("payload", surveySectionItems);
-
-		return responseMap;
+        return sectionId;
 	}
 
     private Map createRequestFailureResponse(String message) {
         Map status = new HashMap();
         status.put("message", message);
         status.put("status", "failed");
-
-        Map responseMap = new HashMap();
-        responseMap.put("status", status);
-        responseMap.put("payload", new HashMap());
-
-        return responseMap;
-    }
-
-    private Map createDeleteSectionSuccessfulResponse() {
-        Map status = new HashMap();
-        status.put("message", "Section deleted successfully.");
-        status.put("status", "succeeded");
 
         Map responseMap = new HashMap();
         responseMap.put("status", status);
@@ -541,21 +510,6 @@ public class EditorRestController {
         return responseMap;
     }
 
-
-    private Map createSectionResponse(SurveySectionInfo surveySection) {
-        Map status = new HashMap();
-        status.put("message", (surveySection != null && surveySection.getSurveySectionId() != null)? "Section created successfully." : "There was a problem processing your request.  If problem continues to exist, please contact the system administrator.");
-        status.put("status", (surveySection != null && surveySection.getSurveySectionId() != null)? "succeeded" : "failed");
-
-        Map surveySectionItems = new HashMap(           );
-        surveySectionItems.put("surveySection", surveySection);
-
-        Map responseMap = new HashMap();
-        responseMap.put("status", status);
-        responseMap.put("payload", surveySectionItems);
-
-        return responseMap;
-    }
 
     private Map createBatteryResponse(BatteryInfo batteryInfo) {
         Map status = new HashMap();

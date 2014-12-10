@@ -4,52 +4,57 @@
             <h1>Manage Sections</h1>
         </div>
         <div class="col-md-6">
-            <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right" type="button">Add Section</button>
+            <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right"
+                    type="button">Add Section
+            </button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+            <alert ng-repeat="msg in msgs" type="msg.type" close="closeAlert($index)">{{msg.text}}</alert>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-          <div class="panel-group">
-          <div ng-repeat="ssRow in ssRows" class="panel">
-              <accordion close-others="false">
-                  <accordion-group>
-                    <accordion-heading>
-                        <h4>{{ssRow.name}}
-                          <i class="btn btn-sm btn-grid glyphicon glyphicon-trash pull-right" ng-click="delete($index)" title="Delete"></i>
-                          <i class="btn btn-sm btn-grid glyphicon glyphicon-save pull-right" ng-click="ssRow.id!=null?update(ssRow):add(ssRow)"></i>
-                        </h4>
-                    </accordion-heading>                      
-                    <div class="row">
-                      <div class="col-md-6 form-group">
-                          <label>Name:</label>
-                          <input type="text" ng-model="ssRow.name" class="form-control">
-                      </div>
-                      <div class="col-md-6 form-group">
-                          <label>Description:</label>
-                          <input type="text" ng-model="ssRow.description" class="form-control">
-                      </div>
-                    </div>
-      
-                      <!-- and here is a nested Accordion to accommodate surveys in this section-->
+            <div class="panel-group">
+                <div ng-repeat="ssRow in ssRows" class="panel">
+                    <accordion close-others="false">
                         <accordion-group>
                             <accordion-heading>
-                                <h5>Sections ({{ssRow.surveys.length}})</h5>
+                                <h4>{{ssRow.name}}
+                                    <i class="btn btn-sm btn-grid glyphicon glyphicon-trash pull-right"
+                                       ng-click="delete($index)" title="Delete"></i>
+                                    <i class="btn btn-sm btn-grid glyphicon glyphicon-save pull-right"
+                                       ng-click="ssRow.id!=null?update($index):add($index)"></i>
+                                </h4>
                             </accordion-heading>
-                            <ul id="survey_list" class="">
-                                <li ng-repeat="sRow in ssRow.surveys">
-                                    <span class="large-12">{{ sRow.name }}</span>
-                                </li>
-                            </ul>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label>Name:</label>
+                                    <input type="text" ng-model="ssRow.name" class="form-control" placeholder="Name...">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Description:</label>
+                                    <input type="text" ng-model="ssRow.description" class="form-control"
+                                           placeholder="Description...">
+                                </div>
+                            </div>
+
+                            <!-- and here is a nested Accordion to accommodate surveys in this section-->
+                            <accordion-group>
+                                <accordion-heading>
+                                    <h5>Sections ({{ssRow.surveys.length}})</h5>
+                                </accordion-heading>
+                                <ul id="survey_list" class="">
+                                    <li ng-repeat="sRow in ssRow.surveys">
+                                        <span class="large-12">{{ sRow.name }}</span>
+                                    </li>
+                                </ul>
+                            </accordion-group>
                         </accordion-group>
-                  </accordion-group>
-              </accordion>
-          </div>
-          </div>
-      </div>
+                    </accordion>
+                </div>
+            </div>
+        </div>
     </div>
 </div><br><br>

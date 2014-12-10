@@ -232,7 +232,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 
                 log("Allowed to drop here");
                 return true;
-            },
+            }
     };
     
     //this could use $watch but this might be overkill for large templates since there are 
