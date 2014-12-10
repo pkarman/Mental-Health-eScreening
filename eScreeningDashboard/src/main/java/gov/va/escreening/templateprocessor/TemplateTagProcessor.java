@@ -4,11 +4,15 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.controller.DashboardHomeController;
 import static gov.va.escreening.templateprocessor.TemplateTags.*;
 
 public class TemplateTagProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(DashboardHomeController.class);
 	
 	public static String resolveClinicalNoteTags(String noteText, ViewType viewType) {
 		switch(viewType) {
@@ -119,7 +123,9 @@ public class TemplateTagProcessor {
         noteText = StringEscapeUtils.unescapeHtml4(noteText);
         
         //replace NO-BREAK SPACE (U+00A0) with regular space (U+0020)
+        logger.debug("\n\n******** Before space replace *******/n{}", noteText);
         noteText = noteText.replaceAll("\\u00A0", " ");
+        logger.debug("\n\n******** After space replace *******/n{}", noteText);
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();
