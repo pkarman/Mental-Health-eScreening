@@ -718,11 +718,11 @@ $(document).ready(function() {
 		pointer = svg.append('rect')
         .attr('fill', pointerColor)
         .attr('width', pointerWidth)
-        .attr('height',pointerHeight)
+        .attr('height', pointerHeight)
         .attr('x', xPos - (pointerWidth/2))
         .attr('y', -40)
         .attr('class', 'pointerBlock');
-
+    
 
 	    svg.append('rect')
 	        .attr('fill', 'black')

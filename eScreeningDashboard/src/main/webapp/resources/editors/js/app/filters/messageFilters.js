@@ -14,13 +14,13 @@ angular.module('EscreeningDashboardApp.filters.messages', []).filter('uniqueMess
 	    if (angular.isArray(messages)) {
 		    filtered = messages.filter(function (message, index, messageArray) {
 			    var existingMessages = [], filterResults = false;
-    
+
 			    if (index > 0) {
 				    existingMessages = messageArray.splice(0, index);
 			    } else {
 				    filterResults = true;
 			    }
-    
+
 			    if (!filterResults) {
 				    filterResults = existingMessages.some(function (existingMessage) {
 					    if (Object.isDefined(existingMessage) && Object.isDefined(message)) {
@@ -30,12 +30,11 @@ angular.module('EscreeningDashboardApp.filters.messages', []).filter('uniqueMess
 					    }
 				    });
 			    }
-    
+
 			    return filterResults;
 		    });
         }
-            
+
         return filtered;
-        
     };
 });
