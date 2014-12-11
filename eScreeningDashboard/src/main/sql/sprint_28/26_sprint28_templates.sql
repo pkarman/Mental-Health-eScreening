@@ -715,3 +715,185 @@ INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10715
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10716, 100);
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10717, 100);
 
+
+-- The following are for for Ticket 744
+
+-- Veteran summary Homelessness
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#-- Template start --> 
+${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END} 
+${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} 
+${LINE_BREAK} 
+<b>Results:</b>${NBSP}
+<#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)> 
+	<#if isSelectedAnswer(var2000,var761)> 
+		unstable housing/at risk 
+		${LINE_BREAK} 
+		<b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. 
+	<#elseif isSelectedAnswer(var2000,var762)>  
+		stable housing 
+	<#else>
+		declined
+	</#if>  
+<#else>
+	declined
+</#if>
+${MODULE_END}' 
+where template_id=301;
+
+DELETE FROM variable_template where template_id=301;
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (2000, 301);
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (761, 301);
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (762, 301);
+
+-- Veteran summary TBI 
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#function calcScore obj> 
+	<#assign result = 0> 
+	<#if (obj.children)?? && ((obj.children)?size > 0)> 
+		<#list obj.children as c> 
+			<#if c.overrideText != "none"> 
+				<#assign result = result + 1> 
+				<#break> 
+		</#if> 
+	</#list> 
+	</#if> 
+	<#return result> 
+</#function>  
+<#assign score = 0>  
+<#assign isQ2Complete = false> 
+<#assign isQ2None = false> 
+<#if (var3400.children)?? && ((var3400.children)?size > 0)> 
+	<#assign isQ2Complete = true> 
+	<#if isSelectedAnswer(var3400, var2016)!false> 
+		<#assign isQ2None = true> 
+	<#else> 
+		<#assign score = score + calcScore(var3400)> 
+	</#if> 
+</#if>  
+<#assign isQ3Complete = false> 
+<#assign isQ3None = false> 
+<#if isQ2Complete> 
+	<#if isQ2None> 
+		<#assign isQ3Complete = true> 
+	<#else> 
+		<#if (var3410.children)?? && ((var3410.children)?size > 0) > 
+			<#if isSelectedAnswer(var3410, var2022)!false> 
+				<#assign isQ3None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3410)> 
+			</#if> 
+			<#assign isQ3Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ4Complete = false> 
+<#assign isQ4None = false> 
+<#if isQ3Complete> 
+	<#if isQ2None || isQ3None> 
+		<#assign isQ4Complete = true> 
+	<#else> 
+		<#if (var3420.children)?? && ((var3420.children)?size > 0) > 
+			<#if isSelectedAnswer(var3420, var2030)!false> 
+				<#assign isQ4None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3420)> 
+			</#if> 
+			<#assign isQ4Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isQ5Complete = false> 
+<#assign isQ5None = false> 
+<#if isQ4Complete> 
+	<#if isQ2None || isQ3None || isQ4None> 
+		<#assign isQ5Complete = true> 
+	<#else> 
+		<#if (var3430.children)?? && ((var3430.children)?size > 0) > 
+			<#if isSelectedAnswer(var3430, var2037)!false> 
+				<#assign isQ5None = true> 
+			<#else> 
+				<#assign score = score + calcScore(var3430)> 
+			</#if> 
+			<#assign isQ5Complete = true> 
+		</#if> 
+	</#if> 
+</#if>  
+<#assign isComplete = false> 
+<#if isQ2Complete && isQ3Complete && isQ4Complete && isQ5Complete> 
+	<#assign isComplete = true> 
+</#if>  
+${MODULE_TITLE_START} 
+	Traumatic Brain Injury (TBI) 
+${MODULE_TITLE_END} 
+
+${MODULE_START}  
+	<#assign showRec = false> <#assign tbi_consult_text = ""> 
+	<#if isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3442)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have requested further assessment"> 
+	<#elseif isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3441)> 
+		<#assign showRec = true> 
+		<#assign tbi_consult_text = "You have declined further assessment">
+	</#if> 
+	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI. ${LINE_BREAK} 
+	${LINE_BREAK} 
+	<#if isComplete> 
+		<b>Results:</b>${NBSP} 
+		<#if (score >= 0) && (score <= 3)> 
+			negative screen 
+		<#elseif (score >= 4 )> 
+			at risk 
+		</#if> 
+	</#if>  
+	<#if isComplete && showRec> 
+		${LINE_BREAK} 
+		<b>Recommendation:</b> 
+			${tbi_consult_text}. 
+	</#if> 
+${MODULE_END} ' 
+where template_id=307;
+
+
+-- VETERAN SUMMARY -  My Pain Score  (Basic Pain)
+UPDATE template set template_file = ' 
+<#include "clinicalnotefunctions"> 
+<#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
+    ${MODULE_TITLE_START}
+    Pain 
+    ${MODULE_TITLE_END}
+    ${GRAPH_SECTION_START}
+
+        ${GRAPH_BODY_START}
+          {
+            "type": "stacked",
+            "title": "My Pain Score",
+            "footer": "",
+            "data": {
+                "graphStart": 0,
+                "ticks": [0,1,4,6,8,10],
+                "intervals": {
+                    "None": 0,
+                    "Mild": 3,
+                    "Moderate": 5,
+                    "Severe": 7,
+                    "Very Severe":10
+                },
+                "score": ${getSelectOneDisplayText(var2300)}
+            }
+          }
+        ${GRAPH_BODY_END}
+    ${GRAPH_SECTION_END}
+
+    ${MODULE_START}
+    Pain can slow healing and stop you from being active. Untreated pain can harm your sleep, outlook, and ability to do things. ${LINE_BREAK}
+    <b>Recommendation:</b>${NBSP} 
+    <#if getSelectOneDisplayText(var2300)?number < 4 >
+        Seek medical attention if your pain suddenly increases or changes.
+    <#else>
+        Tell your clinician if medications aren\'t reducing your pain, or if the pain suddenly increases or changes, and ask for help with managing your pain. 
+    </#if>
+    ${MODULE_END}   
+
+</#if>
+' where template_id=309;
