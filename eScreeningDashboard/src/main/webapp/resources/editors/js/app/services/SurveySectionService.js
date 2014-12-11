@@ -7,25 +7,25 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
             config.setRequestSuffix('.json');
         });
 
-        var ssProxy = restAngular.all('surveySections');
+        var proxy = restAngular.all('surveySections');
 
         // service to perform CRUD
         var service = {
-            createSS: function (ss) {
-                return ssProxy.post(ss);
+            create: function (ss) {
+                return proxy.post(ss);
             },
-            readAllSS: function () {
-                return ssProxy.getList();
+            readAll: function () {
+                return proxy.getList();
             },
-            readOneSS: function (ss) {
-                return ssProxy.get(ss.id);
+            readOne: function (ss) {
+                return proxy.get(ss.id);
             },
-            updateSS: function (ss) {
+            update: function (ss) {
                 return ss.put();
             },
-            deleteSS: function (ss) {
+            delete: function (ss) {
                 return ss.remove();
-            },
+            }
         };
         return service;
 

@@ -30,7 +30,7 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
         $scope.addSuccessMsg(true, 'Please click on header \'New Survey Section\' and enter the name and description of new survey section');
     };
 
-    SurveySectionService.readAllSS()
+    SurveySectionService.readAll()
         .then(function (ssRows) {
             $scope.ssRows = ssRows;
             $scope.addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
@@ -40,7 +40,6 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
 
 
     $scope.delete = function (index) {
-
         // reusable inner function
         function applyDeleteAction(index) {
             $scope.ssRows.splice(index, 1);
@@ -59,7 +58,7 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
         if (section.surveys !== undefined && section.surveys.length > 0) {
             $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' surveys and cannot be removed');
         } else {
-            SurveySectionService.deleteSS(section)
+            SurveySectionService.delete(section)
                 .then(function () {
                     applyDeleteAction(index);
                 }, function error(reason) {
@@ -68,15 +67,15 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
         }
     }
 
-    function freshSS(index, data) {
+    function syncSS(index, data) {
         $scope.ssRows[index] = data;
     }
 
     $scope.update = function (index) {
         var section = $scope.ssRows[index];
-        SurveySectionService.updateSS(section)
+        SurveySectionService.update(section)
             .then(function (data) {
-                freshSS(index, data);
+                syncSS(index, data);
                 $scope.addSuccessMsg(true, 'Survey Section ' + data.name + ' modified successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
@@ -85,9 +84,9 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
 
     $scope.add = function (index) {
         var section = $scope.ssRows[index];
-        SurveySectionService.createSS(section)
+        SurveySectionService.create(section)
             .then(function (data) {
-                freshSS(index, data);
+                syncSS(index, data);
                 $scope.addSuccessMsg(true, 'Survey Section ' + data.name + ' added successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
