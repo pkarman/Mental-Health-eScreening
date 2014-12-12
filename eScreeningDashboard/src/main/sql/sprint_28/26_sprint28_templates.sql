@@ -58,6 +58,11 @@ ${MODULE_START}
 		<#assign fragments = fragments + [housingText] >
 	</#if>
 	
+	<#if hasValue(var260) && !isSelectedAnswer(var260, var261)>       
+		<#assign financialInfoText = "Financial (specifically, " + getSelectMultiDisplayText(var260) + ")">
+		<#assign fragments = fragments + [financialInfoText] >
+	</#if>
+	
 	<#if var244?? && hasValue(var244) && var244.value == "true">
 		<#assign fragments = fragments + [var244.otherValue]>
 	</#if>
@@ -114,14 +119,20 @@ ${MODULE_START}
 	 
 	<#-- The Veteran endorsed being bothered a lot by the following health symptoms over the past four weeks: hearing loss, tinnitus -->
 	<#assign fragments = []> 
-    <#if (getListScore([var930, var940]) > 1)>
-		<#assign fragments = fragments + ["hearing"] >
+	<#if (getScore(var930) > 1)>
+		<#assign fragments = fragments + ["hearing loss"]>
+	</#if>
+    <#if (getScore(var940) > 1)>
+		<#assign fragments = fragments + ["tinnitus (ringing in the ears)"] >
 	</#if>
     <#if (getScore(var950) > 1)>
-		<#assign fragments = fragments + ["vision"]> 
+		<#assign fragments = fragments + ["problem with visions"]> 
 	</#if>
-	<#if (getListScore([var960, var970]) > 1)>
-		<#assign fragments = fragments + ["weight"] >
+	<#if (getScore(var960) > 1)>
+		<#assign fragments = fragments + ["weight gain"] >
+	</#if>
+	<#if (getScore(var970) > 1)>
+		<#assign fragments = fragments + ["weight loss"] >
 	</#if>
 	<#if (getScore(var980) > 1)>
 		<#assign fragments = fragments + ["forgetfulness"] >
@@ -379,7 +390,7 @@ ${MODULE_START}
 		  </#if>
 	    </#if>
 
-		<#if (var10714?? && var10714.value=="0" && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022.value=="false")
+		<#if (!(var10714??)) || (var10714?? && var10714.value=="0" && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022.value=="false")
 		||(var10716?? && var10716.value=="0" && var2030.value=="false") || (var10717?? && var10717.value=="0" && var2037.value=="false") >
 			<#assign status = empty>
 			<#assign score = empty>
@@ -897,3 +908,38 @@ UPDATE template set template_file = '
 
 </#if>
 ' where template_id=309;
+
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+A/V HALLUCINATIONS:
+${MODULE_TITLE_END}
+${MODULE_START}
+
+	<#if (var1350.children)?? && (var1350.children?size > 0) || ((var1360.children)?? && (var1360.children?size > 0))>  		
+		The Veteran ${NBSP}
+		<#if (var1350.children)?? && (var1350.children?size > 0)>
+			<#assign Q1_Score = getScore(var1350)>
+			<#if (Q1_Score > 1) >
+				reported hearing things other people can\'t hear
+			<#else>
+				denied audio hallucinations
+			</#if>
+		</#if>
+		
+		<#if ((var1360.children)?? && (var1360.children?size > 0))>
+		  <#assign Q2_Score = getScore(var1360)>
+		  , The Veteran ${NBSP}		
+			<#if (Q2_Score > 1) >
+				reported seeing things or having visions other people can\'t see"
+			<#else>
+				denied visual hallucinations
+			</#if>
+		</#if>
+		.
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 29;
