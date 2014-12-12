@@ -82,14 +82,13 @@ angular.module('Editors')
 	                abstract:true,
 	                url:'/batteries',
 	                template:'<div class="row">' +
-	                            '   <div class="col-md-12" ui-view></div>'+
+	                            '   <div class="col-md-12" ui-view style="min-height:650px;"></div>'+
 	                           '</div>',
 	                resolve:{
 	                	batteries:function($rootScope,$q,BatteryService){
 	                		var deferred = $q.defer();
 	                		console.log('VIEW STATE Battery:: Resolve Batteries');
 	                		BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
-	                			console.log('Batteries:: ' + existingBatteries);
 	                			deferred.resolve(existingBatteries);
 	                		},function(responseError){
 	                			$rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));

@@ -334,9 +334,4 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             //$scope.sortingLog.push('Stop: ' + logEntry);
         }
     };
-<<<<<<< Temporary merge branch 1
-    
 }]);
-=======
-}]);
->>>>>>> Temporary merge branch 2
