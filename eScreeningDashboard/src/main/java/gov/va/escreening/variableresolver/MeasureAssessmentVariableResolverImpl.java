@@ -251,7 +251,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 				break; // found what we were looking for
 			}
 		}
-		
+
 		return questionVariableDto;
 	}
 

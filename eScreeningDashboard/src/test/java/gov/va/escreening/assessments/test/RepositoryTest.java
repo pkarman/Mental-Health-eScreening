@@ -10,10 +10,12 @@ import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.MeasureValidation;
+import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
+import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
@@ -46,6 +48,9 @@ public class RepositoryTest {
 	SurveyPageRepository surveyPageRepo;
 
 	@Resource
+    SurveyRepository surveyRepo;
+    
+    @Resource
 	SurveyMeasureResponseRepository smrRepo;
 
 	@Resource
@@ -199,6 +204,18 @@ public class RepositoryTest {
 	}
 
 	@Test
+    public void testSurveyBatteryTemplate()
+    {
+    	List<Survey> surveys = surveyRepo.findByTemplateId(25);
+    	assertEquals(1, surveys.size());
+    	assertEquals(24, surveys.get(0).getSurveyId().intValue());
+    	
+    	List<Battery> batteries = batteryRepo.findByTemplateId(1);
+    	assertEquals(1, batteries.size());
+    	
+    }
+    
+    @Test
 	public void testSS() {
 		List a = ss.getSurveyPages(2);
 		assertEquals(a.size(), 3);

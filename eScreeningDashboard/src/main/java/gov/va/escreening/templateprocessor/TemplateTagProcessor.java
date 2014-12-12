@@ -104,8 +104,9 @@ public class TemplateTagProcessor {
         
         noteText = textEmptyReplace.matcher(noteText).replaceAll("");
         
-        //replacing start of paragraph with new line
-        noteText = noteText.replaceAll("<\\s*p[^>]*>", "\n");
+        //replacing end of paragraph with new line (this can have a '\n' optionally before the end of the paragraph
+        //but it should take the \n and the </p> and turn them into *one* new line)
+        noteText = noteText.replaceAll("\\s*<\\s*/\\s*p\\s*>", "\n");
 
         //remove line feeds (normally inserted by copy and paste from Word
         noteText = noteText.replaceAll("&#[(xa)(10)(x9)(9)]+;", "");

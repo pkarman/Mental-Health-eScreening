@@ -56,7 +56,7 @@ public class Template implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "templateId", orphanRemoval=true)
     private List<VariableTemplate> variableTemplateList;
     @JoinColumn(name = "template_type_id", referencedColumnName = "template_type_id")
     @ManyToOne(optional = false)

@@ -27,6 +27,19 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             if(Object.isNumber(selectedSurveyId) && Object.isArray(surveyPages) && surveyPages.length > 0) {
                 SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function (response) {
                     if (Object.isDefined(response)) {
+                        angular.forEach(response.getPayload().surveyPages, function(surveyPage, index) {
+                            var uiPage = surveyPages[index];
+
+                            angular.forEach(surveyPage.questions, function(question, index) {
+                                var uiQuestion = uiPage.questions[index];
+
+                                // Update the question in the ui with the id from the server
+                                if(!uiQuestion.id || uiQuestion.id === -1) {
+                                    uiQuestion.id = question.id;
+                                }
+                            });
+
+                        });
 	                    if (angular.isFunction($rootScope.addMessage)) {
 		                    if (response.isSuccessful()) {
 			                    $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
@@ -105,6 +118,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
             return selectedMenuOptionIndex;
         };
+        surveyUIObject = getSurveyUIObject();
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
@@ -320,4 +334,9 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             //$scope.sortingLog.push('Stop: ' + logEntry);
         }
     };
+<<<<<<< Temporary merge branch 1
+    
 }]);
+=======
+}]);
+>>>>>>> Temporary merge branch 2

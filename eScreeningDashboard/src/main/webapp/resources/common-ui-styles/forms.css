@@ -218,7 +218,7 @@ legend span{
 	background:linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
 	background-color:#468ccf;
-	behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+	behavior:url(../css/PIE_uncompressed.htc);
 }.anchorButton:active{
 	position:relative;
 	top:1px;
@@ -297,7 +297,7 @@ legend span{
   box-shadow:6px 5px 9px -9px hsla(0, 0%, 0%, 1);
   -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
   filter: progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
-  behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+  behavior:url(../css/PIE_uncompressed.htc);
 }
 .arrow{
   width: 70px;
@@ -328,7 +328,7 @@ legend span{
   filter:progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
   -ms-transform:rotate(45deg);
   tranform:rotate(45deg);
-  behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+  behavior:url(../css/PIE_uncompressed.htc);
 }
 .arrow.top:after{
   bottom: -20px;
