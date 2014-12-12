@@ -155,15 +155,22 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			public void buildFromMeasureAnswer(
 					AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
-				surveyFormulae.add(buildXportNameFromMeasureAnswer(avWithFormula));
-				avUsed.add(avWithFormula.getDisplayName());
+				addSurveyFormula(avWithFormula, buildXportNameFromMeasureAnswer(avWithFormula));
+
 			}
 
 			@Override
 			public void buildFromMeasure(AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m) {
-				surveyFormulae.add(buildXportNameFromMeasure(avWithFormula));
-				avUsed.add(avWithFormula.getDisplayName());
+				addSurveyFormula(avWithFormula, buildXportNameFromMeasure(avWithFormula));
+			}
+
+			private void addSurveyFormula(AssessmentVariable avWithFormula, String formula) {
+				// each formula is unique and can only be used only once across all surveys.
+				// If it is already used, then do not try to add it again
+				if (avUsed.add(avWithFormula.getDisplayName())) {
+					surveyFormulae.add(formula);
+				}
 			}
 
 			@Override
