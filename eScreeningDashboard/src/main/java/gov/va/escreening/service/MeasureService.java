@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureType;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface MeasureService {
 	 * @return
 	 */
 	List<Measure> getMeasuresBySurvey(Integer surveyId);
+
+	List<MeasureType> loadAllMeasureTypes();
 }
