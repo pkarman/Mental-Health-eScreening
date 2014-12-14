@@ -1,5 +1,6 @@
 Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'SurveySectionService', function ($timeout, $scope, $state, SurveySectionService) {
     $scope.msgs = [];
+    $scope.surveys = {selected: null};
 
     $scope.addSuccessMsg = function (reset, reason) {
         addMsg(reset, 'success', reason);
@@ -27,16 +28,18 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
 
     $scope.addSection = function () {
         $scope.ssRows.unshift({id: null, name: 'New Survey Section', description: '', surveys: []});
-        $scope.addSuccessMsg(true, 'Please click on header \'New Survey Section\' and enter the name and description of new survey section');
+        $scope.addSuccessMsg(true, 'Please enter the name and description of new survey section');
     };
 
-    SurveySectionService.readAll()
-        .then(function (ssRows) {
-            $scope.ssRows = ssRows;
-            $scope.addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
-        }, function error(reason) {
-            $scope.addDangerMsg(true, reason);
-        });
+    $scope.refresh = function () {
+        SurveySectionService.readAll()
+            .then(function (ssRows) {
+                $scope.ssRows = ssRows;
+                $scope.addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
+            }, function error(reason) {
+                $scope.addDangerMsg(true, reason);
+            });
+    };
 
 
     $scope.delete = function (index) {
@@ -48,16 +51,13 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
 
         var section = $scope.ssRows[index];
 
-        // if user is deleting a newly created section (not previously returned from db)
-        if (section.id == null) {
-            applyDeleteAction(index);
-            return;
-        }
-
-        // user is trying to delete data from database
         if (section.surveys !== undefined && section.surveys.length > 0) {
             $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' surveys and cannot be removed');
-        } else {
+        } else if (section.id == null) { // delete data in memory (not committed yet)
+            // if user is deleting a newly created section (not previously returned from db)
+            applyDeleteAction(index);
+            return;
+        } else {         // user is trying to delete data from database
             SurveySectionService.delete(section)
                 .then(function () {
                     applyDeleteAction(index);
@@ -71,25 +71,46 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
         $scope.ssRows[index] = data;
     }
 
-    $scope.update = function (index) {
-        var section = $scope.ssRows[index];
+    $scope.update = function (section) {
         SurveySectionService.update(section)
             .then(function (data) {
-                syncSS(index, data);
-                $scope.addSuccessMsg(true, 'Survey Section ' + data.name + ' modified successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
             });
     }
 
-    $scope.add = function (index) {
-        var section = $scope.ssRows[index];
+    $scope.add = function (section) {
         SurveySectionService.create(section)
             .then(function (data) {
-                syncSS(index, data);
-                $scope.addSuccessMsg(true, 'Survey Section ' + data.name + ' added successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
             });
     }
+
+    $scope.saveAll = function () {
+        // split ssRows in two groups, to be added (new) and to be updated
+        // (already present in the db and user wishes to make some changes)
+        var groupBy = _.groupBy($scope.ssRows, function (ss) {
+            return ss.id === null;
+        });
+        var createRows = groupBy.true;
+        var updateRows = groupBy.false;
+
+        // send all newly entered data for adding
+        _.forEach(createRows, function (ss) {
+            $scope.add(ss)
+        });
+
+        // send all updated data for editing
+        _.forEach(updateRows, function (ss) {
+            $scope.update(ss)
+        });
+
+        //refresh the view
+        $scope.refresh();
+    }
+
+    //refresh the view on entry
+    $scope.refresh();
+
 }]);

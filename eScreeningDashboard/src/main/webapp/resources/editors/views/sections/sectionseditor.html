@@ -4,8 +4,11 @@
             <h1>Manage Sections</h1>
         </div>
         <div class="col-md-6">
-            <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right"
+            <button ng-click="addSection()" ng-disabled="false" class="btn btn-primary h1_button pull-right"
                     type="button">Add Section
+            </button>
+            <button ng-click="saveAll()" ng-disabled="false" class="btn btn-warning h1_button pull-right"
+                    type="button">Save All
             </button>
         </div>
     </div>
@@ -24,8 +27,10 @@
                                 <h4>{{ssRow.name}}
                                     <i class="btn btn-sm btn-grid glyphicon glyphicon-trash pull-right"
                                        ng-click="delete($index)" title="Delete"></i>
+                                    <!--
                                     <i class="btn btn-sm btn-grid glyphicon glyphicon-save pull-right"
                                        ng-click="ssRow.id!=null?update($index):add($index)"></i>
+                                    -->
                                 </h4>
                             </accordion-heading>
                             <div class="row">
@@ -43,13 +48,17 @@
                             <!-- and here is a nested Accordion to accommodate surveys in this section-->
                             <accordion-group>
                                 <accordion-heading>
-                                    <h5>Sections ({{ssRow.surveys.length}})</h5>
+                                    <h5>Number of Survey(s) in this section ({{ssRow.surveys.length}})</h5>
                                 </accordion-heading>
-                                <ul id="survey_list" class="">
-                                    <li ng-repeat="sRow in ssRow.surveys">
-                                        <span class="large-12">{{ sRow.name }}</span>
-                                    </li>
-                                </ul>
+                                <!-- start -->
+                                <div class="simpleDemo col-md-8">
+                                    <div class="row">
+                                        <div class="panel panel-info">
+                                            <div class="panel-body" ng-include="'resources/editors/views/sections/section_surveys.html'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- finish -->
                             </accordion-group>
                         </accordion-group>
                     </accordion>

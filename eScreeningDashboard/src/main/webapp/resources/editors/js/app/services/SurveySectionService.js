@@ -1,5 +1,5 @@
 angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
-    .factory('SurveySectionService', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+    .factory('SurveySectionService', ['Restangular', function (Restangular) {
         "use strict";
 
         var restAngular = Restangular.withConfig(function (config) {
@@ -16,9 +16,6 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
             },
             readAll: function () {
                 return proxy.getList();
-            },
-            readOne: function (ss) {
-                return proxy.get(ss.id);
             },
             update: function (ss) {
                 return ss.put();
