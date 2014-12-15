@@ -591,7 +591,6 @@ $(document).ready(function() {
     	  
 		// Load Objects
 		var graphparams = graphObj.data;
-		//graphStart is never used
 		var graphStart   = graphparams.graphStart;
 		var ticks        = graphparams.ticks;
 		
@@ -600,12 +599,13 @@ $(document).ready(function() {
 		var scoresInterval;
 		var lastInterval = graphStart;
 		$.each(graphparams.intervals, function(name, intervalEnd){
-		     legends.push(name);
-		     d3DataSet.push([{x:"", y:intervalEnd}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
-		     if(graphparams.score > lastInterval && graphparams.score <= intervalEnd){
-		         scoresInterval = name;
-		     }
-		     lastInterval = intervalEnd;
+			legends.push(name);
+			d3DataSet.push([{x:"", y:intervalEnd}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
+			if((scoresInterval == null && graphparams.score >= graphparams.graphStart)
+					|| (graphparams.score > lastInterval && graphparams.score <= intervalEnd)){
+				scoresInterval = name;
+		    }
+			lastInterval = intervalEnd;
 		}); 
 		
 		
