@@ -7,7 +7,7 @@
             <button ng-click="addSection()" ng-disabled="false" class="btn btn-primary h1_button pull-right"
                     type="button">Add Section
             </button>
-            <button ng-click="saveAll()" ng-disabled="false" class="btn btn-warning h1_button pull-right"
+            <button ng-click="saveAll(true)" ng-disabled="false" class="btn btn-warning h1_button pull-right"
                     type="button">Save All
             </button>
         </div>
@@ -47,7 +47,7 @@
                                     <h5>Module(s) ({{ssRow.surveys.length}})</h5>
                                 </accordion-heading>
                                 <!-- start -->
-                                <div class="simpleDemo col-md-8">
+                                <div class="ss col-md-8">
                                     <div class="row">
                                         <div class="panel panel-info">
                                             <div class="panel-body" ng-include="'resources/editors/views/sections/section_surveys.html'"></div>

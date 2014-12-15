@@ -52,18 +52,23 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
         var section = $scope.ssRows[index];
 
         if (section.surveys !== undefined && section.surveys.length > 0) {
-            $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' surveys and cannot be removed');
+            $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' module(s) and cannot be removed');
         } else if (section.id == null) { // delete data in memory (not committed yet)
             // if user is deleting a newly created section (not previously returned from db)
             applyDeleteAction(index);
             return;
         } else {         // user is trying to delete data from database
+            $scope.saveAll(false);
+
             SurveySectionService.delete(section)
                 .then(function () {
                     applyDeleteAction(index);
                 }, function error(reason) {
-                    $scope.addDangerMsg(true, reason);
+                    var errMsg='Section name \''+section.name+'\' could not be deleted. Reason: '+reason.statusText;
+                    $scope.addDangerMsg(true, errMsg);
                 });
+
+            $scope.refresh();
         }
     }
 
@@ -87,7 +92,7 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
             });
     }
 
-    $scope.saveAll = function () {
+    $scope.saveAll = function (refreshRequested) {
         // split ssRows in two groups, to be added (new) and to be updated
         // (already present in the db and user wishes to make some changes)
         var groupBy = _.groupBy($scope.ssRows, function (ss) {
@@ -106,8 +111,10 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
             $scope.update(ss)
         });
 
-        //refresh the view
-        $scope.refresh();
+        if (refreshRequested) {
+            //refresh the view
+            $scope.refresh();
+        }
     }
 
     //refresh the view on entry

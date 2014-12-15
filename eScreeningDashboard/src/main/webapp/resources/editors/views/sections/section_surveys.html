@@ -5,13 +5,12 @@
          transfer the object that was assigned to it. If an element was
          dragged away, you have to remove it from the original list
          yourself using the dnd-moved attribute -->
-    <li ng-repeat="survey in ssRow.surveys"
+    <li ng-repeat="survey in ssRow.surveys|orderBy:'name'"
         dnd-draggable="survey"
         dnd-moved="ssRow.surveys.splice($index, 1)"
         dnd-effect-allowed="move"
         dnd-selected="surveys.selected = survey"
         ng-class="{'selected': surveys.selected === survey}">
-
         {{survey.name}}
     </li>
 </ul>
