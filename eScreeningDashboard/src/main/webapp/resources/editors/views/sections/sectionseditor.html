@@ -27,10 +27,6 @@
                                 <h4>{{ssRow.name}}
                                     <i class="btn btn-sm btn-grid glyphicon glyphicon-trash pull-right"
                                        ng-click="delete($index)" title="Delete"></i>
-                                    <!--
-                                    <i class="btn btn-sm btn-grid glyphicon glyphicon-save pull-right"
-                                       ng-click="ssRow.id!=null?update($index):add($index)"></i>
-                                    -->
                                 </h4>
                             </accordion-heading>
                             <div class="row">
@@ -48,7 +44,7 @@
                             <!-- and here is a nested Accordion to accommodate surveys in this section-->
                             <accordion-group>
                                 <accordion-heading>
-                                    <h5>Number of Survey(s) in this section ({{ssRow.surveys.length}})</h5>
+                                    <h5>Module(s) ({{ssRow.surveys.length}})</h5>
                                 </accordion-heading>
                                 <!-- start -->
                                 <div class="simpleDemo col-md-8">
