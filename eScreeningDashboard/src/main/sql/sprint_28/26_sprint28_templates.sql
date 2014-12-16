@@ -866,7 +866,7 @@ ${MODULE_END} '
 where template_id=307;
 
 
--- VETERAN SUMMARY -  My Pain Score  (Basic Pain)
+/* Basic Pain veteran summary. Updating intervals (t744)*/
 UPDATE template set template_file = ' 
 <#include "clinicalnotefunctions"> 
 <#if (var2300.children)??  &&  ((var2300.children)?size > 0)>
@@ -881,14 +881,14 @@ UPDATE template set template_file = '
             "title": "My Pain Score",
             "footer": "",
             "data": {
-                "graphStart": 0,
                 "ticks": [0,1,4,6,8,10],
                 "intervals": {
-                    "None": 0,
-                    "Mild": 3,
-                    "Moderate": 5,
-                    "Severe": 7,
-                    "Very Severe":10
+					"None": 0,
+                    "Mild": 1,
+                    "Moderate": 4,
+                    "Severe": 6,
+                    "Very Severe":8,
+                    "Worst Possible":10
                 },
                 "score": ${getSelectOneDisplayText(var2300)}
             }
@@ -908,6 +908,88 @@ UPDATE template set template_file = '
 
 </#if>
 ' where template_id=309;
+
+/* phq-9 veteran summary. Updating to intervals  (t744) */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#assign score = getCustomVariableDisplayText(var1599)> 
+<#-- Template start --> 
+${MODULE_TITLE_START} Depression ${MODULE_TITLE_END} 
+<#if score != "notfound">
+	${GRAPH_SECTION_START} 
+	${GRAPH_BODY_START} 
+		{"type": "stacked", 
+		 "title": "My Depression Score", 
+		 "footer": "*a score of 10 or greater is a positive screen", 
+		 "data": {
+			"maxXPoint" : 27,
+		 	"ticks": [0, 1, 5, 10, 15, 20, 27],
+		 	"intervals": {
+				"None":0,
+		 		"Minimal":1, 
+		 		"Mild":5, 
+		 		"Moderate":10, 
+		 		"Moderately Severe":15, 
+		 		"Severe":20
+		 	}, 
+		 	"score": ${score} 
+		 } 
+		} 
+	${GRAPH_BODY_END} 
+	${GRAPH_SECTION_END}  
+</#if>
+${MODULE_START} 
+	Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression.
+	${LINE_BREAK} 
+	<b>Recommendation:</b> 
+	<#if score = "notfound">
+		${NBSP}Veteran declined to respond
+	<#elseif score?number lt 10>
+		Contact a clinician if in the future if you ever feel you may have a problem with depression
+	<#elseif score?number gt 9>
+		Ask your clinician for further evaluation and treatment options
+	</#if> 
+${MODULE_END}' 
+where template_id=308;
+
+/* PCL-C veteran summary. Updating intervals (t744) */
+update template set template_file = '<#include "clinicalnotefunctions"> 
+<#assign score = getCustomVariableDisplayText(var1929)>  
+<#-- Template start --> 
+${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}  
+
+<#if score != "notfound">
+	${GRAPH_SECTION_START}  
+	${GRAPH_BODY_START} 
+		{"type": "stacked", 
+		 "title": "My PTSD Score", 
+		 "footer": "", 
+		 "data": {
+		 	"maxXPoint" : 85,
+		 	"ticks": [17,35,50,65,85], 
+		 	"intervals": {
+		 		"Negative":17, 
+		 		"Positive":50 
+		 	}, 
+		 	"score": ${score} 
+		 } 
+		} 
+	${GRAPH_BODY_END} 
+	${GRAPH_SECTION_END}  
+</#if>
+
+${MODULE_START} 
+	PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irresistible, or numb. 
+	${LINE_BREAK} 
+	<b>Recommendation:</b> 
+	<#if score = "notfound">
+		${NBSP}Veteran declined to respond
+	<#elseif score?number gt 49>
+		Ask your clinician for further evaluation and treatment options
+	<#elseif score?number lt 50>
+		You may ask a clinician for help in the future if you feel you may have symptoms of PTSD
+	</#if> 
+${MODULE_END}' 
+where template_id=310;
 
 update template set template_file = 
 '<#include "clinicalnotefunctions"> 
