@@ -297,7 +297,7 @@ abstract class Resolver {
 		String followup = addMore ? "todo" : "";
 		String skiplevel = addMore ? getSkipLevel(m) : "";
 
-		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel);
+		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel, other);
 	}
 
 	protected String generateRowId(String partialRowId, String salt, int index) {
@@ -308,7 +308,7 @@ abstract class Resolver {
 
 	protected void addRow(Table<String, String, String> t, String rowId,
 			String quesType, String quesDesc, String varName, String valsRange,
-			String valsDesc, String dataVal, String followup, String skiplevel) {
+			String valsDesc, String dataVal, String followup, String skiplevel, boolean other) {
 
 		t.put(rowId, ddh.msg("ques.type"), quesType);
 		t.put(rowId, ddh.msg("ques.desc"), quesDesc);
@@ -318,6 +318,7 @@ abstract class Resolver {
 		t.put(rowId, ddh.msg("data.val"), dataVal);
 		t.put(rowId, ddh.msg("followup"), followup);
 		t.put(rowId, ddh.msg("skiplevel"), skiplevel);
+		t.put(rowId, ddh.msg("answer.type.other"), String.format("%s$%s", varName, String.valueOf(other)));
 	}
 
 	private String getSkipLevel(Measure m) {
@@ -489,7 +490,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 			Table<String, String, String> t, String salt) {
 	    String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
 		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getExportName());
-		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "");
+		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "", false);
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }
