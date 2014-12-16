@@ -885,11 +885,12 @@ UPDATE template set template_file = '
                 "graphStart": 0,
                 "ticks": [0,1,4,6,8,10],
                 "intervals": {
-                    "None": 0,
-                    "Mild": 3,
-                    "Moderate": 5,
-                    "Severe": 7,
-                    "Very Severe":10
+					"None": 0,
+                    "Mild": 1,
+                    "Moderate": 4,
+                    "Severe": 6,
+                    "Very Severe":8,
+                    "Worst Possible":10
                 },
                 "score": ${getSelectOneDisplayText(var2300)}
             }

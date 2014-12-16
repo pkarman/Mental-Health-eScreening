@@ -591,23 +591,26 @@ $(document).ready(function() {
     	  
 		// Load Objects
 		var graphparams = graphObj.data;
-		var graphStart   = graphparams.graphStart;
+		var graphStart = graphparams.intervals != null && graphparams.intervals.length > 0 ? graphparams.intervals[0] : 0;
 		var ticks        = graphparams.ticks;
 		
 		var legends = [];
 		var d3DataSet = [];
 		var scoresInterval;
-		var lastInterval = graphStart;
-		$.each(graphparams.intervals, function(name, intervalEnd){
+		var prevInterval, prevName;
+		$.each(graphparams.intervals, function(name, intervalStart){
 			legends.push(name);
-			d3DataSet.push([{x:"", y:intervalEnd}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
-			if((scoresInterval == null && graphparams.score >= graphparams.graphStart)
-					|| (graphparams.score > lastInterval && graphparams.score <= intervalEnd)){
-				scoresInterval = name;
+			d3DataSet.push([{x:"", y:intervalStart}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
+			if(prevInterval != null && graphparams.score >= prevInterval && graphparams.score < intervalStart){
+				scoresInterval = prevName;
 		    }
-			lastInterval = intervalEnd;
+			prevInterval = intervalStart;
+			prevName = name;
 		}); 
-		
+		//check if scoreInterval is in the last interval
+		if(scoresInterval == null && graphparams.score >= prevInterval){
+			scoresInterval = prevName;
+		}
 		
 		// Update title block to contain the scoring
 		titleContainer.wrap("<div class='scoreBlock text-center'>");
