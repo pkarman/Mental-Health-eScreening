@@ -18,7 +18,6 @@ import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.ae.SurveyProgress;
 import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.Event;
-import gov.va.escreening.entity.EventType;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.Survey;
@@ -30,7 +29,6 @@ import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
-import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.measure.AnswerProcessor;
 import gov.va.escreening.measure.AnswerSubmission;
 import gov.va.escreening.measure.BooleanAnswerProcessor;
@@ -40,7 +38,6 @@ import gov.va.escreening.repository.AssessmentStatusRepository;
 import gov.va.escreening.repository.EventRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.repository.RuleRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
@@ -55,7 +52,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -141,34 +137,34 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		return getAssessmentResponse(assessmentRequest);
 	}
 
-	@Override
-	public Map<Integer, Boolean> getUpdatedVisibility(
-			AssessmentRequest assessmentRequest) {
-		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
-				.getPageId());
-		checkArgument(page != null, "Invalid page ID given");
-
-		// we set the assessment ID from the context (not from the request)
-		assessmentRequest.setAssessmentId(assessmentContext
-				.getVeteranAssessmentId());
-
-		try {
-			// First validate and save data.
-			saveUserInput(assessmentRequest);
-		} catch (Throwable t) {
-			logger.warn(
-					"Error during save of user data for follow-up question visibility update:\n{}",
-					t.getLocalizedMessage());
-		}
-
-		// update visibility for the measures found on the page
-		ruleProcessorService.updateVisibilityForQuestions(
-				assessmentContext.getVeteranAssessmentId(), page.getMeasures());
-
-		return measureVisibilityRepository.getVisibilityMapForSurveyPage(
-				assessmentRequest.getAssessmentId(),
-				assessmentRequest.getPageId());
-	}
+//	@Override
+//	public Map<Integer, Boolean> getUpdatedVisibility(
+//			AssessmentRequest assessmentRequest) {
+//		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
+//				.getPageId());
+//		checkArgument(page != null, "Invalid page ID given");
+//
+//		// we set the assessment ID from the context (not from the request)
+//		assessmentRequest.setAssessmentId(assessmentContext
+//				.getVeteranAssessmentId());
+//
+//		try {
+//			// First validate and save data.
+//			saveUserInput(assessmentRequest);
+//		} catch (Throwable t) {
+//			logger.warn(
+//					"Error during save of user data for follow-up question visibility update:\n{}",
+//					t.getLocalizedMessage());
+//		}
+//
+//		// update visibility for the measures found on the page
+//		ruleProcessorService.updateVisibilityForQuestions(
+//				assessmentContext.getVeteranAssessmentId(), page.getMeasures());
+//
+//		return measureVisibilityRepository.getVisibilityMapForSurveyPage(
+//				assessmentRequest.getAssessmentId(),
+//				assessmentRequest.getPageId());
+//	}
 
 	@Override
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
@@ -257,8 +253,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 		// Now that we have saved the submitted data, update the progress and
 		// get it.
-		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
-				assessmentRequest.getStartTime());
+//		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
+//				assessmentRequest.getStartTime());
 		assessmentResponse
 				.setSurveyProgresses(getProgressStatuses(veteranAssessmentId));
 
@@ -531,15 +527,9 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
 
-		Map<Integer, Boolean> visMap = new HashMap<Integer, Boolean>();
+		Map<Integer, Boolean> visMap = getUpdatedVisibilityInMemory(assessmentRequest);
 		List<Integer> measuresToDelete = new ArrayList<Integer>();
-		/*measureVisibilityRepository
-				.getVisibilityMapForSurveyPage(
-						assessmentRequest.getAssessmentId(),
-						assessmentRequest.getPageId());*/
 
-//		AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
-//				visMap).setErrorResponse(errorResponse);
 		Set<gov.va.escreening.entity.Measure> tableMeasures = new HashSet<gov.va.escreening.entity.Measure>();
 		for (Measure measure : assessmentRequest.getUserAnswers()) {
 			visMap.put(measure.getMeasureId(), measure.getIsVisible());
@@ -631,6 +621,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 							AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
+			veteranAssessmentSurveyService.updateProgress(veteranAssessment, assessmentRequest, survey, visList);
+			
 			// clear the threadlocal cache
 			smrLister.clearSmrFromCache();
 
