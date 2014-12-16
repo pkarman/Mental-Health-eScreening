@@ -591,8 +591,9 @@ $(document).ready(function() {
     	  
 		// Load Objects
 		var graphparams = graphObj.data;
-		var graphStart = graphparams.intervals != null && graphparams.intervals.length > 0 ? graphparams.intervals[0] : 0;
-		var ticks        = graphparams.ticks;
+		var graphStart 	= 0;
+		var graphEnd 	= graphparams.maxXPoint;
+		var ticks      	= graphparams.ticks;
 		
 		var legends = [];
 		var d3DataSet = [];
@@ -600,7 +601,14 @@ $(document).ready(function() {
 		var prevInterval, prevName;
 		$.each(graphparams.intervals, function(name, intervalStart){
 			legends.push(name);
-			d3DataSet.push([{x:"", y:intervalStart}]);  // adds 	[Object { x="None", y=1}] // Removed x:name
+			//skip the first one
+			if(prevInterval != null){
+				d3DataSet.push([{x:"", y:intervalStart}]);
+			}
+			else{
+				graphStart = intervalStart;
+			}
+			
 			if(prevInterval != null && graphparams.score >= prevInterval && graphparams.score < intervalStart){
 				scoresInterval = prevName;
 		    }
@@ -610,6 +618,11 @@ $(document).ready(function() {
 		//check if scoreInterval is in the last interval
 		if(scoresInterval == null && graphparams.score >= prevInterval){
 			scoresInterval = prevName;
+		}
+		
+		//if this is null then that means the final interval will end the graph (there must be a tick for this last point)
+		if(graphEnd != null){
+			d3DataSet.push([{x:"", y:graphEnd}]);
 		}
 		
 		// Update title block to contain the scoring
@@ -645,7 +658,7 @@ $(document).ready(function() {
 		      xMax            = d3.max(ticks),
 		      xCurrent        = graphparams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
-		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'],
+		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
 		      series          = legends,
 		      dataset         = d3DataSet,
 		      pointerColor    = '#0f3a65',
@@ -770,12 +783,13 @@ $(document).ready(function() {
 		   series.forEach(function(s, i) {
 			   text = svg.append('text')
 		          .attr('fill', 'black')
-              .attr('width', 100)
+				  .attr('width', 100)
 		          .attr('x', textWidth)
 		          .attr('y', 100)
 		          .attr('font-size', '10')
 		          .text(s);
-			   box = svg.append('g').append('rect')
+			   box = svg.append('g')
+			   	  .append('rect')
 		          .attr('fill', colors[i])
 		          .attr('width', 10)
 		          .attr('height', 10)
