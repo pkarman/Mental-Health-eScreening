@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="escreeningdashboard:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="escreeningdashboard-1.0.0-BUILD-SNAPSHOT.war">
+      <element id="artifact" artifact-name="escreeningdashboard:war exploded" />
+    </root>
+  </artifact>
+</component>

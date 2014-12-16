@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: gov.va.med.vistalink:vljFoundationsLib:1.6.0.028">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../data/mvn_repos/gov/va/med/vistalink/vljFoundationsLib/1.6.0.028/vljFoundationsLib-1.6.0.028.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../../data/mvn_repos/gov/va/med/vistalink/vljFoundationsLib/1.6.0.028/vljFoundationsLib-1.6.0.028-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../../data/mvn_repos/gov/va/med/vistalink/vljFoundationsLib/1.6.0.028/vljFoundationsLib-1.6.0.028-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
