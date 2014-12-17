@@ -311,6 +311,16 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				else
 					assessmentSearchResult.setAssessmentDate(sdf.format(veteranAssessment.getDateUpdated()));
 
+				if (veteranAssessment.getDateCreated() == null)
+					assessmentSearchResult.setCreateDate("");
+				else
+					assessmentSearchResult.setCreateDate(sdf.format(veteranAssessment.getDateCreated()));
+
+				if (veteranAssessment.getDateCompleted() == null)
+					assessmentSearchResult.setCompleteDate("");
+				else
+					assessmentSearchResult.setCompleteDate(sdf.format(veteranAssessment.getDateCompleted()));
+
 				// set assessment status text
 				if (veteranAssessment.getAssessmentStatus().getName() == null)
 					assessmentSearchResult.setAssessmentStatusName("");
