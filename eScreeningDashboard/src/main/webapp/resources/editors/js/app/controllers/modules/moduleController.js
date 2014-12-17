@@ -38,6 +38,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $scope.pageQuestionItems.forEach(function(item) {
             if(item.isPage()){
                 organizedPages.push(item.getItem());
+	            organizedPages[0].questions = [];
             } else if(organizedPages.length > 0){
                 organizedPages[organizedPages.length-1].questions.push(item.getItem());
             }

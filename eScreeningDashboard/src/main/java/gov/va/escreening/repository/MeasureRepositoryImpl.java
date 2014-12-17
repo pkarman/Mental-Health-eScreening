@@ -208,7 +208,6 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 	    m.setDisplayOrder(measureDto.getDisplayOrder());
 	    m.setIsPatientProtectedInfo(measureDto.getIsPPI());
 	    m.setMeasureType(measureTypeRepo.findMeasureTypeByName(measureDto.getMeasureType().trim()));
-		m.setMeasureText(measureDto.getMeasureText());
 
 
 		List<Answer> answerList = measureDto.getAnswers();
@@ -259,7 +258,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			
 		}
 
-		update(m);
+
+		//update(m);
 
 		if (measureDto.getChildMeasures() != null) {
 			for (gov.va.escreening.dto.ae.Measure child : measureDto
