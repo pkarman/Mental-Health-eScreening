@@ -61,24 +61,21 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
             $scope.saveAll(false);
 
             SurveySectionService.delete(section)
-                .then(function () {
+                .then(function success() {
                     applyDeleteAction(index);
+                    $scope.refresh();
                 }, function error(reason) {
                     var errMsg='Section name \''+section.name+'\' could not be deleted. Reason: '+reason.statusText;
                     $scope.addDangerMsg(true, errMsg);
                 });
 
-            $scope.refresh();
         }
-    }
-
-    function syncSS(index, data) {
-        $scope.ssRows[index] = data;
     }
 
     $scope.update = function (section) {
         SurveySectionService.update(section)
             .then(function (data) {
+                $scope.addSuccessMsg(true, 'Survey Sections updated successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
             });
@@ -87,6 +84,7 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
     $scope.add = function (section) {
         SurveySectionService.create(section)
             .then(function (data) {
+                $scope.addSuccessMsg(true, 'Survey Sections added successfully');
             }, function error(reason) {
                 $scope.addDangerMsg(true, reason);
             });

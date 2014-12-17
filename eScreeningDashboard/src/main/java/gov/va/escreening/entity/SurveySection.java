@@ -51,7 +51,7 @@ public class SurveySection implements Serializable, SurveySectionBaseProperties 
 	@Column(name = "date_created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
-	@OneToMany(mappedBy = "surveySection")
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "surveySection")
 	private List<Survey> surveyList;
 
 	public SurveySection() {

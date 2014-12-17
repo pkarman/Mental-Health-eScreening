@@ -60,7 +60,7 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private List<VeteranAssessmentSurvey> veteranAssessmentSurveyList;
     
     @JoinColumn(name = "survey_section_id", referencedColumnName = "survey_section_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.ALL,optional = false)
     private SurveySection surveySection;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")

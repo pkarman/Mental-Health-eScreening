@@ -102,18 +102,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
 	@Override
 	public SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo) {
-        List<SurveyInfo> updatedSurveyInfoList = new ArrayList<SurveyInfo>();
-        SurveySectionInfo updatedSurveySectionInfo;
-
-        for(SurveyInfo surveyInfo : surveySectionInfo.getSurveyInfoList()){
-            if(surveyInfo.getSurveySectionInfo().getSurveySectionId() != surveySectionInfo.getSurveySectionId()){
-                surveyInfo.getSurveySectionInfo().setSurveySectionId(surveySectionInfo.getSurveySectionId());
-            }
-            surveyInfo = surveyService.update(surveyInfo);
-            updatedSurveyInfoList.add(surveyInfo);
-        }
-		updatedSurveySectionInfo = surveySectionService.update(surveySectionInfo);
-        return updatedSurveySectionInfo;
+		return surveySectionService.update(surveySectionInfo);
 	}
 
 	@Override

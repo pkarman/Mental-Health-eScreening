@@ -6,6 +6,7 @@ import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.entity.Survey;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface SurveyService {
@@ -57,8 +58,6 @@ public interface SurveyService {
      */
     Survey findOne(int surveyId);
 
-	SurveyInfo convertToSurveyItem(Survey survey);
-	
 	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
 
 	void createSurveyPage(Integer surveyId, Page surveyPage);
@@ -68,4 +67,8 @@ public interface SurveyService {
 	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 
 	SurveyInfo createSurvey(SurveyInfo survey);
+
+    List<SurveyInfo> fromSurvey2SurveyInfo(List<Survey> surveyList);
+
+    List<Survey> fromSurveyInfo2Survey(List<SurveyInfo> surveyInfoList);
 }
