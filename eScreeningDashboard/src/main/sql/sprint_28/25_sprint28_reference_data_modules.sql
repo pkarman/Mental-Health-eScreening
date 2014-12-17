@@ -12,3 +12,10 @@ UPDATE assessment_variable SET formula_template='([$10718$] +[2047])' WHERE asse
 INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent, variable_child) VALUES (932, 10719, 2047);
 UPDATE measure_answer SET export_name=NULL, answer_type='none' WHERE measure_answer_id='900';
 /* finish before this line ==> fix for t742 */
+
+UPDATE measure_answer SET export_name='serv_other1' WHERE measure_answer_id='1510';
+UPDATE measure_answer SET export_name='serv_other2' WHERE measure_answer_id='1520';
+# UPDATE escreening.measure_answer SET export_name='serv_exp_other1' WHERE measure_answer_id='1274';
+# UPDATE escreening.measure_answer SET export_name='serv_exp_other2' WHERE measure_answer_id='1275';
+# UPDATE escreening.measure_answer SET export_name='serv_oper_other1' WHERE measure_answer_id='1114';
+# UPDATE escreening.measure_answer SET export_name='serv_oper_other2' WHERE measure_answer_id='1115';
