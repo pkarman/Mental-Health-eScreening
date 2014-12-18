@@ -1,7 +1,9 @@
 package gov.va.escreening.variableresolver;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AssessmentVariableDto {
 
@@ -18,6 +20,7 @@ public class AssessmentVariableDto {
 	private String calculationValue;
 	private String otherValue;
 	private String displayName;
+	private Map<Date, String> timeSeries;
 	
 	private Integer answerId;
 	
@@ -178,7 +181,13 @@ public class AssessmentVariableDto {
 		this.children = children;
 	}
 
-	
+	public Map<Date, String> getTimeSeries() {
+		return timeSeries;
+	}
+
+	public void setTimeSeries(Map<Date, String> timeSeries) {
+		this.timeSeries = timeSeries;
+	}
 	
 
 	@Override
@@ -188,7 +197,8 @@ public class AssessmentVariableDto {
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
-				+ ", otherValue=" + otherValue + ", children=" + children + "]";
+				+ ", otherValue=" + otherValue + ", "
+				+ "timeSeries= " +timeSeries + ", children=" + children + "]";
 	}
 
 	public void setDisplayName(String displayName) {

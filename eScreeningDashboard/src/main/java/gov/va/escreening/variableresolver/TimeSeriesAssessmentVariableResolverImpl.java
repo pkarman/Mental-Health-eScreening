@@ -10,8 +10,11 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +65,6 @@ public class TimeSeriesAssessmentVariableResolverImpl implements
 		Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
 				.createMeasureAnswerTypeHash(varList);
 
-		StringBuilder sb = new StringBuilder();
 		List<VeteranAssessment> assessmentList = veteranAssessmentRepo
 				.findByVeteranId(veteranId);
 
@@ -77,21 +79,22 @@ public class TimeSeriesAssessmentVariableResolverImpl implements
 			
 		});
 		
+		SortedMap<Date, String> timeSeries = new TreeMap<Date, String>();
+		
 		for (VeteranAssessment va : assessmentList) {
 			try {
 				AssessmentVariableDto result = formulaResolver
 						.resolveAssessmentVariable(assessmentVariable,
 								va.getVeteranAssessmentId(), measureAnswerHash);
 				if (result.getValue() != null) {
-					sb.append(va.getDateCompleted().toString());
-					sb.append(":"+result.getValue()+",");
+					timeSeries.put(va.getDateCompleted(),  result.getValue());
 				}
 			} catch (Exception ex) {// do nothing
 
 			}
 		}
 		
-		dto.setValue(sb.toString());
+		dto.setTimeSeries(timeSeries);
 		logger.info("Time Series assessment var " + dto.toString());
 		
 		return dto;
