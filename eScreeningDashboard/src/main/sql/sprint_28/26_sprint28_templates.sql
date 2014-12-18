@@ -736,26 +736,38 @@ ${MODULE_TITLE_START} Homelessness ${MODULE_TITLE_END}
 ${MODULE_START} This is when you do not have a safe or stable place you can return to every night. The VA is committed to ending Veteran homelessness by the end of 2015. ${LINE_BREAK} 
 ${LINE_BREAK} 
 <b>Results:</b>${NBSP}
-<#if (var2000)?? && (var2000.children)?? && ((var2000.children)?size > 0)> 
-	<#if isSelectedAnswer(var2000,var761)> 
-		unstable housing/at risk 
+
+<#if isSelectedAnswer(var2000, var761) || ( isSelectedAnswer(var2000, var762) && isSelectedAnswer(var2001, var772) ) >
+	unstable housing/at risk 
 		${LINE_BREAK} 
 		<b>Recommendation:</b> Call the VA\'s free National Call Center for Homeless Veterans at (877)-424-3838 and ask for help. Someone is always there to take your call. 
-	<#elseif isSelectedAnswer(var2000,var762)>  
-		stable housing 
-	<#else>
-		declined
-	</#if>  
+<#elseif isSelectedAnswer(var2000, var762) && isSelectedAnswer(var2001, var771)>
+	stable housing 
 <#else>
 	declined
 </#if>
 ${MODULE_END}' 
 where template_id=301;
 
+-- update the variable templates entries for Homelessness veteran summary template
 DELETE FROM variable_template where template_id=301;
+-- HomelessCR_stable_house question (measure_id=61)
 INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (2000, 301);
+-- HomelessCR_stable_house = 0
 INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (761, 301);
+-- HomelessCR_stable_house = 1
 INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (762, 301);
+-- HomelessCR_stable_house = 2
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (763, 301);
+
+-- HomelessCR_stable_worry question (measure_id=62)
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (2001, 301);
+-- HomelessCR_stable_worry = 0
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (771, 301);
+-- HomelessCR_stable_worry = 1
+INSERT INTO variable_template (assessment_variable_id, template_id) VALUES (772, 301);
+
+
 
 -- Veteran summary TBI 
 update template set template_file = '<#include "clinicalnotefunctions"> 
