@@ -10,7 +10,9 @@
         dnd-moved="ssRow.surveys.splice($index, 1)"
         dnd-effect-allowed="move"
         dnd-selected="surveys.selected = survey"
-        ng-class="{'selected': surveys.selected === survey}">
-        {{survey.name}}
+        ng-class="{'selected': surveys.selected === survey}"
+        ng-class-odd="'odd-class-grid'"
+        ng-class-even="'even-class-grid'">
+        <span class="glyphicon glyphicon-align-justify pull-left cursor-pointer margin-right-10"></span>  {{survey.name}} <span class="label label-default pull-right">{{$index + 1}}</span>
     </li>
 </ul>
