@@ -126,7 +126,7 @@ ${MODULE_START}
 		<#assign fragments = fragments + ["tinnitus (ringing in the ears)"] >
 	</#if>
     <#if (getScore(var950) > 1)>
-		<#assign fragments = fragments + ["problem with visions"]> 
+		<#assign fragments = fragments + ["problem with vision"]> 
 	</#if>
 	<#if (getScore(var960) > 1)>
 		<#assign fragments = fragments + ["weight gain"] >
