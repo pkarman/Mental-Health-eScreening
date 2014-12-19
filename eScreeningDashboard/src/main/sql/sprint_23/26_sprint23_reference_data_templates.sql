@@ -1164,7 +1164,7 @@ UPDATE template set template_file = '
 
 
 -- /* VETERAN SUMMARY - Environmental Exposure Update #230 */
-UPDATE escreening.template set template_file = '
+UPDATE template set template_file = '
 <#include "clinicalnotefunctions"> 
 <#-- Template start -->
     ${MODULE_TITLE_START}
