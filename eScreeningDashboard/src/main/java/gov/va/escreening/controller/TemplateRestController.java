@@ -73,7 +73,7 @@ public class TemplateRestController {
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-        if(surveyId == null || surveyId < 0) {
+        if(surveyId == null || surveyId < 0){
             ErrorBuilder.throwing(EntityNotFoundException.class)
                     .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
                     .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
@@ -83,7 +83,7 @@ public class TemplateRestController {
 
         List<TemplateTypeDTO> templateTypes = templateTypeService.getModuleTemplateTypesBySurvey(surveyId);
 
-        if(templateTypes == null || (templateTypes != null && templateTypes.isEmpty())){
+        if(templateTypes == null || templateTypes.isEmpty()){
             ErrorBuilder.throwing(EntityNotFoundException.class)
                     .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
                     .toAdmin("Could not find the template types with the survey with ID: " + surveyId)
@@ -95,7 +95,7 @@ public class TemplateRestController {
 	}
 	
 	
-	@RequestMapping(value ="/services/templateTypes/batteryId/{batteryId}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value ="/services/templateTypes", params="batteryId", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<TemplateTypeDTO> getModuleTemplateTypesByBatteryId(@RequestParam("batteryId") Integer batteryId, @CurrentUser EscreenUser escreenUser) {
@@ -107,9 +107,9 @@ public class TemplateRestController {
                     .throwIt();
         }
 
-        List<TemplateTypeDTO> templateTypes = templateTypeService.getModuleTemplateTypesBySurvey(batteryId);
+        List<TemplateTypeDTO> templateTypes = templateTypeService.getTemplateTypesByBattery(batteryId);
 
-        if(templateTypes == null || (templateTypes != null && templateTypes.isEmpty())){
+        if(templateTypes == null || templateTypes.isEmpty()){
             ErrorBuilder.throwing(EntityNotFoundException.class)
                     .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
                     .toAdmin("Could not find the template types with the battery with ID: " + batteryId)

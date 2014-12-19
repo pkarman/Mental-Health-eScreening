@@ -14,8 +14,8 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
 
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
-        id: $stateParams.selectedSurveyId,
-        name: decodeURIComponent($stateParams.selectedSurveyName),
+        id: $stateParams.relatedObjId,
+        name: decodeURIComponent($stateParams.relatedObjName),
         type: "module"
     };    
 

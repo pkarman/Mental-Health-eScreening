@@ -271,25 +271,31 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
     		// Create.
     		BatteryService.create(BatteryService.setCreateBatteryRequestParameter(currentlySelectedUpdatedBattery)).then(
                 function(battery){
-                    $state.go('batteries.batteryselection');
+                    $state.go('batteries.list');
                 }
             );
     	} else {
     		// Update.
     		BatteryService.update(BatteryService.setUpdateBatteryRequestParameter(currentlySelectedUpdatedBattery)).then(
                 function(battery){
-                    $state.go('batteries.batteryselection');
+                    $state.go('batteries.list');
                 }
             );
     	}
     };
     
-    $scope.cancelBattery = function(){$state.go('batteries.batteryselection');};
+    $scope.cancelBattery = function(){$state.go('batteries.list');};
     
     $scope.isBatterySaved = function(){
         return Object.isDefined($scope.currentlySelectedBattery) 
         		&& Object.isDefined($scope.currentlySelectedBattery.getId()) 
         		&& $scope.currentlySelectedBattery.getId() >= 0;
+    }
+    
+    $scope.editTemplates = function(){
+    	$state.go('batteries.templates', 
+                {relatedObjId: $scope.currentlySelectedBattery.getId(), 
+    			 relatedObjName: encodeURIComponent($scope.currentlySelectedBattery.getName())});
     }
     
 }]);
