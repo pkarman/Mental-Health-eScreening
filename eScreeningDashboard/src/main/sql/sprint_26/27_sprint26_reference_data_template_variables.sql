@@ -1,6 +1,6 @@
-UPDATE `escreening`.`measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1120';
-UPDATE `escreening`.`measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1121';
-UPDATE `escreening`.`measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1122';
+UPDATE `measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1120';
+UPDATE `measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1121';
+UPDATE `measure_answer` SET `export_name`='serv_oef_oif' WHERE `measure_answer_id`='1122';
 
 
 INSERT INTO assessment_variable (assessment_variable_id,assessment_variable_type_id,display_name,description,measure_id) VALUES (10810, 1, 'test123', 'How many hours per week are you currently employed?', 25);
