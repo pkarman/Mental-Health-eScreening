@@ -6,13 +6,14 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.beans.BeanUtils.*;
 
 @Transactional
 @Service
@@ -35,12 +36,10 @@ public class SurveySectionServiceImpl implements SurveySectionService {
     }
 
     @Override
+    @Transactional
     public SurveySectionInfo create(SurveySectionInfo surveySectionInfo) {
         SurveySection surveySection = new SurveySection();
-
-        surveySection.setName(surveySectionInfo.getName());
-        surveySection.setDescription(surveySectionInfo.getDescription());
-        surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
+        copyProperties(surveySectionInfo, surveySection);
 
         surveySectionRepository.create(surveySection);
 
@@ -83,37 +82,32 @@ public class SurveySectionServiceImpl implements SurveySectionService {
     public SurveySectionInfo update(SurveySectionInfo surveySectionInfo) {
 
         SurveySection surveySection = surveySectionRepository.findOne(surveySectionInfo.getSurveySectionId());
+        copyProperties(surveySectionInfo, surveySection);
 
-        surveySection.setName(surveySectionInfo.getName());
-        surveySection.setDescription(surveySectionInfo.getDescription());
-        surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
-        List<Survey> surveys = surveySection.getSurveyList();
-        surveys.clear();
+        List<Survey> surveySection__SurveyList = surveySection.getSurveyList();
+        surveySection__SurveyList.clear();
+
         for (SurveyInfo s : surveySectionInfo.getSurveyInfoList()) {
-            Survey updatedSurvey=surveyService.findOne(s.getSurveyId());
-            updatedSurvey.setSurveySection(surveySection);
-            surveys.add(updatedSurvey);
+            Survey survey = surveyService.findOne(s.getSurveyId());
+            survey.setSurveySection(surveySection);
+            surveySection__SurveyList.add(survey);
         }
+
         surveySectionRepository.update(surveySection);
 
         return surveySectionInfo;
     }
 
     public SurveySectionInfo convertToSurveySectionItem(SurveySection surveySection) {
-
         if (surveySection == null) {
             return null;
         }
 
-        SurveySectionInfo surveySectionInfo = new SurveySectionInfo();
-        surveySectionInfo.setSurveySectionId(surveySection.getSurveySectionId());
-        surveySectionInfo.setName(surveySection.getName());
-        surveySectionInfo.setDisplayOrder(surveySection.getDisplayOrder());
-        surveySectionInfo.setDescription(surveySection.getDescription());
-        surveySectionInfo.setDateCreated(surveySection.getDateCreated());
+        SurveySectionInfo ssInfo = new SurveySectionInfo();
+        copyProperties(surveySection, ssInfo);
 
-        surveySectionInfo.setSurveyInfoList(surveyService.fromSurvey2SurveyInfo(surveySection.getSurveyList()));
-        return surveySectionInfo;
+        ssInfo.setSurveyInfoList(surveyService.toSurveyInfo(surveySection.getSurveyList(), null));
+        return ssInfo;
     }
 
     @Override

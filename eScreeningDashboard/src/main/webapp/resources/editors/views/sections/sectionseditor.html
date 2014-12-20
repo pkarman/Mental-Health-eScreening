@@ -27,7 +27,7 @@
                             <accordion-heading ng-class="border-bottom-3-gray">
                                 <div class="row cursor-pointer">
                                   <div class="col-md-8">
-                                     <span class="glyphicon glyphicon-align-justify pull-left margin-right-10 margin-top-10"></span> <h4 class="pull-left ">{{ssRow.name}}</h4>  
+                                     <span class="glyphicon glyphicon-align-justify pull-left margin-right-10 margin-top-10"></span> <h4 class="pull-left ">{{ssRow.name||"Enter New Section"}}</h4>
                                   </div>
                                   <div class="col-md-4">
                                     
@@ -79,8 +79,8 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-group pull-right">
-          <button ng-click="saveAll(true)" ng-disabled="false" class="btn btn-primary" type="button">Save</button>
-          <button  class="btn btn-default" type="button">Cancel</button>
+          <button ng-click="saveAll()" ng-disabled="false" class="btn btn-primary" type="button">Save</button>
+          <button ng-click="cancel()" class="btn btn-default" type="button">Cancel</button>
         </div>
       </div>
     </div>

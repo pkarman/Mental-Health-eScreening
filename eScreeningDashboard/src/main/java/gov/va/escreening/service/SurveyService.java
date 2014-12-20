@@ -4,6 +4,7 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
+import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.Survey;
 
 import java.util.Collection;
@@ -68,7 +69,5 @@ public interface SurveyService {
 
 	SurveyInfo createSurvey(SurveyInfo survey);
 
-    List<SurveyInfo> fromSurvey2SurveyInfo(List<Survey> surveyList);
-
-    List<Survey> fromSurveyInfo2Survey(List<SurveyInfo> surveyInfoList);
+    List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, SurveySectionInfo ssInfo);
 }

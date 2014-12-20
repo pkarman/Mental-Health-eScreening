@@ -1,20 +1,20 @@
 angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
+
+    .config(function (RestangularProvider) {
+        RestangularProvider.setBaseUrl('services')
+    })
+
     .factory('SurveySectionService', ['Restangular', function (Restangular) {
         "use strict";
 
-        var restAngular = Restangular.withConfig(function (config) {
-            config.setBaseUrl('services');
-            config.setRequestSuffix('.json');
-        });
-
-        var proxy = restAngular.all('surveySections');
+        var proxy = Restangular.all('surveySections');
 
         // service to perform CRUD
         var service = {
             create: function (ss) {
                 return proxy.post(ss);
             },
-            readAll: function () {
+            getList: function () {
                 return proxy.getList();
             },
             update: function (ss) {

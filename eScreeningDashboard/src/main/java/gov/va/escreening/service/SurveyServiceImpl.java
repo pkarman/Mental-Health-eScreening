@@ -158,7 +158,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
         List<Survey> surveys = surveyRepository.getSurveyList();
-        List<SurveyInfo> surveyInfoList = fromSurvey2SurveyInfo(surveys);
+        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys, null);
 
 //		for (Survey survey : surveys) {
 //			surveyInfoList.add(convertToSurveyItem(survey));
@@ -326,58 +326,25 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(surveySection);
 
         surveyRepository.create(survey);
-        return fromSurvey2SurveyInfo(Arrays.asList(survey)).iterator().next();
+        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
     }
 
     @Override
-    public List<SurveyInfo> fromSurvey2SurveyInfo(List<Survey> surveyList) {
-        Function<Survey, SurveyInfo> f = new Function<Survey, SurveyInfo>() {
+    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, final SurveySectionInfo ssInfo) {
+
+        Function<Survey, SurveyInfo> transformerFun = new Function<Survey, SurveyInfo>() {
             @Nullable
             @Override
-            public SurveyInfo apply(Survey input) {
+            public SurveyInfo apply(Survey survey) {
                 SurveyInfo si = new SurveyInfo();
-                BeanUtils.copyProperties(input, si);
-                if (input.getSurveySection() != null) {
-                    SurveySectionInfo surveySectionInfo = new SurveySectionInfo();
+                BeanUtils.copyProperties(survey, si);
 
-                    SurveySection inputSS = input.getSurveySection();
-                    surveySectionInfo.setSurveySectionId(inputSS.getSurveySectionId());
-                    surveySectionInfo.setDescription(inputSS.getDescription());
-                    surveySectionInfo.setName(inputSS.getName());
-                    surveySectionInfo.setDisplayOrder(inputSS.getDisplayOrder());
-                    surveySectionInfo.setDateCreated(inputSS.getDateCreated());
+                si.setSurveySectionInfo(ssInfo);
 
-                    si.setSurveySectionInfo(surveySectionInfo);
-                }
                 return si;
             }
         };
-        return Lists.newArrayList(Collections2.transform(surveyList, f));
-    }
 
-    @Override
-    public List<Survey> fromSurveyInfo2Survey(List<SurveyInfo> surveyInfoList) {
-        Function<SurveyInfo, Survey> f = new Function<SurveyInfo, Survey>() {
-            @Nullable
-            @Override
-            public Survey apply(SurveyInfo input) {
-                Survey s = new Survey();
-                BeanUtils.copyProperties(input, s);
-                if (input.getSurveySectionInfo() != null) {
-                    SurveySection surveySection = new SurveySection();
-
-                    SurveySectionInfo inputSS = input.getSurveySectionInfo();
-                    surveySection.setSurveySectionId(inputSS.getSurveySectionId());
-                    surveySection.setDescription(inputSS.getDescription());
-                    surveySection.setName(inputSS.getName());
-                    surveySection.setDisplayOrder(inputSS.getDisplayOrder());
-                    surveySection.setDateCreated(inputSS.getDateCreated());
-
-                    s.setSurveySection(surveySection);
-                }
-                return s;
-            }
-        };
-        return Lists.newArrayList(Collections2.transform(surveyInfoList, f));
+        return Lists.newArrayList(Collections2.transform(surveyList, transformerFun));
     }
 }

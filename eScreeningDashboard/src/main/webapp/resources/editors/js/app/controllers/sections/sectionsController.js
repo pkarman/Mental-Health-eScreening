@@ -1,8 +1,8 @@
-Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'SurveySectionService', function ($timeout, $scope, $state, SurveySectionService) {
+Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'SurveySectionService', function ($rootScope, $scope, $state, SurveySectionService) {
     $scope.msgs = [];
-    $scope.surveys = {selected: null};
+    var deleteSection = null;
 
-    $scope.addSuccessMsg = function (reset, reason) {
+    var addSuccessMsg = function (reset, reason) {
         addMsg(reset, 'success', reason);
     };
 
@@ -15,9 +15,9 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
             clearMsgs();
         }
         $scope.msgs.push({type: type, text: msg});
-    }
+    };
 
-    $scope.addDangerMsg = function (reset, reason) {
+    var addDangerMsg = function (reset, reason) {
         addMsg(reset, 'danger', reason);
     };
 
@@ -27,95 +27,111 @@ Editors.controller('sectionsController', ['$timeout', '$scope', '$state', 'Surve
 
 
     $scope.addSection = function () {
-        $scope.ssRows.unshift({id: null, name: 'New Survey Section', description: '', surveys: []});
-        $scope.addSuccessMsg(true, 'Please enter the name and description of new survey section');
+        $scope.ssRows.unshift({id: null, name: '', description: '', displayOrder: 0, surveys: []});
+        addSuccessMsg(true, 'Please enter the name and description of new survey section');
     };
 
-    $scope.refresh = function () {
-        SurveySectionService.readAll()
+    var refreshNow = function () {
+        deleteSection = null;
+        SurveySectionService.getList()
             .then(function (ssRows) {
                 $scope.ssRows = ssRows;
-                $scope.addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
+                addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
             }, function error(reason) {
-                $scope.addDangerMsg(true, reason);
+                addDangerMsg(true, reason);
             });
     };
 
+    $scope.cancel = function () {
+        $state.go("home");
+    }
+
+    $scope.saveAll = function () {
+        saveAll();
+    };
 
     $scope.delete = function (index) {
-        // reusable inner function
-        function applyDeleteAction(index) {
-            $scope.ssRows.splice(index, 1);
-            $scope.addSuccessMsg(true, 'Survey Section ' + $scope.ssRows[index].name + ' deleted successfully');
-        }
-
         var section = $scope.ssRows[index];
 
         if (section.surveys !== undefined && section.surveys.length > 0) {
-            $scope.addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' module(s) and cannot be removed');
+            addDangerMsg(true, section.name + ' has ' + section.surveys.length + ' module(s) and cannot be removed');
         } else if (section.id == null) { // delete data in memory (not committed yet)
             // if user is deleting a newly created section (not previously returned from db)
-            applyDeleteAction(index);
-            return;
-        } else {         // user is trying to delete data from database
-            $scope.saveAll(false);
-
-            SurveySectionService.delete(section)
-                .then(function success() {
-                    applyDeleteAction(index);
-                    $scope.refresh();
-                }, function error(reason) {
-                    var errMsg='Section name \''+section.name+'\' could not be deleted. Reason: '+reason.statusText;
-                    $scope.addDangerMsg(true, errMsg);
-                });
-
+            $scope.ssRows.splice(index, 1);
+            addSuccessMsg(true, 'Survey Section ' + $scope.ssRows[index].name + ' deleted successfully');
+        } else {
+            // latch the section to be deleted and call for saveAll
+            deleteSection = section;
+            saveAll();
         }
-    }
+    };
 
-    $scope.update = function (section) {
+    var onLastSectionUpdate = function () {
+        if (deleteSection) {
+            SurveySectionService.delete(deleteSection)
+                .then(function success(section) {
+                    console.log('section \'' + deleteSection.name + '\' deleted successfully')
+                    refreshNow();
+                }, function error(reason) {
+                    var errMsg = 'Section name \'' + deleteSection.name + '\' could not be deleted.';
+                    console.error(errMsg + 'Reason:' + reason);
+                    addDangerMsg(true, errMsg);
+                });
+        } else {
+            refreshNow();
+        }
+    };
+
+
+    $scope.$on("lastSection:updated", onLastSectionUpdate);
+
+    var updateSection = function (section, lastSection) {
         SurveySectionService.update(section)
             .then(function (data) {
-                $scope.addSuccessMsg(true, 'Survey Sections updated successfully');
+                console.log("'" + data.name + "' updated successfully");
+                if (lastSection) $rootScope.$broadcast('lastSection:updated');
             }, function error(reason) {
-                $scope.addDangerMsg(true, reason);
+                addDangerMsg(true, reason);
             });
-    }
+    };
 
-    $scope.add = function (section) {
+    var addSection = function (section, lastSection) {
         SurveySectionService.create(section)
             .then(function (data) {
-                $scope.addSuccessMsg(true, 'Survey Sections added successfully');
+                console.log("a new survey section '" + data.name + "\ added successfully");
+                if (lastSection) $rootScope.$broadcast('lastSection:added');
             }, function error(reason) {
-                $scope.addDangerMsg(true, reason);
+                addDangerMsg(true, reason);
             });
-    }
+    };
 
-    $scope.saveAll = function (refreshRequested) {
+    var saveAll = function (foo) {
+        //reset the display Order as this could be out of order when
+        //dragging these survey sections back and forth
+        _.each($scope.ssRows, function (ss, index) {
+            ss.displayOrder = index + 1;
+        });
+
         // split ssRows in two groups, to be added (new) and to be updated
         // (already present in the db and user wishes to make some changes)
         var groupBy = _.groupBy($scope.ssRows, function (ss) {
             return ss.id === null;
         });
-        var createRows = groupBy.true;
-        var updateRows = groupBy.false;
+        var newSections = groupBy.true;
+        var updatableSections = groupBy.false;
 
         // send all newly entered data for adding
-        _.forEach(createRows, function (ss) {
-            $scope.add(ss)
+        _.each(newSections, function (ss, index, newSections) {
+            addSection(ss, index+1 === newSections.length);
         });
 
         // send all updated data for editing
-        _.forEach(updateRows, function (ss) {
-            $scope.update(ss)
+        _.each(updatableSections, function (ss, index, updatableSections) {
+            updateSection(ss, index+1 === updatableSections.length);
         });
-
-        if (refreshRequested) {
-            //refresh the view
-            $scope.refresh();
-        }
-    }
+    };
 
     //refresh the view on entry
-    $scope.refresh();
+    refreshNow();
 
 }]);
