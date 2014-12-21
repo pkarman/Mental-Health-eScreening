@@ -2,6 +2,22 @@ Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'Sur
     $scope.msgs = [];
     var deleteSection = null;
 
+    $scope.status = {
+        newOpen: true,
+        open: false,
+        dd: {
+            sections: {
+                selected: null
+            },
+            modules: {
+                selected: null
+            }
+        }
+    };
+
+    data = [];
+    $scope.ssRows = [];
+
     var addSuccessMsg = function (reset, reason) {
         addMsg(reset, 'success', reason);
     };
@@ -35,12 +51,23 @@ Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'Sur
         deleteSection = null;
         SurveySectionService.getList()
             .then(function (ssRows) {
-                $scope.ssRows = ssRows;
+                data = ssRows;
+
+                $scope.ssRows = transform(ssRows);
+
                 addSuccessMsg(true, ssRows.length + ' Survey Sections were loaded successfully');
             }, function error(reason) {
                 addDangerMsg(true, reason);
             });
     };
+
+    var transform = function (from) {
+        var tt = [];
+        _.each(from, function (value) {
+            tt.push(_.pick(value, ['id', 'name', 'description', 'displayOrder', 'surveys']));
+        });
+        return tt;
+    }
 
     $scope.cancel = function () {
         $state.go("home");
@@ -61,7 +88,7 @@ Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'Sur
             addSuccessMsg(true, 'Survey Section ' + $scope.ssRows[index].name + ' deleted successfully');
         } else {
             // latch the section to be deleted and call for saveAll
-            deleteSection = section;
+            deleteSection = _.where(data, {id: section.id})[0];
             saveAll();
         }
     };
@@ -112,9 +139,20 @@ Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'Sur
             ss.displayOrder = index + 1;
         });
 
+        // switch gears and reassign values from $scope.ssRows to 'data' so restangular
+        // be happy and be able to invoke update if user has changed the order of sections
+        _.each($scope.ssRows, function (ss) {
+            var d = _.where(data, {id: ss.id});
+            if (d[0]) {
+                _.assign(d[0], ss);
+            } else {
+                data.push(ss);
+            }
+        });
+
         // split ssRows in two groups, to be added (new) and to be updated
         // (already present in the db and user wishes to make some changes)
-        var groupBy = _.groupBy($scope.ssRows, function (ss) {
+        var groupBy = _.groupBy(data, function (ss) {
             return ss.id === null;
         });
         var newSections = groupBy.true;
@@ -122,12 +160,12 @@ Editors.controller('sectionsController', ['$rootScope', '$scope', '$state', 'Sur
 
         // send all newly entered data for adding
         _.each(newSections, function (ss, index, newSections) {
-            addSection(ss, index+1 === newSections.length);
+            addSection(ss, index + 1 === newSections.length);
         });
 
         // send all updated data for editing
         _.each(updatableSections, function (ss, index, updatableSections) {
-            updateSection(ss, index+1 === updatableSections.length);
+            updateSection(ss, index + 1 === updatableSections.length);
         });
     };
 
