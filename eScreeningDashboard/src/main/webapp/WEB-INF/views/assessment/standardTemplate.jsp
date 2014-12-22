@@ -78,10 +78,6 @@
             </c:forEach>
             </ul>
         </div>
-      </li>
-    </c:forEach>
-  </ul>
-</div>
 <!-- Three columns, fixed-fluid-fixed -->
 <div id="center" class="column contentAreaGrayRadial" aria-hidden="false"> <a name="skip" > </a >
   <h1 id="viewTitle"></h1>
