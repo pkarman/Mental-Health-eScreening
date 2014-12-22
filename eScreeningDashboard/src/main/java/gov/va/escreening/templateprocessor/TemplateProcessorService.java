@@ -1,11 +1,11 @@
 package gov.va.escreening.templateprocessor;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
-import freemarker.template.Template;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.entity.Battery;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
 
@@ -34,9 +34,6 @@ public interface TemplateProcessorService {
      * @throws TemplateProcessorException if a bug was found in code (including template code), or a needed resource cannot be found. 
 	 */
 	public String generateCPRSNote(int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, TemplateProcessorException;
-
-	String generateCompletionMsgFor(int batteryId);
-
 	
 	/**
 	 * Renders the given assessment's veteran summary printout (this is always in HTML)
@@ -52,11 +49,22 @@ public interface TemplateProcessorService {
 	 * @param veteranAssessmentId
 	 * @return rendered text
 	 * @throws IllegalSystemStateException 
-	 * @throw IllegalStateException if a template of the given type does not exist for the given survey
+	 * @throw IllegalStateException 
+	 * @throw EntityNotFoundException if a template of the given type does not exist for the given survey
 	 */
-	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException;
+	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, EntityNotFoundException;
 
-	Template getTemplate(Integer templateId, String templateText)
-			throws IOException;
 	
+	/**
+	 * Renders a template of the given type using responses in the given assessment
+	 * @param batteryId the id of the battery to render a template for
+	 * @param type TemplateType to render
+	 * @param veteranAssessmentId
+	 * @param viewType - the view type to render
+	 * @return rendered text
+	 * @throws IllegalSystemStateException 
+	 * @throw IllegalStateException 
+	 * @throw EntityNotFoundException if a template of the given type does not exist for the given battery
+	 */
+	public String renderBatteryTemplate(Battery battery, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, EntityNotFoundException;
 }

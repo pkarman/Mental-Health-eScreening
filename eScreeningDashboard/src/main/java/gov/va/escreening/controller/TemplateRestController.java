@@ -8,7 +8,7 @@ import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
-import gov.va.escreening.exception.ErrorResponseRuntimeException;
+import gov.va.escreening.exception.ErrorResponseException;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.TemplateService;
@@ -40,28 +40,27 @@ public class TemplateRestController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
-    	
-    	logger.debug(enfe.getMessage());
-        return enfe.getErrorResponse();
+    	ErrorResponse er = enfe.getErrorResponse();
+    	logger.error(er.getLogMessage());
+        return er;
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ErrorResponse handleIllegalArgumentException(Exception iae) {
-        logger.debug(iae.getMessage());
-        
-        System.out.println(iae.getClass());
-        
-        if (iae instanceof ErrorResponseRuntimeException){
-        	return ((ErrorResponseRuntimeException)iae).getErrorResponse();
+        ErrorResponse er;
+        if (iae instanceof ErrorResponseException){
+        	return ((ErrorResponseException)iae).getErrorResponse();
         }
-        
-        ErrorResponse er = new ErrorResponse();
+        else{
+        	er = new ErrorResponse();
+        	er.setDeveloperMessage(iae.getMessage());
+            er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
+            er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
 
-        er.setDeveloperMessage(iae.getMessage());
-        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
-        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        logger.error(er.getLogMessage());
         return er;
     }
 	

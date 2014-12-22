@@ -2,11 +2,9 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureType;
 import gov.va.escreening.entity.Survey;
 
 import java.util.Collection;
-import java.util.Set;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;

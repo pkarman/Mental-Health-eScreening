@@ -3,12 +3,10 @@ package gov.va.escreening.service;
 import freemarker.core.TemplateElement;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
-import gov.va.escreening.controller.TemplateRestController;
 import gov.va.escreening.dto.MeasureAnswerDTO;
 import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
-import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.entity.Battery;
@@ -48,7 +46,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {

@@ -79,16 +79,28 @@ function showLastPageCall() {
 	$("#backBtn").css("visibility", "hidden");
 	$.ajax({
 		  type: "GET",
-		  url: "services/assessments/end/5",
+		  url: "end",
 	      dataType: 'json',
 	      contentType: "application/json; charset=utf-8",
-		  async:false
-		}).done(function(data) {
-			showCongratsPage(data);
-		});
+		  async:false,
+		  success: function(data){
+			  showCongratsPage(data.message);
+		  },
+		  error: function(error){
+			  var msg = "";
+	    	  //TODO: This error logic should be combined with handleServerError and displayServerError in measures-integrated and pulled out into another js file as a service
+	    	  if(error.responseJSON && error.responseJSON.errorMessages && error.responseJSON.errorMessages.length && error.responseJSON.errorMessages.length > 0){
+	    		  error.responseJSON.errorMessages.forEach(function(errorMsg){msg += "<div>" + errorMsg.description + "</div>";});
+	    	  }
+	    	  else{
+		    	  msg += "Can't load completion message. Contact support.";
+	    	  }
+	    	  showCongratsPage(msg);
+	      }
+	});
 }
 
-function showCongratsPage(data) {
+function showCongratsPage(message) {
 	$("#left").hide();
 	$("#center").addClass("lastPageCenter");
 	$('#assessmentContainer').empty();
@@ -100,13 +112,7 @@ function showCongratsPage(data) {
 	var graphicImages = "<div id='graphicImages'> " +
 						"<div class='imageContainer'><img src='resources/images/final_cesamh.png' alt='VA Center of Excellence CESAMH | Stress and Mental Health'></div>" +
 						"<div class='imageContainer'><img src='resources/images/final_va.png' alt='VA HEALTH CARE | Defining Excellence in the 21st Century'></div>" +"</div>";
-	var completionText = "<div id='completionText'>"+data.completionText+"</div>";
-	
-	var summaryNotes = $("<div id='summaryNotes'>");
-	$.each(data.summaryNotes, function(k, v){
-		summaryNotes.append(v);
-		summaryNotes.append("<br /><br />");
-	});
+	var completionText = "<div id='completionText'>"+message+"</div>";
 	
 	var buttonWrapper = "<div class='buttonWrapper'> " +
 							"<div id='doneButton'><input class='answerButton doneButton' type='button' value='Done'></div>"+
@@ -114,7 +120,6 @@ function showCongratsPage(data) {
 	
 	formElements.append(congratsString);
 	formElements.append(completionText);
-	formElements.append(summaryNotes);
 	formElements.append(buttonWrapper);
 	formElements.append(graphicImages);
 	formContainer.append(formElements);

@@ -993,12 +993,6 @@ td.matrixQuestionText input.selectOther{
     width: 96% !important;
 }
 
-#summaryNotes {
-	text-align: left; 
-	margin-top: 20px;
-	border-bottom: 1px solid #666666;
-}
-
 .instructionLi {
 	margin: 16px 0px;
 }
