@@ -78,16 +78,21 @@
             </c:forEach>
             </ul>
         </div>
-		<!-- Three columns, fixed-fluid-fixed -->
-        <div id="center" class="column contentAreaGrayRadial" aria-hidden="false">
-			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
-			<!-- Dynamic Content Region -->
-			<div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
-            	<!-- This is the active region container for the active view's (page) form controls.  When a page is selected, the question JSON 
-            	returned, this will be populated with the form controls drawn by iteration over the response's JSON object. -->
-            </div>
-			<!-- End Dynamic Content Region -->
-            <!-- <noscript> section with descriptive text to provide users without JavaScript enabled, or screen reader-equipped, directions
+      </li>
+    </c:forEach>
+  </ul>
+</div>
+<!-- Three columns, fixed-fluid-fixed -->
+<div id="center" class="column contentAreaGrayRadial" aria-hidden="false"> <a name="skip" > </a >
+  <h1 id="viewTitle"></h1>
+  <!-- Dynamic Content Region -->
+ 
+  <div id="assessmentContainer" role="application" aria-describedby="assessmentNotes"> 
+    <!-- This is the active region container for the active view's (page) form controls.  When a page is selected, the question JSON 
+            	returned, this will be populated with the form controls drawn by iteration over the response's JSON object. --> 
+  </div>
+  <!-- End Dynamic Content Region --> 
+  <!-- <noscript> section with descriptive text to provide users without JavaScript enabled, or screen reader-equipped, directions
             	 for use.  -->
             <noscript id="assessmentNotes">
             	<!-- TODO:: Describe usage of the Measures/Assessment here. -->

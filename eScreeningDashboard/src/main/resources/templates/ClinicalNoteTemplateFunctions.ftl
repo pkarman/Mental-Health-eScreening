@@ -424,13 +424,16 @@
 
 <#-- checks if a specific answer was selected given a question -->
 <#function isSelectedAnswer variableObj1 variableObj2 > 
-    <#if (variableObj1.children)?? && (variableObj2)??> 
+
+	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
+		<#return false>
+	</#if>
+    
     <#list variableObj1.children as v>
         <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
             <#return true>
         </#if>
     </#list>
-    </#if>
     <#return false>
 </#function>
 

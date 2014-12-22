@@ -1,3 +1,10 @@
+.moduleTemplateText h3{
+	margin: 10px auto;
+}
+.moduleTemplateText{
+	line-height: 16px;
+	font-size: 13px;
+}
 .bar {
 }
 .pointer {
@@ -151,6 +158,11 @@
 #VeteranSummaryModal .moduleTemplateText {
   margin: 10px 10px 20px 10px;
 }
+#VeteranSummaryModal .graphicBlock .moduleTemplateText {
+  margin: 0px 10px 20px 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 #VeteranSummaryModal .moduleTemplateText:first-line {
 /* font-weight: bold; */
 }
@@ -188,6 +200,9 @@
   border: none !important;
   border-top: 1px dashed #000000 !important;
 }
+
+/* Boxes Start Regular */
+/* 1. Score Box */
 #VeteranSummaryModal .graphicBlock .scoreBlock {
   border: none !important;
   display: inline-table;
@@ -195,21 +210,24 @@
   border-right: 1px dashed #000 !important;
   padding-right: 5px;
 }
+/* 3. Template Text Box */
 #VeteranSummaryModal .graphicBlock .moduleTemplateText {
   display: inline-table;
   width: 300px;
   border-left: 1px dashed #000000 !important;
   padding-left: 10px;
+  vertical-align: top;
 }
+/* 2. Template Text graphSection */
 #VeteranSummaryModal .graphicBlock .graphSection {
   display: inline-table;
   width: 450px;
+  vertical-align: top;
 }
 #VeteranSummaryModal .graphicBlock .graphHeader {
   font-weight: bold;
   text-align: center;
 }
-
 
 /* Printable */
 .printable .moduleTemplateTitle {
@@ -252,11 +270,16 @@
   font-weight: bold !important;
   line-height: 35px;
 }
+
+
+/* Boxes Start Printable */
 .printable .graphicBlock {
   width: 100% !important;
   border: none !important;
   border-top: 1px dashed #000000 !important;
 }
+
+/* 1. Score Box */
 .printable .graphicBlock .scoreBlock {
   border: none !important;
   display: inline-table;
@@ -264,12 +287,7 @@
   border-right: 1px dashed #000 !important;
   padding-right: 5px;
 }
-.printable .graphicBlock .moduleTemplateText {
-  display: inline-table;
-  width: 300px;
-  border-left: 1px dashed #000000 !important;
-  padding-left: 10px;
-}
+/* 2. Template Text graphSection */
 .printable .graphicBlock .graphSection {
   display: inline-table;
   width: 450px;
@@ -279,6 +297,15 @@
   text-align: center;
 }
 
+/* 3. Template Text Box */
+.printable .graphicBlock .moduleTemplateText {
+  display: inline-table;
+  width: 300px;
+  border-left: 1px dashed #000000 !important;
+  padding-left: 10px;
+  vertical-align: top;
+}
+
 .graphicBody{ 
   font-size:10px;
 }
@@ -286,6 +313,12 @@
 display:none;
 }
 @media print {
+body{
+	zoom: 100%;
+}
+@page{
+	margin:.5cm 0cm;
+}
 /*
 * {
   overflow: visible;
@@ -328,7 +361,7 @@ body * {
   min-height: 100px;
   min-width: 100px;
 }
-.moduleTemplateText {
+.moduleTemplateText{
   margin: 0px;
   padding: 0px
 }
@@ -348,7 +381,7 @@ body * {
   text-decoration: underline;
 }
 #VeteranSummaryModal .moduleTemplateText {
-  margin: 5px;
+  margin: 0px;
   padding: 0px;
 }
 #VeteranSummaryModal .graphicBlock .scoreBlock {
@@ -357,16 +390,21 @@ body * {
   width: 100px;
   border-right: 1px dashed #000 !important;
   padding-right: 5px;
+  vertical-align: top;
 }
 #VeteranSummaryModal .graphicBlock .moduleTemplateText {
   display: inline-table;
   width: 150px;
   border-left: 1px dashed #000000 !important;
   padding-left: 10px;
+  vertical-align: top;
 }
 #VeteranSummaryModal .graphicBlock .graphSection {
   display: inline-table;
-  width: 450px;
+  width: 440px;
+  max-width:440px;
+  overflow:hidden;
+  vertical-align: top;
 }
 #VeteranSummaryModal .graphicBlock .graphHeader {
   font-weight: bold;
@@ -391,6 +429,10 @@ body * {
   margin: 5px;
   padding: 0px;
 }
+
+.graphicBlock{
+	width: 100% !important;
+}
 .printable .graphicBlock .scoreBlock {
   border: none !important;
   display: inline-table;
@@ -400,14 +442,27 @@ body * {
 }
 .printable .graphicBlock .moduleTemplateText {
   display: inline-table;
-  width: 150px;
+  width: 170px;
+  vertical-align: top;
   border-left: 1px dashed #000000 !important;
-  padding-left: 10px;
+  padding-left: 5px;
+  padding-top: 10px;
 }
+
 .printable .graphicBlock .graphSection {
   display: inline-table;
-
-  width: 450px;
+  width: 445px;
+  overflow:hidden;
+}
+.printable .graphicBlock .graphicBody {
+  display: inline-table;
+  width: 445px;
+  overflow:hidden;
+  vertical-align: top;
+}
+.printable .graphicBlock .graphicBody svg{
+  width: 445px;
+  overflow:hidden;
 }
 .printable .graphicBlock .graphHeader {
   font-weight: bold;
