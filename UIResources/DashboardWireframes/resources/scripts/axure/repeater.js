@@ -61,6 +61,34 @@ $axure.internal(function($ax) {
     _repeaterManager.setDataSet = _setRepeaterDataSet;
 
     var _refreshRepeater = function(repeaterId, eventInfo) {
+        // Don't show if you have a parent rdos thats limboed.
+        var rdoPath = $ax.getPathFromScriptId(repeaterId);
+        var view = $ax.adaptive.currentViewId;
+        var chain = $ax.adaptive.getAdaptiveIdChain(view);
+        var testView = view;
+        // Check each parent rdo through appropriate views to see if you are limboed
+        while (rdoPath.length > 0) {
+            var testingChain = testView;
+            var rdoObj = $obj($ax.getScriptIdFromPath(rdoPath));
+            var style = testView ? rdoObj.adaptiveStyles && rdoObj.adaptiveStyles[testView] : rdoObj.style;
+            if(style && typeof (style.limbo) != 'undefined') {
+                if(style.limbo) {
+                    removeItems(repeaterId);
+                    return;
+                }
+                // Otherwise this chain is good, move up rdo again
+                testingChain = false;
+            }
+
+            if(testingChain) {
+                var viewIndex = chain.indexOf(testView);
+                testView = viewIndex == 0 ? '' : chain[viewIndex - 1];
+            } else {
+                $ax.splice(rdoPath, rdoPath.length - 1, 1);
+                testView = view;
+            }
+        }
+
         _loaded[repeaterId] = true;
         $ax.action.refreshStart(repeaterId);
         $ax.style.ClearCacheForRepeater(repeaterId);
@@ -433,7 +461,7 @@ $axure.internal(function($ax) {
 
                     //If tied, go to tie breaker
                     if(text1 == text2) {
-                        if(compare) return compare(row1, row2); 
+                        if(compare) return compare(row1, row2);
                         // Actually a tie.
                         return 0;
                     }
@@ -612,7 +640,7 @@ $axure.internal(function($ax) {
 
         var dataSet = repeaterToActiveDataSet[repeaterId];
         if(!dataSet) dataSet = repeaterToCurrentDataSet[repeaterId];
-        var lastPage = Math.ceil(dataSet.length / pageInfo.itemsPerPage);
+        var lastPage = Math.max(1, Math.ceil(dataSet.length / pageInfo.itemsPerPage));
 
         if(type == 'Value') {
             var val = Number($ax.expr.evaluateExpr(value, eventInfo));
@@ -713,13 +741,14 @@ $axure.internal(function($ax) {
         else if(type == 'marked') items = repeaterToEditItems[repeaterId];
         else {
             // This should be rule
-            var visibleData = repeaterToActiveDataSet[repeaterId];
+            var visibleData = repeaterToCurrentDataSet[repeaterId];
             var items = [];
             var oldTarget = eventInfo.targetElement;
             for(var i = 0; i < visibleData.length; i++) {
-                eventInfo.targetElement = _createElementId(repeaterId, visibleData[i].index);
+                var index = i + 1;
+                eventInfo.targetElement = _createElementId(repeaterId, index);
                 if($ax.expr.evaluateExpr(rule, eventInfo).toLowerCase() != 'true') continue;
-                items.push(visibleData[i].index);
+                items.push(index);
             }
             eventInfo.targetElement = oldTarget;
         }
@@ -744,13 +773,14 @@ $axure.internal(function($ax) {
         else if(type == 'marked') items = repeaterToEditItems[repeaterId];
         else {
             // This should be rule
-            var visibleData = repeaterToActiveDataSet[repeaterId];
+            var currData = repeaterToCurrentDataSet[repeaterId];
             var items = [];
             var oldTarget = eventInfo.targetElement;
-            for(var i = 0; i < visibleData.length; i++) {
-                eventInfo.targetElement = _createElementId(repeaterId, visibleData[i].index);
+            for(var i = 0; i < currData.length; i++) {
+                var index = i + 1;
+                eventInfo.targetElement = _createElementId(repeaterId, index);
                 if($ax.expr.evaluateExpr(rule, eventInfo).toLowerCase() != 'true') continue;
-                items.push(visibleData[i].index);
+                items.push(index);
             }
             eventInfo.targetElement = oldTarget;
         }
@@ -764,6 +794,7 @@ $axure.internal(function($ax) {
                 if(data.type == 'literal') {
                     eventInfo.targetElement = _createElementId(repeaterId, item);
                     data = $ax.expr.evaluateExpr(data.literal, eventInfo);
+                    if(typeof (data) == 'object' && data.isWidget) data = data.text;
                     if(typeof (data) == 'string') data = { type: 'text', text: data };
                 }
                 dataSet[item - 1][prop] = data;
@@ -1408,6 +1439,10 @@ $axure.internal(function($ax) {
         var children = $(parent ? '#' + parent : '#base').children();
         for(var i = 0; i < children.length; i++) {
             var child = $(children[i]);
+
+            // Check for basic links
+            if(child[0] && child[0].tagName == 'A' && child.hasClass('basiclink')) child = child.children();
+
             var childId = child.attr('id');
             // Don't move self, and check id to make sure it is a widget.
             if(childId == id || !childId || childId[0] != 'u') continue;
@@ -1473,6 +1508,11 @@ $axure.internal(function($ax) {
             for(var i = 0; i < children.length; i++) {
                 var elementId = children[i].id;
                 var obj = $obj(elementId);
+                if(obj == null) {
+                    elementId = elementId.split('_')[0];
+                    obj = $obj(elementId);
+                }
+                if(obj == null) continue;
                 if(obj.type == 'dynamicPanel' && !obj.propagate) continue;
 
                 if(hover) $ax.style.SetWidgetHover(elementId, value);
