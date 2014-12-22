@@ -141,7 +141,7 @@ public class TemplateRestController {
 	}
 		
 
-	@RequestMapping(value = "/services/templateTypes/{templateTypeId}/battery/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = "/services/templateTypes/{templateTypeId}/batteries/{batteryId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
 	public Integer createTemplateForBattery(

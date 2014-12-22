@@ -143,9 +143,6 @@ angular.module('Editors')
 	            
 	            .state('batteries.templates',{
                     url:'/:relatedObjId/:relatedObjName/templates/:saved',
-                    data: {
-                        context: 'batteries'
-                    },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
                     resolve: {
                         templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateTypeService', function($rootScope, $stateParams, $q, TemplateTypeService) {
@@ -177,6 +174,63 @@ angular.module('Editors')
                     },
                     controller: 'templateListController'
                 })
+                
+                .state('batteries.templateeditor', {
+                    url: "/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId",
+                    templateUrl: 'resources/editors/views/templates/templateeditor.html',
+                    controller: "templateEditorController",
+                    resolve: {
+                        assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
+                            return AssessmentVariableService;
+                        }],
+                        template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
+                            function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
+                                var deferred = $q.defer();
+                                if (Object.isDefined($stateParams)
+                                    && Object.isDefined($stateParams.relatedObjId)
+                                    && $stateParams.relatedObjId > -1
+                                    && Object.isDefined($stateParams.typeId)) {
+                                    
+                                    if(Object.isDefined($stateParams.templateId) 
+                                            && $stateParams.templateId != -1 
+                                            && $stateParams.templateId.length > 0){
+                                        console.log("Getting template from server with ID: " + $stateParams.templateId);
+                                        
+                                        TemplateService.get($stateParams.templateId).then(function (template) {
+                                            deferred.resolve(template);
+                                        });
+                                    }
+                                    else{
+                                        console.log("Creating empty template for battery " + $stateParams.relatedObjName + " of template type " + $stateParams.typeId);
+                                        var selectedTemplateType = TemplateTypeService.getSelectedType();
+                                        if(Object.isDefined(selectedTemplateType)){
+                                            var emptyTemplate =  new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
+                                            deferred.resolve(emptyTemplate);
+                                        }
+                                        else {
+                                            console.log("There is no currently selected template type.");
+                                            deferred.resolve({});
+                                        }
+                                    }
+                                }
+                                return deferred.promise;
+                            }],
+                            relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                            	var deferred = $q.defer();
+                            	deferred.resolve({
+                                    id : $stateParams.relatedObjId,
+                                    name : decodeURIComponent($stateParams.relatedObjName),
+                                    type: "battery"
+                                });
+                            	return deferred.promise;
+                            }]
+                    },
+                    onExit: function (AssessmentVariableService) {
+                        console.log("leaving batteries.templateeditor state.");
+                        AssessmentVariableService.clearCachedResults();
+                    }
+                })
+
 	            
 	            /** -------- END BATTERY WORKFLOW -------- **/
 
@@ -222,9 +276,6 @@ angular.module('Editors')
 
                 .state('modules.templates',{
                     url:'/:relatedObjId/:relatedObjName/templates/:saved',
-                    data: {
-                    	context: 'modules'
-                    },
                     templateUrl:'resources/editors/views/templates/templatesselection.html',
                     resolve: {
                         templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateTypeService', function($rootScope, $stateParams, $q, TemplateTypeService) {
@@ -260,9 +311,6 @@ angular.module('Editors')
                 .state('modules.templateeditor', {
                     url: "/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId",
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
-                    data: {
-                        displayName: 'Template Editor'
-                    },
                     controller: "templateEditorController",
                     resolve: {
                         assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
@@ -293,12 +341,21 @@ angular.module('Editors')
                                             deferred.resolve(emptyTemplate);
                                         }
                                         else {
-                                            console.log("There is no currently selected template type. Redirecting to module template list.");
+                                            console.log("There is no currently selected template type.");
                                             deferred.resolve({});
                                         }
                                     }
                                 }
                                 return deferred.promise;
+                            }],
+                            relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                            	var deferred = $q.defer();
+                            	deferred.resolve({
+                                    id : $stateParams.relatedObjId,
+                                    name : decodeURIComponent($stateParams.relatedObjName),
+                                    type: "module"
+                                });
+                            	return deferred.promise;
                             }]
                     },
                     onExit: function (AssessmentVariableService) {

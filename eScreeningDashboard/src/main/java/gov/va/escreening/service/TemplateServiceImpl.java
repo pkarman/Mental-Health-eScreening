@@ -691,6 +691,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 
 	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Integer saveTemplateFileForBattery(Integer batteryId,
 			Integer templateTypeId, TemplateFileDTO templateFile) {
 		Battery battery = batteryRepository.findOne(batteryId);

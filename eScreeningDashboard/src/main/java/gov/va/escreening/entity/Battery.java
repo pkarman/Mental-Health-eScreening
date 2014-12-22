@@ -74,7 +74,10 @@ public class Battery implements Serializable, BatteryBaseProperties {
 	private Set<Survey> surveys;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "battery_template", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "template_id", referencedColumnName = "template_id") })
+	@JoinTable(name = "battery_template", 
+		joinColumns = { 
+			@JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, 
+			inverseJoinColumns = { @JoinColumn(name = "template_id", referencedColumnName = "template_id", unique=true) })
 	private Set<Template> templates;
 
 	public Battery() {
