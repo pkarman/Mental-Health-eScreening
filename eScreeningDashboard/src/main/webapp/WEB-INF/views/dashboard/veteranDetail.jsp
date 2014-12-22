@@ -113,8 +113,6 @@
 					</div>
 				</c:if>
 
-
-				
 				<c:if test="${empty veteranDetailFormBean.veteranIen}">
 					<div class="alert alert-info">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -414,6 +412,6 @@
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 
 </body>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/dashboard/veteranDetails.js" />"></script>
 </html>

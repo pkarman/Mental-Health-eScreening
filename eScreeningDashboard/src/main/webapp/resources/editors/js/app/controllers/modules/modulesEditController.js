@@ -118,7 +118,6 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
             return selectedMenuOptionIndex;
         };
-        surveyUIObject = getSurveyUIObject();
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
@@ -334,4 +333,5 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             //$scope.sortingLog.push('Stop: ' + logEntry);
         }
     };
+    
 }]);
