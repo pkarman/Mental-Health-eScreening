@@ -872,9 +872,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-.navbar-default .navbar-toggle .icon-bar{
-  background-color: #fff;
-}
 .print{
   margin:10px 0px;
 }

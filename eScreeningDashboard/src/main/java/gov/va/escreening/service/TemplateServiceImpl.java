@@ -3,12 +3,10 @@ package gov.va.escreening.service;
 import freemarker.core.TemplateElement;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
-import gov.va.escreening.controller.TemplateRestController;
 import gov.va.escreening.dto.MeasureAnswerDTO;
 import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
-import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.entity.Battery;
@@ -32,8 +30,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,7 +46,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -163,6 +162,7 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new IllegalArgumentException("Could not find template");
 		}
 		TemplateTransformer.copyToTemplate(templateDTO, template);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 		return TemplateTransformer.copyToTemplateDTO(template, null);
 	}
@@ -174,6 +174,7 @@ public class TemplateServiceImpl implements TemplateService {
 		Template template = TemplateTransformer.copyToTemplate(templateDTO,	null);
 
 		template.setTemplateType(templateTypeRepository.findOne(templateTypeId));
+		template.setModifiedDate(new Date());
 
 		if (parentId == null) {
 			templateRepository.create(template);
@@ -184,11 +185,13 @@ public class TemplateServiceImpl implements TemplateService {
 				survey.setTemplates(addTemplateToSet(templateSet, template,
 						surveyTemplates));
 				surveyRepository.update(survey);
+				template.setName("Survey "+template.getTemplateType().getName());
 			} else {
 				Battery battery = batteryRepository.findOne(parentId);
 				Set<Template> templateSet = battery.getTemplates();
 				battery.setTemplates(addTemplateToSet(templateSet, template,
 						batteryTemplates));
+				template.setName("Battery "+template.getTemplateType().getName());
 				batteryRepository.update(battery);
 			}
 		}
@@ -238,6 +241,7 @@ public class TemplateServiceImpl implements TemplateService {
 		List<VariableTemplate> variableTemplates = variableTemplateRepository
 				.findByIds(variableTemplateIds);
 		template.getVariableTemplateList().removeAll(variableTemplates);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 	}
 
@@ -249,6 +253,7 @@ public class TemplateServiceImpl implements TemplateService {
 		List<VariableTemplate> variableTemplates = variableTemplateRepository
 				.findByIds(variableTemplateIds);
 		template.setVariableTemplateList(variableTemplates);
+		template.setModifiedDate(new Date());
 		templateRepository.update(template);
 	}
 
@@ -564,20 +569,36 @@ public class TemplateServiceImpl implements TemplateService {
 				template.setJsonFile(null);
 			}
 			
-			Set<Integer> ids = new HashSet<Integer>();
+			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
 			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
 			
-			if (ids.size()>0)
-			{
-				for(Integer id : ids){
-					VariableTemplate vt = new VariableTemplate();
-					vt.setDateCreated(new Date());
-					vt.setAssessmentVariableId(avRepository.findOne(id));
-					vt.setTemplateId(template);
-					if (template.getVariableTemplateList()==null)
-					{
-						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+			//get current variable template entries for this template
+			Map<Integer, VariableTemplate> vtMap = new HashMap<>();
+			for(VariableTemplate vt : template.getVariableTemplateList()){
+				vtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
+			}
+			
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));
+			
+			//clear out list of variable template entries
+			if (template.getVariableTemplateList()==null){
+				template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+			}
+			else{
+				template.getVariableTemplateList().clear();
+			}
+			
+			if (!assessmentVariableIds.isEmpty()){
+				
+				for(Integer id : assessmentVariableIds){
+					VariableTemplate vt;
+					if(vtMap.containsKey(id)){
+						vt = vtMap.get(id);
+					}
+					else{
+						vt = new VariableTemplate();
+						vt.setAssessmentVariableId(avRepository.findOne(id));
+						vt.setTemplateId(template);
 					}
 					template.getVariableTemplateList().add(vt);
 				}
@@ -601,6 +622,7 @@ public class TemplateServiceImpl implements TemplateService {
 		template.setTemplateType(templateType);
 		
 		template.setDateCreated(new Date());
+		template.setModifiedDate(new Date());
 		template.setIsGraphical(templateFile.getIsGraphical());
 		template.setName(templateFile.getName());
 		
@@ -666,6 +688,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 
 	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Integer saveTemplateFileForBattery(Integer batteryId,
 			Integer templateTypeId, TemplateFileDTO templateFile) {
 		Battery battery = batteryRepository.findOne(batteryId);

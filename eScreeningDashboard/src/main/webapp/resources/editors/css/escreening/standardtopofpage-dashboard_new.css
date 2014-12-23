@@ -616,24 +616,6 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 
-.red-color{
-  color:red  !important;
-}
-.odd-class-grid{
-  background-color:#EDEDED;
-}
-
-.even-class-grid{
-  background-color:#FFFFFF;
-}
-
-.border-bottom-3-gray{
-  border-bottom:3px solid #ADADAD;
-}
-.pagination{
-  margin: 0px;
-}
-
 .modal-custom-sm .modal-dialog {
 	width: 600px !important;
 }
