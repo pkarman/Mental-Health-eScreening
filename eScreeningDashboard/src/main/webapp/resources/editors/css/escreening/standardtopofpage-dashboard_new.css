@@ -565,7 +565,7 @@ a.offscreen:focus, a.offscreen:active {
 .margin_top_10{
   margin-top:10px;
 }
-/* JH | Form Editor Start Here */
+/* Form Editor Start Here */
 
 .form_editor .list-group-item{
   padding:5px 10px;
@@ -597,7 +597,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg-gray-light{
   background-color: #F8F8F8;
 }
-
 .red-color{
   color:red  !important;
 }
@@ -615,6 +614,26 @@ a.offscreen:focus, a.offscreen:active {
 .pagination{
   margin: 0px;
 }
+
+
+.modal-custom-sm .modal-dialog {
+	width: 600px !important;
+}
+.modal-custom-sm .modal-content{
+  min-height:inherit !important;
+}
+
+/*Timeout*/
+span.countdown {
+	color: #8C0000;
+	font-weight: bold;
+}
+
+.sessionTimeOutMessage{
+	font-weight:18px;
+	text-align:center;
+}
+
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 
