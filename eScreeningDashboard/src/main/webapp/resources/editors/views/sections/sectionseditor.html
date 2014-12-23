@@ -10,7 +10,7 @@
               </button>
             </div>
 
-            <div class="label label-primary pull-right  margin-right-10 margin-top-35"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i></div>
+            <div ng-click="openAll()" class="label label-primary pull-right  margin-right-10 margin-top-35"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !status.closeOthers, 'glyphicon-chevron-right': status.closeOthers}"></i></div>
         </div>
     </div>
     <div class="row">
