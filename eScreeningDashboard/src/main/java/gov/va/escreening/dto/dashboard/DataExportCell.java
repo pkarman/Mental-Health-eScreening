@@ -3,6 +3,7 @@ package gov.va.escreening.dto.dashboard;
 public class DataExportCell {
 	String columnName;
 	String cellValue;
+	boolean other;
 
 	public String getColumnName() {
 		return columnName;
@@ -28,9 +29,23 @@ public class DataExportCell {
 		setCellValue(cellValue);
 	}
 
+	public DataExportCell(String columnName, String cellValue, boolean other) {
+		setColumnName(columnName);
+		setCellValue(cellValue);
+		setOther(other);
+	}
+
+	public boolean isOther() {
+		return other;
+	}
+
+	public void setOther(boolean other) {
+		this.other = other;
+	}
+
 	@Override
 	public String toString() {
-		return "name=" + columnName + ", val=" + cellValue;
+		return "name=" + columnName + ", val=" + cellValue+", other="+other;
 	}
 
 }

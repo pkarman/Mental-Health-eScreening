@@ -239,20 +239,23 @@ div.progressLabel{
 
 #assessmentContainer {
 	background-color: #ffffff;
-	border: 1px solid #333333;
+	border: 1px solid #DFDFDF;
 	visibility: visible;
 /* 	overflow-y: auto; */
 	margin-top: 32px;
 	margin-bottom: 50px;
-	-moz-box-shadow:    3px 3px 5px 6px #333;
-  	-webkit-box-shadow: 3px 3px 5px 6px #333;
-  	box-shadow:         3px 3px 5px 6px #333;
+	-moz-box-shadow:    0px 0px 10px 1px rgba(0,0,0,6.00);
+  	-webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,6.00);
+  	box-shadow:         0px 0px 10px 1px rgba(0,0,0,6.00);
   	min-height: 400px;
-  	
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  
 }
 
 #formContainer {
-	width: 98%;
+	max-width: 98%;
 	margin: 10px 0 38px;
 }
 
@@ -260,8 +263,9 @@ div.progressLabel{
 	/* margin-left: 4x; */
 	/* overflow-y: auto; */
 	/* width: 96%; */ /* JH */
-	width: 95%;
+	max-width: 95%;
     margin: 0 auto;
+    overflow-x:auto;
 }
 
 #innerFormContainer{
@@ -842,6 +846,7 @@ table.matrixQuestion{
 	margin: 28px 0px;
 	border-collapse: collapse;
 	text-align:center;
+  box-sizing:border-box;
 }
 td.matrixQuestionText  {
     padding: 8px;
@@ -873,7 +878,7 @@ th:empty {
 	padding: 4px;
 }
 th.matrixQuestion{
-	padding: 10px 24px;
+	padding: 10px 5px;
 	font-size: 14px;
 	width: 15%;
 }

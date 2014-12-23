@@ -428,8 +428,6 @@
 						<version>5.1.27</version>
 					</dependency>
 				</dependencies>
-
-
 				<!-- common configuration shared by all executions -->
 				<configuration>
 					<skip>${skip.db}</skip>
@@ -438,7 +436,7 @@
 					<username>${jdbc.username}</username>
 					<password>${jdbc.password}</password>
 				</configuration>
-			    <executions>
+				<executions>
 					<execution>
 						<id>recreate-db</id>
 						<phase>process-test-resources</phase>
@@ -501,7 +499,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_22</basedir>
 							</fileset>
 						</configuration>
@@ -527,7 +525,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_24</basedir>
 							</fileset>
 						</configuration>
@@ -540,7 +538,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_25</basedir>
 							</fileset>
 						</configuration>
@@ -553,7 +551,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_26</basedir>
 							</fileset>
 						</configuration>
@@ -566,7 +564,7 @@
 						</goals>
 						<configuration>
 							<orderFile>ascending</orderFile>
-							<fileset> 
+							<fileset>
 								<basedir>src/main/sql/sprint_27</basedir>
 							</fileset>
 						</configuration>
@@ -623,7 +621,7 @@
 							</fileset>
 						</configuration>
 					</execution>
-				</executions>				
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -705,6 +703,23 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>bug</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>bug</value>
+				</property>
+			</activation>
+			<build>
+				<finalName>${project.artifactId}-bug</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost/escreening-bug</jdbc.url>
+				<jdbc.db>escreening-bug</jdbc.db>
+				<log.suffix>bug</log.suffix>
+			</properties>
+		</profile>
+		<profile>
 			<id>sandiego</id>
 			<activation>
 				<property>
@@ -743,7 +758,7 @@
 				<quick.order.ien>16267</quick.order.ien>
 				<vista.primaryStation>664</vista.primaryStation>
 				<jdbc.username>escrapp-test</jdbc.username>
-		        <jdbc.password>escreeningTest</jdbc.password>
+				<jdbc.password>escreeningTest</jdbc.password>
 			</properties>
 		</profile>
 	</profiles>

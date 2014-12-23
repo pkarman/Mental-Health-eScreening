@@ -410,7 +410,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		// process the freemarker template and convert it's output to a string
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		String templateOutput = new String();
-		Writer out = new OutputStreamWriter(outStream);
+		Writer out = new OutputStreamWriter(outStream, FILE_ENCODING);
 		resolvedTemplate.process(root, out);
 		templateOutput = new String(outStream.toByteArray(), FILE_ENCODING);
 

@@ -11,7 +11,9 @@ public class AssessmentSearchResult implements Serializable {
 
     private String clinicianName = "";
     private String createdBy = "";
+    private String createDate = "";
     private String assessmentDate = "";
+    private String completeDate = "";
     private Integer veteranId;
     private String veteranName = "";
     private String assessmentStatusName = "";
@@ -125,6 +127,22 @@ public class AssessmentSearchResult implements Serializable {
 
     public void setAlerts(List<AlertDto> alerts) {
         this.alerts = alerts;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(String completeDate) {
+        this.completeDate = completeDate;
     }
 
     public AssessmentSearchResult() {
