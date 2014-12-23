@@ -917,6 +917,11 @@ td.matrixQuestionText input.selectOther{
 	background: red !important;	
 }
 
+/*************************************************************/
+/********* Styles for the welcome page **************/
+#assessmentWelcome {
+	word-wrap: break-word;
+}
 
 /*************************************************************/
 /********* Styles for the complete survey page **************/
@@ -932,7 +937,10 @@ td.matrixQuestionText input.selectOther{
 }
 
 #completionText {
+	border-bottom: 1px solid #666;
+	word-wrap: break-word;
 	margin: 10px 0px;
+	padding-bottom: 20px;
     text-align: left;
 }
 

@@ -39,32 +39,6 @@ public class Battery implements Serializable, BatteryBaseProperties {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
 	
-	@Column(name="welcome_message")
-	private String welcomeMessage;
-
-	@Override
-	public String getWelcomeMessage() {
-		return welcomeMessage;
-	}
-
-	@Override
-	public void setWelcomeMessage(String welcomeMessage) {
-		this.welcomeMessage = welcomeMessage;
-	}
-
-	@Override
-	public String getCompleteMessage() {
-		return completeMessage;
-	}
-
-	@Override
-	public void setCompleteMessage(String completeMessage) {
-		this.completeMessage = completeMessage;
-	}
-
-	@Column(name="complete_message")
-	private String completeMessage;
-	
 	@OneToMany(mappedBy = "battery")
 	private List<VeteranAssessment> veteranAssessmentList;
 
