@@ -53,24 +53,6 @@ angular.module('Editors')
 	            .state('sections',{
 	                url:'/sections',
 	                templateUrl:'resources/editors/views/sections/sectionseditor.html',
-	                resolve:{
-	                	sections: function($rootScope, $q, SurveySectionService){
-                            var deferred = $q.defer();
-
-                            console.log('VIEW STATE SECTIONS:: Resolve sections');
-
-                            SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                                deferred.resolve(response.getPayload());
-                            }, function(responseError) {
-                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                                console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
-                                deferred.reject(responseError.getMessage());
-                            });
-
-
-                            return deferred.promise;
-	                	}
-	                },
 	                controller: 'sectionsController'
 	            })
 

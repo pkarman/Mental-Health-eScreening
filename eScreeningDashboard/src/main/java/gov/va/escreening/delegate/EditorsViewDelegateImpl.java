@@ -33,7 +33,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     private SurveyService surveyService;
 
     private SurveySectionService surveySectionService;
-   
+
 
     @Autowired
     public void setBatterySurveyService(BatterySurveyService batterySurveyService) {
@@ -80,9 +80,12 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
     @Override
 	public Integer createSection(SurveySectionInfo surveySectionInfo) {
-		surveySectionService.create(surveySectionInfo);
-        return surveySectionInfo.getSurveySectionId();
-		
+		// only insert a new survey section
+        surveySectionService.create(surveySectionInfo);
+        // now that survey section is added to the db. ask to update, which will also take care of surveys
+        SurveySectionInfo surveySectionInfo1=updateSection(surveySectionInfo);
+        return surveySectionInfo1.getSurveySectionId();
+
 	}
 
 	@Override
@@ -99,25 +102,14 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
 	@Override
 	public SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo) {
-        List<SurveyInfo> updatedSurveyInfoList = new ArrayList<SurveyInfo>();
-        SurveySectionInfo updatedSurveySectionInfo;
-
-        for(SurveyInfo surveyInfo : surveySectionInfo.getSurveyInfoList()){
-            if(surveyInfo.getSurveySectionInfo().getSurveySectionId() != surveySectionInfo.getSurveySectionId()){
-                surveyInfo.getSurveySectionInfo().setSurveySectionId(surveySectionInfo.getSurveySectionId());
-            }
-            surveyInfo = surveyService.update(surveyInfo);
-            updatedSurveyInfoList.add(surveyInfo);
-        }
-		updatedSurveySectionInfo = surveySectionService.update(surveySectionInfo);
-        return updatedSurveySectionInfo;
+		return surveySectionService.update(surveySectionInfo);
 	}
 
 	@Override
 	public void deleteSection(Integer surveySectionId) {
 		surveySectionService.delete(surveySectionId);
 	}
-	
+
 
 	@Override
 	public void deleteBattery(Integer batteryId) {
@@ -133,7 +125,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public SurveyInfo updateSurvey(SurveyInfo surveyInfo) {
         return surveyService.update(surveyInfo);
     };
-    
+
     @Override
 	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
 		surveyService.removeMeasureFromSurvey(surveyId, questionId);
@@ -146,8 +138,8 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	public void updateSurveyPages(Integer surveyId,
 			List<SurveyPageInfo> surveyPageInfo) {
 		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
-		
-		
+
+
 	}
 	@Override
 	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
@@ -155,7 +147,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	}
 	@Override
 	public SurveyInfo createSurvey(SurveyInfo survey) {
-		
+
 		return surveyService.createSurvey(survey);
 	}
 }
