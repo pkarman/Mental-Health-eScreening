@@ -93,15 +93,15 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
                                         refreshDataCb();
                                     }, function error(deleteErrs) {
                                         console.log("error while write batch delete:" + JSON.stringify(deleteErrs));
-                                        dangerMsgCb(true, "Error Found while deleting sections. Delete operation failed");
+                                        dangerMsgCb(true, "Error Found while deleting sections. Delete operation failed. Reason:"+deleteErrs.data.status.message);
                                     });
                             }, function error(updateErrs) {
                                 console.log("error while batch updates:" + JSON.stringify(updateErrs));
-                                dangerMsgCb(true, "Error Found while updating sections. Update operation failed");
+                                dangerMsgCb(true, "Error Found while updating sections. Update operation failed. Reason:"+updateErrs.data.status.message);
                             });
                     }, function error(createErrs) {
                         console.log("error while write batch:" + JSON.stringify(createErrs));
-                        dangerMsgCb(true, "Error Found while creating sections. Create operation failed");
+                        dangerMsgCb(true, "Error Found while creating sections. Create operation failed. Reason:"+createErrs.data.status.message);
                     });
             }
 

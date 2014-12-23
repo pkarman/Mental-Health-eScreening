@@ -1,5 +1,5 @@
 Editors.controller('sectionsController', ['$scope', '$state', 'SurveySectionService', function ($scope, $state, SurveySectionService) {
-    var toBeDel = {sections:[]};
+    var toBeDel = {sections: []};
     var dbData = [];
 
     $scope.msgs = [];
@@ -111,14 +111,17 @@ Editors.controller('sectionsController', ['$scope', '$state', 'SurveySectionServ
     function updateDbDataWithScopeData() {
         // switch gears and reassign values from $scope.ssRows to 'dbData' so restangular
         // be happy and be able to invoke update if user has changed the order of sections
+        var tmp = [];
         _.each($scope.ssRows, function (ss) {
             var d = _.where(dbData, {id: ss.id});
             if (d[0]) {
                 _.assign(d[0], _.pick(ss, ['id', 'name', 'description', 'displayOrder', 'surveys']));
             } else {
-                dbData.push(ss);
+                tmp.push(ss);
             }
         });
+
+        dbData = dbData.concat(tmp);
     }
 
     function saveAll(foo) {
