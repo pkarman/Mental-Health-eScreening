@@ -597,6 +597,24 @@ a.offscreen:focus, a.offscreen:active {
 .bg-gray-light{
   background-color: #F8F8F8;
 }
+.red-color{
+  color:red  !important;
+}
+.odd-class-grid{
+  background-color:#EDEDED;
+}
+
+.even-class-grid{
+  background-color:#FFFFFF;
+}
+
+.border-bottom-3-gray{
+  border-bottom:3px solid #ADADAD;
+}
+.pagination{
+  margin: 0px;
+}
+
 
 .red-color{
   color:red  !important;
@@ -616,6 +634,23 @@ a.offscreen:focus, a.offscreen:active {
   margin: 0px;
 }
 
+.modal-custom-sm .modal-dialog {
+	width: 600px !important;
+}
+.modal-custom-sm .modal-content{
+  min-height:inherit !important;
+}
+
+/*Timeout*/
+span.countdown {
+	color: #8C0000;
+	font-weight: bold;
+}
+
+.sessionTimeOutMessage{
+	font-weight:18px;
+	text-align:center;
+}
 .form_editor .accordion-toggle h4, .form_editor .accordion-toggle h5{
   cursor:pointer;
 }
