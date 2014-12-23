@@ -1,5 +1,7 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.base.Function;
+import com.google.common.collect.*;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
@@ -32,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import org.bouncycastle.util.Strings;
@@ -43,11 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
 
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
@@ -141,6 +139,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		for (String surveyName : preFetchedData.get(surveyNamesKey()).keySet()) {
 			Map<String, String> usrRespMap = preFetchedData.get(usrRespKey(assessment, surveyName));
 			Map<String, String> surveyDictionary = preFetchedData.get(dictHdrKey(surveyName));
+			Map<String, String> answerTypeOther = preFetchedData.get(answerTypeOtherKey(surveyName));
 
 			// traverse through each exportName, and try to find the veteran's response for the exportName. In case the
 			// user has not responded, leave 999
@@ -148,7 +147,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			for (Entry<String, String> surveyEntry : surveyDictionary.entrySet()) {
 				String surveyExportName = surveyEntry.getValue();
 				if (!surveyExportName.isEmpty()) {
-					DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, surveyExportName, show);
+					DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, show);
 					if (logger.isDebugEnabled()) {
 						logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
 					}
@@ -267,13 +266,16 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	}
 
 	public DataExportCell createExportCell(Map<String, String> usrRespMap,
-			Map<String, String> formulaeMap, String exportName, boolean show) {
+			Map<String, String> formulaeMap,  Map<String, String> answerTypeOther, String exportName,boolean show) {
 
 		// try to find the user response
 		String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
 		// if value of export name was a formula (sum, avg, or some other formula derived value)
 		exportVal = srh.getOrMiss(exportVal == null ? formulaeMap.get(exportName) : exportVal);
-		return new DataExportCell(exportName, exportVal);
+
+		// find out if this is an other datatype
+		boolean other="true".equals(answerTypeOther.get(exportName));
+		return new DataExportCell(exportName, exportVal, other);
 	}
 
 	private ExportLog createExportLogFromOptions(DataExportFilterOptions options) {
@@ -502,7 +504,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 			List<VeteranAssessment> matchingAssessments,
 			Integer identifiedExportType) {
 
-		String ddColumnKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
+		String exportNameKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
+		String answerTypeKey = msgSrc.getMessage("data.dict.column.answer.type.other", null, null);
 		boolean show = ExportTypeEnum.DEIDENTIFIED.getExportTypeId() != identifiedExportType;
 
 		Map<String, Table<String, String, String>> masterDataDictionary = dds.createDataDictionary();
@@ -527,7 +530,9 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 				Table<String, String, String> dataDictionary = masterDataDictionary.get(surveyName);
 
 				// extract all rows/columnValues for column key=data.dict.column.var.name
-				Map<String, String> ddColumnData = dataDictionary.column(ddColumnKey);
+				Map<String, String> ddColumnData = dataDictionary.column(exportNameKey);
+				// extract all answerType is Other or not
+				miscDataMap.put(answerTypeOtherKey(surveyName), createExportNameOtherMap(dataDictionary.column(answerTypeKey)));
 
 				buildDictionaryHeaderFor(surveyName, syncTableQ(usrRespMap, ddColumnData), miscDataMap);
 
@@ -539,6 +544,21 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 		miscDataMap.putAll(buildFormulaeMapForMatchingAssessments(matchingAssessments));
 		miscDataMap.put(surveyNamesKey(), surveyNamesMap);
 		return miscDataMap;
+	}
+
+	private Map<String, String> createExportNameOtherMap(Map<String, String> ddColumnOtherData) {
+		Map<String, String> m=Maps.newHashMap();
+		for (String value:ddColumnOtherData.values()){
+			String v[]=value.split("[$]");
+			if (!v[0].isEmpty()){
+				m.put(v[0], v[1]);
+			}
+		}
+		return m;
+	}
+
+	private String answerTypeOtherKey(String surveyName) {
+		return String.format("%s__%s", surveyName, "ANSWER_TYPE_OTHER");
 	}
 
 	private void buildDictionaryHeaderFor(String surveyName,
@@ -580,7 +600,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
 	private void setMissingCellsToZero(Collection<DataExportCell> cells) {
 		for (DataExportCell cell : cells) {
-			if (srh.miss().equals(cell.getCellValue())) {
+			if (!cell.isOther() && srh.miss().equals(cell.getCellValue())) {
 				cell.setCellValue("0");
 			}
 		}
@@ -592,7 +612,6 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 	 * for every table question, this method will add a row in data dictionary
 	 * 
 	 * @param usrRespMap
-	 * @param dataDictionary
 	 * @return
 	 */
 	private Map<String, String> syncTableQ(Map<String, String> usrRespMap,

@@ -27,12 +27,27 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             if(Object.isNumber(selectedSurveyId) && Object.isArray(surveyPages) && surveyPages.length > 0) {
                 SurveyPageService.update(SurveyPageService.setUpdateSurveyPageRequestParameter($scope.selectedSurveyUIObject.id, surveyPages)).then(function (response) {
                     if (Object.isDefined(response)) {
-                        if (response.isSuccessful()) {
-                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                        } else {
-                            $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                            console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
-                        }
+                        angular.forEach(response.getPayload().surveyPages, function(surveyPage, index) {
+                            var uiPage = surveyPages[index];
+
+                            angular.forEach(surveyPage.questions, function(question, index) {
+                                var uiQuestion = uiPage.questions[index];
+
+                                // Update the question in the ui with the id from the server
+                                if(!uiQuestion.id || uiQuestion.id === -1) {
+                                    uiQuestion.id = question.id;
+                                }
+                            });
+
+                        });
+	                    if (angular.isFunction($rootScope.addMessage)) {
+		                    if (response.isSuccessful()) {
+			                    $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+		                    } else {
+			                    $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
+			                    console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
+		                    }
+	                    }
                     }
                 }, function (responseError) {
                     $scope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -103,6 +118,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
 
             return selectedMenuOptionIndex;
         };
+        surveyUIObject = getSurveyUIObject();
 
     $scope.textFormatDropDownMenuOptions = [];
     $scope.setTextFormatDropDownMenuOptions = function(textFormatTypeMenuOptions) {
@@ -177,7 +193,10 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
                 if(Object.isDefined(response)) {
                     if (response.isSuccessful()) {
                         $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
-                        $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+
+	                    if (angular.isFunction($rootScope.addMessage)) {
+		                    $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
+	                    }
 
                         updateSurveyPages($scope.selectedSurveyUIObject.id, organizedPages);
                     } else {
@@ -282,7 +301,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         return stateName;
     };
 
-    /*$scope.deleteQuestion = function(question){
+    $scope.deleteQuestion = function(question){
         $rootScope.messageHandler.clearMessages();
         QuestionService.remove(QuestionService.setRemoveQuestionRequestParameter($scope.selectedSurveyUIObject.id, question.id)).then(function(response){
             setQuestionUIObjects();
@@ -292,7 +311,7 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
         });
 
         $state.go('modules.detail.selectQuestionType');
-    };*/
+    };
 
     $scope.sortableOptions = {
         cancel: ".unsortable",
@@ -315,5 +334,4 @@ Editors.controller('addEditModuleController', ['$rootScope', '$scope', '$state',
             //$scope.sortingLog.push('Stop: ' + logEntry);
         }
     };
-    
 }]);

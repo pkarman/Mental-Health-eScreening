@@ -1,9 +1,6 @@
 /**
  * Created by pouncilt on 8/4/14.
  */
-/**
- * Created by pouncilt on 8/4/14.
- */
 Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$filter', '$timeout', 'ngTableParams', 'surveys', function($rootScope, $scope, $state, $filter, $timeout, ngTableParams, surveys) {
     $scope.setSurveyUIObjects(EScreeningDashboardApp.models.Survey.toUIObjects(surveys));
     
@@ -93,6 +90,6 @@ Editors.controller('modulesController', ['$rootScope', '$scope', '$state', '$fil
     };
 
     $scope.cancel = function(){
-        alert('Will take user back to Editors Entry View.');
+        $state.go('home');
     };
 }]);

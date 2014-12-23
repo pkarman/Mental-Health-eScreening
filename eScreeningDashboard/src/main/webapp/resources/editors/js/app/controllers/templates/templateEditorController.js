@@ -1,69 +1,58 @@
-Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', 'TemplateService', 'TemplateTypeService', 'template', 
-                                          function($rootScope, $scope, $state, $stateParams, TemplateService, TemplateTypeService, template) {
+Editors.controller('testModalCtrl', ['$scope', function($scope) {
+}]);
+Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 
+                                                function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template) {
 
     console.log("In templateEditorController");
-    
+
     $scope.template = template;
     $scope.hasChanged = false;
+    $scope.assessmentVariables = [];
+    $scope.variableHash = {};
     $scope.debug = false;
-    
+    $scope.logId=0;
+
     //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
     $scope.relatedObj = {
-        id : $stateParams.selectedSurveyId,
-        name : decodeURIComponent($stateParams.selectedSurveyName),
-        type : "module"
+        id: $stateParams.selectedSurveyId,
+        name: decodeURIComponent($stateParams.selectedSurveyName),
+        type: "module"
     };    
-    
-    $scope.save = function(){
-        console.log("Save clicked");
+
+    if ($scope.relatedObj.type === "module") {
         
-        $scope.template.saveFor($scope.relatedObj).then(function(response){
+        $scope.assessmentVariables = AssessmentVariableService.query({surveyId: $scope.relatedObj.id})
+            .then(function(assessmentVariables) {
+                assessmentVariables.forEach(function(variable){
+                        $scope.variableHash[variable.id] = variable;
+                    });
+                    
+                    return assessmentVariables;
+                });
+    }
+
+    $scope.save = function () {
+        console.log("Save clicked");
+
+        $scope.template.saveFor($scope.relatedObj).then(function (response) {
             $scope.done(true).then(function(){
                 $rootScope.addMessage(
                   $rootScope.createSuccessSaveMessage("All template changes have been saved."));
             })
-        });       
+        });
     };
-    
-    $scope.done = function(wasSaved){
+
+    $scope.done = function (wasSaved) {
         console.log("Redirecting to module templates");
-        if($scope.relatedObj.type == "module"){
+        if ($scope.relatedObj.type == "module") {
             var stateParams = angular.copy($stateParams);
-            if(wasSaved){
+            if (wasSaved) {
                 stateParams.saved = wasSaved;
             }
             return $state.go('modules.templates', stateParams);
         }
     };
-    
-    /**
-     * @param parent is optional. If undefined then the block is added to the bottom of the template.
-     */
-    $scope.addBlock = function(parentScope){
-        if(Object.isDefined(parentScope)){
-            var parent = parentScope.$modelValue;
-            console.log("Add block under parent block: " + parent.title);
-        }
-        else{
-            console.log("Add block to bottom of template");
-        }
-        $scope.templateChanged();
-    };
-    
-    $scope.removeBlock = function(blockScope){
-        var block = blockScope.$modelValue;
-        console.log("removing block: " + block.title);
-        blockScope.remove();
-        $scope.templateChanged();
-        
-    };
-    
-    $scope.editBlock = function(blockScope){
-        var block = blockScope.$modelValue;
-        console.log("edit block: " + block.title);
-        $scope.templateChanged();
-    };
-    
+
     //helper function for debugging drag and drop rules (only when we want tons of logs)
     function log(msg){
         if($scope.debug)
@@ -108,7 +97,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 $scope.templateChanged();
             },
             accept: function(dragNodeScope, destNodesScope, destIndex){
-                log("*************");
+                log("****** LOG ID " + $scope.logId++ + " *******");
             	log("destIndex: " + destIndex);
             	
             	var destIsRoot = !Object.isDefined(destNodesScope.$nodeScope);
@@ -117,6 +106,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             	log("destParent type: " + (Object.isDefined(destParent) ? destParent.type : "null" ));
             	
             	var dragType = dragNodeScope.$modelValue.type;
+            	var dragIndex = dragNodeScope.$modelValue.index();
             	
             	
                 if(!destIsRoot){
@@ -141,6 +131,7 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 var lastElseIf = -1;
                 var elseIndex = -1;
                 var lastTextBlock = -1;
+                var destIsAfterDragInSameParent = false;
                 for(var i = 0; i < destNodesScope.$modelValue.length; i++){
                     
                     var type = destNodesScope.$modelValue[i].type;
@@ -155,6 +146,12 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     else if(type == "text"){
                         lastTextBlock = i;
+                    }
+                    if(dragNodeScope.$modelValue.equals(destNodesScope.$modelValue[i])){
+                        if(destIndex > i){
+                            log("destIndex is greater than dragged index and in same parent");
+                            destIsAfterDragInSameParent = true;
+                        }
                     }
                 }
                 
@@ -181,11 +178,13 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                     }
                     //3. between an If and the first else or else if
                     if(destParent.type == "if"){
-                        log("destIndex: " + destIndex + " <= firstElseIndex: " + firstElseIndex);
+                        var firstElse = firstElseIndex; // destIsAfterDragInSameParent ? firstElseIndex - 1 : firstElseIndex;
+                        log("adjusted firstElseIndex:" + firstElse);
+                        log("source/drag index is: " + dragIndex);
+                        log("returning:  destIndex: " + destIndex + " <= firstElseIndex: " + firstElse);
                         //PLEASE NOTE: there seems to be a bug in ui-tree which gives the wrong index if 
-                        // you quickly move from the first node under the if to right under an elseif of 
-                        // the same if the index is still 1 which is incorrect (could not reproduce this with Chrome)
-                        return destIndex <= firstElseIndex;
+                        // you quickly move from the first node under the if to right under an elseif of the same if the index is still 1 which is incorrect
+                        return destIndex <= firstElse;
                     }
                 }
                 
@@ -234,16 +233,191 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
                 return true;
             }
     };
-    
-    //this could use $watch but this might be overkill for large templates since there are 
+
+    //this could use $watch but this might be overkill for large templates since there are
     //only a couple of places that a change occurs and after one has happened we don't care about new updates 
-    $scope.templateChanged = function(){
+    $scope.templateChanged = function () {
         console.log("template changed");
         $scope.template.updateSections();
         $scope.hasChanged = true;
-    } 
-    
-    //if we have lost state redirect
+    };
+
+	$scope.deleteBlock = function (blockScope) {
+	    var block = blockScope.$modelValue;
+	    console.log("removing block: " + block.name);
+	    blockScope.remove();
+	    $scope.templateChanged();
+	};
+
+	$scope.updateBlock = function(selectedBlock, isAdding){
+
+		// Create the modal
+		var modalInstance = $modal.open({
+			templateUrl: 'resources/editors/views/templates/templateblockmodal.html',
+            scope: $scope,
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+	            template:  function() {
+		            return $scope.template;
+	            }
+			},
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template', function($scope, $modalInstance, eventBus, template) {
+
+                $scope.templateName = template.name;
+
+				$scope.validationMessage = {
+					show: false
+				};
+
+				// Copy the selected or new block so that potential changes in modal don't update object in page
+				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
+				$scope.isAdding = angular.isUndefined(isAdding) ? false : isAdding;
+				
+				$scope.block.setTextContent(TemplateBlockService);
+
+				// Dismiss modal
+				$scope.cancel = function () {
+					$modalInstance.dismiss('cancel');
+				};
+				
+				eventBus.onLocationChange($scope, function(next, current){
+				    $scope.cancel();
+				});
+
+				// Close modal and pass updated block to the page
+                $scope.close = function (form) {
+
+	                if (form.$valid) {
+
+		                $scope.block.transformTextContent(TemplateBlockService, $scope.variableHash);
+		                $scope.block.autoGenerateFields($scope.variableHash);
+
+		                if (isAdding) {
+
+			                if (!selectedBlock) template.blocks.push($scope.block);
+			                //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
+			                else if (selectedBlock.type == 'if') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'elseif' || $scope.block.type == 'else') {
+					                insertAfterTextAndElseIf(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //put it at top
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'elseif') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'elseif') {
+					                //insert right after this else if
+					                selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
+				                }
+				                else if ($scope.block.type == 'else') {
+					                //insert into parent IF after text and else if
+					                insertAfterTextAndElseIf(selectedBlock.getParent());
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //add it to top of elseif's children
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'else') {
+				                if ($scope.block.type == 'if') {
+					                insertAfterText(selectedBlock);
+				                }
+				                else if ($scope.block.type == 'text') {
+					                //add it to top of elseif's children
+					                selectedBlock.children.splice(0, 0, $scope.block);
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+			                else if (selectedBlock.type == 'text') {
+				                if ($scope.block.type == 'if' || $scope.block.type == 'text') {
+					                if (selectedBlock.getParent()) {
+						                //if we have a parent place the if after the text in that parent
+						                selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
+					                }
+					                else {
+						                //if we have no parent then add block as next sibling in template's blocks array
+						                var textIndex = -1;
+						                template.blocks.every(function (block, i) {
+							                if (selectedBlock.equals(block)) {
+								                textIndex = i;
+							                }
+							                return textIndex == -1;
+						                });
+						                template.blocks.splice(textIndex + 1, 0, $scope.block);
+					                }
+				                }
+				                else if ($scope.block.type == 'elseif') {
+					                //insert after all text blocks in the parent If
+					                insertAfterText(selectedBlock.getParent());
+				                }
+				                else if ($scope.block.type == 'else') {
+					                insertAfterTextAndElseIf(selectedBlock.getParent());
+				                }
+				                else {
+					                log.error("Unsupported type to insert");
+				                }
+			                }
+		                }
+
+		                $scope.templateChanged();
+		                $modalInstance.close();
+	                } else {
+		                $scope.validationMessage.show = true;
+	                }
+				};
+				
+				function insertAfterTextAndElseIf(parent){
+				    //put block after parent's elseifs and text
+                    var lastElseIfIndex = parent.lastElseIf().index;
+                    if(lastElseIfIndex != -1){
+                        parent.children.splice(lastElseIfIndex + 1, 0, $scope.block);
+                    }
+                    else{
+                        var lastText = parent.lastText().index;
+                        if(lastText != -1){
+                            parent.children.splice(lastText + 1, 0, $scope.block);
+                        }
+                        else{
+                          //put it at top
+                          parent.children.splice(0,0, $scope.block);
+                        }
+                    }
+				    
+				}
+				
+                function insertAfterText(parent){
+                    //place after text if there are any
+                    var lastText = parent.lastText().index;
+                    if(lastText != -1){
+                        parent.children.splice(lastText + 1, 0, $scope.block);
+                    }
+                    else{
+                        //put it at top
+                       parent.children.splice(0,0, $scope.block);
+                    }
+				}
+
+			}]
+		});
+	};
+
+	//if we have lost state redirect
     if(!Object.isDefined(template) 
             || !Object.isDefined(template.type)){
         console.log("There is no currently selected template type.");
@@ -256,5 +430,4 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
             $scope.done();
         }
     }
-    
 }]);

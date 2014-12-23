@@ -132,8 +132,8 @@ public class TemplateTest {
 		fileDTO.setType(typeDTO);
 		
 		System.out.println(om.writeValueAsString(fileDTO));
-		for(int i=0; i<3; i++)
-		System.out.println(fileDTO.getBlocks().get(i).toFreeMarkerFormat());
+//		for(int i=0; i<3; i++)
+//		System.out.println(fileDTO.getBlocks().get(i).toFreeMarkerFormat());
 	}
 	
 	

@@ -6,7 +6,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.service.AssessmentVariableService;
-import gov.va.escreening.service.AvModelBuilder;
+import gov.va.escreening.service.AvBuilder;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -67,7 +67,11 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	Map<Integer, Resolver> resolverMap;
 
 	private Resolver findResolver(Measure m) {
-		return this.resolverMap.get(m.getMeasureType().getMeasureTypeId());
+		return findResolver(m.getMeasureType().getMeasureTypeId());
+	}
+
+	public Resolver findResolver(int measureTypeId) {
+		return this.resolverMap.get(measureTypeId);
 	}
 
 	public String getPlainText(String htmlString) {
@@ -146,29 +150,57 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			final Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avLstWithFormulae) {
 
-		AvModelBuilder avmd = new AvModelBuilder() {
+		AvBuilder<Set<String>> avBldr = new AvBuilder<Set<String>>() {
 			@Override
 			public void buildFromMeasureAnswer(
 					AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
-				surveyFormulae.add(buildXportNameFromMeasureAnswer(avWithFormula));
-				avUsed.add(avWithFormula.getDisplayName());
+				addSurveyFormula(avWithFormula, buildXportNameFromMeasureAnswer(avWithFormula));
+
 			}
 
 			@Override
 			public void buildFromMeasure(AssessmentVariable avWithFormula,
 					AssessmentVarChildren avc, Measure m) {
-				surveyFormulae.add(buildXportNameFromMeasure(avWithFormula));
-				avUsed.add(avWithFormula.getDisplayName());
+				addSurveyFormula(avWithFormula, buildXportNameFromMeasure(avWithFormula));
+			}
+
+			private void addSurveyFormula(AssessmentVariable avWithFormula, String formula) {
+				// each formula is unique and can only be used only once across all surveys.
+				// If it is already used, then do not try to add it again
+				if (avUsed.add(avWithFormula.getDisplayName())) {
+					surveyFormulae.add(formula);
+				}
 			}
 
 			@Override
-			public Object getResult() {
-				return null;
+			public Set<String> getResult() {
+				return surveyFormulae;
+			}
+
+			@Override
+			public void buildFormula(Survey survey, AssessmentVariable av,
+					Collection<Measure> smList,
+					Collection<AssessmentVariable> avList,
+					boolean filterMeasures) {
+
+				for (Measure m : smList) {
+					for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
+						AssessmentVariable av1 = avc.getVariableChild();
+						if (avs.compareMeasure(av1, m)) {
+							buildFromMeasure(av, avc, m);
+						} else if (avs.compareMeasureAnswer(av1, m)) {
+							buildFromMeasureAnswer(av, avc, m, av1.getMeasureAnswer());
+						}
+					}
+					if (!m.getChildren().isEmpty()) {
+						avs.filterBySurvey(survey, this, m.getChildren(), avList, filterMeasures);
+					}
+				}
 			}
 		};
 
-		avs.filterBySurvey(survey, avmd, smList, avLstWithFormulae);
+		avs.filterBySurvey(survey, avBldr, smList, avLstWithFormulae, false);
 	}
 
 	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {
@@ -217,7 +249,7 @@ abstract class Resolver {
 		this.ddh = ddh;
 	}
 
-	String getValidationDescription(Measure m, Multimap mvMap) {
+	String getValidationDescription(Measure m, Multimap mvMap, boolean isOther) {
 		return "";
 	}
 
@@ -226,11 +258,11 @@ abstract class Resolver {
 		addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 
-	String getValuesRange(Measure m, MeasureAnswer ma) {
+	String getValuesRange(Measure m, MeasureAnswer ma, boolean isOther) {
 		return "";
 	}
 
-	String getValuesDescription(Measure m, MeasureAnswer ma) {
+	String getValuesDescription(Measure m, MeasureAnswer ma, boolean isOther) {
 		return "";
 	}
 
@@ -259,13 +291,13 @@ abstract class Resolver {
 		String quesDesc = ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText());
 		boolean addMore = ma != null;
 		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
-		String valsRange = addMore ? getValuesRange(m, ma) : "";
-		String valsDesc = addMore ? getValuesDescription(m, ma) : "";
-		String dataVal = addMore ? getValidationDescription(m, mvMap) : "";
+		String valsRange = addMore ? getValuesRange(m, ma, other) : "";
+		String valsDesc = addMore ? getValuesDescription(m, ma, other) : "";
+		String dataVal = addMore ? getValidationDescription(m, mvMap, other) : "";
 		String followup = addMore ? "todo" : "";
 		String skiplevel = addMore ? getSkipLevel(m) : "";
 
-		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel);
+		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel, other);
 	}
 
 	protected String generateRowId(String partialRowId, String salt, int index) {
@@ -276,7 +308,7 @@ abstract class Resolver {
 
 	protected void addRow(Table<String, String, String> t, String rowId,
 			String quesType, String quesDesc, String varName, String valsRange,
-			String valsDesc, String dataVal, String followup, String skiplevel) {
+			String valsDesc, String dataVal, String followup, String skiplevel, boolean other) {
 
 		t.put(rowId, ddh.msg("ques.type"), quesType);
 		t.put(rowId, ddh.msg("ques.desc"), quesDesc);
@@ -286,6 +318,7 @@ abstract class Resolver {
 		t.put(rowId, ddh.msg("data.val"), dataVal);
 		t.put(rowId, ddh.msg("followup"), followup);
 		t.put(rowId, ddh.msg("skiplevel"), skiplevel);
+		t.put(rowId, ddh.msg("answer.type.other"), String.format("%s$%s", varName, String.valueOf(other)));
 	}
 
 	private String getSkipLevel(Measure m) {
@@ -299,13 +332,13 @@ class MultiSelectResolver extends Resolver {
 	}
 
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer ma) {
-		return "0-1,999";
+	public String getValuesRange(Measure m, MeasureAnswer ma, boolean isOther) {
+		return isOther?ddh.findResolver(1).getValuesRange(m,ma,isOther):"0-1,999";
 	}
 
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer ma) {
-		return "0= no, 1= yes, 999= missing";
+	public String getValuesDescription(Measure m, MeasureAnswer ma, boolean isOther) {
+		return isOther?ddh.findResolver(1).getValuesDescription(m,ma,isOther):"0= no, 1= yes, 999= missing";
 	}
 
 	@Override
@@ -332,7 +365,11 @@ class SelectOneResolver extends Resolver {
 	 * consolidate measure answers' ranges. The out put will be in following format 1-10,999
 	 */
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer unusedMa) {
+	public String getValuesRange(Measure m, MeasureAnswer unusedMa, boolean isOther) {
+		if (isOther){
+			return ddh.findResolver(1).getValuesRange(m,unusedMa,isOther);
+		}
+		
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
 		int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
 		if (calculationType == 1) {
@@ -355,7 +392,10 @@ class SelectOneResolver extends Resolver {
 	 * specify,999=missing
 	 */
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer unusedMa) {
+	public String getValuesDescription(Measure m, MeasureAnswer unusedMa, boolean isOther) {
+		if (isOther){
+			return ddh.findResolver(1).getValuesDescription(m,unusedMa,isOther);
+		}
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
 		int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
 		if (calculationType == 1) {
@@ -377,17 +417,17 @@ class FreeTextResolver extends Resolver {
 	}
 
 	@Override
-	public String getValuesRange(Measure m, MeasureAnswer ma) {
+	public String getValuesRange(Measure m, MeasureAnswer ma, boolean isOther) {
 		return "text";
 	}
 
 	@Override
-	public String getValuesDescription(Measure m, MeasureAnswer ma) {
+	public String getValuesDescription(Measure m, MeasureAnswer ma, boolean isOther) {
 		return "text, 999= missing";
 	}
 
 	@Override
-	String getValidationDescription(Measure m, Multimap mvMap) {
+	String getValidationDescription(Measure m, Multimap mvMap, boolean isOther) {
 		Collection<String> validations = mvMap.get(m.getMeasureId());
 		String description = Joiner.on(", ").skipNulls().join(validations);
 		return description;
@@ -450,7 +490,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 			Table<String, String, String> t, String salt) {
 	    String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
 		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getExportName());
-		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "");
+		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "", false);
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }

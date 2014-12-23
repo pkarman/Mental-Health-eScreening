@@ -73,6 +73,26 @@ public class VeteranAssessmentSurvey implements Serializable {
 	public VeteranAssessmentSurvey(VeteranAssessment assessment, Survey survey) {
 		this.veteranAssessment = assessment;
 		this.survey = survey;
+		
+		int total = 0;
+		//find the total number of questions
+		for(SurveyPage p : survey.getSurveyPageList())
+		{
+			for(Measure m : p.getMeasures())
+			{
+				if((!(m.getMeasureType().getMeasureTypeId()==8)) && (m.getMeasureType().getMeasureTypeId() == 4
+						|| m.getChildren() == null || m.getChildren().isEmpty()))
+				{
+					total++;
+				}
+				else
+				{
+					total += m.getChildren().size();
+				}
+			}
+		}
+		setTotalQuestionCount(total);
+		setTotalResponseCount(0);
 	}
 
 	public Integer getVeteranAssessmentSurveyId() {

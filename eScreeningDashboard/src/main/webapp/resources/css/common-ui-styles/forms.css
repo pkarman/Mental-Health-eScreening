@@ -72,7 +72,7 @@
 			box-shadow:inset 0px 1px 0px 0px rgba(124, 172, 222, 1);
 			box-shadow:inset 0px 1px 0px 0px #7cacde;
 			*/
-			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+			behavior:url(../PIE_uncompressed.htc);
 		}
 		
 		#formHeader h2, #formHeader h3{
@@ -163,7 +163,7 @@
 			-moz-border-radius:10px;
 			-webkit-border-radius: 10px;
 			border-radius: 10px;
-			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+			behavior:url(../PIE_uncompressed.htc);
 		}
 		
 		.selectfield{
@@ -219,7 +219,7 @@
 		    */
 			-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45)";
  			filter: progid:DXImageTransform.Microsoft.Shadow(Color=#000, direction=45);
- 			behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+ 			behavior:url(../PIE_uncompressed.htc);
 		  }
 		  .arrow {
 		    width: 70px;
@@ -254,21 +254,9 @@
 		    -ms-transform: rotate(45deg);
 		    -o-transform: rotate(45deg);
 		    tranform: rotate(45deg);
-		    behavior:url(../../../../../svn/FullProject/triplei_escreening/WebDashboard/eScreeningDashboard/src/main/webapp/resources/css/common-ui-styles/resources/css/PIE_uncompressed.htc);
+		    behavior:url(../PIE_uncompressed.htc);
 		  }
 		  .arrow.top:after {
 		    bottom: -20px;
 		    top: auto;
 		  }
-		  
-
-
-
-
-
-
-
-
-
-
-
