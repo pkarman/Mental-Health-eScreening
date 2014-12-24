@@ -3,14 +3,20 @@
         <div class="col-md-6 col-sm-6">
             <h1>Manage Sections</h1>
         </div>
-        <div class="col-md-6 col-sm-6">            
-            <div class="pull-right">        
-              <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right"
-                      type="button"><span class="glyphicon glyphicon-plus"></span> Add Section
-              </button>
+        <div class="col-md-6 col-sm-6">
+            <div class="pull-right">
+                <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right"
+                        type="button"><span class="glyphicon glyphicon-plus"></span> Add Section
+                </button>
             </div>
 
-            <div ng-click="openAll()" class="label label-primary pull-right  margin-right-10 margin-top-35"><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !status.closeOthers, 'glyphicon-chevron-right': status.closeOthers}"></i></div>
+            <div ng-click="openAll()" class="label label-primary pull-right  margin-right-10 margin-top-35">
+                <i class="pull-right glyphicon"
+                   ng-class="{'glyphicon-chevron-down': !status.closeOthers, 'glyphicon-chevron-right': status.closeOthers}">
+                    <span ng-if="status.closeOthers">Expand</span>
+                    <span ng-if="!status.closeOthers">Collapse</span>
+                </i>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -20,16 +26,17 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-                <div ng-include="'resources/editors/views/sections/survey_sections.html'"></div>
+            <div ng-include="'resources/editors/views/sections/survey_sections.html'"></div>
         </div>
     </div>
     <br>
+
     <div class="row">
-      <div class="col-md-12">
-        <div class="form-group pull-right">
-          <button ng-click="saveAll()" ng-disabled="false" class="btn btn-primary" type="button">Save</button>
-          <button ng-click="cancel()" class="btn btn-default" type="button">Cancel</button>
+        <div class="col-md-12">
+            <div class="form-group pull-right">
+                <button ng-click="saveAll()" ng-disabled="false" class="btn btn-primary" type="button">Save</button>
+                <button ng-click="cancel()" class="btn btn-default" type="button">Cancel</button>
+            </div>
         </div>
-      </div>
     </div>
 </div><br><br>

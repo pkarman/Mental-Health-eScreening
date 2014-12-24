@@ -1,5 +1,5 @@
 angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
-    .factory('SurveySectionService', ['Restangular', '$q', function (Restangular, $q) {
+    .factory('SurveySectionService', ['$log', 'Restangular', '$q', function ($log, Restangular, $q) {
 
         "use strict";
 
@@ -29,8 +29,8 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
                 _.each(newSections, function (ss) {
                     p.push(service.create(ss)
                         .then(function (createdData) {
-                            console.debug('details of section created in database => '+JSON.stringify(createdData));
-                            console.log('added success:\'' + ss.name + '\' added successfully');
+                            $log.debug('details of section created in database => ' + JSON.stringify(createdData));
+                            $log.debug('added success:\'' + ss.name + '\' added successfully');
                         }));
                 });
                 return p;
@@ -40,8 +40,8 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
                 _.each(updateSections, function (ss) {
                     p.push(service.update(ss)
                         .then(function (modifiedData) {
-                            console.debug('details of section updated => '+JSON.stringify(modifiedData));
-                            console.log('update success:\'' + ss.name + '\' updated successfully');
+                            $log.debug('details of section updated => ' + JSON.stringify(modifiedData));
+                            $log.debug('update success:\'' + ss.name + '\' updated successfully');
                         }));
                 });
                 return p;
@@ -51,8 +51,8 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
                 _.each(deleteSections, function (ss) {
                     p.push(service.delete(ss)
                         .then(function () {
-                            console.debug('details of section deleted => '+JSON.stringify(ss));
-                            console.log('delete success:\'' + ss.name + '\' deleted successfully');
+                            $log.debug('details of section deleted => ' + JSON.stringify(ss));
+                            $log.debug('delete success:\'' + ss.name + '\' deleted successfully');
                         }));
                 });
                 return p;
@@ -74,34 +74,34 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['restangular'])
                 $q.all(service.batchCreate(newRecs))
                     .then(function (newResults) {
                         if (newRecs) {
-                            console.log("[" + newRecs.length + "] Sections added successfully:" + JSON.stringify(newResults));
+                            $log.debug("[" + newRecs.length + "] Sections added successfully:" + JSON.stringify(newResults));
                         }
                         // update
                         $q.all(service.batchUpdate(updateRecs))
                             .then(function (updateResults) {
-                                console.log("[" + updateRecs.length + "] Sections updated successfully:" + JSON.stringify(updateResults));
+                                $log.debug("[" + updateRecs.length + "] Sections updated successfully:" + JSON.stringify(updateResults));
                                 // third row is for delete records
                                 // PS: this will be called after records are added and created
                                 // as otherwise foreign key's will hinder the delete operation
                                 var deleteRecs = _.uniq(toBeDel.sections);
                                 // reset the toBeDel now
-                                toBeDel.sections=[];
+                                toBeDel.sections = [];
                                 $q.all(service.batchDelete(deleteRecs))
                                     .then(function (deleteResults) {
-                                        console.log("[" + deleteRecs.length + "] Sections deleted successfully:" + JSON.stringify(deleteResults));
+                                        $log.debug("[" + deleteRecs.length + "] Sections deleted successfully:" + JSON.stringify(deleteResults));
                                         succMsgCb(true, "Saved all sections successfully");
                                         refreshDataCb();
                                     }, function error(deleteErrs) {
-                                        console.log("error while write batch delete:" + JSON.stringify(deleteErrs));
-                                        dangerMsgCb(true, "Error Found while deleting sections. Delete operation failed. Reason:"+deleteErrs.data.status.message);
+                                        $log.debug("error while write batch delete:" + JSON.stringify(deleteErrs));
+                                        dangerMsgCb(true, "Error Found while deleting sections. Delete operation failed");
                                     });
                             }, function error(updateErrs) {
-                                console.log("error while batch updates:" + JSON.stringify(updateErrs));
-                                dangerMsgCb(true, "Error Found while updating sections. Update operation failed. Reason:"+updateErrs.data.status.message);
+                                $log.debug("error while batch updates:" + JSON.stringify(updateErrs));
+                                dangerMsgCb(true, "Error Found while updating sections. Update operation failed");
                             });
                     }, function error(createErrs) {
-                        console.log("error while write batch:" + JSON.stringify(createErrs));
-                        dangerMsgCb(true, "Error Found while creating sections. Create operation failed. Reason:"+createErrs.data.status.message);
+                        $log.debug("error while write batch:" + JSON.stringify(createErrs));
+                        dangerMsgCb(true, "Error Found while creating sections. Create operation failed");
                     });
             }
 

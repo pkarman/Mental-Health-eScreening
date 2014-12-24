@@ -1,7 +1,7 @@
 <!-- The dnd-list directive allows to drop elements into it.
      The dropped data will be added to the referenced list -->
 <accordion close-others="false">
-    <ul dnd-list="ssRows">
+    <ul dnd-list="ssRows" style="list-style: none;">
         <li ng-repeat="ssRow in ssRows"
             dnd-draggable="ssRow"
             dnd-moved="ssRows.splice($index, 1)"
@@ -40,13 +40,13 @@
                                placeholder="Description...">
                     </div>
                 </div>
-                <h5>
+                <h4>
                     <div ng-click="ssRow.openModule=!ssRow.openModule"
-                         class="label label-primary margin-right-10 margin-top-35">
+                         class="label label-default margin-right-10 margin-top-35">
                         <i class="glyphicon"
-                           ng-class="{'glyphicon-chevron-down': ssRow.openModule, 'glyphicon-chevron-right': !ssRow.openModule}"></i>
+                           ng-class="{'glyphicon-chevron-down': ssRow.openModule, 'glyphicon-chevron-right': !ssRow.openModule}">  <strong>Module(s)</strong></i>
                     </div>
-                    <strong>Module(s)</strong></h5>
+                </h4>
                 <div collapse="!ssRow.openModule">
                     <div class="row">
                         <div class="ss col-md-12">
