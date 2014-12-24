@@ -731,6 +731,16 @@ span.countdown {
   -webkit-transition: all linear 0.5s;
   transition: all linear 0.5s;
 }
+.form_editor accordion .panel-group  ul{
+  padding:0px;
+}
+.form_editor accordion .panel-group ul li{
+  margin-bottom:10px;
+}
+.modules-list{
+  border:1px solid #C8C8C8;
+  border-radius:4px;
+}
 
 @media only screen 
 and (min-device-width : 768px) 
