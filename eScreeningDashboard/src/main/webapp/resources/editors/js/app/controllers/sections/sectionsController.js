@@ -124,13 +124,26 @@ Editors.controller('sectionsController', ['$scope', '$state', 'SurveySectionServ
         dbData = dbData.concat(tmp);
     }
 
+    function passBasicSanityChecks() {
+        var errSectionName = _.find($scope.ssRows, function (ssRow) {
+            return ssRow.name.length <= 0;
+        })
+        if (errSectionName) {
+            addDangerMsg(true, 'Section must have a name');
+        }
+
+        return errSectionName == undefined;
+    }
+
     function saveAll(foo) {
+        if (passBasicSanityChecks()) {
 
-        adjustDisplayOrders();
+            adjustDisplayOrders();
 
-        updateDbDataWithScopeData();
+            updateDbDataWithScopeData();
 
-        SurveySectionService.applyCrud(dbData, toBeDel, addSuccessMsg, addDangerMsg, refreshNow);
+            SurveySectionService.applyCrud(dbData, toBeDel, addSuccessMsg, addDangerMsg, refreshNow);
+        }
     };
 
     //refresh the view on entry

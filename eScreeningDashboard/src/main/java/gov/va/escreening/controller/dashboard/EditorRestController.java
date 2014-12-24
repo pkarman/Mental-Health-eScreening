@@ -419,6 +419,7 @@ public class EditorRestController {
             @CurrentUser EscreenUser escreenUser) {
         logger.debug("addSection");
         ErrorResponse errorResponse = new ErrorResponse();
+
         if (surveySectionInfo != null) {
             logger.debug(surveySectionInfo.toString());
 
@@ -431,6 +432,10 @@ public class EditorRestController {
                 errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Name", "Secion Name should be less than 50 characters.");
             }
 
+            if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+                throw new AssessmentEngineDataValidationException(errorResponse);
+            }
+
             // Call service class here.
             Integer surveySectionId = editorsViewDelegate.createSection(surveySectionInfo);
             surveySectionInfo.setSurveySectionId(surveySectionId);
@@ -439,9 +444,6 @@ public class EditorRestController {
             errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Object", "Cannot be null.");
         }
 
-        if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
-            throw new AssessmentEngineDataValidationException(errorResponse);
-        }
 
         return surveySectionInfo;
     }
