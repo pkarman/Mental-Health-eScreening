@@ -9,8 +9,10 @@
 angular.module('EscreeningDashboardApp.filters.messages', []).filter('uniqueMessage', function(){
     'use strict';
     return function (messages) {
-        if(Object.isDefined(messages)){
-            var filtered = messages.filter(function(message, index, messageArray){
+	    var filtered = messages;
+
+	    if (angular.isArray(messages)) {
+		    filtered = messages.filter(function (message, index, messageArray) {
                 var existingMessages = [], filterResults = false;
     
                 if(index > 0){
@@ -30,11 +32,10 @@ angular.module('EscreeningDashboardApp.filters.messages', []).filter('uniqueMess
                 }
     
                 return filterResults;
-            });
-            
-            return filtered;
+            });            
         }
-        return messages;
+        
+        return filtered;
         
     };
 });

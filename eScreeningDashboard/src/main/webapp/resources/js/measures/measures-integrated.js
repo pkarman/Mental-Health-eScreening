@@ -260,8 +260,8 @@ function openSkipDialog(url, requestJSON, initialPageCallback) {
             $(this).parent().find(".ui-dialog-buttonpane .ui-button")
                 .addClass("customButtonsDialog");
 						$(this).parents().find('.ui-dialog')
-								.attr('aria-hidden', 'false');
-                
+								.attr('aria-hidden', 'false');      
+          
             $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
             $(".assessment-column-left").attr('aria-hidden', 'true');
             // Delay play sound

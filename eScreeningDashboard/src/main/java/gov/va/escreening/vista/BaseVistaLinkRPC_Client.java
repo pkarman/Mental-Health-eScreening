@@ -25,7 +25,7 @@ public abstract class BaseVistaLinkRPC_Client{
     private String appProxyName = null;
     private String rpcContext = null;
     private boolean useProprietaryMessageFormat = true;
-    private int connectionTimeOut = 1000;
+    private int connectionTimeOut = 10000;
     private RpcRequest request = null;
     private VistaLinkConnection connection = null;
 

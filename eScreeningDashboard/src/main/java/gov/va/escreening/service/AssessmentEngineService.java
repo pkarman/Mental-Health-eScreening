@@ -25,9 +25,12 @@ public interface AssessmentEngineService {
 	 * @param assessmentRequest
 	 * @return a map (from measure ID to visibility) containing measures found
 	 *         on the survey page found in the request.
+	 *         
+	 *  This function does a lot of DB IO unecessarily. Remove it and use the inmemory version
+	 *  instead.
 	 */
-	Map<Integer, Boolean> getUpdatedVisibility(
-			AssessmentRequest assessmentRequest);
+//	Map<Integer, Boolean> getUpdatedVisibility(
+//			AssessmentRequest assessmentRequest);
 
 	boolean transitionAssessmentStatusTo(Integer veteranAssessmentId,
 			AssessmentStatusEnum requestedState);
