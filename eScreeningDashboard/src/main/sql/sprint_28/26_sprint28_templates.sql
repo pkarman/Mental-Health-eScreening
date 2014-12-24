@@ -1037,3 +1037,67 @@ ${MODULE_START}
 	</#if>
 ${MODULE_END}'
 where template_id = 29;
+
+/***** t753 remove all ACSW ****/
+update template
+set template_file = '
+<#include "clinicalnotefunctions">
+<#-- Template start -->
+${MODULE_START}
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="50%" valign="middle"><h2  style="color:#1b4164"><strong>eScreening Summary</strong></h2></td>
+    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"><br></td>
+  </tr>
+</table>
+
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 1px dashed #000000; border-top:1px dashed #000000;">
+  <tr>
+
+    <td width="50%" valign="top" style="border-right: 1px dashed #000000;">
+        <div align="center" style="color:#1b4164"><h3> <strong>${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</strong></h3>
+
+        <#if var2??>
+        <strong>${getVariableDisplayText(var2)}</strong><br>
+        </#if>
+
+        <#if var7??>
+        <strong>${getVariableDisplayText(var7)}</strong>
+        <#else>
+        Assessment is incomplete
+        </#if>
+    <br>
+
+    </div></td>
+
+    <td width="50%" valign="top"><h3 align="center"  style="color:#1b4164">Appointments</h3>
+
+
+        <#if var6?? && (var6.children)?? >
+
+            <#if ((var6.children)?size > 0) >
+                <ul>
+                ${delimitChildren(var6 "<li>" "</li>" true)}
+                </ul>
+            <#else>
+                <div align="center"><h4>None scheduled</h4></div>
+            </#if>
+        <#else>
+            <div align="center"><h4>Appointments unavailable</h4><div>
+        </#if>
+      </td>
+
+  </tr>
+
+</table>
+<br>
+
+<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz at (858) 642-3615.</div>
+
+<div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
+
+<div><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </div>
+${MODULE_END}'
+where template_id = 200;
+
