@@ -183,7 +183,8 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <style type="text/css">
-	    @media (min-width:1024px) { 
+	    <!-- TODO: Need to move to external CSS file -->
+      @media (min-width:1024px) { 
 			.navbar > .container {
 			    text-align: center;
 			}

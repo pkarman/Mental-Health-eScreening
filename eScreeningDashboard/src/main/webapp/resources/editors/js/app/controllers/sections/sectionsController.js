@@ -1,4 +1,4 @@
-Editors.controller('sectionsController', ['$scope', '$state', 'SurveySectionService', function ($scope, $state, SurveySectionService) {
+Editors.controller('sectionsController', ['$log', '$scope', '$state', 'SurveySectionService', function ($log, $scope, $state, SurveySectionService) {
     var toBeDel = {sections: []};
     var dbData = [];
 
@@ -104,7 +104,7 @@ Editors.controller('sectionsController', ['$scope', '$state', 'SurveySectionServ
         //dragging these survey sections back and forth
         _.each($scope.ssRows, function (ss, index) {
             ss.displayOrder = index + 1;
-            console.log('displayOrder of \'' + ss.name + '\' set to => ' + ss.displayOrder);
+            $log.debug('displayOrder of \'' + ss.name + '\' set to => ' + ss.displayOrder);
         });
     }
 
