@@ -12,8 +12,8 @@
 
             <div ng-click="openAll()" class="label label-primary cursor-pointer pull-right  margin-right-10 margin-top-35">
                 <i class="glyphicon" ng-class="{'glyphicon-chevron-down': !status.closeOthers, 'glyphicon-chevron-right': status.closeOthers}"></i>
-                <span ng-if="status.closeOthers">Expand</span>
-                <span ng-if="!status.closeOthers">Collapse</span>
+                <span ng-if="status.closeOthers">Expand All Sections</span>
+                <span ng-if="!status.closeOthers">Collapse All Sections</span>
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 section-rows">
             <div ng-include="'resources/editors/views/sections/survey_sections.html'"></div>
         </div>
     </div>
