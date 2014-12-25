@@ -62,3 +62,14 @@
     background-color: #CACACA;
     /* color: #3c763d; */
 }
+
+/* Placeholder for section dragging */
+.section-rows ul[dnd-list] .dndDraggingSource {
+    display: none;
+}
+.section-rows ul[dnd-list] .dndPlaceholder {
+    display: block;
+    background-color: #e5e5e5;
+    min-height: 42px; 
+    border:2px dashed #bbb; 
+}

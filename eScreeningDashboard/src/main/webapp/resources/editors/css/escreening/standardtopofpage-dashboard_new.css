@@ -741,6 +741,15 @@ span.countdown {
   border:1px solid #C8C8C8;
   border-radius:4px;
 }
+.section-rows h4{
+  font-size:14px;
+  font-weight:bold;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+  color: #ffae00;
+  background-color: #001441;
+  border-color: #adadad;
+}
 
 @media only screen 
 and (min-device-width : 768px) 

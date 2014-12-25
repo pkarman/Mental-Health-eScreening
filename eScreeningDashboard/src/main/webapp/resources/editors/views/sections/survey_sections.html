@@ -30,11 +30,11 @@
                 </accordion-heading>
 
                 <div class="row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label>Name</label>
                         <input type="text" ng-model="ssRow.name" class="form-control" placeholder="Name...">
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-8 form-group">
                         <label>Description</label>
                         <input type="text" ng-model="ssRow.description" class="form-control"
                                placeholder="Description...">
@@ -42,9 +42,12 @@
                 </div>
                 <h4>
                     <div ng-click="ssRow.openModule=!ssRow.openModule"
-                         class="label label-default margin-right-10 cursor-pointer margin-top-35">
+                         class="label label-primary cursor-pointer margin-top-35">
                         <i class="glyphicon"
-                           ng-class="{'glyphicon-chevron-down': ssRow.openModule, 'glyphicon-chevron-right': !ssRow.openModule}">  </i> <strong>Module(s)</strong>
+                           ng-class="{'glyphicon-chevron-down': ssRow.openModule, 'glyphicon-chevron-right': !ssRow.openModule}">  </i>
+                            <span ng-if="ssRow.openModule">Collapse</span>
+                            <span ng-if="!ssRow.openModule">Expand</span>
+                            Module(s)
                     </div>
                 </h4>
                 <div collapse="!ssRow.openModule">
