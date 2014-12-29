@@ -1,12 +1,13 @@
 <!-- The dnd-list directive allows to drop elements into it.
      The dropped data will be added to the referenced list -->
-<ul dnd-list="ssRow.surveys"  ng-class="{modules-list: ssRow.surveys.length == 0}">
+<ul dnd-list="ssRow.surveys" moduleType ng-class="{'modules-list': ssRow.surveys.length == 0}">
     <!-- The dnd-draggable directive makes an element draggable and will
          transfer the object that was assigned to it. If an element was
          dragged away, you have to remove it from the original list
          yourself using the dnd-moved attribute -->
     <li ng-repeat="survey in ssRow.surveys"
         dnd-draggable="survey"
+        dnd-type="'moduleType'"
         dnd-moved="ssRow.surveys.splice($index, 1)"
         dnd-effect-allowed="move"
         dnd-selected="status.dd.modules.selected = survey"
