@@ -4,7 +4,7 @@
       <h1>Manage Module</h1>
     </div>
     <div class="col-md-6">
-      <button ng-click="editTemplates();" ng-disabled="!isModuleSaved();" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
+      <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
     </div>
 </div>
 
@@ -44,29 +44,30 @@
                         <div class="form-group">
                             <label for="inputTitle">Title *</label>
                             <input name="inputTitle" id="inputTitle" type="text" class="form-control"
-                                   ng-model="selectedSurveyUIObject.name"
+                                   ng-model="survey.name"
                                    placeholder="Enter Module Title" requried>
                         </div>
                         <div class="form-group">
                             <label for="inputDescription">Description</label>
                             <input name="inputDescription" id="inputDescription" type="text" class="form-control"
-                                   ng-model="selectedSurveyUIObject.description"
+                                   ng-model="survey.description"
                                    placeholder="Enter Module Description">
                         </div>
                     </div>
                     <div class="col-md-4">
                             <!--
                             <br>
-                            <input type="checkbox" id="is_clinical_reminder" ng-model="selectedSurveyUIObject.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
+                            <input type="checkbox" id="is_clinical_reminder" ng-model="survey.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
 
                             <label>VistA Title</label>
-                            <textarea class="form-control" ng-model="selectedSurveyUIObject.vista_title" placeholder="Enter VistA Title" ng-disabled="!selectedSurveyUIObject.clinicalReminder" ></textarea>
+                            <textarea class="form-control" ng-model="survey.vista_title" placeholder="Enter VistA Title" ng-disabled="!survey.clinicalReminder" ></textarea>
                             //-->
                             <div class="form-group">
                                 <label for="selectSurveySection">Section *</label>
+
                                 <select id="selectSurveySection" name="selectSurveySection" class="form-control"
-                                        ng-model="selectedSurveyUIObject.surveySection"
-                                        ng-options="surveySectionDropDownMenuOption.item as surveySectionDropDownMenuOption.name for surveySectionDropDownMenuOption in surveySectionDropDownMenuOptions"
+                                        ng-model="survey.surveySection"
+                                        ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
                                         required>
                                     <option value=""> -- Choose Section --</option>
                                 </select>
@@ -77,62 +78,62 @@
 
             </div>
         </form>
-        <br>
 
-        
+        <br>
 
         <div class="row">
             <div class="col-md-4 text-center">
                 <div class="border-radius-top-box  gray-lighter">
                   <div class="section_header_title pull-left">Items</div>
-                  <button class="btn btn-success btn-sm pull-right" ng-click="addPageBreak();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
+                  <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
                   <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
                   <div class="clearfix"></div>
                  </div>
                  
                     
                 <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
-                    <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="pageQuestionItems">
+                    <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="surveyPages">
+                        <li class="list-group-item text-left" ng-repeat="page in surveyPages"
+                                ng-class="{'unsortable': page.sortable === false}">
 
-                        <li class="list-group-item text-left" ng-repeat="item in pageQuestionItems"
-                            ng-class="{'unsortable': item.isEnabled() === false}">
-
-                            <div ng-switch on="item.isPage()">
-                                <div ng-switch-when="true" class="page-divider-container">
-                                    <div class="page-divider-container-row">
-                                        <div class="page-divider">
-                                            <button type="button" class="btn btn-default btn-circle pull-left">
-                                                {{item.getType()}} {{item.getItem().pageNumber}}
-                                                    <span class="glyphicon glyphicon-remove-circle"
-                                                          style="margin-left: 10px;color:red;"
-                                                          ng-show="item.getItem().pageNumber > 1"
-                                                          ng-click="deletePageQuestionItem(item);"/>
-                                            </button>
-                                            <button class="btn btn-success btn-sm pull-right" ng-click="goToQuestions(item);"><span
-                                                    class="glyphicon glyphicon-plus"></span> Add Item
-                                            </button>
-                                        </div>
+                            <div class="page-divider-container">
+                                <div class="page-divider-container-row">
+                                    <div class="page-divider">
+                                        <button type="button" class="btn btn-default btn-circle pull-left">
+                                            Page {{page.pageNumber}}
+                                            <span class="glyphicon glyphicon-remove-circle"
+                                                    style="margin-left: 10px;color:red;"
+                                                    ng-show="page.pageNumber > 1"
+                                                    ng-click="deletePage($index);"/>
+                                        </button>
+                                        <button class="btn btn-success btn-sm pull-right" ng-click="addQuestion(page);"><span
+                                                class="glyphicon glyphicon-plus"></span> Add Item
+                                        </button>
                                     </div>
-                                </div>
-
-                                <div ng-switch-default class="form-inline">
-                                    <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>                                    
-                                    <div class="pull-left">
-                                      <div class="strong" style="font-size:12px;" ng-click="editQuestion(item);">{{item.getItem().variableName}}</div>
-                                      <div style="font-size:12px;">{{item.getItem().type}}</div>
-                                    </div>
-                                    <div class="pull-right margin_top_10">
-                                        <span ng-show="item.isQuestion()">
-                                            <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(item);"></span>
-                                        </span>
-                                        <span class="glyphicon glyphicon-remove-circle cursor_pointer"
-                                              style="margin-left: 10px; color:red;"
-                                              ng-click="deletePageQuestionItem(item);"></span>
-
-                                    </div>
-                                    <div class="clearfix"></div>
                                 </div>
                             </div>
+                            <ul class="list-group app screen" style="margin-top:5px;">
+                                <li class="list-group-item text-left" ng-repeat="question in page.questions"
+                                        ng-class="{'unsortable': question.sortable === false}">
+                                    <div class="form-inline">
+                                        <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
+                                        <div class="pull-left">
+                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(question);">{{question.variableName}}</div>
+                                            <div style="font-size:12px;">{{question.type}}</div>
+                                        </div>
+                                        <div class="pull-right margin_top_10">
+                                            <span>
+                                                <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(question);"></span>
+                                            </span>
+                                            <span class="glyphicon glyphicon-remove-circle cursor_pointer"
+                                                    style="margin-left: 10px; color:red;"
+                                                    ng-click="deleteQuestion(page, $index);"></span>
+
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

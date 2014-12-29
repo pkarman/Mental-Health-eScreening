@@ -107,7 +107,7 @@
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
@@ -116,6 +116,12 @@
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
+
+    <!-- Application Definition file -->
+    <script type="text/javascript" src="resources/editors/main.js"></script>
+
+    <!-- UI-Router View States definition -->
+    <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
@@ -133,9 +139,6 @@
     <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
     
-    <!-- Application Definition file -->
-    <script type="text/javascript" src="resources/editors/main.js"></script>
-    
     <!-- Controllers -->
     
     <!-- Entry View -->
@@ -145,25 +148,29 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAbstractController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesSelectionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAddEditController.js"></script>
-    
+
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
-    
-    <!-- Modules View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
 
-    <!-- Questions View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/freeTextReadOnlyQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleMatrixQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/instructionQuestionController.js"></script>
+    <!-- Modules View State(s) -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.list.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
+
+    <!-- Modules Detail Questions View State(s) -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.freetext.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.instructions.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.list.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.multi.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.multimatrix.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.one.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.onematrix.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.table.controller.js"></script>
     
     <!-- Template View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.edit.controller.js"></script>
+
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
@@ -174,9 +181,6 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
 
-    <!-- UI-Router View States definition -->
-    <script type="text/javascript" src="resources/editors/states.js"></script>
-    
     <style type="text/css">
 	    @media (min-width:1024px) { 
 			.navbar > .container {

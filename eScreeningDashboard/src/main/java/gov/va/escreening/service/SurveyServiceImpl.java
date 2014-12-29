@@ -387,6 +387,15 @@ public class SurveyServiceImpl implements SurveyService {
 		return surveyPageInfos;
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public SurveyInfo getSurvey(int surveyId) {
+		SurveyInfo surveyInfo = null;
+		Survey survey = surveyRepository.findOne(surveyId);
+
+		return surveyInfo;
+	}
+
 	@Override
 	public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
 		Survey survey = new Survey();

@@ -264,7 +264,7 @@ public class EditorRestController {
         logger.debug("getSurvey");
 
         // Call service class here instead of hard coding it.
-       // SurveyInfo surveyInfo = //editorsViewDelegate.getSurvey(surveyId);
+       SurveyInfo surveyInfo = editorsViewDelegate.getSurvey(surveyId);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
     }

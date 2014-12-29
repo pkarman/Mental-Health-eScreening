@@ -1,7 +1,7 @@
 /**
  * Created by Robin Carnow on 9/26/2014.
  */
-Editors.controller('ModuleTemplateListController', 
+Editors.controller('ModulesTemplatesController',
         ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'TemplateTypeService', 'templateTypes',
          function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
@@ -66,7 +66,7 @@ Editors.controller('ModuleTemplateListController',
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
            };
         
-        $state.go('modules.templateeditor', editorParams);
+        $state.go('modules.templates.edit', editorParams);
     };
 
     $scope.deleteTemplate = function(templateType){

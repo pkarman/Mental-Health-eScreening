@@ -125,6 +125,11 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	}
 
     @Override
+    public SurveyInfo getSurvey(int surveyId) {
+        return surveyService.getSurvey(surveyId);
+    }
+
+    @Override
     public List<SurveyInfo> getSurveys() {
         return surveyService.getSurveyItemList();
     }

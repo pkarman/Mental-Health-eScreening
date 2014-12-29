@@ -57,6 +57,8 @@ public interface SurveyService {
      */
     Survey findOne(int surveyId);
 
+    SurveyInfo getSurvey(int surveyId);
+
 	SurveyInfo convertToSurveyItem(Survey survey);
 	
 	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);

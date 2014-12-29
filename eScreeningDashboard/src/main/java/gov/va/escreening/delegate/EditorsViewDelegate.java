@@ -17,8 +17,8 @@ public interface EditorsViewDelegate {
     void deleteBattery(Integer batteryId);
     
     List<SurveyInfo> getSurveys();
+    SurveyInfo getSurvey(int surveyId);
     SurveyInfo updateSurvey(SurveyInfo surveyInfo);
-
     
     Integer createSection(SurveySectionInfo surveySection);
    	SurveySectionInfo getSection(Integer sectionId);

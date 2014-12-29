@@ -126,7 +126,7 @@ angular.module('Editors')
                 .state('modules-select',{
                     abstract:false,
                     url: '/modules-select',
-                    templateUrl: 'resources/editors/views/modules/modulesselectview.html',
+                    templateUrl: 'resources/editors/views/modules/modules.list.html',
                     controller:['$rootScope', '$scope', '$state',
                         function($rootScope, $scope, $state){
                             $scope.editClick = function(){
@@ -162,7 +162,7 @@ angular.module('Editors')
 
                             $scope.addQClick = function(){
                                 var modalInstance = $modal.open({
-                                    templateUrl: 'views/questions/selectsinglemultiplematrixquestion.html',
+                                    templateUrl: 'views/modules/modules.detail.multimatrix.html',
                                     controller: questionModalController
                                 });
 
@@ -216,7 +216,7 @@ angular.module('Editors')
 
                 .state('questions-table',{
                     url:'/questions-table',
-                    templateUrl:'resources/editors/views/questions/tablequestion.html'
+                    templateUrl:'resources/editors/views/questions/modules.detail.table.html'
                 })
 
                 .state('questions-instructions',{

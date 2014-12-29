@@ -1,7 +1,7 @@
 /**
  * Created by Bryan Henderson - 08/07/2014
  */
-Editors.controller('selectMultipleQuestionController', ['$rootScope', '$scope', '$state','QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
+Editors.controller('ModulesDetailMultiController', ['$rootScope', '$scope', '$state','QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
 	//$scope.question = EScreeningDashboardApp.models.Question.toUIObjects($rootScope.selectedQuestion);
     //$rootScope.currentlySelectedAnswerTypeDropDownMenu = $scope.getDefaultTextFormatType($scope.selectedQuestionUIObject, $rootScope.textFormatDropDownMenuOptions);
 	$scope.answerTypeMenuOptions = answerTypeMenuOptions;

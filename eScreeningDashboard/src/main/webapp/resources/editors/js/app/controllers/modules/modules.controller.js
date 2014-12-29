@@ -1,41 +1,14 @@
-/**
- * Created by pouncilt on 8/4/14.
- */
-Editors.controller('moduleController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
+
+Editors.controller('ModulesController', ['$rootScope', '$scope', '$state', function ($rootScope, $scope, $state) {
+
     var selectedPage;
 
-    var createModule = function(jsonModuleObject){
-            return new EScreeningDashboardApp.models.Survey(jsonModuleObject);
-        },
-        createQuestion = function(jsonQuestionObject){
-            return new EScreeningDashboardApp.models.Question(jsonQuestionObject);
-        };
-
-    $scope.surveyUIObjects = $scope.surveyUIObjects || [];
-    $scope.pageQuestionItems = $scope.pageQuestionItems || [];
-    $scope.selectedSurveyUIObject = $scope.selectedSurveyUIObject || createModule().toUIObject();
-    $scope.selectedPageQuestionItem = $scope.selectedPageQuestionItem || {};
-    $scope.createModule = createModule;
-    $scope.createQuestion = createQuestion;
     $scope.formReset = false;
-
-    $scope.$watch('pageQuestionItems', function(newValue, oldValue) {
-        var pageIndex = 0;
-        if (newValue === oldValue) {
-            return;
-        } else {
-            $scope.pageQuestionItems.forEach(function(pageQuestionItem) {
-                if(pageQuestionItem.isPage()) {
-                    pageQuestionItem.getItem().pageNumber = ++pageIndex;
-                }
-            });
-        }
-    }, true);
 
     $scope.organizePages = function () {
         var organizedPages = [];
 
-        $scope.pageQuestionItems.forEach(function(item) {
+        $scope.surveyPages.forEach(function(item) {
             if(item.isPage()){
                 organizedPages.push(item.getItem());
                 organizedPages[0].questions = [];
@@ -74,7 +47,7 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.setSelectedSurveyUIObject = function(someSelectedQuestionUIObject) {
-        $scope.selectedSurveyUIObject = someSelectedQuestionUIObject
+        $scope.survey = someSelectedQuestionUIObject
     };
 
     $scope.setSelectedPageQuestionItem = function(someSelectedPageQuestionItem) {
@@ -86,14 +59,14 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
 
     $scope.setPageQuestionItems = function(newPageQuestionItems) {
-        $scope.pageQuestionItems = newPageQuestionItems;
+        $scope.surveyPages = newPageQuestionItems;
     };
 
     $scope.addPageBreak = function(surveyPageUIObject){
         var surveyPageUIObject = new EScreeningDashboardApp.models.SurveyPage(surveyPageUIObject).toUIObject(),
-            pageQuestionItem = new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper((($scope.pageQuestionItems.length === 0)? {surveyPageUIObject: surveyPageUIObject, enabled: false} : {surveyPageUIObject: surveyPageUIObject}));
+            pageQuestionItem = new EScreeningDashboardApp.models.SurveyPageUIObjectItemWrapper((($scope.surveyPages.length === 0)? {surveyPageUIObject: surveyPageUIObject, enabled: false} : {surveyPageUIObject: surveyPageUIObject}));
 
-        $scope.pageQuestionItems.push(pageQuestionItem);
+        $scope.surveyPages.push(pageQuestionItem);
         return pageQuestionItem;
     };
 
@@ -104,18 +77,18 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             trackPageQuestionItem = false,
             nextPageAfterSelectedPage;
 
-        if($scope.pageQuestionItems.length === 0) {
+        if($scope.surveyPages && $scope.surveyPages.length === 0) {
            $scope.addPageBreak();
         }
 
         if((Object.isDefined(selectedPage))){
-            nextPageAfterSelectedPage = $scope.pageQuestionItems.find(function(existingPageQuestionItem, index, pageQuestionItems) {
+            nextPageAfterSelectedPage = $scope.surveyPages.find(function(existingPageQuestionItem, index, surveyPages) {
 
                 if(existingPageQuestionItem === selectedPage){
                     trackPageQuestionItem = true;
                 } else if(trackPageQuestionItem) {
                     if(existingPageQuestionItem.isPage()) {
-                        $scope.pageQuestionItems.splice(index, 0, pageQuestionItem);
+                        $scope.surveyPages.splice(index, 0, pageQuestionItem);
                         return true;
                     }
                 }
@@ -124,17 +97,17 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             });
 
             if(!Object.isDefined(nextPageAfterSelectedPage)) {
-                $scope.pageQuestionItems.push(pageQuestionItem);
+                $scope.surveyPages.push(pageQuestionItem);
             }
         } else {
-            $scope.pageQuestionItems.push(pageQuestionItem);
+            $scope.surveyPages.push(pageQuestionItem);
         }
 
         return pageQuestionItem;
     };
 
     $scope.updatePageQuestionItem = function(somePageQuestionItem) {
-        var foundExistingPageQuestionItem = $scope.pageQuestionItems.find(function (pageQuestionItem) {
+        var foundExistingPageQuestionItem = $scope.surveyPages.find(function (pageQuestionItem) {
             if(pageQuestionItem.getId() === somePageQuestionItem.getId()){
                 return pageQuestionItem;
             }
@@ -150,10 +123,10 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
             doStateTransition = (pageQuestionItem === $scope.getSelectedPageQuestionItem())? true: false;
 
         if(Object.isDefined(pageQuestionItem)) {
-            matchIndex = $scope.pageQuestionItems.indexOf(pageQuestionItem);
+            matchIndex = $scope.surveyPages.indexOf(pageQuestionItem);
 
             if(matchIndex > -1) {
-                $scope.pageQuestionItems.splice(matchIndex, 1);
+                $scope.surveyPages.splice(matchIndex, 1);
             }
         }
 
@@ -190,15 +163,13 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     $scope.goToQuestions = function(selectedPage) {
         var softReset = false,
             state = {
-                name: "modules.detail.selectQuestionType",
+                name: "modules.detail.list",
                 params: {selectedQuestionId: -1},
                 doTransition: true
             };
         $scope.setSelectedPage(selectedPage);
         $scope.resetForm(false, state);
     };
-
-
 
     $rootScope.createBattery = function(){
         return {
@@ -217,34 +188,13 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         }
     };
 
-    $rootScope.createFormula = function(){
-        alert('Not presently implemented');
-    };
-
-    $rootScope.createTemplate = function(){
-        alert('Not presently implemented');
-    };
-
-    $rootScope.createRule = function(){
-        alert('Not presently implemented');
-    };
-
     $rootScope.createTableQuestion = function(){
         var q = $scope.createQuestion();
         q.childAnswers = [];
         return q;
     };
 
-    //$rootScope.battery = $rootScope.createBattery();
-
-
-    /*$scope.addQuestion = function(){
-        $scope.selectedQuestion = $rootScope.createQuestion();
-        $scope.goToQuestions();
-    };*/
-
-    $scope.editQuestion = function(q){
-        //$scope.selectedQuestion = q;
+    $scope.editQuestion = function(){
         $scope.goToQuestions();
     };
 
@@ -274,13 +224,9 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $state.go('modules.detail.createvariable.questionvariable');
     };
     
-    $scope.editTemplates = function(){        
+    $scope.editTemplates = function(surveyId, surveyName){
         $state.go('modules.templates', 
-                {selectedSurveyId: $scope.selectedSurveyUIObject.id, 
-                 selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
+                {selectedSurveyId: surveyId,
+                 selectedSurveyName: encodeURIComponent(surveyName)});
     };
-    
-    $scope.isModuleSaved = function(){
-        return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
-    }
 }]);

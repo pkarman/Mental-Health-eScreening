@@ -1,7 +1,7 @@
 /**
  *  Created by Bryan Henderson - 08/07/2014
  */
-Editors.controller('selectMultipleMatrixQuestionController', ['$rootScope', '$scope', '$state', 'QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
+Editors.controller('ModulesDetailMultimatrixController', ['$rootScope', '$scope', '$state', 'QuestionService', 'answerTypeMenuOptions', function($rootScope, $scope, $state,QuestionService, answerTypeMenuOptions){
 	//$scope.question = EScreeningDashboardApp.models.Question.toUIObjects($rootScope.selectedQuestion);
     $scope.answerTypeMenuOptions = answerTypeMenuOptions;
 	$scope.isDirty = false;

@@ -1,7 +1,8 @@
 /**
  * Created by pouncilt on 8/6/14.
  */
-Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'questionTypeDropDownMenuOptions', function($rootScope, $scope, $state, questionTypeDropDownMenuOptions){
+Editors.controller('ModulesDetailListController', ['$rootScope', '$scope', '$state', 'questionTypes', 'Question', function($rootScope, $scope, $state, questionTypes, Question){
+
     var getSelectedQuestionDomainObject = function () {
             var firstChildQuestionAnswers = (Object.isDefined($scope.selectedQuestionUIObject))?
                 $scope.getFirstChildMeasureAnswers($scope.selectedQuestionUIObject.childQuestions): [],
@@ -14,13 +15,13 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
                     }
                 });
 
-                selectedQuestionDomainObject = new EScreeningDashboardApp.models.Question($scope.selectedQuestionUIObject);
+                selectedQuestionDomainObject = Question.create($scope.selectedQuestionUIObject);
             }
 
             return selectedQuestionDomainObject;
         };
 
-    $scope.questionTypeDropDownMenuOptions = questionTypeDropDownMenuOptions;
+    $scope.questionTypes = questionTypes;
     $scope.partentAddToPageQuestion = $scope.addToPageQuestion;
     $scope.parentResetForm = $scope.resetForm;
     $scope.questionTypeSelection = {type: null};
@@ -36,13 +37,9 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     });
 
     $scope.goToQuestionTypeForm = function() {
-        var stateName = $scope.getStateName($scope.questionTypeSelection.type),
-            newQuestionUIObject = new EScreeningDashboardApp.models.Question({
-                type: $scope.questionTypeSelection.type
-            }).toUIObject();
+        var stateName = $scope.getStateName($scope.questionTypeSelection.type);
 
-        $scope.setSelectedPageQuestionItem($scope.addQuestion(newQuestionUIObject));
-        $state.go(stateName, {selectedQuestionId: -1});
+        $state.go(stateName);
     };/*
 
     $scope.disableDropDownMenu = function () {
@@ -61,7 +58,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
         var selectedQuestionDomainObject;
 
         state = (Object.isDefined(state))? state: {
-            name: "modules.detail.selectQuestionType",
+            name: "modules.detail.list",
             params: {selectedQuestionId: -1},
             doTransition: false
         };
@@ -86,7 +83,7 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     $scope.resetForm = function (softReset, state){
         softReset = (Object.isBoolean(softReset))? softReset : false;
         state = (Object.isDefined(state))? state: {
-            name: "modules.detail.selectQuestionType",
+            name: "modules.detail.list",
             params: {selectedQuestionId: -1},
             doTransition: false
         };
@@ -100,6 +97,6 @@ Editors.controller('questionsController', ['$rootScope', '$scope', '$state', 'qu
     };
 
     $scope.goToAddEdit = function(){
-        $state.go('modules.detail.selectQuestionType');
+        $state.go('modules.detail.list');
     };
 }]);
