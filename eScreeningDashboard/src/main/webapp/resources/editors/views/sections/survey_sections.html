@@ -1,11 +1,12 @@
 <!-- The dnd-list directive allows to drop elements into it.
      The dropped data will be added to the referenced list -->
 <accordion close-others="false">
-    <ul dnd-list="ssRows" style="list-style: none;">
+    <ul dnd-list="ssRows" dnd-allowed-types="['sectionType']" style="list-style: none;">
         <li ng-repeat="ssRow in ssRows"
             dnd-draggable="ssRow"
             dnd-moved="ssRows.splice($index, 1)"
             dnd-effect-allowed="move"
+            dnd-type="'sectionType'"
             dnd-selected="status.dd.sections.selected = ssRow"
             ng-class="{'selected': status.dd.sections.selected === ssRow}">
             <accordion-group is-open="ssRow.openSection">
