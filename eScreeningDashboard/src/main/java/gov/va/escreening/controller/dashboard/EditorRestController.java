@@ -10,37 +10,46 @@ import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import gov.va.escreening.webservice.Response;
 import gov.va.escreening.webservice.ResponseStatus;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/dashboard")
 public class EditorRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(EditorRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditorRestController.class);
 
-	private EditorsViewDelegate editorsViewDelegate;
+    private EditorsViewDelegate editorsViewDelegate;
     @Autowired
     private MeasureRepository measureRepo;
 
-	@Autowired
-	public void setEditorsViewDelegate(EditorsViewDelegate editorsViewDelegate) {
-		this.editorsViewDelegate = editorsViewDelegate;
-	}
+    @Autowired
+    public void setEditorsViewDelegate(EditorsViewDelegate editorsViewDelegate) {
+        this.editorsViewDelegate = editorsViewDelegate;
+    }
 
 
 
@@ -58,30 +67,30 @@ public class EditorRestController {
     @ResponseBody
     public Response updateSurveyPages(@PathVariable Integer surveyId, @RequestBody List<SurveyPageInfo> surveyPages, @CurrentUser EscreenUser escreenUser)
     {
-    	ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse errorResponse = new ErrorResponse();
 
-    	for(SurveyPageInfo surveyPage : surveyPages)
-    	{
-    		for(QuestionInfo q :surveyPage.getQuestions())
-    		{
-    			if (q.getMeasureType()==null)
-    			{
-    				// throw data validation exception
+        for(SurveyPageInfo surveyPage : surveyPages)
+        {
+            for(QuestionInfo q :surveyPage.getQuestions())
+            {
+                if (q.getMeasureType()==null)
+                {
+                    // throw data validation exception
                     errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Question Type", "Question Type is required.");
 
-    			} else if (q.getText()==null)
-    			{
-    				// throw data validation exception
+                } else if (q.getText()==null)
+                {
+                    // throw data validation exception
                     errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Question Text", "Question Text is required.");
 
-    			}
+                }
 
-    		}
+            }
             if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
                 throw new AssessmentEngineDataValidationException(errorResponse);
             }
 
-    	}
+        }
         editorsViewDelegate.updateSurveyPages(surveyId, surveyPages);
         Map surveyPageInfoItems = new HashMap();
         surveyPageInfoItems.put("surveyPages", surveyPages);
@@ -111,7 +120,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/question", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Response addQuestion(@RequestBody QuestionInfo question,
-                              @CurrentUser EscreenUser escreenUser) {
+                                @CurrentUser EscreenUser escreenUser) {
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null); // questionInfoList
     }
 
@@ -146,7 +155,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/questions", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response getQuestions(@PathVariable("questionId") Integer questionId,
-                                @CurrentUser EscreenUser escreenUser) {
+                                 @CurrentUser EscreenUser escreenUser) {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
@@ -160,7 +169,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/surveys/{surveyId}/questions", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response getQuestionsBySurveyId(@PathVariable("surveyId") Integer surveyId,
-                                 @CurrentUser EscreenUser escreenUser) {
+                                           @CurrentUser EscreenUser escreenUser) {
         logger.debug("getQuestions");
 
         List<QuestionInfo> questions = EditorsQuestionViewTransformer.transformQuestions(measureRepo.getMeasureDtoBySurveyID(surveyId));
@@ -174,47 +183,61 @@ public class EditorRestController {
     @RequestMapping(value = "/services/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
     public Response deleteQuestion(
-    		@PathVariable("surveyId") Integer surveyId,
-    		@PathVariable("questionId") Integer questionId, @CurrentUser EscreenUser escreenUser) {
+            @PathVariable("surveyId") Integer surveyId,
+            @PathVariable("questionId") Integer questionId, @CurrentUser EscreenUser escreenUser) {
 
 
-    	editorsViewDelegate.removeQuestionFromSurvey(surveyId,questionId);
+        editorsViewDelegate.removeQuestionFromSurvey(surveyId,questionId);
 
-    	return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @RequestMapping(value = "/services/survey", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Response addSurvey(@RequestBody SurveyInfo survey,
-                          @CurrentUser EscreenUser escreenUser) {
-		logger.debug("create new survey:"+survey);
+                              @CurrentUser EscreenUser escreenUser) {
+        logger.debug("create new survey:"+survey);
 
-		ErrorResponse errorResponse = new ErrorResponse();
+        ErrorResponse errorResponse = new ErrorResponse();
 
-		// Data validation.
-		if (StringUtils.isBlank(survey.getName())) {
-			// throw data validation exception
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Name is required.");
-		} else if (survey.getName().length() > 255) {
-			// throw data validation exception
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Title should be less than 255 characters.");
-		} else if (survey.getDescription()!=null && survey.getDescription().length()> 255)
-		{
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Description", "Description should be less than 255 characters.");
-		}
-		else if (survey.getSurveySectionInfo() == null || survey.getSurveySectionInfo().getSurveySectionId() == null)
-		{
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Survey Section", "Survey Section can not be empty");
-		}
+        // Data validation.
+        if (StringUtils.isBlank(survey.getName())) {
+            // throw data validation exception
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Name is required.");
+        } else if (survey.getName().length() > 255) {
+            // throw data validation exception
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Title", "Module Title should be less than 255 characters.");
+        } else if (survey.getDescription()!=null && survey.getDescription().length()> 255)
+        {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Module Description", "Description should be less than 255 characters.");
+        }
+        else if (survey.getSurveySectionInfo() == null || survey.getSurveySectionInfo().getSurveySectionId() == null)
+        {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Survey Section", "Survey Section can not be empty");
+        }
 
-		if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
-			throw new AssessmentEngineDataValidationException(errorResponse);
-		}
+        if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+            throw new AssessmentEngineDataValidationException(errorResponse);
+        }
 
-		// Call service class here.
-		survey = editorsViewDelegate.createSurvey(survey);
+        // Call service class here.
+        survey = editorsViewDelegate.createSurvey(survey);
 
-		Map surveyMap = new HashMap();
+        Map surveyMap = new HashMap();
         surveyMap.put("survey", survey);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyMap); // surveyInfoList
@@ -237,11 +260,11 @@ public class EditorRestController {
     @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response getSurvey(@PathVariable("surveyId") Integer surveyId,
-                          @CurrentUser EscreenUser escreenUser) {
+                              @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSurvey");
 
         // Call service class here instead of hard coding it.
-       // SurveyInfo surveyInfo = //editorsViewDelegate.getSurvey(surveyId);
+        SurveyInfo surveyInfo = editorsViewDelegate.findSurvey(surveyId);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
     }
@@ -269,28 +292,28 @@ public class EditorRestController {
 
 
 
-	@RequestMapping(value = "/services/battery", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	@ResponseBody
-	public Map addBattery(@RequestBody BatteryInfo battery,
-			@CurrentUser EscreenUser escreenUser) {
-		ErrorResponse errorResponse = new ErrorResponse();
+    @RequestMapping(value = "/services/battery", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public Map addBattery(@RequestBody BatteryInfo battery,
+                          @CurrentUser EscreenUser escreenUser) {
+        ErrorResponse errorResponse = new ErrorResponse();
 
-		// Data validation.
-		if (StringUtils.isBlank(battery.getName())) {
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
-		} else if (battery.getName().length() > 50) {
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
-		}
+        // Data validation.
+        if (StringUtils.isBlank(battery.getName())) {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
+        } else if (battery.getName().length() > 50) {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
+        }
 
-		if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
-			throw new AssessmentEngineDataValidationException(errorResponse);
-		}
+        if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+            throw new AssessmentEngineDataValidationException(errorResponse);
+        }
 
-		// Call service class here.
-		BatteryInfo batteryInfo = editorsViewDelegate.createBattery(battery);
+        // Call service class here.
+        BatteryInfo batteryInfo = editorsViewDelegate.createBattery(battery);
 
-		return createBatteryResponse(batteryInfo);
-	}
+        return createBatteryResponse(batteryInfo);
+    }
 
     @RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     @ResponseBody
@@ -301,64 +324,64 @@ public class EditorRestController {
 
         ErrorResponse errorResponse = new ErrorResponse();
 
-		// Data validation.
-		if (StringUtils.isBlank(battery.getName())) {
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
-		} else if (battery.getName().length() > 50) {
-			errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
-		}
+        // Data validation.
+        if (StringUtils.isBlank(battery.getName())) {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name is required.");
+        } else if (battery.getName().length() > 50) {
+            errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Battery Name", "Battery Name should be less than 50 characters.");
+        }
 
-		if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
-			throw new AssessmentEngineDataValidationException(errorResponse);
-		}
+        if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+            throw new AssessmentEngineDataValidationException(errorResponse);
+        }
 
-		// Call service class here.
-		editorsViewDelegate.updateBattery(battery);
+        // Call service class here.
+        editorsViewDelegate.updateBattery(battery);
 
         return createBatteryResponse(battery);
     }
 
-	@RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public Map getBattery(@PathVariable("batteryId") Integer batteryId,
-			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("getBattery");
+    @RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map getBattery(@PathVariable("batteryId") Integer batteryId,
+                          @CurrentUser EscreenUser escreenUser) {
+        logger.debug("getBattery");
 
-		// Call service class here instead of hard coding it.
-		BatteryInfo batteryInfo = editorsViewDelegate.getBattery(batteryId);
-		return createBatteryResponse(batteryInfo);
-	}
+        // Call service class here instead of hard coding it.
+        BatteryInfo batteryInfo = editorsViewDelegate.getBattery(batteryId);
+        return createBatteryResponse(batteryInfo);
+    }
 
-	@RequestMapping(value = "/services/batteries", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public Map getBatteries(@CurrentUser EscreenUser escreenUser) {
-		logger.debug("getBatteries");
+    @RequestMapping(value = "/services/batteries", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map getBatteries(@CurrentUser EscreenUser escreenUser) {
+        logger.debug("getBatteries");
 
-		List<BatteryInfo> batteryInfoList = editorsViewDelegate.getBatteries();
+        List<BatteryInfo> batteryInfoList = editorsViewDelegate.getBatteries();
 
-		return createBatteriesResponse(batteryInfoList);
-	}
+        return createBatteriesResponse(batteryInfoList);
+    }
 
     @RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
     public Map deleteBattery(@PathVariable("batteryId") Integer batteryId, @CurrentUser EscreenUser escreenUser) {
-    	editorsViewDelegate.deleteBattery(batteryId);
-    	return createDeleteBatterySuccessfulResponse();
+        editorsViewDelegate.deleteBattery(batteryId);
+        return createDeleteBatterySuccessfulResponse();
     }
 
-	@ExceptionHandler(AssessmentEngineDataValidationException.class)
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public Map handleException(
-			AssessmentEngineDataValidationException ex) {
+    @ExceptionHandler(AssessmentEngineDataValidationException.class)
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map handleException(
+            AssessmentEngineDataValidationException ex) {
 
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+        logger.debug(ex.toString());
+        logger.debug(ex.getErrorResponse().toString());
 
-		// returns the error response which contains a list of error messages
-		//return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
+        // returns the error response which contains a list of error messages
+        //return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
         return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));
-	}
+    }
 
     @ExceptionHandler(NotFoundException.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
@@ -394,68 +417,68 @@ public class EditorRestController {
 
     @RequestMapping(value = "/services/surveySections", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List getSections(@CurrentUser EscreenUser escreenUser) {
+    public Map getSections(@CurrentUser EscreenUser escreenUser) {
         logger.debug("getSections");
 
-        return editorsViewDelegate.getSections();
+        List<SurveySectionInfo> surveySectionInfoList = editorsViewDelegate.getSections();
+
+        return createSectionsResponse(surveySectionInfoList);
     }
 
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public SurveySectionInfo getSection(
+    public Map getSection(
             @PathVariable("sectionId") Integer sectionId,
             @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSection");
 
         // Call service class here instead of hard coding it.
+        SurveySectionInfo surveySectionInfo = editorsViewDelegate.getSection(sectionId);
 
-        return editorsViewDelegate.getSection(sectionId);
+        return createSectionResponse(surveySectionInfo);
     }
 
-    @RequestMapping(value = "/services/surveySections", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/services/surveySection", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public SurveySectionInfo addSection(
+    public Map addSection(
             @RequestBody SurveySectionInfo surveySectionInfo,
             @CurrentUser EscreenUser escreenUser) {
-        logger.debug("addSection");
+        /*logger.debug("addSection");
         ErrorResponse errorResponse = new ErrorResponse();
-
-        if (surveySectionInfo != null) {
-            logger.debug(surveySectionInfo.toString());
+        if (surveySectionItem != null) {
+            logger.debug(surveySectionItem.toString());
 
             // Data validation.
-            if (StringUtils.isBlank(surveySectionInfo.getName())) {
+            if (StringUtils.isBlank(surveySectionItem.getName())) {
                 // throw data validation exception
                 errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Name", "Section Name is required.");
-            } else if (surveySectionInfo.getName().length() > 50) {
+            } else if (surveySectionItem.getName().length() > 50) {
                 // throw data validation exception
                 errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Name", "Secion Name should be less than 50 characters.");
             }
 
-            if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
-                throw new AssessmentEngineDataValidationException(errorResponse);
-            }
-
             // Call service class here.
-            Integer surveySectionId = editorsViewDelegate.createSection(surveySectionInfo);
-            surveySectionInfo.setSurveySectionId(surveySectionId);
+            Integer surveySectionId = editorDelegate.createSection(surveySectionItem);
             logger.debug("surveySectionId: " + surveySectionId);
         } else {
             errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Object", "Cannot be null.");
         }
 
+        if (errorResponse.getErrorMessages() != null && errorResponse.getErrorMessages().size() > 0) {
+            throw new AssessmentEngineDataValidationException(errorResponse);
+        }*/
 
-        return surveySectionInfo;
+        return createSectionResponse(surveySectionInfo);
     }
 
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = {RequestMethod.PUT}, consumes = "application/json", produces = "application/json")
-	@ResponseBody
-	public SurveySectionInfo updateSection(
-			@PathVariable("sectionId") Integer sectionId,
-			@RequestBody SurveySectionInfo surveySectionInfo,
-			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("updateSection");
-		ErrorResponse errorResponse = new ErrorResponse();
+    @ResponseBody
+    public Map updateSection(
+            @PathVariable("sectionId") Integer sectionId,
+            @RequestBody SurveySectionInfo surveySectionInfo,
+            @CurrentUser EscreenUser escreenUser) {
+        logger.debug("updateSection");
+        ErrorResponse errorResponse = new ErrorResponse();
         SurveySectionInfo updatedSurveySectionInfo = null;
         if(sectionId != null) {
             // Data validation.
@@ -476,22 +499,50 @@ public class EditorRestController {
             updatedSurveySectionInfo = editorsViewDelegate.updateSection(surveySectionInfo);
         }
 
-        return updatedSurveySectionInfo;
-	}
+        return createSectionResponse(updatedSurveySectionInfo);
+    }
 
-	@RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.DELETE, produces = "application/json")
-	@ResponseBody
-	public int deleteSection(
-			@PathVariable("sectionId") Integer sectionId,
-			@CurrentUser EscreenUser escreenUser) {
-		editorsViewDelegate.deleteSection(sectionId);
-        return sectionId;
-	}
+    @RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.DELETE, produces = "application/json")
+    @ResponseBody
+    public Map deleteSection(
+            @PathVariable("sectionId") Integer sectionId,
+            @CurrentUser EscreenUser escreenUser) {
+        editorsViewDelegate.deleteSection(sectionId);
+        return createDeleteSectionSuccessfulResponse();
+    }
+
+    private Map createSectionsResponse(List<SurveySectionInfo> surveySectionInfoList) {
+
+        Map status = new HashMap();
+        status.put("message", "The Quick Brown fox jumps over the lazy dog");
+        status.put("status", surveySectionInfoList != null && !surveySectionInfoList.isEmpty() ? "succeeded" : "failed");
+
+        Map surveySectionItems = new HashMap();
+        surveySectionItems.put("surveySections", surveySectionInfoList);
+
+        Map responseMap = new HashMap();
+        responseMap.put("status", status);
+        responseMap.put("payload", surveySectionItems);
+
+        return responseMap;
+    }
 
     private Map createRequestFailureResponse(String message) {
         Map status = new HashMap();
         status.put("message", message);
         status.put("status", "failed");
+
+        Map responseMap = new HashMap();
+        responseMap.put("status", status);
+        responseMap.put("payload", new HashMap());
+
+        return responseMap;
+    }
+
+    private Map createDeleteSectionSuccessfulResponse() {
+        Map status = new HashMap();
+        status.put("message", "Section deleted successfully.");
+        status.put("status", "succeeded");
 
         Map responseMap = new HashMap();
         responseMap.put("status", status);
@@ -512,6 +563,21 @@ public class EditorRestController {
         return responseMap;
     }
 
+
+    private Map createSectionResponse(SurveySectionInfo surveySection) {
+        Map status = new HashMap();
+        status.put("message", (surveySection != null && surveySection.getSurveySectionId() != null)? "Section created successfully." : "There was a problem processing your request.  If problem continues to exist, please contact the system administrator.");
+        status.put("status", (surveySection != null && surveySection.getSurveySectionId() != null)? "succeeded" : "failed");
+
+        Map surveySectionItems = new HashMap(           );
+        surveySectionItems.put("surveySection", surveySection);
+
+        Map responseMap = new HashMap();
+        responseMap.put("status", status);
+        responseMap.put("payload", surveySectionItems);
+
+        return responseMap;
+    }
 
     private Map createBatteryResponse(BatteryInfo batteryInfo) {
         Map status = new HashMap();

@@ -368,4 +368,10 @@ public class SurveyServiceImpl implements SurveyService {
 
         return Lists.newArrayList(Collections2.transform(surveyList, transformerFun));
     }
+
+    @Override
+    public SurveyInfo findSurveyById(Integer surveyId) {
+        Survey survey = surveyRepository.findOne(surveyId);
+        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+    }
 }

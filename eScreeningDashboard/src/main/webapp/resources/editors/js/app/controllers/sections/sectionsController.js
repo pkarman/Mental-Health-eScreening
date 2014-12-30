@@ -1,4 +1,4 @@
-Editors.controller('sectionsController', ['$log', '$scope', '$state', 'SurveySectionService', function ($log, $scope, $state, SurveySectionService) {
+Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSectionService', function ($log, $scope, $state, ManageSectionService) {
     var toBeDel = {sections: []};
     var dbData = [];
 
@@ -52,7 +52,7 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'SurveySec
     };
 
     var refreshNow = function () {
-        SurveySectionService.getList()
+        ManageSectionService.getList()
             .then(function (fetchedDataFromBackend) {
                 dbData = fetchedDataFromBackend;
                 $scope.ssRows = updateScopeDataWithDbData(fetchedDataFromBackend);
@@ -142,7 +142,7 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'SurveySec
 
             updateDbDataWithScopeData();
 
-            SurveySectionService.applyCrud(dbData, toBeDel, addSuccessMsg, addDangerMsg, refreshNow);
+            ManageSectionService.applyCrud(dbData, toBeDel, addSuccessMsg, addDangerMsg, refreshNow);
         }
     };
 
