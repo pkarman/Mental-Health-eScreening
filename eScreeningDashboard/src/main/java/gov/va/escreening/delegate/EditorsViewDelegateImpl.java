@@ -33,7 +33,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     private SurveyService surveyService;
 
     private SurveySectionService surveySectionService;
-   
+
 
     @Autowired
     public void setBatterySurveyService(BatterySurveyService batterySurveyService) {
@@ -79,26 +79,26 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
 
     @Override
-	public Integer createSection(SurveySectionInfo surveySectionInfo) {
-		surveySectionService.create(surveySectionInfo);
+    public Integer createSection(SurveySectionInfo surveySectionInfo) {
+        surveySectionService.create(surveySectionInfo);
         return surveySectionInfo.getSurveySectionId();
-		
-	}
 
-	@Override
-	public SurveySectionInfo getSection(Integer sectionId) {
-		// Code for service classes
-		return surveySectionService.getSurveySectionItem(sectionId);
-	}
+    }
 
-	@Override
-	public List<SurveySectionInfo> getSections() {
-		// Code for service classes
-		return surveySectionService.getSurveySectionList();
-	}
+    @Override
+    public SurveySectionInfo getSection(Integer sectionId) {
+        // Code for service classes
+        return surveySectionService.getSurveySectionItem(sectionId);
+    }
 
-	@Override
-	public SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo) {
+    @Override
+    public List<SurveySectionInfo> getSections() {
+        // Code for service classes
+        return surveySectionService.getSurveySectionList();
+    }
+
+    @Override
+    public SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo) {
         List<SurveyInfo> updatedSurveyInfoList = new ArrayList<SurveyInfo>();
         SurveySectionInfo updatedSurveySectionInfo;
 
@@ -109,24 +109,19 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
             surveyInfo = surveyService.update(surveyInfo);
             updatedSurveyInfoList.add(surveyInfo);
         }
-		updatedSurveySectionInfo = surveySectionService.update(surveySectionInfo);
+        updatedSurveySectionInfo = surveySectionService.update(surveySectionInfo);
         return updatedSurveySectionInfo;
-	}
-
-	@Override
-	public void deleteSection(Integer surveySectionId) {
-		surveySectionService.delete(surveySectionId);
-	}
-	
-
-	@Override
-	public void deleteBattery(Integer batteryId) {
-		batteryService.delete(batteryId);
-	}
+    }
 
     @Override
-    public SurveyInfo getSurvey(int surveyId) {
-        return surveyService.getSurvey(surveyId);
+    public void deleteSection(Integer surveySectionId) {
+        surveySectionService.delete(surveySectionId);
+    }
+
+
+    @Override
+    public void deleteBattery(Integer batteryId) {
+        batteryService.delete(batteryId);
     }
 
     @Override
@@ -138,30 +133,30 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public SurveyInfo updateSurvey(SurveyInfo surveyInfo) {
         return surveyService.update(surveyInfo);
     };
-    
+
     @Override
-	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
-		surveyService.removeMeasureFromSurvey(surveyId, questionId);
-	}
-	@Override
-	public void createSurveyPage(Integer surveyId, Page surveyPage) {
-		surveyService.createSurveyPage(surveyId, surveyPage);
-	}
-	@Override
-	public void updateSurveyPages(Integer surveyId,
-			List<SurveyPageInfo> surveyPageInfo) {
-		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
-		
-		
-	}
-	@Override
-	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
-		return surveyService.getSurveyPages(surveyId);
-	}
-	@Override
-	public SurveyInfo createSurvey(SurveyInfo survey) {
-		
-		return surveyService.createSurvey(survey);
-	}
+    public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
+        surveyService.removeMeasureFromSurvey(surveyId, questionId);
+    }
+    @Override
+    public void createSurveyPage(Integer surveyId, Page surveyPage) {
+        surveyService.createSurveyPage(surveyId, surveyPage);
+    }
+    @Override
+    public void updateSurveyPages(Integer surveyId,
+                                  List<SurveyPageInfo> surveyPageInfo) {
+        surveyService.updateSurveyPages(surveyId, surveyPageInfo);
+
+
+    }
+    @Override
+    public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
+        return surveyService.getSurveyPages(surveyId);
+    }
+    @Override
+    public SurveyInfo createSurvey(SurveyInfo survey) {
+
+        return surveyService.createSurvey(survey);
+    }
 }
 

@@ -18,104 +18,104 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SurveySectionServiceImpl implements SurveySectionService {
 
-	@Autowired
-	private SurveyService surveyService;
-	private SurveySectionRepository surveySectionRepository;
+    @Autowired
+    private SurveyService surveyService;
+    private SurveySectionRepository surveySectionRepository;
     @Autowired
     private SurveyRepository surveyRepository;
 
-	@Autowired
-	public void setBatteryRepository(
-			SurveySectionRepository surveySectionRepository) {
-		this.surveySectionRepository = surveySectionRepository;
-	}
+    @Autowired
+    public void setBatteryRepository(
+            SurveySectionRepository surveySectionRepository) {
+        this.surveySectionRepository = surveySectionRepository;
+    }
 
-	public SurveySectionServiceImpl() {
-		// Default constructor
-	}
+    public SurveySectionServiceImpl() {
+        // Default constructor
+    }
 
-	@Override
-	public SurveySectionInfo create(SurveySectionInfo surveySectionInfo) {
-		SurveySection surveySection = new SurveySection();
+    @Override
+    public SurveySectionInfo create(SurveySectionInfo surveySectionInfo) {
+        SurveySection surveySection = new SurveySection();
 
-		surveySection.setName(surveySectionInfo.getName());
-		surveySection.setDescription(surveySectionInfo.getDescription());
-		surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
+        surveySection.setName(surveySectionInfo.getName());
+        surveySection.setDescription(surveySectionInfo.getDescription());
+        surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
 
-		surveySectionRepository.create(surveySection);
+        surveySectionRepository.create(surveySection);
 
-		surveySectionInfo.setSurveySectionId(surveySection.getSurveySectionId());
+        surveySectionInfo.setSurveySectionId(surveySection.getSurveySectionId());
 
-		return surveySectionInfo;
-	}
+        return surveySectionInfo;
+    }
 
-	@Transactional(readOnly = true)
-	@Override
-	public SurveySectionInfo getSurveySectionItem(int surveySectionId) {
+    @Transactional(readOnly = true)
+    @Override
+    public SurveySectionInfo getSurveySectionItem(int surveySectionId) {
 
-		SurveySection surveySection = surveySectionRepository.findOne(surveySectionId);
+        SurveySection surveySection = surveySectionRepository.findOne(surveySectionId);
 
-		if (surveySection == null) {
-			return null;
-		}
+        if (surveySection == null) {
+            return null;
+        }
 
-		SurveySectionInfo surveySectionInfo = convertToSurveySectionItem(surveySection);
-		return surveySectionInfo;
-	}
+        SurveySectionInfo surveySectionInfo = convertToSurveySectionItem(surveySection);
+        return surveySectionInfo;
+    }
 
-	@Transactional(readOnly = true)
-	@Override
-	public List<SurveySectionInfo> getSurveySectionList() {
+    @Transactional(readOnly = true)
+    @Override
+    public List<SurveySectionInfo> getSurveySectionList() {
 
-		List<SurveySectionInfo> surveySectionInfoList = new ArrayList<SurveySectionInfo>();
+        List<SurveySectionInfo> surveySectionInfoList = new ArrayList<SurveySectionInfo>();
 
-		List<SurveySection> surveySectionList = surveySectionRepository.getSurveySectionList();
+        List<SurveySection> surveySectionList = surveySectionRepository.getSurveySectionList();
 
-		for (SurveySection surveySection : surveySectionList) {
-			surveySectionInfoList.add(convertToSurveySectionItem(surveySection));
-		}
+        for (SurveySection surveySection : surveySectionList) {
+            surveySectionInfoList.add(convertToSurveySectionItem(surveySection));
+        }
 
-		return surveySectionInfoList;
-	}
+        return surveySectionInfoList;
+    }
 
-	@Override
-	public SurveySectionInfo update(SurveySectionInfo surveySectionInfo) {
+    @Override
+    public SurveySectionInfo update(SurveySectionInfo surveySectionInfo) {
 
-		SurveySection surveySection = surveySectionRepository.findOne(surveySectionInfo.getSurveySectionId());
+        SurveySection surveySection = surveySectionRepository.findOne(surveySectionInfo.getSurveySectionId());
 
-		surveySection.setName(surveySectionInfo.getName());
-		surveySection.setDescription(surveySectionInfo.getDescription());
-		surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
-		surveySection = surveySectionRepository.update(surveySection);
-		SurveySectionInfo result = convertToSurveySectionItem(surveySection);
-		surveySectionRepository.commit();
-		return result;
-	}
+        surveySection.setName(surveySectionInfo.getName());
+        surveySection.setDescription(surveySectionInfo.getDescription());
+        surveySection.setDisplayOrder(surveySectionInfo.getDisplayOrder());
+        surveySection = surveySectionRepository.update(surveySection);
+        SurveySectionInfo result = convertToSurveySectionItem(surveySection);
+        surveySectionRepository.commit();
+        return result;
+    }
 
-	public SurveySectionInfo convertToSurveySectionItem(SurveySection surveySection) {
+    public SurveySectionInfo convertToSurveySectionItem(SurveySection surveySection) {
 
-		if (surveySection == null) {
-			return null;
-		}
+        if (surveySection == null) {
+            return null;
+        }
 
-		SurveySectionInfo surveySectionInfo = new SurveySectionInfo();
-		surveySectionInfo.setSurveySectionId(surveySection.getSurveySectionId());
-		surveySectionInfo.setName(surveySection.getName());
-		surveySectionInfo.setDisplayOrder(surveySection.getDisplayOrder());
-		surveySectionInfo.setDescription(surveySection.getDescription());
-		surveySectionInfo.setDateCreated(surveySection.getDateCreated());
+        SurveySectionInfo surveySectionInfo = new SurveySectionInfo();
+        surveySectionInfo.setSurveySectionId(surveySection.getSurveySectionId());
+        surveySectionInfo.setName(surveySection.getName());
+        surveySectionInfo.setDisplayOrder(surveySection.getDisplayOrder());
+        surveySectionInfo.setDescription(surveySection.getDescription());
+        surveySectionInfo.setDateCreated(surveySection.getDateCreated());
 
-		List<SurveyInfo> surveyInfos = new ArrayList<SurveyInfo>();
-		for (Survey survey : surveySection.getSurveyList()) {
-			surveyInfos.add(surveyService.convertToSurveyItem(survey));
-		}
-		surveySectionInfo.setSurveyInfoList(surveyInfos);
-		return surveySectionInfo;
-	}
+        List<SurveyInfo> surveyInfos = new ArrayList<SurveyInfo>();
+        for (Survey survey : surveySection.getSurveyList()) {
+            surveyInfos.add(surveyService.convertToSurveyItem(survey));
+        }
+        surveySectionInfo.setSurveyInfoList(surveyInfos);
+        return surveySectionInfo;
+    }
 
-	@Override
-	public void delete(Integer surveySectionId) {
-		SurveySection surveySection = surveySectionRepository.findOne(surveySectionId);
+    @Override
+    public void delete(Integer surveySectionId) {
+        SurveySection surveySection = surveySectionRepository.findOne(surveySectionId);
         surveySectionRepository.delete(surveySection);
-	}
+    }
 }

@@ -1,15 +1,15 @@
 html body{
 	background-color: #cccccc;
-	width: 100%; 
+	width: 100%;
 	min-width:1360px;
 	font-family: Arial,sans-serif;
-    margin: 0px !important;
+	margin: 0px !important;
 }
 .strong{
-  font-weight:bold;
+	font-weight:bold;
 }
 #vaLogoDiv {
-	float:left; 
+	float:left;
 	padding:10px 30px 0px 5px;
 }
 
@@ -18,7 +18,7 @@ html body{
 	height: 116px;
 	background-color: #061a43;
 	color: White;
-} 
+}
 
 #agencyName {
 	font-size:16px;
@@ -27,8 +27,8 @@ html body{
 #applicationName {
 	font-size:26px !important;
 	font-family: Arial,sans-serif !important;
-    letter-spacing: 0px !important;
-    font-weight: normal !important;
+	letter-spacing: 0px !important;
+	font-weight: normal !important;
 }
 
 .container_box .btn{
@@ -54,16 +54,16 @@ html body{
 	float:right;
 }
 .csamhImg{
-float: right;
-height: 55px;
-padding-right: 7px;
-width: 140px;
+	float: right;
+	height: 55px;
+	padding-right: 7px;
+	width: 140px;
 }
 
 #welcomeMessage {
 	/* font-style:italic; */
 	color: #fff;
-	
+
 	font-size: 11px;
 }
 .mainTabs{
@@ -137,7 +137,7 @@ h2 {
 	font-weight: bold;
 }
 .badge_content{
-line-height:22px;
+	line-height:22px;
 }
 .badge_content a{
 	color:#fff;
@@ -165,11 +165,11 @@ h2{
 
 .border-radius-main-form{
 	-webkit-border-radius:5px;
-		-moz-border-radius:5px;
-			border-radius:5px;
-			border:1px solid #bbb;
-			padding: 10px 20px;
-			background-color: #eeeeee;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #bbb;
+	padding: 10px 20px;
+	background-color: #eeeeee;
 }
 
 
@@ -190,7 +190,7 @@ h2{
 	background-color:#061a43;
 	background-size:cover;
 	background-position:center;
-	
+
 	/* box-shadow: -5px 0px 5px 4px #000; */
 }
 .landing_page h1{
@@ -232,8 +232,8 @@ h2{
 	position:absolute;
 	border-bottom:1px solid #344466;
 	-webkit-box-shadow: 0 8px 6px -6px black;
-	   -moz-box-shadow: 0 8px 6px -6px black;
-	        box-shadow: 0 8px 6px -6px black;
+	-moz-box-shadow: 0 8px 6px -6px black;
+	box-shadow: 0 8px 6px -6px black;
 	z-index: 10;
 }
 
@@ -266,9 +266,9 @@ footer{
 	line-height:24px;
 	font-size:11px;
 	border-top:1px solid #334367;
-		-webkit-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
-	   	   -moz-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
-	            box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+	box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container{
 	background-color:#082f54;
@@ -276,9 +276,9 @@ footer{
 	padding:10px 10px;
 	line-height:24px;
 }
-	.veteran_block, .staff_block{
-		margin-bottom:20px;
-	}
+.veteran_block, .staff_block{
+	margin-bottom:20px;
+}
 
 
 
@@ -366,8 +366,8 @@ iframe {
 	margin-top: 114px;
 	z-index: 9;
 	-webkit-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
-	   -moz-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
-			box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+	box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 
 .navbar{
@@ -484,7 +484,7 @@ iframe {
 }
 .offscreen , .offscreen a{
 	font-size:12px;
-		padding: 5px 5px 5px 5px;
+	padding: 5px 5px 5px 5px;
 	text-align:center;
 
 }
@@ -497,7 +497,7 @@ a.offscreen:focus, a.offscreen:active {
 	background: #3F3F3F;
 	border: 1px solid #000;
 	color:#fff;
-	
+
 	left: 50%;
 	margin-left: -5.25em;
 	margin-top: 0;
@@ -505,36 +505,36 @@ a.offscreen:focus, a.offscreen:active {
 
 /*WYSIWYG Update by Joseph */
 .scroll-div-y{
-  overflow-y:auto;
+	overflow-y:auto;
 }
 
 .border-radius-main-box .panel{
-  margin-bottom:10px;
+	margin-bottom:10px;
 }
 .border-radius-main-box .panel .list-group{
-  margin-bottom:0px;
+	margin-bottom:0px;
 }
 
 .border-radius-main-box .panel .panel-heading {
-  padding: 10px 8px;
+	padding: 10px 8px;
 }
 
 .border-radius-main-box .panel .panel-title{
-  font-size:14px;
-  line-height: 20px;
-} 
+	font-size:14px;
+	line-height: 20px;
+}
 .border-radius-main-box .panel .panel-body {
-  padding:5px;
+	padding:5px;
 }
 
 .border-radius-main-box{
-  border-radius: 5px;
-  border: 1px solid #BBB;
-  padding: 10px 10px;
+	border-radius: 5px;
+	border: 1px solid #BBB;
+	padding: 10px 10px;
 }
 
 .color-red{
-  color:#FF0000;
+	color:#FF0000;
 }
 
 .border-radius-top-box{
@@ -553,29 +553,30 @@ a.offscreen:focus, a.offscreen:active {
 	padding: 5px 5px;
 }
 .section_header_title{
-  margin-top:5px;
-  margin-bottom:5px;
-  font-weight:bold;
+	margin-top:5px;
+	margin-bottom:5px;
+	font-weight:bold;
 }
 
 .padding_10{
-  padding:10px;
+	padding:10px;
 }
 
 .margin_top_10{
-  margin-top:10px;
+	margin-top:10px;
 }
+/* Form Editor Start Here */
 
 .form_editor .list-group-item{
-  padding:5px 10px;
+	padding:5px 10px;
 }
 
 .form_editor .highlight-item{
-  background-color:#d4d4d4;
+	background-color:#d4d4d4;
 }
 
 .form_editor .modal-dialog h1{
-  font-size:26px;
+	font-size:26px;
 }
 
 .border-radius-block-type{
@@ -584,40 +585,41 @@ a.offscreen:focus, a.offscreen:active {
 	border-radius: 4px;
 	border: 1px solid #bbb;
 	padding: 5px 10px 0px;
-  margin: 10px 0;
+	margin: 10px 0;
 }
 .border-radius-block-type hr{
-  margin-top:0px;
+	margin-top:0px;
 
 }
 .blockLableMarginTop{
-  margin-top:20px;
+	margin-top:20px;
 }
 .bg-gray-light{
-  background-color: #F8F8F8;
+	background-color: #F8F8F8;
 }
 .red-color{
-  color:red  !important;
+	color:red  !important;
 }
 .odd-class-grid{
-  background-color:#EDEDED;
+	background-color:#EDEDED;
 }
 
 .even-class-grid{
-  background-color:#FFFFFF;
+	background-color:#FFFFFF;
 }
 
 .border-bottom-3-gray{
-  border-bottom:3px solid #ADADAD;
+	border-bottom:3px solid #ADADAD;
 }
 .pagination{
-  margin: 0px;
+	margin: 0px;
 }
+
 .modal-custom-sm .modal-dialog {
 	width: 600px !important;
 }
 .modal-custom-sm .modal-content{
-  min-height:inherit !important;
+	min-height:inherit !important;
 }
 
 /*Timeout*/
@@ -630,9 +632,10 @@ span.countdown {
 	font-weight:18px;
 	text-align:center;
 }
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) 
+
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
 and (orientation : landscape) {
 	.container{
 		width:90%;
@@ -643,17 +646,17 @@ and (orientation : landscape) {
 	.landing_page .bg_main{
 		background-size:cover;
 	}
-	
+
 }
 
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) 
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
 and (orientation : portrait) {
 	.container{
 		width:90%;
 	}
-	
+
 	.veteran_block, .staff_block{
 		margin-bottom:20px;
 	}

@@ -1,81 +1,40 @@
 <div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <h1>Manage Sections</h1>
-    </div>
-    <div class="col-md-6 h1_button">
-      <a href="javascript:void(0);" ng-show="!isAllExpanded" ng-click="expandAll();"><div class="pull-right"><div class="label label-primary"><span class="glyphicon glyphicon-plus"></span> Click to Expand All Sections</div></div></a> 
-      <a href="javascript:void(0);" ng-show="isAllExpanded" ng-click="collapseAll();"><div class="pull-right"><div class="label label-primary"><span class="glyphicon glyphicon-minus"></span> Click to Collapse All Sections</div></div></a>
-      <div class="pull-right">
-        <button class="btn btn-success" style="visibility:hidden;"> <span class="glyphicon glyphicon-plus"></span> Add Section </button>
-      </div>
-    </div>
-  </div>
-  <!-- Alerts and Messages -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()"> Error Message(s):<br>
-        <br>
-        <div ng-repeat="error in messageHandler.getMessages()| filter:messageHandler.filterByErrorMessage"> {{error.getValue()}} </div>
-      </div>
-      <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
-        <div ng-repeat="message in messageHandler.getMessages()| filter:messageHandler.filterBySuccessMessage"> {{message.getValue()}} </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <ul class="list-group app screen first connected-sec-container"  ui-sortable="sortableSecOptions" ng-model="editSections">
-        <li class="list-group-item border-bottom-3-gray" ng-model="editSections" ng-repeat="section in editSections|orderBy:'displayOrder'" ng-show="section.visible==true" ng-hide="section.visible==false"  style="cursor:move;" ng-class-odd="'odd-class-grid'" ng-class-even="'even-class-grid'">
-          <form>
-            <div class="row">
-              <div class="col-md-4"> <span class="glyphicon glyphicon-align-justify pull-left cursor-pointer" style="margin-right:6px;"></span>
-                <div class="form-group">
-                  <label for="sectionName{{$index+1}}" >Title <span title="Required Field">*</span></label>
-                  <input id="sectionName{{$index+1}}" type="text" class="form-control" value="{{section.name}}" ng-model="section.name" placeholder="Please Enter a Name" ng-keyup="setDirty();" ng-blur="setDirty();">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="sectionDescription{{$index+1}}">Description</label>
-                  <input id="sectionDescription{{$index+1}}" type="text" class="form-control" value="{{section.description}}" ng-model="section.description" placeholder="Please Enter a Description" ng-keyup="setDirty();" ng-blur="setDirty();">
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group pull-right">
-                  <button class="btn btn-default btn-xs h1_button" style="cursor:pointer;" ng-show="section.surveys.length > 0" ng-click="section.isExpanded = !section.isExpanded"  ng-attr-title="Expand/Collapse {{section.name}}">Expand</button>
-                  &nbsp;
-                  <button class="btn btn-default btn-xs h1_button" style="cursor:pointer;" ng-click="deleteCheck(section);" ng-attr-title="Delete {{section.name}}"> <i class="glyphicon glyphicon-remove-circle red-color"></i> Delete</button>
-                 </div>
-                <!--<span class="glyphicon glyphicon-remove-circle" style="color:red;cursor:pointer;cursor:hand;" ng-really-message="This will delete the Section, and it will not be available in the future. Click 'OK' to permanently delete it." ng-really-click="removeSection(section);"></span>--> 
-              </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h1>Manage Sections</h1>
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <div class="pull-right">
+                <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button pull-right"
+                        type="button"><span class="glyphicon glyphicon-plus"></span> Add Section
+                </button>
             </div>
-          </form>
-          <div class="clearfix"></div>
-          <div class="row">
-            <div class="col-md-12">
-              <div ng-show="section.isExpanded">
-                <ul class="list-group app screen first connected-mods-container" style="min-height:20px;" ui-sortable="sortableOptions" ng-model="section.surveys">
-                  <li class="list-group-item" ng-animate="'animate'" ng-model="section.surveys" ng-repeat="survey in section.surveys|orderBy:'displayOrder'" style="cursor:move;" ng-class-odd="'odd-class-grid'" ng-class-even="'even-class-grid'"> <span class="glyphicon glyphicon-align-justify"></span>&nbsp;&nbsp;&nbsp;
-                    {{survey.name}}
-                    <div class="pull-right"> <span class="badge">{{survey.displayOrder}}</span> </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="pull-right">
-        <button class="btn btn-primary" ng-click="save();">Save</button>
-        <button class="btn btn-default" ng-click="cancel();">Cancel</button>
-      </div>
+            <div ng-click="openAll()" class="label label-primary cursor-pointer pull-right  margin-right-10 margin-top-35">
+                <i class="glyphicon" ng-class="{'glyphicon-chevron-down': !status.closeOthers, 'glyphicon-chevron-right': status.closeOthers}"></i>
+                <span ng-if="status.closeOthers">Expand All Sections</span>
+                <span ng-if="!status.closeOthers">Collapse All Sections</span>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<br>
+    <div class="row">
+        <div class="col-md-12">
+            <alert ng-repeat="msg in msgs" type="msg.type" close="closeAlert($index)">{{msg.text}}</alert>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 section-rows">
+            <div ng-include="'resources/editors/views/sections/survey_sections.html'"></div>
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group pull-right">
+                <button ng-click="saveAll()" ng-disabled="false" class="btn btn-primary" type="button">Save</button>
+                <button ng-click="cancel()" class="btn btn-default" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div><br><br>

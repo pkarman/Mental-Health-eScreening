@@ -35,13 +35,13 @@ public interface SurveyService {
      * @return
      */
     List<SurveyDto> getSurveyListForVeteranAssessment(int veteranAssessmentId);
-    
+
     /**
      * Retrieves all the survey.
      * @return
      */
     List<SurveyDto> getSurveyList();
-    
+
     /**
      * Retrieves all the survey.
      * @return
@@ -49,25 +49,23 @@ public interface SurveyService {
     List<SurveyInfo> getSurveyItemList();
 
     SurveyInfo update(SurveyInfo surveyInfo);
-    
+
     /**
-     * 
+     *
      * @param surveyId
      * @return
      */
     Survey findOne(int surveyId);
 
-    SurveyInfo getSurvey(int surveyId);
+    SurveyInfo convertToSurveyItem(Survey survey);
 
-	SurveyInfo convertToSurveyItem(Survey survey);
-	
-	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
+    void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
 
-	void createSurveyPage(Integer surveyId, Page surveyPage);
+    void createSurveyPage(Integer surveyId, Page surveyPage);
 
-	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
+    void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 
-	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+    List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 
-	SurveyInfo createSurvey(SurveyInfo survey);
+    SurveyInfo createSurvey(SurveyInfo survey);
 }
