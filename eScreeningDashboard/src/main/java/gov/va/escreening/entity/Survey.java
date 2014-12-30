@@ -2,6 +2,7 @@ package gov.va.escreening.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -183,6 +184,19 @@ public class Survey implements Serializable, SurveyBaseProperties{
 
     public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
         return surveyMeasureResponseList;
+    }
+    
+    /**
+     * Creates a list of measures by collecting measures for each survey page in this survey. 
+     * This list is created on every call (i.e. no caching for now).
+     * @return list of all measures in this survey
+     */
+    public List<Measure> createMeasureList(){
+    	List<Measure> measures = new LinkedList<>();
+    	for(SurveyPage page : surveyPageList){
+    		measures.addAll(page.getMeasures());
+    	}
+    	return measures;
     }
 
     public void setSurveyMeasureResponseList(

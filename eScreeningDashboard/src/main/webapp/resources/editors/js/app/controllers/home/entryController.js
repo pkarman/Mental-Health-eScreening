@@ -18,7 +18,7 @@ Editors.controller('entryController', ['$scope', '$state', function($scope, $sta
     };
 
     $scope.goToBatteryEdit = function () {
-        $state.go('batteries.batteryselection');
+        $state.go('batteries.list');
     };
 
     $scope.goToSections = function () {

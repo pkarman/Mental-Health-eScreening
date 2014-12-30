@@ -87,7 +87,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         var deferred = $q.defer();
                         console.log('VIEW STATE Battery:: Resolve Batteries');
                         BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
-                            console.log('Batteries:: ' + existingBatteries);
                             deferred.resolve(existingBatteries);
                         },function(responseError){
                             $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -112,7 +111,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'batteryAbstractController'
             })
 
-            .state('batteries.batteryselection',{
+	            .state('batteries.list',{
                 url:'',
                 templateUrl:'resources/editors/views/batteries/batteryselect.html',
                 controller:'batterySelectionController'
@@ -124,10 +123,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 resolve:{
                     battery:function($rootScope, $q, $stateParams, BatteryService){
                         var deferred = $q.defer();
-                        console.log('VIEW STATE Battery:: Resolve Batteries');
                         if(Object.isDefined($stateParams.batteryId) && $stateParams.batteryId.trim().length > 0) {
                             BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function (existingBattery) {
-                                console.log('Battery:: ' + existingBattery);
                                 deferred.resolve(existingBattery);
                             }, function (responseError) {
                                 $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
@@ -142,6 +139,97 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'batteryAddEditController'
             })
 
+	            .state('batteries.templates',{
+                    url:'/:relatedObjId/:relatedObjName/templates/:saved',
+                    templateUrl:'resources/editors/views/templates/templatesselection.html',
+                    resolve: {
+                        templateTypes: ['$rootScope', '$stateParams', '$q', 'TemplateTypeService', function($rootScope, $stateParams, $q, TemplateTypeService) {
+                            
+                            var deferred = $q.defer();
+
+                            if(Object.isDefined($stateParams) &&
+                                Object.isDefined($stateParams.relatedObjId) &&
+                                $stateParams.relatedObjId > -1) {
+
+                                TemplateTypeService.getTemplateTypes({batteryId: $stateParams.relatedObjId}).then(function (templateTypes) {
+                                    deferred.resolve(templateTypes);
+                                }, function(responseError) {
+                                    deferred.reject(responseError.data);
+                                });
+                            }
+
+                            return deferred.promise;
+                        }],
+                        relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                        	var deferred = $q.defer();
+                        	deferred.resolve({
+                                id : $stateParams.relatedObjId,
+                                name : decodeURIComponent($stateParams.relatedObjName),
+                                type: "battery"
+                            });
+                        	return deferred.promise;
+                        }]
+                    },
+                    controller: 'templateListController'
+                })
+                
+                .state('batteries.templateeditor', {
+                    url: "/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId",
+                    templateUrl: 'resources/editors/views/templates/templateeditor.html',
+                    controller: "templateEditorController",
+                    resolve: {
+                        assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
+                            return AssessmentVariableService;
+                        }],
+                        template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
+                            function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
+                                var deferred = $q.defer();
+                                if (Object.isDefined($stateParams)
+                                    && Object.isDefined($stateParams.relatedObjId)
+                                    && $stateParams.relatedObjId > -1
+                                    && Object.isDefined($stateParams.typeId)) {
+                                    
+                                    if(Object.isDefined($stateParams.templateId) 
+                                            && $stateParams.templateId != -1 
+                                            && $stateParams.templateId.length > 0){
+                                        console.log("Getting template from server with ID: " + $stateParams.templateId);
+                                        
+                                        TemplateService.get($stateParams.templateId).then(function (template) {
+                                            deferred.resolve(template);
+                                        });
+                                    }
+                                    else{
+                                        console.log("Creating empty template for battery " + $stateParams.relatedObjName + " of template type " + $stateParams.typeId);
+                                        var selectedTemplateType = TemplateTypeService.getSelectedType();
+                                        if(Object.isDefined(selectedTemplateType)){
+                                            var emptyTemplate =  new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
+                                            deferred.resolve(emptyTemplate);
+                                        }
+                                        else {
+                                            console.log("There is no currently selected template type.");
+                                            deferred.resolve({});
+                                        }
+                                    }
+                                }
+                                return deferred.promise;
+                            }],
+                            relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                            	var deferred = $q.defer();
+                            	deferred.resolve({
+                                    id : $stateParams.relatedObjId,
+                                    name : decodeURIComponent($stateParams.relatedObjName),
+                                    type: "battery"
+                                });
+                            	return deferred.promise;
+                            }]
+                    },
+                    onExit: function (AssessmentVariableService) {
+                        console.log("leaving batteries.templateeditor state.");
+                        AssessmentVariableService.clearCachedResults();
+                    }
+                })
+
+	            
             /** -------- END BATTERY WORKFLOW -------- **/
 
             //////////////////////////
@@ -335,6 +423,15 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         }
 
                         return deferred.promise;
+                        }],
+                        relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                        	var deferred = $q.defer();
+                        	deferred.resolve({
+                                id : $stateParams.relatedObjId,
+                                name : decodeURIComponent($stateParams.relatedObjName),
+                                type: "module"
+                            });
+                        	return deferred.promise;
                     }]
                 },
                 controller: 'ModulesTemplatesController'
@@ -382,6 +479,15 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 }
                             }
                             return deferred.promise;
+                            }],
+                            relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                            	var deferred = $q.defer();
+                            	deferred.resolve({
+                                    id : $stateParams.relatedObjId,
+                                    name : decodeURIComponent($stateParams.relatedObjName),
+                                    type: "module"
+                                });
+                            	return deferred.promise;
                         }]
                 },
                 onExit: function (AssessmentVariableService) {
