@@ -127,6 +127,11 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     };
 
     @Override
+    public SurveyInfo findSurvey(Integer surveyId) {
+        return surveyService.findSurveyById(surveyId);
+    };
+
+    @Override
 	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
 		surveyService.removeMeasureFromSurvey(surveyId, questionId);
 	}

@@ -70,4 +70,6 @@ public interface SurveyService {
 	SurveyInfo createSurvey(SurveyInfo survey);
 
     List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, SurveySectionInfo ssInfo);
+
+    SurveyInfo findSurveyById(Integer surveyId);
 }

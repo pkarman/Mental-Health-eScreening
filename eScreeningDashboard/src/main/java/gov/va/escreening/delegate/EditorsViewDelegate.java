@@ -25,8 +25,10 @@ public interface EditorsViewDelegate {
    	List<SurveySectionInfo> getSections();
     SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo);
    	void deleteSection(Integer surveySectionId);
-   	
-   	void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
+
+    SurveyInfo findSurvey(Integer surveyId);
+
+    void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
