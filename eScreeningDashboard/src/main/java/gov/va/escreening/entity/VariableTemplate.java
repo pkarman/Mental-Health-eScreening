@@ -108,8 +108,14 @@ public class VariableTemplate implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (variableTemplateId != null ? variableTemplateId.hashCode() : 0);
+        int hash = 17;
+        if(this.assessmentVariableId != null && this.templateId != null){
+        	hash = 31 * hash + this.assessmentVariableId.hashCode();
+        	hash = 31 * hash + this.templateId.hashCode();
+        }
+        else{
+        	hash += (variableTemplateId != null ? variableTemplateId.hashCode() : 0);
+        }
         return hash;
     }
 
@@ -120,6 +126,12 @@ public class VariableTemplate implements Serializable {
             return false;
         }
         VariableTemplate other = (VariableTemplate) object;
+        
+        if(this.assessmentVariableId != null && other.assessmentVariableId != null 
+        	&& this.templateId != null && other.templateId != null ){
+        	return this.assessmentVariableId.equals(other.assessmentVariableId) && this.templateId.equals(other.templateId);
+        }
+        
         if ((this.variableTemplateId == null && other.variableTemplateId != null) || (this.variableTemplateId != null && !this.variableTemplateId.equals(other.variableTemplateId))) {
             return false;
         }

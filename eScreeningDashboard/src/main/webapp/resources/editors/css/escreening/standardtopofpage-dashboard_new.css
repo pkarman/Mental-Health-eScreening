@@ -613,22 +613,22 @@ a.offscreen:focus, a.offscreen:active {
 .pagination{
   margin: 0px;
 }
-.red-color{
-  color:red  !important;
+.modal-custom-sm .modal-dialog {
+	width: 600px !important;
 }
-.odd-class-grid{
-  background-color:#EDEDED;
-}
-
-.even-class-grid{
-  background-color:#FFFFFF;
+.modal-custom-sm .modal-content{
+  min-height:inherit !important;
 }
 
-.border-bottom-3-gray{
-  border-bottom:3px solid #ADADAD;
+/*Timeout*/
+span.countdown {
+	color: #8C0000;
+	font-weight: bold;
 }
-.pagination{
-  margin: 0px;
+
+.sessionTimeOutMessage{
+	font-weight:18px;
+	text-align:center;
 }
 @media only screen 
 and (min-device-width : 768px) 

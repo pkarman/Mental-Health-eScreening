@@ -193,7 +193,9 @@
                     <th scope="col">Program</th>
                     <th scope="col">Clinician</th>
                     <th scope="col">Created By</th>
+                    <th scope="col">Create Date</th>
                     <th scope="col">Assessment Date</th>
+                    <th scope="col">Complete Date</th>
                     <th scope="col">Veteran ID</th>
                     <th scope="col">Veteran</th>
                     <th scope="col">Status</th>

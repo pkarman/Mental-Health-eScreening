@@ -8,15 +8,21 @@ Editors.controller('ModulesController', ['$rootScope', '$scope', '$state', funct
     $scope.organizePages = function () {
         var organizedPages = [];
 
-        $scope.surveyPages.forEach(function(item) {
+        // Loop through the pageQuestionItems domain objects
+        $scope.pageQuestionItems.forEach(function(item) {
+            // Check if the item is a page using the isPage accessor
             if(item.isPage()){
+                // Add the page to the organizedPages array
                 organizedPages.push(item.getItem());
-                organizedPages[0].questions = [];
+                // Clear out any existing questions (needed when saving/updating surveys with existing pages
+                organizedPages[organizedPages.length-1].questions = [];
             } else if(organizedPages.length > 0){
+                // Item is a question, add it to last page in the organizedPages array
                 organizedPages[organizedPages.length-1].questions.push(item.getItem());
             }
         });
 
+        // Return empty array if no questions exist on the first page (seems brute force)
         if(organizedPages.length === 1 &&
             Object.isArray(organizedPages[0].questions) &&
             organizedPages[0].questions.length === 0) {

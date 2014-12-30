@@ -1,9 +1,13 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.dto.VeteranAssessmentProgressDto;
+import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 
 import java.util.List;
+import java.util.Map;
 
 public interface VeteranAssessmentSurveyService {
 
@@ -33,4 +37,7 @@ public interface VeteranAssessmentSurveyService {
      * @return
      */
     List<VeteranAssessmentProgressDto> getProgress(int veteranAssessmentId);
+
+	public abstract void updateProgress(VeteranAssessment va, AssessmentRequest req,
+			Survey survey, List<VeteranAssessmentMeasureVisibility> visList);
 }

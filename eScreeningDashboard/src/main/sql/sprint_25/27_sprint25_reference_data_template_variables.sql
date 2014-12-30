@@ -23,24 +23,11 @@ INSERT INTO assessment_var_children(assessment_var_children_id, variable_parent,
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10720, 32);
 
 update variable_template set override_display_value = 'no' where variable_template_id=2551;
--- update phq9 score assessment variable so it has the correct display name
-UPDATE assessment_variable SET display_name='dep_score_phq9', description='PHQ-9 Score' 
-WHERE assessment_variable_id=1599;
-
 
 INSERT INTO assessment_variable(assessment_variable_id, assessment_variable_type_id, display_name, description, formula_template) VALUES (10800, 4, 'health_score_phq14', 'health_score without the cramp question', '([1020] + [1040] + [1050] + [1060] + [1070] + [1080] + [1090] + [1100] + [1110] + [1120] + [1130] + [1140] + [1150]  + [1160])');
 INSERT INTO assessment_var_children(variable_parent, variable_child) VALUES (10800, 1020), (10800,1040), (10800, 1050), (10800,1060), (10800, 1070), (10800, 1080), (10800, 1090), (10800, 1100), 
 	(10800, 1110), (10800, 1120), (10800,1130), (10800, 1140), (10800, 1150), (10800, 1160);
 INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (10800, 17);
-
-
--- Needed variables for ticket 642
-
--- update phq9 score assessment variable so it has the correct display name
-UPDATE assessment_variable SET display_name='dep_score_phq9', description='PHQ-9 Score' 
-WHERE assessment_variable_id=1599;
-
-
 
 /*
 update statements to sync assessment variables' display names + description with measure answer

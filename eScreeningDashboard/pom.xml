@@ -428,8 +428,6 @@
 						<version>5.1.27</version>
 					</dependency>
 				</dependencies>
-
-
 				<!-- common configuration shared by all executions -->
 				<configuration>
 					<skip>${skip.db}</skip>
@@ -572,6 +570,19 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-28-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_28</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -663,6 +674,23 @@
 				<jdbc.url>jdbc:mysql://localhost/escreening-int</jdbc.url>
 				<jdbc.db>escreening-int</jdbc.db>
 				<log.suffix>int</log.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>bug</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>bug</value>
+				</property>
+			</activation>
+			<build>
+				<finalName>${project.artifactId}-bug</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost/escreening-bug</jdbc.url>
+				<jdbc.db>escreening-bug</jdbc.db>
+				<log.suffix>bug</log.suffix>
 			</properties>
 		</profile>
 		<profile>

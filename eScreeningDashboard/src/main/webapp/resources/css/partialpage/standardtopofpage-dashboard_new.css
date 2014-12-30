@@ -250,10 +250,6 @@ footer {
   box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container {
-	background-color: #061a43;
-	margin-top: 6px;
-	padding: 10px 10px;
-	line-height: 24px;
 }
 .veteran_block, .staff_block {
   margin-bottom: 20px;
@@ -872,9 +868,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-.navbar-default .navbar-toggle .icon-bar{
-  background-color: #fff;
-}
 .userErrorMessage{
   margin:10px 0;  
 }
@@ -884,13 +877,6 @@ a.offscreen:focus, a.offscreen:active {
 .logErrorMessage{
   margin:10px 0;
 }
-.bg_head_table{
-  background-color:#303335;
-}
-.print{
-  margin:10px 0px;
-}
-
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
