@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
-	angular.module('Editors').controller('ModulesDetailOneController', ['$scope', '$stateParams', function($scope, $stateParams) {
+	angular.module('Editors').controller('ModulesDetailOneController', ['$scope', '$stateParams', 'Answer', function($scope, $stateParams, Answer) {
 
 		if (!$scope.question) {
 			// Look up the selected question by the id passed into the parameter
@@ -25,6 +25,10 @@
 				}
 			}
 		};
+
+		$scope.addAnswer = function addAnswer() {
+			$scope.question.answers.push(Answer.create());
+		}
 
 	}]);
 })();

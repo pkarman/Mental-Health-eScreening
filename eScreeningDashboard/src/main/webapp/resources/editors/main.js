@@ -53,6 +53,13 @@ Editors.directive('ngReallyClick', [function() {
     };
 }]);
 
+Editors.value('Answer', EScreeningDashboardApp.models.Answer);
+Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
+Editors.value('Question', EScreeningDashboardApp.models.Question);
+Editors.value('Template', new EScreeningDashboardApp.models.Template());
+Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
+Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
+Editors.value('TemplateVariableContent', new EScreeningDashboardApp.models.TemplateVariableContent());
 
 Editors.config(function(RestangularProvider, $provide) {
 
@@ -66,7 +73,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response
-            newResponse = data.payload[what];
+            newResponse = data.payload[what] || data.payload;
             // Add the status as a meta property on the array
             newResponse.status = data.status;
         }
@@ -149,13 +156,6 @@ Editors.config(function(RestangularProvider, $provide) {
 		return $delegate;
 	}]);
 });
-
-Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
-Editors.value('Question', EScreeningDashboardApp.models.Question);
-Editors.value('Template', new EScreeningDashboardApp.models.Template());
-Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
-Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
-Editors.value('TemplateVariableContent', new EScreeningDashboardApp.models.TemplateVariableContent());
 
 Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', function ($rootScope, $state, $stateParams, editableOptions, MessageHandler) {
 

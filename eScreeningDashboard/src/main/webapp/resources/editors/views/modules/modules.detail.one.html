@@ -1,88 +1,90 @@
-<h4>Properties</h4>
+<h4>Item Type</h4>
+<p>Select One</p>
+
+<form class="form" name="selectOneForm" role="form">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label for="txtVariableNm"> Variable Name </label> <input type="text"
+					ng-model="question.variableName"
+					id="txtVariableNm"
+					class="form-control"
+					placeholder="Variable Name">
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label> Question Text </label> <textarea class="form-control" ng-model="question.text"></textarea>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group form-inline">
+				<label class="checkbox"> <input type="checkbox" ng-model="question.required"> Required </label> <label
+					class="checkbox"> <input type="checkbox" ng-model="question.ppi"> PPI </label>
+			</div>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="row">
+		<div class="col-md-12">
+			<h4>Answers Properties</h4>
+		</div>
+	</div>
+
+	<ul class="list-group odd-even-list" ui-sortable="sortableAnswerOptions" ng-model="question.answers">
+		<li class="list-group-item"
+				ng-repeat="answer in question.answers"
+				ng-class="{'unsortable': answer.sortable === false}">
+			<div class="row">
+				<div class="col-md-1">
+					<div class="glyphicon glyphicon-align-justify" style="margin:10px 10px 10px 0px;"></div>
+				</div>
+				<div class="col-md-5">
+					<div class="form-group">
+						<label> {{$index + 1}}. Answer Type * </label> <input type="text"
+							class="form-control"
+							ng-model="answer.text"
+							placeholder="Enter Answer Text">
+					</div>
+				</div>
+				<div class="col-md-5">
+					<div class="form-group">
+						<label> Export Value *</label> <input type="text"
+							class="form-control"
+							ng-model="answer.exportName"
+							placeholder="Enter Export Value">
+					</div>
+				</div>
+				<div class="col-md-1">
+					<a href="javascript:void(0)">
+						<span class="glyphicon glyphicon-remove-circle" style="margin:10px 10px 10px 0px; color:red"></span>
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-offset-1 col-md-12">
+					<div class="checkbox">
+						<label> <input type="checkbox"
+								ng-model="answer.type"
+								ng-true-value="other"
+								ng-false-value="{{ null }}"> Other </label>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+</form>
 
 <div class="row">
-  <div class="col-md-12 column">
-    <form class="form" role="form">
-      <div class="form-group">
-        <label for="txtVariableNm"> Variable Name </label>
-        <input type="text" ng-model="question.variableName" id="txtVariableNm" class="form-control" placeholder="Variable Name">
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <div class="col-md-12 column">
-      <form role="form" class="form-horizontal">
-        <div class="form-group">
-          <label> Question Text </label>
-          <textarea class="form-control" ng-model="question.text"></textarea>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <form class="form">
-      <div class="form-group form-inline">
-        <label class="checkbox">
-          <input type="checkbox" ng-model="question.required"> Required </label>
-        <label class="checkbox">
-          <input type="checkbox" ng-model="question.ppi"> PPI </label>
-      </div>
-    </form>
-  </div>
-</div>
-
-<hr>
-
-<div class="row">
-  <div class="col-md-12">
-      <h4>Answers Properties</h4>
-  </div>
-</div>
-
-<ul class="list-group odd-even-list" ui-sortable="sortableAnswerOptions" ng-model="question.answers">
-    <li class="list-group-item" ng-repeat="answer in question.answers" ng-class="{'unsortable': answer.sortable === false}">
-        <div class="row">
-            <div class="col-md-1">
-                <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label> {{$index + 1}}. Answer Type * </label> <input type="text"
-                        class="form-control"
-                        ng-model="answer.text"
-                        placeholder="Enter Answer Text">
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="form-group">
-                    <label> Export Value *</label> <input type="text"
-                        class="form-control"
-                        ng-model="answer.exportName"
-                        placeholder="Enter Export Value">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-offset-1 col-md-12">
-                <div class="checkbox">
-                    <label> <input type="checkbox"
-                            ng-model="answer.type"
-                            ng-true-value="other"
-                            ng-false-value="{{ null }}"> Other </label>
-                </div>
-            </div>
-        </div>
-    </li>
-</ul>
-
-<div class="row">
-    <div class="col-md-12">
-        <a href="javascript:void(0);" class="btn btn-primary btn-sm">Add New Answer</a>
-    </div>
+	<div class="col-md-12">
+		<a href="javascript:void(0);" ng-click="addAnswer()" class="btn btn-primary btn-sm">Add New Answer</a>
+	</div>
 </div>
