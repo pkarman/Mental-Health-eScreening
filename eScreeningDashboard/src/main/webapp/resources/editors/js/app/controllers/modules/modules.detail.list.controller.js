@@ -37,22 +37,10 @@ Editors.controller('ModulesDetailListController', ['$rootScope', '$scope', '$sta
     });
 
     $scope.goToQuestionTypeForm = function() {
-        var stateName = $scope.getStateName($scope.questionTypeSelection.type);
+        var stateName = $scope.getStateName($scope.question.type);
 
         $state.go(stateName);
-    };/*
-
-    $scope.disableDropDownMenu = function () {
-        var disableDropDownMenu = false;
-
-        if(Object.isDefined($scope.selectedQuestionUIObject) && Object.isDefined($scope.selectedQuestionUIObject.type)){
-            if(Object.isDefined($scope.questionTypeDropDownMenu)) {
-                disableDropDownMenu = true;
-            }
-        }
-
-        return disableDropDownMenu;
-    };*/
+    };
 
     $scope.addToPageQuestion = function (state, resetFormFunction, softReset) {
         var selectedQuestionDomainObject;
