@@ -2,16 +2,14 @@ package gov.va.escreening.delegate;
 
 import gov.va.escreening.dto.SearchDTO;
 import gov.va.escreening.dto.SearchType;
+import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.BatterySurvey;
-import gov.va.escreening.service.BatteryService;
-import gov.va.escreening.service.BatterySurveyService;
-import gov.va.escreening.service.SurveySectionService;
-import gov.va.escreening.service.SurveyService;
+import gov.va.escreening.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +19,8 @@ import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
@@ -33,6 +33,9 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     private SurveyService surveyService;
 
     private SurveySectionService surveySectionService;
+
+    @Resource(type=MeasureService.class)
+    private MeasureService measureService;
 
 
     @Autowired
@@ -157,6 +160,11 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public SurveyInfo createSurvey(SurveyInfo survey) {
 
         return surveyService.createSurvey(survey);
+    }
+
+    @Override
+    public Measure findMeasure(Integer measureId) {
+        return measureService.findMeasure(measureId);
     }
 }
 

@@ -21,4 +21,7 @@ public interface MeasureService {
 	List<Measure> getMeasuresBySurvey(Integer surveyId);
 
 	List<MeasureType> loadAllMeasureTypes();
+
+	gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId);
+
 }

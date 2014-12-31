@@ -146,10 +146,10 @@ public class EditorRestController {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
-        Measure questionInfo = null; //editorsViewDelegate.getQuestion(questionId);
+        Measure questionInfo = editorsViewDelegate.findMeasure(questionId);
 
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), questionInfo);
     }
 
     @RequestMapping(value = "/services/questions", method = RequestMethod.GET, produces = "application/json")
