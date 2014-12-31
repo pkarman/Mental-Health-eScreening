@@ -6,12 +6,7 @@ angular.module('EscreeningDashboardApp.services.managesection', ['restangular'])
 
         "use strict";
 
-        var restAngular = Restangular.withConfig(function (config) {
-            config.setBaseUrl('services');
-            config.setRequestSuffix('.json');
-        });
-
-        var proxy = restAngular.all('sections');
+        var proxy = Restangular.all('sections');
 
         // service to perform CRUD
         var service = {
