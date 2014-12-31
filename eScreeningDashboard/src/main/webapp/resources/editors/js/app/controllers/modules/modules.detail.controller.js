@@ -20,22 +20,27 @@
             });
         }
 
-        $scope.sortableOptions = {
-            cancel: ".unsortable",
-            items: "li:not(.unsortable)",
-
-            update: function(e, ui) {
-                var logEntry = tmpList.map(function(i){
-                    return i.value;
-                }).join(', ');
-
-            },
+        $scope.sortablePageOptions = {
+            'ui-floating': false,
+            cancel: '.unsortable',
+            items: 'li:not(.unsortable)',
             stop: function(e, ui) {
-                // this callback has the changed model
-                var logEntry = tmpList.map(function(i){
-                    return i.value;
-                }).join(', ');
-                //$scope.sortingLog.push('Stop: ' + logEntry);
+                for (var index in $scope.surveyPages) {
+                    //$scope.surveyPages[index].displayOrder = index;
+                }
+            }
+        };
+
+        $scope.sortableQuestionOptions = {
+            'ui-floating': false,
+            cancel: '.unsortable',
+            items: 'li:not(.unsortable)',
+            stop: function(e, ui) {
+                // Update the display order
+                var questions = ui.item.scope().$parent.page.questions;
+                for (var index in questions) {
+                    questions[index].displayOrder = index;
+                }
             }
         };
 
@@ -89,7 +94,7 @@
             var stateName = $scope.getStateName(question.type);
 
             if(Object.isDefined(stateName)) {
-                $scope.setSelectedPageQuestionItem(question);
+                $scope.question = question;
                 $state.go(stateName, {selectedQuestionId: question.id});
             }
         };
