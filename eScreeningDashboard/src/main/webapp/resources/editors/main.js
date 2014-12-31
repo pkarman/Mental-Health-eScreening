@@ -66,12 +66,17 @@ Editors.config(function(RestangularProvider, $provide) {
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response
-            newResponse = data.payload[what] || data.payload;
+            newResponse = data.payload[what];
             // Add the status as a meta property on the array
             newResponse.status = data.status;
         }
 
-        return newResponse || data;
+        if (operation === 'get') {
+            // Add the payload directly on the response
+            _.extend(data, data.payload);
+        }
+
+        return newResponse || data.payload || data;
     });
     
     $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', 'textAngularManager', '$delegate', '$modal', 'TemplateBlockService',
