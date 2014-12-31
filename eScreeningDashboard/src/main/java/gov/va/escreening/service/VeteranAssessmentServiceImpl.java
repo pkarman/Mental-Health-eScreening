@@ -13,6 +13,7 @@ import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.ClinicalNote;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
@@ -31,6 +32,7 @@ import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.ClinicalNoteRepository;
@@ -48,15 +50,21 @@ import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
@@ -109,6 +117,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private VariableResolverService variableResolverSvc;
+	
+	@Autowired
+	private AssessmentVariableRepository assessmentVariableRepo;
 
 	@Resource(name = "esVeteranAssessmentDashboardAlertRepository")
 	VeteranAssessmentDashboardAlertRepository vadar;
@@ -1108,5 +1122,61 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			String programId, SearchAttributes searchAttributes) {
 		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), searchAttributes);
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
+	}
+
+	@Override
+	public SortedMap<Date, String> getVeteranAssessmentVariableSeries(
+			int veteranId, int assessmentVariableID, int numOfMonth) {
+		
+		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
+		List<AssessmentVariable> dbVariables = new ArrayList<>(1);
+		dbVariables.add(dbVariable);
+		List<VeteranAssessment> assessmentList = veteranAssessmentRepository
+				.findByVeteranId(veteranId);
+
+		Collections.sort(assessmentList, new Comparator<VeteranAssessment>()
+		{
+
+			@Override
+			public int compare(VeteranAssessment va1, VeteranAssessment va2) {
+				if((va1.getDateCompleted()!=null) && (va2.getDateCompleted()!=null))
+				{
+					return va1.getDateCompleted().compareTo(va2.getDateCompleted());
+				}
+				else if(va1.getDateUpdated() !=null && va2.getDateUpdated() !=null)
+				{
+					return va1.getDateUpdated().compareTo(va2.getDateUpdated());
+				}
+				else
+				{
+					if(va1.getDateUpdated() == null)
+					{
+						return -1;
+					}
+					else
+					{
+						return 1;
+					}
+				}
+			}
+			
+		});
+		
+		SortedMap<Date, String> timeSeries = new TreeMap<Date, String>();
+		
+		for (VeteranAssessment va : assessmentList) {
+			try {
+				
+				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
+				
+				AssessmentVariableDto result = dto.iterator().next();
+				if (result.getValue() != null) {
+					timeSeries.put(va.getDateCompleted(),  result.getValue());
+				}
+			} catch (Exception ex) {// do nothing
+
+			}
+		}
+		return timeSeries;
 	}
 }

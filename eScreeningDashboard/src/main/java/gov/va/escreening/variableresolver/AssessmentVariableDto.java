@@ -20,7 +20,6 @@ public class AssessmentVariableDto {
 	private String calculationValue;
 	private String otherValue;
 	private String displayName;
-	private Map<Date, String> timeSeries;
 	
 	private Integer answerId;
 	
@@ -180,14 +179,6 @@ public class AssessmentVariableDto {
 	public void setChildren(List<AssessmentVariableDto> children) {
 		this.children = children;
 	}
-
-	public Map<Date, String> getTimeSeries() {
-		return timeSeries;
-	}
-
-	public void setTimeSeries(Map<Date, String> timeSeries) {
-		this.timeSeries = timeSeries;
-	}
 	
 
 	@Override
@@ -197,8 +188,8 @@ public class AssessmentVariableDto {
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
-				+ ", otherValue=" + otherValue + ", "
-				+ "timeSeries= " +timeSeries + ", children=" + children + "]";
+				+ ", otherValue=" + otherValue 
+				+ ", children=" + children + "]";
 	}
 
 	public void setDisplayName(String displayName) {
