@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailFreetextController', ['$scope', '$state', '$stateParams', 'QuestionService', 'MeasureService', 'textFormatOptions', function($scope, $state, $stateParams, QuestionService, MeasureService, textFormatOptions){
+    angular.module('Editors').controller('ModulesDetailFreetextController', ['$scope', '$state', '$stateParams', 'SurveyService', 'MeasureService', 'textFormatOptions', function($scope, $state, $stateParams, SurveyService, MeasureService, textFormatOptions){
 
         $scope.textFormatOptions = textFormatOptions;
         $scope.parentResetForm = $scope.resetForm;
@@ -9,9 +9,11 @@
 
         if (!$scope.question) {
             // Look up the selected question by the id passed into the parameter
-            // TODO create GET /services/surveys/:id/questions/:id endpoint
-            // This also doesn't work: MeasureService.one($stateParams.selectedQuestionId).get()
-            // The above endpoint doesn't exist, therefore loop through the surveyPages questions list
+            /* TODO
+             $scope.survey.one('questions', $stateParams.selectedQuestionId).get().then(function(question) {
+             console.log(question);
+             });
+             */
             $scope.question =_.find($scope.surveyPages[0].questions, function(question) {
                 return question.id === +$stateParams.selectedQuestionId;
             });
