@@ -174,18 +174,18 @@ h2 {
   background-position: center;/* box-shadow: -5px 0px 5px 4px #000; */
 }
 .landing_page h1 {
-	font-weight: normal;
-	color: #061a43;
-	font-size: 34px;
-	text-align: center;
-	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
-	margin: 38px auto;
+  font-weight: normal;
+  color: #061a43;
+  font-size: 34px;
+  text-align: center;
+  text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
+  margin: 38px auto;
 }
 .landing_page h2 {
-	font-weight: normal;
-	color: #ffd800;
-	font-size: 22px;
-	text-align: left;
+  font-weight: normal;
+  color: #ffd800;
+  font-size: 22px;
+  text-align: left;
 	text-shadow: 0px 1px 0px rgba(255,255,255,0.50);
 }
 .container_box_white {
@@ -250,10 +250,10 @@ footer {
   box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container {
-	background-color: #061a43;
-	margin-top: 6px;
-	padding: 10px 10px;
-	line-height: 24px;
+  background-color: #061a43;
+  margin-top: 6px;
+  padding: 10px 10px;
+  line-height: 24px;
 }
 .veteran_block, .staff_block {
   margin-bottom: 20px;
@@ -272,12 +272,6 @@ footer {
   color: #000 !important;
 }
 .btn-default-white:hover {
-  color: #fff !important;
-}
-.btn-default-black:hover{
-  color: #000 !important;
-}
-.btn-default-white:hover{
   color: #fff !important;
 }
 .ajax_loading {
@@ -878,18 +872,10 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-
-/* added by JH */
-.cursor-pointer{
-	cursor:pointer;
+.print{
+  margin:10px 0px;
 }
 
-.red-color{
-  color:red !important;
-}
-.navbar-default .navbar-toggle .icon-bar{
-  background-color: #fff;
-}
 .userErrorMessage{
   margin:10px 0;  
 }
@@ -899,13 +885,6 @@ a.offscreen:focus, a.offscreen:active {
 .logErrorMessage{
   margin:10px 0;
 }
-.bg_head_table{
-  background-color:#303335;
-}
-.print{
-  margin:10px 0px;
-}
-
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
@@ -956,34 +935,6 @@ a.offscreen:focus, a.offscreen:active {
   padding: 0 !important;
   margin: 0 auto;
 }
-.nonPrintableArea {
-  display: none;
-}
-.modal-header, .modal-content{
-  border:none;
-}
-
-
-.modal{
-  overflow:visible;
-  position:absolute;
-  left: 0;
-  top: 0;
-  width: 1100px !important;
-  height: auto !important;
-  background-color: #454545;
-  visibility: visible !important;
-  min-height: none !important;
-  max-height: none !important;
-  padding: 0px;
-  margin: 0px;
-}
-.container_main{
-  width: 100% !important;
-  padding:0 !important;
-  margin: 0 auto;
-}
-
 /*
 .noPrint {
 	display: none;
