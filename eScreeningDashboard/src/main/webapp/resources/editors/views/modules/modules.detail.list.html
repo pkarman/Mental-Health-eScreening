@@ -1,5 +1,4 @@
 <form name="selectedQuestionTypeForm" novalidate>
-
     <div class="row">
         <div class="col-md-12">
             <div class="form-horizontal">
@@ -14,14 +13,6 @@
                         ng-disabled="selectedQuestionTypeForm.$invalid"
                         ng-click="goToQuestionTypeForm();">Next <span class="glyphicon glyphicon-chevron-right"></span>
                 </button>
-                <!--div class="col-md-4">
-                    <select id="selectQuestionType" name="selectQuestionType" class="form-control"
-                            ng-model="questionTypeDropDownMenu"
-                            ng-options="option.displayName for option in questionTypeDropDownMenuOptions track by option.displayName"
-                            ng-disabled="disableDropDownMenu()" required>
-                        <option value=""> -- Choose Question Type --</option>
-                    </select>
-                </div-->
             </div>
         </div>
     </div>

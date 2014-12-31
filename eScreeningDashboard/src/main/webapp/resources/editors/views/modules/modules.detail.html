@@ -1,4 +1,3 @@
-
 <div class="row">
     <div class="col-md-6">
       <h1>Manage Module</h1>
@@ -7,8 +6,6 @@
       <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
     </div>
 </div>
-
-
 
 <!-- Alerts and Messages -->
 <div class="row">
@@ -25,18 +22,8 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-md-12">
-        <div class="btn-group-sm pull-right"> 
-            
-         
-          
-	        <!-- JH OOOCOMMENT              
-	        <a ui-sref="modules.detail.expressioneditor" class="btn btn-success" href="#/modules/modules.detail/modules.detail.expressioneditor">Add/Edit Formula</a>
-	        <a class="btn btn-warning" ui-sref="modules.detail.rulesandevents" href="#/modules/modules.detail/modules.detail.rulesandevents">Add/Edit Rule</a> 
-	        -->
-      </div>
         <form name="moduleDetailsForm" novalidate>
             <div class="border-radius-main-form gray-lighter">
                 <div class="row">
@@ -86,13 +73,12 @@
                 <div class="border-radius-top-box  gray-lighter">
                   <div class="section_header_title pull-left">Items</div>
                   <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
-                  <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
                   <div class="clearfix"></div>
                  </div>
                  
                     
                 <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
-                    <ul class="list-group app screen first" ui-sortable="sortableOptions" ng-model="surveyPages">
+                    <ul class="list-group app screen first" ng-model="surveyPages">
                         <li class="list-group-item text-left" ng-repeat="page in surveyPages"
                                 ng-class="{'unsortable': page.sortable === false}">
 
@@ -112,7 +98,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul class="list-group app screen" style="margin-top:5px;">
+                            <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
                                 <li class="list-group-item text-left" ng-repeat="question in page.questions"
                                         ng-class="{'unsortable': question.sortable === false}">
                                     <div class="form-inline">
@@ -142,7 +128,6 @@
             <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
               <div class="border-radius-top-box  gray-lighter">
               <div class="section_header_title pull-left">Properties</div>
-              <!-- popover-placement="top" popover="Will add a sortable Page Break object to the Questions List, and update page breaks."//-->
               <div class="clearfix"></div>
               </div>
                 <div class="border-radius-bottom-box padding_10" style="min-height:470px; background-color:#FFFFFF;">
