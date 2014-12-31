@@ -61,8 +61,10 @@ Editors.config(function(RestangularProvider, $provide) {
 
     RestangularProvider.addResponseInterceptor(function(data, operation, what) {
         var newResponse;
+        // List of array collection endpoints that do not conform to response.payload[resource]
+        var listExceptions = ['validations', 'templateTypes', 'sections'];
 
-        if (operation === 'getList' && what !== 'validations' && what !== 'templateTypes') {
+        if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response
             newResponse = data.payload[what] || data.payload;
             // Add the status as a meta property on the array
