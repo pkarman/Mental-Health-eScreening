@@ -28,7 +28,11 @@
 
 		$scope.addAnswer = function addAnswer() {
 			$scope.question.answers.push(Answer.create());
-		}
+		};
+
+		$scope.deleteAnswer = function deleteAnswer(index) {
+			$scope.question.answers.splice(index, 1);
+		};
 
 	}]);
 })();
