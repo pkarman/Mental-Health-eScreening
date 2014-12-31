@@ -270,8 +270,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     surveyPages: ['$stateParams', 'SurveyPageService',  function($stateParams, SurveyPageService) {
                         return SurveyPageService($stateParams.surveyId).getList();
                     }],
-                    surveySections: ['SurveySectionService',  function(SurveySectionService) {
-                        return SurveySectionService.getList();
+                    surveySections: ['ManageSectionService',  function(ManageSectionService) {
+                        return ManageSectionService.getList();
                     }]
                 },
                 controller: 'ModulesDetailController'
@@ -284,20 +284,20 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
             })
 
             .state('modules.detail.list', {
-                url:'/question',
+                url:'/list',
                 templateUrl:'resources/editors/views/modules/modules.detail.list.html',
                 data:{displayName:false},
                 resolve: {
                     questionTypes: ['Restangular', function (Restangular) {
                         //return Restangular.all("measureType").getList();
 
-                        return [{id: 0, name: "freeText", displayName: "Free Text"},
-                        {id: 1, name: "selectOne", displayName: "Select One"},
-                         {id: 2, name: "selectMulti", displayName: "Select Multi"},
-                         {id: 3, name: "selectOneMatrix", displayName: "Select One Matrix"},
-                         {id: 4, name: "selectMultiMatrix", displayName: "Select Multi Matrix"},
-                         {id: 5, name: "tableQuestion", displayName: "Table"},
-                         {id: 6, name: "instruction", displayName: "Instructions"}];
+                        return [{id: 0, name: "freeText", displayName: "Free Text", state: "modules.detail.freetext"},
+                        {id: 1, name: "selectOne", displayName: "Select One", state: "modules.detail.one"},
+                         {id: 2, name: "selectMulti", displayName: "Select Multi", state: "modules.detail.multi"},
+                         {id: 3, name: "selectOneMatrix", displayName: "Select One Matrix", state: "modules.detail.onematrix"},
+                         {id: 4, name: "selectMultiMatrix", displayName: "Select Multi Matrix", state: "modules.detail.multimatrix"},
+                         {id: 5, name: "tableQuestion", displayName: "Table", state: "modules.detail.table"},
+                         {id: 6, name: "instruction", displayName: "Instructions", state: "modules.detail.instructions"}];
 
                     }]
                 },
