@@ -151,8 +151,7 @@ public class EditorRestController {
         Measure measure = editorsViewDelegate.findMeasure(questionId);
         QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
         Gson gson = new GsonBuilder().create();
-        String jsonResponse=gson.toJson(question);
-
+        String jsonResponse=gson.toJson(question).replaceAll("\"", "'");
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), jsonResponse);
     }
 
@@ -267,10 +266,11 @@ public class EditorRestController {
                               @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSurvey");
 
-        // Call service class here instead of hard coding it.
         // SurveyInfo surveyInfo = //editorsViewDelegate.getSurvey(surveyId);
+        Gson gson = new GsonBuilder().create();
+        String jsonResponse=gson.toJson(surveyInfo).replaceAll("\"", "'");
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), jsonResponse);
     }
 
     @RequestMapping(value = "/services/surveys", method = RequestMethod.GET, produces = "application/json")

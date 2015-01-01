@@ -48,13 +48,7 @@ public class MeasureServiceImpl implements MeasureService {
     @Transactional(readOnly = true)
     public gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId) {
         Measure dbMeasure=measureRepository.findOne(measureId);
-        gov.va.escreening.dto.ae.Measure dtoMeasure=new gov.va.escreening.dto.ae.Measure();
-        BeanUtils.copyProperties(dbMeasure, dtoMeasure);
-        dtoMeasure.setMeasureType(dbMeasure.getMeasureType().getName());
-        dtoMeasure.setIsPPI(dbMeasure.getIsPatientProtectedInfo());
-        dtoMeasure.setIsMha(dbMeasure.getIsMha());
-        dtoMeasure.setIsRequired(dbMeasure.getIsRequired());
-
+        gov.va.escreening.dto.ae.Measure dtoMeasure=new gov.va.escreening.dto.ae.Measure(dbMeasure,null,null);
         return dtoMeasure;
     }
 }
