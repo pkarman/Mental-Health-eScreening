@@ -266,7 +266,7 @@ public class EditorRestController {
                               @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSurvey");
 
-        // SurveyInfo surveyInfo = //editorsViewDelegate.getSurvey(surveyId);
+        SurveyInfo surveyInfo = editorsViewDelegate.findSurvey(surveyId);
         Gson gson = new GsonBuilder().create();
         String jsonResponse=gson.toJson(surveyInfo).replaceAll("\"", "'");
 
