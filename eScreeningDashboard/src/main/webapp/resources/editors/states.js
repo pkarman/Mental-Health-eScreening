@@ -331,25 +331,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'ModulesDetailInstructionsController'
             })
 
-            .state('modules.detail.multi', {
-                url:'/selectMultiple/:selectedQuestionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.multi.html',
-                data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One Multi'
-                },
-                resolve: {
-                    answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
-                        //TODO: Need to dynamically pull a unique list of answer types from the database.
-                        return [
-                            "regular",
-                            "other",
-                            "none"
-                        ];
-                    }]
-                },
-                controller:'ModulesDetailMultiController'
-            })
-
             .state('modules.detail.multimatrix',{
                 url:'/selectMultipleMatrix/:selectedQuestionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.multimatrix.html',

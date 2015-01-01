@@ -25,8 +25,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="form-group form-inline">
-				<label class="checkbox"> <input type="checkbox" ng-model="question.required"> Required </label> <label
-					class="checkbox"> <input type="checkbox" ng-model="question.ppi"> PPI </label>
+				<label class="checkbox"> <input type="checkbox" ng-model="question.required"> Required </label>
+				<label class="checkbox"> <input type="checkbox" ng-model="question.ppi"> PPI </label>
 			</div>
 		</div>
 	</div>
@@ -49,7 +49,7 @@
 				</div>
 				<div class="col-md-5">
 					<div class="form-group">
-						<label> {{$index + 1}}. Answer Type * </label> <input type="text"
+						<label> {{$index + 1}}. Answer Text * </label> <input type="text"
 							class="form-control"
 							ng-model="answer.text"
 							placeholder="Enter Answer Text">
@@ -57,7 +57,7 @@
 				</div>
 				<div class="col-md-5">
 					<div class="form-group">
-						<label> Export Value *</label> <input type="text"
+						<label> Variable Name *</label> <input type="text"
 							class="form-control"
 							ng-model="answer.exportName"
 							placeholder="Enter Export Value">
@@ -71,11 +71,19 @@
 			</div>
 			<div class="row">
 				<div class="col-md-offset-1 col-md-12">
-					<div class="checkbox">
-						<label> <input type="checkbox"
+					<div class="form-group form-inline">
+						<label class="checkbox" ng-if="question.type === 'selectMulti'"> <input type="checkbox"
+								ng-model="answer.type"
+								ng-true-value="regular"
+								ng-false-value="{{ null }}"> Regular </label>
+						<label class="checkbox"> <input type="checkbox"
 								ng-model="answer.type"
 								ng-true-value="other"
 								ng-false-value="{{ null }}"> Other </label>
+						<label class="checkbox" ng-if="question.type === 'selectMulti'"> <input type="checkbox"
+								ng-model="answer.type"
+								ng-true-value=""
+								ng-false-value="{{ null }}"> None </label>
 					</div>
 				</div>
 			</div>

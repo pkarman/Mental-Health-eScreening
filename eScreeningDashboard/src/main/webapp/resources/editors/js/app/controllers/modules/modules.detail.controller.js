@@ -55,7 +55,7 @@
                     stateName = "modules.detail.one";
                     break;
                 case'selectMulti':
-                    stateName = "modules.detail.multi";
+                    stateName = "modules.detail.one";
                     break;
                 case 'selectOneMatrix':
                     stateName = "modules.detail.onematrix";
