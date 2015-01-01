@@ -160,7 +160,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	}
 
     @Override
-    public Measure findMeaure(Integer measureId) {
+    public Measure findMeasure(Integer measureId) {
         return measureService.findMeasure(measureId);
     }
 }

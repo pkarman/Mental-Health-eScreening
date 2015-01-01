@@ -14,7 +14,6 @@ import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,11 +147,10 @@ public class EditorRestController {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
-        Measure measure = editorsViewDelegate.findMeaure(questionId);
+        Measure measure = editorsViewDelegate.findMeasure(questionId);
         QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
         Gson gson = new GsonBuilder().create();
-        String jsonResponse=gson.toJson(question);
-
+        String jsonResponse=gson.toJson(question).replaceAll("\"", "'");
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), jsonResponse);
     }
 
@@ -267,10 +265,11 @@ public class EditorRestController {
                               @CurrentUser EscreenUser escreenUser) {
         logger.debug("getSurvey");
 
-        // Call service class here instead of hard coding it.
         SurveyInfo surveyInfo = editorsViewDelegate.findSurvey(surveyId);
+        Gson gson = new GsonBuilder().create();
+        String jsonResponse=gson.toJson(surveyInfo).replaceAll("\"", "'");
 
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), jsonResponse);
     }
 
     @RequestMapping(value = "/services/surveys", method = RequestMethod.GET, produces = "application/json")
