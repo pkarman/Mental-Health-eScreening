@@ -1,5 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.EditorsViewDelegate;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -146,10 +148,12 @@ public class EditorRestController {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
-        Measure questionInfo = editorsViewDelegate.findMeaure(questionId);
+        Measure measure = editorsViewDelegate.findMeaure(questionId);
+        QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
+        Gson gson = new GsonBuilder().create();
+        String jsonResponse=gson.toJson(question);
 
-
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), questionInfo);
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), jsonResponse);
     }
 
     @RequestMapping(value = "/services/questions", method = RequestMethod.GET, produces = "application/json")
