@@ -14,7 +14,6 @@ import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +147,7 @@ public class EditorRestController {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
-        Measure measure = editorsViewDelegate.findMeaure(questionId);
+        Measure measure = editorsViewDelegate.findMeasure(questionId);
         QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
         Gson gson = new GsonBuilder().create();
         String jsonResponse=gson.toJson(question).replaceAll("\"", "'");

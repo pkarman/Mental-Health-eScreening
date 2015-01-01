@@ -35,5 +35,5 @@ public interface EditorsViewDelegate {
 	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 	SurveyInfo createSurvey(SurveyInfo survey);
 
-    Measure findMeaure(Integer questionId);
+    Measure findMeasure(Integer questionId);
 }
