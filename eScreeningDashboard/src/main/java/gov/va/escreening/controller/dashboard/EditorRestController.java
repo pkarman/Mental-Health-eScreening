@@ -148,7 +148,7 @@ public class EditorRestController {
         logger.debug("getQuestion");
 
         // Call service class here instead of hard coding it.
-        Measure measure = editorsViewDelegate.findMeasure(questionId);
+        Measure measure = editorsViewDelegate.findMeaure(questionId);
         QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
         Gson gson = new GsonBuilder().create();
         String jsonResponse=gson.toJson(question).replaceAll("\"", "'");

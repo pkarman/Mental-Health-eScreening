@@ -16,22 +16,24 @@ public interface EditorsViewDelegate {
     List<BatteryInfo> getBatteries();
     void updateBattery(BatteryInfo batteryInfo);
     void deleteBattery(Integer batteryId);
-
+    
     List<SurveyInfo> getSurveys();
     SurveyInfo updateSurvey(SurveyInfo surveyInfo);
 
-
+    
     Integer createSection(SurveySectionInfo surveySection);
-    SurveySectionInfo getSection(Integer sectionId);
-    List<SurveySectionInfo> getSections();
+   	SurveySectionInfo getSection(Integer sectionId);
+   	List<SurveySectionInfo> getSections();
     SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo);
-    void deleteSection(Integer surveySectionId);
+   	void deleteSection(Integer surveySectionId);
+
+    SurveyInfo findSurvey(Integer surveyId);
 
     void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
-    void createSurveyPage(Integer surveyId, Page surveyPage);
-    void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
-    List<SurveyPageInfo> getSurveyPages(Integer surveyId);
-    SurveyInfo createSurvey(SurveyInfo survey);
+	void createSurveyPage(Integer surveyId, Page surveyPage);
+	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+	SurveyInfo createSurvey(SurveyInfo survey);
 
-    Measure findMeasure(Integer questionId);
+    Measure findMeaure(Integer questionId);
 }

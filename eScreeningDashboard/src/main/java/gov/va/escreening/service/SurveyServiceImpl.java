@@ -1,11 +1,16 @@
 package gov.va.escreening.service;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
-import gov.va.escreening.dto.editors.*;
+import gov.va.escreening.dto.editors.QuestionInfo;
+import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
+import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.*;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
@@ -23,7 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 @Service
 public class SurveyServiceImpl implements SurveyService {
 
@@ -152,82 +157,47 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SurveyInfo> getSurveyItemList() {
 
-        List<SurveyInfo> surveyInfoList = new ArrayList<SurveyInfo>();
 
         List<Survey> surveys = surveyRepository.getSurveyList();
+        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys, null);
 
-        for (Survey survey : surveys) {
-            surveyInfoList.add(convertToSurveyItem(survey));
-        }
+//		for (Survey survey : surveys) {
+//			surveyInfoList.add(convertToSurveyItem(survey));
+//		}
 
         return surveyInfoList;
     }
 
     @Override
-    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SurveyInfo update(SurveyInfo surveyInfo) {
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
-
-
-        BeanUtils.copyProperties(surveyInfo, survey);
         survey.setSurveySection(surveySection);
-
-        survey = surveyRepository.update(survey);
-        return convertToSurveyItem(survey);
-    }
-
-    @Override
-    public SurveyInfo convertToSurveyItem(Survey survey) {
-
-        if (survey == null) {
-            return null;
-        }
-
-        SurveyInfo surveyInfo = new SurveyInfo();
-        BeanUtils.copyProperties(survey, surveyInfo);
-
-        if (survey.getSurveySection() != null) {
-            SurveySectionInfo surveySectionInfo = new SurveySectionInfo();
-
-            surveySectionInfo.setSurveySectionId(survey.getSurveySection().getSurveySectionId());
-            surveySectionInfo.setDescription(survey.getSurveySection().getDescription());
-            surveySectionInfo.setName(survey.getSurveySection().getName());
-            surveySectionInfo.setDisplayOrder(survey.getSurveySection().getDisplayOrder());
-            surveySectionInfo.setDateCreated(survey.getSurveySection().getDateCreated());
-
-            surveyInfo.setSurveySectionInfo(surveySectionInfo);
-        }
-
+        surveyRepository.update(survey);
         return surveyInfo;
     }
 
     @Override
     public Survey findOne(int surveyId) {
-
         return surveyRepository.findOne(surveyId);
     }
 
-    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     @Override
     public void removeMeasureFromSurvey(Integer surveyId, Integer questionId) {
 
         Measure measure = measureRepository.findOne(questionId);
 
-        if (measure!=null)
-        {
-            if (measure.getParent()!=null)
-            {
+        if (measure != null) {
+            if (measure.getParent() != null) {
                 measure.setParent(null);
                 measureRepository.update(measure);
                 measureRepository.commit();
-            }
-            else
-            {
+            } else {
                 SurveyPage sp = surveyPageRepository.getSurveyPageByMeasureId(questionId);
 
-                if (sp!=null)
-                {
+                if (sp != null) {
                     sp.getMeasures().remove(measure);
                     surveyPageRepository.update(sp);
                     surveyPageRepository.commit();
@@ -252,7 +222,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void updateSurveyPages(Integer surveyId,
                                   List<SurveyPageInfo> surveyPageInfos) {
 
@@ -263,17 +233,13 @@ public class SurveyServiceImpl implements SurveyService {
 
         String surveyPageTitle = survey.getSurveySection().getName();
 
-        for(SurveyPageInfo surveyPageInfo : surveyPageInfos)
-        {
+        for (SurveyPageInfo surveyPageInfo : surveyPageInfos) {
 
             SurveyPage surveyPage = null;
 
-            if (surveyPageInfo.getId() == null)
-            {
+            if (surveyPageInfo.getId() == null) {
                 surveyPage = new SurveyPage();
-            }
-            else
-            {
+            } else {
                 surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
             }
 
@@ -282,12 +248,9 @@ public class SurveyServiceImpl implements SurveyService {
             surveyPage.setTitle(surveyPageTitle);
             surveyPage.setSurveyPageId(surveyPageInfo.getId());
 
-            if (surveyPageInfo.getDateCreated()==null)
-            {
+            if (surveyPageInfo.getDateCreated() == null) {
                 surveyPage.setDateCreated(new Date());
-            }
-            else
-            {
+            } else {
                 surveyPage.setDateCreated(surveyPageInfo.getDateCreated());
             }
             surveyPage.setSurvey(survey);
@@ -295,16 +258,12 @@ public class SurveyServiceImpl implements SurveyService {
             List<Measure> measures = new ArrayList<Measure>();
             surveyPage.setMeasures(measures);
 
-            for(final QuestionInfo questionInfo : surveyPageInfo.getQuestions())
-            {
+            for (final QuestionInfo questionInfo : surveyPageInfo.getQuestions()) {
                 Integer measureId = questionInfo.getId();
-                if (measureId != null && measureId >-1)
-                {
+                if (measureId != null && measureId > -1) {
                     measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
                     measures.add(measureRepository.findOne(questionInfo.getId()));
-                }
-                else
-                {
+                } else {
                     gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
                     Measure measure = measureRepository.findOne(measureDTO.getMeasureId());
 
@@ -319,23 +278,20 @@ public class SurveyServiceImpl implements SurveyService {
                 }
             }
 
-            if (surveyPageInfo.getId() == null)
-            {
+            if (surveyPageInfo.getId() == null) {
                 surveyPageRepository.create(surveyPage);
-            }
-            else
+            } else
                 surveyPageRepository.update(surveyPage);
 
             surveyPageList.add(surveyPage);
         }
 
-        System.out.println("aaaaaab");
         survey.setSurveyPageList(surveyPageList);
         surveyRepository.update(survey);
     }
 
     private void attachMeasureAnswer(Measure measure) {
-        if (MeasureTypeEnum.FREETEXT.getMeasureTypeId()==measure.getMeasureType().getMeasureTypeId()) {
+        if (MeasureTypeEnum.FREETEXT.getMeasureTypeId() == measure.getMeasureType().getMeasureTypeId()) {
             MeasureAnswer ma = new MeasureAnswer();
             ma.setMeasure(measure);
             ma.setDisplayOrder(0);
@@ -358,13 +314,13 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
         Survey survey = surveyRepository.findOne(surveyId);
         List<SurveyPage> surveyPages = survey.getSurveyPageList();
 
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
-        for(SurveyPage surveyPage : surveyPages)
-        {
+        for (SurveyPage surveyPage : surveyPages) {
             SurveyPageInfo spi = new SurveyPageInfo();
             spi.setId(surveyPage.getSurveyPageId());
             spi.setDescription(surveyPage.getDescription());
@@ -373,30 +329,49 @@ public class SurveyServiceImpl implements SurveyService {
             spi.setDateCreated(surveyPage.getDateCreated());
 
             spi.setQuestions(new ArrayList<QuestionInfo>());
-            for(Measure measure : surveyPage.getMeasures())
-            {
+            for (Measure measure : surveyPage.getMeasures()) {
                 spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
             }
             surveyPageInfos.add(spi);
-
         }
         return surveyPageInfos;
     }
 
     @Override
+    @Transactional
     public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
-        Survey survey = new Survey();
-
-        BeanUtils.copyProperties(surveyInfo, survey);
-
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
 
+        Survey survey = new Survey();
+        BeanUtils.copyProperties(surveyInfo, survey);
         survey.setSurveySection(surveySection);
-        //surveySection.getSurveyList().add(survey);
-        surveyRepository.create(survey);
-        //surveySectionRepository.update(surveySection);
 
-        return convertToSurveyItem(survey);
+        surveyRepository.create(survey);
+        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
     }
 
+    @Override
+    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, final SurveySectionInfo ssInfo) {
+
+        Function<Survey, SurveyInfo> transformerFun = new Function<Survey, SurveyInfo>() {
+            @Nullable
+            @Override
+            public SurveyInfo apply(Survey survey) {
+                SurveyInfo si = new SurveyInfo();
+                BeanUtils.copyProperties(survey, si);
+
+                si.setSurveySectionInfo(ssInfo);
+
+                return si;
+            }
+        };
+
+        return Lists.newArrayList(Collections2.transform(surveyList, transformerFun));
+    }
+
+    @Override
+    public SurveyInfo findSurveyById(Integer surveyId) {
+        Survey survey = surveyRepository.findOne(surveyId);
+        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+    }
 }

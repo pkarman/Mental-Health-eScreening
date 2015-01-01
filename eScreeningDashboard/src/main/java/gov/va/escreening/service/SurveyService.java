@@ -4,8 +4,10 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
+import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.Survey;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface SurveyService {
@@ -35,13 +37,13 @@ public interface SurveyService {
      * @return
      */
     List<SurveyDto> getSurveyListForVeteranAssessment(int veteranAssessmentId);
-
+    
     /**
      * Retrieves all the survey.
      * @return
      */
     List<SurveyDto> getSurveyList();
-
+    
     /**
      * Retrieves all the survey.
      * @return
@@ -49,23 +51,25 @@ public interface SurveyService {
     List<SurveyInfo> getSurveyItemList();
 
     SurveyInfo update(SurveyInfo surveyInfo);
-
+    
     /**
-     *
+     * 
      * @param surveyId
      * @return
      */
     Survey findOne(int surveyId);
 
-    SurveyInfo convertToSurveyItem(Survey survey);
+	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
 
-    void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
+	void createSurveyPage(Integer surveyId, Page surveyPage);
 
-    void createSurveyPage(Integer surveyId, Page surveyPage);
+	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 
-    void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 
-    List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+	SurveyInfo createSurvey(SurveyInfo survey);
 
-    SurveyInfo createSurvey(SurveyInfo survey);
+    List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, SurveySectionInfo ssInfo);
+
+    SurveyInfo findSurveyById(Integer surveyId);
 }
