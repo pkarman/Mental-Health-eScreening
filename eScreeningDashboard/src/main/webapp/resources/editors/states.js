@@ -306,7 +306,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
 
             .state('modules.detail.freetext', {
                 url:'/freeText/:questionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.freetext.html',
+                templateUrl:'resources/editors/views/modules/modules.detail.text.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                 },
@@ -326,7 +326,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 url:'/simple/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.simple.html',
                 data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One'
+                    displayName: 'Modules-Editor: Add/Edit - Questions'
                 },
                 controller: 'ModulesDetailSimpleController'
             })
@@ -335,7 +335,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 url:'/matrix/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.matrix.html',
                 data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One Matrix'
+                    displayName: 'Modules-Editor: Add/Edit - Questions'
                 },
                 controller: 'ModulesDetailMatrixController'
             })

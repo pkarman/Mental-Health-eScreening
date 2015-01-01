@@ -1,113 +1,79 @@
-<h4>Properties</h4>
+<h4>Item Type</h4>
+{{ question.type }}
+
 <div class="row">
     <div class="col-md-12">
         <form role="form" class="form">
             <div class="form-group">
                 <label> Question Text </label>
-                <textarea class="form-control" ng-model="selectedPageQuestionItem.getItem().text"></textarea>
+                <textarea class="form-control" ng-model="question.text"></textarea>
             </div>
         </form>
     </div>
 </div>
-<!--
+
 <div class="row">
     <div class="col-md-12">
+        <h4>Matrix Columns (Answers)</h4>
         <div class="form-group">
-            <label> VistA Question Text </label>
-            <textarea class="form-control" ng-model="selectedQuestionUIObject.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
-        </div>
-    </div>
-</div>
-//-->
-<div class="row">
-    <div class="col-md-12 column" style="display: block;">
-
-        <!-- JH OOOCOMMENT
-            <form class="form-horizontal">
-
-                <div class="form-group form-inline">
-
-                    <div class="btn-group pull-left">
-                        <a href="#" class="btn btn-success btn-sm active">Select Single</a>
-                        <a href="#" class="btn btn-success btn-sm">Select Multiple</a>
+            <ul class="list-group odd-even-list" ui-sortable="sortableChildAnswerOptions" ng-model="question.childAnswers">
+                <li class="list-group-item"
+                        ng-repeat="childAnswer in question.childAnswers"
+                        ng-class="{'unsortable': childAnswer.sortable === false}">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <div class="glyphicon glyphicon-align-justify" style="margin:10px 10px 10px 0px;"></div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label> {{$index + 1}}. Column Name * </label> <input type="text"
+                                    class="form-control"
+                                    ng-model="childAnswer.text"
+                                    placeholder="Enter Answer Text">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label> Variable Name *</label> <input type="text"
+                                    class="form-control"
+                                    ng-model="childAnswer.exportName"
+                                    placeholder="Enter Export Value">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" ng-really-click="deleteChildAnswer($index)" ng-really-message="Are you sure you want to delete this answer?">
+                                <span class="glyphicon glyphicon-remove-circle" style="margin:10px 10px 10px 0px; color:red"></span>
+                            </button>
+                        </div>
                     </div>
-
-                &nbsp;
-                    <label class="form-label">Help Text</label>
-                    <input type="text" class="form-control" style="width:360px;" placeholder="Enter Help Text">
-                </div>
-
-                <div class="form-group form-inline">
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        &nbsp;PPI
-                    </label>
-                    &nbsp;&nbsp;
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        MHA
-                    </label>
-                    &nbsp;&nbsp;
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        Required
-                    </label>
-                </div>
-            </form>
-             -->
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group">
-            <h4>Matrix Columns (Answers)</h4>
-
-            <!-- JH OOOCOMMENT
-                  <div class="form-group pull-right">
-                      <button class="btn btn-primary btn-sm">
-                          <span class="glyphicon glyphicon-plus"></span>
-                          Add
-                      </button>
-
-                  </div>
-                  -->
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group">
-            <ul class="list-group odd-even-list">
-                <li class="list-group-item" ng-repeat="answerUIObject in getFirstChildMeasureAnswers(selectedPageQuestionItem.getItem().childQuestions)">
-                    <div class="form-group">
-                        <label> {{$index + 1}}. Column Name </label>
-                        <input type="text" class="form-control" ng-model="answerUIObject.text" placeholder="Enter Column Name">
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-12">
+                            <div class="form-group form-inline">
+                                <label class="checkbox" ng-if="question.type === 'selectMultiMatrix'"> <input type="checkbox"
+                                        ng-model="childAnswer.type"
+                                        ng-true-value="regular"
+                                        ng-false-value="{{ null }}"> Regular </label>
+                                <label class="checkbox"> <input type="checkbox"
+                                        ng-model="childAnswer.type"
+                                        ng-true-value="other"
+                                        ng-false-value="{{ null }}"> Other </label>
+                                <label class="checkbox" ng-if="question.type === 'selectMultiMatrix'"> <input type="checkbox"
+                                        ng-model="childAnswer.type"
+                                        ng-true-value="none"
+                                        ng-false-value="{{ null }}"> None </label>
+                            </div>
+                        </div>
                     </div>
-                    <!--
-                    <div class="form-group">
-                        <label> Vista Answer text </label>
-                        <input type="text" class="form-control" ng-model="answerUIObject.vistaText" ng-disabled="!module.clinicalReminder" placeholder="Enter Vista Answer text " value="">
-                    </div>
-                    //-->
-                    <div class="checkbox">
-                        <label><input type="checkbox" ng-model="answerUIObject.type" ng-true-value="other" ng-false-value="{{ null }}"> Other </label>
-                    </div>
-
                 </li>
-            </ul>&nbsp;
+            </ul>
         </div>
+        <button type="submit" class="btn btn-primary btn-sm"> <span class="glyphicon glyphicon-plus"></span> Add New Column</button>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <div class="form-group">
             <h4> Matrix Row (Questions) </h4>
-
-            <!-- JH OOOCOMMENT
-            <div class="form-group pull-right">
-              <button type="submit" class="btn btn-primary btn-sm"> <span class="glyphicon glyphicon-plus"></span> Add </button>
-            </div>
-            -->
         </div>
     </div>
 </div>
@@ -115,37 +81,20 @@
     <div class="col-md-12">
         <div class="form-group">
             <ul class="list-group odd-even-list">
-                <li class="list-group-item" ng-repeat="childQuestion in selectedPageQuestionItem.getItem().childQuestions">
-                    <div class="">
-                        <div class="form-group">
-                            <div>
-                                <div class="">
-                                    <label> {{$index + 1}}. Question Text</label>
-                                    <input type="text" class=" form-control" ng-model="childQuestion.text" placeholder="Enter Question Text">
-                                </div>
-                                <label> Export Value </label>
-                                <div class="">
-                                    <input type="text" class="form-control" ng-model="childQuestion.variableName" placeholder="Export Value">
-                                </div>
-                            </div>
+                <li class="list-group-item" ng-repeat="childQuestion in question.childQuestions">
+                    <div class="form-group">
+                        <div class="">
+                            <label> {{$index + 1}}. Row Name</label>
+                            <input type="text" class=" form-control" ng-model="childQuestion.text" placeholder="Enter Question Text">
                         </div>
-                        <!--
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label> VistA Question text </label>
-                                    <textarea class="form-control" ng-model="childQuestion.vistaText" ng-disabled="!module.clinicalReminder"></textarea>
-                                </div>
-                            </div>
+                        <label> Variable Name * </label>
+                        <div class="">
+                            <input type="text" class="form-control" ng-model="childQuestion.variableName" placeholder="Export Value">
                         </div>
-                        //-->
-                        <!-- JH OOOCOMMENT
-                        <div class="btn-group pull-right"> <a href="#" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Rule</a> <a href="#" class="btn btn-default btn-sm">Calc Val</a> <a href="#" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> </a> </div>
-                        <div class="clear-fix"></div>
-                        -->
                     </div>
                 </li>
             </ul>
         </div>
+        <button type="submit" class="btn btn-primary btn-sm"> <span class="glyphicon glyphicon-plus"></span> Add New Row</button>
     </div>
 </div>
