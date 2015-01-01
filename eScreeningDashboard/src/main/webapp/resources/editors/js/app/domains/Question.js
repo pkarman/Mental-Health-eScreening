@@ -160,16 +160,6 @@ EScreeningDashboardApp.models.Question = (function Question() {
             return filteredValidations;
         };
 
-        if(config) {
-            // Loop through the properties on the config
-            for (var prop in config) {
-                if (config.hasOwnProperty(prop) && config[prop] === null) {
-                    // Update nulls to undefined so they don't override class properties
-                    config[prop] = undefined;
-                }
-            }
-        }
-
         return _.extend(question, config);
     }
 

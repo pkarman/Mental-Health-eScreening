@@ -9,12 +9,12 @@
         if (!$scope.survey) {
             // Look up the selected survey by the id passed into the parameter
             /*
-             TODO create GET /services/survey/:id endpoint
+             TODO fix GET /services/surveys/:id endpoint
              SurveyService.one($stateParams.surveyId).get().then(function(survey) {
                 $scope.survey = survey;
              });
              */
-            // The above endpoint doesn't exist, therefore loop through the surveys list
+            // The above endpoint returns null for payload, therefore loop through the surveys list
             $scope.survey =_.find(surveys, function(survey) {
                 return survey.id === +$stateParams.surveyId;
             });
@@ -52,16 +52,16 @@
                     stateName = "modules.detail.freetext";
                     break;
                 case 'selectOne':
-                    stateName = "modules.detail.one";
+                    stateName = "modules.detail.simple";
                     break;
                 case'selectMulti':
-                    stateName = "modules.detail.one";
+                    stateName = "modules.detail.simple";
                     break;
                 case 'selectOneMatrix':
-                    stateName = "modules.detail.onematrix";
+                    stateName = "modules.detail.matrix";
                     break;
                 case 'selectMultiMatrix':
-                    stateName = "modules.detail.multimatrix";
+                    stateName = "modules.detail.matrix";
                     break;
                 case 'tableQuestion':
                     stateName = "modules.detail.table";
@@ -95,7 +95,7 @@
 
             if(Object.isDefined(stateName)) {
                 $scope.question = question;
-                $state.go(stateName, {selectedQuestionId: question.id});
+                $state.go(stateName, {questionId: question.id});
             }
         };
 
@@ -146,7 +146,7 @@
 
             $scope.resetForm(false, {
                 name: "modules.detail.empty",
-                params: {selectedQuestionId: $scope.survey.id},
+                params: {questionId: $scope.survey.id},
                 doTransition: true
             });
         };

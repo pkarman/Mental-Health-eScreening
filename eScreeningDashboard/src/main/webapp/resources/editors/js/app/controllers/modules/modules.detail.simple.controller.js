@@ -1,16 +1,16 @@
 (function() {
 	'use strict';
-	angular.module('Editors').controller('ModulesDetailOneController', ['$scope', '$stateParams', 'Answer', function($scope, $stateParams, Answer) {
+	angular.module('Editors').controller('ModulesDetailSimpleController', ['$scope', '$stateParams', 'Answer', function($scope, $stateParams, Answer) {
 
 		if (!$scope.question) {
 			// Look up the selected question by the id passed into the parameter
 			/* TODO
-			 $scope.survey.one('questions', $stateParams.selectedQuestionId).get().then(function(question) {
+			 $scope.survey.one('questions', $stateParams.questionId).get().then(function(question) {
 			 console.log(question);
 			 });
 			 */
 			$scope.question =_.find($scope.surveyPages[0].questions, function(question) {
-				return question.id === +$stateParams.selectedQuestionId;
+				return question.id === +$stateParams.questionId;
 			});
 		}
 

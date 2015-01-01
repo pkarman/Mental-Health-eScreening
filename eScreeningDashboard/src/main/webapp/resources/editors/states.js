@@ -305,7 +305,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
             })
 
             .state('modules.detail.freetext', {
-                url:'/freeText/:selectedQuestionId',
+                url:'/freeText/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.freetext.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
@@ -319,11 +319,29 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         ];
                     }]
                 },
-                controller:'ModulesDetailFreetextController'
+                controller:'ModulesDetailTextController'
+            })
+
+            .state('modules.detail.simple',{
+                url:'/simple/:questionId',
+                templateUrl:'resources/editors/views/modules/modules.detail.simple.html',
+                data: {
+                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One'
+                },
+                controller: 'ModulesDetailSimpleController'
+            })
+
+            .state('modules.detail.matrix',{
+                url:'/matrix/:questionId',
+                templateUrl:'resources/editors/views/modules/modules.detail.matrix.html',
+                data: {
+                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One Matrix'
+                },
+                controller: 'ModulesDetailMatrixController'
             })
 
             .state('modules.detail.instructions', {
-                url:'/instruction/:selectedQuestionId',
+                url:'/instruction/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.instructions.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'
@@ -331,45 +349,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'ModulesDetailInstructionsController'
             })
 
-            .state('modules.detail.multimatrix',{
-                url:'/selectMultipleMatrix/:selectedQuestionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.multimatrix.html',
-                data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select Multi Matrix'
-                },
-                resolve: {
-                    answerTypeMenuOptions: ['$q', '$stateParams', function ($q, $stateParams) {
-                        //TODO: Need to dynamically pull a unique list of answer types from the database.
-                        return [
-                            {id: null, name: "Regular"},
-                            {id: null, name: "Other"},
-                            {id: null, name: "None"}
-                        ];
-                    }]
-                },
-                controller:'ModulesDetailMultimatrixController'
-            })
-
-            .state('modules.detail.one',{
-                url:'/selectOne/:selectedQuestionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.one.html',
-                data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One'
-                },
-                controller: 'ModulesDetailOneController'
-            })
-
-            .state('modules.detail.onematrix',{
-                url:'/selectOneMatrix/:selectedQuestionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.onematrix.html',
-                data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Select One Matrix'
-                },
-                controller: 'ModulesDetailOnematrixController'
-            })
-
             .state('modules.detail.table',{
-                url:'/table/:selectedQuestionId',
+                url:'/table/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.table.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Table Question'

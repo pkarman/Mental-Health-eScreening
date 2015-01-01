@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailFreetextController', ['$scope', '$state', '$stateParams', 'SurveyService', 'MeasureService', 'textFormatOptions', function($scope, $state, $stateParams, SurveyService, MeasureService, textFormatOptions){
+    angular.module('Editors').controller('ModulesDetailTextController', ['$scope', '$state', '$stateParams', 'SurveyService', 'MeasureService', 'textFormatOptions', function($scope, $state, $stateParams, SurveyService, MeasureService, textFormatOptions){
 
         $scope.textFormatOptions = textFormatOptions;
         $scope.parentResetForm = $scope.resetForm;
@@ -9,7 +9,7 @@
 
         if (!$scope.question) {
             // Look up the selected question by the id passed into the parameter
-            MeasureService.one($stateParams.selectedQuestionId).get().then(function(question){
+            MeasureService.one($stateParams.questionId).get().then(function(question){
                 $scope.question = question;
                 initValidations();
             });

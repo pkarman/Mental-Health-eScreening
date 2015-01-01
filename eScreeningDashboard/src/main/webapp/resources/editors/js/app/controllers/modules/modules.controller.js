@@ -139,7 +139,7 @@ Editors.controller('ModulesController', ['$rootScope', '$scope', '$state', funct
         if(doStateTransition) {
             $scope.setSelectedPageQuestionItem(null);
             $scope.setSelectedSurveyUIObject(null);
-            $state.go('modules.detail.empty', {selectedQuestionId: -1})
+            $state.go('modules.detail.empty', {questionId: -1})
         }
     };
 
@@ -170,7 +170,7 @@ Editors.controller('ModulesController', ['$rootScope', '$scope', '$state', funct
         var softReset = false,
             state = {
                 name: "modules.detail.list",
-                params: {selectedQuestionId: -1},
+                params: {questionId: -1},
                 doTransition: true
             };
         $scope.setSelectedPage(selectedPage);

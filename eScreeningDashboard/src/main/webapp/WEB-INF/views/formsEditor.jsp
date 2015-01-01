@@ -158,16 +158,14 @@
     <!-- Modules View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.list.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
 
     <!-- Modules Detail Questions View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.freetext.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.instructions.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.list.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.multi.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.multimatrix.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.one.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.onematrix.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.text.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.simple.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.matrix.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.instructions.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.table.controller.js"></script>
     
     <!-- Template View State(s) -->

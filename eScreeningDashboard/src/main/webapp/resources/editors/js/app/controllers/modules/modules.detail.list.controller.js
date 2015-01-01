@@ -47,7 +47,7 @@ Editors.controller('ModulesDetailListController', ['$rootScope', '$scope', '$sta
 
         state = (Object.isDefined(state))? state: {
             name: "modules.detail.list",
-            params: {selectedQuestionId: -1},
+            params: {questionId: -1},
             doTransition: false
         };
         resetFormFunction = (Object.isDefined(resetFormFunction))? resetFormFunction: $scope.resetForm;
@@ -72,7 +72,7 @@ Editors.controller('ModulesDetailListController', ['$rootScope', '$scope', '$sta
         softReset = (Object.isBoolean(softReset))? softReset : false;
         state = (Object.isDefined(state))? state: {
             name: "modules.detail.list",
-            params: {selectedQuestionId: -1},
+            params: {questionId: -1},
             doTransition: false
         };
 

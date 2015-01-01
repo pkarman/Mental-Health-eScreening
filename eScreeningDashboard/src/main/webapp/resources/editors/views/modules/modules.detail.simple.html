@@ -1,7 +1,7 @@
 <h4>Item Type</h4>
-<p>Select One</p>
+<p>{{question.type}}</p>
 
-<form class="form" name="selectOneForm" role="form">
+<form class="form" name="simpleForm" role="form">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="form-group">
@@ -82,7 +82,7 @@
 								ng-false-value="{{ null }}"> Other </label>
 						<label class="checkbox" ng-if="question.type === 'selectMulti'"> <input type="checkbox"
 								ng-model="answer.type"
-								ng-true-value=""
+								ng-true-value="none"
 								ng-false-value="{{ null }}"> None </label>
 					</div>
 				</div>
