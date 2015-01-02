@@ -1,12 +1,13 @@
 package gov.va.escreening.assessments.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.service.VeteranAssessmentService;
 
 import java.util.Calendar;
-
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.service.AssessmentVariableService;
-import gov.va.escreening.service.VeteranAssessmentService;
+import java.util.Date;
+import java.util.SortedMap;
 
 import javax.annotation.Resource;
 
@@ -27,18 +28,10 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 	
 	@Test
 	public void testTimeSeries()
-	{
-		VeteranAssessment a1 = createTestAssessment();
-		Calendar c1 = Calendar.getInstance();
-		c1.add(Calendar.MONTH, -1);
-		vetAssessmentRepo.create(a1);
+	{	
+		SortedMap<Date, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
+		assertNotNull(timeSeries);
+		assertEquals(1, timeSeries.size());
 		
-		a1.setDateCompleted(c1.getTime());
-		
-		VeteranAssessment a2 = createTestAssessment();
-		a2.setDateCompleted(Calendar.getInstance().getTime());
-		vetAssessmentRepo.create(a2);
-		
-		assertNotNull(vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 1722, 3));
 	}
 }

@@ -55,6 +55,7 @@ import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1163,18 +1164,32 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		});
 		
 		SortedMap<Date, String> timeSeries = new TreeMap<Date, String>();
+		if(assessmentList.size() > 15)
+		{
+			assessmentList = assessmentList.subList(assessmentList.size()-15, assessmentList.size());
+		}
 		
 		for (VeteranAssessment va : assessmentList) {
 			try {
+				Date d = va.getDateUpdated();
+				long time = d.getTime()/1000;
 				
+				long secInMonth = 30*24*3600*numOfMonth;
+				long current = Calendar.getInstance().getTimeInMillis()/1000;
+				long timeDiff = current - time;
+				if(timeDiff > secInMonth)
+				{
+					continue;
+				}
+					
 				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
 				
 				AssessmentVariableDto result = dto.iterator().next();
 				if (result.getValue() != null) {
-					timeSeries.put(va.getDateCompleted(),  result.getValue());
+					timeSeries.put(va.getDateUpdated(),  result.getValue());
 				}
 			} catch (Exception ex) {// do nothing
-
+				logger.warn("exception getting a assessment variable for time series", ex);
 			}
 		}
 		return timeSeries;
