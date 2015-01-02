@@ -38,7 +38,7 @@ EScreeningDashboardApp.models.Survey = (function Survey() {
             mhaResultGroupIen: '',
             clinicalReminder: false,
             createdDate: '',
-            surveySection: '',
+            surveySection: {},
             markedForDeletion: false,
             visible: false
         };
