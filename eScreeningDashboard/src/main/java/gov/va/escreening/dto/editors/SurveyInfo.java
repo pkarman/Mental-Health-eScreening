@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,11 +13,12 @@ import gov.va.escreening.serializer.JsonDateSerializer;
 
 @JsonRootName(value="survey")
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"isIncludedInBattery", "surveyStatusItemInfo"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private static final long serialVersionUID = 1L;
 
-
+    @JsonProperty("id")
     private Integer surveyId;
     private String name;
     private String vistaTitle;

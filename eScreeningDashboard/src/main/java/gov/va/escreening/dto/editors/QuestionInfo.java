@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.editors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import gov.va.escreening.entity.MeasureBaseProperties;
 
@@ -11,7 +12,8 @@ import java.util.List;
  * Created by pouncilt on 8/5/14.
  */
 @JsonRootName("question")
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"measureId", "measureText", "measureType", "isRequired", "isVisible", "isPPI"})
+//@JsonIgnoreProperties(ignoreUnknown = true, value = {"measureId", "measureText", "measureType", "isRequired", "isVisible", "isPPI"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionInfo implements MeasureBaseProperties {
     private Integer id;
     private String text;
