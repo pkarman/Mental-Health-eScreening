@@ -8,15 +8,8 @@
 
         if (!$scope.survey) {
             // Look up the selected survey by the id passed into the parameter
-            /*
-             TODO fix GET /services/surveys/:id endpoint
-             SurveyService.one($stateParams.surveyId).get().then(function(survey) {
+            SurveyService.one($stateParams.surveyId).get().then(function(survey) {
                 $scope.survey = survey;
-             });
-             */
-            // The above endpoint returns null for payload, therefore loop through the surveys list
-            $scope.survey =_.find(surveys, function(survey) {
-                return survey.id === +$stateParams.surveyId;
             });
         }
 
