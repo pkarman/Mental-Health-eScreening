@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 @Transactional(readOnly = true)
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -372,6 +374,8 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyInfo findSurveyById(Integer surveyId) {
         Survey survey = surveyRepository.findOne(surveyId);
-        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+        SurveySectionInfo ssInfo = new SurveySectionInfo();
+        copyProperties(survey.getSurveySection(), ssInfo);
+        return toSurveyInfo(Arrays.asList(survey), ssInfo).iterator().next();
     }
 }
