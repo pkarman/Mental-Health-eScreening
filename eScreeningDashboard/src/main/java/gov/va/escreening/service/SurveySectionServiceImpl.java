@@ -106,7 +106,7 @@ public class SurveySectionServiceImpl implements SurveySectionService {
         SurveySectionInfo ssInfo = new SurveySectionInfo();
         copyProperties(surveySection, ssInfo);
 
-        ssInfo.setSurveyInfoList(surveyService.toSurveyInfo(surveySection.getSurveyList(), null));
+        ssInfo.setSurveyInfoList(surveyService.toSurveyInfo(surveySection.getSurveyList(), ssInfo));
         return ssInfo;
     }
 
