@@ -1,16 +1,20 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'QuestionService', 'SurveyPageService', 'SurveyPage', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, QuestionService, SurveyPageService, SurveyPage, Question, surveys, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'QuestionService', 'SurveyPageService', 'SurveyPage', 'Survey', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, QuestionService, SurveyPageService, SurveyPage, Survey, Question, surveys, surveyPages, surveySections){
 
         $scope.surveySections = surveySections;
         $scope.surveyPages = surveyPages;
 
         if (!$scope.survey) {
-            // Look up the selected survey by the id passed into the parameter
-            SurveyService.one($stateParams.surveyId).get().then(function(survey) {
-                $scope.survey = survey;
-            });
+            if ($stateParams.surveyId) {
+                // Look up the selected survey by the id passed into the parameter
+                SurveyService.one($stateParams.surveyId).get().then(function (survey) {
+                    $scope.survey = survey;
+                });
+            } else {
+                $scope.survey = Survey.create();
+            }
         }
 
         $scope.alerts = [];
@@ -52,28 +56,28 @@
 
             switch (selectedStateName){
                 case 'freeText':
-                    stateName = "modules.detail.freetext";
+                    stateName = "modules.detail.question.text";
                     break;
                 case 'selectOne':
-                    stateName = "modules.detail.simple";
+                    stateName = "modules.detail.question.simple";
                     break;
                 case'selectMulti':
-                    stateName = "modules.detail.simple";
+                    stateName = "modules.detail.question.simple";
                     break;
                 case 'selectOneMatrix':
-                    stateName = "modules.detail.matrix";
+                    stateName = "modules.detail.question.matrix";
                     break;
                 case 'selectMultiMatrix':
-                    stateName = "modules.detail.matrix";
+                    stateName = "modules.detail.question.matrix";
                     break;
                 case 'tableQuestion':
-                    stateName = "modules.detail.table";
+                    stateName = "modules.detail.question.table";
                     break;
                 case 'instruction':
-                    stateName = "modules.detail.instructions";
+                    stateName = "modules.detail.question.instructions";
                     break;
                 default:
-                    stateName = "modules.detail.freetext";
+                    stateName = "modules.detail.question.text";
             }
 
             return stateName;
@@ -155,7 +159,7 @@
         };
 
         $scope.cancel = function cancel() {
-            $state.go('modules.list');
+            $state.go('modules');
         };
 
     }]);

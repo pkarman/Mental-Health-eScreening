@@ -44,7 +44,7 @@ Editors.controller('ModulesTemplatesController',
         }
         else{
             console.log('No module selected. Redirecting back to module list');
-            $state.go('modules.list');
+            $state.go('modules');
         }
     };
     

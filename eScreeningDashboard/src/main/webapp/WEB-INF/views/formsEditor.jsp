@@ -157,9 +157,6 @@
 
     <!-- Modules View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.list.controller.js"></script>
-
-    <!-- Modules Detail Questions View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.list.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.text.controller.js"></script>
@@ -304,7 +301,7 @@
                  <div class="col-md-12  text-center">
                 <div class="button-group" ng-show="$state.current.name!=='home'">
                 	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>
-                	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules.list">Manage Module</a>
+                	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules">Manage Module</a>
                 	<a ng-class="{active: $state.includes('sections')}" class="btn btn-default btnHeader btnHeaderRight" ui-sref="sections">Manage Sections</a>
                 </div>
                 </div>
