@@ -287,10 +287,11 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
             })
 
             .state('modules.detail.question', {
-                url: ':questionId',
+                params: {'questionId': {}},
                 abstract: true,
                 template: '<div ui-view></div>',
                 controller: ['$scope', '$stateParams', 'MeasureService', 'Question', function($scope, $stateParams, MeasureService, Question) {
+
                     if (!$scope.question) {
                         if ($stateParams.questionId) {
                             // Look up the selected question by the id passed into the parameter
