@@ -295,15 +295,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                 },
-                resolve: {
-                    textFormatOptions: ['$q', '$stateParams', function ($q, $stateParams) {
-                        return [
-                            {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
-                            {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
-                            {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
-                        ];
-                    }]
-                },
                 controller:'ModulesDetailTextController'
             })
 

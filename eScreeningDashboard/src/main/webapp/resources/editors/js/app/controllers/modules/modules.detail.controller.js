@@ -112,6 +112,7 @@
 
         $scope.save = function () {
             $scope.survey.save().then(function(survey) {
+                console.log(survey);
                 $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
             });
 
