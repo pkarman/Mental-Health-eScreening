@@ -4,7 +4,7 @@
     angular.module('Editors').controller('ModulesDetailTextController', ['$scope', '$state', '$stateParams', 'SurveyService', 'MeasureService', 'textFormatOptions', function($scope, $state, $stateParams, SurveyService, MeasureService, textFormatOptions){
 
         $scope.textFormatOptions = textFormatOptions;
-        
+
         $scope.numberValidations = [
             { name: 'exactLength', displayName: 'Exact Length', value: undefined },
             { name: 'minLength', displayName: 'Min Length', value: undefined },

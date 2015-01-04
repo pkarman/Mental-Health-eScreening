@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'QuestionService', 'SurveyPageService', 'SurveyPage', 'Survey', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, QuestionService, SurveyPageService, SurveyPage, Survey, Question, surveys, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'SurveyPageService', 'SurveyPage', 'Survey', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, SurveyPageService, SurveyPage, Survey, Question, surveys, surveyPages, surveySections){
 
         $scope.surveySections = surveySections;
         $scope.surveyPages = surveyPages;
