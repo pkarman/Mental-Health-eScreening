@@ -111,7 +111,9 @@
         };
 
         $scope.save = function () {
-            $scope.survey.save();
+            $scope.survey.save().then(function(survey) {
+                $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+            });
 
             angular.forEach($scope.surveyPages, function(page) {
                 page.save();
