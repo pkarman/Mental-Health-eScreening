@@ -1,15 +1,8 @@
 (function() {
 	'use strict';
-	angular.module('Editors').controller('ModulesDetailMatrixController', ['$scope', '$state', function ($scope, $state) {
+	angular.module('Editors').controller('ModulesDetailMatrixController', ['$scope', 'Answer', 'Question', function ($scope, Answer, Question) {
 
-		if (!$scope.question) {
-			// Look up the selected question by the id passed into the parameter
-			MeasureService.one($stateParams.questionId).get().then(function(question){
-				$scope.question = question;
-			});
-		}
-
-		$scope.sortableChildAnswerOptions = {
+		$scope.sortableAnswerOptions = {
 			'ui-floating': false,
 			cancel: '.unsortable',
 			items: 'li:not(.unsortable)',
@@ -20,6 +13,34 @@
 				}
 			}
 		};
+
+		$scope.sortableQuestionOptions = {
+			'ui-floating': false,
+			cancel: '.unsortable',
+			items: 'li:not(.unsortable)',
+			stop: function(e, ui) {
+				var questions = ui.item.scope().$parent.question.childQuestions;
+				for (var index in questions) {
+					questions[index].displayOrder = index;
+				}
+			}
+		};
+
+		$scope.addAnswer = function addAnswer() {
+			$scope.question.childQuestions[0].answers.push(Answer.create());
+		};
+
+		$scope.deleteAnswer = function deleteAnswer(parentIndex, index) {
+			$scope.question.childQuestions[parentIndex].answers.splice(index, 1);
+		};
+
+		$scope.addQuestion = function addQuestion() {
+			$scope.question.childQuestions.push(Question.create());
+		};
+
+		$scope.deleteQuestion = function deleteQuestion(index) {
+			$scope.question.childQuestions.splice(index, 1);
+		}
 
 	}]);
 

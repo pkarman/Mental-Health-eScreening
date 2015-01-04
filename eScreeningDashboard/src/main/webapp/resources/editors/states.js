@@ -52,18 +52,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 url:'/sections',
                 templateUrl:'resources/editors/views/sections/sectionseditor.html',
                 resolve:{
-                    sections: function($rootScope, $q, SurveySectionService){
-                        var deferred = $q.defer();
-                        console.log('VIEW STATE SECTIONS:: Resolve sections');
-                        SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                            deferred.resolve(response.getPayload());
-                        }, function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
-                            deferred.reject(responseError.getMessage());
-                        });
-                        return deferred.promise;
-                    }
+                    sections: ['ManageSectionService', function(ManageSectionService){
+                        return ManageSectionService.getList();
+                    }]
                 },
                 controller: 'sectionsController'
             })
@@ -91,16 +82,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         });
                         return deferred.promise;
                     },
-                    sections: function($rootScope, $q, SurveySectionService){
-                        var deferred = $q.defer();
-                        SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                            deferred.resolve(response.getPayload());
-                        }, function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            deferred.reject(responseError.getMessage());
-                        });
-                        return deferred.promise;
-                    }
+                    sections: ['ManageSectionService',  function(ManageSectionService) {
+                        return ManageSectionService.getList();
+                    }]
                 },
 
 

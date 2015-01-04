@@ -64,9 +64,9 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn-link" ng-really-click="deleteAnswer($index)" ng-really-message="Are you sure you want to delete this answer?">
+					<a href="javascript:void(0);" ng-really-click="deleteAnswer($index)" ng-really-message="Are you sure you want to delete this answer?">
 						<span class="glyphicon glyphicon-remove-circle" style="margin:10px 10px 10px 0px; color:red"></span>
-					</button>
+					</a>
 				</div>
 			</div>
 			<div class="row">
@@ -93,6 +93,6 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<a href="javascript:void(0);" ng-click="addAnswer()" class="btn btn-primary btn-sm">Add New Answer</a>
+		<button type="button" ng-click="addAnswer()" class="btn btn-primary btn-sm">Add New Answer</button>
 	</div>
 </div>
