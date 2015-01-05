@@ -52,18 +52,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 url:'/sections',
                 templateUrl:'resources/editors/views/sections/sectionseditor.html',
                 resolve:{
-                    sections: function($rootScope, $q, SurveySectionService){
-                        var deferred = $q.defer();
-                        console.log('VIEW STATE SECTIONS:: Resolve sections');
-                        SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                            deferred.resolve(response.getPayload());
-                        }, function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            console.log('Sections Query Error:: ' + JSON.stringify($rootScope.errors));
-                            deferred.reject(responseError.getMessage());
-                        });
-                        return deferred.promise;
-                    }
+                    sections: ['ManageSectionService', function(ManageSectionService){
+                        return ManageSectionService.getList();
+                    }]
                 },
                 controller: 'sectionsController'
             })
@@ -91,16 +82,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         });
                         return deferred.promise;
                     },
-                    sections: function($rootScope, $q, SurveySectionService){
-                        var deferred = $q.defer();
-                        SurveySectionService.query(SurveySectionService.setQuerySurveySectionSearchCriteria(null)).then(function (response){
-                            deferred.resolve(response.getPayload());
-                        }, function(responseError) {
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                            deferred.reject(responseError.getMessage());
-                        });
-                        return deferred.promise;
-                    }
+                    sections: ['ManageSectionService',  function(ManageSectionService) {
+                        return ManageSectionService.getList();
+                    }]
                 },
 
 
@@ -231,12 +215,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
             //////////////////////////
             // Modules Editor Views //
             //////////////////////////
-
-            /* ------ Workflow Frozen until completion of Formulas, Rules/Events, Templates.
-             * Nothing here should be considered canonical. - JBH
-             */
             .state('modules', {
-                abstract: true,
                 url: '/modules',
                 templateUrl: 'resources/editors/views/modules/modules.html',
                 data: {
@@ -251,17 +230,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'ModulesController'
             })
 
-            .state('modules.list', {
-                url: '/list',
-                templateUrl: 'resources/editors/views/modules/modules.list.html',
-                data: {
-                    displayName: 'Modules-Editor: Selection'
-                },
-                controller: 'ModulesListController'
-            })
-
             .state('modules.detail', {
-                url: '/:surveyId/details',
+                url: '/details/:surveyId',
                 templateUrl: 'resources/editors/views/modules/modules.detail.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit'
@@ -277,71 +247,77 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller: 'ModulesDetailController'
             })
 
-            .state('modules.detail.empty', {
-                url: '/question/empty',
-                templateUrl: 'resources/editors/views/modules/modules.detail.empty.html',
-                data: { displayName: false }
-            })
-
             .state('modules.detail.list', {
                 url:'/list',
                 templateUrl:'resources/editors/views/modules/modules.detail.list.html',
-                data:{displayName:false},
+                data: { displayName:false },
                 resolve: {
                     questionTypes: ['Restangular', function (Restangular) {
                         //return Restangular.all("measureType").getList();
 
-                        return [{id: 0, name: "freeText", displayName: "Free Text", state: "modules.detail.freetext"},
-                        {id: 1, name: "selectOne", displayName: "Select One", state: "modules.detail.one"},
-                         {id: 2, name: "selectMulti", displayName: "Select Multi", state: "modules.detail.multi"},
-                         {id: 3, name: "selectOneMatrix", displayName: "Select One Matrix", state: "modules.detail.onematrix"},
-                         {id: 4, name: "selectMultiMatrix", displayName: "Select Multi Matrix", state: "modules.detail.multimatrix"},
-                         {id: 5, name: "tableQuestion", displayName: "Table", state: "modules.detail.table"},
-                         {id: 6, name: "instruction", displayName: "Instructions", state: "modules.detail.instructions"}];
+                        return [
+                            {id: 0, name: "freeText", displayName: "Free Text"},
+                            {id: 1, name: "selectOne", displayName: "Select One"},
+                            {id: 2, name: "selectMulti", displayName: "Select Multi"},
+                            {id: 3, name: "selectOneMatrix", displayName: "Select One Matrix"},
+                            {id: 4, name: "selectMultiMatrix", displayName: "Select Multi Matrix"},
+                            {id: 5, name: "tableQuestion", displayName: "Table"},
+                            {id: 6, name: "instruction", displayName: "Instructions"}
+                        ];
 
                     }]
                 },
                 controller:'ModulesDetailListController'
             })
 
-            .state('modules.detail.freetext', {
-                url:'/freeText/:questionId',
+            .state('modules.detail.question', {
+                params: {'questionId': {}},
+                abstract: true,
+                template: '<div ui-view></div>',
+                controller: ['$scope', '$stateParams', 'MeasureService', 'Question', function($scope, $stateParams, MeasureService, Question) {
+
+                    if (!$scope.question) {
+                        if ($stateParams.questionId) {
+                            // Look up the selected question by the id passed into the parameter
+                            MeasureService.one($stateParams.questionId).get().then(function (question) {
+                                $scope.question = question;
+                            });
+                        } else {
+                            $scope.question = Question.create();
+                        }
+                    }
+                }]
+            })
+
+            .state('modules.detail.question.text', {
+                url:'/text/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.text.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
                 },
-                resolve: {
-                    textFormatOptions: ['$q', '$stateParams', function ($q, $stateParams) {
-                        return [
-                            {id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
-                            {id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
-                            {id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
-                        ];
-                    }]
-                },
                 controller:'ModulesDetailTextController'
             })
 
-            .state('modules.detail.simple',{
+            .state('modules.detail.question.simple', {
                 url:'/simple/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.simple.html',
                 data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions'
+                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Simple'
                 },
                 controller: 'ModulesDetailSimpleController'
             })
 
-            .state('modules.detail.matrix',{
+            .state('modules.detail.question.matrix', {
                 url:'/matrix/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.matrix.html',
                 data: {
-                    displayName: 'Modules-Editor: Add/Edit - Questions'
+                    displayName: 'Modules-Editor: Add/Edit - Questions, Type: Matrix'
                 },
                 controller: 'ModulesDetailMatrixController'
             })
 
-            .state('modules.detail.instructions', {
-                url:'/instruction/:questionId',
+            .state('modules.detail.question.instructions', {
+                url:'/instructions/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.instructions.html',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Page Instructions'
@@ -349,7 +325,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'ModulesDetailInstructionsController'
             })
 
-            .state('modules.detail.table',{
+            .state('modules.detail.question.table', {
                 url:'/table/:questionId',
                 templateUrl:'resources/editors/views/modules/modules.detail.table.html',
                 data: {
@@ -358,7 +334,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller: 'ModulesDetailTableController'
             })
 
-            .state('modules.templates',{
+            .state('modules.templates', {
                 url:'/:selectedSurveyId/:selectedSurveyName/templates/:saved',
                 data: {
                     displayName: 'Manage Templates'

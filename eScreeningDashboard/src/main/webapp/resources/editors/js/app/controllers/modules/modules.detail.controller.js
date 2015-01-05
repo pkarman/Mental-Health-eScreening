@@ -1,17 +1,23 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'QuestionService', 'SurveyPageService', 'SurveyPage', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, QuestionService, SurveyPageService, SurveyPage, Question, surveys, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'SurveyPageService', 'SurveyPage', 'Survey', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, SurveyPageService, SurveyPage, Survey, Question, surveys, surveyPages, surveySections){
 
         $scope.surveySections = surveySections;
         $scope.surveyPages = surveyPages;
 
         if (!$scope.survey) {
-            // Look up the selected survey by the id passed into the parameter
-            SurveyService.one($stateParams.surveyId).get().then(function(survey) {
-                $scope.survey = survey;
-            });
+            if ($stateParams.surveyId) {
+                // Look up the selected survey by the id passed into the parameter
+                SurveyService.one($stateParams.surveyId).get().then(function (survey) {
+                    $scope.survey = survey;
+                });
+            } else {
+                $scope.survey = Survey.create();
+            }
         }
+
+        $scope.alerts = [];
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -37,36 +43,12 @@
             }
         };
 
-        $scope.getStateName = function getStateName(selectedStateName){
-            var stateName;
+        $scope.addAlert = function addAlert() {
+            $scope.alerts.push({msg: 'Another alert!'});
+        };
 
-            switch (selectedStateName){
-                case 'freeText':
-                    stateName = "modules.detail.freetext";
-                    break;
-                case 'selectOne':
-                    stateName = "modules.detail.simple";
-                    break;
-                case'selectMulti':
-                    stateName = "modules.detail.simple";
-                    break;
-                case 'selectOneMatrix':
-                    stateName = "modules.detail.matrix";
-                    break;
-                case 'selectMultiMatrix':
-                    stateName = "modules.detail.matrix";
-                    break;
-                case 'tableQuestion':
-                    stateName = "modules.detail.table";
-                    break;
-                case 'instruction':
-                    stateName = "modules.detail.instructions";
-                    break;
-                default:
-                    stateName = "modules.detail.freetext";
-            }
-
-            return stateName;
+        $scope.closeAlert = function closeAlert(index) {
+            $scope.alerts.splice(index, 1);
         };
 
         $scope.addPage = function addPage() {
@@ -83,6 +65,38 @@
             $state.go('modules.detail.list');
         };
 
+        $scope.getStateName = function getStateName(selectedStateName){
+            var stateName;
+
+            switch (selectedStateName){
+                case 'freeText':
+                    stateName = "modules.detail.question.text";
+                    break;
+                case 'selectOne':
+                    stateName = "modules.detail.question.simple";
+                    break;
+                case'selectMulti':
+                    stateName = "modules.detail.question.simple";
+                    break;
+                case 'selectOneMatrix':
+                    stateName = "modules.detail.question.matrix";
+                    break;
+                case 'selectMultiMatrix':
+                    stateName = "modules.detail.question.matrix";
+                    break;
+                case 'tableQuestion':
+                    stateName = "modules.detail.question.table";
+                    break;
+                case 'instruction':
+                    stateName = "modules.detail.question.instructions";
+                    break;
+                default:
+                    stateName = "modules.detail.question.text";
+            }
+
+            return stateName;
+        };
+
         $scope.editQuestion = function editQuestion(question){
             var stateName = $scope.getStateName(question.type);
 
@@ -97,55 +111,24 @@
         };
 
         $scope.save = function () {
-            var selectedModuleDomainObject = new EScreeningDashboardApp.models.Survey($scope.survey),
-                organizedPages = $scope.organizePages();
+            $scope.survey.save().then(function(survey) {
+                console.log(survey);
+                $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+            });
 
-            if(selectedModuleDomainObject.getId() > -1) {
-                SurveyService.update(SurveyService.setUpdateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
-                    if(Object.isDefined(response)) {
-                        if (response.isSuccessful()) {
-                            $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
-
-                            if (angular.isFunction($rootScope.addMessage)) {
-                                $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-                            }
-
-                            updateSurveyPages($scope.survey.id, organizedPages);
-                        } else {
-                            $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                            console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
-                        }
-                    }
-                }, function(responseError) {
-                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                });
-            } else {
-                SurveyService.create(SurveyService.setCreateSurveyRequestParameter(selectedModuleDomainObject)).then(function (response){
-                    if(Object.isDefined(response)) {
-                        if (response.isSuccessful()) {
-                            $scope.setSelectedSurveyUIObject(response.getPayload().toUIObject());
-                            $rootScope.addMessage($rootScope.createSuccessSaveMessage(response.getMessage()));
-
-                            updateSurveyPages($scope.survey.id, organizedPages);
-                        } else {
-                            $rootScope.addMessage($rootScope.createErrorMessage(response.getMessage()));
-                            console.error("modulesEditController.save() method. Expected successful response object from SurveyService.update() method to be successful.");
-                        }
-                    }
-                }, function(responseError) {
-                    $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
-                });
-            }
+            angular.forEach($scope.surveyPages, function(page) {
+                page.save();
+            });
 
             $scope.resetForm(false, {
-                name: "modules.detail.empty",
-                params: {questionId: $scope.survey.id},
+                name: "modules.detail",
+                params: {surveyId: $scope.survey.id},
                 doTransition: true
             });
         };
 
         $scope.cancel = function cancel() {
-            $state.go('modules.list');
+            $state.go('modules');
         };
 
     }]);

@@ -27,18 +27,18 @@ EScreeningDashboardApp.models.Survey = (function Survey() {
 
     function create(config) {
         var survey = {
-            id: null,
-            name: null,
-            vistaTitle: null,
-            description: null,
-            version: null,
-            displayOrder: null,
-            mha: null,
-            mhaTestName: null,
-            mhaResultGroupIen: null,
+            id: '',
+            name: '',
+            vistaTitle: '',
+            description: '',
+            version: '',
+            displayOrder: '',
+            mha: '',
+            mhaTestName: '',
+            mhaResultGroupIen: '',
             clinicalReminder: false,
-            createdDate: null,
-            surveySection: null,
+            createdDate: '',
+            surveySection: {},
             markedForDeletion: false,
             visible: false
         };

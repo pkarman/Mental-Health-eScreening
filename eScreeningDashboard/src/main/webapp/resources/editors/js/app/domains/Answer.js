@@ -27,10 +27,10 @@ EScreeningDashboardApp.models.Answer = (function Question() {
 
     function create(config) {
         var answer = {
-            id: undefined,
-            text: undefined,
-            type: undefined,
-            exportName: undefined
+            id: '',
+            text: '',
+            type: '',
+            exportName: ''
         };
 
         _.extend(answer, config);

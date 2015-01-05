@@ -27,15 +27,15 @@ EScreeningDashboardApp.models.Question = (function Question() {
 
     function create(config) {
         var question = {
-            id: undefined,
-            text: undefined,
-            type: undefined,
-            displayOrder: undefined,
-            required: undefined,
+            id: '',
+            text: '',
+            type: '',
+            displayOrder: '',
+            required: '',
             ppi: false,
             mha: false,
             visible: true,
-            variableName: undefined,
+            variableName: '',
             answers: [],
             validations: [],
             childQuestions: [],

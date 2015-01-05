@@ -8,19 +8,7 @@
 </div>
 
 <!-- Alerts and Messages -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-danger" ng-show="messageHandler.hasErrorMessages()">
-            <div>Error Message(s):</div>
-            <div ng-repeat="error in messageHandler.getMessages()| uniqueMessage">{{error.getValue()}}</div>
-        </div>
-        <div class="alert alert-success" ng-show="messageHandler.hasSuccessMessages()">
-            <div ng-repeat="message in messageHandler.getMessages()| uniqueMessage">
-                {{message.getValue()}}
-            </div>
-        </div>
-    </div>
-</div>
+<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
 
 <div class="row">
     <div class="col-md-12">
@@ -42,13 +30,6 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                            <!--
-                            <br>
-                            <input type="checkbox" id="is_clinical_reminder" ng-model="survey.clinicalReminder" ng-disabled="true"> <label for="is_clinical_reminder">Is a clinical reminder</label><br>
-
-                            <label>VistA Title</label>
-                            <textarea class="form-control" ng-model="survey.vista_title" placeholder="Enter VistA Title" ng-disabled="!survey.clinicalReminder" ></textarea>
-                            //-->
                             <div class="form-group">
                                 <label for="selectSurveySection">Section *</label>
 
