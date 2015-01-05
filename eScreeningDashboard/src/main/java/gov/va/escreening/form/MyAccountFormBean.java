@@ -16,12 +16,12 @@ public class MyAccountFormBean implements Serializable {
 
     @Size(min = 8, max = 30, message = "New Password must be between 8 and 30 characters")
     @NotEmpty(message = "New Password is required")
-    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@#%$^() etc.), and be at least 8 characters.")
+    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@!#$%&?^*()), and be at least 8 characters.")
     private String newPassword;
 
     @Size(min = 8, max = 30, message = "Confirmed Password must be between 8 and 30 characters")
     @NotEmpty(message = "Confirmed Password is required")
-    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@#%$^() etc.), and be at least 8 characters.")
+    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@!#$%&?^*()), and be at least 8 characters.")
     private String confirmedPassword;
 
     public String getCurrentPassword() {

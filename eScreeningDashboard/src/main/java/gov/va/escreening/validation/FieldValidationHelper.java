@@ -33,8 +33,7 @@ public class FieldValidationHelper {
 	public static boolean isFieldValidPassword(String fieldValue) {
 		if(fieldValue==null || fieldValue.isEmpty())
 			return false;
-		
-		String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+		String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@!#$%&?^*()])(?=\\S+$).{8,}$";
 		Pattern pattern = Pattern.compile(passwordPattern);
 		Matcher matcher = pattern.matcher(fieldValue);
 		boolean doesItMatch = matcher.matches();
