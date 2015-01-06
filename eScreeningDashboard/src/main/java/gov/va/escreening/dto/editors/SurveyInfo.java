@@ -26,6 +26,7 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private String mhaTestName;
     private String mhaResultGroupIen;
     private Boolean clinicalReminder;
+    private Integer displayOrderForSection;
 	private Date dateCreated;
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
@@ -112,6 +113,16 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     @Override
     public Boolean isClinicalReminder() {
         return this.clinicalReminder;
+    }
+
+    @Override
+    public void setDisplayOrderForSection(Integer displayOrder) {
+        this.displayOrderForSection=displayOrder;
+    }
+
+    @Override
+    public Integer getDisplayOrderForSection() {
+        return this.displayOrderForSection;
     }
 
     public void setClinicalReminder(boolean clinicalReminder) {

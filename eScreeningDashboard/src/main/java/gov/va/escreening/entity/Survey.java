@@ -48,7 +48,9 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String mhaTestName;
     @Column(name = "mha_result_group_ien")
     private String mhaResultGroupIen;
-    
+    @Column(name = "display_order_for_section")
+    private Integer displayOrderForSection;
+
     @Column(name = "vista_title")
     private String vistaTitle;
     
@@ -224,6 +226,16 @@ public class Survey implements Serializable, SurveyBaseProperties{
     {
         return clinicalReminderSurveyList!=null 
                 && (!clinicalReminderSurveyList.isEmpty());
+    }
+
+    @Override
+    public void setDisplayOrderForSection(Integer displayOrder) {
+        this.displayOrderForSection=displayOrder;
+    }
+
+    @Override
+    public Integer getDisplayOrderForSection() {
+        return this.displayOrderForSection;
     }
 
     public String getVistaTitle() {
