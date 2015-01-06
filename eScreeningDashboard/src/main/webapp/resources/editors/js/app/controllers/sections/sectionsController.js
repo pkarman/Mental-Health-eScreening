@@ -43,6 +43,13 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSec
         _.each($scope.ssRows, function (ss, index) {
             ss.displayOrder = index + 1;
             $log.debug('displayOrder of \'' + ss.name + '\' set to => ' + ss.displayOrder);
+
+            //resting the display orders of surveys within this section too
+            _.each(ss.surveys, function (survey, index) {
+                survey.displayOrderForSection = index + 1;
+                $log.debug('displayOrder of \'' + survey.name + '\' set to => ' + survey.displayOrderForSection);
+            });
+
         });
     }
 
