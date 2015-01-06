@@ -2,12 +2,10 @@ package gov.va.escreening.assessments.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.service.VeteranAssessmentService;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.SortedMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -29,7 +27,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 	@Test
 	public void testTimeSeries()
 	{	
-		SortedMap<Date, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
+		Map<Date, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
 		assertNotNull(timeSeries);
 		assertEquals(1, timeSeries.size());
 		

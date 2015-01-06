@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1126,7 +1127,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	}
 
 	@Override
-	public SortedMap<Date, String> getVeteranAssessmentVariableSeries(
+	public Map<Date, String> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
@@ -1163,13 +1164,11 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
-		SortedMap<Date, String> timeSeries = new TreeMap<Date, String>();
-		if(assessmentList.size() > 15)
+		LinkedHashMap<Date, String> timeSeries = new LinkedHashMap<Date, String>();
+		int total = 0;
+		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
 		{
-			assessmentList = assessmentList.subList(assessmentList.size()-15, assessmentList.size());
-		}
-		
-		for (VeteranAssessment va : assessmentList) {
+			VeteranAssessment va = assessmentList.get(i);
 			try {
 				Date d = va.getDateUpdated();
 				long time = d.getTime()/1000;
@@ -1187,11 +1186,13 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				AssessmentVariableDto result = dto.iterator().next();
 				if (result.getValue() != null) {
 					timeSeries.put(va.getDateUpdated(),  result.getValue());
+					total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);
 			}
 		}
+		
 		return timeSeries;
 	}
 }
