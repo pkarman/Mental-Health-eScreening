@@ -20,9 +20,9 @@ public class OrwptApptlstExtractor implements VistaRecordExtractor<VistaVeteranA
 
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
 
-        vistaVeteranAppointment.setAppointmentDate(VistaUtils.convertVistaDate(fields[1]));
-        vistaVeteranAppointment.setClinicName(fields[2]);
-        vistaVeteranAppointment.setStatus(fields[3]);
+        vistaVeteranAppointment.setAppointmentDate(VistaUtils.convertVistaDate(fields.length>1?fields[1]:null));
+        vistaVeteranAppointment.setClinicName(fields.length>2?fields[2]:null);
+        vistaVeteranAppointment.setStatus(fields.length>3?fields[3]:null);
         
 
         return vistaVeteranAppointment;
