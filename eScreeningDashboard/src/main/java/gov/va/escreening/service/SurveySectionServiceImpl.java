@@ -90,6 +90,7 @@ public class SurveySectionServiceImpl implements SurveySectionService {
         for (SurveyInfo s : surveySectionInfo.getSurveyInfoList()) {
             Survey survey = surveyService.findOne(s.getSurveyId());
             survey.setSurveySection(surveySection);
+            survey.setDisplayOrderForSection(s.getDisplayOrderForSection());
             surveySection__SurveyList.add(survey);
         }
 

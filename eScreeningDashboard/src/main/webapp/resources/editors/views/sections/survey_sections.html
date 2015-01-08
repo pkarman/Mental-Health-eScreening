@@ -9,7 +9,7 @@
             dnd-type="'sectionType'"
             dnd-selected="status.dd.sections.selected = ssRow"
             ng-class="{'selected': status.dd.sections.selected === ssRow}">
-            <accordion-group is-open="ssRow.openSection">
+            <accordion-group is-open="ssRow.id===null || ssRow.openSection">
                 <accordion-heading ng-class="border-bottom-3-gray">
                     <div class="col-md-8">
                         <span class="glyphicon glyphicon-align-justify pull-left margin-right-10 margin-top-10"></span>
@@ -45,13 +45,13 @@
                     <div ng-click="ssRow.openModule=!ssRow.openModule"
                          class="label label-primary cursor-pointer margin-top-35">
                         <i class="glyphicon"
-                           ng-class="{'glyphicon-chevron-down': ssRow.openModule, 'glyphicon-chevron-right': !ssRow.openModule}">  </i>
-                            <span ng-if="ssRow.openModule">Collapse</span>
-                            <span ng-if="!ssRow.openModule">Expand</span>
+                           ng-class="{'glyphicon-chevron-down': !ssRow.openModule, 'glyphicon-chevron-right': ssRow.openModule}">  </i>
+                            <span ng-if="!ssRow.openModule">Collapse</span>
+                            <span ng-if="ssRow.openModule">Expand</span>
                             Module(s)
                     </div>
                 </h4>
-                <div collapse="!ssRow.openModule">
+                <div collapse="ssRow.openModule">
                     <div class="row">
                         <div class="ss col-md-12">
                             <div ng-include="'resources/editors/views/sections/section_modules.html'"></div>
