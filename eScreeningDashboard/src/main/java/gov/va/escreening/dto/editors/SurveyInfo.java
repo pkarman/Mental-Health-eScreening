@@ -18,7 +18,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("id")
     private Integer surveyId;
     private String name;
     private String vistaTitle;
