@@ -235,16 +235,16 @@ public class SurveyServiceImpl implements SurveyService {
 
             SurveyPage surveyPage = null;
 
-            if (surveyPageInfo.getId() == null) {
+            if (surveyPageInfo.getSurveyPageId() == null) {
                 surveyPage = new SurveyPage();
             } else {
-                surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
+                surveyPage = surveyPageRepository.findOne(surveyPageInfo.getSurveyPageId());
             }
 
             surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
             surveyPage.setDescription(surveyPageInfo.getDescription());
             surveyPage.setTitle(surveyPageTitle);
-            surveyPage.setSurveyPageId(surveyPageInfo.getId());
+            surveyPage.setSurveyPageId(surveyPageInfo.getSurveyPageId());
 
             if (surveyPageInfo.getDateCreated() == null) {
                 surveyPage.setDateCreated(new Date());
@@ -276,7 +276,7 @@ public class SurveyServiceImpl implements SurveyService {
                 }
             }
 
-            if (surveyPageInfo.getId() == null) {
+            if (surveyPageInfo.getSurveyPageId() == null) {
                 surveyPageRepository.create(surveyPage);
             } else
                 surveyPageRepository.update(surveyPage);
@@ -320,11 +320,7 @@ public class SurveyServiceImpl implements SurveyService {
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
         for (SurveyPage surveyPage : surveyPages) {
             SurveyPageInfo spi = new SurveyPageInfo();
-            spi.setId(surveyPage.getSurveyPageId());
-            spi.setDescription(surveyPage.getDescription());
-            spi.setPageNumber(surveyPage.getPageNumber());
-            spi.setTitle(surveyPage.getTitle());
-            spi.setDateCreated(surveyPage.getDateCreated());
+            BeanUtils.copyProperties(surveyPage, spi);
 
             spi.setQuestions(new ArrayList<QuestionInfo>());
             for (Measure measure : surveyPage.getMeasures()) {
@@ -374,5 +370,33 @@ public class SurveyServiceImpl implements SurveyService {
     public SurveyInfo findSurveyById(Integer surveyId) {
         Survey survey = surveyRepository.findOne(surveyId);
         return toSurveyInfo(Arrays.asList(survey)).iterator().next();
+    }
+
+    @Override
+    public SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId) {
+        Survey survey = surveyRepository.findOne(surveyId);
+        List<SurveyPage> surveyPages = survey.getSurveyPageList();
+
+        for (SurveyPage surveyPage : surveyPages) {
+            if (surveyPage.getSurveyPageId().equals(pageId)) {
+                SurveyPageInfo spi = new SurveyPageInfo();
+                BeanUtils.copyProperties(surveyPage, spi);
+
+                spi.setQuestions(new ArrayList<QuestionInfo>());
+                for (Measure measure : surveyPage.getMeasures()) {
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                }
+
+                return spi;
+
+            }
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void removeSurveyPage(Integer surveyId, Integer pageId) {
+        surveyPageRepository.deleteById(pageId);
     }
 }

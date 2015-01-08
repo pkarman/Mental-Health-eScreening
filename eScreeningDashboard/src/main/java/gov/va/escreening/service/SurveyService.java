@@ -72,4 +72,8 @@ public interface SurveyService {
     List<SurveyInfo> toSurveyInfo(List<Survey> surveyList);
 
     SurveyInfo findSurveyById(Integer surveyId);
+
+    SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
+
+    void removeSurveyPage(Integer surveyId, Integer pageId);
 }
