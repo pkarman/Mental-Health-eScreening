@@ -11,7 +11,7 @@
                     <span ng-if="status.closeOthers">Expand All Sections</span>
                     <span ng-if="!status.closeOthers">Collapse All Sections</span>
                 </button>
-                <button ng-click="addSection();" ng-disabled="false" class="btn btn-primary h1_button"
+                <button ng-click="addSection(); remove($index);" ng-disabled="false" class="btn btn-primary h1_button"
                         type="button"><span class="glyphicon glyphicon-plus"></span> Add Section
                 </button>
             </div>
