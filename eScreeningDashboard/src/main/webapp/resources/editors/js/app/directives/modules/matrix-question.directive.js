@@ -35,6 +35,8 @@
 					}
 				};
 
+				scope.answers = scope.question.childQuestions[0].answers;
+
 				scope.addAnswer = function addAnswer() {
 					scope.question.childQuestions[0].answers.push(Answer.create());
 				};

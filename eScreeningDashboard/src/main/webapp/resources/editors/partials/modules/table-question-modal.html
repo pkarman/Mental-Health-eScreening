@@ -1,0 +1,14 @@
+<div class="modal-header">
+	<h3 class="modal-title">I'm a modal!</h3>
+</div>
+<div class="modal-body">
+	<select
+			ng-model="question.type"
+			ng-options="questionType.value for questionType in questionTypes track by questionType.value">
+		<option value="">-- Select Type --</option>
+	</select>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="ok()">OK</button>
+	<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

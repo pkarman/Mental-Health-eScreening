@@ -159,15 +159,11 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.list.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.text.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.simple.controller.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.matrix.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.instructions.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.table.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/modules/text-question.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/modules/simple-question.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/modules/matrix-question.directive.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/modules/instruction-question.directive.js"></script>
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.edit.controller.js"></script>

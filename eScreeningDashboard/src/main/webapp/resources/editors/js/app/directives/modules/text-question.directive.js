@@ -12,6 +12,7 @@
 			link: function(scope, elem, attrs) {
 
 				scope.textFormatOptions = [
+					{id: null, code: null, name: "dataType", value: "Unformatted", description: null, dataType: null, createdDate: null},
 					{id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
 					{id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
 					{id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}

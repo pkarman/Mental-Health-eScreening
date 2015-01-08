@@ -291,29 +291,26 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
 
             .state('modules.detail.question.text', {
                 url:'/text/:questionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.text.html',
+                template:'<text-question question="question"></text-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Free Text/Read-Only'
-                },
-                controller:'ModulesDetailTextController'
+                }
             })
 
             .state('modules.detail.question.simple', {
                 url:'/simple/:questionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.simple.html',
+                template:'<simple-question question="question"></simple-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Simple'
-                },
-                controller: 'ModulesDetailSimpleController'
+                }
             })
 
             .state('modules.detail.question.matrix', {
                 url:'/matrix/:questionId',
-                templateUrl:'resources/editors/views/modules/modules.detail.matrix.html',
+                template:'<matrix-question question="question"></simple-matrix>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Matrix'
-                },
-                controller: 'ModulesDetailMatrixController'
+                }
             })
 
             .state('modules.detail.question.instructions', {
