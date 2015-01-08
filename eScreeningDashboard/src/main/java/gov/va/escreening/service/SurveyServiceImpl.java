@@ -161,11 +161,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
         List<Survey> surveys = surveyRepository.getSurveyList();
-        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys, null);
-
-//		for (Survey survey : surveys) {
-//			surveyInfoList.add(convertToSurveyItem(survey));
-//		}
+        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys);
 
         return surveyInfoList;
     }
@@ -349,11 +345,11 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(surveySection);
 
         surveyRepository.create(survey);
-        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+        return toSurveyInfo(Arrays.asList(survey)).iterator().next();
     }
 
     @Override
-    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, final SurveySectionInfo ssInfo) {
+    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList) {
 
         Function<Survey, SurveyInfo> transformerFun = new Function<Survey, SurveyInfo>() {
             @Nullable
@@ -361,6 +357,9 @@ public class SurveyServiceImpl implements SurveyService {
             public SurveyInfo apply(Survey survey) {
                 SurveyInfo si = new SurveyInfo();
                 BeanUtils.copyProperties(survey, si);
+
+                SurveySectionInfo ssInfo = new SurveySectionInfo();
+                copyProperties(survey.getSurveySection(), ssInfo);
 
                 si.setSurveySectionInfo(ssInfo);
 
@@ -374,8 +373,6 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyInfo findSurveyById(Integer surveyId) {
         Survey survey = surveyRepository.findOne(surveyId);
-        SurveySectionInfo ssInfo = new SurveySectionInfo();
-        copyProperties(survey.getSurveySection(), ssInfo);
-        return toSurveyInfo(Arrays.asList(survey), ssInfo).iterator().next();
+        return toSurveyInfo(Arrays.asList(survey)).iterator().next();
     }
 }

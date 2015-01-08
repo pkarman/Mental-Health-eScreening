@@ -145,9 +145,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     public void setSurveySectionInfo(SurveySectionInfo surveySectionInfo) {
         this.surveySectionInfo = surveySectionInfo;
-//        if (surveySectionInfo!=null) {
-//            surveySectionInfo.getSurveyInfoList().add(this);
-//        }
     }
 
     public SurveyStatusInfo getSurveyStatusInfo() {
