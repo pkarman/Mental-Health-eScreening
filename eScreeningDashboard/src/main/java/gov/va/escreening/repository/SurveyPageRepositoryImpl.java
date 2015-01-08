@@ -186,5 +186,5 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
             +") measure_compare group by survey_page_id ) survey_page_measure_count "
       +"INNER JOIN survey_page sp ON survey_page_measure_count.survey_page_id=sp.survey_page_id " 
       +"INNER JOIN survey s on sp.survey_id=s.survey_id " 
-      +"ORDER BY s.display_order, sp.page_number"; 
+      +"ORDER BY s.display_order_for_section, sp.page_number";
 }
