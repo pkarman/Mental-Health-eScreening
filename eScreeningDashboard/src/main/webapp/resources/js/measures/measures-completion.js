@@ -105,10 +105,7 @@ function showCongratsPage(message) {
 	$("#center").addClass("lastPageCenter");
 	$('#assessmentContainer').empty();
 	var formContainer = $('<div id="formContainer">');
-	var formElements = $('<ul id="centerItemList">');
-	var textCongrats = " Congratulations! ";
-	
-	var congratsString = "<div id='congratsLabel'>"+textCongrats+"</div>";
+	var formElements = $('<ul id="centerItemList">');	
 	var graphicImages = "<div id='graphicImages'> " +
 						"<div class='imageContainer'><img src='resources/images/final_cesamh.png' alt='VA Center of Excellence CESAMH | Stress and Mental Health'></div>" +
 						"<div class='imageContainer'><img src='resources/images/final_va.png' alt='VA HEALTH CARE | Defining Excellence in the 21st Century'></div>" +"</div>";
@@ -118,7 +115,6 @@ function showCongratsPage(message) {
 							"<div id='doneButton'><input class='answerButton doneButton' type='button' value='Done'></div>"+
 						"</div>";
 	
-	formElements.append(congratsString);
 	formElements.append(completionText);
 	formElements.append(buttonWrapper);
 	formElements.append(graphicImages);
