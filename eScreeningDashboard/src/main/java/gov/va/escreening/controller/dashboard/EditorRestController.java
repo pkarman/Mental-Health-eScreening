@@ -15,10 +15,7 @@ import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import gov.va.escreening.webservice.Response;
@@ -102,7 +99,7 @@ public class EditorRestController {
     public Response updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
         ErrorResponse errorResponse = new ErrorResponse();
 
-        editorsViewDelegate.updateSurveyPages(surveyId, Lists.asList(surveyPage, null));
+        editorsViewDelegate.updateSurveyPages(surveyId, Arrays.asList(surveyPage));
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), surveyPage);
     }
