@@ -120,30 +120,30 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSec
         addSuccessMsg(true, 'Please enter the name and description of new survey section');
     };
     $scope.cancel = function () {
-        function sureCancel() {
-            var deleteCnt = toBeDel.sections.length;
-            if (deleteCnt > 0) {
-                return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure that you want to cancel the delete operation?");
-            }
-            return true;
-        }
+        //function sureCancel() {
+        //    var deleteCnt = toBeDel.sections.length;
+        //    if (deleteCnt > 0) {
+        //        return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure that you want to cancel the delete operation?");
+        //    }
+        //    return true;
+        //}
 
-        if (sureCancel()) {
+        //if (sureCancel()) {
             $state.go("home");
-        }
+        //}
     };
     $scope.saveAll = function () {
-        function confirmSave() {
-            var deleteCnt = toBeDel.sections.length;
-            if (deleteCnt > 0) {
-                return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure to delete these permanently?");
-            }
-            return true;
-        }
+        //function confirmSave() {
+        //    var deleteCnt = toBeDel.sections.length;
+        //    if (deleteCnt > 0) {
+        //        return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure to delete these permanently?");
+        //    }
+        //    return true;
+        //}
 
-        if (confirmSave()) {
+        //if (confirmSave()) {
             saveAll();
-        }
+        //}
     };
     $scope.delete = function (index) {
         var section = $scope.ssRows[index];
