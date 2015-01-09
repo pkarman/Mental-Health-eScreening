@@ -1,6 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.EditorsViewDelegate;
@@ -93,6 +94,17 @@ public class EditorRestController {
         surveyPageInfoItems.put("surveyPages", surveyPages);
 
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "All module changes have been saved successfully."), surveyPageInfoItems);
+    }
+
+
+    @RequestMapping(value = "/services/surveys/{surveyId}/pages/{pageId}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    public Response updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        editorsViewDelegate.updateSurveyPages(surveyId, Lists.asList(surveyPage, null));
+
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), surveyPage);
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")
