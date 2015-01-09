@@ -138,7 +138,7 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSec
             toBeDel.sections.push(_.where(dbData, {id: section.id})[0]);
 
             // remove the section from $scope.ssRows but DO NOT save it the db
-            //$scope.ssRows.splice(index, 1);
+            $scope.ssRows.splice(index, 1);
 
             addSuccessMsg(true, 'Survey Section \'' + section.name + '\' is marked for deletion. Please press \'Save\' to delete the section permanently');
         }
