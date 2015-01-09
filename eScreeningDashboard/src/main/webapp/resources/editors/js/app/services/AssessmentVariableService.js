@@ -31,7 +31,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
                 var results = [];
                 useQueryCache = (Object.isBoolean(useQueryCache))? useQueryCache: false;
 
-                if(Object.isDefined(queryParams) && Object.isDefined(queryParams.surveyId)) {
+                if(Object.isDefined(queryParams) && (Object.isDefined(queryParams.surveyId) || Object.isDefined(queryParams.batteryId))) {
                     if(useQueryCache) {
                         if(Object.isDefined(this.cachedHashResults[queryParams])){
                             results = this.cachedHashResults[queryParams];
