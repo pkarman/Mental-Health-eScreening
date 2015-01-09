@@ -33,7 +33,7 @@ EScreeningDashboardApp.models.Answer = (function Question() {
             exportName: ''
         };
 
-        _.extend(answer, config);
+        return _.extend(answer, config);
     }
 
     return {

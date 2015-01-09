@@ -1,22 +1,11 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'SurveyPageService', 'SurveyPage', 'Survey', 'Question', 'surveys', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, SurveyPageService, SurveyPage, Survey, Question, surveys, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', 'SurveyPageService', 'Question', 'survey', 'surveyPages', 'surveySections', function($scope, $state, SurveyPageService, Question, survey, surveyPages, surveySections){
 
-        $scope.surveySections = surveySections;
+        $scope.survey = survey;
         $scope.surveyPages = surveyPages;
-
-        if (!$scope.survey) {
-            if ($stateParams.surveyId) {
-                // Look up the selected survey by the id passed into the parameter
-                SurveyService.one($stateParams.surveyId).get().then(function (survey) {
-                    $scope.survey = survey;
-                });
-            } else {
-                $scope.survey = Survey.create();
-            }
-        }
-
+        $scope.surveySections = surveySections;
         $scope.alerts = [];
 
         $scope.sortablePageOptions = {
@@ -52,7 +41,9 @@
         };
 
         $scope.addPage = function addPage() {
-            $scope.surveyPages.push(SurveyPage.create({pageNumber: $scope.surveyPages.length+1}));
+            var page = SurveyPageService.one();
+            page.pageNumber = $scope.surveyPages.length + 1;
+            $scope.surveyPages.push(page);
         };
 
         $scope.deletePage = function deletePage(index) {
@@ -112,9 +103,10 @@
 
         $scope.save = function () {
             $scope.survey.save().then(function(survey) {
-                console.log(survey);
                 $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
             });
+
+            console.log($scope.surveyPages);
 
             angular.forEach($scope.surveyPages, function(page) {
                 page.save();

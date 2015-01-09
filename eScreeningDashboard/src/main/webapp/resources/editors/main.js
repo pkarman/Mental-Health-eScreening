@@ -16,7 +16,6 @@ var Editors = angular.module("Editors",
         'dndLists',
         'angularUtils.directives.uiBreadcrumbs',
         'EscreeningDashboardApp.services.battery',
-        'EscreeningDashboardApp.services.surveypage',
         'EscreeningDashboardApp.services.surveysection',
         'EscreeningDashboardApp.services.managesection',
         'EscreeningDashboardApp.services.question',
@@ -74,7 +73,8 @@ Editors.config(function(RestangularProvider, $provide) {
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response
-            newResponse = data.payload[what] || data.payload;
+            // Pages response does NOT match the endpoint
+            newResponse = (what === 'pages') ? data.payload['surveyPages'] || data : data.payload[what] || data.payload;
             // Add the status as a meta property on the array
             newResponse.status = data.status;
         }
