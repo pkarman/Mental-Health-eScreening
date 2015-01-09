@@ -50,7 +50,7 @@
 					</div>
 					<div class="col-md-5">
 						<div class="form-group">
-							<label> {{$index + 1}}. Answer Text * </label> <input type="text"
+							<label>{{$index + 1}}. Answer Text * </label> <input type="text"
 								class="form-control"
 								ng-model="answer.text"
 								placeholder="Enter Answer Text">
@@ -58,10 +58,10 @@
 					</div>
 					<div class="col-md-5">
 						<div class="form-group">
-							<label> Variable Name *</label> <input type="text"
+							<label>{{question.type === 'selectOne' ? 'Export Value' : 'Variable Name '}}*</label> <input type="text"
 								class="form-control"
 								ng-model="answer.exportName"
-								placeholder="Enter Export Value">
+								placeholder="Enter Value">
 						</div>
 					</div>
 					<div class="col-md-1">
@@ -72,19 +72,25 @@
 				</div>
 				<div class="row">
 					<div class="col-md-offset-1 col-md-12">
-						<div class="form-group form-inline">
-							<label class="checkbox" ng-if="question.type === 'selectMulti'"> <input type="checkbox"
-									ng-model="answer.type"
-									ng-true-value="regular"
-									ng-false-value="{{ null }}"> Regular </label>
-							<label class="checkbox"> <input type="checkbox"
-									ng-model="answer.type"
-									ng-true-value="other"
-									ng-false-value="{{ null }}"> Other </label>
-							<label class="checkbox" ng-if="question.type === 'selectMulti'"> <input type="checkbox"
-									ng-model="answer.type"
-									ng-true-value="none"
-									ng-false-value="{{ null }}"> None </label>
+						<div class="form-group">
+							<div ng-if="question.type === 'selectOne'">
+								<label class="checkbox"> <input type="checkbox"
+										ng-model="answer.type"
+										ng-true-value="other"
+										ng-false-value="{{ null }}"> Other </label>
+							</div>
+							<div class="row" ng-if="question.type === 'selectMulti'">
+								<div class="col-xs-3">
+									<label for="answerType">Type</label>
+									<select id="answerType"
+											class="form-control"
+											name="answerType"
+											ng-model="answer.type"
+											ng-options="answerType.value as answerType.name for answerType in answerTypes">
+										<option value="">Regular</option>
+									</select>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

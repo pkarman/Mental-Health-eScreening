@@ -11,6 +11,11 @@
 			templateUrl: 'resources/editors/partials/modules/simple-question.html',
 			link: function(scope) {
 
+				scope.answerTypes = [
+					{ name: 'Other', value: 'other' },
+					{ name: 'None', value: 'none' }
+				];
+
 				scope.sortableAnswerOptions = {
 					'ui-floating': false,
 					cancel: '.unsortable',
@@ -30,6 +35,8 @@
 				scope.deleteAnswer = function deleteAnswer(index) {
 					scope.question.answers.splice(index, 1);
 				};
+
+
 			}
 		};
 

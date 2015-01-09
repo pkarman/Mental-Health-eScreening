@@ -11,6 +11,13 @@
 			templateUrl: 'resources/editors/partials/modules/matrix-question.html',
 			link: function(scope) {
 
+				scope.answers = [];
+
+				scope.answerTypes = [
+					{ name: 'Other', value: 'other' },
+					{ name: 'None', value: 'none' }
+				];
+
 				scope.sortableAnswerOptions = {
 					'ui-floating': false,
 					cancel: '.unsortable',
@@ -35,14 +42,32 @@
 					}
 				};
 
-				scope.answers = scope.question.childQuestions[0].answers;
+				scope.$watch('question', function(question) {
+					if (question && scope.question.childQuestions[0]) {
+						// Create question agnostic answers
+						_.each(scope.question.childQuestions[0].answers, function(answer) {
+							scope.answers.push(Answer.create({text: answer.text, exportName: answer.exportName.split('_')[1]}));
+						});
+					}
+				});
+
+				/*
+				if (scope.question && scope.question.childQuestions) {
+					_.each(scope.question.childQuestions, function(question) {
+						_.each(question.answers, function(answer) {
+							mergeByProperty(answer, answers, 'text');
+							answer.exportName = question.variableName + '_' + answer.exportName;
+						})
+					})
+				}
+				*/
 
 				scope.addAnswer = function addAnswer() {
-					scope.question.childQuestions[0].answers.push(Answer.create());
+					scope.answers.push(Answer.create());
 				};
 
-				scope.deleteAnswer = function deleteAnswer(parentIndex, index) {
-					scope.question.childQuestions[parentIndex].answers.splice(index, 1);
+				scope.deleteAnswer = function deleteAnswer(index) {
+					scope.answers.splice(index, 1);
 				};
 
 				scope.addQuestion = function addQuestion() {
@@ -51,6 +76,17 @@
 
 				scope.deleteQuestion = function deleteQuestion(index) {
 					scope.question.childQuestions.splice(index, 1);
+				};
+
+				function mergeByProperty(arr1, arr2, prop) {
+					_.each(arr2, function(arr2obj) {
+						var arr1obj = _.find(arr1, function(arr1obj) {
+							return arr1obj[prop] === arr2obj[prop];
+						});
+
+						//If the object already exist extend it with the new values from arr2, otherwise just add the new object to arr1
+						arr1obj ? _.extend(arr1obj, arr2obj) : arr1.push(arr2obj);
+					});
 				}
 			}
 		};

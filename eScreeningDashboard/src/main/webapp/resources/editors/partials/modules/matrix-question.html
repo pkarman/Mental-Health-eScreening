@@ -16,10 +16,10 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h4>Matrix Columns (Answers)</h4>
-			<div class="form-group" ng-repeat="childQuestion in question.childQuestions">
-				<ul class="list-group odd-even-list" ui-sortable="answerOptions" ng-model="childQuestion.answers">
+			<div class="form-group">
+				<ul class="list-group odd-even-list" ui-sortable="answerOptions" ng-model="answers">
 					<li class="list-group-item"
-							ng-repeat="answer in childQuestion.answers"
+							ng-repeat="answer in answers"
 							ng-class="{'unsortable': answer.sortable === false}">
 						<div class="row">
 							<div class="col-md-1">
@@ -35,33 +35,39 @@
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
-									<label> Variable Name *</label> <input type="text"
+									<label>{{question.type === 'selectOneMatrix' ? 'Export Value' : 'Variable Name '}}*</label> <input type="text"
 										class="form-control"
 										ng-model="answer.exportName"
 										placeholder="Enter Export Value">
 								</div>
 							</div>
 							<div class="col-md-1">
-								<a href="javascript:void(0);" ng-really-click="deleteAnswer($parent.$index, $index)" ng-really-message="Are you sure you want to delete this answer?">
+								<a href="javascript:void(0);" ng-really-click="deleteAnswer($index)" ng-really-message="Are you sure you want to delete this answer?">
 									<span class="glyphicon glyphicon-remove-circle" style="margin:10px 10px 10px 0px; color:red"></span>
 								</a>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-offset-1 col-md-12">
-								<div class="form-group form-inline">
-									<label class="checkbox" ng-if="question.type === 'selectMultiMatrix'"> <input type="checkbox"
-											ng-model="answer.type"
-											ng-true-value="regular"
-											ng-false-value="{{ null }}"> Regular </label>
-									<label class="checkbox"> <input type="checkbox"
+								<div class="form-group">
+									<div ng-if="question.type === 'selectOneMatrix'">
+										<label class="checkbox"> <input type="checkbox"
 											ng-model="answer.type"
 											ng-true-value="other"
 											ng-false-value="{{ null }}"> Other </label>
-									<label class="checkbox" ng-if="question.type === 'selectMultiMatrix'"> <input type="checkbox"
-											ng-model="answer.type"
-											ng-true-value="none"
-											ng-false-value="{{ null }}"> None </label>
+									</div>
+									<div class="row" ng-if="question.type === 'selectMultiMatrix'">
+										<div class="col-xs-3">
+											<label for="answerType">Type</label>
+											<select id="answerType"
+													class="form-control"
+													name="answerType"
+													ng-model="answer.type"
+													ng-options="answerType.value as answerType.name for answerType in answerTypes">
+												<option value="">Regular</option>
+											</select>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
