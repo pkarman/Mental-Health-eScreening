@@ -200,7 +200,12 @@ angular.module('Editors')
                     },
                     controller: 'ModuleTemplateListController'
                 })
-                
+                .state('modules.formulas',{
+                    url:'/:selectedSurveyId/:selectedSurveyName/module_formulas',
+                    templateUrl:'resources/editors/views/formulas/module_formulas.html',
+                    controller: 'ModuleFormulasListController'
+                })
+
                 .state('modules.templateeditor', {
                     url: "/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId",
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
@@ -518,70 +523,6 @@ angular.module('Editors')
                                 return $state.transitionTo('modules.detail');
                             }
                         })
-                    }
-                })
-                .state('modules.detail.expressioneditor',{
-                    url:'/modules.detail.expressioneditor',
-                    onEnter: function($stateParams, $state, $modal) {
-                        $modal.open({
-                            templateUrl: 'resources/editors/views/formulas/formulas.html',
-                            windowClass:'modal modal-huge modal-content',
-                            controller: ['$scope', function($scope) {
-                                $scope.qoCollapsed = false;
-                                $scope.aoCollapsed = false;
-                                $scope.csCollapsed = false;
-                                $scope.fCollapsed = false;
-                                $scope.fsCollapsed = false;
-                                $scope.moCollapsed = true;
-
-                                $scope.viewQOperator = function(){
-                                    $scope.aoCollapsed = $scope.csCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                    $scope.qoCollapsed = true;
-                                }
-
-                                $scope.viewAOperator = function(){
-                                    $scope.qoCollapsed = $scope.csCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                    $scope.aoCollapsed = true;
-                                }
-
-                                $scope.viewCOperator = function(){
-                                    $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                    $scope.csCollapsed = true
-                                }
-
-                                $scope.viewFOperator = function(){
-                                    $scope.qoCollapsed = $scope.aoCollapsed = $scope.csCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                    $scope.fCollapsed = true;
-                                }
-
-                                $scope.viewSEditor = function(){
-                                    $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.csCollapsed = $scope.moCollapsed = false;
-                                    $scope.fsCollapsed = true;
-                                }
-
-                                $scope.viewMO = function(){
-                                    $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.fsCollapsed = false;
-                                    $scope.moCollapsed = true;
-                                }
-
-                                $scope.dismiss = function() {
-                                    if (!$scope.moCollapsed){
-                                        $scope.viewMO();
-                                    }
-                                    else
-                                        $scope.$close(true);
-                                };
-                                $scope.save = function() {
-                                    item.update().then(function() {
-                                        $scope.$close(true);
-                                    });
-                                };
-                            }]
-                        }).result.then(function(result) {
-                                if (result) {
-                                    return $state.transitionTo("modules.detail");
-                                }
-                            });
                     }
                 })
 

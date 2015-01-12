@@ -110,7 +110,7 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script type="text/javascript" src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
@@ -151,12 +151,16 @@
     
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
-    
+
     <!-- Modules View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
+
+    <!-- Formulas Controller, Service, Directives, Filters, etc -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageFormulasService.js"></script>
 
     <!-- Questions View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>

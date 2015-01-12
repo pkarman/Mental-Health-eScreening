@@ -1,5 +1,6 @@
 package gov.va.escreening.service.export;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Table;
@@ -12,4 +13,5 @@ public interface DataDictionaryService {
 
 	public String createTableResponseVarName(String exportName);
 
+	List<Map> askFormulasFor(Integer moduleId);
 }

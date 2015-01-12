@@ -5,6 +5,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Validation;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.ValidationRepository;
 import gov.va.escreening.service.AssessmentVariableService;
 
@@ -48,6 +49,9 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
 	@Resource(type = ValidationRepository.class)
 	ValidationRepository vr;
+
+	@Resource(type = SurveyRepository.class)
+	SurveyRepository sr;
 
 	@Resource(type = AssessmentVariableService.class)
 	AssessmentVariableService avs;
@@ -197,5 +201,28 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 	@Override
 	public String createTableResponseVarName(String exportName) {
 		return ddh.createTableResponseVarName(exportName);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Map> askFormulasFor(Integer moduleId) {
+
+		Survey survey=sr.findOne(moduleId);
+		Map<String, Table<String, String, String>> dataDictionary = createDataDictionary();
+		Table<String, String, String> moduleTable=dataDictionary.get(survey.getName());
+		Map<String, Map<String, String>> rowMap = moduleTable.rowMap();
+		Set<Map.Entry<String, Map<String, String>>> entries = rowMap.entrySet();
+
+		List<Map> formulas=Lists.newArrayList();
+		for(Map.Entry<String, Map<String, String>> entry:entries){
+			if (entry.getKey().startsWith(ddh.FORMULA_KEY_PREFIX)){
+				Map<String, String> formula=Maps.newHashMap();
+				formula.put("name", entry.getValue().get(ddh.msg("var.name")));
+				formula.put("formula", entry.getValue().get(ddh.msg("ques.desc")));
+				formulas.add(formula);
+			}
+		}
+
+		return formulas;
 	}
 }

@@ -272,20 +272,21 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
         $state.go('modules.detail.questions.mapconsult');
     };
 
-    $scope.goToFormulaExpression = function(){
-        $state.go('modules.detail.expressioneditor');
-    };
-
     $scope.goToCreateVar = function(){
         $state.go('modules.detail.createvariable.questionvariable');
     };
     
-    $scope.editTemplates = function(){        
-        $state.go('modules.templates', 
+    $scope.editFormulas = function(){
+        $state.go('modules.formulas',
                 {selectedSurveyId: $scope.selectedSurveyUIObject.id, 
                  selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
     };
-    
+    $scope.editTemplates = function(){
+        $state.go('modules.templates',
+                {selectedSurveyId: $scope.selectedSurveyUIObject.id,
+                 selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
+    };
+
     $scope.isModuleSaved = function(){
         return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
     }
