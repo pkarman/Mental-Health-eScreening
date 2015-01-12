@@ -46,9 +46,10 @@ public class OrwptApptlstExtractor implements VistaRecordExtractor<VistaVeteranA
         VistaVeteranAppointment vistaVeteranAppointment = new VistaVeteranAppointment();
 
         // we are only interested in appointments
-        
-        if ("A".equals(record.split(";")[0])) {
-            String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
+
+        String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
+
+        if (fields.length > 3 && !fields[3].startsWith("CANCELLED")) {
 
             vistaVeteranAppointment.setAppointmentDate(VistaUtils.convertVistaDate(fields.length > 1 ? fields[1] : null));
             vistaVeteranAppointment.setClinicName(fields.length > 2 ? fields[2] : null);
