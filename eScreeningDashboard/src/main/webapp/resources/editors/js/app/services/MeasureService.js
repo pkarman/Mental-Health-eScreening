@@ -6,7 +6,7 @@
 		var endpoint = 'questions';
 
 		Restangular.extendModel(endpoint, function(model) {
-			return Question.create(model);
+			return Question.extend(model);
 		});
 
 		return Restangular.service(endpoint);

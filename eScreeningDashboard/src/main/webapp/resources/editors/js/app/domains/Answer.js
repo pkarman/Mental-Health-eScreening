@@ -23,9 +23,9 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @constructor
  * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.Answer = (function Question() {
+EScreeningDashboardApp.models.Answer = (function answer() {
 
-    function create(config) {
+    function extend(obj) {
         var answer = {
             id: '',
             text: '',
@@ -33,10 +33,16 @@ EScreeningDashboardApp.models.Answer = (function Question() {
             exportName: ''
         };
 
-        return _.extend(answer, config);
+        for (var prop in obj) {
+            if (answer.hasOwnProperty(prop)) {
+                answer[prop] = obj[prop];
+            }
+        }
+
+        return _.extend(obj, answer);
     }
 
     return {
-        create: create
+        extend: extend
     };
 })();

@@ -23,9 +23,9 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @constructor
  * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.Question = (function Question() {
+EScreeningDashboardApp.models.Question = (function question() {
 
-    function create(config) {
+    function extend(obj) {
         var question = {
             id: '',
             text: '',
@@ -42,129 +42,17 @@ EScreeningDashboardApp.models.Question = (function Question() {
             tableAnswers: []
         };
 
-        question.escapeTags = function (string) {
-            string = string.replace(/</g, 'tag');
-            string = string.replace(/>/g, 'endtag;');
-            string = prettifyStr(text);
-            alert('string:: ' + string);
-            return string;
-        };
-
-        var unescapeTags = function (string) {
-            string = string.replace(/tag/g, '<');
-            string = string.replace(/endtag/g, '>');
-            return string;
-        };
-
-        var prettifyStr = function (text) {
-            var e = {
-                lsquo: '\u2018',
-                rsquo: '\u2019',
-                ldquo: '\u201c',
-                rdquo: '\u201d'
-            };
-            var subs = [
-                {pattern: "(^|[\\s\"])'", replace: '$1' + e.lsquo},
-                {pattern: '(^|[\\s-])"', replace: '$1' + e.ldquo},
-                {pattern: "'($|[\\s\"])?", replace: e.rsquo + '$1'},
-                {pattern: '"($|[\\s.,;:?!])', replace: e.rdquo + '$1'}
-            ];
-            for (var i = 0; i < subs.length; i++) {
-                var sub = subs[i];
-                var pattern = new RegExp(sub.pattern, 'g');
-                text = text.replace(pattern, sub.replace);
+        for (var prop in obj) {
+            if (question.hasOwnProperty(prop)) {
+                question[prop] = obj[prop];
             }
-            return text;
-        };
+        }
 
-
-        question.filterValidations = function (targetPropertyName, targetPropertyValue) {
-            var isPropertyName = "is" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                hasPropertyName = "has" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                getPropertyName = "get" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                propertyNameValue = false,
-                filteredValidations = [];
-
-            validations.some(function (validation) {
-                if (validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
-                    validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
-                    if (typeof validation[isPropertyName] === 'function') {
-                        propertyNameValue = validation[isPropertyName]();
-                    } else if (typeof validation[hasPropertyName] === 'function') {
-                        propertyNameValue = validation[hasPropertyName]();
-                    } else if (typeof validation[getPropertyName] === 'function') {
-                        propertyNameValue = validation[getPropertyName]();
-                    } else {
-                        propertyNameValue = validation[targetPropertyName];
-                    }
-
-                    if (propertyNameValue === targetPropertyValue) {
-                        filteredValidations.push(validation);
-                        return true;
-                    }
-
-                    return false;
-                }
-            });
-
-            return filteredValidations;
-        };
-
-        question.findValidation = function (targetPropertyName, targetPropertyValue) {
-            var filteredValidations = question.filterValidations(targetPropertyName, targetPropertyValue),
-                filteredValidation = null,
-                filteredValidationConstructorParameters;
-
-            if (Object.isArray(filteredValidations) && filteredValidations.length > 0) {
-                filteredValidation = filteredValidations[0];
-            } else {
-                filteredValidationConstructorParameters = {};
-                filteredValidationConstructorParameters[targetPropertyName] = targetPropertyValue;
-                filteredValidationConstructorParameters["selected"] = false;
-
-                filteredValidation = new EScreeningDashboardApp.models.Validation(filteredValidationConstructorParameters);
-            }
-
-            return filteredValidation;
-        };
-
-        question.filterValidations = function filterValidations(targetPropertyName, targetPropertyValue, validations) {
-            var isPropertyName =  "is"  + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                hasPropertyName = "has" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                getPropertyName = "get" + targetPropertyName.charAt(0).toUpperCase() + targetPropertyName.substring(1),
-                propertyNameValue = false,
-                filteredValidations = [];
-
-            validations.some(function (validation) {
-                if(validation.hasOwnProperty(targetPropertyName) || validation.hasOwnProperty(isPropertyName) ||
-                    validation.hasOwnProperty(hasPropertyName) || validation.hasOwnProperty(getPropertyName)) {
-                    if(typeof validation[isPropertyName] === 'function'){
-                        propertyNameValue = validation[isPropertyName]();
-                    } else if(typeof validation[hasPropertyName] === 'function') {
-                        propertyNameValue = validation[hasPropertyName]();
-                    } else if(typeof validation[getPropertyName] === 'function') {
-                        propertyNameValue = validation[getPropertyName]();
-                    } else {
-                        propertyNameValue = validation[targetPropertyName];
-                    }
-
-                    if(propertyNameValue === targetPropertyValue) {
-                        filteredValidations.push(validation);
-                        return true;
-                    }
-
-                    return false;
-                }
-            });
-
-            return filteredValidations;
-        };
-
-        return _.extend(question, config);
+        return _.extend(obj, question);
     }
 
     return {
-        create: create
-    }
+        extend: extend
+    };
 
 })();

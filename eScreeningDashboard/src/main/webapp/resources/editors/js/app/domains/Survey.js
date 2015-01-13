@@ -19,13 +19,13 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behaviour and state
  *              information about the user.
- * @param {String}  jsonSurveyObject  Represents the JSON representation of a Survey object.
- * @constructor create
+ * @param {String}  jsonSurvey  Represents the JSON representation of a Survey object.
+ * @constructor
  * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.Survey = (function Survey() {
+EScreeningDashboardApp.models.Survey = (function survey() {
 
-    function create(config) {
+    function extend(obj) {
         var survey = {
             id: '',
             name: '',
@@ -36,35 +36,24 @@ EScreeningDashboardApp.models.Survey = (function Survey() {
             mha: '',
             mhaTestName: '',
             mhaResultGroupIen: '',
-            clinicalReminder: false,
+            clinicalReminder: '',
             createdDate: '',
             surveySection: {},
-            markedForDeletion: false,
-            visible: false
+            markedForDeletion: '',
+            visible: ''
         };
 
-        survey.sortByDisplayOrder = function sortByDisplayOrder(surveys, sortDirection) {
-            sortDirection = (sortDirection && sortDirection === "-")? "-" : "+";
-            if(Object.isArray(surveys)){
-                if(sortDirection === "+") {
-                    surveys.sort(function (a, b) {
-                        return a.displayOrder - b.displayOrder;
-                    });
-                } else if(sortDirection === "-") {
-                    surveys.sort(function (a, b) {
-                        return b.displayOrder - a.displayOrder;
-                    });
-                }
+        for (var prop in obj) {
+            if (survey.hasOwnProperty(prop)) {
+                survey[prop] = obj[prop];
             }
+        }
 
-            return surveys;
-        };
-
-        return _.extend(survey, config);
+        return _.extend(obj, survey);
     }
 
     return {
-        create: create
-    }
+        extend: extend
+    };
 
 })();

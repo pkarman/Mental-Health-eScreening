@@ -23,20 +23,29 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @constructor
  * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.SurveyPage = (function SurveyPage() {
-    function create(config) {
+EScreeningDashboardApp.models.SurveyPage = (function surveyPage() {
+
+    function extend(obj) {
         var surveyPage = {
             id: null,
-            title: null,
-            description: null,
+            title: '',
+            description: '',
             pageNumber: null,
-            createdDate: null,
+            createdDate: '',
             questions: []
         };
-        return _.extend(surveyPage, config);
+
+        for (var prop in obj) {
+            if (surveyPage.hasOwnProperty(prop)) {
+                surveyPage[prop] = obj[prop];
+            }
+        }
+
+        return _.extend(obj, surveyPage);
     }
 
     return {
-        create: create
+        extend: extend
     };
+
 })();

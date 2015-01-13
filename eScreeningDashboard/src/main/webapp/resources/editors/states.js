@@ -237,9 +237,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     displayName: 'Modules-Editor: Add/Edit'
                 },
                 resolve: {
-                    survey: ['$stateParams', 'SurveyService', function($stateParams, SurveyService) {
-                        return SurveyService.one($stateParams.surveyId).get();
-                    }],
                     surveyPages: ['$stateParams', 'SurveyService', function($stateParams, SurveyService) {
                         return SurveyService.one($stateParams.surveyId).getList('pages');
                     }],

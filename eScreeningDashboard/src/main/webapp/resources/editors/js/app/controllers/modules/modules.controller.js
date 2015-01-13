@@ -1,5 +1,5 @@
 
-Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'surveys', 'ngTableParams', function ($scope, $state, $filter, surveys, ngTableParams) {
+Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyService', 'surveys', 'ngTableParams', function ($scope, $state, $filter, SurveyService, surveys, ngTableParams) {
 
     $scope.surveys = surveys;
 
@@ -103,7 +103,7 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'surveys
     };
 
     $scope.addModule = function(){
-        $scope.survey = {};
+        $scope.survey = SurveyService.one();
         $state.go('modules.detail.list');
     };
 

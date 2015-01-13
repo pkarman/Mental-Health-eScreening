@@ -67,6 +67,7 @@ Editors.config(function(RestangularProvider, $provide) {
     RestangularProvider.setRequestSuffix('.json');
 
     RestangularProvider.addResponseInterceptor(function(data, operation, what) {
+
         var newResponse;
         // List of array collection endpoints that do not conform to response.payload[resource]
         var listExceptions = ['validations', 'templateTypes', 'sections'];
@@ -79,12 +80,23 @@ Editors.config(function(RestangularProvider, $provide) {
             newResponse.status = data.status;
         }
 
+        if(operation === 'put' || operation === 'post') {
+            // The saved object is returned on data.payload using the singular form
+            // Transform the response by adding the saved object directly on the response
+            newResponse = data.payload[what.slice(0,-1)] || data.payload;
+        }
+
         if (operation === 'get') {
             // Add the payload directly on the response
             _.extend(data, data.payload);
         }
 
         return newResponse || data.payload || data;
+    })
+    .addFullRequestInterceptor(function(element, operation, what, url) {
+        if (operation == 'put') {
+            alert('Sending: '+JSON.stringify(element));
+        }
     });
     
     $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', 'textAngularManager', '$delegate', '$modal', 'TemplateBlockService',
