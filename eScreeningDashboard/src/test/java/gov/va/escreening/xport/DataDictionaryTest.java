@@ -1,5 +1,8 @@
 package gov.va.escreening.xport;
 
+import com.google.common.collect.TreeBasedTable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.view.DataDictionaryExcelView;
 
@@ -11,6 +14,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,10 +59,45 @@ public class DataDictionaryTest {
 	@Test
 	public void createDataDictionary() throws Exception {
 		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+		Gson gson = new GsonBuilder().create();
+		String ddAsString= gson.toJson(dataDictionary);
+		int ddSize=ddAsString.length();
+
+		Map<String, Table<String, String, String>> dataDictionary1=reconstructDataDictionary(ddAsString);
+		Gson gson1 = new GsonBuilder().create();
+		String dd1AsString= gson1.toJson(dataDictionary1);
+
+		int dd1Size=dd1AsString.length();
+
+		Assert.assertEquals(dataDictionary, dataDictionary1);
 
 		logDataDictionary(dataDictionary);
 
 		viewDataDictionaryAsExcel(dataDictionary);
+		viewDataDictionaryAsExcel(dataDictionary1);
+	}
+
+	private Map<String, Table<String, String, String>> reconstructDataDictionary(String ddAsString) {
+		Gson gson1 = new GsonBuilder().create();
+		Map raw=gson1.fromJson(ddAsString, Map.class);
+
+		Map<String, Table<String, String, String>> dd=Maps.newLinkedHashMap();
+
+		for (Object o : raw.keySet()) {
+			String moduleName=(String)o;
+			Table<String, String, String> t= TreeBasedTable.create();
+			Map m=(Map)raw.get(moduleName);
+			Map m1=(Map)m.get("backingMap");
+			for(Object k:m1.keySet()){
+				String key=(String)k;
+				Map<String, String> m2= (Map<String, String>) m1.get(key);
+				for(String key1:m2.keySet()){
+					t.put(key, key1, m2.get(key1));
+				}
+			}
+			dd.put(moduleName, t);
+		}
+		return dd;
 	}
 
 	private void viewDataDictionaryAsExcel(
