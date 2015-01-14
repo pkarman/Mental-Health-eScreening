@@ -2,11 +2,10 @@
 	<h3 class="modal-title">Add question to {{ tableQuestion.entityName }} table</h3>
 </div>
 <div class="modal-body">
-	{{ question.type }}
 	<select
 			class="form-control"
 			ng-model="question.type"
-			ng-options="questionType.name as questionType.displayName for questionType in questionTypes track by questionType.displayName">
+			ng-options="questionType.name as questionType.displayName for questionType in questionTypes track by questionType.name">
 		<option value="">-- Select Type --</option>
 	</select>
 	<div ng-switch="question.type">

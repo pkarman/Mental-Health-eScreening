@@ -15,7 +15,9 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = Question.extend();
+					$scope.question = Question.extend({});
+
+					console.log($scope.question);
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},

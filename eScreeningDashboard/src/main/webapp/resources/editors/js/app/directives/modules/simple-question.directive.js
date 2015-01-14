@@ -29,7 +29,7 @@
 				};
 
 				scope.addAnswer = function addAnswer() {
-					scope.question.answers.push(Answer.create());
+					scope.question.answers.push(Answer.extend({}));
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
