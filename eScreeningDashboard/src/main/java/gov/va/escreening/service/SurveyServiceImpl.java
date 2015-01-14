@@ -170,8 +170,13 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SurveyInfo update(SurveyInfo surveyInfo) {
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
+        // copy any changed propertires from incoming surveyInfo to the data for database 'survey'
+        copyProperties(surveyInfo, survey);
+
+        // and now make sure that surveyInfo's survey Section is also reflected back to the survey
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
         survey.setSurveySection(surveySection);
+
         surveyRepository.update(survey);
         return surveyInfo;
     }

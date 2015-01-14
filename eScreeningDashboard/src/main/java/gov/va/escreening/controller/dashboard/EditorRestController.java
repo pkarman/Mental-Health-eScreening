@@ -210,7 +210,7 @@ public class EditorRestController {
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
     }
 
-    @RequestMapping(value = "/services/survey", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/services/surveys", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Response addSurvey(@RequestBody SurveyInfo survey,
                               @CurrentUser EscreenUser escreenUser) {
