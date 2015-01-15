@@ -17,17 +17,19 @@
 
 					$scope.question = Question.extend({});
 
-					console.log($scope.question);
-
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
 						{id: 1, name: "selectOne", displayName: "Select One"},
 						{id: 2, name: "selectMulti", displayName: "Select Multi"}
 					];
 
-					$scope.cancel = function cancel() {
-						$modalInstance.close();
+					$scope.dismiss = function dismiss() {
+						$modalInstance.dismiss();
 					};
+
+					$scope.update = function update() {
+						$modalInstance.close($scope.question);
+					}
 				}
 			});
 		}

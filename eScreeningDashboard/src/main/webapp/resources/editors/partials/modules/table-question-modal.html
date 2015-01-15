@@ -2,12 +2,19 @@
 	<h3 class="modal-title">Add question to {{ tableQuestion.entityName }} table</h3>
 </div>
 <div class="modal-body">
-	<select
-			class="form-control"
-			ng-model="question.type"
-			ng-options="questionType.name as questionType.displayName for questionType in questionTypes track by questionType.name">
-		<option value="">-- Select Type --</option>
-	</select>
+	<div class="row">
+		<div class="col-md-6">
+			<label for="question-type">Select Question Type</label>
+			<select
+					id="question-type"
+					class="form-control"
+					ng-model="question.type"
+					ng-options="questionType.name as questionType.displayName for questionType in questionTypes">
+				<option value="">-- Select Type --</option>
+			</select>
+		</div>
+	</div>
+
 	<div ng-switch="question.type">
 		<div ng-switch-when="freeText">
 			<text-question question="question"></text-question>
@@ -22,5 +29,5 @@
 </div>
 <div class="modal-footer">
 	<button class="btn btn-primary" ng-click="update()">{{ question.id ? 'Update' : 'Insert'}}</button>
-	<button class="btn btn-default" ng-click="cancel()">Close</button>
+	<button class="btn btn-default" ng-click="dismiss()">Close</button>
 </div>
