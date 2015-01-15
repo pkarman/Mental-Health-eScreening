@@ -25,7 +25,32 @@
       </div>
 
       <div class="form-group">
-        <button type="button" class="btn btn-primary btn-small" ng-click="addTableQuestion()">Add Question</button>
+        <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="question.childQuestions">
+          <li class="list-group-item text-left" ng-repeat="question in question.childQuestions"
+                  ng-class="{'unsortable': question.sortable === false}">
+            <div class="form-inline">
+              <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
+              <div class="pull-left">
+                <div class="strong" style="font-size:12px;" ng-click="updateChildQuestion(question);">{{question.variableName}}</div>
+                <div style="font-size:12px;">{{question.type}}</div>
+              </div>
+              <div class="pull-right margin_top_10">
+                 <span>
+                  <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="updateChildQuestion(question);"></span>
+                 </span>
+                 <span class="glyphicon glyphicon-remove-circle cursor_pointer"
+                                                      style="margin-left: 10px; color:red;"
+                                                      ng-click="deleteChildQuestion($index);"></span>
+
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <button type="button" class="btn btn-primary btn-small" ng-click="updateChildQuestion()">Add Question</button>
       </div>
     </form>
   </div>
