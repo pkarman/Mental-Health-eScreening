@@ -8,7 +8,7 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
         "use strict";
 
         var currentTemplateTypes = [];
-        var currentTemplateType = null;
+        var currentTemplateType;
         
         var restAngular = Restangular.withConfig(function(config) {
                 config.setBaseUrl('services/');
@@ -56,8 +56,8 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
             /**
              * To track the currently selected template type.
              */
-            setSelectedType : function(currentTemplateType){
-                currentTemplateType = currentTemplateType;
+            setSelectedType : function(templateType){
+                currentTemplateType = templateType;
             },
             getSelectedType : function(){
                 return currentTemplateType;

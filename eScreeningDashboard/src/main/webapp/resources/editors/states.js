@@ -396,9 +396,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
                                 var selectedTemplateType = TemplateTypeService.getSelectedType();
                                 if(Object.isDefined(selectedTemplateType)){
-                                    var emptyTemplate =  TemplateService.get();
-                                    emptyTemplate.type = selectedTemplateType;
-                                    console.log('empty template', emptyTemplate);
+                                    var emptyTemplate =  new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
+                                    deferred.resolve(emptyTemplate);
 
                                     deferred.resolve(emptyTemplate);
                                 }
