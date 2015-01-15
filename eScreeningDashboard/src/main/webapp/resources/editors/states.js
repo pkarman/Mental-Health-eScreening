@@ -150,7 +150,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         	return deferred.promise;
                         }]
                     },
-                    controller: 'templateListController'
+                    controller: 'ModulesTemplatesController'
                 })
                 
                 .state('batteries.templateeditor', {
