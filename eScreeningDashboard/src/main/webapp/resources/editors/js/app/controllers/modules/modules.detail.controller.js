@@ -1,17 +1,15 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'SurveyService', 'SurveyPage', 'Question', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, SurveyService, SurveyPage, Question, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'surveys', 'SurveyPage', 'Question', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, surveys, SurveyPage, Question, surveyPages, surveySections){
 
         $scope.surveyPages = surveyPages;
         $scope.surveySections = surveySections;
         $scope.alerts = [];
 
-        if (!$scope.survey) {
-            SurveyService.one($stateParams.surveyId).get().then(function(survey) {
-                $scope.survey = survey;
-            });
-        }
+        surveys.get($stateParams.surveyId).then(function(survey) {
+            $scope.survey = survey;
+        });
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -56,7 +54,6 @@
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            console.log(page);
             $scope.question = Question.extend({});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
