@@ -283,7 +283,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 $scope.question = question;
                             });
                         } else {
-                            $scope.question = Question.create();
+                            $scope.question = Question.extend({});
                         }
                     }
                 }]

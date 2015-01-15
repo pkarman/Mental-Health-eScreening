@@ -57,7 +57,7 @@
 
         $scope.addQuestion = function addQuestion(page) {
             console.log(page);
-            $scope.question = Question;
+            $scope.question = Question.extend({});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
@@ -94,10 +94,18 @@
             return stateName;
         };
 
-        $scope.editQuestion = function editQuestion(question){
+        $scope.editQuestion = function editQuestion(page, question){
             var stateName = $scope.getStateName(question.type);
 
+            // Deselect all questions
+            _.each(page.questions, function(question) {
+                question.selected = false;
+            });
+
             if(Object.isDefined(stateName)) {
+                // Set selected on current question
+                question.selected = true;
+
                 $scope.question = question;
                 $state.go(stateName, {questionId: question.id});
             }

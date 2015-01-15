@@ -81,16 +81,16 @@
                             </div>
                             <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
                                 <li class="list-group-item text-left" ng-repeat="question in page.questions"
-                                        ng-class="{'unsortable': question.sortable === false}">
+                                        ng-class="{unsortable: question.sortable === false, active: question.selected}">
                                     <div class="form-inline">
                                         <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
                                         <div class="pull-left">
-                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(question);">{{question.variableName}}</div>
+                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName}}</div>
                                             <div style="font-size:12px;">{{question.type}}</div>
                                         </div>
                                         <div class="pull-right margin_top_10">
                                             <span>
-                                                <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(question);"></span>
+                                                <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(page, question);"></span>
                                             </span>
                                             <span class="glyphicon glyphicon-remove-circle cursor_pointer"
                                                     style="margin-left: 10px; color:red;"
