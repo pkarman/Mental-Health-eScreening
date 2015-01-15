@@ -358,8 +358,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
                         	var deferred = $q.defer();
                         	deferred.resolve({
-                                id : $stateParams.relatedObjId,
-                                name : decodeURIComponent($stateParams.relatedObjName),
+                                id : $stateParams.selectedSurveyId,
+                                name : decodeURIComponent($stateParams.selectedSurveyName),
                                 type: "module"
                             });
                         	return deferred.promise;
@@ -368,7 +368,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller: 'ModulesTemplatesController'
             })
 
-            .state('modules.templates.edit', {
+            .state('modules.templatesedit', {
                 url: "/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId",
                 templateUrl: 'resources/editors/views/templates/templateeditor.html',
                 data: {
@@ -376,50 +376,49 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 },
                 controller: "ModulesTemplatesEditController",
                 resolve: {
-                    assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
-                        return AssessmentVariableService;
-                    }],
-                    template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
-                        function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
-                            var deferred = $q.defer();
-                            if (Object.isDefined($stateParams)
-                                && Object.isDefined($stateParams.selectedSurveyId)
-                                && $stateParams.selectedSurveyId > -1
-                                && Object.isDefined($stateParams.typeId)) {
+                    template: ['$stateParams', '$q', 'TemplateService', 'TemplateTypeService', function ($stateParams, $q, TemplateService, TemplateTypeService) {
+                        var deferred = $q.defer();
+                        if (Object.isDefined($stateParams)
+                            && Object.isDefined($stateParams.selectedSurveyId)
+                            && $stateParams.selectedSurveyId > -1
+                            && Object.isDefined($stateParams.typeId)) {
 
-                                if(Object.isDefined($stateParams.templateId)
-                                    && $stateParams.templateId != -1
-                                    && $stateParams.templateId.length > 0){
-                                    console.log("Getting template from server with ID: " + $stateParams.templateId);
+                            if(Object.isDefined($stateParams.templateId)
+                                && $stateParams.templateId != -1
+                                && $stateParams.templateId.length > 0){
+                                console.log("Getting template from server with ID: " + $stateParams.templateId);
 
-                                    TemplateService.get($stateParams.templateId).then(function (template) {
-                                        deferred.resolve(template);
-                                    });
+                                TemplateService.get($stateParams.templateId).then(function (template) {
+                                    deferred.resolve(template);
+                                });
+                            }
+                            else{
+                                console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
+                                var selectedTemplateType = TemplateTypeService.getSelectedType();
+                                if(Object.isDefined(selectedTemplateType)){
+                                    var emptyTemplate =  TemplateService.get();
+                                    emptyTemplate.type = selectedTemplateType;
+                                    console.log('empty template', emptyTemplate);
+
+                                    deferred.resolve(emptyTemplate);
                                 }
-                                else{
-                                    console.log("Creating empty template for module " + $stateParams.selectedSurveyName + " of template type " + $stateParams.typeId);
-                                    var selectedTemplateType = TemplateTypeService.getSelectedType();
-                                    if(Object.isDefined(selectedTemplateType)){
-                                        var emptyTemplate =  new EScreeningDashboardApp.models.Template({type: selectedTemplateType});
-                                        deferred.resolve(emptyTemplate);
-                                    }
-                                    else {
-                                        console.log("There is no currently selected template type. Redirecting to module template list.");
-                                        deferred.resolve({});
-                                    }
+                                else {
+                                    console.log("There is no currently selected template type. Redirecting to module template list.");
+                                    deferred.resolve({});
                                 }
                             }
-                            return deferred.promise;
-                            }],
-                            relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
-                            	var deferred = $q.defer();
-                            	deferred.resolve({
-                                    id : $stateParams.relatedObjId,
-                                    name : decodeURIComponent($stateParams.relatedObjName),
-                                    type: "module"
-                                });
-                            	return deferred.promise;
-                        }]
+                        }
+                        return deferred.promise;
+                    }],
+                    relatedObj: ['$stateParams', '$q', function($stateParams, $q) {
+                        var deferred = $q.defer();
+                        deferred.resolve({
+                            id : $stateParams.selectedSurveyId,
+                            name : decodeURIComponent($stateParams.selectedSurveyName),
+                            type: "module"
+                        });
+                        return deferred.promise;
+                    }]
                 },
                 onExit: function (AssessmentVariableService) {
                     console.log("leaving template.moduleeditor state.");

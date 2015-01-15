@@ -11,7 +11,7 @@ Editors.controller('ModulesTemplatesController',
     }
             
     //register types list
-    TemplateTypeService.registerTypes($scope, templateTypes);          
+    TemplateTypeService.registerTypes($scope, templateTypes);
 
     var setTable = function(arguments) {
         console.log('template list setTable');
@@ -66,7 +66,7 @@ Editors.controller('ModulesTemplatesController',
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
            };
         
-        $state.go('modules.templates.edit', editorParams);
+        $state.go('modules.templatesedit', editorParams);
     };
 
     $scope.deleteTemplate = function(templateType){

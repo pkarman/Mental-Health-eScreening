@@ -70,7 +70,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
         var newResponse;
         // List of array collection endpoints that do not conform to response.payload[resource]
-        var listExceptions = ['validations', 'templateTypes', 'sections'];
+        var listExceptions = ['validations', 'templateTypes', 'sections', 'assessmentVariables'];
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response

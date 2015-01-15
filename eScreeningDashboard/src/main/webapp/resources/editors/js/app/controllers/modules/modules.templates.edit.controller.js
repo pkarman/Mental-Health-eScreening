@@ -1,6 +1,6 @@
 Editors.controller('testModalCtrl', ['$scope', function($scope) {
 }]);
-Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template',
+Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 'relatedObj',
                                                 function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template, relatedObj) {
 
     console.log("In templateEditorController");

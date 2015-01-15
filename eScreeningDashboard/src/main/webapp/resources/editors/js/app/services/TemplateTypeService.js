@@ -44,7 +44,7 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
                                 return templateTypes;
                             });
                 }
-                return this.currentTemplateTypes;
+                return currentTemplateTypes;
             },
             /**
              * Connects the given types to the give scope and sets up a $watch for changes so
@@ -56,11 +56,11 @@ angular.module('EscreeningDashboardApp.services.templateType', ['restangular'])
             /**
              * To track the currently selected template type.
              */
-            setSelectedType : function(currentTemplateType){ 
-                this.currentTemplateType = currentTemplateType; 
+            setSelectedType : function(currentTemplateType){
+                currentTemplateType = currentTemplateType;
             },
             getSelectedType : function(){
-                return this.currentTemplateType; 
+                return currentTemplateType;
             }
         }
     }]);
