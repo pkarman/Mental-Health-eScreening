@@ -40,7 +40,7 @@ Editors.controller('ModulesTemplatesController',
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
             console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
-            $state.go('modules.detail', $stateParams);
+            $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
         }
         else{
             console.log('No module selected. Redirecting back to module list');
