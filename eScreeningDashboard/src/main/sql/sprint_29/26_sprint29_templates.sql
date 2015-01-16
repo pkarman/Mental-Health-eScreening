@@ -460,3 +460,117 @@ ${MODULE_START}
 	</#if>
 ${MODULE_END}'
 where template_id = 19;
+
+/** Ticket 771 Below ****/
+update template set template_file = 
+'<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+A/V HALLUCINATIONS:
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var1350.children)?? && (var1350.children?size > 0) || ((var1360.children)?? && (var1360.children?size > 0))>  		
+The Veteran${NBSP}
+		<#if (var1350.children)?? && (var1350.children?size > 0)>
+			<#assign Q1_Score = getScore(var1350)>
+			<#if (Q1_Score > 1) >
+reported hearing things other people can\'t hear
+			<#else>
+denied audio hallucinations
+			</#if>
+		</#if>
+		
+		<#if ((var1360.children)?? && (var1360.children?size > 0))>
+		  <#assign Q2_Score = getScore(var1360)>
+		  , The Veteran ${NBSP}		
+			<#if (Q2_Score > 1) >
+				reported seeing things or having visions other people can\'t see"
+			<#else>
+				denied visual hallucinations
+			</#if>
+		</#if>
+		.
+	<#else>
+		${getNotCompletedText()}
+	</#if>
+${MODULE_END}'
+where template_id = 29;
+
+update template 
+set template_file = '
+<#include "clinicalnotefunctions"> 
+<#-- Template start -->
+${MODULE_TITLE_START}
+PRESENTING CONCERN(S):
+${MODULE_TITLE_END}
+${MODULE_START}
+	<#if (var200.children)?? && (var210.children)?? && (var220.children)?? && (var230.children)?? && (var240.children)?? 
+		&& (var250.children)?? && (var260.children)?? && (var270.children)??
+		&& ((var200.children)?size > 0) && ((var210.children)?size > 0) && ((var220.children)?size > 0) && ((var230.children)?size > 0) && ((var240.children)?size > 0) 
+		&& ((var250.children)?size > 0) && ((var260.children)?size > 0) && ((var270.children)?size > 0)>
+
+    <#-- The Veteran identified enrollment, mental health , physical health, establishing a PCP, and vic as the presenting concerns. -->
+    <#if hasValue(getSelectMultiDisplayText(var200)) >
+      The Veteran identified ${getSelectMultiDisplayText(var200)} as the presenting concern(s). ${NBSP}
+	</#if>
+    
+	<#assign fragments = []>
+	<#assign healthCareText = "">
+	<#assign vaBeneifitsText = "">
+	<#assign employmentText = "">
+	<#assign financialInfoText = "">
+	<#assign SocialText = "">
+	<#assign legalText = "">
+	<#assign housingText = "">
+	<#assign otherText = "">
+
+	<#if hasValue(var210) && !isSelectedAnswer(var210, var211)>      
+		<#assign healthCareText = "Healthcare (specifically, " + getSelectMultiDisplayText(var210) + ")">
+		<#assign fragments = fragments + [healthCareText] >
+	</#if>
+
+	<#if hasValue(var250) && !isSelectedAnswer(var250, var251)>   
+		<#assign vaBeneifitsText = "VA Benefits (specifically, " + getSelectMultiDisplayText(var250) + ")" >
+		<#assign fragments = fragments + [vaBeneifitsText] >
+	</#if>
+
+	<#if hasValue(var220) && !isSelectedAnswer(var220, var221)>  
+		<#assign employmentText = "Employment (specifically, " + getSelectMultiDisplayText(var220) + ")">
+		<#assign fragments = fragments + [employmentText] >
+	</#if>
+
+	<#if hasValue(var230) && !isSelectedAnswer(var230, var231)>      
+		<#assign SocialText = "Social (specifically, " + getSelectMultiDisplayText(var230) + ")">
+		<#assign fragments = fragments + [SocialText]  >
+	</#if>
+
+	<#if hasValue(var270) && !isSelectedAnswer(var270, var271)>      
+		<#assign legalText = "Legal (specifically, " + getSelectMultiDisplayText(var270) + ")" >
+		<#assign fragments = fragments + [legalText]  >
+	</#if>
+
+	<#if hasValue(var240) && !isSelectedAnswer(var240, var241)>       
+		<#assign housingText = "Housing (specifically, " + getSelectMultiDisplayText(var240) + ")">
+		<#assign fragments = fragments + [housingText] >
+	</#if>
+	
+	<#if hasValue(var260) && !isSelectedAnswer(var260, var261)>       
+		<#assign financialInfoText = "Financial (specifically, " + getSelectMultiDisplayText(var260) + ")">
+		<#assign fragments = fragments + [financialInfoText] >
+	</#if>
+	
+	<#if var244?? && hasValue(var244) && var244.value == "true">
+		<#assign fragments = fragments + [var244.otherValue]>
+	</#if>
+
+	<#if (fragments?size > 0)>
+		The Veteran indicated that he/she would like information or assistance with the following: ${createSentence(fragments)}.${NBSP}
+	<#else>
+		The Veteran indicated that he/she would not like information or assistance with Healthcare, VA BEnefits, Social, Legal or Housing concerns.
+	</#if>
+   <#else>
+	 ${getNotCompletedText()}
+   </#if>
+${MODULE_END}
+'
+where template_id = 3;
