@@ -253,6 +253,12 @@ fieldset {
     margin:5px 0;
 }
 
+.editing,
+.editing th,
+.editing td {
+	border: 1px solid #ddd;
+}
+
 .app{
     cursor:move;
 }

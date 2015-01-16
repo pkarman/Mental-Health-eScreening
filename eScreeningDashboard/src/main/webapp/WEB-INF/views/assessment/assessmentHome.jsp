@@ -23,6 +23,7 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/assessmenttemplate.css">
         <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/assessment-measures-master.css">
         <link rel="stylesheet" type="text/css" href="resources/css/measuresWIP.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common.css">
         
         <link rel="stylesheet" type="text/css" href="resources/css/checkswitch.css">
          <link rel="stylesheet" type="text/css" href="resources/css/formButtons.css">
