@@ -49,8 +49,8 @@ Editors.controller('ModulesTemplatesController',
     };
     
     $scope.relatedObj = {
-        id : $stateParams.selectedSurveyId,
-        name : decodeURIComponent($stateParams.selectedSurveyName)
+        id : $stateParams.selectedSurveyId || $stateParams.relatedObjId,
+        name : decodeURIComponent($stateParams.selectedSurveyName || $stateParams.relatedObjName)
     };
 
     /* ---- Button Actions ---- */    
@@ -100,8 +100,8 @@ Editors.controller('ModulesTemplatesController',
     
     //set target object which is related to the templates we will be editing
     if(!Object.isDefined($stateParams) 
-            || !Object.isDefined($stateParams.selectedSurveyId) 
-            || !Object.isDefined($stateParams.selectedSurveyName)){
+            || !Object.isDefined($stateParams.selectedSurveyId || !$stateParams.relatedObjId)
+            || !Object.isDefined($stateParams.selectedSurveyName || !$stateParams.relatedObjName)){
             //redirect back to module list
         console.log("No module is selected. Redirecting to module list.");
         backToModule();
