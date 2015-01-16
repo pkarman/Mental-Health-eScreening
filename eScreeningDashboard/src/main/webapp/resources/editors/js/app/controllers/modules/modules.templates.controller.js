@@ -60,8 +60,8 @@ Editors.controller('ModulesTemplatesController',
         TemplateTypeService.setSelectedType(templateType);
         
         var editorParams =
-           {selectedSurveyId: $stateParams.selectedSurveyId,
-            selectedSurveyName: $stateParams.selectedSurveyName,
+           {selectedSurveyId: $stateParams.selectedSurveyId || $stateParams.relatedObjId,
+            selectedSurveyName: $stateParams.selectedSurveyName || $stateParams.relatedObjName,
             typeId: templateType.id,
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
            };
