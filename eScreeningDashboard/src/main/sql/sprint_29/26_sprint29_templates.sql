@@ -30,50 +30,18 @@ ${MODULE_START}
 		<#assign incompleteText = "All of the required information has not been provided.">
 
 		<#assign outputText = outputText + "${LINE_BREAK}*Explained confidentiality and the limits of confidentiality.${LINE_BREAK}">
-		<#assign part = "">
-		<#if (var1599.value)??>
-			<#assign v1 = var1599.value> <#-- PHQ9 Score -->  
-			<#if (v1 != "notset")> 
-				<#if (v1?number >= 10)>
-					<#assign part = "*Conducted CSRA and other necessary follow-ups (see note(s) with same date)${LINE_BREAK}
-									*Conducted CSRA, SBR and Safety Plan (see notes with same date)${LINE_BREAK}">
-				</#if>
-			</#if>
-		</#if>
-        
-		<#if (var1989.value)?? >
-			<#assign v2 = var1989.value> <#-- PTSD Score -->  
-			<#if (v2 != "notset")> 
-				<#if (v2?number >= 3)>
-					<#assign part = "*Conducted CSRA and other necessary follow-ups (see note(s) with same date)${LINE_BREAK}
-									*Conducted CSRA, SBR and Safety Plan (see notes with same date)${LINE_BREAK}">
-				</#if>
-			</#if>
-		</#if>
-		
-		<#if (var1929.value)??>
-			<#assign v3 = var1929.value> <#-- PCL Score -->  
-			<#if (v3 != "notset")> 
-				<#if (v3?number >= 50)>
-					<#assign part = "*Conducted CSRA and other necessary follow-ups (see note(s) with same date)${LINE_BREAK}
-									*Conducted CSRA, SBR and Safety Plan (see notes with same date)${LINE_BREAK}">
-				</#if>
-			</#if>
-		</#if>
 
-		<#assign outputText = outputText + part>
 		<#assign part = "">
 
 		<#assign outputText = outputText + "*Educated the Veteran on VA health care benefits and OEF/OIF care coordination services.${LINE_BREAK}
 												*OEF/OIF Case Management not indicated at this time.${LINE_BREAK}">
-
 		
 		<#if ((var202.value)?? && var202.value == "true") || ((var9060.value)?? && var9060.value == "true")>
 				<#assign outputText = outputText + "*Veteran endorsed mental health concerns, recommend outpatient consult to Psychiatry for MH.${LINE_BREAK}"> 
 		</#if>
 		
 		<#if ((var215.value)?? && var215.value == "true") || ((var9066.value)?? && var9066.value == "true")>
-				<#assign outputText = outputText + "*Veteran endorsed substance abuse concerns, recommend outpatient consult to SARRTP.${LINE_BREAK}"> 
+				<#assign outputText = outputText + "*Veteran endorsed substance abuse concerns, recommend outpatient consult to ADTP.${LINE_BREAK}"> 
 		</#if>
 		
 		<#if ((var212.value)?? && var212.value == "true") || ((var9063.value)?? && var9063.value == "true")>
@@ -92,7 +60,7 @@ ${MODULE_START}
 			<#assign v1 = var1229.value> <#-- AUDICT C Score -->  
 			<#if (v1 != "notset")> 
 				<#if (v1?number >= 4)>
-					<#assign part = "*Recommend SARRTP referral for alcohol abuse.${LINE_BREAK}">
+					<#assign part = "*Recommend ADTP referral for alcohol abuse.${LINE_BREAK}">
 				</#if>
 			</#if>
 		</#if>
@@ -105,7 +73,7 @@ ${MODULE_START}
 			<#assign v1 = var1010.value> <#-- DAST Score -->  
 			<#if (v1 != "notset")> 
 				<#if (v1?number >= 3)>
-					<#assign part = "*Recommend SARRTP referral for Substance Abuse.${LINE_BREAK}">
+					<#assign part = "*Recommend ADTP referral for Substance Abuse.${LINE_BREAK}">
 				</#if>
 			</#if>
 		</#if>
