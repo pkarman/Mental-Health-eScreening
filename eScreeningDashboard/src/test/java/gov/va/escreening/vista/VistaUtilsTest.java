@@ -3,6 +3,7 @@ package gov.va.escreening.vista;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,5 +33,19 @@ public class VistaUtilsTest {
         Date expectedDate = new SimpleDateFormat("yyyyMMdd").parse("20140422");
         Date actualDate = VistaUtils.convertVistaDate(vistaDateString);
         Assert.assertEquals(expectedDate, actualDate);
+    }
+
+    @Test
+    public void testStringParse() throws Exception{
+        String record="123;4656;678^3150124";
+        String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
+
+        Date vistaDate= VistaUtils.convertVistaDate(fields.length>1?fields[1]:null);
+        String clininicName= fields.length>2?fields[2]:null;
+        String status = fields.length>3?fields[3]:null;
+
+        int i=0;
+
+
     }
 }
