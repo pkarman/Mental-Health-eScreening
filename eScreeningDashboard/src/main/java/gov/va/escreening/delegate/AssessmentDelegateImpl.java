@@ -10,15 +10,17 @@ import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICA
 import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_SSN_LAST_FOUR;
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import static gov.va.escreening.constants.AssessmentConstants.SURVEY_IDENTIFICATION_ID;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
+import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.AssessmentContext;
-import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.domain.AssessmentStatusEnum;
+import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranDtoHelper;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.AssessmentResponse;
-import gov.va.escreening.dto.ae.CompletionResponse;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.Battery;
@@ -26,6 +28,8 @@ import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.repository.AssessmentStatusRepository;
 import gov.va.escreening.repository.BatteryRepository;
@@ -224,20 +228,46 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
-	public CompletionResponse getCompletionResponse(int batteryId) {
-		CompletionResponse response = new CompletionResponse();
-		Battery b = batteryRepo.findOne(batteryId);
-		
-		response.setCompletionText(b.getCompleteMessage());
-		return response;
+	public String getCompletionMessage() throws IllegalSystemStateException {
+		return getBatteryTempalte(TemplateType.ASSESS_CONCLUSION);
 	}
 
 	@Override
-	public String getWelcomeMessage()
-	{
-		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
-		return veteranAssessment.getBattery().getWelcomeMessage();
+	public String getWelcomeMessage() throws IllegalSystemStateException {
+		return getBatteryTempalte(TemplateType.ASSESS_WELCOME);
+	}
+	
+	private String getBatteryTempalte(TemplateType type) throws InvalidAssessmentContextException, EntityNotFoundException, IllegalSystemStateException{
+		Integer assessmentId = assessmentContext.getVeteranAssessmentId();
+		if(assessmentId == null){
+			throw new InvalidAssessmentContextException("No assessment found in context");
+		}
 		
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
+		if(veteranAssessment == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+		        .toUser("Could not find the assessment.")
+		        .toAdmin("Could not find the assessment with ID: " + assessmentId)
+		        .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+		        .throwIt();
+		}
+		
+		Battery battery = veteranAssessment.getBattery();
+		if(battery == null){
+			ErrorBuilder.throwing(IllegalSystemStateException.class)
+		        .toUser("No battery assigned to this assessment.  Please contact support.")
+		        .toAdmin("No battery is associated with assessment with ID: " + assessmentId + ". Please report this incident to development team.")
+		        .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+		        .throwIt();
+		}
+		
+		try{
+			return templateProcessorService.renderBatteryTemplate(battery, type, assessmentId, ViewType.HTML);
+		}
+		catch(EntityNotFoundException enf){
+			//if there is no defined template we will return an empty string
+			return "";
+		}
 	}
 	
 	@Override

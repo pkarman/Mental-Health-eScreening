@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="resources/editors/css/escreening/formButtons.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/jquery-ui-1.10.3.custom.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard_new.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/css/escreening/section_surveys.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/css/main.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
@@ -35,7 +36,8 @@
     <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
-    
+    <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+
     <!-- Utility classes and non-Angular, non-framework classes -->
     <script type="text/javascript" src="resources/editors/js/app/utils/HttpRejectionProcessor.js"></script>
 
@@ -124,6 +126,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageSectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
@@ -153,7 +156,7 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleTemplateListController.js"></script>
 
     <!-- Questions View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>
@@ -164,8 +167,11 @@
     
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateListController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
+    
+    <!--  Directives -->
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
@@ -178,7 +184,8 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <style type="text/css">
-	    @media (min-width:1024px) { 
+	    <!-- TODO: Need to move to external CSS file -->
+      @media (min-width:1024px) { 
 			.navbar > .container {
 			    text-align: center;
 			}
@@ -292,10 +299,10 @@
                          will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
                          its descendant states are activated. -->
                 <br> 
-                 <div class="row">
+                 <div class="row editorTopNav">
                  <div class="col-md-12  text-center">
                 <div class="button-group" ng-show="$state.current.name!=='home'">
-                	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.batteryselection">Manage Batteries</a>
+                	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>
                 	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules.list">Manage Module</a>
                 	<a ng-class="{active: $state.includes('sections')}" class="btn btn-default btnHeader btnHeaderRight" ui-sref="sections">Manage Sections</a>
                 </div>

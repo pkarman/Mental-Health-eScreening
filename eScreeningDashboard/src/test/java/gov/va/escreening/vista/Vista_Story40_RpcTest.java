@@ -228,6 +228,7 @@ public class Vista_Story40_RpcTest {
 		try {
 			RpcResponse vResp = connection.executeRPC(vReq);
 			String resp = vResp.getResults();
+			System.out.println(resp);
 		} finally {
 			connection.close();
 		}

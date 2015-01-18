@@ -18,6 +18,7 @@ public class SurveyDto implements Serializable {
     private String note;
     private SurveySectionDto surveySection;
     private List<BatteryDto> batteryList;
+    private Integer displayOrderForSection;
 
     public SurveyDto() {
     }
@@ -97,4 +98,11 @@ public class SurveyDto implements Serializable {
         this.batteryList = batteryList;
     }
 
+    public Integer getDisplayOrderForSection() {
+        return displayOrderForSection;
+    }
+
+    public void setDisplayOrderForSection(Integer displayOrderForSection) {
+        this.displayOrderForSection = displayOrderForSection;
+    }
 }

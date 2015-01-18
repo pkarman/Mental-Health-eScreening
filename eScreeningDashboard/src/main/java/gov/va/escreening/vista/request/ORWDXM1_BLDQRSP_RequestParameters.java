@@ -49,7 +49,7 @@ public class ORWDXM1_BLDQRSP_RequestParameters extends VistaLinkRequestParameter
 		super.checkRequestParameterLong("partLocationIEN", partLocationIEN, true);
 		super.checkRequestParameterLong("partProviderIEN", partProviderIEN, true);
 		super.checkRequestParameterBoolean("partInpatient", partInpatient, true);
-		super.checkRequestParameterString("partSex", partSex, true, Arrays.asList("M", "F"));
+		//super.checkRequestParameterString("partSex", partSex, true, Arrays.asList("M", "F"));
 		super.checkRequestParameterInteger("partAge", partAge, true);
 		super.checkRequestParameterLong("partEventIEN", partEventIEN, true, 0);
 		super.checkRequestParameterString("partEventType", partEventType, true, Arrays.asList("C"));
