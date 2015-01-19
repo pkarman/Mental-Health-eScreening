@@ -6,7 +6,7 @@ Editors.controller('ModulesTemplatesController',
          function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
     if(!Object.isDefined($rootScope.messageHandler)){
-        console.log("rootScope has been reset. Redirecting to Editors page.")
+        console.log("rootScope has been reset. Redirecting to Editors page.");
         $state.go("home");
     }
             
@@ -40,9 +40,8 @@ Editors.controller('ModulesTemplatesController',
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
             console.log("Redirecting back to editor for " + $scope.relatedObj.name);
-            console.log($stateParams);
 
-            ($scope.relatedObj.type == "battery") ? $state.go('batteries.detail', {batteryId: $stateParams.relatedObjId}) : $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
+            ($stateParams.relatedObjId) ? $state.go('batteries.detail', {batteryId: $stateParams.relatedObjId}) : $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
 
         }
         else{

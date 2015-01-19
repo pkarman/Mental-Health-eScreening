@@ -365,7 +365,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller: 'ModulesTemplatesController'
             })
 
-            .state('modules.templatesedit', {
+            .state('modules.templateeditor', {
                 url: "/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId",
                 templateUrl: 'resources/editors/views/templates/templateeditor.html',
                 data: {
