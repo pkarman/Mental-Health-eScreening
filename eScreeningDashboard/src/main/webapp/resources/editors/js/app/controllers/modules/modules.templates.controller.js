@@ -39,8 +39,11 @@ Editors.controller('ModulesTemplatesController',
     
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
-            console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
-            $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
+            console.log("Redirecting back to editor for " + $scope.relatedObj.name);
+            console.log($stateParams);
+
+            ($scope.relatedObj.type == "battery") ? $state.go('batteries.detail', {batteryId: $stateParams.relatedObjId}) : $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
+
         }
         else{
             console.log('No module selected. Redirecting back to module list');
@@ -58,15 +61,13 @@ Editors.controller('ModulesTemplatesController',
         console.log('Opening Template Editor to edit template of type: ' + templateType.name);
         
         TemplateTypeService.setSelectedType(templateType);
-        
-        var editorParams =
-           {selectedSurveyId: $stateParams.selectedSurveyId || $stateParams.relatedObjId,
-            selectedSurveyName: $stateParams.selectedSurveyName || $stateParams.relatedObjName,
+
+        var editorParams = angular.extend({}, $stateParams, {
             typeId: templateType.id,
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
-           };
-        
-        $state.go('modules.templatesedit', editorParams);
+        });
+
+        $state.go('^.templateeditor', editorParams);
     };
 
     $scope.deleteTemplate = function(templateType){

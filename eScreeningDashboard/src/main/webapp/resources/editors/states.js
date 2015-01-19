@@ -154,9 +154,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 })
                 
                 .state('batteries.templateeditor', {
-                    url: "/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId",
+                    url: '/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId',
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
-                    controller: "templateEditorController",
+                    controller: 'ModulesTemplatesEditController',
                     resolve: {
                         assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
                             return AssessmentVariableService;
