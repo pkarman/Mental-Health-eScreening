@@ -11,7 +11,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     $scope.variableHash = {};
     $scope.debug = false;
     $scope.logId=0;
-
+    $scope.alerts = [];
     $scope.relatedObj = relatedObj;
 
     var queryObj;
@@ -36,8 +36,9 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
         $scope.template.saveFor($scope.relatedObj).then(function (response) {
             $scope.done(true).then(function(){
-                $rootScope.addMessage(
-                  $rootScope.createSuccessSaveMessage("All template changes have been saved."));
+                // Reset alert messages
+                $scope.alerts = [];
+                $scope.alerts.push({type: 'success', msg: 'All template changes have been saved.'});
             })
         });
     };

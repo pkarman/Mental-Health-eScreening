@@ -5,6 +5,8 @@ Editors.controller('ModulesTemplatesController',
         ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'TemplateTypeService', 'templateTypes',
          function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
+    $scope.alerts = [];
+
     if(!Object.isDefined($rootScope.messageHandler)){
         console.log("rootScope has been reset. Redirecting to Editors page.");
         $state.go("home");
@@ -76,7 +78,9 @@ Editors.controller('ModulesTemplatesController',
         TemplateService.remove(templateType.templateId).then(function(template){
             console.log("Successfully deleted template type: " + templateType.name + " which has ID: " + templateType.templateId);
 
-            $rootScope.addMessage($rootScope.createSuccessDeleteMessage(templateType.name + " template was successfully deleted."));
+            // Reset the alerts
+            $scope.alerts = [];
+            $scope.alerts.push({type: 'success', msg: templateType.name + ' template was successfully deleted.'});
             
             delete(templateType.templateId);
         });
