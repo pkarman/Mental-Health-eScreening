@@ -158,9 +158,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
                     controller: 'ModulesTemplatesEditController',
                     resolve: {
-                        assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
-                            return AssessmentVariableService;
-                        }],
                         template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
                             function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
                                 var deferred = $q.defer();
