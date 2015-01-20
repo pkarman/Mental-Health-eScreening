@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
-	angular.module('Editors').controller('ModulesDetailTableController', ['$scope', '$modal', 'Question', function($scope, $modal, Question) {
+	angular.module('Editors').controller('ModulesDetailTableController', ['$scope', '$modal', 'MeasureService', function($scope, $modal, MeasureService) {
 
 		$scope.sortableQuestionOptions = {
 			'ui-floating': false,
@@ -28,7 +28,7 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || Question.extend({});
+					$scope.question = question || MeasureService.one();
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
