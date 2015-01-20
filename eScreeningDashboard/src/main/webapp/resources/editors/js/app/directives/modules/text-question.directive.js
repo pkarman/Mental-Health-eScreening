@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	angular.module('Editors').directive('textQuestion', [function() {
+	angular.module('Editors').directive('textQuestion', ['MeasureService', function(MeasureService) {
 
 		return {
 			restrict: 'EA',
@@ -12,67 +12,91 @@
 			link: function(scope) {
 
 				var validations = [
-					{ name: 'exactLength', displayName: 'Exact Length', value: undefined, type: 'common' },
-					{ name: 'minLength', displayName: 'Min Length', value: undefined, type: 'common' },
-					{ name: 'maxLength', displayName: 'Max Length', value: undefined, type: 'common' },
-					{ name: 'minValue', displayName: 'Min Value', value: undefined },
-					{ name: 'maxValue', displayName: 'Max Value', value: undefined }
+					{ name: 'exactLength', displayName: 'Exact Length', value: 0, type: 'common' },
+					{ name: 'minLength', displayName: 'Min Length', value: 0, type: 'common' },
+					{ name: 'maxLength', displayName: 'Max Length', value: 0, type: 'common' },
+					{ name: 'minValue', displayName: 'Min Value', value: 0 },
+					{ name: 'maxValue', displayName: 'Max Value', value: 0 }
 				];
 
-				scope.validations;
+				// Set all the validations on the scope (to be filtered when appropriate)
+				scope.validations = validations;
+
+				scope.validations.show = false;
 
 				scope.textFormatOptions = [
-					{id: null, code: null, name: "dataType", value: "email", description: null, dataType: null, createdDate: null},
-					{id: null, code: null, name: "dataType", value: "date", description: null, dataType: null, createdDate: null},
-					{id: null, code: null, name: "dataType", value: "number", description: null, dataType: null, createdDate: null}
+					{id: undefined, name: "dataType", value: "unformatted"},
+					{id: undefined,  name: "dataType", value: "email" },
+					{id: undefined,  name: "dataType", value: "date" },
+					{id: undefined, name: "dataType", value: "number" }
 				];
 
-				scope.$watch('question.textFormat.value', function(val) {
-					// Filter validations if text format is unformatted (i.e. undefined)
-					scope.validations = _.filter(validations, function(validation) {
-						return (!val) ? validation.type === 'common' : true;
-					});
-					if (scope.question) {
+				scope.$watch('question', function(question) {
+					// Initialize after second digest when question is present
+					if (question) {
 						initializeValidations();
 					}
 				});
 
 				// Update the validations on the question when changed in the UI
 				scope.updateValidations = function updateValidations() {
-					// Reset the validations array to only include the textFormat validation
-					scope.question.validations = [scope.question.textFormat];
-					if (!scope.question.textFormat || scope.question.textFormat.value === 'number') {
-						// Rebuild the validations array with selected validations
-						angular.forEach(scope.validations, function (validation) {
+					// Reset the question validations
+					scope.question.validations = [];
+
+					// Initialize the array with the textFormat
+					if(scope.textFormat && scope.textFormat.value !== 'unformatted') {
+						scope.question.validations.push(scope.textFormat);
+					}
+
+					// Filter validations if text format is unformatted
+					scope.validations = _.filter(validations, function(validation) {
+						return (scope.textFormat && scope.textFormat.value === 'unformatted') ? validation.type === 'common' : true;
+					});
+
+					// Maintain validations for number and unfromatted questions
+					if (scope.textFormat.value === 'number' || scope.textFormat.value === 'unformatted') {
+						// Show the validations
+						scope.validations.show = true;
+						_.each(scope.validations, function(validation) {
 							if (validation.checked) {
 								scope.question.validations.push(validation);
 							}
-						});
+						})
+					} else {
+						// Hide the validations
+						scope.validations.show = false;
 					}
 				};
 
 				function initializeValidations() {
-					// Initialize the numberValidations array with the question validations from the server
-					angular.forEach(scope.validations, function(validation, index) {
-						var match = _.find(scope.question.validations, function(questionValidation) {
-							console.log('val name', validation.name);
-							console.log('ques val name', questionValidation.name);
-							return validation.name === questionValidation.name;
+					// Initialize the validations array with the question validations from the server
+					_.each(scope.question.validations, function(questionValidation) {
+						_.each(scope.validations, function(scopeValidation) {
+							if (questionValidation.name === scopeValidation.name) {
+								// Merge the values from the server with the default validations
+								_.merge(scopeValidation, questionValidation);
+								// Mark validation as checked
+								scopeValidation.checked = true;
+								// Cast value to number
+								scopeValidation.value = +questionValidation.value;
+							}
 						});
-						if (match) {
-							_.merge(scope.validations[index], match);
-							scope.validations[index].checked = true;
-						}
-						// Cast value to number
-						scope.validations[index].value = +scope.validations[index].value;
 					});
 
 					// Populate the question's textFormat value with the selected text format option
-					scope.question.textFormat = _.find(scope.question.validations, function(questionValidation) {
-						return _.find(scope.textFormatOptions, function(validation){
-							return validation.value === questionValidation.value;
+					scope.textFormat = _.find(scope.question.validations, function(questionValidation) {
+						return _.find(scope.textFormatOptions, function(textFormatOption){
+							return textFormatOption.value === questionValidation.value;
 						});
 					});
+
+					// Set the unformatted option from the textFormatOptions array if the textFormat is undefined
+					if (!scope.textFormat) {
+						scope.textFormat = scope.textFormatOptions[0];
+					}
+
+					scope.updateValidations();
+
 				}
 
 			}

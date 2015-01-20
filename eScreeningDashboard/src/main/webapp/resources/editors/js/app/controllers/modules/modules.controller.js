@@ -104,7 +104,7 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
 
     $scope.addModule = function(){
         $scope.survey = SurveyService.one();
-        $state.go('modules.detail.list');
+        $state.go('modules.detail');
     };
 
     $scope.goToAddEdit = function(){
