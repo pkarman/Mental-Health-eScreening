@@ -28,6 +28,10 @@ public class AbstractHibernateRepository<T extends Serializable> implements Repo
 	}
 
 	public final List<T> findAll() {
+		return _findAll();
+	}
+
+	protected List<T> _findAll() {
 		return entityManager.createQuery("from " + clazz.getName()).getResultList();
 	}
 

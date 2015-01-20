@@ -12,4 +12,5 @@
 	<import resource="data-config.xml" />
 	<import resource="spring-security.xml" />
 	<import resource="business-config.xml" />
+	<import resource="spring-views.xml" />
 </beans>

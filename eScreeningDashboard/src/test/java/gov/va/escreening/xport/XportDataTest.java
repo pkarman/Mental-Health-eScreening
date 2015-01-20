@@ -1,9 +1,11 @@
 package gov.va.escreening.xport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Table;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
@@ -11,43 +13,17 @@ import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.controller.dashboard.ExportDataRestController;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
-import gov.va.escreening.entity.ExportLog;
-import gov.va.escreening.entity.ExportLogData;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.form.ExportDataFormBean;
-import gov.va.escreening.repository.ExportLogDataRepository;
-import gov.va.escreening.repository.ExportLogRepository;
-import gov.va.escreening.repository.MeasureAnswerRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.VeteranAssessmentRepository;
+import gov.va.escreening.repository.*;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -60,11 +36,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static org.junit.Assert.*;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -72,6 +52,14 @@ import com.google.gson.JsonSyntaxException;
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 public class XportDataTest {
 	public static int totalRuns = 1;
+
+	@Resource(type = DataDictionaryService.class)
+	private DataDictionaryService dds;
+
+	@Resource(type = ExportLogRepository.class)
+	private ExportLogRepository elr;
+
+
 
 	class AssesmentTestData {
 		String testName;
@@ -165,9 +153,6 @@ public class XportDataTest {
 
 	@Resource(name = "exportDataService")
 	ExportDataService exportDataService;
-
-	@Resource(type = ExportLogDataRepository.class)
-	ExportLogDataRepository exportLogDataRepository;
 
 	@Resource(type = ExportLogRepository.class)
 	ExportLogRepository exportLogRepository;
@@ -455,7 +440,8 @@ public class XportDataTest {
 	private boolean exportDataVerifierIdentified(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 1);
+		Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd,va, 1);
 
 		return exportDataVerifierResult(atd, exportedData, false);
 	}
@@ -463,7 +449,8 @@ public class XportDataTest {
 	private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
 		AssesmentTestData atd = (AssesmentTestData) testTuple[0];
 		VeteranAssessment va = (VeteranAssessment) testTuple[1];
-		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 2);
+		Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+		List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd,va, 2);
 
 		atd.removePPIInfoExportNames();
 
@@ -680,7 +667,8 @@ public class XportDataTest {
 	private AssessmentDataExport addExportLogOfVet18() {
 		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
 		edfb.setExportedByUserId(1);
-		return exportDataService.getAssessmentDataExport(edfb);
+		Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+		return exportDataService.getAssessmentDataExport(dd,edfb);
 	}
 
 	private AssessmentDataExport addExportLogOfProgramOOO() {
@@ -689,27 +677,8 @@ public class XportDataTest {
 		eUser.setProgramIdList(new ArrayList(Arrays.asList(1, 2, 3, 4, 5)));
 		ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
 		edfb.setExportedByUserId(5);
-		return exportDataService.getAssessmentDataExport(edfb);
-	}
-
-	@Rollback(value = false)
-	@Test
-	public void testVeteran18ForExportData() throws Exception {
-		AssessmentDataExport adeOriginal = addExportLogOfVet18();
-		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
-		// and make sure that adeOriginal is equal to adeCopy
-		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
-		assertEquals(adeCopy.getData(), adeOriginal.getData());
-	}
-
-	@Rollback(value = false)
-	@Test
-	public void testProgramOOOForExportData() throws Exception {
-		AssessmentDataExport adeOriginal = addExportLogOfProgramOOO();
-		// now we will go and get the export log from data base and will construct another AssessmentDataExport adeCopy
-		// and make sure that adeOriginal is equal to adeCopy
-		AssessmentDataExport adeCopy = exportDataService.downloadExportData(adeOriginal.getFilterOptions().getCreatedByUserId(), adeOriginal.getExportLogId(), "copy download");
-		assertEquals(adeCopy.getData(), adeOriginal.getData());
+		Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+		return exportDataService.getAssessmentDataExport(dd,edfb);
 	}
 
 	// @Rollback(value = false)
@@ -736,6 +705,22 @@ public class XportDataTest {
 		assertTrue(mixTemplateTxtReview(testFilesFor(detail), detail));
 	}
 
+	@Test
+	public void testLastSnapTopDate() throws Exception {
+		Date d=elr.findLastSnapshotDate();
+		Assert.assertNotNull(d);
+	}
+	@Test
+	public void testExportLogs() throws Exception {
+		List<ExportLog> elList=elr.findAll();
+		Assert.assertNotNull(elList);
+	}
+	@Test
+	public void testExportLogsForDays() throws Exception {
+		List<ExportLog> elList=elr.findAllForDays(1);
+		Assert.assertNotNull(elList);
+	}
+
 	// @Rollback(value = false)
 	@Test
 	public void mix__DETAIL__TemplatesCorrectnessWith__HTML() throws Exception {
@@ -745,18 +730,6 @@ public class XportDataTest {
 	@Test
 	public void mix__DETAIL__VeteranSummaryTemplatesCorrectness() throws Exception {
 		assertTrue(mixVeteranSummaryTemplateReview(testFilesFor(detail), detail));
-	}
-
-	@Rollback(value = false)
-	@Test
-	public void addDataToExportLog() {
-		List<ExportLog> exportLog = exportLogRepository.findAll();
-		if (!exportLog.isEmpty()) {
-			ExportLog el = exportLog.iterator().next();
-			el.addExportLogData(new ExportLogData("The Quick Brown Fox @ " + new DateTime().getMillisOfDay()));
-
-			exportLogRepository.update(el);
-		}
 	}
 
 	@Test
