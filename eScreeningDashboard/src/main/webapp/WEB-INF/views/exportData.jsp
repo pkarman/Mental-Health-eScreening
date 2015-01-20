@@ -6,11 +6,11 @@
 <html ng-app="exportDataFormApp">
 <head>
   <title>Export Data</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
-  <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" /> 
+  <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon"> 
   
   <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
@@ -21,7 +21,7 @@
   
   <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
   <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
-  <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
+  <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css">
   <link href="resources/css/userManagement.css" rel="stylesheet" type="text/css">
   <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css">
   <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
@@ -29,7 +29,7 @@
   <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
   
   <!-- Bootstrap -->
-  <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css">
   <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
 	
   <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
