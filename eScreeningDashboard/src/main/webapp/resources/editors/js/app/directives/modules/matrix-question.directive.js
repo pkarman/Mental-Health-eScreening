@@ -19,6 +19,7 @@
 				];
 
 				scope.sortableAnswerOptions = {
+					handle: '.glyphicon-align-justify',
 					'ui-floating': false,
 					cancel: '.unsortable',
 					items: 'li:not(.unsortable)',

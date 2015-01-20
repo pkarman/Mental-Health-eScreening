@@ -3,6 +3,7 @@
 	angular.module('Editors').controller('ModulesDetailTableController', ['$scope', '$modal', 'MeasureService', function($scope, $modal, MeasureService) {
 
 		$scope.sortableQuestionOptions = {
+			handle: '.glyphicon-align-justify',
 			'ui-floating': false,
 			cancel: '.unsortable',
 			items: 'li:not(.unsortable)',

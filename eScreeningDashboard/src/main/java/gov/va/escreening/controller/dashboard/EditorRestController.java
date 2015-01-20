@@ -238,10 +238,7 @@ public class EditorRestController {
         // Call service class here.
         survey = editorsViewDelegate.createSurvey(survey);
 
-        Map surveyMap = new HashMap();
-        surveyMap.put("survey", survey);
-
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyMap); // surveyInfoList
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded), survey); // surveyInfoList
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

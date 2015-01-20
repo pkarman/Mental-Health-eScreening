@@ -48,7 +48,9 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String mhaTestName;
     @Column(name = "mha_result_group_ien")
     private String mhaResultGroupIen;
+
     @Column(name = "display_order_for_section")
+    @Basic(optional = false)
     private Integer displayOrderForSection;
 
     @Column(name = "vista_title")

@@ -47,7 +47,7 @@
         };
 
         $scope.addPage = function addPage() {
-            var page = SurveyPageService.one();
+            var page = SurveyService.one($scope.survey.id).one('pages');
             page.pageNumber = $scope.surveyPages.length + 1;
             $scope.surveyPages.push(page);
         };
@@ -122,21 +122,21 @@
 
             $scope.survey.save().then(function(survey) {
                 $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+
+                _.each($scope.surveyPages, function(page) {
+                    page.parentResource.id = survey.id;
+                    // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
+                    _.each(page.questions, function(question) {
+                        delete question.selected;
+                    });
+
+                    page.save().then(function(page) {}, function(response) {
+                        $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
+                    });
+                });
+
             }, function(response) {
                 $scope.alerts.push({type: 'danger', msg: 'There was an error saving the module.'});
-            });
-
-            _.each($scope.surveyPages, function(page) {
-                // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
-                _.each(page.questions, function(question) {
-                    delete question.selected;
-                });
-
-                page.save().then(function(page) {
-
-                }, function(response) {
-                    $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
-                });
             });
 
             $scope.resetForm(false, {

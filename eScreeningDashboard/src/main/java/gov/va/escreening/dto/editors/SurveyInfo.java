@@ -27,7 +27,7 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private String mhaTestName;
     private String mhaResultGroupIen;
     private Boolean clinicalReminder;
-    private Integer displayOrderForSection;
+    private Integer displayOrderForSection=1;
 	private Date dateCreated;
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
