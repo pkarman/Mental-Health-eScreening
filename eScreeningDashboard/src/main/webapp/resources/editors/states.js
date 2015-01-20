@@ -226,7 +226,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 },
                 resolve: {
                     surveys: ['SurveyService', function(SurveyService) {
-
                         return SurveyService.getList();
                     }]
                 },

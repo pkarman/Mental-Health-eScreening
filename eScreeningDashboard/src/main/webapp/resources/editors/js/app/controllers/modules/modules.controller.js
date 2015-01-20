@@ -81,30 +81,14 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
         }
     };
 
-    $scope.goToQuestions = function(selectedPage) {
-        var softReset = false,
-            state = {
-                name: "modules.detail.list",
-                params: {questionId: -1},
-                doTransition: true
-            };
-        $scope.setSelectedPage(selectedPage);
-        $scope.resetForm(false, state);
-    };
-
-    $scope.editQuestion = function(){
-        $scope.goToQuestions();
-    };
-
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
         $scope.survey = survey;
         $state.go('modules.detail', {surveyId: survey.id});
     };
 
-    $scope.addModule = function(){
-        $scope.survey = SurveyService.one();
-        $state.go('modules.detail');
+    $scope.deleteModule = function deleteModule(index) {
+        $scope.surveys[index].remove();
     };
 
     $scope.goToAddEdit = function(){
@@ -113,14 +97,6 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
 
     $scope.cancel = function(){
         $state.go('home');
-    };
-
-    $scope.goToSelection = function(){
-        $state.go('modules');
-    };
-
-    $scope.goToFormulaExpression = function(){
-        $state.go('modules.detail.expressioneditor');
     };
     
     $scope.editTemplates = function(surveyId, surveyName){
