@@ -26,11 +26,6 @@ function evaluateAndBuildTypes(formHTML /*HTMLElement with children*/)/* returns
         
         //get row index
         var tableEntry = formBuilder.tableEntryFor(currLI);
-        var rowIndex = null;
-        if(tableEntry.size() != 0){
-            //this looks strange but when the Wave tool added elements into the tableEntry container the index was breaking
-            var rowIndex = tableEntry.parent().children(".tableQuestionEntry").index(tableEntry);
-        }
         
         switch (questionType){
             case "freeText":
@@ -50,8 +45,7 @@ function evaluateAndBuildTypes(formHTML /*HTMLElement with children*/)/* returns
                 break;
             
             case "selectDropdown":
-                var questionId = formBuilder.createQuestionId( measId, rowIndex, "ILS");
-                var intSUL = $(currLI).find('select[id=' + questionId +']');
+                var intSUL = $(currLI).find('select[id$=_' + measId +']');
                 measureObj.answers = grabAnswersFromDropdown($(intSUL));
                 break;
             
@@ -162,7 +156,7 @@ function grabAnswersFromDropdown(input) {
 	});
 	
 	var selected = input.find("option:selected");
-	if(selected.val() != ""){
+	if(selected.val() != null && selected.val() != ""){
 		var selectedAnswerId = formBuilder.getAnswerId(selected.attr("id"));
 		
 		if(selected.attr("is_other") == "true") {
