@@ -28,8 +28,8 @@
 				<div class="form-group">
 					<label for="selectTextFormat"> Text Format </label>
 					<select id="selectTextFormat" name="selectTextFormat" class="form-control"
-							ng-model="question.textFormat"
-							ng-options="textFormat.value for textFormat in textFormatOptions"
+							ng-model="textFormat"
+							ng-options="textFormat.value for textFormat in textFormatOptions track by textFormat.value"
 							ng-change="updateValidations()"
 							ng-disabled="vistaDisable"
 							required>
@@ -43,10 +43,10 @@
 				</div>
 			</div>
 			<div class="col-md-6">
-				<div id="form-group validation-container" ng-show="question.textFormat.value === 'number'">
+				<div id="form-group validation-container" ng-show="validations.show">
 					<h4> Validations </h4>
 
-					<div class="form-group" ng-repeat="validation in numberValidations">
+					<div class="form-group" ng-repeat="validation in validations">
 						<label for="{{validation.name}}" class="form-label" ng-bind="validation.displayName"></label>
 
 						<div class="input-group">

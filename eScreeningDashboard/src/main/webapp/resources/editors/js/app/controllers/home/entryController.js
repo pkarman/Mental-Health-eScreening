@@ -5,7 +5,7 @@
         $scope.entryApp = '/escreeningdashboard/';
 
         $scope.goToModuleNew = function () {
-            $state.go('modules.detail', {surveyId: 0});
+            $state.go('modules.detail');
         };
 
         $scope.goToModuleEdit = function () {

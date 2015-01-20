@@ -39,8 +39,8 @@
                   <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="updateChildQuestion(question);"></span>
                  </span>
                  <span class="glyphicon glyphicon-remove-circle cursor_pointer"
-                                                      style="margin-left: 10px; color:red;"
-                                                      ng-click="deleteChildQuestion($index);"></span>
+                         style="margin-left: 10px; color:red;"
+                         ng-really-click="deleteChildQuestion($index)" ng-really-message="Are you sure you want to delete this question?"></span>
 
               </div>
               <div class="clearfix"></div>

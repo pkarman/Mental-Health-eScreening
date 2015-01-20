@@ -76,7 +76,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                         BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
                             deferred.resolve(existingBatteries);
                         },function(responseError){
-                            $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                            $rootScope.alerts = [];
+                            $rootScope.alerts.push({type: 'danger', msg: responseError.getMessage()});
                             console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
                             deferred.reject(responseError.getMessage());
                         });
@@ -107,7 +108,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                             BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function (existingBattery) {
                                 deferred.resolve(existingBattery);
                             }, function (responseError) {
-                                $rootScope.addMessage($rootScope.createErrorMessage(responseError.getMessage()));
+                                $rootScope.alerts = [];
+                                $rootScope.alerts.push({type: 'danger', msg: responseError.getMessage()});
                                 deferred.reject(responseError.getMessage());
                             });
                         } else {
@@ -154,13 +156,10 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 })
                 
                 .state('batteries.templateeditor', {
-                    url: "/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId",
+                    url: '/:relatedObjId/:relatedObjName/type/:typeId/template/:templateId',
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
-                    controller: "templateEditorController",
+                    controller: 'ModulesTemplatesEditController',
                     resolve: {
-                        assessmentVariableService: ['AssessmentVariableService', function (AssessmentVariableService) {
-                            return AssessmentVariableService;
-                        }],
                         template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService',
                             function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
                                 var deferred = $q.defer();
@@ -176,6 +175,10 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                         
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
+                                        }, function(response) {
+                                            console.log('te response', response);
+                                            $rootScope.alerts = [];
+                                            $rootScope.alerts.push({type: 'danger', msg: response.data.errorMessages[0].description || "There was an error"});
                                         });
                                     }
                                     else{
@@ -223,7 +226,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 },
                 resolve: {
                     surveys: ['SurveyService', function(SurveyService) {
-
                         return SurveyService.getList();
                     }]
                 },
@@ -237,8 +239,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     displayName: 'Modules-Editor: Add/Edit'
                 },
                 resolve: {
-                    surveyPages: ['$stateParams', 'SurveyService', function($stateParams, SurveyService) {
-                        return SurveyService.one($stateParams.surveyId).getList('pages');
+                    survey: ['$stateParams', 'SurveyService', 'surveys', function($stateParams, SurveyService, surveys) {
+                        return ($stateParams.surveyId) ? surveys.get($stateParams.surveyId) : SurveyService.one();
                     }],
                     surveySections: ['ManageSectionService',  function(ManageSectionService) {
                         return ManageSectionService.getList();
@@ -274,16 +276,17 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 params: {'questionId': {}},
                 abstract: true,
                 template: '<div ui-view></div>',
-                controller: ['$scope', '$stateParams', 'MeasureService', 'Question', function($scope, $stateParams, MeasureService, Question) {
+                controller: ['$scope', '$stateParams', 'MeasureService', function($scope, $stateParams, MeasureService) {
 
                     if (!$scope.question) {
+
                         if ($stateParams.questionId) {
                             // Look up the selected question by the id passed into the parameter
                             MeasureService.one($stateParams.questionId).get().then(function (question) {
                                 $scope.question = question;
                             });
                         } else {
-                            $scope.question = Question.extend({});
+                            $scope.question = MeasureService.one();
                         }
                     }
                 }]
@@ -368,7 +371,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller: 'ModulesTemplatesController'
             })
 
-            .state('modules.templatesedit', {
+            .state('modules.templateeditor', {
                 url: "/:selectedSurveyId/:selectedSurveyName/type/:typeId/template/:templateId",
                 templateUrl: 'resources/editors/views/templates/templateeditor.html',
                 data: {
@@ -376,7 +379,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 },
                 controller: "ModulesTemplatesEditController",
                 resolve: {
-                    template: ['$stateParams', '$q', 'TemplateService', 'TemplateTypeService', function ($stateParams, $q, TemplateService, TemplateTypeService) {
+                    template: ['$rootScope', '$stateParams', '$q', 'TemplateService', 'TemplateTypeService', function ($rootScope, $stateParams, $q, TemplateService, TemplateTypeService) {
                         var deferred = $q.defer();
                         if (Object.isDefined($stateParams)
                             && Object.isDefined($stateParams.selectedSurveyId)
@@ -389,7 +392,12 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 console.log("Getting template from server with ID: " + $stateParams.templateId);
 
                                 TemplateService.get($stateParams.templateId).then(function (template) {
+                                    console.log(template);
                                     deferred.resolve(template);
+                                }, function(response) {
+                                    console.log('te response', response);
+                                    $rootScope.alerts = [];
+                                    $rootScope.alerts.push({type: 'danger', msg: response.data.errorMessages[0].description || "There was an error"});
                                 });
                             }
                             else{

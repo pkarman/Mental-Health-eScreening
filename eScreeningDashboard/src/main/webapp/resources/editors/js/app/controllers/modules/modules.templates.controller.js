@@ -5,8 +5,10 @@ Editors.controller('ModulesTemplatesController',
         ['$rootScope', '$scope', '$state', '$stateParams', '$filter', '$timeout', 'ngTableParams', 'TemplateService', 'TemplateTypeService', 'templateTypes',
          function($rootScope, $scope, $state, $stateParams, $filter, $timeout, ngTableParams, TemplateService, TemplateTypeService, templateTypes) {
 
+    $scope.alerts = [];
+
     if(!Object.isDefined($rootScope.messageHandler)){
-        console.log("rootScope has been reset. Redirecting to Editors page.")
+        console.log("rootScope has been reset. Redirecting to Editors page.");
         $state.go("home");
     }
             
@@ -39,8 +41,10 @@ Editors.controller('ModulesTemplatesController',
     
     var backToModule = function(){
         if(Object.isDefined($scope.relatedObj)){
-            console.log("Redirecting back to editor for module " + $scope.relatedObj.name);
-            $state.go('modules.detail', $stateParams);
+            console.log("Redirecting back to editor for " + $scope.relatedObj.name);
+
+            ($stateParams.relatedObjId) ? $state.go('batteries.detail', {batteryId: $stateParams.relatedObjId}) : $state.go('modules.detail', {surveyId: $scope.relatedObj.id} );
+
         }
         else{
             console.log('No module selected. Redirecting back to module list');
@@ -49,8 +53,8 @@ Editors.controller('ModulesTemplatesController',
     };
     
     $scope.relatedObj = {
-        id : $stateParams.selectedSurveyId,
-        name : decodeURIComponent($stateParams.selectedSurveyName)
+        id : $stateParams.selectedSurveyId || $stateParams.relatedObjId,
+        name : decodeURIComponent($stateParams.selectedSurveyName || $stateParams.relatedObjName)
     };
 
     /* ---- Button Actions ---- */    
@@ -58,15 +62,13 @@ Editors.controller('ModulesTemplatesController',
         console.log('Opening Template Editor to edit template of type: ' + templateType.name);
         
         TemplateTypeService.setSelectedType(templateType);
-        
-        var editorParams =
-           {selectedSurveyId: $stateParams.selectedSurveyId,
-            selectedSurveyName: $stateParams.selectedSurveyName,
+
+        var editorParams = angular.extend({}, $stateParams, {
             typeId: templateType.id,
             templateId: Object.isDefined(templateType.templateId) ? templateType.templateId : ""
-           };
-        
-        $state.go('modules.templatesedit', editorParams);
+        });
+
+        $state.go('^.templateeditor', editorParams);
     };
 
     $scope.deleteTemplate = function(templateType){
@@ -76,7 +78,9 @@ Editors.controller('ModulesTemplatesController',
         TemplateService.remove(templateType.templateId).then(function(template){
             console.log("Successfully deleted template type: " + templateType.name + " which has ID: " + templateType.templateId);
 
-            $rootScope.addMessage($rootScope.createSuccessDeleteMessage(templateType.name + " template was successfully deleted."));
+            // Reset the alerts
+            $scope.alerts = [];
+            $scope.alerts.push({type: 'success', msg: templateType.name + ' template was successfully deleted.'});
             
             delete(templateType.templateId);
         });
@@ -100,8 +104,8 @@ Editors.controller('ModulesTemplatesController',
     
     //set target object which is related to the templates we will be editing
     if(!Object.isDefined($stateParams) 
-            || !Object.isDefined($stateParams.selectedSurveyId) 
-            || !Object.isDefined($stateParams.selectedSurveyName)){
+            || !Object.isDefined($stateParams.selectedSurveyId || !$stateParams.relatedObjId)
+            || !Object.isDefined($stateParams.selectedSurveyName || !$stateParams.relatedObjName)){
             //redirect back to module list
         console.log("No module is selected. Redirecting to module list.");
         backToModule();

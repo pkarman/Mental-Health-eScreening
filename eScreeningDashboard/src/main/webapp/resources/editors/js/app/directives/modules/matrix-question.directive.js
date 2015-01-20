@@ -43,27 +43,28 @@
 				};
 
 				scope.$watch('question', function(question) {
-					if (question && scope.question.childQuestions[0]) {
+					if (question && scope.question.childQuestions) {
 						// Create question agnostic answers
 						_.each(scope.question.childQuestions[0].answers, function(answer) {
-							scope.answers.push(Answer.create({text: answer.text, exportName: answer.exportName.split('_')[1]}));
+							scope.answers.push({text: answer.text, exportName: answer.exportName.split('_')[1]});
 						});
 					}
+
 				});
 
-				/*
-				if (scope.question && scope.question.childQuestions) {
-					_.each(scope.question.childQuestions, function(question) {
-						_.each(question.answers, function(answer) {
-							mergeByProperty(answer, answers, 'text');
-							answer.exportName = question.variableName + '_' + answer.exportName;
-						})
-					})
-				}
-				*/
+				scope.$watch('answers', function(answers) {
+					if (answers.length) {
+						_.each(scope.question.childQuestions, function(question) {
+							mergeByProperty(question.answers, scope.answers, 'text');
+							_.each(question.answers, function(answer) {
+								answer.exportName = question.variableName + '_' + answer.exportName;
+							});
+						});
+					}
+				}, true);
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push(Answer.create());
+					scope.answers.push({text:'Enter Answer Test', exportName: 0});
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -84,7 +85,8 @@
 							return arr1obj[prop] === arr2obj[prop];
 						});
 
-						//If the object already exist extend it with the new values from arr2, otherwise just add the new object to arr1
+						//If the object already exist extend it with the new values from arr2
+						// otherwise just add the new object to arr1
 						arr1obj ? _.extend(arr1obj, arr2obj) : arr1.push(arr2obj);
 					});
 				}

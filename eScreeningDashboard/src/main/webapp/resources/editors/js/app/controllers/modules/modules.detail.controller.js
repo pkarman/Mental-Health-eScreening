@@ -1,15 +1,18 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'surveys', 'SurveyPage', 'Question', 'surveyPages', 'surveySections', function($scope, $state, $stateParams, surveys, SurveyPage, Question, surveyPages, surveySections){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'MeasureService', function($scope, $state, survey, surveySections, SurveyService, SurveyPageService, MeasureService){
 
-        $scope.surveyPages = surveyPages;
+        $scope.survey = survey;
+        $scope.surveyPages = [];
         $scope.surveySections = surveySections;
         $scope.alerts = [];
 
-        surveys.get($stateParams.surveyId).then(function(survey) {
-            $scope.survey = survey;
-        });
+        if (survey.id) {
+            survey.getList('pages').then(function(pages) {
+                $scope.surveyPages = pages;
+            });
+        }
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -44,7 +47,7 @@
         };
 
         $scope.addPage = function addPage() {
-            var page = SurveyPage;
+            var page = SurveyPageService.one();
             page.pageNumber = $scope.surveyPages.length + 1;
             $scope.surveyPages.push(page);
         };
@@ -54,7 +57,7 @@
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            $scope.question = Question.extend({});
+            $scope.question = MeasureService.one();
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
@@ -117,13 +120,23 @@
             // Remove any existing alerts
             $scope.alerts = [];
 
-            $scope.survey.save().then(function(response) {
-                console.log('response', response);
+            $scope.survey.save().then(function(survey) {
                 $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+            }, function(response) {
+                $scope.alerts.push({type: 'danger', msg: 'There was an error saving the module.'});
             });
 
-            angular.forEach($scope.surveyPages, function(page) {
-                page.save();
+            _.each($scope.surveyPages, function(page) {
+                // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
+                _.each(page.questions, function(question) {
+                    delete question.selected;
+                });
+
+                page.save().then(function(page) {
+
+                }, function(response) {
+                    $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
+                });
             });
 
             $scope.resetForm(false, {
