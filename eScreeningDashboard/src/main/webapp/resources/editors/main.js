@@ -85,7 +85,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
             // The saved object is returned on data.payload using the singular form
             // Transform the response by adding the saved object directly on the response
-            newResponse = (_.contains(saveExceptions, what) | what.indexOf('batteries') === 0) ? data : data.payload[what.slice(0,-1)] || data.payload;
+            newResponse = (_.contains(saveExceptions, what) | what.indexOf('batteries/') === 0 | what.indexOf('surveys/') === 0) ? data : data.payload[what.slice(0,-1)] || data.payload;
         }
 
         if (operation === 'get') {
