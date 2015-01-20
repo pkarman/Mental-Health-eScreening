@@ -241,6 +241,21 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 		return rpcInvoker.invokeRpc(getConnection(), getRequest(),
 				"ORQQCN SVC W/SYNONYMS");
 	}
+	
+	private Long getTbiServiceName()
+	{
+		Map<String, Long> svcmap = getConsultationServiceNameDataSet2("1", "1",
+										true);
+		
+		for(Map.Entry<String, Long> entry : svcmap.entrySet())
+		{
+			if(entry.getKey().startsWith("TBI/POLYTRAUMA SUPPORT CLINIC TEAM"))
+			{
+				return entry.getValue();
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Implementation of Appendix D, Para D5 of CPRS Reminder Dialogs
@@ -343,9 +358,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 						.put(RpcRequest.buildMultipleMSubscriptKey(String
 								.format("%s,1", respListMap.get("ORDERABLEIEN"
 										.toUpperCase()))),
-								getConsultationServiceNameDataSet2("1", "1",
-										true).get(
-										"TBI/POLYTRAUMA SUPPORT CLINIC TEAM"));
+										getTbiServiceName());
 				// 2. ARRAY(CommentIEN,1)=”ORDIALOG("”WP”",CommentIEN,1)”
 				Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
 				respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String

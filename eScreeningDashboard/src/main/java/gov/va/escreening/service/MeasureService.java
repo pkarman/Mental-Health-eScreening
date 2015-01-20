@@ -18,4 +18,6 @@ public interface MeasureService {
 	 * @return
 	 */
 	List<Measure> getMeasuresBySurvey(Integer surveyId);
+
+	gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId);
 }
