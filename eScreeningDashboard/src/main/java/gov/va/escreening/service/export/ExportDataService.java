@@ -8,6 +8,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,4 +27,5 @@ public interface ExportDataService {
 	List<DataExportCell> buildExportDataForOneAssessment(Map<String, Table<String, String, String>> dd,VeteranAssessment va,
 			int identifiedExportType);
 
+	Date getLastSnapshotDate();
 }

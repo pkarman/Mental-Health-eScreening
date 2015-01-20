@@ -99,6 +99,11 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     }
 
+    @Override
+    public Date getLastSnapshotDate() {
+        return exportLogRepository.findLastSnapshotDate();
+    }
+
     private List<DataExportCell> buildExportDataPerAssessment(Map<String, Table<String, String, String>> dd,
                                                               VeteranAssessment assessment, Integer identifiedExportType,
                                                               Map<String, Map<String, String>> preFetchedData) {
@@ -342,7 +347,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         ade.setExportLogId(exportLog.getExportLogId());
 
         // create a new entry in the export log audit saving the comments plus also the clinician who is downloading this export log
-        ExportLogAudit exportLogAudit=new ExportLogAudit();
+        ExportLogAudit exportLogAudit = new ExportLogAudit();
         exportLogAudit.setExportLog(exportLog);
         exportLogAudit.setExportedByUser(userRepository.findByUserId(userId));
         exportLogAudit.setComment(comment);
@@ -369,10 +374,12 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     public void takeAssessmentSnapShot() {
-        Map<String, Table<String, String, String>> dd=dds.createDataDictionary();
-        Date lastSnapshotDate=exportLogRepository.findLastSnapshotDate();
-        ExportDataFormBean exportDataFormBean=new ExportDataFormBean();
+        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();
+        ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
+        exportDataFormBean.setHasParameter(true);
         exportDataFormBean.setFromAssessmentDate(LocalDate.fromDateFields(lastSnapshotDate).plusDays(1).toDate());
+        exportDataFormBean.setToAssessmentDate(LocalDate.now().toDate());
         getAssessmentDataExport(dd, exportDataFormBean);
     }
 

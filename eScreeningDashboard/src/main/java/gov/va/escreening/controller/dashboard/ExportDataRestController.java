@@ -31,10 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -344,6 +341,12 @@ public class ExportDataRestController extends BaseDashboardRestController {
         // Populate the clinic id list from the logged in user.
         // exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
+        // Assessment Start Date from last snapshop date is by default
+        if (!exportDataFormBean.getHasParameter() && errors.isEmpty()){
+            exportDataFormBean.setFromAssessmentDate(exportDataService.getLastSnapshotDate());
+            exportDataFormBean.setToAssessmentDate(new Date());
+            exportDataFormBean.setHasParameter(true);
+        }
         return exportDataFormBean;
     }
 
