@@ -11,7 +11,7 @@ public class PasswordResetRequest implements Serializable {
 
     private Integer userId;
     @Size(min = 8, max = 50, message = "Password must be at least 8 characters and less than 50 characters")
-    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@#%$^ etc.), and be at least 8 characters.")
+    @Pattern(regexp = "^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$", message = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@!#$%&?^*()), and be at least 8 characters.")
     private String password;
     private String passwordConfirmed;
 

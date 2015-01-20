@@ -383,11 +383,11 @@ public class UserManagementController {
         String error = null;
 
         if (passwordParam != null && !passwordParam.isEmpty()) {
-            Pattern pattern = Pattern.compile("^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?]).*$");
+            Pattern pattern = Pattern.compile("^.*(?=.{8,})(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@!#$%&?^*()]).*$");
             Matcher matcher = pattern.matcher(passwordParam);
             boolean matched = matcher.matches();
             if (!matched)
-                error = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@#%$^ etc.), and be at least 8 characters.";
+                error = "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@!#$%&?^*()), and be at least 8 characters.";
         }
 
         return error;

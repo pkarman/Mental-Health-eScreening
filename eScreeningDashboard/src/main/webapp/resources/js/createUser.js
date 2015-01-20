@@ -264,7 +264,7 @@ $(document)
 											if (!checkInputLen(text, 30))
 												attrVal += "Password must be entered.\n";
 											else if (!validatePassword(text))
-												attrVal += "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@#%$^ etc.), and be at least 8 characters.\n";
+												attrVal += "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character (@!#$%&?^*()), and be at least 8 characters.\n";
 											if (attrVal.length > 0) {
 												$('#passwordParam').attr(
 														'title', attrVal);
@@ -579,7 +579,7 @@ function validatePword1() {
 		valid = false;
 	} else if (!validatePassword(text)) {
 		attrVal += "Password must contain at least one digit, one uppercase letter, and one lowercase letter, one special character "
-				+ "(@#%$^ etc.), and be at least 8 characters.\n";
+				+ "(@!#$%&?^*()), and be at least 8 characters.\n";
 		valid = false;
 	}
 	if (attrVal.length > 0) {
@@ -612,7 +612,7 @@ function validateEmail(email) {
 }
 
 function validatePassword(pword) {
-	var re = /^.*(?=.{8,})(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!#$%&?]).*$/;
+	var re = /^.*(?=.{8,})(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!#$%&?^*()]).*$/;
 	return re.test(pword);
 }
 
