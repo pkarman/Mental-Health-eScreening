@@ -4,6 +4,8 @@ import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public class AssessmentDataExportCsvView extends AbstractView implements Message
 	private static final Logger logger = LoggerFactory.getLogger(AssessmentDataExportCsvView.class);
 
 	private final String defaultErrorMsg = "An error occured while generating the requested export.  Please contact technical support for assistance.";
-
+	SimpleDateFormat sdf=new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -36,7 +38,7 @@ public class AssessmentDataExportCsvView extends AbstractView implements Message
 
 			AssessmentDataExport dataExport = (AssessmentDataExport) model.get("dataExportList");
 
-			String csvFileName = dataExport.getFilterOptions().getFilePath();
+			String csvFileName = "data_export_"+sdf.format(new Date())+".csv";
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + csvFileName + "\"");
 
 			writeExportDataToCsvFile(writer, dataExport, csvFileName);
