@@ -93,14 +93,19 @@ public class EditorRestController {
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "All module changes have been saved successfully."), surveyPageInfoItems);
     }
 
+    @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    public Response createSurveyPage(@PathVariable Integer surveyId, @RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
+        // re-direct this call to the update version
+        return updateSurveyPage(surveyId, 0, surveyPage, escreenUser);
+    }
+
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages/{pageId}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     @ResponseBody
     public Response updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
         ErrorResponse errorResponse = new ErrorResponse();
-
         editorsViewDelegate.updateSurveyPages(surveyId, Arrays.asList(surveyPage));
-
         return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), surveyPage);
     }
 
