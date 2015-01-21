@@ -379,7 +379,7 @@ ${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}
 </#if>
 
 ${MODULE_START} 
-	PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irresistible, or numb. 
+	PTSD is when remembering a traumatic event keeps you from living a normal life. It\'s also called shell shock or combat stress. Common symptoms include recurring memories or nightmares of the event, sleeplessness, and feeling angry, irritable, or numb. 
 	${LINE_BREAK} 
 	<b>Recommendation:</b> 
 	<#if score = "notfound">
