@@ -20,7 +20,7 @@
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
                 for (var index in $scope.surveyPages) {
-                    //$scope.surveyPages[index].displayOrder = index;
+                    $scope.surveyPages[index].pageNumber = index;
                 }
             }
         };

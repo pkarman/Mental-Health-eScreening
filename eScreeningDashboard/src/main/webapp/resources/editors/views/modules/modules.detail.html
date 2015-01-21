@@ -60,7 +60,7 @@
                     
                 <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
                     <ul class="list-group app screen first" ng-model="surveyPages">
-                        <li class="list-group-item text-left" ng-repeat="page in surveyPages"
+                        <li class="list-group-item text-left" ng-repeat="page in surveyPages | orderBy 'pageNumber'"
                                 ng-class="{'unsortable': page.sortable === false}">
 
                             <div class="page-divider-container">
