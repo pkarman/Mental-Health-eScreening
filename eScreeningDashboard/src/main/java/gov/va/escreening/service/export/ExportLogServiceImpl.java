@@ -39,7 +39,7 @@ public class ExportLogServiceImpl implements ExportLogService {
         List<ExportDataSearchResult> exportSearchResults = new ArrayList<ExportDataSearchResult>();
 
         // create Export Data Search Results from export_log table (originally created logs)
-        List<ExportLog> exportlogs = noOfDays == -1 ? exportLogRepository.findAll() : exportLogRepository.findAllForDays(noOfDays);
+        List<ExportLog> exportlogs = noOfDays == -1 ? exportLogRepository.findAllMinusBytes() : exportLogRepository.findAllForDays(noOfDays);
         for (ExportLog exportLog : exportlogs) {
             exportSearchResults.add(createSearchResult(exportLog));
         }

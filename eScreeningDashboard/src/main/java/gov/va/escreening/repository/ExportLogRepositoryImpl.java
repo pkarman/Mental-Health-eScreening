@@ -32,11 +32,10 @@ public class ExportLogRepositoryImpl extends AbstractHibernateRepository<ExportL
     }
 
     @Override
-    protected List<ExportLog> _findAll() {
+    public List<ExportLog> findAllMinusBytes() {
         TypedQuery<ExportLog> query = entityManager.createNamedQuery("ExportLog.findAllMinusBytes", ExportLog.class);
         List<ExportLog> result =query.getResultList();
         return result;
-
     }
 
     @Override
