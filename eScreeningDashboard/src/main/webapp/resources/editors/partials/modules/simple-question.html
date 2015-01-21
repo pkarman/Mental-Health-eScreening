@@ -42,7 +42,7 @@
 
 		<ul class="list-group odd-even-list" ui-sortable="sortableAnswerOptions" ng-model="question.answers">
 			<li class="list-group-item"
-					ng-repeat="answer in question.answers"
+					ng-repeat="answer in question.answers | orderBy 'displayOrder'"
 					ng-class="{'unsortable': answer.sortable === false}">
 				<div class="row">
 					<div class="col-md-1">
