@@ -6,31 +6,38 @@
         
         function addAvDeleteButton(editorScope, $element){
             //We had to do it this way because adding an ng-click gets stripped in the wysiwyg because of santaize
-            $element.on('click', function(event){
-                editorScope.displayElements.popover.css('width', '62px');
-                
-                var container = editorScope.displayElements.popoverContainer;
-        
-                container.empty();
-                container.css('line-height', '28px');
-        
-                var buttonGroup = angular.element('<div class="btn-group">');
-        
-                var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-trash-o icon-trash-o"></i></button>');
-                // directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
-                unLinkButton.on('click', function (event) {
-                    event.preventDefault();
-                    $element.remove();
-                    editorScope.updateTaBindtaTextElement();
-                    editorScope.hidePopover();
-                });
-                buttonGroup.append(unLinkButton);
-                container.append(buttonGroup);
-                
-                editorScope.showPopover($(event.target));   
-            });
+            $element.on('click', deleteElementHandler(editorScope));
         }
 
+        function deleteElementHandler(editorScope){
+        	return function(event){
+	            editorScope.displayElements.popover.css('width', '62px');
+	            
+	            var container = editorScope.displayElements.popoverContainer;
+	    
+	            container
+	            	.empty()
+	            	.css('line-height', '28px')
+	            	.append(createDeleteGroup(editorScope, $(this)));
+	            
+	            editorScope.showPopover($(this));  
+        	};
+        }
+        
+        function createDeleteGroup(editorScope, $element){
+        	var buttonGroup = angular.element('<div class="btn-group">');
+    	    
+            var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-trash-o icon-trash-o"></i></button>');
+            // directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
+            unLinkButton.on('click', function (event) {
+                event.preventDefault();
+                $element.remove();
+                editorScope.updateTaBindtaTextElement();
+                editorScope.hidePopover();
+            });
+            buttonGroup.append(unLinkButton);
+            return buttonGroup;
+        }
         
         function addDeleteButtonToAll(editorScope, $editorEle){
             $editorEle
@@ -53,6 +60,8 @@
         
         function rmTableEditing($editorEle){
         	$editorEle.find(".ui-resizable").resizable("destroy");
+        	$(".tablewrap").popover("hide");
+        	$editorEle.find(".tablewrap table").unwrap();
         }
         
         function initTableEditing(editorScope, $editorEle){
@@ -83,11 +92,13 @@
             		  });
         		      		
         		$(table).find("tr").resizable({handles:"s"});
-            	
+        		
+        		$(table).wrap($("<div/>").addClass("tablewrap"));
+        		
             });
         	
+        	$(".tablewrap").hover( deleteElementHandler(editorScope) );        	
         }
-        
         
         
         return {
@@ -96,7 +107,6 @@
             link: function ($scope, $element, attrs) {
                 var el = $element.get(0);
                 el.addEventListener("DOMNodeInserted",function(e) {
-                    //console.log("editor changed");
                     
                     if(TemplateBlockService.avDragHandler(el, e)){
                         console.log("updating editor because of change.");
