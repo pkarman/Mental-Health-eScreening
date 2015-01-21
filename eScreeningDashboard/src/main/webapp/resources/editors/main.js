@@ -146,6 +146,9 @@ Editors.config(function(RestangularProvider, $provide) {
                 
                 var modalInstance=$modal.open({
                     templateUrl: 'resources/editors/views/templates/textblocktable.html',
+					windowClass: 'modal-window-sm',
+					backdrop: 'static',
+					keyboard: false,
                     controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
                         $scope.newtable ={};
                         $scope.tablestyles = [
