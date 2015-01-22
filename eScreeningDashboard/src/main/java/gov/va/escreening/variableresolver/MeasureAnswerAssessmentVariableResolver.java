@@ -19,7 +19,7 @@ public interface MeasureAnswerAssessmentVariableResolver {
 	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, 
 			SurveyMeasureResponse response);
 	
-	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId);
+	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, NullValueHandler smrNullHandler);
 
 	String resolveCalculationValue(AssessmentVariable answerVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer);

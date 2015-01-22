@@ -1,6 +1,5 @@
 package gov.va.escreening.service.export;
 
-import com.google.common.base.Function;
 import com.google.common.collect.*;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
@@ -34,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import org.bouncycastle.util.Strings;
@@ -173,13 +171,17 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         Map<String, Map<String, String>> formulaeMap = Maps.newHashMap();
 
-        Iterable<AssessmentVariable> avFormulaeEntities = avr.findAllFormulae();
+        Iterable<AssessmentVariable> allFormulas = avr.findAllFormulae();
 
         for (VeteranAssessment va : matchingAssessments) {
-            Iterable<AssessmentVariableDto> avFormulaeList = vrs.resolveVariablesFor(va.getVeteranAssessmentId(), avFormulaeEntities);
-            formulaeMap.put(formulaKey(va), createFormulaeMap(avFormulaeEntities,avFormulaeList));
+            Iterable<AssessmentVariableDto> assessmentFormulas = pluckFormulasForAssessment(va, allFormulas);
+            formulaeMap.put(formulaKey(va), createFormulasMapByAssessment(assessmentFormulas));
         }
         return formulaeMap;
+    }
+
+    private Iterable<AssessmentVariableDto> pluckFormulasForAssessment(VeteranAssessment va, Iterable<AssessmentVariable> allFormulas) {
+        return vrs.resolveVariablesFor(va.getVeteranAssessmentId(), allFormulas);
     }
 
     public List<DataExportCell> buildMandatoryColumns(
@@ -376,13 +378,9 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         return filterOptions;
     }
 
-    private Map<String, String> createFormulaeMap(
-            Iterable<AssessmentVariable> formulaeList, Iterable<AssessmentVariableDto> avFormulaeList) {
+    private Map<String, String> createFormulasMapByAssessment(
+            Iterable<AssessmentVariableDto> avFormulaeList) {
         Map<String, String> formulaeMap = Maps.newHashMap();
-
-        for (AssessmentVariable av : formulaeList) {
-            formulaeMap.put(av.getDisplayName(), "0");
-        }
 
         for (AssessmentVariableDto dto : avFormulaeList) {
             formulaeMap.put(dto.getDisplayName(), dto.getDisplayText());
