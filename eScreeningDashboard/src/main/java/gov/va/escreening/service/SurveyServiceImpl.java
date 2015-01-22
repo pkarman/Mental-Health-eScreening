@@ -283,8 +283,10 @@ public class SurveyServiceImpl implements SurveyService {
 
             if (surveyPageInfo.getSurveyPageId() == null) {
                 surveyPageRepository.create(surveyPage);
-            } else
+                surveyPageInfo.setSurveyPageId(surveyPage.getSurveyPageId());
+            } else {
                 surveyPageRepository.update(surveyPage);
+            }
 
             surveyPageList.add(surveyPage);
         }

@@ -60,7 +60,7 @@
                     
                 <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
                     <ul class="list-group app screen first" ng-model="surveyPages">
-                        <li class="list-group-item text-left" ng-repeat="page in surveyPages"
+                        <li class="list-group-item text-left" ng-repeat="page in surveyPages | orderBy: 'pageNumber'"
                                 ng-class="{'unsortable': page.sortable === false}">
 
                             <div class="page-divider-container">
@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                             <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
-                                <li class="list-group-item text-left" ng-repeat="question in page.questions"
+                                <li class="list-group-item text-left" ng-repeat="question in page.questions | orderBy: 'displayOrder'"
                                         ng-class="{unsortable: question.sortable === false, active: question.selected}">
                                     <div class="form-inline">
                                         <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>

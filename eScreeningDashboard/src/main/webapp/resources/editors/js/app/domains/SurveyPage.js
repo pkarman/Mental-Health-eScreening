@@ -27,11 +27,10 @@ EScreeningDashboardApp.models.SurveyPage = (function surveyPage() {
 
     function extend(obj) {
         var surveyPage = {
-            id: null,
+            id: '',
             title: '',
             description: '',
-            pageNumber: null,
-            createdDate: '',
+            pageNumber: 0,
             questions: []
         };
 

@@ -1,6 +1,12 @@
 (function() {
 	'use strict';
-	angular.module('Editors').controller('ModulesDetailTableController', ['$scope', '$modal', 'MeasureService', function($scope, $modal, MeasureService) {
+	angular.module('Editors').controller('ModulesDetailTableController', ['$scope', '$modal', 'Question', 'Answer', function($scope, $modal, Question, Answer) {
+
+		$scope.$watch('question', function(question) {
+			if (question && !question.answers.length) {
+				$scope.question.answers.push(Answer.extend({type: 'none'}));
+			}
+		});
 
 		$scope.sortableQuestionOptions = {
 			handle: '.glyphicon-align-justify',
@@ -29,7 +35,7 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || MeasureService.one();
+					$scope.question = question || Question.extend({});
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
