@@ -1,5 +1,7 @@
 package gov.va.escreening.repository;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.Validation;
 import gov.va.escreening.entity.Measure;
@@ -15,7 +17,6 @@ import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -211,22 +212,30 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
 
 		List<Answer> answerList = measureDto.getAnswers();
-		Map<Integer, Answer> answerMap = new HashedMap<Integer, Answer>();
+		Map<Integer, Answer> modifiedAnswerMap = Maps.newHashMap();
+		List<Answer> newAnswerList = Lists.newArrayList();
 		for (Answer a : answerList) {
-			answerMap.put(a.getAnswerId(), a);
+			if (a.getAnswerId()!=null) {
+				modifiedAnswerMap.put(a.getAnswerId(), a);
+			} else {
+				newAnswerList.add(a);
+			}
 		}
 
-		if (m.getMeasureAnswerList()!=null)
+		List<MeasureAnswer> maList=m.getMeasureAnswerList();
+		if (maList!=null)
 		{
-			for (MeasureAnswer ma : m.getMeasureAnswerList()) {
-				Answer answerDto = answerMap.get(ma.getMeasureAnswerId());
-				if (answerDto != null) {
-					ma.setAnswerText(answerDto.getAnswerText());
-					ma.setExportName(answerDto.getExportName());
-					ma.setVistaText(answerDto.getVistaText());
-					ma.setAnswerType(answerDto.getAnswerType());
-				}
+			for (MeasureAnswer ma : maList) {
+				Answer answerDto = modifiedAnswerMap.get(ma.getMeasureAnswerId());
+				updateMeasureAnswer(m,ma, answerDto);
 			}
+		}
+		if (maList==null){
+			m.setMeasureAnswerList(new ArrayList<MeasureAnswer>());
+			maList=m.getMeasureAnswerList();
+		}
+		for (Answer newAnswer:newAnswerList){
+			maList.add(updateMeasureAnswer(m, new MeasureAnswer(), newAnswer));
 		}
 		
 		if (m.getMeasureValidationList()==null)
@@ -268,5 +277,16 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 			}
 		}
 		return m;
+	}
+
+	private MeasureAnswer updateMeasureAnswer(Measure m, MeasureAnswer ma, Answer answerDto) {
+		if (answerDto != null) {
+			ma.setAnswerText(answerDto.getAnswerText());
+			ma.setExportName(answerDto.getExportName());
+			ma.setVistaText(answerDto.getVistaText());
+			ma.setAnswerType(answerDto.getAnswerType());
+			ma.setMeasure(m);
+		}
+		return ma;
 	}
 }
