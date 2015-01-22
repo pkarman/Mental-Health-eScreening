@@ -3,7 +3,7 @@
 
     Editors.directive('templateBlockTextEditor', ['textAngularManager', 'TemplateBlockService', 
                                                   function(textAngularManager, TemplateBlockService) {
-        
+        var editing = false;
         function addAvDeleteButton(editorScope, $element){
             //We had to do it this way because adding an ng-click gets stripped in the wysiwyg because of santaize
             $element.on('click', deleteElementHandler(editorScope));
@@ -46,12 +46,13 @@
         }
         
         function initTables(editorScope, $editorEle){
+        	initTableEditing(editorScope, $editorEle);
         	$editorEle
         	.focusin(function(){
         		initTableEditing(editorScope, $editorEle);
         	})
         	.focusout(function(){
-        		rmTableEditing($editorEle)
+        		rmTableEditing($editorEle);
         	});
         	
         	//this disables the resizing of the table by firefox
@@ -59,45 +60,57 @@
         }
         
         function rmTableEditing($editorEle){
-        	$editorEle.find(".ui-resizable").resizable("destroy");
-        	$(".tablewrap").popover("hide");
-        	$editorEle.find(".tablewrap table").unwrap();
+        	editing = false;
+        	$editorEle.find(".isResizable")
+        		.resizable("destroy")
+        		.removeClass(".isResizable");
+        	$editorEle.find(".ui-resizable-handle").remove();
+        	$editorEle.find(".tablewrap table")
+        		.removeClass("editing")
+        		.unwrap();
+        	textAngularManager.refreshEditor('text-block-editor');
         }
         
         function initTableEditing(editorScope, $editorEle){
-        	$editorEle
-        	.find("table")
-        	.each(function(i, table){
-        		var container = $(table);
-        		var sibTotalWidth;
-        		$(table)
-        			.addClass("editing")
-            		.find("tr:first td, tr:first th")
-            		  .resizable({
-            			  handles: "e",  
-            			  start: function(event, ui){
-            		            sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
-            		        },
-            		        stop: function(event, ui){
-            		        	console.debug("container width: " + container.innerWidth());
-            		            var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
-            		            ui.originalElement.css('width', cellPercentWidth + '%');  
-            		            var nextCell = ui.originalElement.next();
-            		            var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
-            		            nextCell.css('width', nextPercentWidth + '%');
-            		        },
-            		        resize: function(event, ui){ 
-            		            ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
-            		        }
-            		  });
-        		      		
-        		$(table).find("tr").resizable({handles:"s"});
-        		
-        		$(table).wrap($("<div/>").addClass("tablewrap"));
-        		
-            });
-        	
-        	$(".tablewrap").hover( deleteElementHandler(editorScope) );        	
+        	if(!editing){
+        		editing = true;
+	        	$editorEle
+	        	.find("table")
+	        	.each(function(i, table){
+	        		var container = $(table);
+	        		var sibTotalWidth;
+	        		$(table)
+	        			.addClass("editing")
+	            		.find("tr:first td, tr:first th")
+	            		  .addClass("isResizable")
+	            		  .resizable({
+	            			  handles: "e",  
+	            			  start: function(event, ui){
+	            		            sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
+	            		        },
+	            		        stop: function(event, ui){
+	            		            var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
+	            		            ui.originalElement.css('width', cellPercentWidth + '%');  
+	            		            var nextCell = ui.originalElement.next();
+	            		            var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
+	            		            nextCell.css('width', nextPercentWidth + '%');
+	            		            textAngularManager.refreshEditor('text-block-editor');
+	            		        },
+	            		        resize: function(event, ui){ 
+	            		            ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
+	            		        }
+	            		  });
+	        		      		
+	        		$(table).find("tr")
+	        			.addClass("isResizable")
+	        			.resizable({handles:"s"});
+	        		
+	        		$(table).wrap($("<div/>").addClass("tablewrap"));
+	        		
+	            });
+	        	
+	        	$(".tablewrap").hover( deleteElementHandler(editorScope) );  
+	        }
         }
         
         
@@ -109,7 +122,6 @@
                 el.addEventListener("DOMNodeInserted",function(e) {
                     
                     if(TemplateBlockService.avDragHandler(el, e)){
-                        console.log("updating editor because of change.");
                         textAngularManager.refreshEditor('text-block-editor');
                     }
                     var target = $(e.target);

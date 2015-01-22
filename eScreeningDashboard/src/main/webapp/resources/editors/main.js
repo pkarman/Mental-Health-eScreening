@@ -103,8 +103,8 @@ Editors.config(function(RestangularProvider, $provide) {
     	function createTable(tableParams) {
     		if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
     				&& tableParams.row > 0 && tableParams.col > 0){
-    			var table = "<table class='w-table no-border " 
-    				+ (tableParams.style ? "border-" + tableParams.style : '')	
+    			var table = "<table class='w-table no-border" 
+    				+ (tableParams.style ? " border-" + tableParams.style : '')	
     				+ "'>";
 
     			var colWidth = 100/tableParams.col;
