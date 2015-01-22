@@ -3,7 +3,6 @@
 
     Editors.directive('templateBlockTextEditor', ['textAngularManager', 'TemplateBlockService', 
                                                   function(textAngularManager, TemplateBlockService) {
-        var editing = false;
         function addAvDeleteButton(editorScope, $element){
             //We had to do it this way because adding an ng-click gets stripped in the wysiwyg because of santaize
             $element.on('click', deleteElementHandler(editorScope));
@@ -56,11 +55,10 @@
         	});
         	
         	//this disables the resizing of the table by firefox
-        	document.execCommand('enableObjectResizing', false, 'false');
+        	//document.execCommand('enableObjectResizing', false, 'false');
         }
         
         function rmTableEditing($editorEle){
-        	editing = false;
         	$editorEle.find(".isResizable")
         		.resizable("destroy")
         		.removeClass(".isResizable");
@@ -72,10 +70,8 @@
         }
         
         function initTableEditing(editorScope, $editorEle){
-        	if(!editing){
-        		editing = true;
 	        	$editorEle
-	        	.find("table")
+	        	.find("table:not(.editing)")
 	        	.each(function(i, table){
 	        		var container = $(table);
 	        		var sibTotalWidth;
@@ -84,33 +80,37 @@
 	            		.find("tr:first td, tr:first th")
 	            		  .addClass("isResizable")
 	            		  .resizable({
-	            			  handles: "e",  
+	            			  handles: "e,s",  
 	            			  start: function(event, ui){
 	            		            sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
-	            		        },
-	            		        stop: function(event, ui){
-	            		            var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
-	            		            ui.originalElement.css('width', cellPercentWidth + '%');  
-	            		            var nextCell = ui.originalElement.next();
-	            		            var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
-	            		            nextCell.css('width', nextPercentWidth + '%');
-	            		            textAngularManager.refreshEditor('text-block-editor');
-	            		        },
+	            		      },
+	            		      stop: function(event, ui){
+	            		    	  var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
+	            		          ui.originalElement.css('width', cellPercentWidth + '%');  
+	            		          var nextCell = ui.originalElement.next();
+	            		          var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
+	            		          nextCell.css('width', nextPercentWidth + '%');
+	            		          textAngularManager.refreshEditor('text-block-editor');
+	            		      },
 	            		        resize: function(event, ui){ 
 	            		            ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
 	            		        }
 	            		  });
-	        		      		
-	        		$(table).find("tr")
+	        		
+	        		$(table)
+	        			.find("tr")
 	        			.addClass("isResizable")
 	        			.resizable({handles:"s"});
 	        		
+	        		//with Chrome and IE we must also set the td south to be resizable
+	        		$(table).find("td, th")
+            		  .addClass("isResizable")
+            		  .resizable({handles: "s"});
+            			  
 	        		$(table).wrap($("<div/>").addClass("tablewrap"));
-	        		
 	            });
 	        	
 	        	$(".tablewrap").hover( deleteElementHandler(editorScope) );  
-	        }
         }
         
         
@@ -120,7 +120,7 @@
             link: function ($scope, $element, attrs) {
                 var el = $element.get(0);
                 el.addEventListener("DOMNodeInserted",function(e) {
-                    
+                	
                     if(TemplateBlockService.avDragHandler(el, e)){
                         textAngularManager.refreshEditor('text-block-editor');
                     }
