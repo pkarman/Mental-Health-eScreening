@@ -59,7 +59,7 @@
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            $scope.question = Question.extend({});
+            $scope.question = Question.extend({displayOrder: page.questions.length});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
