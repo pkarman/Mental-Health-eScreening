@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'MeasureService', function($scope, $state, survey, surveySections, SurveyService, SurveyPageService, MeasureService){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question){
 
         $scope.survey = survey;
         $scope.surveyPages = [];
@@ -48,16 +48,18 @@
 
         $scope.addPage = function addPage() {
             var page = SurveyService.one($scope.survey.id).one('pages');
+            page.title = $scope.survey.surveySection.name | $scope.survey.name;
+            page.description = $scope.survey.name + ' page';
             page.pageNumber = $scope.surveyPages.length + 1;
             $scope.surveyPages.push(page);
         };
 
         $scope.deletePage = function deletePage(index) {
-            surveyPages.splice(index, 1);
+            $scope.surveyPages.splice(index, 1);
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            $scope.question = MeasureService.one();
+            $scope.question = Question.extend({});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
@@ -125,15 +127,27 @@
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
-                    // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
-                    _.each(page.questions, function(question) {
-                        delete question.selected;
-                    });
 
-                    page.save().then(function(page) {}, function(response) {
-                        $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
-                    });
+                    // Only save pages with at least one question
+                    if (page.questions.length) {
+                        // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
+                        _.each(page.questions, function (question) {
+                            delete question.selected;
+                        });
+
+                        page.save().then(function (page) {}, function (response) {
+                            $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
+                        });
+                    } else {
+                        $scope.alerts.push({type: 'danger', msg: 'Page items require a minimum of one question.'});
+                    }
                 });
+
+                if (!$stateParams.surveyId) {
+                    $state.transitionTo($state.current, {surveyId: survey.id}, {
+                        reload: true, inherit: false, notify: false
+                    });
+                }
 
             }, function(response) {
                 $scope.alerts.push({type: 'danger', msg: 'There was an error saving the module.'});

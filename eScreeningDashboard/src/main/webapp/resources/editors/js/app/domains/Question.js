@@ -31,7 +31,7 @@ EScreeningDashboardApp.models.Question = (function question() {
             text: '',
             type: '',
             displayOrder: '',
-            required: '',
+            required: false,
             ppi: false,
             mha: false,
             visible: true,
