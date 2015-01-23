@@ -1,5 +1,5 @@
 /* phq-9 veteran summary. Update for time series graph  (719) */
-update template set template_file = '<#include "clinicalnotefunctions"> 
+update template set template_file = 'update template set template_file = '<#include "clinicalnotefunctions"> 
 <#assign score = getFormulaDisplayText(var1599)>
 <#if score != "notfound">
 	${MODULE_TITLE_START} Depression ${MODULE_TITLE_END} 
@@ -30,9 +30,9 @@ update template set template_file = '<#include "clinicalnotefunctions">
 					{"key": "None 0-1", "range": "1", "color": "#75cc51"},
 					{"key": "Minimally Depressed 1-5", "range": "5", "color": "#f4e800"},
 					{"key": "Mildly Depressed 5-10", "range": "10", "color": "#ff9e58"},
-					{"key": "Moderatly Depressed 10-15 and above", "range": "15", "color": "#ad3332"},
-					{"key": "Moderately Severe Depressed 15-20 and above", "range": "15", "color": "#7a100f"},
-					{"key": "Severely Depressed 20-27 and above", "range": "27", "color": "#450404"}
+					{"key": "Moderatly Depressed 10-15", "range": "15", "color": "#ad3332"},
+					{"key": "Moderately Severe Depressed 15-20", "range": "20", "color": "#7a100f"},
+					{"key": "Severely Depressed 20-27", "range": "27", "color": "#450404"}
 				]
             } 
 	}
