@@ -14,11 +14,8 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * @author jocchiuzzo
@@ -264,6 +261,6 @@ public interface VeteranAssessmentService {
      * @param numOfMonth
      * @return
      */
-    Map<Date, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
     		int numOfMonth);
 }

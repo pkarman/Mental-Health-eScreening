@@ -27,7 +27,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 	@Test
 	public void testTimeSeries()
 	{	
-		Map<Date, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
+		Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
 		assertNotNull(timeSeries);
 		assertEquals(1, timeSeries.size());
 		
