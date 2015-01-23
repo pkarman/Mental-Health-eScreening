@@ -372,6 +372,7 @@
                         <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
                       </div>
                       <div class="modal_contents">Loading...</div>
+					  <div class="timeSeries"></div>
                   </div>
                 </div>
               </div>
@@ -812,5 +813,353 @@ $(document).ready(function() {
 		      graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
 		  }
 	}
+
+
+
+// Call timeSeries JSON
+$.ajax({
+	type : 'get',
+	url : "http://beta.json-generator.com/api/json/get/AdzXyPh", // Test URL
+	success : function(r){  
+		
+	// Call timeSeries function is success
+	timeSeries(${veteranAssessmentInfo.veteranId});
+	
+	function timeSeries(veteranId) {
+		
+		var vid = veteranId;
+		
+		/*
+		var dataset = [{
+						"varId": 2300,
+						"title": "Depression Over Time",
+						"numberOfMonths": 12,   // TBD after Liz question is answered
+						"timeSeriesParams":  {
+												"ticks": [
+															{"value": "100", "date": "01/01/2014"},
+															{"value": "50", "date": "02/01/2014"},
+															{"value": "60", "date": "03/01/2014"},
+															{"value": "70", "date": "04/01/2014" },
+															{"value": "120", "date": "05/01/2014"},
+															{"value": "60", "date": "06/01/2014"},
+															{"value": "60", "date": "07/01/2014"},
+															{"value": "60", "date": "08/01/2014"}
+												],
+												"intervals": [
+															{"key": "Normal Range 20-44", 				"range": "44", "color": "#75cc51"},
+															{"key": "Mildly Depressed 45-59", 			"range": "60", "color": "#f4e800" },
+															{"key": "Moderately Depressed 60-69", 		"range": "69", "color": "#ff9e58"},
+															{"key": "Severely Depressed 70 and above", 	"range": "120" , "color": "#e46a69" }						
+												]
+											}
+		
+						}];
+		*/
+		
+		var dataset = r; // Set JSON to dataset
+		var maxValue = d3.max(dataset[0].timeSeriesParams.ticks , function(d) { return +d.value;} );
+		
+		// Vars
+		var w = 450,
+			h = 250,
+			margin = {
+				top: 20,
+				bottom: 30,
+				left: 30,
+				right: 140
+			},
+			xRangeStart = 25,		// Move the x axis to right
+			yStartPoint = 20; 		// Start Point for y axis
+			
+		
+		// d3.max(dataset[0].timeSeriesParams.ticks.value);
+			
+		var colors          = ['#75cc51', '#f4e800', '#ff9e58', '#e46a69', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"]; // TODO - May need to swap with this list 
+		
+		
+		// Static Vars
+		var legendTitle = "My Score"; 
+		
+		var xLegendTextPosition = w - 115,
+			xLegendRectPosition = w - 130;
+	
+		var width = w - margin.left - margin.right,
+			height = h - margin.top - margin.bottom;
+	
+		var svg = d3.select(".timeSeries").append("svg")
+			.attr("id", "chart")
+			.attr("width", w)
+			.attr("height", h);
+	
+		var chart = svg.append("g")
+			.classed("display", true)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+		var dateParser = d3.time.format("%m/%d/%Y").parse;
+		
+		var x = d3.time.scale()
+			.domain(d3.extent(dataset[0].timeSeriesParams.ticks, function (d) {
+			var date = dateParser(d.date);
+			return date;
+		}))
+			.range([xRangeStart, width]);
+	
+		var y = d3.scale.linear()
+			.domain([yStartPoint, d3.max(dataset[0].timeSeriesParams.ticks, function (d) {
+			return +d.value;
+		})])
+			.range([height, 0]);
+	
+		var xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom")
+			.ticks(d3.time.days, 100)
+			.tickFormat(d3.time.format("%b"));
+	
+		var yAxis = d3.svg.axis()
+			.scale(y)
+			.orient("left")
+			.ticks(5);
+	
+	
+		var line = d3.svg.line().interpolate("cardinal")
+			.x(function (d) {
+			var date = dateParser(d.date);
+			return x(date);
+		})
+			.y(function (d) {
+			return y(+d.value);
+		});
+	
+		function plot(params) {
+			
+			var intervals 	= params.data[0].timeSeriesParams.intervals,
+				ticks 		= params.data[0].timeSeriesParams.ticks;
+			
+			this.append("g")
+				.classed("x axis", true)
+				.attr("transform", "translate(0," + height + ")")
+				.call(params.axis.x);
+	
+			this.append("g")
+				.classed("y axis", true)
+				.attr("transform", "translate(0,0)")
+				.call(params.axis.y);
+	
+			// Enter Plot Started Here
+			this.selectAll(".trendline")
+				.data([ticks])
+				.enter()
+				.append("path")
+				.classed("trendline", true);
+	
+			this.selectAll(".point")
+				.data(ticks)
+				.enter()
+				.append("circle")
+				.classed("point", true)
+				.attr("r", 5);
+	
+			this.selectAll(".pointText")
+				.data(ticks)
+				.enter()
+				.append("text")
+				.classed("pointTextValue", true)
+				.text( function (d) {
+					return +d.value;
+				});
+	
+	
+			// Update Plot Started Here
+			this.selectAll(".trendline")
+				.attr("d", function (d) {
+				return line(d);
+			});
+			this.selectAll(".point")
+				.attr("cx", function (d) {
+				var date = dateParser(d.date);
+				return x(date);
+			})
+				.attr("cy", function (d) {
+				return y(+d.value);
+			});
+			this.selectAll(".pointTextValue")
+				.attr("x", function (d) {
+				var date = dateParser(d.date);
+				return x(date);
+			})
+				.attr("y", function (d) {
+				return y(+d.value - 8);
+			});
+	
+			// Exit Plot Started Here
+			this.selectAll(".trendline")
+				.data([ticks])
+				.exit()
+				.remove();
+			this.selectAll(".point")
+				.data(ticks)
+				.exit()
+				.remove();
+	
+	
+	
+			// Add Legend Started Here 
+			var legend = this.append("g")
+				.attr("class", "legend")
+				.attr("height", h)
+				.attr("width", w)
+				.attr('transform', 'translate(-20, 10)');
+	
+			legend.selectAll('rect')
+				.data(intervals)
+				.enter()
+				.append("rect")
+				.attr("x", xLegendRectPosition)
+				.attr("y", function (d, i) {
+				return i * 35;
+			})
+				.attr("width", 8)
+				.attr("height", 30)
+				.style("fill", function (d, i) {
+				var color = intervals[i].color;
+				return color;
+			});
+	
+			// Add Legend Started Here
+			legend.append("g")
+				.attr("class", "legendBar")
+				.attr("transform", "translate(" + xLegendTextPosition + ", 0)")
+				.selectAll('text')
+				.data(intervals)
+				.enter()
+				.append("text")
+				.attr("x", xLegendTextPosition)
+				.attr("y", function (d, i) {
+				return i * 35 + 9;
+			})
+				.attr("dy", 0)
+				.text(function (d, i) {
+				var text = intervals[i].key;
+				return text;
+			})
+			.call(wrap, 100);
+	
+			legend.append("circle")
+				.classed("point", true)
+				.attr("r", 5)
+				.attr("cx", xLegendRectPosition+4 )
+				.attr("cy", -12);
+			
+			 legend.append("text")
+				.classed("pointTextValue", true)
+				.attr("x", xLegendTextPosition)
+				.attr("y", -8)
+				.attr("width", 100)
+				.text(legendTitle);
+	
+	
+			// Bar Legend Start Here
+			// Create X Scale for bar graph
+			var xScale = d3.scale.ordinal()
+				.domain([20])
+				.rangeRoundBands([0, 20]);
+	
+			//Create Y Scale for bar graph
+			var yScale = d3.scale.linear()
+				 .domain([yStartPoint, d3.max(dataset[0].timeSeriesParams.ticks, function (d) {
+				 return +d.value;
+			})])
+				.range([height, 0]);
+	
+			// Add Rectangles
+			this.append('g')
+				.attr("class", "bars")
+				.selectAll(".bar")
+				.data(intervals)
+				.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.style("fill", function (d, i) {
+				var color = intervals[i].color;
+				return color;
+			})
+				.attr("x", 0)
+				.attr("y", function (d) {
+				return yScale(+d.range)
+			})
+				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
+				.attr("height", function (d) {
+					if( maxValue >= d.range){
+						return height - yScale(+d.range) + 0;
+					}else{
+						return height - yScale(+maxValue) + 0 ;
+					}
+				});
+	
+	
+			// Text Wrapper
+			function wrap(text, width) {
+				text.each(function () {
+					var text = d3.select(this),
+						words = text.text().split(/\s+/).reverse(),
+						word,
+						line = [],
+						lineNumber = 0,
+						lineHeight = 1.1, // ems
+						y = text.attr("y"),
+						dy = parseFloat(text.attr("dy")),
+						tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+					while (word = words.pop()) {
+						line.push(word);
+						tspan.text(line.join(" "));
+						if (tspan.node().getComputedTextLength() > width) {
+							line.pop();
+							tspan.text(line.join(" "));
+							line = [word];
+							tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+						}
+					}
+				});
+			}
+	
+	
+	
+		} // End of plot function
+	
+	
+		// Call Plot
+		plot.call(chart, {
+			data: dataset,
+			axis: {
+				x: xAxis,
+				y: yAxis
+			}
+		});
+		// Reverse bars	
+		$('.bars > rect').each(function () {
+			$(this).prependTo(this.parentNode);
+		});
+	}		
+		
+		
+		
+		
+		
+		
+		
+		},
+  	error: function (xhr, exception, errorThrown) {
+						alert("no");
+						
+						console.log(xhr);
+		}
+  
+});
+
+	
+	
+	
+		
 </script>
 </html>
