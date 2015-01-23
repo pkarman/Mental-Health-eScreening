@@ -451,6 +451,7 @@ $(document).ready(function() {
 	                
 	                $this.html(""); //clear the graph area
 	                
+					
                   //process graph request by type
 	                if(graphObj.type == "stacked"){
 	                    graphStacked(graphId, graphObj, $this.parents(".moduleTemplate"));
@@ -604,6 +605,7 @@ $(document).ready(function() {
 		var prevInterval, prevName;
 		$.each(graphparams.intervals, function(name, intervalStart){
 			legends.push(name);
+
 			//skip the first one
 			if(prevInterval != null){
 				d3DataSet.push([{x:"", y:intervalStart}]);
@@ -825,11 +827,15 @@ $.ajax({
 	success : function(r){  
 		
 	// Call timeSeries function is success
-	timeSeries(${veteranAssessmentInfo.veteranId});
-	
-	function timeSeries(veteranId) {
-		
-		var vid = veteranId;
+	// timeSeries(${veteranAssessmentInfo.veteranId});
+	var vid = veteranId;
+
+    function timeSeries(graphId, graphObj, parentDiv){
+        parentDiv.addClass("graphicBlock");
+        
+        var titleContainer = parentDiv.children(".moduleTemplateTitle");
+        var graphContainer = parentDiv.children(".graphSection");
+        var descriptionContainer = parentDiv.children(".moduleTemplateText");
 		
 		/*
 		var dataset = [{
@@ -879,6 +885,32 @@ $.ajax({
 		var colors          = ['#75cc51', '#f4e800', '#ff9e58', '#e46a69', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"]; // TODO - May need to swap with this list 
 		
 		
+		// In progress
+		/*
+		var graphparams.intervals = {"2015-01-23T02:31:09.000+0000":"14.0"};
+		
+		$.each(graphparams.intervals, function(date, value){
+
+			legends.push(date);
+			//skip the first one
+			if(prevInterval != null){
+				d3DataSet.push([{date:"", value:intervalStart}]);
+			}
+			else{
+				//graphStart = intervalStart;
+			}
+			
+			/*
+			if(prevInterval != null && graphparams.score >= prevInterval && graphparams.score < intervalStart){
+				scoresInterval = prevName;
+		    }
+			prevInterval = intervalStart;
+			prevName = name;
+			
+		
+		});*/
+			
+			
 		// Static Vars
 		var legendTitle = "My Score"; 
 		
@@ -1142,19 +1174,9 @@ $.ajax({
 		$('.bars > rect').each(function () {
 			$(this).prependTo(this.parentNode);
 		});
-	}		
-		
-		
-		
-		
-		
-		
-		
+	}				
 		},
-  	error: function (xhr, exception, errorThrown) {
-						alert("no");
-						
-						console.log(xhr);
+  			error: function (xhr, exception, errorThrown) {
 		}
   
 });
