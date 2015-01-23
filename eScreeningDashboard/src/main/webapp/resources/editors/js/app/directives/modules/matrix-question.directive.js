@@ -47,7 +47,7 @@
 					if (question && scope.question.childQuestions) {
 						// Create question agnostic answers
 						_.each(scope.question.childQuestions[0].answers, function(answer) {
-							scope.answers.push({text: answer.text, exportName: answer.exportName.split('_')[1]});
+							scope.answers.push({text: answer.text, exportName: answer.exportName.replace(scope.question.childQuestions[0].variableName, '')});
 						});
 					}
 
@@ -58,14 +58,17 @@
 						_.each(scope.question.childQuestions, function(question) {
 							mergeByProperty(question.answers, scope.answers, 'text');
 							_.each(question.answers, function(answer) {
+								console.log('answer', answer);
+								console.log('question', question);
 								answer.exportName = question.variableName + '_' + answer.exportName;
+								console.log(answer.exportName);
 							});
 						});
 					}
 				}, true);
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push({text:'Enter Answer Test', exportName: 0});
+					scope.answers.push({text:'', exportName: ''});
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -73,7 +76,7 @@
 				};
 
 				scope.addQuestion = function addQuestion() {
-					scope.question.childQuestions.push(Question.create());
+					scope.question.childQuestions.push(Question.extend({}));
 				};
 
 				scope.deleteQuestion = function deleteQuestion(index) {
@@ -83,6 +86,8 @@
 				function mergeByProperty(arr1, arr2, prop) {
 					_.each(arr2, function(arr2obj) {
 						var arr1obj = _.find(arr1, function(arr1obj) {
+							console.log('arr1obj[prop]', arr1obj[prop]);
+							console.log('arr2obj[prop]', arr2obj[prop]);
 							return arr1obj[prop] === arr2obj[prop];
 						});
 
