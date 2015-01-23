@@ -7,7 +7,7 @@ update template set template_file = '<#include "clinicalnotefunctions">
 	${GRAPH_SECTION_START} 
 	${GRAPH_BODY_START} 
 		{
-			"varId": 2300, 
+			"varId": 1599, 
 		 	"title": "My Depression Score", 
  			"footer": "*a score of 10 or greater is a positive screen", 
 		 	"footer": "", 
