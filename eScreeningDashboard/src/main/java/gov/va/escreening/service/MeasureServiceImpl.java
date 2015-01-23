@@ -8,6 +8,7 @@ import gov.va.escreening.repository.MeasureTypeRepository;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +35,13 @@ public class MeasureServiceImpl implements MeasureService {
     public List<Measure> getMeasuresBySurvey(Integer surveyId) {
     	List<Measure> measures = measureRepository.getMeasuresBySurvey(surveyId);
     	return measures;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId) {
+        Measure dbMeasure=measureRepository.findOne(measureId);
+        gov.va.escreening.dto.ae.Measure dtoMeasure=new gov.va.escreening.dto.ae.Measure(dbMeasure,null,null);
+        return dtoMeasure;
     }
 }

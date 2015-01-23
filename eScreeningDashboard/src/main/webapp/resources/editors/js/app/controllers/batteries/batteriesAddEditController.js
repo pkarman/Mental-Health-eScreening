@@ -52,8 +52,6 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
             });
         });
 		
-		console.log('BATTERYSECTIONS:: ' + JSON.stringify($scope.batterySections));
-		
 		// Second to Lastly, set visibility of availSections surveys on the basis of what is present on batterySections
 		$scope.batterySections.forEach(function(batterySectionUIObject) {
             $scope.availSections.forEach(function(availableSectionUIObject){
@@ -273,18 +271,31 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
     		// Create.
     		BatteryService.create(BatteryService.setCreateBatteryRequestParameter(currentlySelectedUpdatedBattery)).then(
                 function(battery){
-                    $state.go('home');
+                    $state.go('batteries.list');
                 }
             );
     	} else {
     		// Update.
     		BatteryService.update(BatteryService.setUpdateBatteryRequestParameter(currentlySelectedUpdatedBattery)).then(
                 function(battery){
-                    $state.go('home');
+                    $state.go('batteries.list');
                 }
             );
     	}
     };
     
-    $scope.cancelBattery = function(){$state.go('home');};
+    $scope.cancelBattery = function(){$state.go('batteries.list');};
+    
+    $scope.isBatterySaved = function(){
+        return Object.isDefined($scope.currentlySelectedBattery) 
+        		&& Object.isDefined($scope.currentlySelectedBattery.getId()) 
+        		&& $scope.currentlySelectedBattery.getId() >= 0;
+    }
+    
+    $scope.editTemplates = function(){
+    	$state.go('batteries.templates', 
+                {relatedObjId: $scope.currentlySelectedBattery.getId(), 
+    			 relatedObjName: encodeURIComponent($scope.currentlySelectedBattery.getName())});
+    }
+    
 }]);

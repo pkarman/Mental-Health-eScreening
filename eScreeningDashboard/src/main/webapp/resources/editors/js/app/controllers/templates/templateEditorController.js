@@ -1,7 +1,7 @@
 Editors.controller('testModalCtrl', ['$scope', function($scope) {
 }]);
-Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 
-                                                function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template) {
+Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 'relatedObj', 
+                                                function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template, relatedObj) {
 
     console.log("In templateEditorController");
 
@@ -12,24 +12,24 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     $scope.debug = false;
     $scope.logId=0;
 
-    //TODO: change $stateParams to be more abstract (i.e. use relObj, relObjName, relObjType) so this can be reused for battery templates
-    $scope.relatedObj = {
-        id: $stateParams.selectedSurveyId,
-        name: decodeURIComponent($stateParams.selectedSurveyName),
-        type: "module"
-    };    
+    $scope.relatedObj = relatedObj;
 
+    var queryObj;
     if ($scope.relatedObj.type === "module") {
-        
-        $scope.assessmentVariables = AssessmentVariableService.query({surveyId: $scope.relatedObj.id})
-            .then(function(assessmentVariables) {
-                assessmentVariables.forEach(function(variable){
-                        $scope.variableHash[variable.id] = variable;
-                    });
-                    
-                    return assessmentVariables;
-                });
+    	queryObj = {surveyId: $scope.relatedObj.id};
     }
+    else if($scope.relatedObj.type === "battery") {
+    	queryObj = {batteryId: $scope.relatedObj.id};
+    }
+    
+    $scope.assessmentVariables = AssessmentVariableService.query(queryObj)
+        .then(function(assessmentVariables) {
+            assessmentVariables.forEach(function(variable){
+                    $scope.variableHash[variable.id] = variable;
+                });
+                
+                return assessmentVariables;
+            });
 
     $scope.save = function () {
         console.log("Save clicked");
@@ -43,14 +43,12 @@ Editors.controller('templateEditorController', ['$rootScope', '$scope', '$state'
     };
 
     $scope.done = function (wasSaved) {
-        console.log("Redirecting to module templates");
-        if ($scope.relatedObj.type == "module") {
-            var stateParams = angular.copy($stateParams);
-            if (wasSaved) {
-                stateParams.saved = wasSaved;
-            }
-            return $state.go('modules.templates', stateParams);
+        console.log("Redirecting to list of templates");
+        var stateParams = angular.copy($stateParams);
+        if (wasSaved) {
+            stateParams.saved = wasSaved;
         }
+        return $state.go('^.templates', stateParams);
     };
 
     //helper function for debugging drag and drop rules (only when we want tons of logs)

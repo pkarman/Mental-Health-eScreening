@@ -2,11 +2,9 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureType;
 import gov.va.escreening.entity.Survey;
 
 import java.util.Collection;
-import java.util.Set;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -22,8 +20,20 @@ public interface AssessmentVariableService {
 	 * 
 	 * @return
 	 */
-	Table<String, String, Object> getAssessmentVarsFor(int surveyId);
+	Table<String, String, Object> getAssessmentVarsForSurvey(int surveyId);
 
+	/**
+	 * Retrieves all assessment variables contained in a battery which means that all measures of the relevant 
+	 * type for each survey currently associated with the battery will be returned. 
+	 * 
+	 * @param batteryId
+	 * 
+	 * @return all {@link AssessmentVariable} as a table of name value pair belonging to requested battery. 
+	 * {@link Table} Table<String, String, String> is defined as row, column name, and column value
+	 */
+	Table<String, String, Object> getAssessmentVarsForBattery(int batteryId);
+
+	
 	Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
 	Collection<AssessmentVariable> findAllFormulae();

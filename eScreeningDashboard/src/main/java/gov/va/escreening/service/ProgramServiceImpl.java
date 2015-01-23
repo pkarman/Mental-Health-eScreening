@@ -348,6 +348,7 @@ public class ProgramServiceImpl implements ProgramService {
 		program.setIsDisabled(isDisabled);
 
 		programRepository.update(program);
+		programRepository.commit();
 	}
 
 	@Autowired

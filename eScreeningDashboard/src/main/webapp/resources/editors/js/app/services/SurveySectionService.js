@@ -15,236 +15,236 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
          * @returns {promise} A promise.
          */
         var query = function (querySurveySectionSearchCriteria) {
-            /**
-             * Represents the angular Defer that is used for asynchronous service calls.
-             *
-             * @private
-             * @field
-             * @type {Defer}
-             */
-            var deferred = $q.defer(),
-                service = $resource (
-                    "services/:surveySections/:surveySectionId",
-                    {},
-                    {
-                        query: {
-                            method: 'GET',
-                            params: {},
-                            isArray: false,
-                            headers:{
-                                'Accept': 'application/json',
-                                'Content-Type':'application/json'
-                            }
-                        }
-                    }
-                );
-
-            service.query(querySurveySectionSearchCriteria, function (jsonResponse) {
-                var response = handleSurveySectionQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionsTransformer, null),
-                    payload;
-
-                if(response.isSuccessful()){
-                    if(Object.isArray(response.getPayload())){
-                       if(response.getPayload().length === 1){
-                           payload = EScreeningDashboardApp.models.SurveySectionTransformer.transformJSONPayload({surveySection: response.getPayload()[0].toJSON()}, null);
-                           response = new BytePushers.models.Response(response.getStatus(), payload);
-                       }
-                    }
-                }
-                deferred.resolve(response);
-            }, function (reason) {
-                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
-
-                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
-                	errorMessage = HttpRejectionProcessor.processRejection(reason);
-                }
-
-                deferred.reject(new BytePushers.models.ResponseStatus(
-                    {
-                        "message": errorMessage,
-                        "status": "failed"
-                    }
-                ));
-            });
-
-            return deferred.promise;
-        },
-        /**
-         * Convenience method that supports updating a Survey Section via the SurveySectionService.
-         *
-         * @param {{surveySectionId: String, surveySection: EScreeningDashboardApp.models.SurveySection, surveySections: String }}  saveSurveySectionRequestParameters Represents the save parameters for the request.
-         */
-        update = function (updateSurveySectionRequestParameter) {
-        	
-            /**
-             * Represents the angular Defer that is used for asynchronous service calls.
-             *
-             * @private
-             * @field
-             * @type {Defer}
-             */
-            var deferred = $q.defer(),
                 /**
-                 * Represents the angular Resource object that is used for asynchronous service calls.
+                 * Represents the angular Defer that is used for asynchronous service calls.
                  *
                  * @private
                  * @field
-                 * @type {Resource}
+                 * @type {Defer}
                  */
-                service = $resource(
-                    "services/:surveySections/:surveySectionId",
-                    {},
-                    {
-                        save: {
-                            method: 'PUT',
-                            params: {
-                                "surveySectionId": updateSurveySectionRequestParameter.surveySectionId,
-                                "surveySections": updateSurveySectionRequestParameter.surveySections
-                            },
-                            isArray: false,
-                            headers:{
-                                'Accept': 'application/json',
-                                'Content-Type':'application/json'
-                            }
-                        }
-                    }
-                );
-
-            service.save(updateSurveySectionRequestParameter.surveySection.toJSON(), function (jsonResponse) {
-                var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
-                deferred.resolve(response);
-            }, function (reason) {
-                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
-
-                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
-                    errorMessage = HttpRejectionProcessor.processRejection(reason);
-                }
-
-                deferred.reject(new BytePushers.models.ResponseStatus(
-                    {
-                        "message": errorMessage,
-                        "status": "failed"
-                    }
-                ));
-            });
-
-            return deferred.promise;
-        },
-        /**
-         * Convenience method that supports creating a Survey Section via the SurveySectionService.
-         *
-         * @param {{surveySectionId: String, surveySection: EScreeningDashboardApp.models.SurveySection, surveySections: String }}  saveSurveySectionRequestParameters Represents the save parameters for the request.
-         */
-        create = function (updateSurveySectionRequestParameter) {
-
-            /**
-             * Represents the angular Defer that is used for asynchronous service calls.
-             *
-             * @private
-             * @field
-             * @type {Defer}
-             */
-            var deferred = $q.defer(),
-                /**
-                 * Represents the angular Resource object that is used for asynchronous service calls.
-                 *
-                 * @private
-                 * @field
-                 * @type {Resource}
-                 */
-                service = $resource(
-                    "services/:surveySection",
-                    {},
-                    {
-                        save: {
-                            method: 'PUT',
-                            params: {
-                                "surveySection": updateSurveySectionRequestParameter.surveySection
-                            },
-                            isArray: false,
-                            headers:{
-                                'Accept': 'application/json',
-                                'Content-Type':'application/json'
-                            }
-                        }
-                    }
-                );
-
-            service.save(updateSurveySectionRequestParameter.payload.toJSON(), function (jsonResponse) {
-                var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
-                deferred.resolve(response);
-            }, function (reason) {
-                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
-
-                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
-                    errorMessage = HttpRejectionProcessor.processRejection(reason);
-                }
-
-                deferred.reject(new BytePushers.models.ResponseStatus(
-                    {
-                        "message": errorMessage,
-                        "status": "failed"
-                    }
-                ));
-            });
-
-            return deferred.promise;
-        },
-        /**
-         * Convenience method that supports removing an Survey Section via the SurveySectionService.
-         *
-         * @param {{surveySectionId: string}}  saveAuditRequestParameters Represents the save parameters for the request.
-         */
-        remove = function (removeSurveySectionRequestParameters) {
-            /**
-             * Represents the angular Defer that is used for asynchronous service calls.
-             *
-             * @private
-             * @field
-             * @type {Defer}
-             */
-            var deferred = $q.defer(),
-                /**
-                 * Represents the angular Resource object that is used for asynchronous service calls.
-                 *
-                 * @private
-                 * @field
-                 * @type {Resource}
-                 */
-                service = $resource(
+                var deferred = $q.defer(),
+                    service = $resource (
                         "services/:surveySections/:surveySectionId",
-                    {},
-                    {
-                        save: {
-                            method: 'DELETE',
-                            params: {
-                                "surveySectionId": removeSurveySectionRequestParameters.surveySectionId
-                            },
-                            isArray: false
+                        {},
+                        {
+                            query: {
+                                method: 'GET',
+                                params: {},
+                                isArray: false,
+                                headers:{
+                                    'Accept': 'application/json',
+                                    'Content-Type':'application/json'
+                                }
+                            }
+                        }
+                    );
+
+                service.query(querySurveySectionSearchCriteria, function (jsonResponse) {
+                    var response = handleSurveySectionQueryResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionsTransformer, null),
+                        payload;
+
+                    if(response.isSuccessful()){
+                        if(Object.isArray(response.getPayload())){
+                            if(response.getPayload().length === 1){
+                                payload = EScreeningDashboardApp.models.SurveySectionTransformer.transformJSONPayload({surveySection: response.getPayload()[0].toJSON()}, null);
+                                response = new BytePushers.models.Response(response.getStatus(), payload);
+                            }
                         }
                     }
-                );
+                    deferred.resolve(response);
+                }, function (reason) {
+                    var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
 
-            service.save(removeSurveySectionRequestParameters, function (jsonResponse) {
-                var response = handleSurveySectionRemoveResponse(jsonResponse);
-                deferred.resolve(response);
-            }, function (reason) {
-                var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
-
-                if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
-                    errorMessage = HttpRejectionProcessor.processRejection(reason);
-                }
-
-                deferred.reject(new BytePushers.models.ResponseStatus(
-                    {
-                        "message": errorMessage,
-                        "status": "failed"
+                    if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                        errorMessage = HttpRejectionProcessor.processRejection(reason);
                     }
-                ));
-            });
 
-            return deferred.promise;
-        };
+                    deferred.reject(new BytePushers.models.ResponseStatus(
+                        {
+                            "message": errorMessage,
+                            "status": "failed"
+                        }
+                    ));
+                });
+
+                return deferred.promise;
+            },
+            /**
+             * Convenience method that supports updating a Survey Section via the SurveySectionService.
+             *
+             * @param {{surveySectionId: String, surveySection: EScreeningDashboardApp.models.SurveySection, surveySections: String }}  saveSurveySectionRequestParameters Represents the save parameters for the request.
+             */
+            update = function (updateSurveySectionRequestParameter) {
+
+                /**
+                 * Represents the angular Defer that is used for asynchronous service calls.
+                 *
+                 * @private
+                 * @field
+                 * @type {Defer}
+                 */
+                var deferred = $q.defer(),
+                    /**
+                     * Represents the angular Resource object that is used for asynchronous service calls.
+                     *
+                     * @private
+                     * @field
+                     * @type {Resource}
+                     */
+                    service = $resource(
+                        "services/:surveySections/:surveySectionId",
+                        {},
+                        {
+                            save: {
+                                method: 'PUT',
+                                params: {
+                                    "surveySectionId": updateSurveySectionRequestParameter.surveySectionId,
+                                    "surveySections": updateSurveySectionRequestParameter.surveySections
+                                },
+                                isArray: false,
+                                headers:{
+                                    'Accept': 'application/json',
+                                    'Content-Type':'application/json'
+                                }
+                            }
+                        }
+                    );
+
+                service.save(updateSurveySectionRequestParameter.surveySection.toJSON(), function (jsonResponse) {
+                    var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
+                    deferred.resolve(response);
+                }, function (reason) {
+                    var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                    if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                        errorMessage = HttpRejectionProcessor.processRejection(reason);
+                    }
+
+                    deferred.reject(new BytePushers.models.ResponseStatus(
+                        {
+                            "message": errorMessage,
+                            "status": "failed"
+                        }
+                    ));
+                });
+
+                return deferred.promise;
+            },
+            /**
+             * Convenience method that supports creating a Survey Section via the SurveySectionService.
+             *
+             * @param {{surveySectionId: String, surveySection: EScreeningDashboardApp.models.SurveySection, surveySections: String }}  saveSurveySectionRequestParameters Represents the save parameters for the request.
+             */
+            create = function (updateSurveySectionRequestParameter) {
+
+                /**
+                 * Represents the angular Defer that is used for asynchronous service calls.
+                 *
+                 * @private
+                 * @field
+                 * @type {Defer}
+                 */
+                var deferred = $q.defer(),
+                    /**
+                     * Represents the angular Resource object that is used for asynchronous service calls.
+                     *
+                     * @private
+                     * @field
+                     * @type {Resource}
+                     */
+                    service = $resource(
+                        "services/:surveySection",
+                        {},
+                        {
+                            save: {
+                                method: 'PUT',
+                                params: {
+                                    "surveySection": updateSurveySectionRequestParameter.surveySection
+                                },
+                                isArray: false,
+                                headers:{
+                                    'Accept': 'application/json',
+                                    'Content-Type':'application/json'
+                                }
+                            }
+                        }
+                    );
+
+                service.save(updateSurveySectionRequestParameter.payload.toJSON(), function (jsonResponse) {
+                    var response = handleSurveySectionSaveResponse(jsonResponse, EScreeningDashboardApp.models.SurveySectionTransformer);
+                    deferred.resolve(response);
+                }, function (reason) {
+                    var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                    if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                        errorMessage = HttpRejectionProcessor.processRejection(reason);
+                    }
+
+                    deferred.reject(new BytePushers.models.ResponseStatus(
+                        {
+                            "message": errorMessage,
+                            "status": "failed"
+                        }
+                    ));
+                });
+
+                return deferred.promise;
+            },
+            /**
+             * Convenience method that supports removing an Survey Section via the SurveySectionService.
+             *
+             * @param {{surveySectionId: string}}  saveAuditRequestParameters Represents the save parameters for the request.
+             */
+            remove = function (removeSurveySectionRequestParameters) {
+                /**
+                 * Represents the angular Defer that is used for asynchronous service calls.
+                 *
+                 * @private
+                 * @field
+                 * @type {Defer}
+                 */
+                var deferred = $q.defer(),
+                    /**
+                     * Represents the angular Resource object that is used for asynchronous service calls.
+                     *
+                     * @private
+                     * @field
+                     * @type {Resource}
+                     */
+                    service = $resource(
+                        "services/:surveySections/:surveySectionId",
+                        {},
+                        {
+                            save: {
+                                method: 'DELETE',
+                                params: {
+                                    "surveySectionId": removeSurveySectionRequestParameters.surveySectionId
+                                },
+                                isArray: false
+                            }
+                        }
+                    );
+
+                service.save(removeSurveySectionRequestParameters, function (jsonResponse) {
+                    var response = handleSurveySectionRemoveResponse(jsonResponse);
+                    deferred.resolve(response);
+                }, function (reason) {
+                    var errorMessage = "Sorry, we are unable to process your request at this time because we experiencing problems communicating with the server."
+
+                    if(Object.isDefined(reason) && Object.isDefined(reason.status) && Object.isNumber(reason.status)) {
+                        errorMessage = HttpRejectionProcessor.processRejection(reason);
+                    }
+
+                    deferred.reject(new BytePushers.models.ResponseStatus(
+                        {
+                            "message": errorMessage,
+                            "status": "failed"
+                        }
+                    ));
+                });
+
+                return deferred.promise;
+            };
 
         /**
          * Convenience method that sets the request parameter for the survey section update service request.
@@ -410,14 +410,14 @@ angular.module('EscreeningDashboardApp.services.surveysection', ['ngResource'])
              * @field
              * @type {EScreeningDashboardApp.models.Response}
              */
-        	
-        	if (!jsonResponse.status.status == 'succeeded'){
-	            var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId);
-	
-	            if (response === null) {
-	                throw new Error("handleSurveySectionServiceQueryResponse() method: Response is null.");
-	            }
-        	}
+
+            if (!jsonResponse.status.status == 'succeeded'){
+                var response = BytePushers.models.ResponseTransformer.transformJSONResponse(jsonResponse, null, userId);
+
+                if (response === null) {
+                    throw new Error("handleSurveySectionServiceQueryResponse() method: Response is null.");
+                }
+            }
 
             return response;
         };

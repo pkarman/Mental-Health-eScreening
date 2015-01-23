@@ -25,5 +25,6 @@ public interface SurveyBaseProperties {
     String getVistaTitle();
     void setVistaTitle(String vistaTitle);
     Boolean isClinicalReminder();
-
+    void setDisplayOrderForSection(Integer displayOrder);
+    Integer getDisplayOrderForSection();
 }

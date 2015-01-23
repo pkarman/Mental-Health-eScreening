@@ -2,6 +2,7 @@ package gov.va.escreening.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +48,9 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String mhaTestName;
     @Column(name = "mha_result_group_ien")
     private String mhaResultGroupIen;
-    
+    @Column(name = "display_order_for_section")
+    private Integer displayOrderForSection;
+
     @Column(name = "vista_title")
     private String vistaTitle;
     
@@ -60,7 +63,7 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private List<VeteranAssessmentSurvey> veteranAssessmentSurveyList;
     
     @JoinColumn(name = "survey_section_id", referencedColumnName = "survey_section_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.ALL,optional = false)
     private SurveySection surveySection;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
@@ -184,6 +187,19 @@ public class Survey implements Serializable, SurveyBaseProperties{
     public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
         return surveyMeasureResponseList;
     }
+    
+    /**
+     * Creates a list of measures by collecting measures for each survey page in this survey. 
+     * This list is created on every call (i.e. no caching for now).
+     * @return list of all measures in this survey
+     */
+    public List<Measure> createMeasureList(){
+    	List<Measure> measures = new LinkedList<>();
+    	for(SurveyPage page : surveyPageList){
+    		measures.addAll(page.getMeasures());
+    	}
+    	return measures;
+    }
 
     public void setSurveyMeasureResponseList(
             List<SurveyMeasureResponse> surveyMeasureResponseList) {
@@ -210,6 +226,16 @@ public class Survey implements Serializable, SurveyBaseProperties{
     {
         return clinicalReminderSurveyList!=null 
                 && (!clinicalReminderSurveyList.isEmpty());
+    }
+
+    @Override
+    public void setDisplayOrderForSection(Integer displayOrder) {
+        this.displayOrderForSection=displayOrder;
+    }
+
+    @Override
+    public Integer getDisplayOrderForSection() {
+        return this.displayOrderForSection;
     }
 
     public String getVistaTitle() {
