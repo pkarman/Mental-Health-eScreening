@@ -373,13 +373,24 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     }
 
     @Override
-    public void takeAssessmentSnapShot() {
+    public void takeAssessmentSnapShot(Integer clinicianId, Integer exportedById, Integer createdBy) {
         Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+
         Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();
+        if (lastSnapshotDate == null) {
+            logger.warn("This is the first time snapshot being taken");
+            lastSnapshotDate = LocalDate.now().toDate();
+        }
         ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
         exportDataFormBean.setHasParameter(true);
         exportDataFormBean.setFromAssessmentDate(LocalDate.fromDateFields(lastSnapshotDate).plusDays(1).toDate());
         exportDataFormBean.setToAssessmentDate(LocalDate.now().toDate());
+        exportDataFormBean.setClinicianId(clinicianId);
+        exportDataFormBean.setExportedByUserId(exportedById);
+        exportDataFormBean.setCreatedByUserId(createdBy);
+        exportDataFormBean.setExportTypeId(ExportTypeEnum.DEIDENTIFIED.getExportTypeId());
+        exportDataFormBean.setCommentText("snapshot taken before changing meta information");
+
         getAssessmentDataExport(dd, exportDataFormBean);
     }
 
