@@ -869,6 +869,7 @@ $(document).ready(function() {
 
     function appendTimeSeries(parentSelector, graphparams, points){
 		
+    	$(parentSelector).addClass("timeSeries");
 		/*
 		var dataset = [{
 						"varId": 2300,
@@ -923,7 +924,7 @@ $(document).ready(function() {
 				right: 140
 			},
 			xRangeStart = 25,		// Move the x axis to right
-			yStartPoint = 20; 		// Start Point for y axis
+			yStartPoint = 0; 		// Start Point for y axis
 			
 					
 		var colors = ['#75cc51', '#f4e800', '#ff9e58', '#e46a69', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"]; // TODO - May need to swap with this list 
@@ -1047,7 +1048,7 @@ $(document).ready(function() {
 				return x(date);
 			})
 				.attr("y", function (d) {
-				return y(+d.value - 8);
+				return y(+d.value - 3);
 			});
 	
 			// Exit Plot Started Here
@@ -1110,7 +1111,7 @@ $(document).ready(function() {
 			 legend.append("text")
 				.classed("pointTextValue", true)
 				.attr("x", xLegendTextPosition)
-				.attr("y", -8)
+				.attr("y", -2)
 				.attr("width", 100)
 				.text(legendTitle);
 	
