@@ -28,6 +28,8 @@ import javax.resource.ResourceException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,6 +41,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/data-config.xml", "file:src/main/webapp/WEB-INF/spring/spring-security.xml","file:src/main/webapp/WEB-INF/spring/business-config.xml","/application-context-vistalink-test.xml" })
 public class VistaRPCTest {
+	private static final Logger logger = LoggerFactory.getLogger(VistaRPCTest.class);
 	@Autowired
 	private VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory;
 	@Autowired
@@ -178,7 +181,7 @@ public class VistaRPCTest {
 	}
 
 	private String deleteProgressNote(Long progressNoteIEN) throws VistaLinkFaultException, FoundationsException, ResourceException {
-		System.out.println("Delete Progress Note - IEN: " + progressNoteIEN);
+		logger.warn("Delete Progress Note - IEN: " + progressNoteIEN);
 		VistaLinkConnection connection = getVistaLinkDuzConnection("500", "10000000056");
 		RpcRequest request = createRpcRequest("OR CPRS GUI CHART", connection, true);
 		List requestParams = new ArrayList();
@@ -189,7 +192,7 @@ public class VistaRPCTest {
 		request.setParams(requestParams);
 
 		RpcResponse response = connection.executeRPC(request);
-		System.out.println("Delete Progress Note Response: " + response.getResults());
+		logger.warn("Delete Progress Note Response: " + response.getResults());
 		request = null;
 		connection = null;
 		return response.getResults();
