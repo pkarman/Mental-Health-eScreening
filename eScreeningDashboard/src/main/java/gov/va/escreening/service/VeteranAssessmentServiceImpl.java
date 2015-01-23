@@ -1122,7 +1122,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 	}
 
-	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	@Override
 	public Map<String, String> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {

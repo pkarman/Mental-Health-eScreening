@@ -904,7 +904,7 @@ $(document).ready(function() {
 			}
 			
 			ticks.push({
-				'date': date,
+				'date': date.split(" ")[0], //parse out the date (removing time)
 				'value': value
 			});
 		});
