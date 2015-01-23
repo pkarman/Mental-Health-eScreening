@@ -898,7 +898,9 @@ $(document).ready(function() {
 		
 		var ticks = [];
 		var maxValue;
-		$.each(points, function(date, value){
+		$.each(points, function(date, valueStr){
+			//TODO: Add check if can't be parsed
+			var value = parseFloat(valueStr);
 			if(maxValue == null || maxValue < value){
 				maxValue = value;
 			}
