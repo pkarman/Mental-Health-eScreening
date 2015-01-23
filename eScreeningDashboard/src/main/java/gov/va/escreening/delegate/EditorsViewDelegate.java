@@ -1,5 +1,6 @@
 package gov.va.escreening.delegate;
 
+import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
@@ -25,10 +26,14 @@ public interface EditorsViewDelegate {
    	List<SurveySectionInfo> getSections();
     SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo);
    	void deleteSection(Integer surveySectionId);
-   	
-   	void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
+
+    SurveyInfo findSurvey(Integer surveyId);
+
+    void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
 	SurveyInfo createSurvey(SurveyInfo survey);
+
+    Measure findMeasure(Integer questionId);
 }

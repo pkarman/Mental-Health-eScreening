@@ -2,11 +2,13 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
@@ -87,6 +89,9 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	@Resource(type = SurveyPageMeasureRepository.class)
 	SurveyPageMeasureRepository spmr;
+	
+	@Resource(type = BatteryRepository.class)
+	BatteryRepository batteryRepo;
 
 	@Override
 	public Multimap<Survey, Measure> buildSurveyMeasuresMap() {
@@ -147,13 +152,17 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			boolean useFilteredMeasures) {
 		
 		boolean ignoreAnswers=useFilteredMeasures;
+		Collection<Measure>filteredMeasures = null;
+		if(useFilteredMeasures){
+			filteredMeasures = filterMeasures(smList, filterMeasureTypes);
+		}
 		
 		for (AssessmentVariable av : avList) {
 			int avTypeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 			switch (avTypeId) {
 			case 1:
-				Collection<Measure> filteredMeasures = useFilteredMeasures ? filterMeasures(smList, filterMeasureTypes) : smList;
-				handleMeasureType(av, filteredMeasures, avBldr);
+				Collection<Measure> measures = useFilteredMeasures ? filteredMeasures : smList;
+				handleMeasureType(av, measures, avBldr);
 				break;
 			case 2:
 				// if caller has asked to filter the measures (see case 1) then do not return measure answers
@@ -162,7 +171,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				}
 				break;
 			case 3:
-				handleCustomType(av, smList, avBldr);
+				handleCustomType(av, avBldr);
 				break;
 			case 4:
 				handleFormulaType(survey, av, smList, avBldr, avList, ignoreAnswers);
@@ -185,7 +194,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	 * return all Assessments Variables without any filtering except when the AssessmentVariable of type 1 (av_type=1) (Measure). 
 	 * If av_type=1 then only return those which belong to Measure Types of 1, 2, or 3
 	 */
-	public Table<String, String, Object> getAssessmentVarsFor(int surveyId) {
+	public Table<String, String, Object> getAssessmentVarsForSurvey(int surveyId) {
 
 		// by default have empty set of measures assigned to the requested Survey
 		Collection<Measure> measures = Lists.newArrayList();
@@ -205,9 +214,34 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		Table<String, String, Object> assessments = TreeBasedTable.create();
 
 		Collection<AssessmentVariable> avList = avr.findAll();
-		AvBuilder avModelBldr = new TableTypeAvModelBuilder(assessments);
+		AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
 		filterBySurvey(survey, avModelBldr, measures, avList, true);
-		return (Table<String, String, Object>) avModelBldr.getResult();
+		return avModelBldr.getResult();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	/**
+	 * @return assessment variables for the given battery
+	 */
+	public Table<String, String, Object> getAssessmentVarsForBattery(int batteryId) {
+		Table<String, String, Object> assessments = TreeBasedTable.create();
+		
+		if(batteryId > -1){
+			Battery battery = batteryRepo.findOne(batteryId);
+			if(battery != null){
+				Collection<AssessmentVariable> avList = avr.findAll();
+				AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
+				
+				for(Survey survey : battery.getSurveys()){
+					List<Measure> measures = survey.createMeasureList();
+					//TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
+					filterBySurvey(survey, avModelBldr, measures, avList, true);
+				}
+				assessments = avModelBldr.getResult();
+			}
+		}
+		return assessments;
 	}
 
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
@@ -223,8 +257,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return result;
 	}
 
-	private void handleCustomType(AssessmentVariable av,
-			Collection<Measure> smList, AvBuilder avModelBldr) {
+	private void handleCustomType(AssessmentVariable av, AvBuilder avModelBldr) {
 		avModelBldr.buildFromMeasureAnswer(av, null, null, null);
 	}
 
@@ -250,10 +283,10 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				// no need to compare measure or compare measure answer if the av is a formula type
 				if (!isFormulaType && compareMeasure(av, m)) {
 					avBldr.buildFromMeasure(av, avc, m);
-					handleCustomType(avFormula, smList, avBldr);
+					handleCustomType(avFormula, avBldr);
 				} else if (!ignoreAnswers && !isFormulaType && compareMeasureAnswer(av, m)) {
 					avBldr.buildFromMeasureAnswer(av, avc, m, avc.getVariableChild().getMeasureAnswer());
-					handleCustomType(avFormula, smList, avBldr);
+					handleCustomType(avFormula, avBldr);
 				}
 			}
 			if (!m.getChildren().isEmpty()) {

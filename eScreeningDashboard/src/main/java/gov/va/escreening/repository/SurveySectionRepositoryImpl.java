@@ -38,7 +38,7 @@ class SurveySectionRepositoryImpl  extends AbstractHibernateRepository<SurveySec
     public List<SurveySection> getSurveySectionList() {
 
         List<SurveySection> resultList = new ArrayList<SurveySection>();
-        String sql = "FROM SurveySection s ORDER BY s.displayOrder, s.name, s.surveySectionId";
+        String sql = "FROM SurveySection s ORDER BY s.displayOrder";
 
         TypedQuery<SurveySection> query = entityManager.createQuery(sql, SurveySection.class);
 

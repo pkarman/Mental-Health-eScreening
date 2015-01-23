@@ -19,3 +19,8 @@ UPDATE measure_answer SET export_name='serv_other2' WHERE measure_answer_id='152
 # UPDATE escreening.measure_answer SET export_name='serv_exp_other2' WHERE measure_answer_id='1275';
 # UPDATE escreening.measure_answer SET export_name='serv_oper_other1' WHERE measure_answer_id='1114';
 # UPDATE escreening.measure_answer SET export_name='serv_oper_other2' WHERE measure_answer_id='1115';
+
+/**** t754 **/
+UPDATE assessment_variable SET formula_template='(([1522]?1:0) + ([1523]?1:0) + ([1524]?1:0))' WHERE assessment_variable_id='10711';
+UPDATE assessment_variable SET formula_template='(([1532]?1:0) + ([1533]?1:0) + ([1534]?1:0) + ([1535]?1:0) + ([1536]?1:0))' WHERE assessment_variable_id='10712';
+

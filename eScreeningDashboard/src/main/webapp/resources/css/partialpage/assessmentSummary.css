@@ -186,10 +186,12 @@
 #VeteranSummaryModal .justifyLftTableData {
   text-align: left;
 }
-
+/*
 #VeteranSummaryModal .modal-body p {
   margin-bottom: 900px;
-}
+}*/
+
+
 #VeteranSummaryModal .moduleTemplateHeader h5 {
   font-size: 22px !important;
   font-weight: bold !important;
