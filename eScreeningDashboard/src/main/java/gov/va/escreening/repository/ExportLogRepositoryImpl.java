@@ -5,7 +5,9 @@ import gov.va.escreening.entity.ExportLog;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -34,14 +36,18 @@ public class ExportLogRepositoryImpl extends AbstractHibernateRepository<ExportL
     @Override
     public List<ExportLog> findAllMinusBytes() {
         TypedQuery<ExportLog> query = entityManager.createNamedQuery("ExportLog.findAllMinusBytes", ExportLog.class);
-        List<ExportLog> result =query.getResultList();
+        List<ExportLog> result = query.getResultList();
         return result;
     }
 
     @Override
     public Date findLastSnapshotDate() {
         TypedQuery<Date> query = entityManager.createNamedQuery("ExportLog.findLastSnapshotDate", Date.class);
-        Date date = query.getSingleResult();
-        return date;
+        Date lastSnapshotDate = query.getSingleResult();
+        if (lastSnapshotDate == null) {
+            logger.warn("This is the first time snapshot being taken");
+            lastSnapshotDate = LocalDate.now().toDate();
+        }
+        return new DateMidnight(lastSnapshotDate.getTime()).toDate();
     }
 }
