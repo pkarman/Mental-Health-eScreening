@@ -620,7 +620,7 @@ public class XportDataTest {
     @Test
     public void takeSnapShot() {
         List before = exportLogRepository.findAll();
-        exportDataService.takeAssessmentSnapShot(1, 1, 1);
+        exportDataService.takeAssessmentSnapShot(1);
         List after = exportLogRepository.findAll();
         Assert.assertTrue(after.size() - before.size() == 1);
     }

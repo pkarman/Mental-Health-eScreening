@@ -186,7 +186,7 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
 
     private void setCsvHeader(BufferedWriter writer, String header,
                               String fileName) throws IOException {
-        writer.write(String.format("%s %s dated %s", messageSource.getMessage("export.data.assessments.msg.intro", null, null), messageSource.getMessage("export.data.assessments.version", null, null), ISODateTimeFormat.dateTime().print(new DateTime())));
+        writer.write(String.format("%s dated %s", messageSource.getMessage("export.data.assessments.msg.intro", null, null), DateTime.now().toString("MM/dd/yy -- HH:mm:ss")));
         writer.newLine();
         writer.write(header);
         writer.newLine();

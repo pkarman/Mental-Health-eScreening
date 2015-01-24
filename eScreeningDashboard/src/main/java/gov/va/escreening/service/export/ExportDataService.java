@@ -19,7 +19,7 @@ public interface ExportDataService {
 	AssessmentDataExport getAssessmentDataExport(Map<String, Table<String, String, String>> dd,
 			ExportDataFormBean exportDataFormBean);
 
-	void takeAssessmentSnapShot(Integer clinicianId, Integer exportedById, Integer createdBy);
+	void takeAssessmentSnapShot(Integer exportedById);
 
 	AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
 			String comment);

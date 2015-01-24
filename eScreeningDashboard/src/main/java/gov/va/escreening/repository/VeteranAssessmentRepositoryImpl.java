@@ -100,7 +100,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		}
 
 		if (fromAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateCreated"), fromAssessmentDate));
+			criteriaList.add(criteriaBuilder.greaterThan(veteranAssessmentRoot.<Date> get("dateCreated"), fromAssessmentDate));
 		}
 
 		if (toAssessmentDate != null) {
