@@ -5,9 +5,10 @@ import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.AssessmentResponse;
-import gov.va.escreening.dto.ae.CompletionResponse;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.service.AssessmentEngineService;
 
@@ -23,12 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
 @Controller
 @RequestMapping(value = "/assessment")
@@ -63,10 +66,26 @@ public class AssessmentEngineController {
 		}
 	}
 	
-	@RequestMapping(value = "/welcome_msg", method = RequestMethod.GET)
-	public @ResponseBody String getWelcomeMessage()
-	{
-		return assessmentDelegate.getWelcomeMessage();
+	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
+	public @ResponseBody Map<String, String> getWelcomeMessage() throws IllegalSystemStateException	{
+		assessmentDelegate.ensureValidAssessmentContext();
+		String message = assessmentDelegate.getWelcomeMessage();
+		return ImmutableMap.of("message", Strings.nullToEmpty(message));
+	}
+
+	@RequestMapping(value = "/end", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
+	@ResponseBody
+	public Map<String,String> getCompletionData(HttpSession session) throws IllegalSystemStateException {
+		logger.debug("In getCompletionData");
+		assessmentDelegate.ensureValidAssessmentContext();
+		assessmentDelegate.markAssessmentAsComplete();
+
+		String message = assessmentDelegate.getCompletionMessage();
+		
+		// delete everything out of the session
+		session.invalidate();
+
+		return ImmutableMap.of("message", Strings.nullToEmpty(message));
 	}
 
 	@RequestMapping(value = "/services/assessments/active", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
@@ -98,19 +117,6 @@ public class AssessmentEngineController {
 		return assessmentResponse;
 	}
 
-	@RequestMapping(value = "/services/assessments/end/{batteryId}", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
-	@ResponseBody
-	public CompletionResponse getCompletionData(@PathVariable int batteryId, HttpSession session) {
-		logger.debug("In getCompletionData");
-		assessmentDelegate.ensureValidAssessmentContext();
-		assessmentDelegate.markAssessmentAsComplete();
-
-		// delete everything out of the session
-		session.invalidate();
-
-		return assessmentDelegate.getCompletionResponse(batteryId);
-	}
-
 	@RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
 	public Map<Integer, Boolean> processSurveyPageMeasureVisibility(
@@ -119,9 +125,9 @@ public class AssessmentEngineController {
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
-		long end1 = System.currentTimeMillis();
+		//long end1 = System.currentTimeMillis();
 		
 		/*** The following section are here for testing purpose only **********/
 //		Map<Integer, Boolean> regular = assessmentEngineService.getUpdatedVisibility(assessmentRequest);
@@ -145,9 +151,9 @@ public class AssessmentEngineController {
 	public ErrorResponse handleException(
 			AssessmentEngineDataValidationException ex) {
 
-		logger.debug("==>Assessment Engine Validation Exception");
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+		logger.error("==>Assessment Engine Validation Exception");
+		logger.error(ex.toString());
+		logger.error(ex.getErrorResponse().toString());
 
 		// returns the error response which contains a list of error messages
 		return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
@@ -158,11 +164,29 @@ public class AssessmentEngineController {
 	@ResponseBody
 	public ErrorResponse handleException(InvalidAssessmentContextException ex) {
 
-		logger.debug("==>Veteran Assessment Context  Exception");
-
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+		logger.error("==>Veteran Assessment Context  Exception");
+		logger.error(ex.toString());
+		logger.error(ex.getErrorResponse().toString());
 
 		return ex.getErrorResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
 	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
+		ErrorResponse er = enfe.getErrorResponse();
+    	logger.error(er.getLogMessage());
+        return er;
+    }
+	
+	@ExceptionHandler(IllegalSystemStateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleIllegalSystemStateException(IllegalSystemStateException isse) {
+		ErrorResponse er = isse.getErrorResponse();
+    	logger.error(er.getLogMessage());
+        return er;
+    }
+	
 }

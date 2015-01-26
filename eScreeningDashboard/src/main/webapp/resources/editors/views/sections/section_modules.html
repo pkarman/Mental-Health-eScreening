@@ -1,10 +1,16 @@
 <!-- The dnd-list directive allows to drop elements into it.
      The dropped data will be added to the referenced list -->
+   
+
 <ul dnd-list="ssRow.surveys" dnd-allowed-types="['moduleType']" ng-class="{'modules-list': ssRow.surveys.length == 0}">
     <!-- The dnd-draggable directive makes an element draggable and will
          transfer the object that was assigned to it. If an element was
          dragged away, you have to remove it from the original list
          yourself using the dnd-moved attribute -->
+    
+     <li ng-show="ssRow.surveys.length == 0" class="emptyDragableArea text-center">
+        There is no module assigned to {{ssRow.name}} section, please drag modules here from other sections.
+    </li>
     <li ng-repeat="survey in ssRow.surveys"
         dnd-draggable="survey"
         dnd-type="'moduleType'"

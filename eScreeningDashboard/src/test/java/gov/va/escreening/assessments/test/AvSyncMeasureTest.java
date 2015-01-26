@@ -34,157 +34,157 @@ public class AvSyncMeasureTest {
 
 	@Test
 	public void testAssessmentVariablesForSurveyId1() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(1);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(1);
 		showAssessmentsAsJson(1, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId2() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(2);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(2);
 		showAssessmentsAsJson(2, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId3() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(3);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(3);
 		showAssessmentsAsJson(3, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId4() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(4);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(4);
 		showAssessmentsAsJson(4, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId5() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(5);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(5);
 		showAssessmentsAsJson(5, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId6() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(6);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(6);
 		showAssessmentsAsJson(6, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId7() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(7);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(7);
 		showAssessmentsAsJson(7, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId8() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(8);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(8);
 		showAssessmentsAsJson(8, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId9() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(9);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(9);
 		showAssessmentsAsJson(9, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId10() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(10);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(10);
 		showAssessmentsAsJson(10, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId11() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(11);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(11);
 		showAssessmentsAsJson(11, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId12() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(12);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(12);
 		showAssessmentsAsJson(12, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId13() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(13);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(13);
 		showAssessmentsAsJson(13, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId14() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(14);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(14);
 		showAssessmentsAsJson(14, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId15() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(15);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(15);
 		showAssessmentsAsJson(15, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId16() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(16);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(16);
 		showAssessmentsAsJson(16, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId17() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(17);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(17);
 		showAssessmentsAsJson(17, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId18() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(18);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(18);
 		showAssessmentsAsJson(18, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId19() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(19);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(19);
 		showAssessmentsAsJson(19, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId20() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(20);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(20);
 		showAssessmentsAsJson(20, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId21() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(21);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(21);
 		showAssessmentsAsJson(21, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId22() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(22);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(22);
 		showAssessmentsAsJson(22, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId23() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(23);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(23);
 		showAssessmentsAsJson(23, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId24() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(24);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(24);
 		showAssessmentsAsJson(24, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId25() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(25);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(25);
 		showAssessmentsAsJson(25, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId26() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(26);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(26);
 		showAssessmentsAsJson(26, assessments);
 	}
 
@@ -219,115 +219,115 @@ public class AvSyncMeasureTest {
 
 	@Test
 	public void testAssessmentVariablesForSurveyId27() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(27);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(27);
 		showAssessmentsAsJson(27, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId28() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(28);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(28);
 		showAssessmentsAsJson(28, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId29() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(29);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(29);
 		showAssessmentsAsJson(29, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId30() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(30);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(30);
 		showAssessmentsAsJson(30, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId31() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(31);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(31);
 		showAssessmentsAsJson(31, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId32() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(32);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(32);
 		showAssessmentsAsJson(32, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId33() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(33);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(33);
 		showAssessmentsAsJson(33, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId34() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(34);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(34);
 		showAssessmentsAsJson(34, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId35() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(35);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(35);
 		showAssessmentsAsJson(35, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId36() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(36);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(36);
 		showAssessmentsAsJson(36, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId37() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(37);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(37);
 		showAssessmentsAsJson(37, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId38() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(38);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(38);
 		showAssessmentsAsJson(38, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId39() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(39);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(39);
 		showAssessmentsAsJson(39, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId40() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(40);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(40);
 		showAssessmentsAsJson(40, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId41() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(41);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(41);
 		showAssessmentsAsJson(41, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId42() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(42);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(42);
 		showAssessmentsAsJson(42, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId43() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(43);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(43);
 		showAssessmentsAsJson(43, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId44() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(44);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(44);
 		showAssessmentsAsJson(44, assessments);
 	}
 
 	@Test
 	public void testAssessmentVariablesForSurveyId45() {
-		Table<String, String, Object> assessments = avs.getAssessmentVarsFor(45);
+		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(45);
 		showAssessmentsAsJson(45, assessments);
 	}
 }

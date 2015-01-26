@@ -43,13 +43,13 @@ app.directive('reportTable', function() {
 	        aoColumns = [
 				{ "mData": "exportedOn", "type": "select", "values": [ '1 week', '2 weeks']},
 				{ "mData": "exportedBy"},
-				{ "mData": "assignedClinician"},
-				{ "mData": "createdByUser"},
+				//{ "mData": "assignedClinician"},
+				//{ "mData": "createdByUser"},
 				{ "mData": "exportType"},
 				{ "mData": "assessmentStartDate", "bSortable": false,"mRender":function(data, type, assessment){
 				       return "Start: " + assessment.assessmentStartDate + "<br > End: " +assessment.assessmentEndDate;}},
-				{ "mData": "programName"},
-				{ "mData": "veteranId","sClass":"numeric", "sWidth":"45px"},
+				//{ "mData": "programName"},
+				//{ "mData": "veteranId","sClass":"numeric", "sWidth":"45px"},
 				{ "mData": "comment", "sWidth":"150px", "sClass":"wrap", "bSortable": false},
 	        	{ "mData": "exportLogId", "bSortable": false, "sClass":"alignCenter", "mRender": function(data, type, full) { return '<a href="#"  data-toggle="modal" data-target="#modal_confirmation" onclick="'+checkDataType(full.exportType, full.exportLogId)+'" ng-model="exportIdentifiedDataButton" data-exportLogId="'+full.exportLogId+'"  data-exportType="exportAgain" class="font-size-24"><span class="glyphicon glyphicon-download"></span></a>'; }}];
 	        options["aoColumns"] = aoColumns;

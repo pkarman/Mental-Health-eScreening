@@ -1,6 +1,8 @@
 package gov.va.escreening.xport;
 
 import gov.va.escreening.service.export.DataDictionaryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +13,8 @@ import javax.annotation.Resource;
  */
 @Component("ddCache")
 public class DDCache {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Resource(type = DataDictionaryService.class)
     DataDictionaryService dds;
 
@@ -18,6 +22,7 @@ public class DDCache {
 
     @PostConstruct
     private void init() {
+        logger.warn(">>>>>>[init]DD-CREATE");
         dd = dds.createDataDictionary();
     }
 

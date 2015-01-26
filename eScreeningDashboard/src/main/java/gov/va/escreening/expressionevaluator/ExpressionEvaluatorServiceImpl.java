@@ -92,8 +92,8 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         ExpressionParser parser = new SpelExpressionParser();
         
         String expression = "(((true||false||false)?1:0) + ((true||true||false||false||false)?1:0) + (true?1:0) + (true?1:0))";
-        
-        System.out.println(parser.parseExpression(expression).getValue());
+
+		logger.warn(""+parser.parseExpression(expression).getValue());
     }
     
 }

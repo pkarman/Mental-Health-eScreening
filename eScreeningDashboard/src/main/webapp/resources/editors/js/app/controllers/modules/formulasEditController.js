@@ -1,10 +1,7 @@
 /**
  * Created by Khalid Rizvi @ 01/24/2015
  */
-Editors.controller('ModuleFormulasEditController', ['$log', '$scope', '$stateParams', 'ManageFormulasService', function ($log, $scope, $stateParams, ManageFormulasService) {
-    //$scope.module = {
-    //    name: ManageFormulasService.findModuleNameById($stateParams.moduleId),
-    //    av: ManageFormulasService.findAvById($stateParams.avId)
-    //};
-    //$log.debug($scope.module);
+Editors.controller('ModuleFormulasEditController', ['$log', '$scope', '$stateParams', 'FormulasService', function ($log, $scope, $stateParams, FormulasService) {
+    $scope.formula=FormulasService.fetchCurrentFormula();
+    $log.debug($scope);
 }]);

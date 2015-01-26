@@ -99,30 +99,24 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
     };
     
     this.toJSON = function(serializeCollections){
-        serializeCollections = (Object.isDefined(serializeCollections) && Object.isBoolean(serializeCollections))? serializeCollections : true;
-        var jsonId = (id != null && id > 0)? id : null,
-            jsonName = (name != null)? "\"" + name + "\"":  null,
-            jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
-            jsonDisabled = (Object.isDefined(disabled))? disabled: false,
-            jsonCreatedDate = (createdDate != null)? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
-            jsonSurveys = (serializeCollections)? ",\"surveys\": " + generateJsonStringForSurveys(): "",
-            json =  "{" +
-                "\"id\": " + jsonId + "," +
-                "\"name\": " + jsonName + "," +
-                "\"description\": " +  jsonDescription + "," +
-                "\"disabled\": " + jsonDisabled + "," +
-                "\"createdDate\": " + jsonCreatedDate +
-                jsonSurveys +
-            "}";
-
-        return json;
+    	return angular.toJson(this.toUIObject()); 
     };
     
-    this.toUIObject = function(){
-    	var batteryUIObjects = JSON.parse(this.toJSON());
-        batteryUIObjects.createdDate = this.getCreatedDate();
-    	return batteryUIObjects;
-    };
+	this.toUIObject = function(serializeCollections){		
+		var uiObj= {
+			'id': (id != null && id > 0)? id : null,
+			'name': name,
+			'description': description,
+			'disabled': (Object.isDefined(disabled))? disabled: false,
+			'createdDate': (createdDate != null)? createdDate.toISOString().substring(0, createdDate.toISOString().length-1) : null
+		};
+		 
+		if( (!Object.isDefined(serializeCollections) || serializeCollections)){
+			uiObj.surveys = angular.isArray(surveys) ? surveys.map(function(survey){ return survey.toUIObject();}) : null; 
+		}
+		
+		return uiObj;
+	};
 
     this.getSurveysAsSurveyUIObjects = function(){
         var surveyUIObjects = [];

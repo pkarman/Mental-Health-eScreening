@@ -59,20 +59,47 @@ public class AssessmentVariableController {
 		return er;
 	}
 
-	@RequestMapping(value = "/services/assessmentVariables", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/services/assessmentVariables", params="surveyId", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List getAssessmentVarsForSurvey(
-			@RequestParam("surveyId") Integer surveyId) {
+	public List<Map<String, Object>> getAssessmentVarsForSurvey(@RequestParam("surveyId") Integer surveyId) {
 
 		if (surveyId == null || surveyId < 0) {
 			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 
-		Table<String, String, Object> t = avs.getAssessmentVarsFor(surveyId);
+		Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId);
 
 		if (t.isEmpty()) {
-			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin(String.format("No Measures were found to be available for Survey with an Id of %s", surveyId)).setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+			ErrorBuilder
+				.throwing(EntityNotFoundException.class)
+				.toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+				.toAdmin(String.format("No Measures were found to be available for Survey with an Id of %s", surveyId))
+				.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
+		return avTableToList(t);
+	}
+	
+	@RequestMapping(value = "/services/assessmentVariables", params="batteryId", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<Map<String, Object>> getAssessmentVarsForBattery(@RequestParam("batteryId") Integer batteryId) {
+
+		if (batteryId == null || batteryId < 0) {
+			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+		}
+
+		Table<String, String, Object> t = avs.getAssessmentVarsForBattery(batteryId);
+
+		if (t.isEmpty()) {
+			ErrorBuilder
+				.throwing(EntityNotFoundException.class)
+				.toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+				.toAdmin(String.format("No Assessment Variables were found for Battery with an Id of %s", batteryId))
+				.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+		}
+		return avTableToList(t);
+	}
+	
+	private List<Map<String, Object>> avTableToList(Table<String, String, Object> t){
 
 		List<Map<String, Object>> avs = Lists.newArrayList();
 
@@ -85,7 +112,6 @@ public class AssessmentVariableController {
 					e.setValue(null);
 				}
 			}
-
 			avs.add(m);
 		}
 

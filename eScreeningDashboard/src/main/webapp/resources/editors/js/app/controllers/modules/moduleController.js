@@ -278,15 +278,14 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     
     $scope.editFormulas = function(){
         $state.go('modules.formulasList',
-                {moduleId: $scope.selectedSurveyUIObject.id,
-                 selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
+                {moduleId: $scope.selectedSurveyUIObject.id});
     };
     $scope.editTemplates = function(){
-        $state.go('modules.templates',
+        $state.go('modules.templates', 
                 {selectedSurveyId: $scope.selectedSurveyUIObject.id,
                  selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
     };
-
+    
     $scope.isModuleSaved = function(){
         return Object.isDefined($scope.selectedSurveyUIObject) && Object.isDefined($scope.selectedSurveyUIObject.id);
     }

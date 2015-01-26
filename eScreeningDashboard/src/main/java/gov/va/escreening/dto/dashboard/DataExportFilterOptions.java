@@ -113,113 +113,19 @@ public class DataExportFilterOptions implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((assessmentEnd == null) ? 0 : assessmentEnd.hashCode());
-		result = prime * result + ((assessmentStart == null) ? 0 : assessmentStart.hashCode());
-		result = prime * result + ((clinicianUserId == null) ? 0 : clinicianUserId.hashCode());
-		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		result = prime * result + ((createdByUserId == null) ? 0 : createdByUserId.hashCode());
-		result = prime * result + ((exportLogId == null) ? 0 : exportLogId.hashCode());
-		result = prime * result + ((exportTypeId == null) ? 0 : exportTypeId.hashCode());
-		result = prime * result + ((exportedByUserId == null) ? 0 : exportedByUserId.hashCode());
-		result = prime * result + ((filePath == null) ? 0 : filePath.hashCode());
-		result = prime * result + ((programId == null) ? 0 : programId.hashCode());
-		result = prime * result + ((veteranId == null) ? 0 : veteranId.hashCode());
-		return result;
-	}
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof DataExportFilterOptions)) {
-			return false;
-		}
-		DataExportFilterOptions other = (DataExportFilterOptions) obj;
-		if (assessmentEnd == null) {
-			if (other.assessmentEnd != null) {
-				return false;
-			}
-		} else if (!assessmentEnd.equals(other.assessmentEnd)) {
-			return false;
-		}
-		if (assessmentStart == null) {
-			if (other.assessmentStart != null) {
-				return false;
-			}
-		} else if (!assessmentStart.equals(other.assessmentStart)) {
-			return false;
-		}
-		if (clinicianUserId == null) {
-			if (other.clinicianUserId != null) {
-				return false;
-			}
-		} else if (!clinicianUserId.equals(other.clinicianUserId)) {
-			return false;
-		}
-		if (comment == null) {
-			if (other.comment != null) {
-				return false;
-			}
-		} else if (!comment.equals(other.comment)) {
-			return false;
-		}
-		if (createdByUserId == null) {
-			if (other.createdByUserId != null) {
-				return false;
-			}
-		} else if (!createdByUserId.equals(other.createdByUserId)) {
-			return false;
-		}
-		if (exportLogId == null) {
-			if (other.exportLogId != null) {
-				return false;
-			}
-		} else if (!exportLogId.equals(other.exportLogId)) {
-			return false;
-		}
-		if (exportTypeId == null) {
-			if (other.exportTypeId != null) {
-				return false;
-			}
-		} else if (!exportTypeId.equals(other.exportTypeId)) {
-			return false;
-		}
-		if (exportedByUserId == null) {
-			if (other.exportedByUserId != null) {
-				return false;
-			}
-		} else if (!exportedByUserId.equals(other.exportedByUserId)) {
-			return false;
-		}
-		if (filePath == null) {
-			if (other.filePath != null) {
-				return false;
-			}
-		} else if (!filePath.equals(other.filePath)) {
-			return false;
-		}
-		if (programId == null) {
-			if (other.programId != null) {
-				return false;
-			}
-		} else if (!programId.equals(other.programId)) {
-			return false;
-		}
-		if (veteranId == null) {
-			if (other.veteranId != null) {
-				return false;
-			}
-		} else if (!veteranId.equals(other.veteranId)) {
-			return false;
-		}
+		DataExportFilterOptions that = (DataExportFilterOptions) o;
+
+		if (!exportLogId.equals(that.exportLogId)) return false;
+
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		return exportLogId.hashCode();
+	}
 }
