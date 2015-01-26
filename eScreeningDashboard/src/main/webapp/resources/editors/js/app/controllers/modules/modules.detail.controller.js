@@ -11,6 +11,13 @@
         if (survey.id) {
             survey.getList('pages').then(function(pages) {
                 $scope.surveyPages = pages;
+
+                // Add displayOrder to questions
+                _.each($scope.surveyPages, function(page) {
+                    _.each(page.questions, function(question, index) {
+                        question.displayOrder = index;
+                    });
+                });
             });
         }
 
@@ -144,7 +151,7 @@
                 });
 
                 if (!$stateParams.surveyId) {
-                    $state.transitionTo($state.current, {surveyId: survey.id}, {
+                    $state.transitionTo('modules.detail', {surveyId: survey.id}, {
                         reload: true, inherit: false, notify: false
                     });
                 }

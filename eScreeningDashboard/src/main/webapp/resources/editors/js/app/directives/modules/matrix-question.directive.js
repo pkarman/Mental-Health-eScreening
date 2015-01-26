@@ -45,10 +45,15 @@
 
 				scope.$watch('question', function(question) {
 					if (question && scope.question.childQuestions) {
-						// Create question agnostic answers
-						_.each(scope.question.childQuestions[0].answers, function(answer) {
-							scope.answers.push({text: answer.text, exportName: answer.exportName.replace(scope.question.childQuestions[0].variableName, '')});
-						});
+						if (scope.question.childQuestions[0]) {
+							// Create question agnostic answers
+							_.each(scope.question.childQuestions[0].answers, function (answer) {
+								scope.answers.push({
+									text: answer.text,
+									exportName: answer.exportName.replace(scope.question.childQuestions[0].variableName, '')
+								});
+							});
+						}
 					}
 
 				});
