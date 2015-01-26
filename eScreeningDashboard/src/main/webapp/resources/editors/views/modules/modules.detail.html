@@ -10,9 +10,10 @@
 <!-- Alerts and Messages -->
 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
 
+<form name="moduleDetailsForm" novalidate>
 <div class="row">
     <div class="col-md-12">
-        <form name="moduleDetailsForm" novalidate>
+
             <div class="border-radius-main-form gray-lighter">
                 <div class="row">
                     <div class="col-md-8">
@@ -45,8 +46,6 @@
                 </div>
 
             </div>
-        </form>
-
         <br>
 
         <div class="row">
@@ -80,8 +79,10 @@
                                 </div>
                             </div>
                             <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
-                                <li class="list-group-item text-left" ng-repeat="question in page.questions | orderBy: 'displayOrder'"
-                                        ng-class="{unsortable: question.sortable === false, active: question.selected}">
+                                <li class="list-group-item text-left"
+                                        ng-repeat="question in page.questions | orderBy: 'displayOrder'"
+                                        ng-class="{unsortable: question.sortable === false, active: question.selected}"
+                                        ng-show="question.type">
                                     <div class="form-inline">
                                         <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
                                         <div class="pull-left">
@@ -124,13 +125,14 @@
         </div>
     </div>
 </div>
+</form>
 <br>
 
 <div class="row">
     <div class="col-md-12">
         <div class="form-group pull-right">
             <button class="btn btn-primary" ng-disabled="!moduleDetailsForm.$valid" ng-click="save();">Save</button>
-            <button class="btn btn-default" ng-click="cancel();">Cancel</button>
+            <button class="btn btn-default" ng-click="cancel(moduleDetailsForm);">Cancel</button>
         </div>
     </div>
 </div>

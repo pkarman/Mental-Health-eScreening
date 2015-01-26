@@ -160,8 +160,10 @@
             });
         };
 
-        $scope.cancel = function cancel() {
-            $state.go('modules');
+        $scope.cancel = function cancel(moduleDetailsForm) {
+            if (!moduleDetailsForm.$dirty || (moduleDetailsForm.$dirty && window.confirm("Would you like to discard all of your changes?"))) {
+                $state.go('modules');
+            }
         };
 
     }]);
