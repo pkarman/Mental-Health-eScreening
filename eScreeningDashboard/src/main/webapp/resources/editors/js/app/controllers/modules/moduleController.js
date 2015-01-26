@@ -277,8 +277,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
     
     $scope.editFormulas = function(){
-        $state.go('modules.formulas',
-                {selectedSurveyId: $scope.selectedSurveyUIObject.id, 
+        $state.go('modules.formulasList',
+                {moduleId: $scope.selectedSurveyUIObject.id,
                  selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
     };
     $scope.editTemplates = function(){

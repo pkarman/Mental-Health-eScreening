@@ -1,4 +1,9 @@
-<div class="container">
+<style type="text/css">
+    [ng\:cloak], [ng-cloak], .ng-cloak {
+        display: none !important;
+    }
+</style>
+<div class="container" ng-cloak class="ng-cloak">
     <h1>Manage Formulas for {{module.name}}</h1>
 
     <div class="row">
@@ -12,19 +17,19 @@
             <!--- ngTable Begin -->
             <table show-filter="false" class="table table-hover">
                 <thead>
-                    <tr>
-                        <th class="col-md-3">Variable Name</th>
-                        <th class="col-md-7">Formula</th>
-                        <th class="col-md-2">Action</th>
-                    </tr>
+                <tr>
+                    <th class="col-md-3">Variable Name</th>
+                    <th class="col-md-7">Formula</th>
+                    <th class="col-md-2">Action</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="f in formulas" ng-class-odd="'odd'" ng-class-even="'even'">
-                        <td class="col-md-3">{{f.name}}</td>
-                        <td class="col-md-7">{{f.formula}}</td>
-                        <td class="col-md-2">
-                            <div class="pull-right">
-                                <div class="cursor-pointer">
+                <tr ng-repeat="f in formulas" ng-class-odd="'odd'" ng-class-even="'even'">
+                    <td class="col-md-3">{{f.name}}</td>
+                    <td class="col-md-7">{{f.formula}}</td>
+                    <td class="col-md-2">
+                        <div class="pull-right">
+                            <div class="cursor-pointer">
                                     <span title="Edit"
                                           ng-click="edit(f);" class="btn btn-default btn-xs"><i
                                             class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
@@ -32,13 +37,12 @@
                                           ng-really-message="Permanently delete template?"
                                           ng-really-click="delete(f);" class="btn btn-default btn-xs"><i
                                             class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
-                                </div>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
-            <!-- /ngTable -->
         </div>
     </div>
     <pagination total-items="pagination.totalItems" ng-model="pagination.currentPage" max-size="pagination.maxSize"

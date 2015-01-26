@@ -15,15 +15,15 @@ import com.google.common.collect.Table;
 
 public interface ExportDataService {
 
-	AssessmentDataExport getAssessmentDataExport(
-			ExportDataFormBean exportDataFormBean);
+    AssessmentDataExport getAssessmentDataExport(Object dd,
+                                                 ExportDataFormBean exportDataFormBean);
 
-	ExportLog logDataExport(AssessmentDataExport dataExport) throws Exception;
+    ExportLog logDataExport(AssessmentDataExport dataExport) throws Exception;
 
-	AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
-			String comment);
+    AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
+                                            String comment);
 
-	List<DataExportCell> buildExportDataForOneAssessment(VeteranAssessment va,
-			int identifiedExportType);
+    List<DataExportCell> buildExportDataForOneAssessment(Object dd, VeteranAssessment va,
+                                                         int identifiedExportType);
 
 }

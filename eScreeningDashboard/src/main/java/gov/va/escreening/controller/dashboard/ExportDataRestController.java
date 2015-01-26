@@ -1,5 +1,6 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.collect.Table;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
@@ -15,7 +16,15 @@ import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataFilterOptionsService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.service.export.ExportLogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,337 +32,321 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.google.common.collect.Table;
-
 @Controller
 @RequestMapping(value = "/dashboard")
 public class ExportDataRestController extends BaseDashboardRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ExportDataRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportDataRestController.class);
 
-	private static final String IDENTIFIED_EXPORT = "identified";
-	private static final String DEIDENTIFIED_EXPORT = "deidentified";
+    private static final String IDENTIFIED_EXPORT = "identified";
+    private static final String DEIDENTIFIED_EXPORT = "deidentified";
+    @Resource(type = DataDictionaryService.class)
+    DataDictionaryService dds;
+    @Resource(name = "sessionMgr")
+    SessionMgr sessionMgr;
+    @Autowired
+    private ExportDataFilterOptionsService exportDataFilterOptionsService;
+    @Autowired
+    private ExportDataService exportDataService;
+    @Autowired
+    private ExportLogService exportLogService;
+    @Autowired
+    private ProgramService programService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private VeteranAssessmentService veteranAssessmentService;
 
-	@Autowired
-	private ExportDataFilterOptionsService exportDataFilterOptionsService;
-	@Autowired
-	private ExportDataService exportDataService;
-	@Autowired
-	private ExportLogService exportLogService;
-	@Autowired
-	private ProgramService programService;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private VeteranAssessmentService veteranAssessmentService;
+    @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
+    @ResponseBody
+    public ExportDataFormBean getFormBean(HttpServletRequest request) {
+        logger.debug("In ExportDataRestController::getFormBean");
+        ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
+        return exportDataFormBean;
+    }
 
-	@Resource(type = DataDictionaryService.class)
-	DataDictionaryService dds;
+    @RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
+    public ModelAndView exportDataAsCsv(
+            ModelAndView modelAndView,
+            HttpServletRequest request,
+            @CurrentUser EscreenUser escreenUser,
+            @RequestParam(value = "fromAssessmentDate", required = false) String fromAssessmentDate,
+            @RequestParam(value = "toAssessmentDate", required = false) String toAssessmentDate,
+            @RequestParam(value = "clinicianId", required = false) String clinicianId,
+            @RequestParam(value = "createdByUserId", required = false) String createdByUserId,
+            @RequestParam(value = "programId", required = false) String programId,
+            @RequestParam(value = "veteranId", required = false) String veteranId,
+            @RequestParam(value = "comment", required = false) String comment,
+            @RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
-	@RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
-	@ResponseBody
-	public ExportDataFormBean getFormBean(HttpServletRequest request) {
-		logger.debug("In ExportDataRestController::getFormBean");
-		ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
-		return exportDataFormBean;
-	}
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+        }
 
-	@RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
-	public ModelAndView exportDataAsCsv(
-			ModelAndView modelAndView,
-			HttpServletRequest request,
-			@CurrentUser EscreenUser escreenUser,
-			@RequestParam(value = "fromAssessmentDate", required = false) String fromAssessmentDate,
-			@RequestParam(value = "toAssessmentDate", required = false) String toAssessmentDate,
-			@RequestParam(value = "clinicianId", required = false) String clinicianId,
-			@RequestParam(value = "createdByUserId", required = false) String createdByUserId,
-			@RequestParam(value = "programId", required = false) String programId,
-			@RequestParam(value = "veteranId", required = false) String veteranId,
-			@RequestParam(value = "comment", required = false) String comment,
-			@RequestParam(value = "exportDataType", required = true) String exportDataType) {
+        List<String> errors = new ArrayList<String>();
+        ExportDataFormBean exportDataFormBean = getSearchFormBean(escreenUser, fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType, errors);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
-		}
+        if (errors.size() > 0) {
+            modelAndView.addObject("createUserStatusMessage", errors);
+            modelAndView.setViewName("exportData");
+            return modelAndView;
+        }
 
-		List<String> errors = new ArrayList<String>();
-		ExportDataFormBean exportDataFormBean = getSearchFormBean(escreenUser, fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType, errors);
+        exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
-		if (errors.size() > 0) {
-			modelAndView.addObject("createUserStatusMessage", errors);
-			modelAndView.setViewName("exportData");
-			return modelAndView;
-		}
+        AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(sessionMgr.getDD(request), exportDataFormBean);
 
-		exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
+        if (dataExport != null) {
+            modelAndView.setViewName("dataExportCsvView");
+            modelAndView.addObject("dataExportList", dataExport);
+        } else if (errors.size() > 0) {
+            modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
+            modelAndView.setViewName("exportData");
+        }
 
-		AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean);
+        return modelAndView;
+    }
 
-		if (dataExport != null) {
-			modelAndView.setViewName("dataExportCsvView");
-			modelAndView.addObject("dataExportList", dataExport);
-		} else if (errors.size() > 0) {
-			modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
-			modelAndView.setViewName("exportData");
-		}
+    @RequestMapping(value = "/exportData/services/exports/downloadAgain/{exportLogId}", method = RequestMethod.GET)
+    public ModelAndView downloadAgain(ModelAndView modelAndView,
+                                      HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
+                                      @PathVariable int exportLogId,
+                                      @RequestParam(value = "comment", required = true) String comment) {
 
-		return modelAndView;
-	}
+        AssessmentDataExport dataExport = exportDataService.downloadExportData(escreenUser.getUserId(), exportLogId, comment);
 
-	@RequestMapping(value = "/exportData/services/exports/downloadAgain/{exportLogId}", method = RequestMethod.GET)
-	public ModelAndView downloadAgain(ModelAndView modelAndView,
-			HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
-			@PathVariable int exportLogId,
-			@RequestParam(value = "comment", required = true) String comment) {
+        modelAndView.setViewName("dataExportCsvView");
+        modelAndView.addObject("dataExportList", dataExport);
 
-		AssessmentDataExport dataExport = exportDataService.downloadExportData(escreenUser.getUserId(), exportLogId, comment);
+        return modelAndView;
+    }
 
-		modelAndView.setViewName("dataExportCsvView");
-		modelAndView.addObject("dataExportList", dataExport);
+    @RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
+    public ModelAndView downloadAgain(ModelAndView modelAndView,
+                                      HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-		return modelAndView;
-	}
+        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) sessionMgr.getDD(request);
 
-	@RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
-	public ModelAndView downloadAgain(ModelAndView modelAndView,
-			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+        modelAndView.setViewName("dataDictionaryExcelView");
+        modelAndView.addObject("dataDictionary", dataDictionary);
 
-		Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+        return modelAndView;
+    }
 
-		modelAndView.setViewName("dataDictionaryExcelView");
-		modelAndView.addObject("dataDictionary", dataDictionary);
+    @RequestMapping(value = "/exportData/services/exports/exportLog", method = RequestMethod.POST)
+    @ResponseBody
+    public DataTableResponse<ExportDataSearchResult> getExportLog(
+            HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-		return modelAndView;
-	}
+        String echo = request.getParameter("sEcho");
+        logger.debug("sEcho: " + echo);
 
-	@RequestMapping(value = "/exportData/services/exports/exportLog", method = RequestMethod.POST)
-	@ResponseBody
-	public DataTableResponse<ExportDataSearchResult> getExportLog(
-			HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+        List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), -1);
+        return prepareResponse(results, echo);
+    }
 
-		String echo = request.getParameter("sEcho");
-		logger.debug("sEcho: " + echo);
+    private DataTableResponse<ExportDataSearchResult> prepareResponse(
+            List<ExportDataSearchResult> results, String echo) {
+        // Start populating the response.
 
-		List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), -1);
-		return prepareResponse(results, echo);
-	}
+        DataTableResponse<ExportDataSearchResult> dataTableResponse = new DataTableResponse<ExportDataSearchResult>();
+        dataTableResponse.setEcho(echo);
+        dataTableResponse.setTotalRecords(results.size());
+        dataTableResponse.setTotalDisplayRecords(results.size());
 
-	private DataTableResponse<ExportDataSearchResult> prepareResponse(
-			List<ExportDataSearchResult> results, String echo) {
-		// Start populating the response.
+        dataTableResponse.setData(results);
 
-		DataTableResponse<ExportDataSearchResult> dataTableResponse = new DataTableResponse<ExportDataSearchResult>();
-		dataTableResponse.setEcho(echo);
-		dataTableResponse.setTotalRecords(results.size());
-		dataTableResponse.setTotalDisplayRecords(results.size());
+        return dataTableResponse;
+    }
 
-		dataTableResponse.setData(results);
+    @RequestMapping(value = "/exportData/services/exports/exportLog/{noOfDays}", method = RequestMethod.POST)
+    @ResponseBody
+    public DataTableResponse<ExportDataSearchResult> getExportLog(
+            HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
+            @PathVariable int noOfDays) {
 
-		return dataTableResponse;
-	}
+        String echo = request.getParameter("sEcho");
+        logger.debug("sEcho: " + echo);
 
-	@RequestMapping(value = "/exportData/services/exports/exportLog/{noOfDays}", method = RequestMethod.POST)
-	@ResponseBody
-	public DataTableResponse<ExportDataSearchResult> getExportLog(
-			HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
-			@PathVariable int noOfDays) {
+        List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), noOfDays);
+        return prepareResponse(results, echo);
+    }
 
-		String echo = request.getParameter("sEcho");
-		logger.debug("sEcho: " + echo);
+    @RequestMapping(value = "/exportData/services/exports/filterOptions", method = RequestMethod.POST)
+    @ResponseBody
+    public List<DropDownObject> getFilterOptions(
+            @CurrentUser EscreenUser escreenUser) {
+        logger.debug("getFilterOptions");
+        List<DropDownObject> dropDownObjectList = exportDataFilterOptionsService.getExportDataFilterOptions();
+        return dropDownObjectList;
+    }
 
-		List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), noOfDays);
-		return prepareResponse(results, echo);
-	}
+    @RequestMapping(value = "/exportData/services/user/clinicians", method = RequestMethod.POST)
+    @ResponseBody
+    public List<DropDownObject> getClinician(@RequestParam Boolean includeAll,
+                                             @CurrentUser EscreenUser escreenUser) {
 
-	@RequestMapping(value = "/exportData/services/exports/filterOptions", method = RequestMethod.POST)
-	@ResponseBody
-	public List<DropDownObject> getFilterOptions(
-			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("getFilterOptions");
-		List<DropDownObject> dropDownObjectList = exportDataFilterOptionsService.getExportDataFilterOptions();
-		return dropDownObjectList;
-	}
+        logger.debug("getClinician");
+        logger.debug("includeAll: " + includeAll);
 
-	@RequestMapping(value = "/exportData/services/user/clinicians", method = RequestMethod.POST)
-	@ResponseBody
-	public List<DropDownObject> getClinician(@RequestParam Boolean includeAll,
-			@CurrentUser EscreenUser escreenUser) {
+        List<Integer> userStatusIdList = new ArrayList<Integer>();
+        userStatusIdList.add(1);
+        userStatusIdList.add(2);
 
-		logger.debug("getClinician");
-		logger.debug("includeAll: " + includeAll);
+        if (includeAll) {
+            userStatusIdList.add(3);
+        }
 
-		List<Integer> userStatusIdList = new ArrayList<Integer>();
-		userStatusIdList.add(1);
-		userStatusIdList.add(2);
+        List<DropDownObject> dropDownObjectList = userService.getAssessmentClinicianDropDownObjects(userStatusIdList, escreenUser.getProgramIdList());
 
-		if (includeAll) {
-			userStatusIdList.add(3);
-		}
+        return dropDownObjectList;
+    }
 
-		List<DropDownObject> dropDownObjectList = userService.getAssessmentClinicianDropDownObjects(userStatusIdList, escreenUser.getProgramIdList());
+    @RequestMapping(value = "/exportData/services/user/assessmentCreators", method = RequestMethod.POST)
+    @ResponseBody
+    public List<DropDownObject> getAssessmentCreators(
+            @RequestParam Boolean includeAll,
+            @CurrentUser EscreenUser escreenUser) {
 
-		return dropDownObjectList;
-	}
+        logger.debug("getAssessmentCreators");
+        logger.debug("includeAll: " + includeAll);
 
-	@RequestMapping(value = "/exportData/services/user/assessmentCreators", method = RequestMethod.POST)
-	@ResponseBody
-	public List<DropDownObject> getAssessmentCreators(
-			@RequestParam Boolean includeAll,
-			@CurrentUser EscreenUser escreenUser) {
+        List<Integer> userStatusIdList = new ArrayList<Integer>();
+        userStatusIdList.add(1);
+        userStatusIdList.add(2);
 
-		logger.debug("getAssessmentCreators");
-		logger.debug("includeAll: " + includeAll);
+        if (includeAll) {
+            userStatusIdList.add(3);
+        }
 
-		List<Integer> userStatusIdList = new ArrayList<Integer>();
-		userStatusIdList.add(1);
-		userStatusIdList.add(2);
+        List<DropDownObject> dropDownObjectList = userService.getAssessmentCreatorDropDownObjects(userStatusIdList, escreenUser.getProgramIdList());
 
-		if (includeAll) {
-			userStatusIdList.add(3);
-		}
+        return dropDownObjectList;
+    }
 
-		List<DropDownObject> dropDownObjectList = userService.getAssessmentCreatorDropDownObjects(userStatusIdList, escreenUser.getProgramIdList());
+    @RequestMapping(value = "/exportData/services/user/programs", method = RequestMethod.POST)
+    @ResponseBody
+    public List<DropDownObject> getPrograms(@CurrentUser EscreenUser escreenUser) {
 
-		return dropDownObjectList;
-	}
+        logger.debug("getPrograms");
 
-	@RequestMapping(value = "/exportData/services/user/programs", method = RequestMethod.POST)
-	@ResponseBody
-	public List<DropDownObject> getPrograms(@CurrentUser EscreenUser escreenUser) {
+        List<DropDownObject> dropDownObjectList = programService.getProgramDropDownObjects(escreenUser.getProgramIdList());
 
-		logger.debug("getPrograms");
+        return dropDownObjectList;
+    }
 
-		List<DropDownObject> dropDownObjectList = programService.getProgramDropDownObjects(escreenUser.getProgramIdList());
+    /**
+     * Takes the passed in query string parameters and populates the exportDataFormBean.
+     *
+     * @param escreenUser
+     * @param fromAssessmentDate
+     * @param toAssessmentDate
+     * @param clinicianId
+     * @param createdByUserId
+     * @param programId
+     * @param veteranId
+     * @param comment
+     * @param exportDataType
+     * @return
+     */
+    public ExportDataFormBean getSearchFormBean(EscreenUser escreenUser,
+                                                String fromAssessmentDate, String toAssessmentDate,
+                                                String clinicianId, String createdByUserId, String programId,
+                                                String veteranId, String comment, String exportDataType,
+                                                List<String> errors) {
 
-		return dropDownObjectList;
-	}
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
-	/**
-	 * Takes the passed in query string parameters and populates the exportDataFormBean.
-	 * 
-	 * @param escreenUser
-	 * @param fromAssessmentDate
-	 * @param toAssessmentDate
-	 * @param clinicianId
-	 * @param createdByUserId
-	 * @param programId
-	 * @param veteranId
-	 * @param comment
-	 * @param exportDataType
-	 * @return
-	 */
-	public ExportDataFormBean getSearchFormBean(EscreenUser escreenUser,
-			String fromAssessmentDate, String toAssessmentDate,
-			String clinicianId, String createdByUserId, String programId,
-			String veteranId, String comment, String exportDataType,
-			List<String> errors) {
+        ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
+        exportDataFormBean.setHasParameter(false);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        if (clinicianId != null && !clinicianId.isEmpty() && !"null".equals(clinicianId) && !clinicianId.equalsIgnoreCase("undefined")) {
+            if (isInteger(clinicianId)) {
+                exportDataFormBean.setClinicianId(Integer.parseInt(clinicianId));
+                exportDataFormBean.setHasParameter(true);
+            } else {
+                logger.warn(String.format("clinicanId could not be parsed as an Integer, was: %s", clinicianId));
+                errors.add("Clinician must be be a number.");
+            }
+        }
 
-		ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
-		exportDataFormBean.setHasParameter(false);
+        if (createdByUserId != null && !createdByUserId.isEmpty() && !"null".equals(createdByUserId) && !createdByUserId.equalsIgnoreCase("undefined")) {
+            if (isInteger(createdByUserId)) {
+                exportDataFormBean.setCreatedByUserId(Integer.parseInt(createdByUserId));
+                exportDataFormBean.setHasParameter(true);
+            } else {
+                logger.warn(String.format("createdByUserId could not be parsed as an Integer, was: %s", createdByUserId));
+                errors.add("Created by user must be be a number.");
+            }
+        }
 
-		if (clinicianId != null && !clinicianId.isEmpty() && !"null".equals(clinicianId) && !clinicianId.equalsIgnoreCase("undefined")) {
-			if (isInteger(clinicianId)) {
-				exportDataFormBean.setClinicianId(Integer.parseInt(clinicianId));
-				exportDataFormBean.setHasParameter(true);
-			} else {
-				logger.warn(String.format("clinicanId could not be parsed as an Integer, was: %s", clinicianId));
-				errors.add("Clinician must be be a number.");
-			}
-		}
+        if (veteranId != null && !veteranId.isEmpty() && !"null".equals(veteranId) && !veteranId.equalsIgnoreCase("undefined")) {
+            if (isInteger(veteranId)) {
+                exportDataFormBean.setVeteranId(Integer.parseInt(veteranId));
+                exportDataFormBean.setHasParameter(true);
+            } else {
+                logger.warn(String.format("veteranId could not be parsed as an Integer, was: %s", veteranId));
+                errors.add("Veteran must be be a number.");
+            }
+        }
 
-		if (createdByUserId != null && !createdByUserId.isEmpty() && !"null".equals(createdByUserId) && !createdByUserId.equalsIgnoreCase("undefined")) {
-			if (isInteger(createdByUserId)) {
-				exportDataFormBean.setCreatedByUserId(Integer.parseInt(createdByUserId));
-				exportDataFormBean.setHasParameter(true);
-			} else {
-				logger.warn(String.format("createdByUserId could not be parsed as an Integer, was: %s", createdByUserId));
-				errors.add("Created by user must be be a number.");
-			}
-		}
+        if (fromAssessmentDate != null && !fromAssessmentDate.isEmpty() && !fromAssessmentDate.equalsIgnoreCase("undefined")) {
+            try {
+                exportDataFormBean.setFromAssessmentDate(sdf.parse(fromAssessmentDate));
+                exportDataFormBean.setHasParameter(true);
+            } catch (ParseException e) {
+                logger.warn(String.format("fromAssessmentDate could not be parsed as a date, was: %s", fromAssessmentDate));
+                errors.add("From Assessment Date must be a valid date: MM/dd/yyyy.");
+            }
+        }
 
-		if (veteranId != null && !veteranId.isEmpty() && !"null".equals(veteranId) && !veteranId.equalsIgnoreCase("undefined")) {
-			if (isInteger(veteranId)) {
-				exportDataFormBean.setVeteranId(Integer.parseInt(veteranId));
-				exportDataFormBean.setHasParameter(true);
-			} else {
-				logger.warn(String.format("veteranId could not be parsed as an Integer, was: %s", veteranId));
-				errors.add("Veteran must be be a number.");
-			}
-		}
+        if (toAssessmentDate != null && !toAssessmentDate.isEmpty() && !toAssessmentDate.equalsIgnoreCase("undefined")) {
+            try {
+                exportDataFormBean.setToAssessmentDate(sdf.parse(toAssessmentDate));
+                exportDataFormBean.setHasParameter(true);
+            } catch (ParseException e) {
+                logger.warn(String.format("toAssessmentDate could not be parsed as a date, was: %s", toAssessmentDate));
+                errors.add("To Assessment Date must be a valid date: MM/dd/yyyy.");
+            }
+        }
 
-		if (fromAssessmentDate != null && !fromAssessmentDate.isEmpty() && !fromAssessmentDate.equalsIgnoreCase("undefined")) {
-			try {
-				exportDataFormBean.setFromAssessmentDate(sdf.parse(fromAssessmentDate));
-				exportDataFormBean.setHasParameter(true);
-			} catch (ParseException e) {
-				logger.warn(String.format("fromAssessmentDate could not be parsed as a date, was: %s", fromAssessmentDate));
-				errors.add("From Assessment Date must be a valid date: MM/dd/yyyy.");
-			}
-		}
+        if (programId != null && !programId.isEmpty() && !"null".equals(programId) && !programId.equalsIgnoreCase("undefined")) {
+            if (isInteger(programId)) {
+                exportDataFormBean.setProgramId(Integer.parseInt(programId));
+                exportDataFormBean.setHasParameter(true);
+            } else {
+                logger.warn(String.format("programId could not be parsed as an Integer, was: %s", programId));
+                errors.add("Program must be be a number.");
+            }
+        }
 
-		if (toAssessmentDate != null && !toAssessmentDate.isEmpty() && !toAssessmentDate.equalsIgnoreCase("undefined")) {
-			try {
-				exportDataFormBean.setToAssessmentDate(sdf.parse(toAssessmentDate));
-				exportDataFormBean.setHasParameter(true);
-			} catch (ParseException e) {
-				logger.warn(String.format("toAssessmentDate could not be parsed as a date, was: %s", toAssessmentDate));
-				errors.add("To Assessment Date must be a valid date: MM/dd/yyyy.");
-			}
-		}
+        if (comment != null && !comment.isEmpty()) {
+            exportDataFormBean.setCommentText(comment);
+        }
 
-		if (programId != null && !programId.isEmpty() && !"null".equals(programId) && !programId.equalsIgnoreCase("undefined")) {
-			if (isInteger(programId)) {
-				exportDataFormBean.setProgramId(Integer.parseInt(programId));
-				exportDataFormBean.setHasParameter(true);
-			} else {
-				logger.warn(String.format("programId could not be parsed as an Integer, was: %s", programId));
-				errors.add("Program must be be a number.");
-			}
-		}
+        if (exportDataType != null && !exportDataType.isEmpty()) {
+            if (exportDataType.equalsIgnoreCase(IDENTIFIED_EXPORT)) {
+                exportDataFormBean.setExportTypeId(ExportTypeEnum.IDENTIFIED.getExportTypeId());
+            } else if (exportDataType.equalsIgnoreCase(DEIDENTIFIED_EXPORT)) {
+                exportDataFormBean.setExportTypeId(ExportTypeEnum.DEIDENTIFIED.getExportTypeId());
+            } else {
+                logger.error(String.format("Unregistered exportDataType of: %s could not be handled", exportDataType));
+                errors.add("Export type must either be 'identified' or 'deidentified'.");
+            }
+        }
 
-		if (comment != null && !comment.isEmpty()) {
-			exportDataFormBean.setCommentText(comment);
-		}
+        // Populate the clinic id list from the logged in user.
+        // exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
-		if (exportDataType != null && !exportDataType.isEmpty()) {
-			if (exportDataType.equalsIgnoreCase(IDENTIFIED_EXPORT)) {
-				exportDataFormBean.setExportTypeId(ExportTypeEnum.IDENTIFIED.getExportTypeId());
-			} else if (exportDataType.equalsIgnoreCase(DEIDENTIFIED_EXPORT)) {
-				exportDataFormBean.setExportTypeId(ExportTypeEnum.DEIDENTIFIED.getExportTypeId());
-			} else {
-				logger.error(String.format("Unregistered exportDataType of: %s could not be handled", exportDataType));
-				errors.add("Export type must either be 'identified' or 'deidentified'.");
-			}
-		}
+        return exportDataFormBean;
+    }
 
-		// Populate the clinic id list from the logged in user.
-		// exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
-
-		return exportDataFormBean;
-	}
-
-	private boolean isInteger(String str) {
-		try {
-			Integer.parseInt(str);
-		} catch (NumberFormatException nfe) {
-			return false;
-		}
-		return true;
-	}
+    private boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
 }

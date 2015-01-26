@@ -205,10 +205,10 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Map> askFormulasFor(Integer moduleId) {
+	public List<Map> askFormulasFor(Object sessionObject, Integer moduleId) {
 
 		Survey survey=sr.findOne(moduleId);
-		Map<String, Table<String, String, String>> dataDictionary = createDataDictionary();
+		Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)sessionObject;
 		Table<String, String, String> moduleTable=dataDictionary.get(survey.getName());
 		Map<String, Map<String, String>> rowMap = moduleTable.rowMap();
 		Set<Map.Entry<String, Map<String, String>>> entries = rowMap.entrySet();
@@ -217,12 +217,19 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 		for(Map.Entry<String, Map<String, String>> entry:entries){
 			if (entry.getKey().startsWith(ddh.FORMULA_KEY_PREFIX)){
 				Map<String, String> formula=Maps.newHashMap();
+				formula.put("avId", entry.getValue().get(ddh.msg("av.id")));
 				formula.put("name", entry.getValue().get(ddh.msg("var.name")));
 				formula.put("formula", entry.getValue().get(ddh.msg("ques.desc")));
+				formula.put("description", entry.getValue().get(ddh.msg("ques.desc.business")));
 				formulas.add(formula);
 			}
 		}
 
 		return formulas;
+	}
+
+	@Override
+	public List<Map> getAllFormulas() {
+		return Collections.EMPTY_LIST;
 	}
 }

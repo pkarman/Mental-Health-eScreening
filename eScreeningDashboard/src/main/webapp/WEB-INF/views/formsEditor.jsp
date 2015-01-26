@@ -160,6 +160,7 @@
 
     <!-- Formulas Controller, Service, Directives, Filters, etc -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasEditController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ManageFormulasService.js"></script>
 
     <!-- Questions View State(s) -->

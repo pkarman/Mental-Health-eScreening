@@ -2,7 +2,7 @@
  * Created by munnoo on 12/29/14.
  */
 angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular'])
-    .factory('ManageFormulasService', ['$log', 'Restangular', '$q', function ($log, Restangular, $q) {
+    .factory('FormulasService', ['$log', 'Restangular', function ($log, Restangular) {
 
         "use strict";
 
@@ -12,21 +12,46 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             config.setRequestSuffix('.json');
         });
 
-        var proxy = restAngular.all('formulas');
+        var formulasProxy = restAngular.all('formulas');
+
+        var currentFormula = {};
+        var currentFormulas = [];
+        var currentModule = {};
 
         // service to perform CRUD
         var service = {
-            create: function (formula) {
-                return proxy.post(formula);
+            loadCurrentFormulas: function () {
+                $log.debug('getting formulas promise for module with an id of' + currentModule.id);
+                return formulasProxy.getList({moduleId: currentModule.id});
             },
-            getList: function (id) {
-                return proxy.getList({moduleId:id});
+
+            getModuleById: function (moduleId) {
+                $log.debug('getting module details promise for module with an id of ' + moduleId);
+                return restAngular.one('formulas/modules', moduleId).get();
             },
-            update: function (formula) {
-                return formula.put();
+
+            saveCurrentModule: function (module) {
+                currentModule = module;
             },
-            delete: function (formula) {
-                return formula.remove();
+
+            fetchCurrentModule: function () {
+                return currentModule;
+            },
+
+            saveCurrentFormula: function (formula) {
+                currentFormula = formula;
+            },
+
+            fetchCurrentFormula: function () {
+                return currentFormula;
+            },
+
+            saveCurrentFormulas: function (formulas) {
+                currentFormulas = formulas;
+            },
+
+            fetchCurrentFormulas: function () {
+                return currentFormulas;
             }
         };
         return service;

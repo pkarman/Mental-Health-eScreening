@@ -1,0 +1,26 @@
+<style type="text/css">
+    [ng\:cloak], [ng-cloak], .ng-cloak {
+        display: none !important;
+    }
+</style>
+<div class="container" ng-cloak class="ng-cloak">
+    <h1>Formula Editor</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <alert ng-repeat="msg in msgs" type="msg.type" close="closeAlert($index)">{{msg.text}}</alert>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <input class="col-md-4" type="text" ng-model="av.name" placeholder="{{av.name||'Enter Name...'}}"/>
+            <input class="col-md-8" type="text" ng-model="av.description" placeholder="{{av.description||'Enter Description...'}}"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <input type="text" mg-model="av.formula" placeholder="{{av.formula||'Enter Formula...'}}"/>
+        </div>
+    </div>
+
+</div>

@@ -13,5 +13,7 @@ public interface DataDictionaryService {
 
 	public String createTableResponseVarName(String exportName);
 
-	List<Map> askFormulasFor(Integer moduleId);
+	List<Map> askFormulasFor(Object sessionObject, Integer moduleId);
+
+	List<Map> getAllFormulas();
 }
