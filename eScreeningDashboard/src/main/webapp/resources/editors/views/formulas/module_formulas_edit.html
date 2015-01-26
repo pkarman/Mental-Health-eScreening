@@ -12,15 +12,46 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <input class="col-md-4" type="text" ng-model="formula.name" placeholder="{{formula.name||'Enter Name...'}}"/>
-            <input class="col-md-8" type="text" ng-model="formula.description" placeholder="{{formula.description||'Enter Description...'}}"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <input class="col-md-12" type="text" ng-model="formula.formula" placeholder="{{formula.formula||'Enter Formula...'}}"/>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input id="name"
+                   class="form-control"
+                   type="text"
+                   ng-model="formula.name"
+                   placeholder="{{formula.name||'Enter Name...'}}">
+            <label for="desc">Description:</label>
+
+            <input id="desc"
+                   class="form-control"
+                   type="text"
+                   ng-model="formula.description"
+                   placeholder="{{formula.description||'Enter Description...'}}">
         </div>
     </div>
 
+    <!--
+    <div class="clearfix form-group">
+        <hr />
+        <div text-angular="text-angular"
+             ta-toolbar="[['h1','h2','h3'],['bold','italics', 'underline'], ['ol', 'ul'], ['justifyLeft', 'justifyCenter', 'justifyRight'], ['indent', 'outdent'], ['insertLink', 'insertImage', 'insertVideo'], ['redo', 'undo'] , ['html'], ['insertVariable']]"
+             ng-model="formula.formula"
+             ta-toolbar-class="btn-toolbar"
+             ta-toolbar-group-class="btn-group"
+             ta-toolbar-button-class="btn btn-default"
+             ta-toolbar-button-active-class="active"
+             name="formula-editor"
+             class="tab-content">
+        </div>
+    </div>
+    -->
+    <div class="row">
+        <div text-angular
+             ta-toolbar="[['insertVariable'], ['+','-','*','/','(',')'],['bold','italics']]"
+             ta-toolbar-class="btn-toolbar"
+             ta-toolbar-group-class="btn-group"
+             ta-toolbar-button-class="btn btn-default"
+             ta-toolbar-button-active-class="active"
+             ng-model="formula.formula">
+        </div>
+    </div>
 </div>

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,11 +36,18 @@ public class DataDictionaryTest {
     @Resource(name="dataExportAndDictionaryUtil")
     DataExportAndDictionaryUtil dedUtil;
 
-
     @Test
     public void createDataDictionary() throws Exception {
         Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
     }
+
+    @Test
+    public void saveDDAsExcel() throws Exception {
+        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
+        String tstDirName=System.getProperty("user.home") + File.separator + "Documents" + File.separator+"escrTestOut";
+        dedUtil.saveDataDictionaryAsExcel(tstDirName, dataDictionary, new Date());
+    }
+
 
     private Map<String, Table<String, String, String>> reconstructDataDictionary(String ddAsString) {
         Gson gson1 = new GsonBuilder().create();
