@@ -101,14 +101,17 @@
 							console.log('scope.question.childQuestions', scope.question.childQuestions);
 
 							if (!question.answers.length) {
-								question.answers = angular.copy(scope.answers);
+								question.answers = _.clone(scope.answers);
 							}
 							//mergeByProperty(question.answers, scope.answers, 'text');
-							_.each(question.answers, function(answer) {
-								console.log('answer', answer);
-								console.log('question', question);
-								answer.exportName = question.variableName + '_' + answer.exportName;
-								console.log(answer.exportName);
+							_.each(scope.answers, function(answer, index) {
+								var exportName = question.variableName + '_' + answer.exportName;
+								if (question.answers[index]) {
+									question.answers[index].exportName = exportName;
+								} else {
+									question.answers.push(answer);
+									question.answers[index].exportName = exportName;
+								}
 							});
 						});
 					}
