@@ -1,5 +1,7 @@
-/******** Update PCL-C cutoff score *************/
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1000, 100);
 
+/******** Update PCL-C cutoff score *************/
+/*** Also update DAST-10 ***********/
 UPDATE template SET template_file = 
 '<#include "clinicalnotefunctions"> 
 <#-- Template start --> 
@@ -26,7 +28,19 @@ ${MODULE_START}
 	<#if (!(var10714??)) || (var10714?? && var10714.value=="0" && var2016?? && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022?? && var2022.value=="false") ||(var10716?? && var10716.value=="0" && var2030?? && var2030.value=="false") || (var10717?? && var10717.value=="0" && var2037?? && var2037.value=="false") > 
 		<#assign status = empty> <#assign score = empty> <#assign cutoff = empty> 
 	</#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  
-	<#-- DAST 10 --> <#assign screen = "DAST-10 (Substance Abuse)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1010?? > <#assign score = getFormulaDisplayText(var1010)> <#if (score?length > 0) &&  score != "notset"> <#assign cutoff = "3"> <#if ((score?number) <= 2)> <#assign status ="Negative"> <#else> <#assign status ="Positive"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     
+	<#-- DAST 10 --> <#assign screen = "DAST-10 (Substance Abuse)"> 
+	<#assign status = empty> <#assign score = empty> <#assign cutoff = empty>
+	<#if var1000?? && var1000.value?? && var1000.value == "0">
+		<#assign status ="Negative">
+		<#assign score="0">
+		<#assign cutoff = "3"> 
+	<#elseif var1010?? > <#assign score = getFormulaDisplayText(var1010)> 
+		<#if (score?length > 0) &&  score != "notset"> <#assign cutoff = "3"> 
+			<#if ((score?number) <= 2)> <#assign status ="Negative"> 
+			<#else> <#assign status ="Positive"> 
+			</#if> 
+		</#if> 
+	</#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     
 	<#-- GAD 7 --> <#assign screen = "GAD-7 (Anxiety)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1749?? > <#assign score = getFormulaDisplayText(var1749)> <#if score != "notset"> <#assign cutoff = "10"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     
 	<#-- HOUSING - Homelessness --> <#assign screen = "Homelessness"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var2000?? && var2000.value??> <#if var2000.value?number == 0> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif var2000.value?number == 1> <#if var2001?? && var2001.value?? && (var2001.value?number == 1)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif var2001?? && var2001.value?? && (var2001.value?number == 0) > <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  
 	<#-- ISI --> <#assign screen = "ISI (Insomnia)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var2189?? > <#assign score = getFormulaDisplayText(var2189)> <#if score != "notset"> <#assign cutoff = "15"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  
@@ -396,3 +410,48 @@ where template_id=310;
 update rule set expression=
 '([1750]+[1760]+[1770]+[1780]+[1790]+[1800]+[1810]+[1820]+[1830]+[1840]+[1850]+[1860]+[1870]+[1880]+[1890]+[1900]+[1910]) >=44'
 where rule_id=104 ;
+
+
+/********* Ticket 780 Dast_other=0 is considered as negative ****************/
+INSERT INTO variable_template(assessment_variable_id, template_id) VALUES (1000, 28);
+ update template set template_file = '
+ <#include "clinicalnotefunctions"> 
+<#-- Template start -->
+<#if (var1000?? && var1000.value??) || (var1010?? && var1010.value??)>
+${MODULE_TITLE_START}
+Drugs:
+${MODULE_TITLE_END}
+${MODULE_START}
+	
+	<#if var1000?? && var1000.value?? && var1000.value == "0">
+	   	<#assign score = 0>
+	   	<#assign status ="negative">
+		<#assign statusText ="no problems">
+	<#else>		 
+	<#assign score = var1010.value?number> <#--getListScore([var1000,var1001,var1002,var1003,var1004,var1005,var1006,var1007,var1008,var1009])>-->
+	<#assign status ="notset"> 
+	<#assign statusText ="notset"> 
+	<#assign gender = "">
+	
+	<#if score?has_content && ((score?number) == 0)> 
+		<#assign status ="negative">
+		<#assign statusText ="no problems">
+	<#elseif (score)?has_content && ((score?number) >= 1) && ((score?number) <= 2)> 
+		<#assign status ="negative">
+		<#assign statusText ="a low level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 3) && ((score?number) <= 5)> 
+		<#assign status ="positive">
+		<#assign statusText ="a moderate level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 6) && ((score?number) <= 8)>
+		<#assign status ="positive">
+		<#assign statusText ="a substantial level of problems">
+	<#elseif (score)?has_content && ((score?number) >= 9) && ((score?number) <= 10)>
+		<#assign status ="positive">
+		<#assign statusText ="a severe level of problems">
+	</#if> 
+	</#if>
+    The Veteran\'s Drug screen was ${status} with ${statusText} reported. ${NBSP}
+	
+${MODULE_END}
+</#if>'
+where template_id = 28;
