@@ -15,15 +15,15 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExpressionEvaluatorServiceImpl.class);
-	
+
     @Override
     public String evaluateFormula(FormulaDto formulaDto) throws NoSuchMethodException, SecurityException {
     	String workingTemplate = formulaDto.getExpressionTemplate();
     	String originalFormulaTemplate = workingTemplate;
     	workingTemplate = mergeChildFormulasIntoTemplate(workingTemplate, formulaDto.getChildFormulaMap(), originalFormulaTemplate);
     	workingTemplate = mergeVariablesToTemplate(workingTemplate, formulaDto.getVariableValueMap(), originalFormulaTemplate);
-    	
-    	ExpressionParser parser = new SpelExpressionParser();
+
+
 
     	String answer = null;
 
@@ -32,20 +32,30 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     		//Register a static method as CUSTOM function then invoke it.
     		StandardEvaluationContext stdContext = new StandardEvaluationContext();
     		stdContext.registerFunction("calculateAge", CustomCalculations.class.getDeclaredMethod("calculateAge", new Class[] { String.class }));
-    		answer = parser.parseExpression(workingTemplate).getValue(stdContext, String.class);
+			ExpressionParser parser = new SpelExpressionParser();
+			answer = parser.parseExpression(workingTemplate).getValue(stdContext, String.class);
     	}
     	else {
-    		answer = parser.parseExpression(workingTemplate).getValue(String.class);	
-    		//logger.debug("parsing expression {} returned {}", workingTemplate, answer);
+    		answer = testFormula(workingTemplate);
     	}
-    	
+
     	return answer;
     }
-    
-    private String mergeChildFormulasIntoTemplate(String workingTemplate, Map<Integer, String> childFormulas, String originalFormulaTemplate) {
+
+	@Override
+	public String testFormula(String formulaAsStr) {
+		ExpressionParser parser = new SpelExpressionParser();
+		String testResult=parser.parseExpression(formulaAsStr).getValue(String.class);
+		if (logger.isDebugEnabled()){
+			logger.debug(String.format("The result of %s is %s", formulaAsStr, testResult));
+		}
+		return testResult;
+	}
+
+	private String mergeChildFormulasIntoTemplate(String workingTemplate, Map<Integer, String> childFormulas, String originalFormulaTemplate) {
     	if(childFormulas == null || childFormulas.size() == 0)
     		return workingTemplate;
-    	
+
     	int safetyCounter = 0;
     	do {
 	    	Iterator<Integer> keysIterator = childFormulas.keySet().iterator();
@@ -55,22 +65,22 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
 	    		String variablePattern = String.format("[$%s$]", key);
 	    		workingTemplate = workingTemplate.replace(variablePattern, String.format(" ( %s ) ", childFormula));
 	    	}
-	    	
+
 	    	safetyCounter = safetyCounter + 1;
 	    	if(safetyCounter > 10)
 	    		throw new ReferencedFormulaMissingException
-	    			(String.format("A referenced formula was missing. The original template was: '%s'. The merged template was: '%s'.", 
+	    			(String.format("A referenced formula was missing. The original template was: '%s'. The merged template was: '%s'.",
 	    					originalFormulaTemplate, workingTemplate));
-	    	
+
     	} while(workingTemplate.contains("$"));
-    	
+
     	return workingTemplate;
     }
-     
+
     private String mergeVariablesToTemplate(String workingTemplate, Map<Integer, String> variableValueMap, String originalFormulaTemplate) {
     	if(variableValueMap == null || variableValueMap.size() == 0)
     		return workingTemplate;
-    	
+
     	Iterator<Integer> keysIterator = variableValueMap.keySet().iterator();
     	while(keysIterator.hasNext()) {
     		Integer key = keysIterator.next();
@@ -78,22 +88,22 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     		String variablePattern = String.format("[%s]", key);
     		workingTemplate = workingTemplate.replace(variablePattern, value);
     	}
-    	
+
     	if(workingTemplate.contains("[") || workingTemplate.contains("]"))
     		throw new ReferencedVariableMissingException
-    			(String.format("A referenced variable was missing. The original template was: '%s'. The merged template was: '%s'.", 
+    			(String.format("A referenced variable was missing. The original template was: '%s'. The merged template was: '%s'.",
     					originalFormulaTemplate, workingTemplate));
-    	
+
     	return workingTemplate;
     }
-    
+
     public static void main(String[] args)
     {
         ExpressionParser parser = new SpelExpressionParser();
-        
+
         String expression = "(((true||false||false)?1:0) + ((true||true||false||false||false)?1:0) + (true?1:0) + (true?1:0))";
 
 		logger.warn(""+parser.parseExpression(expression).getValue());
     }
-    
+
 }

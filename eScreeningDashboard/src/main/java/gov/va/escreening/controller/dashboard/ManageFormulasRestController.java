@@ -2,7 +2,9 @@ package gov.va.escreening.controller.dashboard;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.databind.util.JSONWrappedObject;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.delegate.EditorsViewDelegate;
 import gov.va.escreening.domain.ErrorCodeEnum;
@@ -10,6 +12,7 @@ import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
+import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.security.CurrentUser;
@@ -44,6 +47,9 @@ public class ManageFormulasRestController {
     @Resource(name = "sessionMgr")
     SessionMgr sessionMgr;
 
+    @Resource(type = ExpressionEvaluatorService.class)
+    ExpressionEvaluatorService formulaTester;
+
 
     @RequestMapping(value = "/services/formulas", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -65,5 +71,26 @@ public class ManageFormulasRestController {
             }
         }
         return null;
+    }
+
+    @RequestMapping(value = "/services/formulas/test", method = RequestMethod.PUT, produces = "application/json")
+    @ResponseBody
+    public Map testFormula(@RequestBody Map<String, Object> tgtFormula) {
+        String formulaAsStr = (String)tgtFormula.get("formulaToTest");
+        Map result = Maps.newHashMap();
+        result.put("status", "failed");
+
+        if (formulaAsStr == null) {
+            result.put("reason", "missing formula");
+        } else {
+            try {
+                String testResult = formulaTester.testFormula(formulaAsStr);
+                result.put("status", "passed");
+                result.put("result", testResult);
+            } catch (Exception e) {
+                result.put("reason", Throwables.getRootCause(e).getMessage());
+            }
+        }
+        return result;
     }
 }
