@@ -49,7 +49,7 @@
 						_.each(question.childQuestions[0].answers, function (answer) {
 							scope.answers.push({
 								text: answer.text,
-								exportName: answer.exportName.replace(question.childQuestions[0].variableName + '_', '')
+								exportName: question.childQuestions[0].variableName ? answer.exportName.replace(question.childQuestions[0].variableName + '_', '') : answer.exportName
 							});
 						});
 					}
@@ -80,39 +80,21 @@
 					scope.question.childQuestions.splice(index, 1);
 				};
 
-				function mergeByProperty (arr1, arr2, prop) {
-					_.each(arr2, function(arr2obj) {
-						var arr1obj = _.find(arr1, function(arr1obj) {
-							console.log('arr1obj[prop]', arr1obj[prop]);
-							console.log('arr2obj[prop]', arr2obj[prop]);
-							return arr1obj[prop] === arr2obj[prop];
-						});
-
-						//If the object already exist extend it with the new values from arr2
-						// otherwise just add the new object to arr1
-						arr1obj ? _.extend(arr1obj, arr2obj) : arr1.push(arr2obj);
-					});
-				}
-
 				function updateQuestionAnswers () {
 					if (scope.answers.length && scope.question.childQuestions.length) {
 						_.each(scope.question.childQuestions, function(question) {
 
-							console.log('scope.question.childQuestions', scope.question.childQuestions);
-
-							if (!question.answers.length) {
-								question.answers = _.clone(scope.answers);
-							}
 							//mergeByProperty(question.answers, scope.answers, 'text');
 							_.each(scope.answers, function(answer, index) {
-								var exportName = question.variableName + '_' + answer.exportName;
-								if (question.answers[index]) {
-									question.answers[index].exportName = exportName;
-								} else {
-									question.answers.push(answer);
-									question.answers[index].exportName = exportName;
+
+								if (!question.answers[index]) {
+									question.answers.push(_.clone(answer));
 								}
+								_.merge(question.answers[index], scope.answers[index]);
+								question.answers[index].exportName = question.variableName + '_' + answer.exportName;
 							});
+
+							console.log('scope.question.childQuestions', scope.question.childQuestions);
 						});
 					}
 				}
