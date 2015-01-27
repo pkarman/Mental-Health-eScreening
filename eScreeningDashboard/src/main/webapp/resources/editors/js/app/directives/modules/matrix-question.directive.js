@@ -73,7 +73,7 @@
 				};
 
 				scope.addQuestion = function addQuestion() {
-					scope.question.childQuestions.push(Question.extend({}));
+					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti' }));
 				};
 
 				scope.deleteQuestion = function deleteQuestion(index) {
