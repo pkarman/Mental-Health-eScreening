@@ -30,6 +30,7 @@
 									<label> {{$index + 1}}. Column Name * </label> <input type="text"
 										class="form-control"
 										ng-model="answer.text"
+										ng-change="updateQuestionAnswers()"
 										placeholder="Enter Answer Text">
 								</div>
 							</div>
@@ -38,6 +39,7 @@
 									<label>{{question.type === 'selectOneMatrix' ? 'Export Value' : 'Variable Name '}}*</label> <input type="text"
 										class="form-control"
 										ng-model="answer.exportName"
+										ng-change="updateQuestionAnswers()"
 										placeholder="Enter Export Value">
 								</div>
 							</div>
@@ -54,7 +56,8 @@
 										<label class="checkbox"> <input type="checkbox"
 											ng-model="answer.type"
 											ng-true-value="other"
-											ng-false-value="{{ null }}"> Other </label>
+											ng-false-value="{{ null }}"
+											ng-change="updateQuestionAnswers()"> Other </label>
 									</div>
 									<div class="row" ng-if="question.type === 'selectMultiMatrix'">
 										<div class="col-xs-3">
@@ -63,6 +66,7 @@
 													class="form-control"
 													name="answerType"
 													ng-model="answer.type"
+													ng-change="updateQuestionAnswers()"
 													ng-options="answerType.value as answerType.name for answerType in answerTypes">
 												<option value="">Regular</option>
 											</select>
@@ -100,6 +104,7 @@
 									<label> {{$index + 1}}. Row Name * </label> <input type="text"
 										class="form-control"
 										ng-model="question.text"
+										ng-change="updateQuestionAnswers()"
 										placeholder="Enter Row Name">
 								</div>
 							</div>
@@ -108,6 +113,7 @@
 									<label> Variable Name *</label> <input type="text"
 										class="form-control"
 										ng-model="question.variableName"
+										ng-change="updateQuestionAnswers()"
 										placeholder="Enter Variable Value">
 								</div>
 							</div>

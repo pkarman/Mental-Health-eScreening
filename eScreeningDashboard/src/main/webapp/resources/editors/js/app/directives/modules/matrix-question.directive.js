@@ -57,11 +57,11 @@
 				});
 
 				scope.$watchCollection('answers', function(answers) {
-					updateQuestionAnswers();
+					scope.updateQuestionAnswers();
 				});
 
 				scope.$watchCollection('question.childQuestions', function(childQuestions) {
-					updateQuestionAnswers();
+					scope.updateQuestionAnswers();
 				});
 
 				scope.addAnswer = function addAnswer() {
@@ -80,11 +80,14 @@
 					scope.question.childQuestions.splice(index, 1);
 				};
 
-				function updateQuestionAnswers () {
+				scope.updateQuestionAnswers = function updateQuestionAnswers () {
 					if (scope.answers.length && scope.question.childQuestions.length) {
-						_.each(scope.question.childQuestions, function(question) {
+						_.each(scope.question.childQuestions, function(question, i) {
 
-							//mergeByProperty(question.answers, scope.answers, 'text');
+							question.displayOrder = i;
+
+							// Remove tertiary childQuestions array
+							//delete question.childQuestions;
 							_.each(scope.answers, function(answer, index) {
 
 								if (!question.answers[index]) {
@@ -92,12 +95,11 @@
 								}
 								_.merge(question.answers[index], scope.answers[index]);
 								question.answers[index].exportName = question.variableName + '_' + answer.exportName;
+								question.answers[index].displayOrder = index;
 							});
-
-							console.log('scope.question.childQuestions', scope.question.childQuestions);
 						});
 					}
-				}
+				};
 			}
 		};
 
