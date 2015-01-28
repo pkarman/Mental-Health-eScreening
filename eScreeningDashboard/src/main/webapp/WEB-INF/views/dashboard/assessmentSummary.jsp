@@ -916,10 +916,10 @@ $(document).ready(function() {
 		
 		// Vars
 		var w = 450,
-			h = 250,
+			h = 300,
 			margin = {
 				top: 20,
-				bottom: 30,
+				bottom: 60,
 				left: 30,
 				right: 140
 			},
@@ -973,7 +973,7 @@ $(document).ready(function() {
 			.scale(x)
 			.orient("bottom")
 			.ticks(d3.time.days, 100)
-			.tickFormat(d3.time.format("%b"));
+			.tickFormat(d3.time.format("%m/%d/%Y"));
 	
 		var yAxis = d3.svg.axis()
 			.scale(y)
@@ -998,7 +998,14 @@ $(document).ready(function() {
 			this.append("g")
 				.classed("x axis", true)
 				.attr("transform", "translate(0," + height + ")")
-				.call(params.axis.x);
+				.call(params.axis.x)
+				.selectAll("text")  
+				.style("text-anchor", "end")
+				.attr("dx", "-.8em")
+				.attr("dy", ".15em")
+				.attr("transform", function(d) {
+					return "rotate(-65)" 
+				});
 	
 			this.append("g")
 				.classed("y axis", true)
