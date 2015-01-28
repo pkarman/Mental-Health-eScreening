@@ -27,7 +27,7 @@
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
                 for (var index in $scope.surveyPages) {
-                    $scope.surveyPages[index].pageNumber = index;
+                    $scope.surveyPages[index].pageNumber = +index;
                 }
             }
         };
@@ -40,7 +40,7 @@
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;
                 for (var index in questions) {
-                    questions[index].displayOrder = index;
+                    questions[index].displayOrder = +index;
                 }
             }
         };

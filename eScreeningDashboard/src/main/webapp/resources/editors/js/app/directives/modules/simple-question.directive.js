@@ -17,8 +17,10 @@
 						question.answers = [];
 						_.each(question.tableAnswers, function(answers) {
 							// Server sends back and array of array of objects for no good reason
-							_.each(answers, function(answer) {
-								question.answers.push(_.clone(answer));
+							_.each(answers, function(answer, index) {
+								var clonedAnswer = _.clone(answer);
+								clonedAnswer.displayOrder = index;
+								question.answers.push(clonedAnswer);
 							});
 						});
 						// Remove the tableAnswers so they don't override the answers
@@ -39,19 +41,19 @@
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.answers;
 						for (var index in answers) {
-							answers[index].displayOrder = index;
+							answers[index].displayOrder = +index;
 						}
 					}
 				};
 
 				scope.addAnswer = function addAnswer() {
-					scope.question.answers.push(Answer.extend({}));
+					console.log(scope.question.answers.length);
+					scope.question.answers.push(Answer.extend({displayOrder: scope.question.answers.length}));
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
 					scope.question.answers.splice(index, 1);
 				};
-
 
 			}
 		};

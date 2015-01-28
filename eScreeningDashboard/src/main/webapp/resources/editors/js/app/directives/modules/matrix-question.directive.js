@@ -26,7 +26,7 @@
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.childQuestions.answers;
 						for (var index in answers) {
-							answers[index].displayOrder = index;
+							answers[index].displayOrder = +index;
 						}
 					}
 				};
@@ -38,7 +38,7 @@
 					stop: function(e, ui) {
 						var questions = ui.item.scope().$parent.question.childQuestions;
 						for (var index in questions) {
-							questions[index].displayOrder = index;
+							questions[index].displayOrder = +index;
 						}
 					}
 				};
@@ -65,7 +65,7 @@
 				});
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push({text:'', exportName: ''});
+					scope.answers.push({text:'', exportName: '', displayOrder: scope.answers.length});
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -73,7 +73,7 @@
 				};
 
 				scope.addQuestion = function addQuestion() {
-					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti' }));
+					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti', displayOrder: scope.question.childQuestions.length }));
 				};
 
 				scope.deleteQuestion = function deleteQuestion(index) {
@@ -82,20 +82,20 @@
 
 				scope.updateQuestionAnswers = function updateQuestionAnswers () {
 					if (scope.answers.length && scope.question.childQuestions.length) {
-						_.each(scope.question.childQuestions, function(question, i) {
+						_.each(scope.question.childQuestions, function(question, index) {
 
-							question.displayOrder = i;
+							question.displayOrder = index;
 
 							// Remove tertiary childQuestions array
 							//delete question.childQuestions;
-							_.each(scope.answers, function(answer, index) {
+							_.each(scope.answers, function(answer, j) {
 
-								if (!question.answers[index]) {
+								if (!question.answers[j]) {
 									question.answers.push(_.clone(answer));
 								}
-								_.merge(question.answers[index], scope.answers[index]);
-								question.answers[index].exportName = question.variableName + '_' + answer.exportName;
-								question.answers[index].displayOrder = index;
+								_.merge(question.answers[j], scope.answers[j]);
+								question.answers[j].exportName = question.variableName + '_' + answer.exportName;
+								question.answers[j].displayOrder = j;
 							});
 						});
 					}
