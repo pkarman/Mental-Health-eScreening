@@ -53,15 +53,24 @@
 							<label>{{$index + 1}}. Answer Text * </label> <input type="text"
 								class="form-control"
 								ng-model="answer.text"
-								placeholder="Enter Answer Text">
+								placeholder="Enter Answer Text"
+								required>
 						</div>
 					</div>
 					<div class="col-md-5">
-						<div class="form-group">
-							<label>{{question.type === 'selectOne' ? 'Export Value' : 'Variable Name '}}*</label> <input type="text"
+						<div class="form-group" ng-if="question.type === 'selectOne'">
+							<label>Export Value*</label> <input type="number"
+								class="form-control"
+								ng-model="answer.calculationValue"
+								placeholder="Enter Value"
+								required>
+						</div>
+						<div class="form-group" ng-if="question.type === 'selectMulti'">
+							<label>Variable Name*</label> <input type="text"
 								class="form-control"
 								ng-model="answer.exportName"
-								placeholder="Enter Value">
+								placeholder="Enter Value"
+								required>
 						</div>
 					</div>
 					<div class="col-md-1">

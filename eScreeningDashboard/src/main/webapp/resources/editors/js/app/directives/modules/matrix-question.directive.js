@@ -49,7 +49,8 @@
 						_.each(question.childQuestions[0].answers, function (answer) {
 							scope.answers.push({
 								text: answer.text,
-								exportName: question.childQuestions[0].variableName ? answer.exportName.replace(question.childQuestions[0].variableName + '_', '') : answer.exportName
+								exportName: (question.childQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(question.childQuestions[0].variableName + '_', '') : answer.exportName,
+								calculationValue: answer.calculationValue
 							});
 						});
 					}
@@ -94,7 +95,10 @@
 									question.answers.push(_.clone(answer));
 								}
 								_.merge(question.answers[j], scope.answers[j]);
-								question.answers[j].exportName = question.variableName + '_' + answer.exportName;
+								console.log(question.type);
+								if (question.type === 'selectMulti') {
+									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
+								}
 								question.answers[j].displayOrder = j;
 							});
 						});
