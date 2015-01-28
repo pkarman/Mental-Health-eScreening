@@ -738,19 +738,29 @@ span.countdown {
 	margin-bottom:10px;
 }
 .modules-list{
-	border:1px solid #C8C8C8;
-	border-radius:4px;
+  /*border:1px solid #C8C8C8;
+  border-radius:4px;*/
 }
 .section-rows h4{
 	font-size:14px;
 	font-weight:bold;
 }
-.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+
+  
+.editorTopNav .btn-default:hover,
+.editorTopNav .btn-default:focus,
+.editorTopNav .btn-default:active,
+.editorTopNav .btn-default.active, 
+.editorTopNav .open .dropdown-toggle.btn-default{
 	color: #ffae00;
 	background-color: #001441;
 	border-color: #adadad;
 }
-
+.emptyDragableArea{
+  font-weight:28px;
+  font-weight:bold;
+  color:#949494;
+}
 @media only screen
 and (min-device-width : 768px)
 and (max-device-width : 1024px)

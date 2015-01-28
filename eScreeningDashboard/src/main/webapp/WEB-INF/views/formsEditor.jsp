@@ -298,7 +298,7 @@
                          will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
                          its descendant states are activated. -->
                 <br> 
-                 <div class="row">
+                 <div class="row editorTopNav">
                  <div class="col-md-12  text-center">
                 <div class="button-group" ng-show="$state.current.name!=='home'">
                 	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>

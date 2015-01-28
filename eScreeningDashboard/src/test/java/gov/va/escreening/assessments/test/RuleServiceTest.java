@@ -178,7 +178,6 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for single select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		System.out.println(output);
 		logger.info(output);
 	}
 
@@ -209,7 +208,6 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for long single select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		System.out.println(output);
 		logger.info(output);
 	}
 
@@ -245,7 +243,6 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for multi select:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		System.out.println(output);
 		logger.info(output);
 	}
 
@@ -282,7 +279,6 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for multi select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		System.out.println(output);
 		logger.info(output);
 	}
 
@@ -324,7 +320,6 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for freetext and single select page:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		System.out.println(output);
 		logger.info(output);
 	}
 

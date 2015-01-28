@@ -1037,3 +1037,203 @@ ${MODULE_START}
 	</#if>
 ${MODULE_END}'
 where template_id = 29;
+
+/***** t753 remove all ACSW ****/
+update template
+set template_file = '
+<#include "clinicalnotefunctions">
+<#-- Template start -->
+${MODULE_START}
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="50%" valign="middle"><h2  style="color:#1b4164"><strong>eScreening Summary</strong></h2></td>
+    <td width="50%" valign="top" align="right"><img width="198" height="66" src="resources/images/logo_va_veteran_summary.gif "> <img width="130" height="56" src="resources/images/cesamh_blk_border.png"><br></td>
+  </tr>
+</table>
+
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: 1px dashed #000000; border-top:1px dashed #000000;">
+  <tr>
+
+    <td width="50%" valign="top" style="border-right: 1px dashed #000000;">
+        <div align="center" style="color:#1b4164"><h3> <strong>${getFreeTextAnswer(var630)} ${getFreeTextAnswer(var632)} ${getFreeTextAnswer(var634)}</strong></h3>
+
+        <#if var2??>
+        <strong>${getVariableDisplayText(var2)}</strong><br>
+        </#if>
+
+        <#if var7??>
+        <strong>${getVariableDisplayText(var7)}</strong>
+        <#else>
+        Assessment is incomplete
+        </#if>
+    <br>
+
+    </div></td>
+
+    <td width="50%" valign="top"><h3 align="center"  style="color:#1b4164">Appointments</h3>
+
+
+        <#if var6?? && (var6.children)?? >
+
+            <#if ((var6.children)?size > 0) >
+                <ul>
+                ${delimitChildren(var6 "<li>" "</li>" true)}
+                </ul>
+            <#else>
+                <div align="center"><h4>None scheduled</h4></div>
+            </#if>
+        <#else>
+            <div align="center"><h4>Appointments unavailable</h4><div>
+        </#if>
+      </td>
+
+  </tr>
+
+</table>
+<br>
+
+<div>For questions or concerns, or for a full report of your results, call  the OEF/OIF/OND Transition Case Manager, Natasha Schwarz at (858) 642-3615.</div>
+
+<div style="text-align: center; color:#1b4164"> <strong>If  you need medical attention immediately, go straight to the Emergency  Department.</strong></div><br>
+
+<div><strong>Note:</strong> The results of this screening are NOT diagnoses and do not affect VA  disability ratings. </div>
+${MODULE_END}'
+where template_id = 200;
+
+/* t754 */
+UPDATE template
+SET
+	`template_file` = '<#include "clinicalnotefunctions"> <#-- Template start --> ${MODULE_TITLE_START} SCORING MATRIX: ${MODULE_TITLE_END} ${MODULE_START}  <#macro resetRow > <#assign screen = ""> <#assign status = ""> <#assign score = ""> <#assign cutoff = ""> </#macro>   <#assign empty = "--"> <#assign rows = []>  <#-- AUDIT C --> <#assign screen = "AUDIT C"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty> <#assign rows = []>  <#if var1229??> <#assign score = getFormulaDisplayText(var1229)> <#if score != "notset"> <#assign cutoff = "3-women/4-men"> <#assign score = score?number>  <#if (score >= 0) && (score <= 2)> <#assign status = "Negative"> <#elseif (score >= 4) && (score <= 998)> <#assign status = "Positive"> <#elseif (score == 3 )> <#assign status = "Positive for women/Negative for men"> </#if> <#else> <#assign score = empty> </#if> <#if (score?string == empty) || (status == empty)> <#assign status = empty> <#assign score = empty> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- TBI --> <#assign screen = "BTBIS (TBI)"> <#assign status = "negative"> <#assign score = "N/A"> <#assign cutoff = "N/A">  <#if var10717?? && var10717.value??> <#if (var10717.value?number  >=1) > <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> </#if> </#if>  <#if (!(var10714??)) || (var10714?? && var10714.value=="0" && var2016?? && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022?? && var2022.value=="false") ||(var10716?? && var10716.value=="0" && var2030?? && var2030.value=="false") || (var10717?? && var10717.value=="0" && var2037?? && var2037.value=="false") > <#assign status = empty> <#assign score = empty> <#assign cutoff = empty> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- DAST 10 --> <#assign screen = "DAST-10 (Substance Abuse)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1010?? > <#assign score = getFormulaDisplayText(var1010)> <#if (score?length > 0) &&  score != "notset"> <#assign cutoff = "3"> <#if ((score?number) <= 2)> <#assign status ="Negative"> <#else> <#assign status ="Positive"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     <#-- GAD 7 --> <#assign screen = "GAD-7 (Anxiety)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1749?? > <#assign score = getFormulaDisplayText(var1749)> <#if score != "notset"> <#assign cutoff = "10"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     <#-- HOUSING - Homelessness --> <#assign screen = "Homelessness"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var2000?? && var2000.value??> <#if var2000.value?number == 0> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif var2000.value?number == 1> <#if var2001?? && var2001.value?? && (var2001.value?number == 1)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif var2001?? && var2001.value?? && (var2001.value?number == 0) > <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- ISI --> <#assign screen = "ISI (Insomnia)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var2189?? > <#assign score = getFormulaDisplayText(var2189)> <#if score != "notset"> <#assign cutoff = "15"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- MST --> <#assign screen = "MST"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var2003??> <#if isSelectedAnswer(var2003, var2005)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif isSelectedAnswer(var2003, var2004)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Negative"> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     <#-- PCLC --> <#assign screen = "PCL-C (PTSD)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1929?? > <#assign score = getFormulaDisplayText(var1929)> <#if score != "notset" && score != "notfound"> <#assign cutoff = "50"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- PTSD --> <#assign screen = "PC-PTSD"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1989?? > <#assign score = getFormulaDisplayText(var1989)> <#if score != "notset" && score != "notfound"> <#assign cutoff = "3"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>     <#-- PHQ 9 DEPRESSION --> <#assign screen = "PHQ-9 (Depression)"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if var1599?? > <#assign score = getFormulaDisplayText(var1599)> <#if score != "notset" && score != "notfound"> <#assign cutoff = "10"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- Prior MH DX/TX - Prior Mental Health Treatment --> <#assign screen = "Prior MH DX/TX"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty> <#assign acum = 0> <#assign Q1complete =false> <#assign Q2complete =false> <#assign Q3complete =false> <#assign Q4complete =false> <#-- var1520: ${var1520!""}<br><br>  var1530: ${var1530!""}<br><br>  var200: ${var200!""}<br><br>  var210: ${var210!""}<br><br>  --> <#if (var1520.children)?? && ((var1520.children)?size > 0)> <#assign Q1complete = true> <#list var1520.children as c> <#if ((c.key == "var1522")  || (c.key == "var1523")  || (c.key == "var1524")) && (c.value == "true")> <#assign acum = acum + 1> <#break> </#if> </#list> </#if>  <#if (var1530.children)?? && ((var1530.children)?size > 0)> <#assign Q2complete = true> <#list var1530.children as c> <#if ((c.key == "var1532")  || (c.key == "var1533") || (c.key == "var1534") || (c.key == "var1535") || (c.key == "var1536")) && (c.value == "true") > <#assign acum = acum + 1> <#break> </#if> </#list> </#if>   <#if (var200.children)?? && ((var200.children)?size > 0)> <#assign Q3complete = true> <#list var200.children as c> <#if ((c.key == "var202") && (c.value == "true"))  > <#assign acum = acum + 1> <#break> </#if> </#list> </#if>  <#if (var210.children)?? && ((var210.children)?size > 0)> <#assign Q4complete = true> <#list var210.children as c> <#if ((c.key == "var214") && (c.value == "true"))  > <#assign acum = acum + 1> <#break> </#if> </#list> </#if>  <#if Q1complete && Q2complete && Q3complete && Q3complete> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#if (acum >= 3)> <#assign status = "Positive"> <#elseif (acum > 0) && (acum <= 2)> <#assign status ="Negative"> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- TOBACCO --> <#assign screen = "Tobacco Use"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if (var600.children)?? && ((var600.children)?size > 0)> <#if isSelectedAnswer(var600, var603)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> <#elseif isSelectedAnswer(var600, var601) || isSelectedAnswer(var600, var602)> <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Negative"> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  <#-- VAS PAIN - BASIC PAIN --> <#assign screen = "VAS PAIN"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  <#if (var2300)?? > <#assign score = getSelectOneDisplayText(var2300)> <#if score != "notset" && score != "notfound"> <#assign cutoff = "4"> <#if (score?number >= cutoff?number)> <#assign status = "Positive"> <#else> <#assign status ="Negative"> </#if> <#else> <#assign score = empty> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  ${MATRIX_TABLE_START} ${MATRIX_TR_START} ${MATRIX_TH_START}Screen${MATRIX_TH_END} ${MATRIX_TH_START}Result${MATRIX_TH_END} ${MATRIX_TH_START}Raw Score${MATRIX_TH_END} ${MATRIX_TH_START}Cut-off Score${MATRIX_TH_END} ${MATRIX_TR_END} ${MATRIX_TR_START} <#list rows as row> ${MATRIX_TR_START} <#list row as col> ${MATRIX_TD_START}${col}${MATRIX_TD_END} </#list> ${MATRIX_TR_END} </#list> ${MATRIX_TR_END} ${MATRIX_TABLE_END} ${MODULE_END}'
+WHERE
+	`template_id` = '100';
+
+
+UPDATE template
+SET
+	`template_file` = ' <#include "clinicalnotefunctions"> <#-- Template start --> ${MODULE_TITLE_START} TBI: ${MODULE_TITLE_END} ${MODULE_START}  <#assign scoreText = "negative"> <#if var10717?? && var10717.value??> <#if (var10717.value?number  >=1) > <#assign scoreText = "positive"> </#if> </#if> <#if (var10714?? && var10714.value=="0" && var2016?? && var2016.value=="false") || (var10715?? && var10715.value=="0" && var2022?? && var2022.value=="false") ||(var10716?? && var10716.value=="0" && var2030?? && var2030.value=="false") || (var10717?? && var10717.value=="0" && var2037?? && var2037.value=="false") > <#assign scoreText = "not calculated due to the Veteran declining to answer some or all of the questions"> </#if> The Veteran\'s TBI screen was ${scoreText}. ${NBSP}  <#if var2047?? && (var2047.children)?? && ((var2047.children)?size > 0)> Veteran${NBSP} <#if var3441?? && var3441.value = "true"> declined <#elseif var3442?? && var3442.value="true">agreed to </#if> ${NBSP}TBI consult for further evaluation. ${NBSP} </#if>  ${MODULE_END} '
+WHERE
+	`template_id` = '30';
+
+UPDATE template
+SET
+	template_file = '<#include "clinicalnotefunctions">
+<#function calcScore obj>
+	<#assign result = 0>
+	<#if (obj.children)?? && ((obj.children)?size > 0)>
+		<#list obj.children as c>
+			<#if c.overrideText != "none">
+				<#assign result = result + 1>
+				<#break>
+			</#if>
+		</#list>
+	</#if>
+	<#return result>
+</#function>
+
+<#assign score = 0>
+<#assign isQ2Complete = false>
+<#assign isQ2None = false>
+
+<#if (var3400.children)?? && ((var3400.children)?size > 0)>
+	<#assign isQ2Complete = true>
+	<#if isSelectedAnswer(var3400, var2016)!false>
+		<#assign isQ2None = true>
+	<#else>
+		<#assign score = score + calcScore(var3400)>
+	</#if>
+</#if>
+
+<#assign isQ3Complete = false>
+<#assign isQ3None = false>
+
+<#if isQ2Complete>
+	<#if isQ2None>
+		<#assign isQ3Complete = true>
+	<#else>
+		<#if (var3410.children)?? && ((var3410.children)?size > 0) >
+			<#if isSelectedAnswer(var3410, var2022)!false>
+				<#assign isQ3None = true>
+			<#else>
+				<#assign score = score + calcScore(var3410)>
+			</#if>
+			<#assign isQ3Complete = true>
+		</#if>
+	</#if>
+</#if>
+
+<#assign isQ4Complete = false>
+<#assign isQ4None = false>
+
+<#if isQ3Complete>
+	<#if isQ2None || isQ3None>
+		<#assign isQ4Complete = true>
+	<#else>
+		<#if (var3420.children)?? && ((var3420.children)?size > 0) >
+			<#if isSelectedAnswer(var3420, var2030)!false>
+				<#assign isQ4None = true>
+			<#else>
+				<#assign score = score + calcScore(var3420)>
+			</#if>
+			<#assign isQ4Complete = true>
+		</#if>
+	</#if>
+</#if>
+
+<#assign isQ5Complete = false>
+<#assign isQ5None = false>
+<#if isQ4Complete>
+	<#if isQ2None || isQ3None || isQ4None>
+		<#assign isQ5Complete = true>
+	<#else>
+		<#if (var3430.children)?? && ((var3430.children)?size > 0) >
+			<#if isSelectedAnswer(var3430, var2037)!false>
+				<#assign isQ5None = true>
+			<#else>
+				<#assign score = score + calcScore(var3430)>
+			</#if>
+			<#assign isQ5Complete = true>
+		</#if>
+	</#if>
+</#if>
+<#assign isComplete = false>
+
+<#if isQ2Complete && isQ3Complete && isQ4Complete && isQ5Complete>
+	<#assign isComplete = true>
+</#if>
+
+${MODULE_TITLE_START}
+	Traumatic Brain Injury (TBI)
+${MODULE_TITLE_END}
+
+${MODULE_START}
+	<#assign showRec = false>
+	<#assign tbi_consult_text = "">
+	<#if isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3442)>
+		<#assign showRec = true>
+		<#assign tbi_consult_text = "You have requested further assessment">
+	<#elseif isComplete && (var2047.children)?? && ((var2047.children)?size > 0) && isSelectedAnswer(var2047,var3441)>
+		<#assign showRec = true>
+		<#assign tbi_consult_text = "You have declined further assessment">
+	</#if>
+	A TBI is physical damage to your brain, caused by a blow to the head. Common causes are falls, fights, sports, and car accidents. A blast or shot can also cause TBI.
+	${LINE_BREAK}
+	${LINE_BREAK}
+	<#if isComplete>
+		<b>Results:</b>${NBSP}
+		<#if (score >= 0) && (score <= 3)>
+			negative screen
+		<#elseif (score >= 4 )>
+			at risk
+		</#if>
+	</#if>
+	<#if isComplete && showRec>
+		${LINE_BREAK}
+		<b>Recommendation:</b> ${tbi_consult_text}.
+	<#elseif !isQ2Complete && !isQ3Complete && !isQ4Complete && !isQ5Complete>
+		${LINE_BREAK}
+		<b>Recommendation:</b> Declined to be screened
+	</#if>
+${MODULE_END} '
+WHERE template_id=307;
+

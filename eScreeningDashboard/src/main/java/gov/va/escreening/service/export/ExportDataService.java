@@ -8,6 +8,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,15 +16,16 @@ import com.google.common.collect.Table;
 
 public interface ExportDataService {
 
-	AssessmentDataExport getAssessmentDataExport(
+	AssessmentDataExport getAssessmentDataExport(Map<String, Table<String, String, String>> dd,
 			ExportDataFormBean exportDataFormBean);
 
-	ExportLog logDataExport(AssessmentDataExport dataExport) throws Exception;
+	void takeAssessmentSnapShot(Integer exportedById);
 
 	AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
 			String comment);
 
-	List<DataExportCell> buildExportDataForOneAssessment(VeteranAssessment va,
+	List<DataExportCell> buildExportDataForOneAssessment(Map<String, Table<String, String, String>> dd,VeteranAssessment va,
 			int identifiedExportType);
 
+	Date getLastSnapshotDate();
 }
