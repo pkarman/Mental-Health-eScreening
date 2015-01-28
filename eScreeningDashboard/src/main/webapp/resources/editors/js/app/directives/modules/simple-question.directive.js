@@ -13,7 +13,7 @@
 
 				// Hack to get tableAnswers onto answers array as a result of the server sending answers on tableAnswers
 				scope.$watch('question', function(question) {
-					if (question && question.tableAnswers && question.tableAnswers.length && !question.answers.length) {
+					if (question && question.tableAnswers && question.tableAnswers.length && (!question.answers || !question.answers.length)) {
 						_.each(question.tableAnswers, function(answer) {
 							question.answers.push(_.clone(answer[0]));
 						});
