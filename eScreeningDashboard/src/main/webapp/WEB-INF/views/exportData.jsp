@@ -206,14 +206,10 @@
                           <th scope="col">Last Export On <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Date the file was downloaded"></span></th>
                           <th scope="col">Executed <br>
                             By <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="User who downloaded the file"></span></th>
-                          <th scope="col">Clinician <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Selected assigned clinician which was used to recored for the export" ></span></th>
-                          <th scope="col">Created By <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="User who created the assessment which used to the exported data"></span></th>
                           <th scope="col">Export Type <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Type of export, identied contained contains PPI data de-identied does not contain PPI data" ></span></th>
                           <th scope="col">Assessment Date <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Start/End assessment completion date used to data for export" ></span></th>
-                          <th scope="col">Program <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Selected Program" ></span></th>
-                          <th scope="col">Veteran ID <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Selected Veteran ID" ></span></th>
                           <th scope="col">Export Comment <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="User comment entered when download initiated" ></span></th>
-                          <th scope="col">Download Again <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Download the exported data again based on the listed criteria in this row" ></span></th>
+                          <th scope="col">Download Again <span class="id_header_tooltip glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="Download the previously saved results" ></span></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -228,8 +224,6 @@
         <div class="clear-fix"></div>
       </div>
       
-
-</div>
 
       <!-- Modal -->
       <div class="modal fade" id="modal_confirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -93,7 +93,7 @@ public class VariableResolverTestController {
     		//String result = expressionEvaluatorService.evaluateFormula(missingFormula);
     	}
     	catch(ReferencedFormulaMissingException rfme) {
-    		System.out.println("Got expected exception of: " + rfme.getMessage());
+    		logger.error("Got expected exception of: " + rfme.getMessage());
     	}
     	
     	try {
@@ -104,7 +104,7 @@ public class VariableResolverTestController {
     		//String result = expressionEvaluatorService.evaluateFormula(missingVariable);
     	}
     	catch(ReferencedVariableMissingException rvme) {
-    		System.out.println("Got expected exception of: " + rvme.getMessage());
+			logger.error("Got expected exception of: " + rvme.getMessage());
     	}
     	
     	return "notesBackendTestPage";

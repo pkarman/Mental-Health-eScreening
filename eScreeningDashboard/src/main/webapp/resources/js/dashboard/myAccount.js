@@ -9,7 +9,7 @@ app.directive('passwordValidate', function() {
                 scope.pwdHasLetter = (viewValue && /[a-z]/.test(viewValue)) ? 'valid' : undefined;
                 scope.pwdHasNumber = (viewValue && /\d/.test(viewValue)) ? 'valid' : undefined;
                 scope.pwdHasCapital = (viewValue && /[A-Z]/.test(viewValue)) ? 'valid' : undefined;
-                scope.pwdHasSpecial = (viewValue && /[@,!,#,$,%,&,*]/.test(viewValue)) ? 'valid' : undefined;
+                scope.pwdHasSpecial = (viewValue && /[@,!,#,$,%,&,?,^,*,(,)]/.test(viewValue)) ? 'valid' : undefined;
 
                 if(scope.pwdValidLength && scope.pwdHasLetter && scope.pwdHasNumber &&  scope.pwdHasCapital &&  scope.pwdHasSpecial) {
                     ctrl.$setValidity('pwd', true);

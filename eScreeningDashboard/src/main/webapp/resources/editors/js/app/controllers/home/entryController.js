@@ -96,7 +96,7 @@ Editors.controller('entryController', ['$rootScope', '$scope', '$state', 'Messag
 
     $scope.goToBatteryEdit = function () {
         console.log('ENTRY:: Edit Battery Selection View Selected.');
-        $state.go('batteries.batteryselection');
+        $state.go('batteries.list');
     };
 
     $scope.goToSections = function () {

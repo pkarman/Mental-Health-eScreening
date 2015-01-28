@@ -2,16 +2,14 @@ package gov.va.escreening.delegate;
 
 import gov.va.escreening.dto.SearchDTO;
 import gov.va.escreening.dto.SearchType;
+import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.BatterySurvey;
-import gov.va.escreening.service.BatteryService;
-import gov.va.escreening.service.BatterySurveyService;
-import gov.va.escreening.service.SurveySectionService;
-import gov.va.escreening.service.SurveyService;
+import gov.va.escreening.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +19,8 @@ import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
@@ -33,7 +33,10 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     private SurveyService surveyService;
 
     private SurveySectionService surveySectionService;
-   
+
+    @Resource(type=MeasureService.class)
+    private MeasureService measureService;
+
 
     @Autowired
     public void setBatterySurveyService(BatterySurveyService batterySurveyService) {
@@ -80,9 +83,12 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
     @Override
 	public Integer createSection(SurveySectionInfo surveySectionInfo) {
-		surveySectionService.create(surveySectionInfo);
-        return surveySectionInfo.getSurveySectionId();
-		
+		// only insert a new survey section
+        surveySectionService.create(surveySectionInfo);
+        // now that survey section is added to the db. ask to update, which will also take care of surveys
+        SurveySectionInfo surveySectionInfo1=updateSection(surveySectionInfo);
+        return surveySectionInfo1.getSurveySectionId();
+
 	}
 
 	@Override
@@ -99,25 +105,14 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
 	@Override
 	public SurveySectionInfo updateSection(SurveySectionInfo surveySectionInfo) {
-        List<SurveyInfo> updatedSurveyInfoList = new ArrayList<SurveyInfo>();
-        SurveySectionInfo updatedSurveySectionInfo;
-
-        for(SurveyInfo surveyInfo : surveySectionInfo.getSurveyInfoList()){
-            if(surveyInfo.getSurveySectionInfo().getSurveySectionId() != surveySectionInfo.getSurveySectionId()){
-                surveyInfo.getSurveySectionInfo().setSurveySectionId(surveySectionInfo.getSurveySectionId());
-            }
-            surveyInfo = surveyService.update(surveyInfo);
-            updatedSurveyInfoList.add(surveyInfo);
-        }
-		updatedSurveySectionInfo = surveySectionService.update(surveySectionInfo);
-        return updatedSurveySectionInfo;
+		return surveySectionService.update(surveySectionInfo);
 	}
 
 	@Override
 	public void deleteSection(Integer surveySectionId) {
 		surveySectionService.delete(surveySectionId);
 	}
-	
+
 
 	@Override
 	public void deleteBattery(Integer batteryId) {
@@ -133,7 +128,12 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public SurveyInfo updateSurvey(SurveyInfo surveyInfo) {
         return surveyService.update(surveyInfo);
     };
-    
+
+    @Override
+    public SurveyInfo findSurvey(Integer surveyId) {
+        return surveyService.findSurveyById(surveyId);
+    };
+
     @Override
 	public void removeQuestionFromSurvey(Integer surveyId, Integer questionId) {
 		surveyService.removeMeasureFromSurvey(surveyId, questionId);
@@ -146,8 +146,8 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	public void updateSurveyPages(Integer surveyId,
 			List<SurveyPageInfo> surveyPageInfo) {
 		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
-		
-		
+
+
 	}
 	@Override
 	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
@@ -155,8 +155,13 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	}
 	@Override
 	public SurveyInfo createSurvey(SurveyInfo survey) {
-		
+
 		return surveyService.createSurvey(survey);
 	}
+
+    @Override
+    public Measure findMeasure(Integer measureId) {
+        return measureService.findMeasure(measureId);
+    }
 }
 
