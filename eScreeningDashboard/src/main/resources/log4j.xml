@@ -20,8 +20,24 @@
 	</appender>
 
 	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework">
-		<level value="DEBUG" />
+	<logger name="org.springframework.core">
+		<level value="INFO" />
+	</logger>
+
+	<logger name="org.springframework.beans">
+		<level value="INFO" />
+	</logger>
+
+	<logger name="org.springframework.context">
+		<level value="INFO" />
+	</logger>
+
+	<category name="org.springframework.jdbc.core.JdbcTemplate">
+		<priority value="DEBUG" />
+	</category>
+
+	<logger name="org.springframework.web">
+		<level value="INFO" />
 	</logger>
 
 	<!--
@@ -40,6 +56,11 @@
 	<logger name="gov.va.escreening">
 		<level value="DEBUG" />
 	</logger>
+
+	<logger name="gov.va.escreening.interceptor">
+		<level value="INFO" />
+	</logger>
+
 
 	<!-- Root Logger -->
 	<root>
