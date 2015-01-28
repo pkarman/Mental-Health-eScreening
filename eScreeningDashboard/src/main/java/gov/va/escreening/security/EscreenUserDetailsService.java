@@ -33,7 +33,8 @@ public class EscreenUserDetailsService extends JdbcDaoSupport implements UserDet
             "select up.program_id " +
                     "from user_program up " +
                     "inner join user u on up.user_id = u.user_id " +
-                    "where u.login_id = ?";
+                    "inner join program p on up.program_id = p.program_id " + 
+                    "where u.login_id = ? and p.is_disabled=0 ";
 
     private String usersByUsernameQuery;
     private String authoritiesByUsernameQuery;

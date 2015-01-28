@@ -17,7 +17,7 @@
 				// Update the display order
 				var questions = ui.item.scope().$parent.question.childQuestions;
 				for (var index in questions) {
-					questions[index].displayOrder = index;
+					questions[index].displayOrder = +index;
 				}
 			}
 		};

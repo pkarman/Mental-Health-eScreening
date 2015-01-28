@@ -26,7 +26,7 @@
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.childQuestions.answers;
 						for (var index in answers) {
-							answers[index].displayOrder = index;
+							answers[index].displayOrder = +index;
 						}
 					}
 				};
@@ -38,34 +38,35 @@
 					stop: function(e, ui) {
 						var questions = ui.item.scope().$parent.question.childQuestions;
 						for (var index in questions) {
-							questions[index].displayOrder = index;
+							questions[index].displayOrder = +index;
 						}
 					}
 				};
 
 				scope.$watch('question', function(question) {
-					if (question && scope.question.childQuestions) {
+					if (question && question.childQuestions.length) {
 						// Create question agnostic answers
-						_.each(scope.question.childQuestions[0].answers, function(answer) {
-							scope.answers.push({text: answer.text, exportName: answer.exportName.split('_')[1]});
+						_.each(question.childQuestions[0].answers, function (answer) {
+							scope.answers.push({
+								text: answer.text,
+								exportName: (question.childQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(question.childQuestions[0].variableName + '_', '') : answer.exportName,
+								calculationValue: answer.calculationValue
+							});
 						});
 					}
 
 				});
 
-				scope.$watch('answers', function(answers) {
-					if (answers.length) {
-						_.each(scope.question.childQuestions, function(question) {
-							mergeByProperty(question.answers, scope.answers, 'text');
-							_.each(question.answers, function(answer) {
-								answer.exportName = question.variableName + '_' + answer.exportName;
-							});
-						});
-					}
-				}, true);
+				scope.$watchCollection('answers', function(answers) {
+					scope.updateQuestionAnswers();
+				});
+
+				scope.$watchCollection('question.childQuestions', function(childQuestions) {
+					scope.updateQuestionAnswers();
+				});
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push({text:'Enter Answer Test', exportName: 0});
+					scope.answers.push(Answer.extend({displayOrder: scope.answers.length}));
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -73,24 +74,35 @@
 				};
 
 				scope.addQuestion = function addQuestion() {
-					scope.question.childQuestions.push(Question.create());
+					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti', displayOrder: scope.question.childQuestions.length }));
 				};
 
 				scope.deleteQuestion = function deleteQuestion(index) {
 					scope.question.childQuestions.splice(index, 1);
 				};
 
-				function mergeByProperty(arr1, arr2, prop) {
-					_.each(arr2, function(arr2obj) {
-						var arr1obj = _.find(arr1, function(arr1obj) {
-							return arr1obj[prop] === arr2obj[prop];
-						});
+				scope.updateQuestionAnswers = function updateQuestionAnswers () {
+					if (scope.answers.length && scope.question.childQuestions.length) {
+						_.each(scope.question.childQuestions, function(question, index) {
 
-						//If the object already exist extend it with the new values from arr2
-						// otherwise just add the new object to arr1
-						arr1obj ? _.extend(arr1obj, arr2obj) : arr1.push(arr2obj);
-					});
-				}
+							question.displayOrder = index;
+
+							// Remove tertiary childQuestions array
+							// Delete question.childQuestions
+							_.each(scope.answers, function(answer, j) {
+
+								if (!question.answers[j]) {
+									question.answers.push(_.clone(answer));
+								}
+								_.merge(question.answers[j], scope.answers[j]);
+								if (question.type === 'selectMulti') {
+									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
+								}
+								question.answers[j].displayOrder = j;
+							});
+						});
+					}
+				};
 			}
 		};
 

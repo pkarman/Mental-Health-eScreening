@@ -240,7 +240,7 @@ Editors.config(function(RestangularProvider, $provide) {
 	}]);
 });
 
-Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', function ($rootScope, $state, $stateParams, editableOptions, MessageHandler) {
+Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'AlertFactory', function ($rootScope, $state, $stateParams, editableOptions, AlertFactory) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -309,6 +309,7 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', function
 
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         $rootScope.messageHandler.clearMessages();
+        AlertFactory.clear();
     });
 
     //some error logging to reduce the amount of hair I pull out of my head :)

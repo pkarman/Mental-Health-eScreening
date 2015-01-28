@@ -11,12 +11,13 @@ import gov.va.escreening.service.VistaService;
 import gov.va.escreening.vista.dto.DialogComponent;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VistaRepositoryTest {
     
     private static final String ESCREENING_TEST = "ESCREENING_TEST";
-    private static final Logger logger = Logger.getLogger("VistaRepositoryTest");
+    private static final Logger logger = LoggerFactory.getLogger(VistaRepositoryTest.class);
     public static final String DIVISION = "500";
     public static final String DUZ = "10000000056";
     

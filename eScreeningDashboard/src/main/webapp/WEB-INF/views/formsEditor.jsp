@@ -129,6 +129,7 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <!-- Services -->
+    <script type="text/javascript" src="resources/editors/components/alerts/alert.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
@@ -299,7 +300,7 @@
                          will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
                          its descendant states are activated. -->
                 <br> 
-                 <div class="row">
+                 <div class="row editorTopNav">
                  <div class="col-md-12  text-center">
                 <div class="button-group" ng-show="$state.current.name!=='home'">
                 	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>
@@ -310,6 +311,12 @@
                 </div>
             <!-- </div>-->
             		 <div class="row">
+
+                         <div class="col-md-12">
+                             <!-- Alerts and Messages -->
+                             <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+                         </div>
+
             		    <div class="col-md-12" ui-view></div>
                     </div>
         		</div>

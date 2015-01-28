@@ -1,117 +1,137 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import gov.va.escreening.dto.dashboard.ExportDataSearchResult;
 import gov.va.escreening.entity.ExportLog;
+import gov.va.escreening.entity.ExportLogAudit;
+import gov.va.escreening.repository.ExportLogAuditRepository;
 import gov.va.escreening.repository.ExportLogRepository;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Transactional
 @Service
 public class ExportLogServiceImpl implements ExportLogService {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(ExportLogServiceImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(ExportLogServiceImpl.class);
 
-	@Autowired
-	private ExportLogRepository exportLogRepository;
+    @Autowired
+    private ExportLogRepository exportLogRepository;
+    @Resource(type = ExportLogAuditRepository.class)
+    private ExportLogAuditRepository exportLogAuditRepository;
 
-	@Override
-	public List<ExportDataSearchResult> getExportLogs(
-			List<Integer> programIdList, int noOfDays) {
+    @Override
+    public List<ExportDataSearchResult> getExportLogs(
+            List<Integer> programIdList, int noOfDays) {
 
-		// TODO will need to modify after questions are answered
-		List<ExportLog> exportlogs = noOfDays==-1?exportLogRepository.findAll():exportLogRepository.findAllForDays(noOfDays);
-		List<ExportDataSearchResult> exportSearchResults = new ArrayList<ExportDataSearchResult>();
+        List<ExportDataSearchResult> exportSearchResults = new ArrayList<ExportDataSearchResult>();
 
-		for (ExportLog exportLog : exportlogs) {
-			exportSearchResults.add(createSearchResult(exportLog));
-		}
+        // create Export Data Search Results from export_log table (originally created logs)
+        List<ExportLog> exportlogs = noOfDays == -1 ? exportLogRepository.findAllMinusBytes() : exportLogRepository.findAllForDays(noOfDays);
+        for (ExportLog exportLog : exportlogs) {
+            exportSearchResults.add(createSearchResult(exportLog));
+        }
 
-		return exportSearchResults;
-	}
+        // create Export Data Search Results from export_log_audit table (audit records created whenever clinician opens the archived zip file)
+        List<ExportLogAudit> exportlogAudits = noOfDays == -1 ? exportLogAuditRepository.findAll() : exportLogAuditRepository.findAllForDays(noOfDays);
+        for (ExportLogAudit exportLogAudit : exportlogAudits) {
+            exportSearchResults.add(createSearchResult(exportLogAudit.getAuditExportLog()));
+        }
 
-	private ExportDataSearchResult createSearchResult(ExportLog exportLog) {
+        return exportSearchResults;
+    }
 
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+    private Multimap<ExportLog, ExportLogAudit> creareExportLogAuditMap(List<ExportLogAudit> exportlogAudits) {
+        Multimap<ExportLog, ExportLogAudit> exportLogAuditMap = ArrayListMultimap.create();
+        for(ExportLogAudit ela:exportlogAudits){
+            exportLogAuditMap.put(ela.getExportLog(), ela);
+        }
+        return exportLogAuditMap;
+    }
 
-		ExportDataSearchResult exportResult = new ExportDataSearchResult();
+    private ExportDataSearchResult createSearchResult(ExportLog exportLog) {
 
-		if (exportLog.getDateCreated() != null) {
-			Date date = exportLog.getDateCreated();
-			exportResult.setExportedOn(df.format(date));
-		} else
-			exportResult.setExportedOn("");
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
-		if (exportLog.getAssessmentEndFilter() != null) {
-			Date date = exportLog.getAssessmentEndFilter();
-			exportResult.setAssessmentEndDate(df.format(date));
-		} else
-			exportResult.setAssessmentEndDate("");
+        ExportDataSearchResult exportResult = new ExportDataSearchResult();
 
-		if (exportLog.getAssessmentStartFilter() != null) {
-			Date date = exportLog.getAssessmentStartFilter();
-			exportResult.setAssessmentStartDate(df.format(date));
-		} else
-			exportResult.setAssessmentStartDate("");
+        if (exportLog.getDateCreated() != null) {
+            Date date = exportLog.getDateCreated();
+            exportResult.setExportedOn(df.format(date));
+        } else
+            exportResult.setExportedOn("");
 
-		if (exportLog.getClinician() != null) {
-			String name = exportLog.getClinician().getLastName();
-			if (exportLog.getClinician().getFirstName() != null && !exportLog.getClinician().getFirstName().isEmpty()) {
-				name = String.format("%s, %s", name, exportLog.getClinician().getFirstName());
-			}
-			exportResult.setAssignedClinician(name);
-		} else
-			exportResult.setAssignedClinician("");
+        if (exportLog.getAssessmentEndFilter() != null) {
+            Date date = exportLog.getAssessmentEndFilter();
+            exportResult.setAssessmentEndDate(df.format(date));
+        } else
+            exportResult.setAssessmentEndDate("");
 
-		if (exportLog.getComment() != null && !exportLog.getComment().isEmpty())
-			exportResult.setComment(exportLog.getComment());
-		else
-			exportResult.setComment("");
+        if (exportLog.getAssessmentStartFilter() != null) {
+            Date date = exportLog.getAssessmentStartFilter();
+            exportResult.setAssessmentStartDate(df.format(date));
+        } else
+            exportResult.setAssessmentStartDate("");
 
-		if (exportLog.getCreatedByUser() != null) {
-			String name = exportLog.getCreatedByUser().getLastName();
-			if (exportLog.getCreatedByUser().getFirstName() != null && !exportLog.getCreatedByUser().getFirstName().isEmpty()) {
-				name = String.format("%s, %s", name, exportLog.getCreatedByUser().getFirstName());
-			}
-			exportResult.setCreatedByUser(name);
-		} else
-			exportResult.setCreatedByUser("");
+        if (exportLog.getClinician() != null) {
+            String name = exportLog.getClinician().getLastName();
+            if (exportLog.getClinician().getFirstName() != null && !exportLog.getClinician().getFirstName().isEmpty()) {
+                name = String.format("%s, %s", name, exportLog.getClinician().getFirstName());
+            }
+            exportResult.setAssignedClinician(name);
+        } else
+            exportResult.setAssignedClinician("");
 
-		if (exportLog.getExportedByUser() != null) {
-			String name = exportLog.getExportedByUser().getLastName();
-			if (exportLog.getExportedByUser().getFirstName() != null && !exportLog.getExportedByUser().getFirstName().isEmpty()) {
-				name = String.format("%s, %s", name, exportLog.getExportedByUser().getFirstName());
-			}
-			exportResult.setExportedBy(name);
-		}
+        if (exportLog.getComment() != null && !exportLog.getComment().isEmpty())
+            exportResult.setComment(exportLog.getComment());
+        else
+            exportResult.setComment("");
 
-		if (exportLog.getExportLogId() != null)
-			exportResult.setExportLogId(exportLog.getExportLogId());
+        if (exportLog.getCreatedByUser() != null) {
+            String name = exportLog.getCreatedByUser().getLastName();
+            if (exportLog.getCreatedByUser().getFirstName() != null && !exportLog.getCreatedByUser().getFirstName().isEmpty()) {
+                name = String.format("%s, %s", name, exportLog.getCreatedByUser().getFirstName());
+            }
+            exportResult.setCreatedByUser(name);
+        } else
+            exportResult.setCreatedByUser("");
 
-		if (exportLog.getExportType() != null) {
-			exportResult.setExportType(exportLog.getExportType().getName());
-		} else
-			exportResult.setExportType("");
+        if (exportLog.getExportedByUser() != null) {
+            String name = exportLog.getExportedByUser().getLastName();
+            if (exportLog.getExportedByUser().getFirstName() != null && !exportLog.getExportedByUser().getFirstName().isEmpty()) {
+                name = String.format("%s, %s", name, exportLog.getExportedByUser().getFirstName());
+            }
+            exportResult.setExportedBy(name);
+        }
 
-		if (exportLog.getProgram() != null && exportLog.getProgram().getName() != null && !exportLog.getProgram().getName().isEmpty())
-			exportResult.setProgramName(exportLog.getProgram().getName());
-		else
-			exportResult.setProgramName("");
+        if (exportLog.getExportLogId() != null)
+            exportResult.setExportLogId(exportLog.getExportLogId());
 
-		if (exportLog.getVeteran() != null)
-			exportResult.setVeteranId(exportLog.getVeteran().getVeteranId());
+        if (exportLog.getExportType() != null) {
+            exportResult.setExportType(exportLog.getExportType().getName());
+        } else
+            exportResult.setExportType("");
 
-		return exportResult;
-	}
+        if (exportLog.getProgram() != null && exportLog.getProgram().getName() != null && !exportLog.getProgram().getName().isEmpty())
+            exportResult.setProgramName(exportLog.getProgram().getName());
+        else
+            exportResult.setProgramName("");
+
+        if (exportLog.getVeteran() != null)
+            exportResult.setVeteranId(exportLog.getVeteran().getVeteranId());
+
+        return exportResult;
+    }
 }

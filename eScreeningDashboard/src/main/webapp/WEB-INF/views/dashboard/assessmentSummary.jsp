@@ -305,11 +305,13 @@
             <div class="col-md-6">
               <div class="form-group">
                 <input id="reviewAssessmentButton" name="reviewAssessmentButton" value="Review Assessment" type="button" class="btn btn-primary"  data-toggle="modal" data-target="#assessment_reminders_modal" />
-                <c:if test="${isCprsVerified}">
-                  <input id="saveToVistaModal" name="saveToVistaModal" value="Save To VistA" type="button" class="btn btn-primary" data-toggle="modal" data-target="#save_to_vista_modal" <c:if test="${veteranAssessmentInfo.assessmentStatusName != 'Complete'}">disabled="disabled"</c:if> />
-                </c:if>
-                <c:if test="${!isCprsVerified}">
-                  <input id="saveToVistaModal" name="saveToVistaModal" value="Save To VistA" type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#save_to_vista_modal" />
+                <c:if test="${not empty veteranAssessmentInfo.veteranIen}">
+                  <c:if test="${isCprsVerified}">
+                    <input id="saveToVistaModal" name="saveToVistaModal" value="Save To VistA" type="button" class="btn btn-primary" data-toggle="modal" data-target="#save_to_vista_modal" <c:if test="${veteranAssessmentInfo.assessmentStatusName != 'Complete'}">disabled="disabled"</c:if> />
+                  </c:if>
+                  <c:if test="${!isCprsVerified}">
+                    <input id="saveToVistaModal" name="saveToVistaModal" value="Save To VistA" type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#save_to_vista_modal" />
+                  </c:if>
                 </c:if>
                 <input id="healthFactorTitlesButton" name="healthFactorTitlesButton" value="Health Factor Titles" type="button" class="btn btn-primary"  data-toggle="modal" data-target="health_factor_titles_modal" />
               </div>

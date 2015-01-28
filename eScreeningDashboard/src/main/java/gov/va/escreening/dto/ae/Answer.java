@@ -48,6 +48,25 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private String exportName;
     private String otherAnswerResponse;
     private Integer rowId;
+    private String calculationType;
+
+    public String getCalculationValue() {
+        return calculationValue;
+    }
+
+    public void setCalculationValue(String calculationValue) {
+        this.calculationValue = calculationValue;
+    }
+
+    public String getCalculationType() {
+        return calculationType;
+    }
+
+    public void setCalculationType(String calculationType) {
+        this.calculationType = calculationType;
+    }
+
+    private String calculationValue;
 
 
     public String getVistaText() {
@@ -121,27 +140,30 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public Answer(MeasureAnswer measureAnswer, 
             @Nullable SurveyMeasureResponse measureResponse){
        
-        answerId = measureAnswer.getMeasureAnswerId();
-        answerText = measureAnswer.getAnswerText();
-        answerType = measureAnswer.getAnswerType();
-        vistaText = measureAnswer.getVistaText();
-        exportName = measureAnswer.getExportName();
+        this.answerId = measureAnswer.getMeasureAnswerId();
+        this.answerText = measureAnswer.getAnswerText();
+        this.answerType = measureAnswer.getAnswerType();
+        this.vistaText = measureAnswer.getVistaText();
+        this.exportName = measureAnswer.getExportName();
+        this.calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
+        this.calculationValue=measureAnswer.getCalculationValue();
+
         //set user response
         if(measureResponse != null){
-            rowId = measureResponse.getTabularRow();
+            this.rowId = measureResponse.getTabularRow();
             
             if (StringUtils.isNotBlank(measureResponse.getOtherValue())) {
-                otherAnswerResponse = measureResponse.getOtherValue();
+                this.otherAnswerResponse = measureResponse.getOtherValue();
             }
     
             if (measureResponse.getNumberValue() != null) {                   
-                answerResponse = measureResponse.getNumberValue().toString();
+                this.answerResponse = measureResponse.getNumberValue().toString();
             }
             else if (measureResponse.getBooleanValue() != null) {
-                answerResponse = measureResponse.getBooleanValue().toString();
+                this.answerResponse = measureResponse.getBooleanValue().toString();
             }
             else if (!Strings.isNullOrEmpty(measureResponse.getTextValue())) {
-                answerResponse = measureResponse.getTextValue();
+                this.answerResponse = measureResponse.getTextValue();
             }
         }
     }

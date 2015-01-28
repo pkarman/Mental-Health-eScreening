@@ -10,7 +10,7 @@ public interface UserRepository extends RepositoryInterface<User> {
 	
 	/**
 	 * Retrieves all active users with the given role
-	 * @param roleId
+	 * @param role
 	 * @return all the users associated with Program programId and is in a role in 'roleIdList'
 	 */
 	List<User> findByRoleId(RoleEnum role);
@@ -31,7 +31,7 @@ public interface UserRepository extends RepositoryInterface<User> {
 
     /**
      * Returns a user based on their userId.
-     * @param loginId
+     * @param userId
      */
     User findByUserId(Integer userId);
 

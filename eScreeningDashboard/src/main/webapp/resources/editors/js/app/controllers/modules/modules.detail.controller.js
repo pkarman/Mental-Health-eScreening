@@ -11,6 +11,13 @@
         if (survey.id) {
             survey.getList('pages').then(function(pages) {
                 $scope.surveyPages = pages;
+
+                // Add displayOrder to questions
+                _.each($scope.surveyPages, function(page) {
+                    _.each(page.questions, function(question, index) {
+                        question.displayOrder = index;
+                    });
+                });
             });
         }
 
@@ -20,7 +27,7 @@
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
                 for (var index in $scope.surveyPages) {
-                    $scope.surveyPages[index].pageNumber = index;
+                    $scope.surveyPages[index].pageNumber = +index;
                 }
             }
         };
@@ -33,7 +40,7 @@
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;
                 for (var index in questions) {
-                    questions[index].displayOrder = index;
+                    questions[index].displayOrder = +index;
                 }
             }
         };
@@ -144,7 +151,7 @@
                 });
 
                 if (!$stateParams.surveyId) {
-                    $state.transitionTo($state.current, {surveyId: survey.id}, {
+                    $state.transitionTo('modules.detail', {surveyId: survey.id}, {
                         reload: true, inherit: false, notify: false
                     });
                 }
@@ -160,8 +167,10 @@
             });
         };
 
-        $scope.cancel = function cancel() {
-            $state.go('modules');
+        $scope.cancel = function cancel(moduleDetailsForm) {
+            if (!moduleDetailsForm.$dirty || (moduleDetailsForm.$dirty && window.confirm("Would you like to discard all of your changes?"))) {
+                $state.go('modules');
+            }
         };
 
     }]);

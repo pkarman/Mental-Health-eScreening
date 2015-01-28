@@ -1,4 +1,4 @@
-Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSectionService', function ($log, $scope, $state, ManageSectionService) {
+Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSectionService', '$window', function ($log, $scope, $state, ManageSectionService, $window) {
     'use strict';
     var toBeDel = {sections: []},
         dbData = [],
@@ -120,10 +120,30 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSec
         addSuccessMsg(true, 'Please enter the name and description of new survey section');
     };
     $scope.cancel = function () {
-        $state.go("home");
+        //function sureCancel() {
+        //    var deleteCnt = toBeDel.sections.length;
+        //    if (deleteCnt > 0) {
+        //        return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure that you want to cancel the delete operation?");
+        //    }
+        //    return true;
+        //}
+
+        //if (sureCancel()) {
+            $state.go("home");
+        //}
     };
     $scope.saveAll = function () {
-        saveAll();
+        //function confirmSave() {
+        //    var deleteCnt = toBeDel.sections.length;
+        //    if (deleteCnt > 0) {
+        //        return $window.confirm('There are ' + deleteCnt + " sections marked for delete. Are you sure to delete these permanently?");
+        //    }
+        //    return true;
+        //}
+
+        //if (confirmSave()) {
+            saveAll();
+        //}
     };
     $scope.delete = function (index) {
         var section = $scope.ssRows[index];
@@ -138,11 +158,12 @@ Editors.controller('sectionsController', ['$log', '$scope', '$state', 'ManageSec
             toBeDel.sections.push(_.where(dbData, {id: section.id})[0]);
 
             // remove the section from $scope.ssRows but DO NOT save it the db
-            //$scope.ssRows.splice(index, 1);
+            $scope.ssRows.splice(index, 1);
 
             addSuccessMsg(true, 'Survey Section \'' + section.name + '\' is marked for deletion. Please press \'Save\' to delete the section permanently');
         }
     };
 
 
-}]);
+}])
+;

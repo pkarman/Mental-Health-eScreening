@@ -33,7 +33,7 @@
         
         <link rel="stylesheet" type="text/css" href="resources/css/checkswitch.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/formButtons.css">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="resources/css/jquery/smoothness/jquery-ui.min.css">
 		<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/assessment_new.css">
         <link rel="stylesheet" type="text/css" href="resources/css/common.css">

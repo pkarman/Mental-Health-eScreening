@@ -7,7 +7,7 @@ import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 /**
  * Created by pouncilt on 8/5/14.
  */
-//@JsonIgnoreProperties(ignoreUnknown = true, value = {"answerId", "answerText", "answerType", "answerResponse", "otherAnswerResponse"})
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"answerId", "answerText", "answerType", "answerResponse", "otherAnswerResponse"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerInfo implements MeasureAnswerBaseProperties {
     private Integer id;
@@ -18,6 +18,16 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String exportName;
     private String otherResponse;
     private Integer rowId;
+    private Integer calculationValue;
+
+    public Integer getCalculationValue() {
+        return calculationValue;
+    }
+
+    public void setCalculationValue(Integer calculationValue) {
+        this.calculationValue = calculationValue;
+    }
+
 
 
     public AnswerInfo() {

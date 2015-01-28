@@ -29,7 +29,10 @@ public class OrwptApptlstListExtractor implements VistaRecordExtractor<List<Vist
             OrwptApptlstExtractor orwptApptlstExtractor = new OrwptApptlstExtractor();
 
             for (int i = 0; i < records.length; ++i) {
-                resultList.add(orwptApptlstExtractor.extractData(records[i]));
+                VistaVeteranAppointment appt = orwptApptlstExtractor.extractData(records[i]);
+                if (appt != null) {
+                    resultList.add(appt);
+                }
             }
         }
 
