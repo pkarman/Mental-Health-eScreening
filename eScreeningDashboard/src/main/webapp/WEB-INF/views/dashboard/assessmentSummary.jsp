@@ -374,6 +374,7 @@
                         <button class="btn btn-primary print"><span class=" glyphicon glyphicon-print"></span> Print </button>
                       </div>
                       <div class="modal_contents">Loading...</div>
+					  <div class="timeSeries"></div>
                   </div>
                 </div>
               </div>
@@ -436,7 +437,9 @@ $(document).ready(function() {
         $('#VeteranSummaryModal').modal('show');
         $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
 
- 		  var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+ 		var vaid = ${veteranAssessmentInfo.veteranAssessmentId};
+ 		var vid = ${veteranAssessmentInfo.veteranId};
+ 		 
  	    var modal_url = 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
  	    $.ajax({
 		  	type : 'get',
@@ -445,45 +448,101 @@ $(document).ready(function() {
 	   		success : function(r){  
 	   		    $(modal_contents).show().html(r);
 	            $(".graphicBody").each(function(graphId){
-	                var $this = $(this);
+	            	
+	                //TODO: mayb we should add a "loading..." icon while we get data from server
+	                
+	            	var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
-	                
 	                $this.html(""); //clear the graph area
+	        		var stackGraphParams = processIntervals(graphObj.stackGraphParams);
+	        		var timeSeriesParams = graphObj.timeSeriesParams;
 	                
-                  //process graph request by type
-	                if(graphObj.type == "stacked"){
-	                    graphStacked(graphId, graphObj, $this.parents(".moduleTemplate"));
-	                }
-	                //TODO: add more types 
+	                var parentDiv = $this.parents(".moduleTemplate");
+	                parentDiv.addClass("graphicBlock");
+	                var titleContainer = parentDiv.children(".moduleTemplateTitle");
+	                var graphContainer = parentDiv.children(".graphSection");
+	                var descriptionContainer = parentDiv.children(".moduleTemplateText");
+	            	  
+	        		// Update title block to contain the scoring
+	        		titleContainer.wrap("<div class='scoreBlock text-center'>");
+	        		titleContainer.parent().append("<div><h4>" + stackGraphParams.score + "</h4><h5>" + stackGraphParams.scoresInterval + "</h5></div>");
+	        		
+	        		//Start adding to the graphic block with the graph's title 
+	        		graphContainer.prepend("<div class='graphHeader'>" + graphObj.title + "</div>");
+	        		
+	        		//Add d3 graph
+	                var graphContainerId = "graph_" + graphId;
+	                var graphSelector = "#" + graphContainerId;
+	                graphContainer.children(".graphicBody").prop("id", graphContainerId)
+	                
+	                //get time series for the variable
+	                // Call timeSeries JSON
+					$.ajax({
+						type : 'get',
+						url : 'assessmentSummary/assessmentvarseries/' + vid + '/' + graphObj.varId + '/' + graphObj.numberOfMonths,
+						success : function(points){  
+							
+							//append correct graph type given the number of historical results for the variable
+							if(hasMoreThanOne(points)){
+								appendTimeSeries(graphSelector, timeSeriesParams, points);
+							}
+							else{
+								appendStackGraph(graphSelector, stackGraphParams);
+							}
+			                
+							//Add footer if we were given one
+							if(graphObj.footer != null && graphObj.footer != ""){
+								graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
+							}									
+						},
+				  		error: handleError
+					});
 	            });
-			    },
-          error: function (xhr, exception, errorThrown) {
-                data = "[" + xhr.responseText + "]";
-                data = $.parseJSON(data);
-          
-                var userMessage       = [];
-                var developerMessage  = [];
-                for (var i = 0; i < data.length; ++i) {                    
-                  for (var j = 0; j < data[i].errorMessages.length; j++) {
-                    errorMessages = data[i].errorMessages[j];
-                    userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
-                  }
-                  if(data[i].developerMessage.length > 0){
-                    result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
-                    result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
-                    result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
-                    developerMessage.push(result);
-                  }
-                }
-                var panelTemplate = userMessage;
-                    panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
-                    panelTemplate = panelTemplate + developerMessage;
-                    panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
-                
-                $(modal_contents).show().html(panelTemplate);
-          }
-         
- 	    });    
+	            
+			},
+          	error: handleError
+ 	    });
+ 	    
+ 	   function handleError(xhr, exception, errorThrown) {
+           data = "[" + xhr.responseText + "]";
+           data = $.parseJSON(data);
+     
+           var userMessage       = [];
+           var developerMessage  = [];
+           for (var i = 0; i < data.length; ++i) {                    
+             for (var j = 0; j < data[i].errorMessages.length; j++) {
+               errorMessages = data[i].errorMessages[j];
+               userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+             }
+             if(data[i].developerMessage.length > 0){
+               result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
+               result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
+               result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+               developerMessage.push(result);
+             }
+           }
+           var panelTemplate = userMessage;
+               panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+               panelTemplate = panelTemplate + developerMessage;
+               panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+           
+           $(modal_contents).show().html(panelTemplate);
+ 	   }
+ 	   
+ 	  function hasMoreThanOne(obj) {
+ 		    
+ 		    if (Object.keys) { 
+ 		        return Object.keys(obj).length > 1;
+ 		    }
+
+ 		    var c = 0;
+ 		    for (field in obj) {
+ 		        if(c > 1){ return true; }
+ 		        c++;
+ 		    }
+
+ 		    return false;
+ 		}
  	});
 						
 						
@@ -578,68 +637,67 @@ $(document).ready(function() {
         
         
 <script>
+
+	/**
+	 * Initializes basic graph parameter using given graph parameters.
+	 * Uses fields: 
+	 *	 intervals - array of map from interval name to the starting value for that interval
+	 *	 score - the score for the assessment we are summarizing
+	 *	 maxXPoint - the maximum value of any score (end of last interval), this can be undefined if the last interval will be the end of the graph
+	 * Sets fields:
+	 *	 legends - names for each interval
+	 *	 dataset - the array of objects containg x,y which are used by the stack graph to set intervals
+	 *	 scoresInterval - name of the interval where the score is found
+	 *	 graphStart - the minimum value of any score (start of first interval)
+	 */
+	function processIntervals(graphParams){
+		graphParams.legends = [];
+		graphParams.dataset = [];
+		graphParams.scoresInterval;
+		graphParams.graphStart = 0;
+		
+		var prevInterval, prevName;
+		
+		$.each(graphParams.intervals, function(name, intervalStart){
+			graphParams.legends.push(name);
+
+			//skip the first one
+			if(prevInterval != null){
+				graphParams.dataset.push([{x:"", y:intervalStart}]);
+			}
+			else{
+				graphParams.graphStart = intervalStart;
+			}
+			
+			if(prevInterval != null && graphParams.score >= prevInterval && graphParams.score < intervalStart){
+				graphParams.scoresInterval = prevName;
+		    }
+			prevInterval = intervalStart;
+			prevName = name;
+		}); 
+		
+		//check if scoreInterval is in the last interval
+		if(graphParams.scoresInterval == null && graphParams.score >= prevInterval){
+			graphParams.scoresInterval = prevName;
+		}
+		
+		//if this is null then that means the final interval will end the graph (there must be a tick for this last point)
+		if(graphParams.maxXPoint != null){
+			graphParams.dataset.push([{x:"", y:graphParams.maxXPoint}]);
+		}
+		return graphParams;
+	}
+	
     //TODO:
 	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
 	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
 	  // 2. the y axis label should not be given 
 	  // 3. the score is not showing up in the graph
        
-    function graphStacked(graphId, graphObj, parentDiv){
-        parentDiv.addClass("graphicBlock");
-        
-        var titleContainer = parentDiv.children(".moduleTemplateTitle");
-        var graphContainer = parentDiv.children(".graphSection");
-        var descriptionContainer = parentDiv.children(".moduleTemplateText");
-    	  
-		// Load Objects
-		var graphparams = graphObj.data;
-		var graphStart 	= 0;
-		var graphEnd 	= graphparams.maxXPoint;
-		var ticks      	= graphparams.ticks;
+    function appendStackGraph(parentSelector, graphparams){
+
+		var ticks = graphparams.ticks;
 		
-		var legends = [];
-		var d3DataSet = [];
-		var scoresInterval;
-		var prevInterval, prevName;
-		$.each(graphparams.intervals, function(name, intervalStart){
-			legends.push(name);
-			//skip the first one
-			if(prevInterval != null){
-				d3DataSet.push([{x:"", y:intervalStart}]);
-			}
-			else{
-				graphStart = intervalStart;
-			}
-			
-			if(prevInterval != null && graphparams.score >= prevInterval && graphparams.score < intervalStart){
-				scoresInterval = prevName;
-		    }
-			prevInterval = intervalStart;
-			prevName = name;
-		}); 
-		//check if scoreInterval is in the last interval
-		if(scoresInterval == null && graphparams.score >= prevInterval){
-			scoresInterval = prevName;
-		}
-		
-		//if this is null then that means the final interval will end the graph (there must be a tick for this last point)
-		if(graphEnd != null){
-			d3DataSet.push([{x:"", y:graphEnd}]);
-		}
-		
-		// Update title block to contain the scoring
-		titleContainer.wrap("<div class='scoreBlock text-center'>");
-		titleContainer.parent().append("<div><h4>" + graphparams.score + "</h4><h5>" + scoresInterval + "</h5></div>");
-		
-		//Start adding to the graphic block with the graph's title 
-		graphContainer.prepend("<div class='graphHeader'>" + graphObj.title + "</div>"); 
-		
-		
-		//Add d3 graph
-        var graphContainerId = "graph_" + graphId;
-        var graphSelector = "#" + graphContainerId;
-        graphContainer.children(".graphicBody").prop("id", graphContainerId)
-        
         //Set d3 graph attributes
 	    var margins = {
 		          top: 46,
@@ -661,8 +719,8 @@ $(document).ready(function() {
 		      xCurrent        = graphparams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
 		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
-		      series          = legends,
-		      dataset         = d3DataSet,
+		      series          = graphparams.legends,
+		      dataset         = graphparams.dataset,
 		      pointerColor    = '#0f3a65',
 		      pointerWidth    = 36,
 		      pointerHeight   = 36,
@@ -682,7 +740,7 @@ $(document).ready(function() {
 			    });
 			}),
 	
-			svg = d3.select(graphSelector)
+			svg = d3.select(parentSelector)
 			    .append('svg')
 			        .attr('width', width + margins.left + margins.right)
 			        .attr('height', height + margins.top + margins.bottom + 60)
@@ -691,7 +749,7 @@ $(document).ready(function() {
 			        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
 			
 			xScale = d3.scale.linear()
-			    .domain([graphStart, xMax])
+			    .domain([graphparams.graphStart, xMax])
 			    .range([0, width]),
 			    
 			notes = dataset[0].map(function(d) { return d.y; }),
@@ -730,7 +788,7 @@ $(document).ready(function() {
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / (xMax - graphStart)) * ( xCurrent - graphStart ) ;
+		var xPos = parseFloat(width / (xMax - graphparams.graphStart)) * ( xCurrent - graphparams.graphStart ) ;
 		var yPos = 0;
 		
 		pointer = svg.append('rect')
@@ -803,16 +861,346 @@ $(document).ready(function() {
 		  });
 		  
 		  // Fix graphic bar issue
-		  $(graphSelector).find('.bars > g')
+		  $(parentSelector).find('.bars > g')
 		      .each(function() {
 		          $(this).prependTo(this.parentNode);
 		  });
-		 
-		  //Add footer if we were given one
-		  if(graphObj.footer != null && graphObj.footer != ""){
-			  
-		      graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
-		  }
 	}
+
+    function appendTimeSeries(parentSelector, graphparams, points){
+		
+    	$(parentSelector).addClass("timeSeries");
+		/*
+		var dataset = [{
+						"varId": 2300,
+						"title": "Depression Over Time",
+						"numberOfMonths": 12,   // TBD after Liz question is answered
+						"timeSeriesParams":  {
+												"ticks": [
+															{"value": "100", "date": "01/01/2014"},
+															{"value": "50", "date": "02/01/2014"},
+															{"value": "60", "date": "03/01/2014"},
+															{"value": "70", "date": "04/01/2014" },
+															{"value": "120", "date": "05/01/2014"},
+															{"value": "60", "date": "06/01/2014"},
+															{"value": "60", "date": "07/01/2014"},
+															{"value": "60", "date": "08/01/2014"}
+												],
+												"intervals": [
+															{"key": "Normal Range 20-44", 				"range": "44", "color": "#75cc51"},
+															{"key": "Mildly Depressed 45-59", 			"range": "60", "color": "#f4e800" },
+															{"key": "Moderately Depressed 60-69", 		"range": "69", "color": "#ff9e58"},
+															{"key": "Severely Depressed 70 and above", 	"range": "120" , "color": "#e46a69" }						
+												]
+											}
+		
+						}];
+		*/
+		
+		var ticks = [];
+		var maxValue;
+		$.each(points, function(date, valueStr){
+			//TODO: Add check if can't be parsed
+			var value = parseFloat(valueStr);
+			if(maxValue == null || maxValue < value){
+				maxValue = value;
+			}
+			
+			ticks.push({
+				'date': date.split(" ")[0], //parse out the date (removing time)
+				'value': value
+			});
+		});
+		
+		//var maxValue = d3.max(ticks , function(d) { return +d.value;} );
+		
+		// Vars
+		var w = 450,
+			h = 250,
+			margin = {
+				top: 20,
+				bottom: 30,
+				left: 30,
+				right: 140
+			},
+			xRangeStart = 25,		// Move the x axis to right
+			yStartPoint = 0; 		// Start Point for y axis
+			
+					
+		var colors = ['#75cc51', '#f4e800', '#ff9e58', '#e46a69', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"]; // TODO - May need to swap with this list 
+		
+		
+		// In progress
+		
+		//var graphparams.intervals = {"2015-01-23T02:31:09.000+0000":"14.0"};
+		
+			
+			
+		// Static Vars
+		var legendTitle = "My Score"; 
+		
+		var xLegendTextPosition = w - 115,
+			xLegendRectPosition = w - 130;
+	
+		var width = w - margin.left - margin.right,
+			height = h - margin.top - margin.bottom;
+	
+		var svg = d3.select(parentSelector).append("svg")
+			.attr("id", "chart")
+			.attr("width", w)
+			.attr("height", h);
+	
+		var chart = svg.append("g")
+			.classed("display", true)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+		var dateParser = d3.time.format("%m/%d/%Y").parse;
+		
+		var x = d3.time.scale()
+			.domain(d3.extent(ticks, function (d) {
+			var date = dateParser(d.date);
+			return date;
+		}))
+			.range([xRangeStart, width]);
+	
+		var y = d3.scale.linear()
+			.domain([yStartPoint, d3.max(ticks, function (d) {
+			return +d.value;
+		})])
+			.range([height, 0]);
+	
+		var xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom")
+			.ticks(d3.time.days, 100)
+			.tickFormat(d3.time.format("%b"));
+	
+		var yAxis = d3.svg.axis()
+			.scale(y)
+			.orient("left")
+			.ticks(5);
+	
+	
+		var line = d3.svg.line().interpolate("cardinal")
+			.x(function (d) {
+			var date = dateParser(d.date);
+			return x(date);
+		})
+			.y(function (d) {
+			return y(+d.value);
+		});
+	
+		function plot(params) {
+			
+			var intervals 	= params.data.intervals,
+				ticks 		= params.data.ticks;
+			
+			this.append("g")
+				.classed("x axis", true)
+				.attr("transform", "translate(0," + height + ")")
+				.call(params.axis.x);
+	
+			this.append("g")
+				.classed("y axis", true)
+				.attr("transform", "translate(0,0)")
+				.call(params.axis.y);
+	
+			// Enter Plot Started Here
+			this.selectAll(".trendline")
+				.data([ticks])
+				.enter()
+				.append("path")
+				.classed("trendline", true);
+	
+			this.selectAll(".point")
+				.data(ticks)
+				.enter()
+				.append("circle")
+				.classed("point", true)
+				.attr("r", 5);
+	
+			this.selectAll(".pointText")
+				.data(ticks)
+				.enter()
+				.append("text")
+				.classed("pointTextValue", true)
+				.text( function (d) {
+					return +d.value;
+				});
+	
+	
+			// Update Plot Started Here
+			this.selectAll(".trendline")
+				.attr("d", function (d) {
+				return line(d);
+			});
+			this.selectAll(".point")
+				.attr("cx", function (d) {
+				var date = dateParser(d.date);
+				return x(date);
+			})
+				.attr("cy", function (d) {
+				return y(+d.value);
+			});
+			this.selectAll(".pointTextValue")
+				.attr("x", function (d) {
+				var date = dateParser(d.date);
+				return x(date);
+			})
+				.attr("y", function (d) {
+				return y(+d.value - 3);
+			});
+	
+			// Exit Plot Started Here
+			this.selectAll(".trendline")
+				.data([ticks])
+				.exit()
+				.remove();
+			this.selectAll(".point")
+				.data(ticks)
+				.exit()
+				.remove();
+	
+			// Add Legend Started Here 
+			var legend = this.append("g")
+				.attr("class", "legend")
+				.attr("height", h)
+				.attr("width", w)
+				.attr('transform', 'translate(-20, 10)');
+	
+			legend.selectAll('rect')
+				.data(intervals)
+				.enter()
+				.append("rect")
+				.attr("x", xLegendRectPosition)
+				.attr("y", function (d, i) {
+				return i * 35;
+			})
+				.attr("width", 8)
+				.attr("height", 30)
+				.style("fill", function (d, i) {
+				var color = intervals[i].color;
+				return color;
+			});
+	
+			// Add Legend Started Here
+			legend.append("g")
+				.attr("class", "legendBar")
+				.attr("transform", "translate(" + xLegendTextPosition + ", 0)")
+				.selectAll('text')
+				.data(intervals)
+				.enter()
+				.append("text")
+				.attr("x", xLegendTextPosition)
+				.attr("y", function (d, i) {
+				return i * 35 + 9;
+			})
+				.attr("dy", 0)
+				.text(function (d, i) {
+				var text = intervals[i].key;
+				return text;
+			})
+			.call(wrap, 100);
+	
+			legend.append("circle")
+				.classed("point", true)
+				.attr("r", 5)
+				.attr("cx", xLegendRectPosition+4 )
+				.attr("cy", -12);
+			
+			 legend.append("text")
+				.classed("pointTextValue", true)
+				.attr("x", xLegendTextPosition)
+				.attr("y", -2)
+				.attr("width", 100)
+				.text(legendTitle);
+	
+	
+			// Bar Legend Start Here
+			// Create X Scale for bar graph
+			var xScale = d3.scale.ordinal()
+				.domain([20])
+				.rangeRoundBands([0, 20]);
+	
+			//Create Y Scale for bar graph
+			var yScale = d3.scale.linear()
+				 .domain([yStartPoint, d3.max(ticks, function (d) {
+				 return +d.value;
+			})])
+				.range([height, 0]);
+	
+			// Add Rectangles
+			this.append('g')
+				.attr("class", "bars")
+				.selectAll(".bar")
+				.data(intervals)
+				.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.style("fill", function (d, i) {
+				var color = intervals[i].color;
+				return color;
+			})
+				.attr("x", 0)
+				.attr("y", function (d) {
+				return yScale(+d.range)
+			})
+				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
+				.attr("height", function (d) {
+					if( maxValue >= d.range){
+						return height - yScale(+d.range) + 0;
+					}else{
+						return height - yScale(+maxValue) + 0 ;
+					}
+				});
+	
+	
+			// Text Wrapper
+			function wrap(text, width) {
+				text.each(function () {
+					var text = d3.select(this),
+						words = text.text().split(/\s+/).reverse(),
+						word,
+						line = [],
+						lineNumber = 0,
+						lineHeight = 1.1, // ems
+						y = text.attr("y"),
+						dy = parseFloat(text.attr("dy")),
+						tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+					while (word = words.pop()) {
+						line.push(word);
+						tspan.text(line.join(" "));
+						if (tspan.node().getComputedTextLength() > width) {
+							line.pop();
+							tspan.text(line.join(" "));
+							line = [word];
+							tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+						}
+					}
+				});
+			}
+	
+	
+	
+		} // End of plot function
+	
+	
+		// Call Plot
+		plot.call(chart, {
+			data: {
+				'intervals': graphparams.intervals,
+				'ticks': ticks
+			},
+			axis: {
+				x: xAxis,
+				y: yAxis
+			}
+		});
+		// Reverse bars	
+		$('.bars > rect').each(function () {
+			$(this).prependTo(this.parentNode);
+		});
+	}
+		
 </script>
 </html>

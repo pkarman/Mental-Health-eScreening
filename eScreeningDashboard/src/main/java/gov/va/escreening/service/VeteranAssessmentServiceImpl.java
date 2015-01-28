@@ -3,7 +3,6 @@ package gov.va.escreening.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
-import gov.va.escreening.domain.AssessmentExpirationDaysEnum;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.domain.VeteranAssessmentDto;
@@ -53,6 +52,7 @@ import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,21 +65,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -1126,8 +1122,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 	}
 
+	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	@Override
-	public Map<Date, String> getVeteranAssessmentVariableSeries(
+	public Map<String, String> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
@@ -1164,7 +1161,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
-		LinkedHashMap<Date, String> timeSeries = new LinkedHashMap<Date, String>();
+		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
 		int total = 0;
 		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
 		{
@@ -1185,7 +1182,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				
 				AssessmentVariableDto result = dto.iterator().next();
 				if (result.getValue() != null) {
-					timeSeries.put(va.getDateUpdated(),  result.getValue());
+					timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  result.getValue());
 					total++;
 				}
 			} catch (Exception ex) {// do nothing
