@@ -18,6 +18,16 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String exportName;
     private String otherResponse;
     private Integer rowId;
+    private Integer calculationValue;
+
+    public Integer getCalculationValue() {
+        return calculationValue;
+    }
+
+    public void setCalculationValue(Integer calculationValue) {
+        this.calculationValue = calculationValue;
+    }
+
 
 
     public AnswerInfo() {
