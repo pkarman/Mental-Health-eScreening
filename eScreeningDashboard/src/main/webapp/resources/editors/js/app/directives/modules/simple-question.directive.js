@@ -47,7 +47,6 @@
 				};
 
 				scope.addAnswer = function addAnswer() {
-					console.log(scope.question.answers.length);
 					scope.question.answers.push(Answer.extend({displayOrder: scope.question.answers.length}));
 				};
 

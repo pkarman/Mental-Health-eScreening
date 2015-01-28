@@ -66,7 +66,7 @@
 				});
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push({text:'', exportName: '', displayOrder: scope.answers.length});
+					scope.answers.push(Answer.extend({displayOrder: scope.answers.length}));
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -88,7 +88,7 @@
 							question.displayOrder = index;
 
 							// Remove tertiary childQuestions array
-							//delete question.childQuestions;
+							// Delete question.childQuestions
 							_.each(scope.answers, function(answer, j) {
 
 								if (!question.answers[j]) {
