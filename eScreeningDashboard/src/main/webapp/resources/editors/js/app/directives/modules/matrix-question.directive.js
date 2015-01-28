@@ -95,7 +95,6 @@
 									question.answers.push(_.clone(answer));
 								}
 								_.merge(question.answers[j], scope.answers[j]);
-								console.log(question.type);
 								if (question.type === 'selectMulti') {
 									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
 								}
