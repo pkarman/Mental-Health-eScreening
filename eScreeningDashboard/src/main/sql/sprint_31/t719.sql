@@ -8,37 +8,22 @@ UPDATE template set template_file = '
     ${GRAPH_SECTION_START}
 
         ${GRAPH_BODY_START}
-          {
-            "varId": 2300, 
-            "title": "My Pain Score",
-            "footer": "",
-            "numberOfMonths": 12, 
-            "stackGraphParams": {
-            	"maxXPoint" : 10,
-                "ticks": [0,1,4,6,8,10],
-                "intervals": {
-					"None": 0,
-                    "Mild": 1,
-                    "Moderate": 4,
-                    "Severe": 6,
-                    "Very Severe":8,
-                    "Worst Possible":10
-                },
-                "score": ${getSelectOneDisplayText(var2300)}
-            },
-             "timeSeriesParams": {
-            	"maxXPoint" : 10,
-                "ticks": [0,1,4,6,8,10],
-                "intervals": {
-					"None": 0,
-                    "Mild": 1,
-                    "Moderate": 4,
-                    "Severe": 6,
-                    "Very Severe":8,
-                    "Worst Possible":10
-                }
-            } 
-          }
+          { 	
+		"varId": 2300,
+		"title": "My Pain Score",
+		"footer": "",
+		"numberOfMonths": 12,
+		"score": ${getSelectOneDisplayText(var2300)},
+		"intervals": {
+				"None":0,
+				"Minimal":1,
+				"Moderate":4,
+				"Severe":6,
+				"Very Severe":8,
+				"Worst Possible":10
+		},
+		"maxXPoint" : 10, "ticks": [0, 1, 4, 6, 8, 10]
+	}
         ${GRAPH_BODY_END}
     ${GRAPH_SECTION_END}
 
@@ -63,29 +48,19 @@ ${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}
 <#if score != "notfound">
 	${GRAPH_SECTION_START}  
 	${GRAPH_BODY_START} 
-		{"varId": 1929, 
-		 "title": "My PTSD Score", 
-		 "footer": "", 
-		 "numberOfMonths": 12, 
-		 "stackGraphParams": {
-		 	"maxXPoint" : 85,
-		 	"ticks": [17,31,44,65,85], 
-		 	"intervals": {
-		 		"Negative":17, 
-		 		"Positive":44 
-		 	}, 
-		 	"score": ${score} 
-		 },
-		 "timeSeriesParams": {
-            "maxXPoint" : 85,
-		 	"ticks": [17,31,44,65,85], 
-		 	"intervals": {
-		 		"Negative":17, 
-		 		"Positive":44 
-		 	}
-            } 
-		  
-		} 
+		{ 	
+			"varId": 1929,
+			"title": "My PTSD Score",
+			"footer": "",
+			"footer": "",
+			"numberOfMonths": 12,
+			"score": ${score},
+			"intervals": {
+					"Negative":17,
+					"Positive":44
+			},
+			"maxXPoint" : 85, "ticks": [17, 31, 44, 65, 85]
+		}
 	${GRAPH_BODY_END} 
 	${GRAPH_SECTION_END}  
 </#if>
@@ -108,35 +83,22 @@ update template set template_file = '
 ${GRAPH_SECTION_START}
 ${GRAPH_BODY_START}
 	{ 	
-		"varId": 1599,
-		"title": "My Depression Score",
-		"footer": "*a score of 10 or greater is a positive screen",
-		"footer": "",
-		"numberOfMonths": 12,
-		"stackGraphParams": {
-			"maxXPoint" : 27, "ticks": [0, 1, 5, 10, 15, 20, 27],
-			"intervals": {
-				"None":0,
-				"Minimal":1,
-				"Mild":5,
-				"Moderate":10,
-				"Moderately Severe":15,
-				"Severe":20
-				},
-			"score": ${score}
-			},
-		"timeSeriesParams": {
-			"maxXPoint" : 27, "ticks": [0, 1, 5, 10, 15, 20, 27],
-			"intervals": {
-				"None":0,
-				"Minimal":1,
-				"Mild":5,
-				"Moderate":10,
-				"Moderately Severe":15,
-				"Severe":20
+					"varId": 1599,
+					"title": "My Depression Score",
+					"footer": "*a score of 10 or greater is a positive screen",
+					"footer": "",
+					"numberOfMonths": 12,
+					"score": ${score},
+					"intervals": {
+							"None":0,
+							"Minimal":1,
+							"Mild":5,
+							"Moderate":10,
+							"Moderately Severe":15,
+							"Severe":20
+					},
+					"maxXPoint" : 27, "ticks": [0, 1, 5, 10, 15, 20, 27]
 				}
-		}
-	}
 ${GRAPH_BODY_END}
 ${GRAPH_SECTION_END}  ${MODULE_START} Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression. ${LINE_BREAK} <b>Recommendation:</b> 
 <#if score = "notfound"> ${NBSP}Veteran declined to respond <#elseif score?number lt 10> Contact a clinician if in the future if you ever feel you may have a problem with depression 
