@@ -44,7 +44,7 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || Question.extend({});
+					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length});
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
@@ -57,14 +57,14 @@
 					};
 
 					$scope.update = function update() {
-						$modalInstance.close($scope.question, $scope.isUpdate);
+						$modalInstance.close({question: $scope.question, update: $scope.isUpdate});
 					}
 				}
 			});
 
-			modalInstance.result.then(function (question, isUpdate) {
-				if (!isUpdate) {
-					$scope.question.childQuestions.push(question);
+			modalInstance.result.then(function (result) {
+				if (!result.update) {
+					$scope.question.childQuestions.push(result.question);
 				}
 			});
 		};
