@@ -178,6 +178,8 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'AlertFa
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
 
+    $rootScope.alerts = AlertFactory.get();
+
     $rootScope.messageHandler = new BytePushers.models.MessageHandler();
 
     /* -------------All this needs to go away --------------------- */

@@ -1,12 +1,12 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', 'AlertFactory', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question, AlertFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = [];
         $scope.surveySections = surveySections;
-        $scope.alerts = [];
+        $scope.alerts = AlertFactory.get();
 
         if (survey.id) {
             survey.getList('pages').then(function(pages) {
@@ -43,14 +43,6 @@
                     questions[index].displayOrder = +index;
                 }
             }
-        };
-
-        $scope.addAlert = function addAlert() {
-            $scope.alerts.push({msg: 'Another alert!'});
-        };
-
-        $scope.closeAlert = function closeAlert(index) {
-            $scope.alerts.splice(index, 1);
         };
 
         $scope.addPage = function addPage() {
@@ -126,11 +118,8 @@
 
         $scope.save = function () {
 
-            // Remove any existing alerts
-            $scope.alerts = [];
-
             $scope.survey.save().then(function(survey) {
-                $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+                AlertFactory.add('success', 'Module saved successfully', true);
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
@@ -148,16 +137,16 @@
                             // update the question IDs automatically like it does for actual resources
                             _.each(updatedPage.questions, function (question, index) {
                                 page.questions[index].id = question.id;
-
+                                // Same holds true for childQuestions
                                 _.each(question.childQuestions, function(childQuestion, j) {
                                     page.questions[index].childQuestions[j].id = childQuestion.id;
                                 });
                             });
                         }, function (response) {
-                            $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
+                            AlertFactory.add('danger', 'There was an error saving module items.');
                         });
                     } else {
-                        $scope.alerts.push({type: 'danger', msg: 'Page items require a minimum of one question.'});
+                        AlertFactory('danger', 'Page items require a minimum of one question.');
                     }
                 });
 
@@ -168,7 +157,7 @@
                 }
 
             }, function(response) {
-                $scope.alerts.push({type: 'danger', msg: 'There was an error saving the module.'});
+                AlertFactory.add('danger', 'There was an error saving the module.', true);
             });
 
             $scope.resetForm(false, {
