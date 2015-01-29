@@ -65,6 +65,8 @@ Editors.config(function(RestangularProvider, $provide) {
 
     RestangularProvider.setBaseUrl('services/');
     RestangularProvider.setRequestSuffix('.json');
+    // Explicitly setting cache to false because requests were becoming stale
+    RestangularProvider.setDefaultHttpFields({cache: false});
 
     RestangularProvider.addResponseInterceptor(function(data, operation, what) {
 
