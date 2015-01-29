@@ -40,6 +40,8 @@
 				},
 				controller: function($scope, $modalInstance, tableQuestion) {
 
+					$scope.isUpdate = angular.isDefined(question);
+
 					$scope.tableQuestion = tableQuestion;
 
 					$scope.question = question || Question.extend({});
@@ -55,13 +57,13 @@
 					};
 
 					$scope.update = function update() {
-						$modalInstance.close($scope.question);
+						$modalInstance.close($scope.question, $scope.isUpdate);
 					}
 				}
 			});
 
-			modalInstance.result.then(function (question) {
-				if (!question.id) {
+			modalInstance.result.then(function (question, isUpdate) {
+				if (!isUpdate) {
 					$scope.question.childQuestions.push(question);
 				}
 			});
