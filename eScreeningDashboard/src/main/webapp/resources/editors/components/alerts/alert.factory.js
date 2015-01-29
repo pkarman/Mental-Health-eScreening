@@ -1,28 +1,34 @@
 (function() {
 	'use strict';
 
-	angular.module('Editors').factory('AlertFactory', function($rootScope) {
+	angular.module('Editors').factory('AlertFactory', function() {
 
-		// Create an array of alerts available globally
-		// This is a seldom case where using $rootScope is appropriate
-		$rootScope.alerts = [];
+		var alerts = [];
 
-		function add(type, msg) {
-			$rootScope.alerts.push({type: type, msg: msg, close: close});
+		function add(type, msg, clearExisting) {
+			if (clearExisting) {
+				alerts.length = 0;
+			}
+			alerts.push({type: type, msg: msg, close: close});
 		}
 
 		function close(index) {
-			$rootScope.alerts.splice(index, 1);
+			alerts.splice(index, 1);
 		}
 
 		function clear() {
-			$rootScope.alerts.length = 0;
+			alerts.length = 0;
+		}
+
+		function get() {
+			return alerts;
 		}
 
 		return {
 			add: add,
 			close: close,
-			clear: clear
+			clear: clear,
+			get: get
 		};
 
 	});

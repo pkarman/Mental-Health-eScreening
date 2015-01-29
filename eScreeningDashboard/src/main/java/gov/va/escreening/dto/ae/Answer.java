@@ -49,6 +49,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private String otherAnswerResponse;
     private Integer rowId;
     private String calculationType;
+    private String calculationValue;
 
     public String getCalculationValue() {
         return calculationValue;
@@ -66,7 +67,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.calculationType = calculationType;
     }
 
-    private String calculationValue;
+
 
 
     public String getVistaText() {

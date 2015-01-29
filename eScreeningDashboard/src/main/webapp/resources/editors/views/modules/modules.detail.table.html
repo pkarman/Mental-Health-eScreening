@@ -26,7 +26,7 @@
 
       <div class="form-group">
         <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="question.childQuestions">
-          <li class="list-group-item text-left" ng-repeat="question in question.childQuestions | orderBy: 'displayOrder'"
+          <li class="list-group-item text-left" ng-repeat="question in question.childQuestions track by $index | orderBy: 'displayOrder'"
                   ng-class="{'unsortable': question.sortable === false}">
             <div class="form-inline">
               <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>

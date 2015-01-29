@@ -18,15 +18,7 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String exportName;
     private String otherResponse;
     private Integer rowId;
-    private Integer calculationValue;
-
-    public Integer getCalculationValue() {
-        return calculationValue;
-    }
-
-    public void setCalculationValue(Integer calculationValue) {
-        this.calculationValue = calculationValue;
-    }
+    private String calculationValue;
 
 
 
@@ -146,5 +138,13 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
 
     public void setRowId(Integer rowId) {
         this.rowId = rowId;
+    }
+
+    public String getCalculationValue() {
+        return calculationValue;
+    }
+
+    public void setCalculationValue(String calculationValue) {
+        this.calculationValue = calculationValue;
     }
 }
