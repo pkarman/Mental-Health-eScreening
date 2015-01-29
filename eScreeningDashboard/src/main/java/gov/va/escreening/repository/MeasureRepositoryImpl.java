@@ -276,12 +276,16 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     private MeasureAnswer updateMeasureAnswer(Measure m, MeasureAnswer ma, Answer answerDto) {
         if (answerDto != null) {
             ma.setAnswerText(answerDto.getAnswerText());
-            ma.setExportName(answerDto.getExportName());
+            ma.setExportName(deriveExportName(m, answerDto));
             ma.setVistaText(answerDto.getVistaText());
             ma.setAnswerType(answerDto.getAnswerType());
             ma.setCalculationValue(answerDto.getCalculationValue());
             ma.setMeasure(m);
         }
         return ma;
+    }
+
+    private String deriveExportName(Measure m, Answer answerDto) {
+        return m.getVariableName();
     }
 }
