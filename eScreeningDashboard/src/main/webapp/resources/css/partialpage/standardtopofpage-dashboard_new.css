@@ -885,6 +885,46 @@ a.offscreen:focus, a.offscreen:active {
 .logErrorMessage{
   margin:10px 0;
 }
+
+/* Time Series */
+.timeSeries text{
+  font-size:11px;
+}
+.timeSeries #chart{
+	border: 0px solid #CCC;
+}
+.timeSeries .bar{
+	fill: purple;
+	shape-rendering: crispEdges;
+}
+.timeSeries .bar-label{
+	fill: black;
+	text-anchor: middle;
+	font-size: 18px;
+}
+.timeSeries .axis path,
+.timeSeries .axis line{
+	fill: none;
+	stroke: #AAAAAA;
+	shape-rendering: crispEdges;
+}
+.timeSeries .gridline path,
+.timeSeries .gridline line{
+	fill: none;
+	stroke: #ccc;
+	shape-rendering: crispEdges;
+}
+.timeSeries .trendline{
+	fill: none;
+	stroke: #2d5277;
+	stroke-width: 2px;
+}
+
+.timeSeries .point{
+  fill:rgba(45,82,119,.40);
+  stroke:#2d5277;
+  stroke-width: 2px;
+}
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
