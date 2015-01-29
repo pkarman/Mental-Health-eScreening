@@ -453,10 +453,12 @@ $(document).ready(function() {
 	                
 	            	var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
+					
 	                $this.html(""); //clear the graph area
-	        		var stackGraphParams = processIntervals(graphObj.stackGraphParams);
-	        		var timeSeriesParams = processIntervals(graphObj.timeSeriesParams);
+	        		var stackGraphParams = processIntervals(graphObj);
+	        		var timeSeriesParams = processIntervals(graphObj);
 	                
+					
 	                var parentDiv = $this.parents(".moduleTemplate");
 	                parentDiv.addClass("graphicBlock");
 	                var titleContainer = parentDiv.children(".moduleTemplateTitle");
