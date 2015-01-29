@@ -1,13 +1,15 @@
-/* This should later be changed to the QuestionService */
-angular.module('EscreeningDashboardApp.services.MeasureService', ['restangular'])
-	.factory('MeasureService', ['Restangular', function (Restangular) {
-		"use strict";
+(function() {
+	'use strict';
 
-		var restAngular = Restangular.withConfig(function (config) {
-				config.setBaseUrl('services/');
-				config.setRequestSuffix('.json');
-			});
+	angular.module('Editors').factory('MeasureService', ['Restangular', 'Question', function (Restangular, Question){
 
-		return restAngular.service("questions");
+		var endpoint = 'questions';
+
+		Restangular.extendModel(endpoint, function(model) {
+			return Question.extend(model);
+		});
+
+		return Restangular.service(endpoint);
 
 	}]);
+})();

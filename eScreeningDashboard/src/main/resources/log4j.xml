@@ -39,8 +39,8 @@
 	<logger name="org.springframework.web">
 		<level value="INFO" />
 	</logger>
-	
-	<!-- 
+
+	<!--
 	<logger name="org.springframework.ws.client.MessageTracing">
 		<level value="TRACE" />
 	</logger>

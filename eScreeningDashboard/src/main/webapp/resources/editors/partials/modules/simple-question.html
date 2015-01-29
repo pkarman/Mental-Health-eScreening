@@ -1,0 +1,115 @@
+<div>
+	<h4>Item Type</h4>
+	<p>{{question.type}}</p>
+
+	<form class="form" name="simpleForm" role="form">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="txtVariableNm"> Variable Name </label> <input type="text"
+						ng-model="question.variableName"
+						id="txtVariableNm"
+						class="form-control"
+						placeholder="Variable Name">
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label> Question Text </label> <textarea class="form-control" ng-model="question.text"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group form-inline">
+					<label class="checkbox"> <input type="checkbox" ng-model="question.required"> Required </label>
+					<label class="checkbox"> <input type="checkbox" ng-model="question.ppi"> PPI </label>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Answers Properties</h4>
+			</div>
+		</div>
+
+		<ul class="list-group odd-even-list" ui-sortable="sortableAnswerOptions" ng-model="question.answers">
+			<li class="list-group-item"
+					ng-repeat="answer in question.answers | orderBy: 'displayOrder'"
+					ng-class="{'unsortable': answer.sortable === false}">
+				<div class="row">
+					<div class="col-md-1">
+						<div class="glyphicon glyphicon-align-justify" style="margin:10px 10px 10px 0px;"></div>
+					</div>
+					<div class="col-md-5">
+						<div class="form-group">
+							<label>{{$index + 1}}. Answer Text * </label> <input type="text"
+								class="form-control"
+								ng-model="answer.text"
+								placeholder="Enter Answer Text"
+								required>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="form-group" ng-if="question.type === 'selectOne'">
+							<label>Export Value*</label> <input type="text"
+								class="form-control"
+								ng-model="answer.calculationValue"
+								placeholder="Enter Value"
+								required>
+						</div>
+						<div class="form-group" ng-if="question.type === 'selectMulti'">
+							<label>Variable Name*</label> <input type="text"
+								class="form-control"
+								ng-model="answer.exportName"
+								placeholder="Enter Value"
+								required>
+						</div>
+					</div>
+					<div class="col-md-1">
+						<a href="javascript:void(0);" ng-really-click="deleteAnswer($index)" ng-really-message="Are you sure you want to delete this answer?">
+							<span class="glyphicon glyphicon-remove-circle" style="margin:10px 10px 10px 0px; color:red"></span>
+						</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-1 col-md-12">
+						<div class="form-group">
+							<div ng-if="question.type === 'selectOne'">
+								<label class="checkbox"> <input type="checkbox"
+										ng-model="answer.type"
+										ng-true-value="other"
+										ng-false-value="{{ null }}"> Other </label>
+							</div>
+							<div class="row" ng-if="question.type === 'selectMulti'">
+								<div class="col-xs-3">
+									<label for="answerType">Type</label>
+									<select id="answerType"
+											class="form-control"
+											name="answerType"
+											ng-model="answer.type"
+											ng-options="answerType.value as answerType.name for answerType in answerTypes">
+										<option value="">Regular</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</form>
+
+	<div class="row">
+		<div class="col-md-12">
+			<button type="button" ng-click="addAnswer()" class="btn btn-primary btn-sm">Add New Answer</button>
+		</div>
+	</div>
+</div>

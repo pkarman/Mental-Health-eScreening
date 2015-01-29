@@ -36,4 +36,8 @@ public interface EditorsViewDelegate {
 	SurveyInfo createSurvey(SurveyInfo survey);
 
     Measure findMeasure(Integer questionId);
+
+    SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
+
+    void deleteSurveyPage(Integer surveyId, Integer pageId);
 }

@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "ng-table": "~0.3.3"
+    "ng-table": "~0.3.3",
+    "angular-ui-router": "~0.2.13"
   }
 }

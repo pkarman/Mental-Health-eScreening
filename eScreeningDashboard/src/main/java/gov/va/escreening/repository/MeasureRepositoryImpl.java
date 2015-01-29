@@ -1,5 +1,7 @@
 package gov.va.escreening.repository;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.Validation;
 import gov.va.escreening.entity.Measure;
@@ -15,258 +17,275 @@ import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
-		implements MeasureRepository {
+        implements MeasureRepository {
 
-	@Autowired
-	ValidationRepository validationRepo;
-	
-	@Autowired
-	MeasureTypeRepository measureTypeRepo;
+    @Autowired
+    ValidationRepository validationRepo;
 
-	public MeasureRepositoryImpl() {
-		super();
+    @Autowired
+    MeasureTypeRepository measureTypeRepo;
 
-		setClazz(Measure.class);
-	}
+    public MeasureRepositoryImpl() {
+        super();
 
-	@Override
-	public List<Measure> getMeasureForTypeSurvey(Integer surveyId,
-			MeasureType measureType) {
+        setClazz(Measure.class);
+    }
 
-		String sql = "SELECT m FROM Measure m JOIN m.surveyMeasureResponseList smrl JOIN smrl.survey s "
-				+ "WHERE m.measureType = :measureTypeId AND "
-				+ "s.surveyId = :surveyId";
+    @Override
+    public List<Measure> getMeasureForTypeSurvey(Integer surveyId,
+                                                 MeasureType measureType) {
 
-		TypedQuery<Measure> query = entityManager.createQuery(sql,
-				Measure.class);
-		query.setParameter("measureTypeId", measureType);
-		query.setParameter("surveyId", surveyId);
+        String sql = "SELECT m FROM Measure m JOIN m.surveyMeasureResponseList smrl JOIN smrl.survey s "
+                + "WHERE m.measureType = :measureTypeId AND "
+                + "s.surveyId = :surveyId";
 
-		List<Measure> measures = query.getResultList();
+        TypedQuery<Measure> query = entityManager.createQuery(sql,
+                Measure.class);
+        query.setParameter("measureTypeId", measureType);
+        query.setParameter("surveyId", surveyId);
 
-		return measures;
-	}
+        List<Measure> measures = query.getResultList();
 
-	@Override
-	public List<Integer> getChildMeasureIds(Measure parentMeasure) {
+        return measures;
+    }
 
-		String sql = "SELECT m FROM Measure m  "
-				+ "WHERE m.parent = :parentMeasure";
+    @Override
+    public List<Integer> getChildMeasureIds(Measure parentMeasure) {
 
-		TypedQuery<Measure> query = entityManager.createQuery(sql,
-				Measure.class);
-		query.setParameter("parentMeasure", parentMeasure);
+        String sql = "SELECT m FROM Measure m  "
+                + "WHERE m.parent = :parentMeasure";
 
-		List<Measure> measures = query.getResultList();
+        TypedQuery<Measure> query = entityManager.createQuery(sql,
+                Measure.class);
+        query.setParameter("parentMeasure", parentMeasure);
 
-		List<Integer> measureIds = new ArrayList<Integer>();
-		for (Measure measure : measures)
-			measureIds.add(measure.getMeasureId());
+        List<Measure> measures = query.getResultList();
 
-		return measureIds;
-	}
+        List<Integer> measureIds = new ArrayList<Integer>();
+        for (Measure measure : measures)
+            measureIds.add(measure.getMeasureId());
 
-	@Override
-	public List<Measure> getChildMeasures(Measure parentMeasure) {
-		String sql = "SELECT m FROM Measure m  "
-				+ "WHERE m.parent = :parentMeasure";
+        return measureIds;
+    }
 
-		TypedQuery<Measure> query = entityManager.createQuery(sql,
-				Measure.class);
-		query.setParameter("parentMeasure", parentMeasure);
+    @Override
+    public List<Measure> getChildMeasures(Measure parentMeasure) {
+        String sql = "SELECT m FROM Measure m  "
+                + "WHERE m.parent = :parentMeasure";
 
-		List<Measure> measures = query.getResultList();
-		return measures;
-	}
+        TypedQuery<Measure> query = entityManager.createQuery(sql,
+                Measure.class);
+        query.setParameter("parentMeasure", parentMeasure);
 
-	// TODO this needs to be modified to take into account an identified vs
-	// de-identified export
-	@Override
-	public List<Measure> getMeasuresBySurvey(Integer surveyId) {
+        List<Measure> measures = query.getResultList();
+        return measures;
+    }
 
-		String sql = "SELECT m FROM Measure m JOIN m.surveyMeasureResponseList smrl JOIN smrl.survey s "
-				+ "WHERE s.surveyId = :surveyId ";
+    // TODO this needs to be modified to take into account an identified vs
+    // de-identified export
+    @Override
+    public List<Measure> getMeasuresBySurvey(Integer surveyId) {
 
-		TypedQuery<Measure> query = entityManager.createQuery(sql,
-				Measure.class);
-		query.setParameter("surveyId", surveyId);
+        String sql = "SELECT m FROM Measure m JOIN m.surveyMeasureResponseList smrl JOIN smrl.survey s "
+                + "WHERE s.surveyId = :surveyId ";
 
-		List<Measure> measures = query.getResultList();
+        TypedQuery<Measure> query = entityManager.createQuery(sql,
+                Measure.class);
+        query.setParameter("surveyId", surveyId);
 
-		return measures;
-	}
+        List<Measure> measures = query.getResultList();
 
-	@Override
-	@Transactional
-	public List<gov.va.escreening.dto.ae.Measure> getMeasureDtoBySurveyID(
-			int surveyID) {
-		String sql = "SELECT m.* "
-				+ " FROM survey_page sp "
-				+ " INNER JOIN survey_page_measure spm ON sp.survey_page_id = spm.survey_page_id "
-				+ " INNER JOIN measure m ON spm.measure_id = m.measure_id "
-				+ " WHERE sp.survey_id = :surveyID";
+        return measures;
+    }
 
-		Query q = entityManager.createNativeQuery(sql, Measure.class);
-		q.setParameter("surveyID", surveyID);
+    @Override
+    @Transactional
+    public List<gov.va.escreening.dto.ae.Measure> getMeasureDtoBySurveyID(
+            int surveyID) {
+        String sql = "SELECT m.* "
+                + " FROM survey_page sp "
+                + " INNER JOIN survey_page_measure spm ON sp.survey_page_id = spm.survey_page_id "
+                + " INNER JOIN measure m ON spm.measure_id = m.measure_id "
+                + " WHERE sp.survey_id = :surveyID";
 
-		List<Measure> measures = q.getResultList();
+        Query q = entityManager.createNativeQuery(sql, Measure.class);
+        q.setParameter("surveyID", surveyID);
 
-		List<gov.va.escreening.dto.ae.Measure> result = new ArrayList<gov.va.escreening.dto.ae.Measure>();
+        List<Measure> measures = q.getResultList();
 
-		for (Measure m : measures) {
-			gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
-					m, null, null);
-			result.add(dto);
-		}
-		return result;
-	}
+        List<gov.va.escreening.dto.ae.Measure> result = new ArrayList<gov.va.escreening.dto.ae.Measure>();
 
-	@Override
-	@Transactional
-	public gov.va.escreening.dto.ae.Measure updateMeasure(
-			gov.va.escreening.dto.ae.Measure measureDto) {
-		Measure m = updateMeasureEntity(measureDto);
-		commit();
+        for (Measure m : measures) {
+            gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
+                    m, null, null);
+            result.add(dto);
+        }
+        return result;
+    }
 
-		gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
-				m, null, null);
+    @Override
+    @Transactional
+    public gov.va.escreening.dto.ae.Measure updateMeasure(
+            gov.va.escreening.dto.ae.Measure measureDto) {
 
-		return dto;
-	}
-	
-	@Override
-	public gov.va.escreening.dto.ae.Measure createMeasure(
-			gov.va.escreening.dto.ae.Measure measureDto) {
+        Measure m = updateMeasureEntity(measureDto);
+        gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(m, null, null);
 
-		Measure m = createMeasureEntity(measureDto);
-		gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
-				m, null, null);
-		
-		return dto;
-	}
+        return dto;
+    }
 
-	private Measure updateMeasureEntity(
-			gov.va.escreening.dto.ae.Measure measureDto) {
-		
-		try
-		{
-		Measure m = findOne(measureDto.getMeasureId());
+    @Override
+    public gov.va.escreening.dto.ae.Measure createMeasure(
+            gov.va.escreening.dto.ae.Measure measureDto) {
 
-		copyFromDTO(m, measureDto);
-		
-		update(m);
+        Measure m = createMeasureEntity(measureDto);
+        return measureDto;
+    }
 
-		if (measureDto.getChildMeasures() != null) {
-			for (gov.va.escreening.dto.ae.Measure child : measureDto
-					.getChildMeasures()) {
-				updateMeasure(child);
-			}
-		}
-		return m;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	private Measure createMeasureEntity(
-			gov.va.escreening.dto.ae.Measure measureDto) {
-		
-		Measure m = new Measure();		
-		copyFromDTO(m, measureDto);
-		
-		create(m);
+    private Measure updateMeasureEntity(
+            gov.va.escreening.dto.ae.Measure measureDto) {
 
-		if (measureDto.getChildMeasures() != null) {
-			for (gov.va.escreening.dto.ae.Measure child : measureDto
-					.getChildMeasures()) {
-				updateMeasure(child);
-			}
-		}
-		
-		return m;
-	}
-	
-	private Measure copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto)
-	{
-		m.setIsRequired(measureDto.getIsRequired());
-		m.setIsPatientProtectedInfo(measureDto.getIsPPI());
-		m.setIsMha(measureDto.getIsMha());
-		m.setMeasureText(measureDto.getMeasureText());
-		m.setVistaText(measureDto.getVistaText());
-		m.setVariableName(measureDto.getVariableName());
-	    m.setDisplayOrder(measureDto.getDisplayOrder());
-	    m.setIsPatientProtectedInfo(measureDto.getIsPPI());
-	    m.setMeasureType(measureTypeRepo.findMeasureTypeByName(measureDto.getMeasureType().trim()));
+        try {
+            Measure m = findOne(measureDto.getMeasureId());
+
+            copyFromDTO(m, measureDto);
+            update(m);
+            assignParent(m, measureDto.getChildMeasures());
+
+            return m;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
-		List<Answer> answerList = measureDto.getAnswers();
-		Map<Integer, Answer> answerMap = new HashedMap<Integer, Answer>();
-		for (Answer a : answerList) {
-			answerMap.put(a.getAnswerId(), a);
-		}
+    private Measure createMeasureEntity(
+            gov.va.escreening.dto.ae.Measure measureDto) {
 
-		if (m.getMeasureAnswerList()!=null)
-		{
-			for (MeasureAnswer ma : m.getMeasureAnswerList()) {
-				Answer answerDto = answerMap.get(ma.getMeasureAnswerId());
-				if (answerDto != null) {
-					ma.setAnswerText(answerDto.getAnswerText());
-					ma.setExportName(answerDto.getExportName());
-					ma.setVistaText(answerDto.getVistaText());
-					ma.setAnswerType(answerDto.getAnswerType());
-				}
-			}
-		}
-		
-		if (m.getMeasureValidationList()==null)
-		{
-			m.setMeasureValidationList(new ArrayList<MeasureValidation>());
-		}
-		else
-			m.getMeasureValidationList().clear();
-		
-		if (measureDto.getValidations() != null) {
-			for (Validation mvdto : measureDto.getValidations()) {
-				gov.va.escreening.entity.Validation v = validationRepo
-						.findValidationByCode(mvdto.getName());
-				MeasureValidation mv = new MeasureValidation();
-				if ("boolean".equalsIgnoreCase(v.getDataType())) {
-					mv.setBooleanValue(Integer.valueOf(mvdto.getValue()));
-				} else if ("number".equalsIgnoreCase(v.getDataType())) {
-					mv.setNumberValue(Integer.valueOf(mvdto.getValue()));
-				} else {
-					mv.setTextValue(mvdto.getValue());
-				}
+        Measure m = new Measure();
+        copyFromDTO(m, measureDto);
 
-				mv.setDateCreated(Calendar.getInstance().getTime());
-				mv.setMeasure(m);
+        create(m);
 
-				mv.setValidation(v);
-				m.getMeasureValidationList().add(mv);
-			}
-			
-		}
+        measureDto.setMeasureId(m.getMeasureId());
+        assignParent(m, measureDto.getChildMeasures());
+
+        return m;
+    }
+
+    private void assignParent(Measure parent, List<gov.va.escreening.dto.ae.Measure> childMeasures) {
+        if (childMeasures != null) {
+            for (gov.va.escreening.dto.ae.Measure cm : childMeasures) {
+                Measure dbMeasure = findOne(cm.getMeasureId());
+                dbMeasure.setParent(parent);
+                update(dbMeasure);
+            }
+        }
+    }
+
+    private Measure copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto) {
+        m.setIsRequired(measureDto.getIsRequired());
+        m.setIsPatientProtectedInfo(measureDto.getIsPPI());
+        m.setIsMha(measureDto.getIsMha());
+        m.setMeasureText(measureDto.getMeasureText());
+        m.setVistaText(measureDto.getVistaText());
+        m.setVariableName(measureDto.getVariableName());
+        m.setDisplayOrder(measureDto.getDisplayOrder());
+        m.setIsPatientProtectedInfo(measureDto.getIsPPI());
+        m.setMeasureType(measureTypeRepo.findMeasureTypeByName(measureDto.getMeasureType().trim()));
 
 
-		//update(m);
+        List<Answer> answerList = measureDto.getAnswers();
+        Map<Integer, Answer> modifiedAnswerMap = Maps.newHashMap();
+        List<Answer> newAnswerList = Lists.newArrayList();
+        for (Answer a : answerList) {
+            if (a.getAnswerId() != null) {
+                modifiedAnswerMap.put(a.getAnswerId(), a);
+            } else {
+                newAnswerList.add(a);
+            }
+        }
 
-		if (measureDto.getChildMeasures() != null) {
-			for (gov.va.escreening.dto.ae.Measure child : measureDto
-					.getChildMeasures()) {
-				updateMeasure(child);
-			}
-		}
-		return m;
-	}
+        List<MeasureAnswer> maList = m.getMeasureAnswerList();
+        if (maList != null) {
+            for (MeasureAnswer ma : maList) {
+                Answer answerDto = modifiedAnswerMap.get(ma.getMeasureAnswerId());
+                updateMeasureAnswer(m, ma, answerDto);
+            }
+        }
+        if (maList == null) {
+            m.setMeasureAnswerList(new ArrayList<MeasureAnswer>());
+            maList = m.getMeasureAnswerList();
+        }
+        for (Answer newAnswer : newAnswerList) {
+            maList.add(updateMeasureAnswer(m, new MeasureAnswer(), newAnswer));
+        }
+
+        if (m.getMeasureValidationList() == null) {
+            m.setMeasureValidationList(new ArrayList<MeasureValidation>());
+        } else
+            m.getMeasureValidationList().clear();
+
+        if (measureDto.getValidations() != null) {
+            for (Validation mvdto : measureDto.getValidations()) {
+                gov.va.escreening.entity.Validation v = validationRepo
+                        .findValidationByCode(mvdto.getName());
+                MeasureValidation mv = new MeasureValidation();
+                if ("boolean".equalsIgnoreCase(v.getDataType())) {
+                    mv.setBooleanValue(Integer.valueOf(mvdto.getValue()));
+                } else if ("number".equalsIgnoreCase(v.getDataType())) {
+                    mv.setNumberValue(Integer.valueOf(mvdto.getValue()));
+                } else {
+                    mv.setTextValue(mvdto.getValue());
+                }
+
+                mv.setDateCreated(Calendar.getInstance().getTime());
+                mv.setMeasure(m);
+
+                mv.setValidation(v);
+                m.getMeasureValidationList().add(mv);
+            }
+
+        }
+
+
+        //update(m);
+
+        if (measureDto.getChildMeasures() != null) {
+
+            for (gov.va.escreening.dto.ae.Measure child : measureDto
+                    .getChildMeasures()) {
+
+                if (child.getMeasureId() == null) {
+                    createMeasure(child);
+                } else {
+                    updateMeasure(child);
+                }
+            }
+        }
+        return m;
+    }
+
+    private MeasureAnswer updateMeasureAnswer(Measure m, MeasureAnswer ma, Answer answerDto) {
+        if (answerDto != null) {
+            ma.setAnswerText(answerDto.getAnswerText());
+            ma.setExportName(deriveExportName(m, answerDto));
+            ma.setVistaText(answerDto.getVistaText());
+            ma.setAnswerType(answerDto.getAnswerType());
+            ma.setCalculationValue(answerDto.getCalculationValue());
+            ma.setMeasure(m);
+        }
+        return ma;
+    }
+
+    private String deriveExportName(Measure m, Answer answerDto) {
+        return m.getVariableName();
+    }
 }
