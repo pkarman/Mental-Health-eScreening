@@ -142,7 +142,18 @@
                             delete question.selected;
                         });
 
-                        page.save().then(function (page) {}, function (response) {
+                        page.save().then(function (updatedPage) {
+                            // Update the id of each question with the persisted question ID.
+                            // Questions are not a nested resource and therefore restangular won't
+                            // update the question IDs automatically like it does for actual resources
+                            _.each(updatedPage.questions, function (question, index) {
+                                page.questions[index].id = question.id;
+
+                                _.each(question.childQuestions, function(childQuestion, j) {
+                                    page.questions[index].childQuestions[j].id = childQuestion.id;
+                                });
+                            });
+                        }, function (response) {
                             $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
                         });
                     } else {
