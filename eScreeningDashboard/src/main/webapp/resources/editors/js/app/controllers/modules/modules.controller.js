@@ -1,5 +1,5 @@
 
-Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyService', 'surveys', 'ngTableParams', function ($scope, $state, $filter, SurveyService, surveys, ngTableParams) {
+Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyService', 'surveys', 'ngTableParams', 'AlertService', function ($scope, $state, $filter, SurveyService, surveys, ngTableParams, AlertService) {
 
     $scope.surveys = surveys;
 
@@ -88,7 +88,13 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
     };
 
     $scope.deleteModule = function deleteModule(index) {
-        $scope.surveys[index].remove();
+        var survey = $scope.surveys[index];
+        survey.markedForDeletion = true;
+        survey.save().then(function(response) {
+            AlertService.add('success', 'The select module has been marked for deletion.', true);
+        }, function(result) {
+            AlertService.add('danger', 'There was an error deleting the selected module.', true);
+        });
     };
 
     $scope.goToAddEdit = function(){
