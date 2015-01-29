@@ -26,6 +26,13 @@
 						// Remove the tableAnswers so they don't override the answers
 						delete question.tableAnswers;
 					}
+
+					if (question && question.answers) {
+						// Initialize displayOrder property
+						_.each(question.answers, function(answer, index) {
+							answer.displayOrder = index;
+						});
+					}
 				});
 
 				scope.answerTypes = [

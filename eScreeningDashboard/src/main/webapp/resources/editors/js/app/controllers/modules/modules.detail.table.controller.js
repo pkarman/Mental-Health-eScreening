@@ -6,6 +6,13 @@
 			if (question && !question.answers.length) {
 				$scope.question.answers.push(Answer.extend({type: 'none'}));
 			}
+
+			if (question && question.childQuestions) {
+				_.each(question.childQuestions, function(question, index) {
+					// Initialize display order
+					question.displayOrder = index;
+				});
+			}
 		});
 
 		$scope.sortableQuestionOptions = {
