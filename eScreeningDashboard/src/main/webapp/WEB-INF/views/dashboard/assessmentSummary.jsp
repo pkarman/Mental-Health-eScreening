@@ -455,7 +455,13 @@ $(document).ready(function() {
 	                var graphObj  = $.parseJSON($this.html());
 	                $this.html(""); //clear the graph area
 	        		var stackGraphParams = processIntervals(graphObj.stackGraphParams);
-	        		var timeSeriesParams = graphObj.timeSeriesParams;
+	        		var timeSeriesParams = processIntervals(graphObj.timeSeriesParams);
+					
+					console.log("=========== 1 ==============");
+					console.log(graphObj.timeSeriesParams);
+
+					console.log("=========== 2 ==============");					
+					console.log(processIntervals(graphObj.timeSeriesParams));
 	                
 	                var parentDiv = $this.parents(".moduleTemplate");
 	                parentDiv.addClass("graphicBlock");
@@ -694,7 +700,9 @@ $(document).ready(function() {
 	  // 2. the y axis label should not be given 
 	  // 3. the score is not showing up in the graph
        
-    function appendStackGraph(parentSelector, graphparams){
+    var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
+	
+	function appendStackGraph(parentSelector, graphparams){
 
 		var ticks = graphparams.ticks;
 		
@@ -718,14 +726,13 @@ $(document).ready(function() {
 		      xMax            = d3.max(ticks),
 		      xCurrent        = graphparams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
-		      colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
+		      // colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
 		      series          = graphparams.legends,
 		      dataset         = graphparams.dataset,
 		      pointerColor    = '#0f3a65',
 		      pointerWidth    = 36,
 		      pointerHeight   = 36,
 		      stack = d3.layout.stack();
-		     
 		
 	    stack(dataset);
 	    var dataset = dataset.map(
@@ -867,38 +874,17 @@ $(document).ready(function() {
 		  });
 	}
 
-    function appendTimeSeries(parentSelector, graphparams, points){
+   
+	function appendTimeSeries(parentSelector, graphparams, points){
 		
     	$(parentSelector).addClass("timeSeries");
-		/*
-		var dataset = [{
-						"varId": 2300,
-						"title": "Depression Over Time",
-						"numberOfMonths": 12,   // TBD after Liz question is answered
-						"timeSeriesParams":  {
-												"ticks": [
-															{"value": "100", "date": "01/01/2014"},
-															{"value": "50", "date": "02/01/2014"},
-															{"value": "60", "date": "03/01/2014"},
-															{"value": "70", "date": "04/01/2014" },
-															{"value": "120", "date": "05/01/2014"},
-															{"value": "60", "date": "06/01/2014"},
-															{"value": "60", "date": "07/01/2014"},
-															{"value": "60", "date": "08/01/2014"}
-												],
-												"intervals": [
-															{"key": "Normal Range 20-44", 				"range": "44", "color": "#75cc51"},
-															{"key": "Mildly Depressed 45-59", 			"range": "60", "color": "#f4e800" },
-															{"key": "Moderately Depressed 60-69", 		"range": "69", "color": "#ff9e58"},
-															{"key": "Severely Depressed 70 and above", 	"range": "120" , "color": "#e46a69" }						
-												]
-											}
-		
-						}];
-		*/
-		
+
 		var ticks = [];
 		var maxValue;
+		
+		var series   = graphparams.legends;
+		
+		
 		$.each(points, function(date, valueStr){
 			//TODO: Add check if can't be parsed
 			var value = parseFloat(valueStr);
@@ -927,14 +913,11 @@ $(document).ready(function() {
 			yStartPoint = 0; 		// Start Point for y axis
 			
 					
-		var colors = ['#75cc51', '#f4e800', '#ff9e58', '#e46a69', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"]; // TODO - May need to swap with this list 
-		
+		// var colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65']; // TODO - May need to swap with this list 
+		colors.reverse();
 		
 		// In progress
-		
 		//var graphparams.intervals = {"2015-01-23T02:31:09.000+0000":"14.0"};
-		
-			
 			
 		// Static Vars
 		var legendTitle = "My Score"; 
@@ -973,7 +956,7 @@ $(document).ready(function() {
 			.scale(x)
 			.orient("bottom")
 			.ticks(d3.time.days, 100)
-			.tickFormat(d3.time.format("%m/%d/%Y"));
+			.tickFormat(d3.time.format("%m/%d/%y"));
 	
 		var yAxis = d3.svg.axis()
 			.scale(y)
@@ -1076,7 +1059,7 @@ $(document).ready(function() {
 				.attr('transform', 'translate(-20, 10)');
 	
 			legend.selectAll('rect')
-				.data(intervals)
+				.data(graphparams.dataset)
 				.enter()
 				.append("rect")
 				.attr("x", xLegendRectPosition)
@@ -1085,17 +1068,18 @@ $(document).ready(function() {
 			})
 				.attr("width", 8)
 				.attr("height", 30)
-				.style("fill", function (d, i) {
-				var color = intervals[i].color;
-				return color;
-			});
+				.style('fill', function(d, i) {
+			            return colors[i];
+			    });
 	
 			// Add Legend Started Here
+			graphparams.legends.reverse();
+			
 			legend.append("g")
 				.attr("class", "legendBar")
 				.attr("transform", "translate(" + xLegendTextPosition + ", 0)")
 				.selectAll('text')
-				.data(intervals)
+				.data(graphparams.dataset)
 				.enter()
 				.append("text")
 				.attr("x", xLegendTextPosition)
@@ -1104,9 +1088,10 @@ $(document).ready(function() {
 			})
 				.attr("dy", 0)
 				.text(function (d, i) {
-				var text = intervals[i].key;
-				return text;
-			})
+					
+					var text = graphparams.legends[i];
+					return text;
+				})
 			.call(wrap, 100);
 	
 			legend.append("circle")
@@ -1137,25 +1122,29 @@ $(document).ready(function() {
 				.range([height, 0]);
 	
 			// Add Rectangles
+			
+			console.log("graphparams.dataset---");
+			console.log(graphparams.dataset);
 			this.append('g')
 				.attr("class", "bars")
 				.selectAll(".bar")
-				.data(intervals)
+				.data(graphparams.dataset.reverse())
 				.enter()
 				.append("rect")
 				.attr("class", "bar")
-				.style("fill", function (d, i) {
-				var color = intervals[i].color;
-				return color;
-			})
+				.style('fill', function(d, i) {
+			            return colors[i];
+			     })
 				.attr("x", 0)
-				.attr("y", function (d) {
-				return yScale(+d.range)
+				.attr("y", function (d, i) {
+					console.log("d[0].y ----------------");
+					console.log(d[0].y);
+					return yScale(+d[0].y);
 			})
 				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
 				.attr("height", function (d) {
-					if( maxValue >= d.range){
-						return height - yScale(+d.range) + 0;
+					if( maxValue >= +d[0].y){
+						return height - yScale(+d[0].y) + 0;
 					}else{
 						return height - yScale(+maxValue) + 0 ;
 					}
@@ -1204,9 +1193,9 @@ $(document).ready(function() {
 			}
 		});
 		// Reverse bars	
-		$('.bars > rect').each(function () {
-			$(this).prependTo(this.parentNode);
-		});
+		//$('.bars > rect').each(function () {
+		//	$(this).prependTo(this.parentNode);
+		//});
 	}
 		
 </script>
