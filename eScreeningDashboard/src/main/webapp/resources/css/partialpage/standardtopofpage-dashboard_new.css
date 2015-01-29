@@ -891,7 +891,7 @@ a.offscreen:focus, a.offscreen:active {
   font-size:11px;
 }
 .timeSeries #chart{
-	border: 1px solid #CCC;
+	border: 0px solid #CCC;
 }
 .timeSeries .bar{
 	fill: purple;
