@@ -456,12 +456,6 @@ $(document).ready(function() {
 	                $this.html(""); //clear the graph area
 	        		var stackGraphParams = processIntervals(graphObj.stackGraphParams);
 	        		var timeSeriesParams = processIntervals(graphObj.timeSeriesParams);
-					
-					console.log("=========== 1 ==============");
-					console.log(graphObj.timeSeriesParams);
-
-					console.log("=========== 2 ==============");					
-					console.log(processIntervals(graphObj.timeSeriesParams));
 	                
 	                var parentDiv = $this.parents(".moduleTemplate");
 	                parentDiv.addClass("graphicBlock");
@@ -607,7 +601,6 @@ $(document).ready(function() {
    	       contentType: 'application/json',
    	       url : 'assessmentSummary/assessments/' + vaid + '/healthFactorTitles',
    	       success : function(r){
-   	        console.log(r);
    			$('#healthFactorTitles .modal_contents').show().html(r);
    		   }
    		});
@@ -694,6 +687,7 @@ $(document).ready(function() {
 		return graphParams;
 	}
 	
+	
     //TODO:
 	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
 	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
@@ -702,9 +696,9 @@ $(document).ready(function() {
        
     var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 	
-	function appendStackGraph(parentSelector, graphparams){
+	function appendStackGraph(parentSelector, graphParams){
 
-		var ticks = graphparams.ticks;
+		var ticks = graphParams.ticks;
 		
         //Set d3 graph attributes
 	    var margins = {
@@ -724,11 +718,11 @@ $(document).ready(function() {
 		      
 		      // Settings
 		      xMax            = d3.max(ticks),
-		      xCurrent        = graphparams.score, //4,
+		      xCurrent        = graphParams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
 		      // colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
-		      series          = graphparams.legends,
-		      dataset         = graphparams.dataset,
+		      series          = graphParams.legends,
+		      dataset         = graphParams.dataset,
 		      pointerColor    = '#0f3a65',
 		      pointerWidth    = 36,
 		      pointerHeight   = 36,
@@ -756,7 +750,7 @@ $(document).ready(function() {
 			        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
 			
 			xScale = d3.scale.linear()
-			    .domain([graphparams.graphStart, xMax])
+			    .domain([graphParams.graphStart, xMax])
 			    .range([0, width]),
 			    
 			notes = dataset[0].map(function(d) { return d.y; }),
@@ -795,7 +789,7 @@ $(document).ready(function() {
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / (xMax - graphparams.graphStart)) * ( xCurrent - graphparams.graphStart ) ;
+		var xPos = parseFloat(width / (xMax - graphParams.graphStart)) * ( xCurrent - graphParams.graphStart ) ;
 		var yPos = 0;
 		
 		pointer = svg.append('rect')
@@ -875,14 +869,14 @@ $(document).ready(function() {
 	}
 
    
-	function appendTimeSeries(parentSelector, graphparams, points){
+	function appendTimeSeries(parentSelector, graphParams, points){
 		
     	$(parentSelector).addClass("timeSeries");
 
 		var ticks = [];
 		var maxValue;
 		
-		var series   = graphparams.legends;
+		var series   = graphParams.legends;
 		
 		
 		$.each(points, function(date, valueStr){
@@ -1059,7 +1053,7 @@ $(document).ready(function() {
 				.attr('transform', 'translate(-20, 10)');
 	
 			legend.selectAll('rect')
-				.data(graphparams.dataset)
+				.data(graphParams.dataset)
 				.enter()
 				.append("rect")
 				.attr("x", xLegendRectPosition)
@@ -1073,13 +1067,13 @@ $(document).ready(function() {
 			    });
 	
 			// Add Legend Started Here
-			graphparams.legends.reverse();
+			graphParams.legends.reverse();
 			
 			legend.append("g")
 				.attr("class", "legendBar")
 				.attr("transform", "translate(" + xLegendTextPosition + ", 0)")
 				.selectAll('text')
-				.data(graphparams.dataset)
+				.data(graphParams.dataset)
 				.enter()
 				.append("text")
 				.attr("x", xLegendTextPosition)
@@ -1089,7 +1083,7 @@ $(document).ready(function() {
 				.attr("dy", 0)
 				.text(function (d, i) {
 					
-					var text = graphparams.legends[i];
+					var text = graphParams.legends[i];
 					return text;
 				})
 			.call(wrap, 100);
@@ -1122,13 +1116,10 @@ $(document).ready(function() {
 				.range([height, 0]);
 	
 			// Add Rectangles
-			
-			console.log("graphparams.dataset---");
-			console.log(graphparams.dataset);
 			this.append('g')
 				.attr("class", "bars")
 				.selectAll(".bar")
-				.data(graphparams.dataset.reverse())
+				.data(graphParams.dataset.reverse())
 				.enter()
 				.append("rect")
 				.attr("class", "bar")
@@ -1137,8 +1128,6 @@ $(document).ready(function() {
 			     })
 				.attr("x", 0)
 				.attr("y", function (d, i) {
-					console.log("d[0].y ----------------");
-					console.log(d[0].y);
 					return yScale(+d[0].y);
 			})
 				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
@@ -1184,7 +1173,7 @@ $(document).ready(function() {
 		// Call Plot
 		plot.call(chart, {
 			data: {
-				'intervals': graphparams.intervals,
+				'intervals': graphParams.intervals,
 				'ticks': ticks
 			},
 			axis: {
