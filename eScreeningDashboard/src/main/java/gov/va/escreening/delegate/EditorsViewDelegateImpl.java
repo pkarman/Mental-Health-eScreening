@@ -163,5 +163,15 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     public Measure findMeasure(Integer measureId) {
         return measureService.findMeasure(measureId);
     }
+
+    @Override
+    public SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId) {
+        return surveyService.getSurveyPage(surveyId, pageId);
+    }
+
+    @Override
+    public void deleteSurveyPage(Integer surveyId, Integer pageId) {
+        surveyService.removeSurveyPage(surveyId, pageId);
+    }
 }
 

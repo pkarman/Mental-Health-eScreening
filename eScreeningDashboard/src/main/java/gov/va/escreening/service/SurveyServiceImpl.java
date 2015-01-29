@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 @Transactional(readOnly = true)
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -159,11 +161,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
         List<Survey> surveys = surveyRepository.getSurveyList();
-        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys, null);
-
-//		for (Survey survey : surveys) {
-//			surveyInfoList.add(convertToSurveyItem(survey));
-//		}
+        List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys);
 
         return surveyInfoList;
     }
@@ -172,8 +170,13 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SurveyInfo update(SurveyInfo surveyInfo) {
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
+        // copy any changed propertires from incoming surveyInfo to the data for database 'survey'
+        copyProperties(surveyInfo, survey);
+
+        // and now make sure that surveyInfo's survey Section is also reflected back to the survey
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
         survey.setSurveySection(surveySection);
+
         surveyRepository.update(survey);
         return surveyInfo;
     }
@@ -237,16 +240,16 @@ public class SurveyServiceImpl implements SurveyService {
 
             SurveyPage surveyPage = null;
 
-            if (surveyPageInfo.getId() == null) {
+            if (surveyPageInfo.getSurveyPageId() == null) {
                 surveyPage = new SurveyPage();
             } else {
-                surveyPage = surveyPageRepository.findOne(surveyPageInfo.getId());
+                surveyPage = surveyPageRepository.findOne(surveyPageInfo.getSurveyPageId());
             }
 
             surveyPage.setPageNumber(surveyPageInfo.getPageNumber());
             surveyPage.setDescription(surveyPageInfo.getDescription());
             surveyPage.setTitle(surveyPageTitle);
-            surveyPage.setSurveyPageId(surveyPageInfo.getId());
+            surveyPage.setSurveyPageId(surveyPageInfo.getSurveyPageId());
 
             if (surveyPageInfo.getDateCreated() == null) {
                 surveyPage.setDateCreated(new Date());
@@ -278,10 +281,12 @@ public class SurveyServiceImpl implements SurveyService {
                 }
             }
 
-            if (surveyPageInfo.getId() == null) {
+            if (surveyPageInfo.getSurveyPageId() == null) {
                 surveyPageRepository.create(surveyPage);
-            } else
+                surveyPageInfo.setSurveyPageId(surveyPage.getSurveyPageId());
+            } else {
                 surveyPageRepository.update(surveyPage);
+            }
 
             surveyPageList.add(surveyPage);
         }
@@ -322,11 +327,7 @@ public class SurveyServiceImpl implements SurveyService {
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
         for (SurveyPage surveyPage : surveyPages) {
             SurveyPageInfo spi = new SurveyPageInfo();
-            spi.setId(surveyPage.getSurveyPageId());
-            spi.setDescription(surveyPage.getDescription());
-            spi.setPageNumber(surveyPage.getPageNumber());
-            spi.setTitle(surveyPage.getTitle());
-            spi.setDateCreated(surveyPage.getDateCreated());
+            BeanUtils.copyProperties(surveyPage, spi);
 
             spi.setQuestions(new ArrayList<QuestionInfo>());
             for (Measure measure : surveyPage.getMeasures()) {
@@ -347,11 +348,11 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(surveySection);
 
         surveyRepository.create(survey);
-        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+        return toSurveyInfo(Arrays.asList(survey)).iterator().next();
     }
 
     @Override
-    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, final SurveySectionInfo ssInfo) {
+    public List<SurveyInfo> toSurveyInfo(List<Survey> surveyList) {
 
         Function<Survey, SurveyInfo> transformerFun = new Function<Survey, SurveyInfo>() {
             @Nullable
@@ -359,6 +360,9 @@ public class SurveyServiceImpl implements SurveyService {
             public SurveyInfo apply(Survey survey) {
                 SurveyInfo si = new SurveyInfo();
                 BeanUtils.copyProperties(survey, si);
+
+                SurveySectionInfo ssInfo = new SurveySectionInfo();
+                copyProperties(survey.getSurveySection(), ssInfo);
 
                 si.setSurveySectionInfo(ssInfo);
 
@@ -372,6 +376,34 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SurveyInfo findSurveyById(Integer surveyId) {
         Survey survey = surveyRepository.findOne(surveyId);
-        return toSurveyInfo(Arrays.asList(survey), null).iterator().next();
+        return toSurveyInfo(Arrays.asList(survey)).iterator().next();
+    }
+
+    @Override
+    public SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId) {
+        Survey survey = surveyRepository.findOne(surveyId);
+        List<SurveyPage> surveyPages = survey.getSurveyPageList();
+
+        for (SurveyPage surveyPage : surveyPages) {
+            if (surveyPage.getSurveyPageId().equals(pageId)) {
+                SurveyPageInfo spi = new SurveyPageInfo();
+                BeanUtils.copyProperties(surveyPage, spi);
+
+                spi.setQuestions(new ArrayList<QuestionInfo>());
+                for (Measure measure : surveyPage.getMeasures()) {
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                }
+
+                return spi;
+
+            }
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void removeSurveyPage(Integer surveyId, Integer pageId) {
+        surveyPageRepository.deleteById(pageId);
     }
 }

@@ -1,12 +1,14 @@
 package gov.va.escreening.dto.editors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 
 /**
  * Created by pouncilt on 8/5/14.
  */
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"answerId", "answerText", "answerType", "answerResponse", "otherAnswerResponse"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerInfo implements MeasureAnswerBaseProperties {
     private Integer id;
     private String text;
@@ -16,6 +18,8 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String exportName;
     private String otherResponse;
     private Integer rowId;
+    private String calculationValue;
+
 
 
     public AnswerInfo() {
@@ -134,5 +138,13 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
 
     public void setRowId(Integer rowId) {
         this.rowId = rowId;
+    }
+
+    public String getCalculationValue() {
+        return calculationValue;
+    }
+
+    public void setCalculationValue(String calculationValue) {
+        this.calculationValue = calculationValue;
     }
 }

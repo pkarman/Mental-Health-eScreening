@@ -1,0 +1,57 @@
+<h4> Item Type </h4>
+<p>{{ question.type}}</p>
+
+<div class="row">
+  <div class="col-md-12">
+    <form class="form" role="form">
+      <div class="form-group">
+        <label for="txtVariableNm"> Variable Name *</label>
+          <input type="text" id="txtVariableNm" class="form-control" placeholder="Enter Variable Name" ng-model="question.variableName">
+      </div>
+
+      <div class="form-group">
+        <label for="question-text"> Question Text </label>
+        <textarea class="form-control" id="question-text" ng-model="question.text" placeholder="Enter Question Text"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="entity-name"> Entity Name </label>
+        <input type="text" class="form-control" id="entity-name" ng-model="question.answers[0].text" placeholder="Enter Entity Name">
+      </div>
+
+      <div class="form-group form-inline">
+        <label class="checkbox">
+          <input type="checkbox" ng-model="question.required"> Force at least one entry (disallow none answer) </label>
+      </div>
+
+      <div class="form-group">
+        <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="question.childQuestions">
+          <li class="list-group-item text-left" ng-repeat="question in question.childQuestions track by $index | orderBy: 'displayOrder'"
+                  ng-class="{'unsortable': question.sortable === false}">
+            <div class="form-inline">
+              <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
+              <div class="pull-left">
+                <div class="strong" style="font-size:12px;" ng-click="updateChildQuestion(question);">{{question.variableName}}</div>
+                <div style="font-size:12px;">{{question.type}}</div>
+              </div>
+              <div class="pull-right margin_top_10">
+                 <span>
+                  <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="updateChildQuestion(question);"></span>
+                 </span>
+                 <span class="glyphicon glyphicon-remove-circle cursor_pointer"
+                         style="margin-left: 10px; color:red;"
+                         ng-really-click="deleteChildQuestion($index)" ng-really-message="Are you sure you want to delete this question?"></span>
+
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <button type="button" class="btn btn-primary btn-small" ng-click="updateChildQuestion()">Add Question</button>
+      </div>
+    </form>
+  </div>
+</div>

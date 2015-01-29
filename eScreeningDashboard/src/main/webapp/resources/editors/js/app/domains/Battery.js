@@ -112,7 +112,7 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
 		};
 		 
 		if( (!Object.isDefined(serializeCollections) || serializeCollections)){
-			uiObj.surveys = angular.isArray(surveys) ? surveys.map(function(survey){ return survey.toUIObject();}) : null; 
+			uiObj.surveys = angular.isArray(surveys) ? surveys.map(function(survey){ return survey;}) : null;
 		}
 		
 		return uiObj;
@@ -132,8 +132,8 @@ EScreeningDashboardApp.models.Battery.findVisibleSurveys = function (targetSurve
     var visibleSurveys = [];
 
     targetSurveySections.forEach(function(surveySection) {
-        surveySection.getSurveys().forEach(function (survey) {
-            if(survey.isVisible()){
+        _.each(surveySection.surveys, function (survey) {
+            if(survey.visible){
                 visibleSurveys.push(survey);
             }
         });
