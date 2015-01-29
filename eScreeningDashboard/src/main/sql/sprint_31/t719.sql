@@ -27,13 +27,16 @@ UPDATE template set template_file = '
                 "score": ${getSelectOneDisplayText(var2300)}
             },
              "timeSeriesParams": {
-            	"intervals": [
-					{"key": "None 0-1", "range": "1", "color": "#75cc51"},
-					{"key": "Mild 1-4", "range": "1-4", "color": "#f4e800"},
-					{"key": "Moderate 4-6", "range": "4-6", "color": "#ff9e58"},
-					{"key": "Severe 6-8", "range": "6-8", "color": "#ad3332"},
-					{"key": "Very Severe 8-10", "range": "8-10", "color": "#7a100f"},
-				]
+            	"maxXPoint" : 10,
+                "ticks": [0,1,4,6,8,10],
+                "intervals": {
+					"None": 0,
+                    "Mild": 1,
+                    "Moderate": 4,
+                    "Severe": 6,
+                    "Very Severe":8,
+                    "Worst Possible":10
+                }
             } 
           }
         ${GRAPH_BODY_END}
@@ -74,10 +77,12 @@ ${MODULE_TITLE_START} Post-traumatic Stress Disorder ${MODULE_TITLE_END}
 		 	"score": ${score} 
 		 },
 		 "timeSeriesParams": {
-            	"intervals": [
-					{"key": "Negative 17-44", "range": "17-44", "color": "#75cc51"},
-					{"key": "Positive 44-85", "range": "44-85", "color": "#450404"}
-				]
+            "maxXPoint" : 85,
+		 	"ticks": [17,31,44,65,85], 
+		 	"intervals": {
+		 		"Negative":17, 
+		 		"Positive":44 
+		 	}
             } 
 		  
 		} 
@@ -97,3 +102,43 @@ ${MODULE_START}
 	</#if> 
 ${MODULE_END}' 
 where template_id=310;
+
+update template set template_file = '
+<#include "clinicalnotefunctions"> <#assign score = getFormulaDisplayText(var1599)> <#if score != "notfound"> ${MODULE_TITLE_START} Depression ${MODULE_TITLE_END}  
+${GRAPH_SECTION_START}
+${GRAPH_BODY_START}
+	{ 	
+		"varId": 1599,
+		"title": "My Depression Score",
+		"footer": "*a score of 10 or greater is a positive screen",
+		"footer": "",
+		"numberOfMonths": 12,
+		"stackGraphParams": {
+			"maxXPoint" : 27, "ticks": [0, 1, 5, 10, 15, 20, 27],
+			"intervals": {
+				"None":0,
+				"Minimal":1,
+				"Mild":5,
+				"Moderate":10,
+				"Moderately Severe":15,
+				"Severe":20
+				},
+			"score": ${score}
+			},
+		"timeSeriesParams": {
+			"maxXPoint" : 27, "ticks": [0, 1, 5, 10, 15, 20, 27],
+			"intervals": {
+				"None":0,
+				"Minimal":1,
+				"Mild":5,
+				"Moderate":10,
+				"Moderately Severe":15,
+				"Severe":20
+				}
+		}
+	}
+${GRAPH_BODY_END}
+${GRAPH_SECTION_END}  ${MODULE_START} Depression is when you feel sad and hopeless for much of the time. It affects your body and thoughts, and interferes with daily life. There are effective treatments and resources for dealing with depression. ${LINE_BREAK} <b>Recommendation:</b> 
+<#if score = "notfound"> ${NBSP}Veteran declined to respond <#elseif score?number lt 10> Contact a clinician if in the future if you ever feel you may have a problem with depression 
+<#elseif score?number gt 9> Ask your clinician for further evaluation and treatment options </#if> ${MODULE_END} </#if>'
+where template_id=308;
