@@ -26,61 +26,6 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
         }
     });
 
-    $scope.formReset = false;
-
-    $scope.organizePages = function () {
-        var organizedPages = [];
-
-        // Loop through the pageQuestionItems domain objects
-        $scope.pageQuestionItems.forEach(function(item) {
-            // Check if the item is a page using the isPage accessor
-            if(item.isPage()){
-                // Add the page to the organizedPages array
-                organizedPages.push(item.getItem());
-                // Clear out any existing questions (needed when saving/updating surveys with existing pages
-                organizedPages[organizedPages.length-1].questions = [];
-            } else if(organizedPages.length > 0){
-                // Item is a question, add it to last page in the organizedPages array
-                organizedPages[organizedPages.length-1].questions.push(item.getItem());
-            }
-        });
-
-        // Return empty array if no questions exist on the first page (seems brute force)
-        if(organizedPages.length === 1 &&
-            Object.isArray(organizedPages[0].questions) &&
-            organizedPages[0].questions.length === 0) {
-            organizedPages = [];
-        }
-
-        return organizedPages;
-    };
-
-    $scope.setFormReset = function(formReset) {
-        $scope.formReset = formReset;
-    };
-
-    $scope.resetForm = function(softReset, state) {
-        softReset = (Object.isBoolean(softReset))? softReset: false;
-
-        if(!softReset) {
-            $scope.setFormReset(true);
-        }
-
-        $scope.selectedPageQuestionItem = null;
-
-        if(Object.isDefined(state) && Object.isBoolean(state.doTransition)) {
-            if(state.doTransition) {
-                if (Object.isString(state.name)) {
-                    if (Object.isDefined(state.params)) {
-                        $state.go(state.name, state.params);
-                    } else {
-                        $state.go(state.name);
-                    }
-                }
-            }
-        }
-    };
-
     /* ---- Button Actions ---- */
     $scope.editModule = function(survey){
         $scope.survey = survey;
