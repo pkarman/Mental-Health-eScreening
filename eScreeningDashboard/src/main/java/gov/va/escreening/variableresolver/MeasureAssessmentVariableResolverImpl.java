@@ -8,7 +8,6 @@ import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
-import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
 import java.util.Collections;
@@ -22,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor = { CouldNotResolveVariableException.class,
 		AssessmentVariableInvalidValueException.class,
 		UnsupportedOperationException.class,
@@ -30,12 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MeasureAssessmentVariableResolverImpl implements
 		MeasureAssessmentVariableResolver {
 
-	@Autowired
-	private MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	@Autowired
-	private MeasureRepository measureRepository;
-	@Autowired
-	private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+	//Please add to the constructor and do not use field based @Autowired	
+	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
+	private final SurveyMeasureResponseRepository surveyMeasureResponseRepository;
 
 	public static final int MEASURE_TYPE_ID_FREETEXT = 1;
 	public static final int MEASURE_TYPE_ID_SELECTONE = 2;
@@ -49,6 +47,14 @@ public class MeasureAssessmentVariableResolverImpl implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(MeasureAssessmentVariableResolverImpl.class);
 
+	@Autowired
+	public MeasureAssessmentVariableResolverImpl(
+			MeasureAnswerAssessmentVariableResolver mavr, 
+			SurveyMeasureResponseRepository smrr){
+		measureAnswerVariableResolver = checkNotNull(mavr);
+		surveyMeasureResponseRepository = checkNotNull(smrr);
+	}
+	
 	@Override
 	public String resolveCalculationValue(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,

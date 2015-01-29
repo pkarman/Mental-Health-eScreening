@@ -3,7 +3,6 @@ package gov.va.escreening.variableresolver;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.RoleEnum;
-import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.SystemProperty;
 import gov.va.escreening.entity.User;
@@ -11,7 +10,6 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.repository.UserRepository;
-import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
@@ -29,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVariableResolver {
 	public static final int CUSTOM_PACKET_VERSION_VARIABLE_ID = 1;
@@ -44,27 +44,25 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
     private static final Logger logger = LoggerFactory.getLogger(CustomAssessmentVariableResolverImpl.class);
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
     
-    @Autowired
-    private SystemPropertyService systemPropertyService;
-    @Autowired
-    private VeteranAssessmentRepository veteranAssessmentRepository;
-    @Autowired
-    private VeteranAssessmentService veteranAssessmentService;
-    
-    private UserRepository userRepository;
-    
-    @Autowired
-    public void setUserRepository(UserRepository UserRepository) {
-        this.userRepository = UserRepository;
-    }
-    
-    private CreateAssessmentDelegate createAssessmentDelegate;
+    //Please add to the constructor and do not use field based @Autowired	
+    private final SystemPropertyService systemPropertyService;
+    private final VeteranAssessmentService veteranAssessmentService;
+    private final UserRepository userRepository;    
+    private final CreateAssessmentDelegate createAssessmentDelegate;
 
     @Autowired
-    public void setcreateAssessmentDelegate(CreateAssessmentDelegate createAssessmentDelegate) {
-        this.createAssessmentDelegate = createAssessmentDelegate;
+    public CustomAssessmentVariableResolverImpl(
+    		SystemPropertyService sps,
+    		VeteranAssessmentService vas,
+    		UserRepository ur,    
+    		CreateAssessmentDelegate cad){
+    	
+    	systemPropertyService = checkNotNull(sps);
+        veteranAssessmentService = checkNotNull(vas);
+        userRepository = checkNotNull(ur);    
+        createAssessmentDelegate = checkNotNull(cad);
     }
-
+    
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId) {
 		AssessmentVariableDto variableDto = null;

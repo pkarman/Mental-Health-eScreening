@@ -22,22 +22,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Optional;
+import static com.google.common.base.Preconditions.*;
 
 public class FormulaAssessmentVariableResolverImpl implements
 		FormulaAssessmentVariableResolver {
 
-	@Autowired
-	private CustomAssessmentVariableResolver customVariableResolver;
-	@Autowired
-	private ExpressionEvaluatorService expressionEvaluatorService;
-	@Autowired
-	private MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	@Autowired
-	private MeasureAssessmentVariableResolver measureVariableResolver;
+	//Please add to the constructor and do not use field based @Autowired	
+	private final ExpressionEvaluatorService expressionEvaluatorService;
+	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
+	private final MeasureAssessmentVariableResolver measureVariableResolver;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FormulaAssessmentVariableResolverImpl.class);
 
+	@Autowired
+	public FormulaAssessmentVariableResolverImpl(
+			ExpressionEvaluatorService ees,
+			MeasureAnswerAssessmentVariableResolver mavr,
+			MeasureAssessmentVariableResolver mvr){
+		
+		expressionEvaluatorService = checkNotNull(ees);
+		measureAnswerVariableResolver = checkNotNull(mavr);
+		measureVariableResolver = checkNotNull(mvr);
+	}
+	
 	@Override
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,

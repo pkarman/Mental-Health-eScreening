@@ -322,9 +322,8 @@
                 <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default btn-default-black" />
               </div>
             </div>
-          </div>
-          
-         
+          </div>    
+  </form:form>  
           
           <!-- Modal Save to VistA -->
           <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">

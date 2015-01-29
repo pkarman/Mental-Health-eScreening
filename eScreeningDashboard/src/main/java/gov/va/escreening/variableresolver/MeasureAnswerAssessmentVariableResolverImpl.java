@@ -21,12 +21,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class,
 		UnsupportedOperationException.class, CouldNotResolveVariableValueException.class, UnsupportedOperationException.class, Exception.class})
 public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswerAssessmentVariableResolver {
 
-    @Autowired
-    private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+	//Please add to the constructor and do not use field based @Autowired
+    private final SurveyMeasureResponseRepository surveyMeasureResponseRepository;
 
     //TODO refactor this to use the enum instead.
     public static final int CALCULATION_TYPE_NUMBER = 1;
@@ -35,7 +37,12 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     public static final int CALCULATION_TYPE_USER_ENTERED_BOOLEAN = 4;
 
     private static final Logger logger = LoggerFactory.getLogger(MeasureAnswerAssessmentVariableResolverImpl.class);
-
+    
+    @Autowired
+    public MeasureAnswerAssessmentVariableResolverImpl(SurveyMeasureResponseRepository smrr){
+    	this.surveyMeasureResponseRepository = checkNotNull(smrr);
+    }    
+    
     /*	new AssessmentVariable(70, "var70", "string", "answer_270", "ACCOUNTANT", "ACCOUNTANT", null, null));  */
     @Override
 	public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,

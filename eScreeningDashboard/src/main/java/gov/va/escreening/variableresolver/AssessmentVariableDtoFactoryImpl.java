@@ -15,17 +15,30 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor = { CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class })
 public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFactory {
-	@Autowired
-	private CustomAssessmentVariableResolver customVariableResolver;
-	@Autowired
-	private FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
-	@Autowired
-	private MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	@Autowired
-	private MeasureAssessmentVariableResolver measureVariableResolver;
+	
+	//Please add to the constructor and do not use field based @Autowired
+	private final CustomAssessmentVariableResolver customVariableResolver;
+	private final FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
+	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
+	private final MeasureAssessmentVariableResolver measureVariableResolver;
 
+	@Autowired
+	public AssessmentVariableDtoFactoryImpl(
+			CustomAssessmentVariableResolver cvr, 
+			FormulaAssessmentVariableResolver favr,
+			MeasureAnswerAssessmentVariableResolver mavr,
+			MeasureAssessmentVariableResolver mvr){
+		
+		customVariableResolver = checkNotNull(cvr);
+		formulaAssessmentVariableResolver = checkNotNull(favr);
+		measureAnswerVariableResolver = checkNotNull(mavr);
+		measureVariableResolver = checkNotNull(mvr);
+	}
+	
 	@Override
 	public AssessmentVariableDto createAssessmentVariableDto(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
