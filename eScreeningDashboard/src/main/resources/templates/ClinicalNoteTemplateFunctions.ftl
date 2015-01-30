@@ -340,18 +340,6 @@
 	<#return  text>
 </#function>
 
-<#function calcAge dt>
-	<#assign age = "">
-	<#if dt?? >
-		<#assign today = .now?date>
-		<#assign bday = dt?date("MM/dd/yyyy")>
-		<#assign age = ((((today?long - bday?long) / (1000 * 60 * 60 * 24))?int)/365)?int>
-	</#if>
-	
-	<#return age>
-</#function>
-
-
 <#-- group obj's but their row -->
 <#function groupRows objs>
 	<#assign rows = {}>
@@ -421,6 +409,18 @@
 
 
 <#-- ***********************  Template Editor Helper functions ************************* -->
+
+<#-- calculate number of years from given date -->
+<#function calcAge dt>
+	<#assign age = "">
+	<#if dt?? >
+		<#assign today = .now?date>
+		<#assign bday = dt?date("MM/dd/yyyy")>
+		<#assign age = ((((today?long - bday?long) / (1000 * 60 * 60 * 24))?int)/365)?int>
+	</#if>
+	
+	<#return age>
+</#function>
 
 <#-- checks if a specific answer was selected given a question -->
 <#function isSelectedAnswer variableObj1 variableObj2 > 

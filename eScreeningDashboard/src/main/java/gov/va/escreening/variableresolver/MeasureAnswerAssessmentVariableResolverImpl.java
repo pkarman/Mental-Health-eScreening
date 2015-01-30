@@ -63,7 +63,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String type = getVariableTypeString(measureAnswer.getAnswerType());
 		String displayName = String.format("answer_%s", measureAnswer.getMeasureAnswerId()  );
 		String value = getValue(response, veteranAssessmentId);
-		String displayText = getDisplayText(type, measureAnswer, response, veteranAssessmentId);
+		String displayText = getDisplayText(measureAnswer, response, veteranAssessmentId);
 		String overrideText = getOverrideText(response, measureAnswerHash);
 		String otherText = getOtherText(response);
 		Integer column = getColumn(measureAnswer);
@@ -87,7 +87,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		String displayName = String.format("answer_%s", response.getMeasureAnswer().getMeasureAnswerId());
 
 		String value = getValue(response, veteranAssessmentId);
-		String displayText = getDisplayText(type, response.getMeasureAnswer(), response, veteranAssessmentId);
+		String displayText = getDisplayText(response.getMeasureAnswer(), response, veteranAssessmentId);
 		String overrideText = getOverrideText(response, measureAnswerHash);
 		String otherText = getOtherText(response);
 		Integer column = getColumn(response.getMeasureAnswer());
@@ -264,7 +264,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 		return null;
 	}
 
-	private String getDisplayText(String answerType, MeasureAnswer measureAnswer, SurveyMeasureResponse response, Integer veteranAssessmentId) {
+	private String getDisplayText(MeasureAnswer measureAnswer, SurveyMeasureResponse response, Integer veteranAssessmentId) {
 
 		int measureTypeId = measureAnswer.getMeasure().getMeasureType().getMeasureTypeId();
 		if(measureTypeId == MeasureAssessmentVariableResolverImpl.MEASURE_TYPE_ID_FREETEXT) {

@@ -1,7 +1,10 @@
 package gov.va.escreening.templateprocessor;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -9,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.common.collect.ImmutableList;
-
-import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import freemarker.template.TemplateException;
+import gov.va.escreening.test.AssessmentVariableBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
@@ -19,27 +21,24 @@ public class FreemarkerFunctionTest {
 	private static final Logger logger = LoggerFactory.getLogger(FreemarkerFunctionTest.class);
 	private static TemplateProcessorServiceImpl templateService = new TemplateProcessorServiceImpl();
 	
+	private AssessmentVariableBuilder avBuilder;
+	
+    @Before
+    public void setUp() {
+    	avBuilder = new AssessmentVariableBuilder();
+    }
+	
 	@Test
-	public void test() throws Exception{
-		List<AssessmentVariableDto> assessmentVariables = ImmutableList.of(getExampleQuestionFactory(1, "test output"));
-		
-		String result = templateService.processTemplate("${var1}", assessmentVariables, 1);
-		logger.error("Result is: " + result);
+	public void testGetResponseForFreeText() throws Exception{
+		assertEquals("Bill", 
+				render(avBuilder.addFreeTextAV(1, "name", "Bill"), 
+						"${getResponse(var1, 1)}"));
 	}
-	
-	//Below is an example factory which generates a AssessmentVariableDto.  What we need is an accurate factory for the following:
-	// Assessment variable for freeText question (see MeasureAssessmentVariableResolverImpl for structure)
-	// Assessment variable for select one question (see MeasureAssessmentVariableResolverImpl for structure)
-	// Assessment variable for select multi question (see MeasureAssessmentVariableResolverImpl for structure)
-	// Assessment variable for Custom variables (see CustomAssessmentVariableResolverImpl; most of them are similar but one has children)
-	//
-	// Then the thought is we will be able to use these factories to test the template editor freemarker functions (see the end of ClinicalNoteTemplateFunctions.ftl)
-	
-	private AssessmentVariableDto getExampleQuestionFactory(Integer id, String value){
-		AssessmentVariableDto var = new AssessmentVariableDto();
-		var.setKey("var"+id);
-		var.setValue(value);
-		return var;
+
+	private String render(AssessmentVariableBuilder avBuilder, String templateText) throws IOException, TemplateException{
+		return templateService.processTemplate(
+				"<#include \"clinicalnotefunctions\">" + templateText, 
+				avBuilder.getDTOs(), 1);
 	}
 	
 }
