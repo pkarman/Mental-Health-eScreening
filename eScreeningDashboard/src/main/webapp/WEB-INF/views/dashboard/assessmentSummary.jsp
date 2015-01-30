@@ -21,6 +21,7 @@
     <link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/common-ui-styles/circle.css" />" rel="stylesheet" type="text/css" />
+    <link href="<c:url value="/resources/css/common.css" />" rel="stylesheet" type="text/css" />
     
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
