@@ -9,9 +9,11 @@ import java.text.SimpleDateFormat;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -72,21 +74,30 @@ public class CreateVeteranController {
             try {
                 createVeteranFormBean.setBirthDate(sdf.parse(createVeteranFormBean.getBirthDateString()));
             }
-            catch (ParseException e) {
+            catch (ParseException pe) {
                 result.rejectValue("birthDateString", "birthDateString", "A valid Date of Birth is required.");
-                logger.error("Failed to parse birthDateString", e);
+                logger.error("Failed to parse birthDateString", pe);
             }
         }
 
-        // If there is an error, return the same view.
-        if (result.hasErrors()) {
-            return "dashboard/createVeteran";
-        }
-
         // Save to database, get veteranId, and then redirect to next page.
-        Integer veteranId = veteranService.add(createVeteranFormBean);
+        try{
+        	Integer veteranId = veteranService.add(createVeteranFormBean);
+        	return "redirect:/dashboard/veteranDetail?vid=" + veteranId;
+        }
+        catch(DataIntegrityViolationException dve){
+        	if(dve.getCause() instanceof ConstraintViolationException){
+        		logger.error("Veteran being created already exists", dve);
+        		result.rejectValue(null, null, "Veteran already exists.");
+        	}
+        	else{
+        		throw dve;
+        	}
+        }
+        
+        // If we get here there is an error, return the same view.
+        return "dashboard/createVeteran";
 
-        return "redirect:/dashboard/veteranDetail?vid=" + veteranId;
     }
 
     /**
