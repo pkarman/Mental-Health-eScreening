@@ -80,6 +80,11 @@ public class CreateVeteranController {
             }
         }
 
+        // If there is an error, return the same view.
+    	if (result.hasErrors()) {
+    		return "dashboard/createVeteran";
+        }
+
         // Save to database, get veteranId, and then redirect to next page.
         try{
         	Integer veteranId = veteranService.add(createVeteranFormBean);
