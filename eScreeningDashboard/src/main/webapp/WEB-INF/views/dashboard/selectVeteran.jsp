@@ -113,13 +113,7 @@
  		
  		
  		<div class="row">
- 			
- 			<div class="col-md-4 pull-right">
- 				<form:form method="post">
-			      <button id="createButton" name="createButton" type="submit" class="btn btn-primary form-control h1_button"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
-			    </form:form>
-			</div>
-			<div class="col-md-8 pull-left"><a name="skip" > </a ><h1>Select Veteran</h1></div>
+			<div class="col-md-12"><a name="skip" > </a ><h1>Select Veteran</h1></div>
  		</div>
 
 			<c:if test="${!isCprsVerified}">
@@ -135,7 +129,7 @@
                 
                 <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
 					<div class="border-radius-main-form gray-lighter">
-					<h2>Search Criteria</h2>
+					<h2>Search Assessments to Select or Create a New Veteran</h2>
 					
 					<form:errors path="*" element="div" cssClass="alert alert-danger" />
 					
@@ -176,7 +170,7 @@
 
 	                
                 </form:form>
-
+			<br>
 			<c:if test="${isPostBack}">
 	            <h2>Search Result</h2>
 	            <table class="table table-striped table-hover" summary="Search Result Table">
@@ -242,8 +236,21 @@
 	                	</c:if>
 	                </tbody>
 	            </table>
+				
+				
+				<div class="row">
+					<div class="col-md-12">
+						<hr />
+						<h2>Or Create New Veteran</h2>
+						<br>
+						<form:form method="post">	
+						  <button id="createButton" name="createButton" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
+						</form:form>
+					</div>
+				</div>
 			</c:if>
             <br/><br/>
+			
             <!--  -->
 
 		</div>

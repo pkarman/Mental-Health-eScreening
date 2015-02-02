@@ -83,7 +83,6 @@ html body {
 
 				<a name="skip" > </a >
         <h1>Create Veteran</h1>
-
 				<fieldset>
 					<!--  <legend>Create Veteran</legend>  -->
 					<form:form modelAttribute="createVeteranFormBean"
