@@ -1,25 +1,19 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question, MessageFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, SurveyService, SurveyPageService, Question, MessageFactory){
 
         $scope.survey = survey;
-        $scope.surveyPages = [];
+        $scope.surveyPages = surveyPages;
         $scope.surveySections = surveySections;
         $scope.alerts = MessageFactory.get();
 
-        if (survey.id) {
-            survey.getList('pages').then(function(pages) {
-                $scope.surveyPages = pages;
-
-                // Add displayOrder to questions
-                _.each($scope.surveyPages, function(page) {
-                    _.each(page.questions, function(question, index) {
-                        question.displayOrder = index;
-                    });
-                });
-            });
-        }
+		// Add displayOrder to questions
+		_.each($scope.surveyPages, function(page) {
+			_.each(page.questions, function(question, index) {
+				question.displayOrder = index;
+			});
+		});
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -142,6 +136,9 @@
                                     page.questions[index].childQuestions[j].id = childQuestion.id;
                                 });
                             });
+
+							$state.go('modules.detail', { surveyId: survey.id });
+
                         }, function (response) {
                             MessageFactory.error('There was an error saving module items.');
                         });
@@ -151,9 +148,7 @@
                 });
 
                 if (!$stateParams.surveyId) {
-                    $state.transitionTo('modules.detail', {surveyId: survey.id}, {
-                        reload: true, inherit: false, notify: false
-                    });
+                    $state.go('modules.detail', { surveyId: survey.id });
                 }
 
             }, function(response) {

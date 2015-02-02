@@ -241,7 +241,10 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     }],
                     surveySections: ['ManageSectionService',  function(ManageSectionService) {
                         return ManageSectionService.getList();
-                    }]
+                    }],
+					surveyPages: ['$stateParams', 'survey', function($stateParams, survey) {
+						return (survey.id) ? survey.getList('pages') : [];
+					}]
                 },
                 controller: 'ModulesDetailController'
             })
@@ -273,18 +276,9 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 params: {'questionId': {}},
                 abstract: true,
                 template: '<div ui-view></div>',
-                controller: ['$scope', '$stateParams', 'MeasureService', function($scope, $stateParams, MeasureService) {
-
+                controller: ['$scope', '$state', '$stateParams', function($scope, $state, $stateParams) {
                     if (!$scope.question) {
-
-                        if ($stateParams.questionId) {
-                            // Look up the selected question by the id passed into the parameter
-                            MeasureService.one($stateParams.questionId).get().then(function (question) {
-                                $scope.question = question;
-                            });
-                        } else {
-                            $scope.question = MeasureService.one();
-                        }
+						$state.go('modules.detail', { surveyId: $stateParams.surveyId });
                     }
                 }]
             })

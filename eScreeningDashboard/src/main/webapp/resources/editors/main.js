@@ -241,7 +241,12 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
 
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         $rootScope.messageHandler.clearMessages();
-        MessageFactory.empty();
+
+		// Allow messages to be shared between related states
+		if (!$state.includes(fromState.name.split('.')[0])) {
+			MessageFactory.empty();
+		}
+
     });
 
     //some error logging to reduce the amount of hair I pull out of my head :)
