@@ -1,12 +1,12 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', 'AlertFactory', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question, AlertFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question, MessageFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = [];
         $scope.surveySections = surveySections;
-        $scope.alerts = AlertFactory.get();
+        $scope.alerts = MessageFactory.get();
 
         if (survey.id) {
             survey.getList('pages').then(function(pages) {
@@ -119,7 +119,7 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
-                AlertFactory.add('success', 'Module saved successfully', true);
+                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.');
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
@@ -143,10 +143,10 @@
                                 });
                             });
                         }, function (response) {
-                            AlertFactory.add('danger', 'There was an error saving module items.');
+                            MessageFactory.error('There was an error saving module items.');
                         });
                     } else {
-                        AlertFactory('danger', 'Page items require a minimum of one question.');
+                        MessageFactory.warning('Page items require a minimum of one question.');
                     }
                 });
 
@@ -157,13 +157,7 @@
                 }
 
             }, function(response) {
-                AlertFactory.add('danger', 'There was an error saving the module.', true);
-            });
-
-            $scope.resetForm(false, {
-                name: "modules.detail",
-                params: {surveyId: $scope.survey.id},
-                doTransition: true
+                MessageFactory.set('danger', 'There was an error saving the module.');
             });
         };
 

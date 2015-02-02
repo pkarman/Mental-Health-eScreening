@@ -70,14 +70,14 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                             '   <div class="col-md-12" ui-view></div>'+
                            '</div>',
                 resolve:{
-                    batteries:function($q, AlertFactory, BatteryService){
+                    batteries:function($q, MessageFactory, BatteryService){
                         var deferred = $q.defer();
                         console.log('VIEW STATE Battery:: Resolve Batteries');
                         BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
                             deferred.resolve(existingBatteries);
                         },function(responseError){
 
-                            AlertFactory.add('danger', responseError.getMessage());
+                            MessageFactory.set('danger', responseError.getMessage(), true);
                             console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
                             deferred.reject(responseError.getMessage());
                         });
@@ -102,13 +102,13 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 url:'/details/:batteryId',
                 templateUrl:'resources/editors/views/batteries/batteryedit.html',
                 resolve:{
-                    battery:function($q, $stateParams, AlertFactory, BatteryService){
+                    battery:function($q, $stateParams, MessageFactory, BatteryService){
                         var deferred = $q.defer();
                         if(Object.isDefined($stateParams.batteryId) && $stateParams.batteryId.trim().length > 0) {
                             BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function (existingBattery) {
                                 deferred.resolve(existingBattery);
                             }, function (responseError) {
-                                AlertFactory.add('danger', responseError.getMessage());
+                                MessageFactory.set('danger', responseError.getMessage(), true);
                                 deferred.reject(responseError.getMessage());
                             });
                         } else {
@@ -159,8 +159,8 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     templateUrl: 'resources/editors/views/templates/templateeditor.html',
                     controller: 'ModulesTemplatesEditController',
                     resolve: {
-                        template: ['$stateParams', '$q', 'AlertFactory', 'TemplateService', 'TemplateTypeService',
-                            function ($stateParams, $q, AlertFactory, TemplateService, TemplateTypeService) {
+                        template: ['$stateParams', '$q', 'MessageFactory', 'TemplateService', 'TemplateTypeService',
+                            function ($stateParams, $q, MessageFactory, TemplateService, TemplateTypeService) {
                                 var deferred = $q.defer();
                                 if (Object.isDefined($stateParams)
                                     && Object.isDefined($stateParams.relatedObjId)
@@ -175,7 +175,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
                                         }, function(response) {
-                                            AlertFactory.add('danger', response.data.errorMessages[0].description || "There was an error");
+                                            MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true);
                                         });
                                     }
                                     else{
@@ -376,7 +376,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 },
                 controller: "ModulesTemplatesEditController",
                 resolve: {
-                    template: ['$stateParams', '$q', 'AlertFactory', 'TemplateService', 'TemplateTypeService', function ($stateParams, $q, AlertFactory, TemplateService, TemplateTypeService) {
+                    template: ['$stateParams', '$q', 'MessageFactory', 'TemplateService', 'TemplateTypeService', function ($stateParams, $q, MessageFactory, TemplateService, TemplateTypeService) {
                         var deferred = $q.defer();
                         if (Object.isDefined($stateParams)
                             && Object.isDefined($stateParams.selectedSurveyId)
@@ -392,7 +392,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                     console.log(template);
                                     deferred.resolve(template);
                                 }, function(response) {
-                                    AlertFactory.add('danger', response.data.errorMessages[0].description || "There was an error");
+                                    MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true);
                                 });
                             }
                             else{
