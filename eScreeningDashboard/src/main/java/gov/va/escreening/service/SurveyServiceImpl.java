@@ -51,6 +51,9 @@ public class SurveyServiceImpl implements SurveyService {
     private AssessmentVariableRepository assessmentVariableRepository;
 
     @Autowired
+    private ClinicalReminderSurveyRepository clinicalReminderSurveyRepo;
+    
+    @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
     }
@@ -346,8 +349,15 @@ public class SurveyServiceImpl implements SurveyService {
         Survey survey = new Survey();
         BeanUtils.copyProperties(surveyInfo, survey);
         survey.setSurveySection(surveySection);
+        
 
         surveyRepository.create(survey);
+        
+        if(surveyInfo.getClinicalReminderId() != null && surveyInfo.getClinicalReminderId() > 0)
+        {
+        	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
+        	
+        }
         return toSurveyInfo(Arrays.asList(survey)).iterator().next();
     }
 
@@ -365,7 +375,11 @@ public class SurveyServiceImpl implements SurveyService {
                 copyProperties(survey.getSurveySection(), ssInfo);
 
                 si.setSurveySectionInfo(ssInfo);
-
+                
+                if(survey.getClinicalReminderSurveyList()!=null && !survey.getClinicalReminderSurveyList().isEmpty())
+                {
+                	si.setClinicalReminderId(survey.getClinicalReminderSurveyList().get(0).getClinicalReminder().getClinicalReminderId());
+                }
                 return si;
             }
         };
