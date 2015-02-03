@@ -94,6 +94,8 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/Battery.js"></script>
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteryTransformer.js"></script> 
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
+
+    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
 	
 	<!-- Template Domain -->
 
@@ -129,6 +131,7 @@
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/components/alerts/alert.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>

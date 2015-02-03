@@ -241,7 +241,10 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     }],
                     surveySections: ['ManageSectionService',  function(ManageSectionService) {
                         return ManageSectionService.getList();
-                    }]
+                    }],
+					clinicalReminders: ['ClinicalReminderService', function(ClinicalReminderService) {
+						return ClinicalReminderService.getList();
+					}]
                 },
                 controller: 'ModulesDetailController'
             })

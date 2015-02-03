@@ -1,11 +1,12 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', 'AlertFactory', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question, AlertFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'clinicalReminders', 'SurveyService', 'SurveyPageService', 'Question', 'AlertFactory', function($scope, $state, $stateParams, survey, surveySections, clinicalReminders, SurveyService, SurveyPageService, Question, AlertFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = [];
         $scope.surveySections = surveySections;
+		$scope.clinicalReminders = clinicalReminders;
         $scope.alerts = AlertFactory.get();
 
         if (survey.id) {
