@@ -2,6 +2,7 @@ package gov.va.escreening.controller.dashboard;
 
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.dto.SelectVeteranResultDto;
+import gov.va.escreening.form.CreateVeteranFormBean;
 import gov.va.escreening.form.SelectVeteranFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
@@ -9,6 +10,8 @@ import gov.va.escreening.security.EscreenUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -40,6 +43,7 @@ public class SelectVeteranController {
 
     /**
      * Returns the backing bean for the form.
+     *
      * @return
      */
     @ModelAttribute
@@ -50,13 +54,14 @@ public class SelectVeteranController {
 
     /**
      * Initialize and setup page.
+     *
      * @param selectVeteranFormBean
      * @param model
      * @return
      */
     @RequestMapping(value = "/selectVeteran", method = RequestMethod.GET)
     public String setUpPageSelectVeteran(@CurrentUser EscreenUser escreenUser,
-            @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
+                                         @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
 
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
@@ -66,6 +71,7 @@ public class SelectVeteranController {
 
     /**
      * Process search request.
+     *
      * @param selectVeteranFormBean
      * @param result
      * @param model
@@ -74,7 +80,7 @@ public class SelectVeteranController {
      */
     @RequestMapping(value = "/selectVeteran", method = RequestMethod.POST, params = "searchButton")
     public String searchPageSelectVeteran(@Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
-            BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
+                                          BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
 
         logger.debug(selectVeteranFormBean.toString());
 
@@ -102,11 +108,16 @@ public class SelectVeteranController {
 
     /**
      * Redirects user to Create New Veteran page.
+     *
      * @param model
      * @return
      */
     @RequestMapping(value = "/selectVeteran", method = RequestMethod.POST, params = "createButton")
-    public String createPageSelectVeteran(Model model) {
+    public String createPageSelectVeteran(HttpServletRequest request, @Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
+                                          BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
+
+        request.getSession().setAttribute("lastName", selectVeteranFormBean.getLastName());
+        request.getSession().setAttribute("ssnLastFour", selectVeteranFormBean.getSsnLastFour());
 
         return "redirect:/dashboard/createVeteran";
     }

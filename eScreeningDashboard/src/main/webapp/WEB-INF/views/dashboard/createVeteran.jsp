@@ -143,7 +143,7 @@ html body {
 									<div class="input-group date form_date col-md-12" data-date=""
 										data-date-format="mm/dd/yyyy" data-link-field="dtp_birthDate"
 										data-link-format="mm-dd-yyyy">
-										<form:input path="birthDateString" maxlength="10" cssClass="form-control" cssErrorClass="form-control" placeholder="Enter Veteran Date of Birth mm/dd/yyyy" />
+										<form:input path="birthDateString" minlength="10" maxlength="10" cssClass="form-control" cssErrorClass="form-control" placeholder="Enter Veteran Date of Birth mm/dd/yyyy" />
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 										<div class="clearfix"></div>
 										
