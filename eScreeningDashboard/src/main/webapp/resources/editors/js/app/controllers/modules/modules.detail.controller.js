@@ -1,26 +1,20 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'clinicalReminders', 'SurveyService', 'SurveyPageService', 'Question', 'AlertFactory', function($scope, $state, $stateParams, survey, surveySections, clinicalReminders, SurveyService, SurveyPageService, Question, AlertFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, clinicalReminders, SurveyService, SurveyPageService, Question, MessageFactory){
 
         $scope.survey = survey;
-        $scope.surveyPages = [];
+        $scope.surveyPages = surveyPages;
         $scope.surveySections = surveySections;
 		$scope.clinicalReminders = clinicalReminders;
-        $scope.alerts = AlertFactory.get();
+        $scope.alerts = MessageFactory.get();
 
-        if (survey.id) {
-            survey.getList('pages').then(function(pages) {
-                $scope.surveyPages = pages;
-
-                // Add displayOrder to questions
-                _.each($scope.surveyPages, function(page) {
-                    _.each(page.questions, function(question, index) {
-                        question.displayOrder = index;
-                    });
-                });
-            });
-        }
+		// Add displayOrder to questions
+		_.each($scope.surveyPages, function(page) {
+			_.each(page.questions, function(question, index) {
+				question.displayOrder = index;
+			});
+		});
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -120,7 +114,7 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
-                AlertFactory.add('success', 'Module saved successfully', true);
+                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.');
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
@@ -143,28 +137,23 @@
                                     page.questions[index].childQuestions[j].id = childQuestion.id;
                                 });
                             });
+
+							$state.go('modules.detail', { surveyId: survey.id });
+
                         }, function (response) {
-                            AlertFactory.add('danger', 'There was an error saving module items.');
+                            MessageFactory.error('There was an error saving module items.');
                         });
                     } else {
-                        AlertFactory('danger', 'Page items require a minimum of one question.');
+                        MessageFactory.warning('Page items require a minimum of one question.');
                     }
                 });
 
                 if (!$stateParams.surveyId) {
-                    $state.transitionTo('modules.detail', {surveyId: survey.id}, {
-                        reload: true, inherit: false, notify: false
-                    });
+                    $state.go('modules.detail', { surveyId: survey.id });
                 }
 
             }, function(response) {
-                AlertFactory.add('danger', 'There was an error saving the module.', true);
-            });
-
-            $scope.resetForm(false, {
-                name: "modules.detail",
-                params: {surveyId: $scope.survey.id},
-                doTransition: true
+                MessageFactory.set('danger', 'There was an error saving the module.');
             });
         };
 

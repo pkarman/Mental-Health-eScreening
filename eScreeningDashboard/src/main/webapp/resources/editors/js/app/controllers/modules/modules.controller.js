@@ -1,5 +1,5 @@
 
-Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyService', 'surveys', 'ngTableParams', 'AlertFactory', function ($scope, $state, $filter, SurveyService, surveys, ngTableParams, AlertFactory) {
+Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyService', 'surveys', 'ngTableParams', 'MessageFactory', function ($scope, $state, $filter, SurveyService, surveys, ngTableParams, MessageFactory) {
 
     $scope.surveys = surveys;
 
@@ -36,9 +36,9 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
         var survey = $scope.surveys[index];
         survey.markedForDeletion = true;
         survey.save().then(function(response) {
-            AlertFactory.add('success', 'The select module has been marked for deletion.', true);
+            MessageFactory.success('The select module has been marked for deletion.');
         }, function(result) {
-            AlertFactory.add('danger', 'There was an error deleting the selected module.', true);
+            MessageFactory.error('There was an error deleting the selected module.');
         });
     };
 

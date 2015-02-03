@@ -129,7 +129,7 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <!-- Services -->
-    <script type="text/javascript" src="resources/editors/components/alerts/alert.factory.js"></script>
+    <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
@@ -315,7 +315,7 @@
 
                          <div class="col-md-12">
                              <!-- Alerts and Messages -->
-                             <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)">{{message.msg}}</alert>
                          </div>
 
             		    <div class="col-md-12" ui-view></div>
