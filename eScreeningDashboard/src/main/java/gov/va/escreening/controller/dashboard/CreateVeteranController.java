@@ -56,14 +56,30 @@ public class CreateVeteranController {
      */
     @RequestMapping(value = "/createVeteran", method = RequestMethod.GET)
     public String setUpPageCreateVeteran(HttpServletRequest request, @ModelAttribute CreateVeteranFormBean createVeteranFormBean, Model model) {
-        HttpSession session=request.getSession();
-        createVeteranFormBean.setLastName((String)session.getAttribute("lastName"));
-        createVeteranFormBean.setSsnLastFour((String) session.getAttribute("ssnLastFour"));
-        session.removeAttribute("lastName");
-        session.removeAttribute("ssnLastFour");
-
-        model.addAttribute("createVeteranFormBean", createVeteranFormBean);
+        accomodateCreateVeteranFormBeamFromSearchResult(request, createVeteranFormBean, model);
         return "dashboard/createVeteran";
+    }
+
+    private void accomodateCreateVeteranFormBeamFromSearchResult(HttpServletRequest request, CreateVeteranFormBean createVeteranFormBean, Model model) {
+        HttpSession session = request.getSession();
+        String lastName = (String) session.getAttribute("lastName");
+        String ssnLastFour = (String) session.getAttribute("ssnLastFour");
+        boolean updateCreateVeteranFormBean = false;
+
+        if (lastName != null) {
+            createVeteranFormBean.setLastName(lastName);
+            session.removeAttribute("lastName");
+            updateCreateVeteranFormBean = true;
+        }
+        if (ssnLastFour != null) {
+            createVeteranFormBean.setSsnLastFour(ssnLastFour);
+            session.removeAttribute("ssnLastFour");
+            updateCreateVeteranFormBean = true;
+        }
+        if (updateCreateVeteranFormBean) {
+            model.addAttribute("createVeteranFormBean", createVeteranFormBean);
+        }
+
     }
 
     /**
