@@ -14,47 +14,71 @@
 <div class="row">
     <div class="col-md-12">
 
-            <div class="border-radius-main-form gray-lighter">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="inputTitle">Title *</label>
-                            <input name="inputTitle" id="inputTitle" type="text" class="form-control"
-                                   ng-model="survey.name"
-                                   placeholder="Enter Module Title" requried>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputDescription">Description</label>
-                            <input name="inputDescription" id="inputDescription" type="text" class="form-control"
-                                   ng-model="survey.description"
-                                   placeholder="Enter Module Description">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="selectSurveySection">Section *</label>
-
-                                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
-                                        ng-model="survey.surveySection"
-                                        ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
-                                        required>
-                                    <option value=""> -- Choose Section --</option>
-                                </select>
-                            </div>
-                        <div class="form-group">
-                            <label for="selectClinicalReminder">Clinical Reminder</label>
-
-                            <select id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
-                                    ng-model="survey.clinicalReminder"
-                                    required>
-                                <option value="">No Clinical Reminder</option>
-                            </select>
-                        </div>
-                       
+        <div class="border-radius-main-form gray-lighter">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="inputTitle">Title *</label>
+                        <input name="inputTitle" id="inputTitle" type="text" class="form-control"
+                               ng-model="survey.name"
+                               placeholder="Enter Module Title" requried>
                     </div>
                 </div>
+                <div class="col-sm-4">
+	                <div class="form-group">
+		                <label for="selectSurveySection">Section *</label>
 
+		                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
+				                ng-model="survey.surveySection"
+				                ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
+				                required>
+			                <option value=""> -- Choose Section --</option>
+		                </select>
+	                </div>
+	            </div>
             </div>
+            <div class="row">
+	            <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="inputDescription">Description</label>
+                        <input name="inputDescription" id="inputDescription" type="text" class="form-control"
+                               ng-model="survey.description"
+                               placeholder="Enter Module Description">
+                    </div>
+		        </div>
+	            <div class="col-md-4">
+		            <div class="form-group">
+			            <label for="selectClinicalReminder">Clinical Reminder</label>
+
+			            <select id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
+					            ng-model="survey.clinicalReminderId"
+					            ng-options="clinicalReminder.id as clinicalReminder.name for clinicalReminder in clinicalReminders">
+				            <option value="">No Clinical Reminder</option>
+			            </select>
+		            </div>
+	            </div>
+	        </div>
+            <div class="row">
+                <div ng-if="survey.clinicalReminderId" class="col-sm-3">
+                    <div class="form-group">
+	                    <label class="checkbox">
+		                    <input type="checkbox"
+			                    ng-model="survey.mha"> Is MHA?
+	                    </label>
+                    </div>
+                </div>
+                <div ng-if="survey.mha" class="col-sm-5">
+                    <div class="form-group">
+	                    <label for="mhaTestName">MHA Test Name *</label>
+	                    <input name="mhaTestName" id="mhaTestName" type="text" class="form-control"
+			                    ng-model="survey.mhaTestName"
+			                    placeholder="MHA Test Name"
+			                    required>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <br>
 
         <div class="row">
