@@ -286,6 +286,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     }
 
     private String deriveExportName(Measure m, Answer answerDto) {
-        return m.getVariableName();
+        String xn=answerDto.getExportName();
+        return xn==null||xn.isEmpty()?m.getVariableName():xn;
     }
 }
