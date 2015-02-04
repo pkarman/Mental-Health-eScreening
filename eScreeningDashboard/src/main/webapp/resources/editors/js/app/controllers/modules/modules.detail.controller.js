@@ -1,11 +1,12 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, SurveyService, SurveyPageService, Question, MessageFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, clinicalReminders, SurveyService, SurveyPageService, Question, MessageFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = surveyPages;
         $scope.surveySections = surveySections;
+		$scope.clinicalReminders = clinicalReminders;
         $scope.alerts = MessageFactory.get();
 
 		// Add displayOrder to questions

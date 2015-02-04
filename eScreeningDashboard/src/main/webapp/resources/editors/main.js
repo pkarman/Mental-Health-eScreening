@@ -53,6 +53,7 @@ Editors.directive('ngReallyClick', [function() {
 }]);
 
 Editors.value('Answer', EScreeningDashboardApp.models.Answer);
+Editors.value('ClinicalReminder', EScreeningDashboardApp.models.ClinicalReminder);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('Question', EScreeningDashboardApp.models.Question);
 Editors.value('Template', new EScreeningDashboardApp.models.Template());

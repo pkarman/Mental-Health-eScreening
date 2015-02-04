@@ -4,7 +4,9 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import gov.va.escreening.delegate.EditorsViewDelegate;
+import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.ae.Measure;
@@ -14,6 +16,7 @@ import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.ClinicalReminderService;
 
 import java.util.*;
 
@@ -45,6 +48,9 @@ public class EditorRestController {
     private EditorsViewDelegate editorsViewDelegate;
     @Autowired
     private MeasureRepository measureRepo;
+    
+    @Autowired
+    private ClinicalReminderService clinicalReminderSvc;
 
     @Autowired
     public void setEditorsViewDelegate(EditorsViewDelegate editorsViewDelegate) {
@@ -424,6 +430,26 @@ public class EditorRestController {
         return createSectionsResponse(surveySectionInfoList);
     }
 
+    @RequestMapping(value = "/services/clinicalReminders", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map getClinicalReminders(@CurrentUser EscreenUser escreenUser) {
+        logger.debug("getSections");
+
+        List<ClinicalReminderDto> crDtoList = clinicalReminderSvc.findAll();
+
+        Map status = new HashMap();
+        status.put("message", "The Quick Brown fox jumps over the lazy dog");
+        status.put("status", crDtoList != null && !crDtoList.isEmpty() ? "succeeded" : "failed");
+
+        Map clinicalReminders = new HashMap();
+        clinicalReminders.put("clinicalReminders", crDtoList);
+
+        Map responseMap = new HashMap();
+        responseMap.put("status", status);
+        responseMap.put("payload", clinicalReminders);
+        return responseMap;
+    }
+    
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map getSection(
