@@ -181,6 +181,14 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(surveySection);
 
         surveyRepository.update(survey);
+        
+        Integer clinicalReminderId = surveyInfo.getClinicalReminderId();
+        clinicalReminderSurveyRepo.removeSurveyMapping(surveyInfo.getSurveyId());
+        
+        if(clinicalReminderId!=null && clinicalReminderId >0)
+        {
+         clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());;
+        }
         return surveyInfo;
     }
 
@@ -356,6 +364,7 @@ public class SurveyServiceImpl implements SurveyService {
         if(surveyInfo.getClinicalReminderId() != null && surveyInfo.getClinicalReminderId() > 0)
         {
         	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
+        	clinicalReminderSurveyRepo.create(cr);
         	
         }
         return toSurveyInfo(Arrays.asList(survey)).iterator().next();
