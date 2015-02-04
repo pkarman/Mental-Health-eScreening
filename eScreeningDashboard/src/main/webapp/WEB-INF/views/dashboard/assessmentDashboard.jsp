@@ -97,7 +97,7 @@
                           <div class="col-md-6">
                             <div class="checkbox pull-right"> <br>
                               <label for="auto-refresh">
-                                <input type="checkbox" id="auto-refresh">Auto-refresh </label>
+                                <input type="checkbox" id="auto-refresh" ng-model="autoRefreshProg"  ng-change="autoRefreshProgChange()" >Auto-refresh </label>
                             </div>
                           </div>
                         </div>
@@ -156,8 +156,8 @@
                           </div>
                           <div class="col-md-6">
                             <div class="checkbox pull-right"> <br>
-                              <label>
-                                <input type="checkbox" ng-model="autorefresh" ng-change="change()" >
+                              <label for="auto_refresh_prog">
+                                <input type="checkbox" ng-model="autorefresh" ng-change="change()" id="auto_refresh_prog" >
                                 Auto-refresh </label>
                             </div>
                           </div>

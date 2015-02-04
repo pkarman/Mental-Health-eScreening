@@ -5,6 +5,7 @@ app.directive('reportTable', function() {
         options = {
 	    	"bProcessing": true,
 	    	"bServerSide": true,
+	    	"bStateSave": true,
 	    	"aaSorting": [[0,"desc"]],
 	    	"bFilter": false,
 	    	"bJQueryUI": true,
@@ -32,6 +33,20 @@ app.directive('reportTable', function() {
         // apply the plugin
         var dataTable = element.dataTable(options);
 
+		scope.updateProgTimer = function() {
+			console.log("Timer Start 000" + scope.timerDelay);
+			scope.progTimer = setTimeout(scope.updateProgTimer, scope.timerDelay);
+			//dataTable.draw();
+			dataTable.fnClearTable();
+		};
+
+		scope.stopProgTimer = function() {
+			// ClearTimeOUt
+			clearTimeout(scope.progTimer);
+		};
+		
+		
+		
         // watch for any changes to our data, rebuild the DataTable
         scope.$watch(attrs.aaData, function(value) {
             var val = value || null;
@@ -95,6 +110,7 @@ app.controller("assessmentDashboardController", function($scope, $element,
 			$scope.timer = setTimeout($scope.updateGraphsTimer, $scope.timerDelay);
 			$scope.updateGraphs();
 		};
+
 		
 		$scope.stopTimer = function() {
 			// ClearTimeOUt
@@ -104,14 +120,23 @@ app.controller("assessmentDashboardController", function($scope, $element,
 		$scope.change = function() {
 			if($scope.autorefresh == true){
 				$scope.updateGraphsTimer();
-				console.log("TimeerEnabled");
 			}else{
-				console.log("Timeerdisabled");
 				$scope.stopTimer();
+			}
+		};
+
+		$scope.autoRefreshProgChange = function() {
+			if($scope.autoRefreshProg == true){
+				console.log("Yessss");
+				$scope.updateProgTimer();
+			}else{
+				$scope.stopProgTimer();
+				console.log("Timer Stopped");
 			}
 		};
 		
 		
+
 		// Update Graph
 		$scope.updateGraphs = function() {
 			$("#pie_chart svg, #bar_chart svg, #bar_horizontal svg").remove();
