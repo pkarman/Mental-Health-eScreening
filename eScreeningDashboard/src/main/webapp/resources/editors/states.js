@@ -244,6 +244,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     }],
 					clinicalReminders: ['ClinicalReminderService', function(ClinicalReminderService) {
 						return ClinicalReminderService.getList();
+					}],
 					surveyPages: ['$stateParams', 'survey', function($stateParams, survey) {
 						return (survey.id) ? survey.getList('pages') : [];
 					}]
