@@ -103,7 +103,7 @@
                                             <span class="glyphicon glyphicon-remove-circle"
                                                     style="margin-left: 10px;color:red;"
                                                     ng-show="page.pageNumber > 1"
-                                                    ng-click="deletePage($index);"/>
+                                                    ng-really-click="deletePage($index);" ng-really-message="Are you sure you want to delete this page item?"/>
                                         </button>
                                         <button class="btn btn-success btn-sm pull-right" ng-click="addQuestion(page);"><span
                                                 class="glyphicon glyphicon-plus"></span> Add Item
@@ -128,7 +128,7 @@
                                             </span>
                                             <span class="glyphicon glyphicon-remove-circle cursor_pointer"
                                                     style="margin-left: 10px; color:red;"
-                                                    ng-click="deleteQuestion(page, $index);"></span>
+		                                            ng-really-click="deleteQuestion(page, $index);" ng-really-message="Are you sure you want to delete this question?"></span>
 
                                         </div>
                                         <div class="clearfix"></div>

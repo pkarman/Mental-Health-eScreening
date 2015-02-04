@@ -112,14 +112,15 @@ public class EditorRestController {
     public Response updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
         ErrorResponse errorResponse = new ErrorResponse();
         editorsViewDelegate.updateSurveyPages(surveyId, Arrays.asList(surveyPage));
-        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), surveyPage);
+        SurveyPageInfo spi = editorsViewDelegate.getSurveyPages(surveyId, surveyPage.getPageNumber()).iterator().next();
+        return new Response(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), spi);
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response retrieveSurveyPages(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
         // Call service class here instead of hard coding it.
-        List<SurveyPageInfo> surveyPages = editorsViewDelegate.getSurveyPages(surveyId);
+        List<SurveyPageInfo> surveyPages = editorsViewDelegate.getSurveyPages(surveyId, -1);
         Map surveyPageInfoItems = new HashMap();
         surveyPageInfoItems.put("surveyPages", surveyPages);
 

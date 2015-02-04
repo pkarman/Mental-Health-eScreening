@@ -12,7 +12,7 @@ import java.util.List;
  * Created by pouncilt on 8/5/14.
  */
 @JsonRootName("question")
-//@JsonIgnoreProperties(ignoreUnknown = true, value = {"measureId", "measureText", "measureType", "isRequired", "isVisible", "isPPI"})
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"measureId", "measureText", "measureType", "isRequired", "isVisible", "isPPI"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionInfo implements MeasureBaseProperties {
     private Integer id;
