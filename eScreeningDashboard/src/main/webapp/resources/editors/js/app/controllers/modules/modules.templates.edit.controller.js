@@ -261,10 +261,15 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		            return $scope.template;
 	            }
 			},
-			controller: ['$scope', '$modalInstance', 'eventBus', 'template', function($scope, $modalInstance, eventBus, template) {
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template', 'textAngularManager', 
+			             function($scope, $modalInstance, eventBus, template, textAngularManager) {
 
                 $scope.templateName = template.name;
 
+                if(template.json){
+                	delete(template.json);
+                }
+                
 				$scope.validationMessage = {
 					show: false
 				};
@@ -287,6 +292,9 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				// Close modal and pass updated block to the page
                 $scope.close = function (form) {
 
+                	eventBus.modalClosing('modules.templates.edit.controller:resources/editors/views/templates/templateblockmodal.html');
+                	//console.debug("Inserted block content: ", $scope.block.content);
+                	
 	                if (form.$valid) {
 
 		                $scope.block.transformTextContent(TemplateBlockService, $scope.variableHash);

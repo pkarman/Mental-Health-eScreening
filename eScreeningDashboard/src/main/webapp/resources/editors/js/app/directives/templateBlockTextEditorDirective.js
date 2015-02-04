@@ -1,8 +1,9 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockTextEditor', ['textAngularManager', 'TemplateBlockService', 
-                                                  function(textAngularManager, TemplateBlockService) {
+    Editors.directive('templateBlockTextEditor', ['textAngularManager', 'TemplateBlockService', 'eventBus',
+                                                  function(textAngularManager, TemplateBlockService, eventBus) {
+ 
         function addAvDeleteButton(editorScope, $element){
             //We had to do it this way because adding an ng-click gets stripped in the wysiwyg because of santaize
             $element.on('click', deleteElementHandler(editorScope));
@@ -44,75 +45,87 @@
                 .each(function(i, ele){ addAvDeleteButton(editorScope, $(ele));  });
         }
         
-        function initTables(editorScope, $editorEle){
-        	initTableEditing(editorScope, $editorEle);
-        	$editorEle
-        	.focusin(function(){
-        		initTableEditing(editorScope, $editorEle);
-        	})
-        	.focusout(function(){
-        		rmTableEditing($editorEle);
-        	});
+        function rmTableEditing($editorScope, $editorEle, skipResizeDestroy){
         	
-        	//this disables the resizing of the table by firefox
-        	//document.execCommand('enableObjectResizing', false, 'false');
-        }
-        
-        function rmTableEditing($editorEle){
-        	$editorEle.find(".isResizable")
-        		.resizable("destroy")
-        		.removeClass(".isResizable");
+        	if(!skipResizeDestroy){
+        		$editorEle.find("td.ui-resizable, th.ui-resizable").resizable().resizable("destroy");
+        	}
+        	
         	$editorEle.find(".ui-resizable-handle").remove();
+        	$editorEle.find(".ui-resizable").removeClass("ui-resizable");
         	$editorEle.find(".tablewrap table")
         		.removeClass("editing")
         		.unwrap();
-        	textAngularManager.refreshEditor('text-block-editor');
+        	
+        	//this doesn't work in all cases
+        	$editorScope.updateTaBindtaTextElement();        	
+        }
+        
+        function addResizeWithPercentage(container, elementsToResize, handles){
+        	var sibTotalWidth;
+        	elementsToResize
+	  			.resizable({
+				  'handles': handles,  
+				  start: function(event, ui){
+			            sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
+			      },
+			      stop: function(event, ui){
+			    	  var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
+			          ui.originalElement.css('width', cellPercentWidth + '%');  
+			          var nextCell = ui.originalElement.next();
+			          var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
+			          nextCell.css('width', nextPercentWidth + '%');
+			          textAngularManager.refreshEditor('text-block-editor');
+			      },
+			      resize: function(event, ui){ 
+			          ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
+			      }
+			  });
         }
         
         function initTableEditing(editorScope, $editorEle){
+        	console.debug("init table editing");
+        	
+        	function updateEditing(){
+        		console.debug("updating tables as editable");
 	        	$editorEle
 	        	.find("table:not(.editing)")
 	        	.each(function(i, table){
-	        		var container = $(table);
-	        		var sibTotalWidth;
-	        		$(table)
-	        			.addClass("editing")
-	            		.find("tr:first td, tr:first th")
-	            		  .addClass("isResizable")
-	            		  .resizable({
-	            			  handles: "e,s",  
-	            			  start: function(event, ui){
-	            		            sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
-	            		      },
-	            		      stop: function(event, ui){
-	            		    	  var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
-	            		          ui.originalElement.css('width', cellPercentWidth + '%');  
-	            		          var nextCell = ui.originalElement.next();
-	            		          var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
-	            		          nextCell.css('width', nextPercentWidth + '%');
-	            		          textAngularManager.refreshEditor('text-block-editor');
-	            		      },
-	            		        resize: function(event, ui){ 
-	            		            ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
-	            		        }
-	            		  });
+	        		var $table = $(table);
+	        		console.debug("Setting table as editable:", $table);
 	        		
-	        		$(table)
-	        			.find("tr")
-	        			.addClass("isResizable")
-	        			.resizable({handles:"s"});
+	        		$table.addClass("editing");
 	        		
-	        		//with Chrome and IE we must also set the td south to be resizable
-	        		$(table).find("td, th")
-            		  .addClass("isResizable")
-            		  .resizable({handles: "s"});
-            			  
-	        		$(table).wrap($("<div/>").addClass("tablewrap"));
+	        		$table.find("tr:first")
+	        				.find("td:not(:last-child), th:not(:last-child)")
+	        				.each(function(i, element){
+			        			if(i == 0){
+			        				addResizeWithPercentage($table, $(this), "s, e, se");
+			        			}
+			        			else{
+			        				addResizeWithPercentage($table, $(this), "e"); 
+			        			}
+			        		});
+	  		
+	        		$table.find("tr:not(:first)")
+		    				.find("td:first, th:first")
+							.resizable({handles: "s"});			
+	        				
+	        		var wrapper = $("<div/>").addClass("tablewrap").hover( deleteElementHandler(editorScope) );
+	        		
+	        		$table.wrap(wrapper);
 	            });
-	        	
-	        	$(".tablewrap").hover( deleteElementHandler(editorScope) );  
+        	}
+        	
+        	//This starts editing of tables we are loading from db
+        	rmTableEditing(editorScope, $editorEle, true);
+        	updateEditing();
+        	
+        	//Setup the initialization of new tables inserted
+        	$editorEle.focus(function(){
+        		updateEditing();
+        	});
         }
-        
         
         return {
             restrict: 'A',
@@ -136,9 +149,27 @@
                     if(!$element.data("init")){
                         $element.data("init", true);
                         addDeleteButtonToAll($scope, $element);
-                        initTables($scope, $element);
-                    }
+                        initTableEditing($scope, $element);
+                    }                   
                 });
+                
+                //The following is to remove the editor atifacts when the block is being saved. 
+                
+                //This works for IE and Chrome but not firefox
+                $element.blur(function(){
+                	rmTableEditing($scope, $element);
+                });
+                  
+                //TODO: this doesn't work in chrome or IE because in rmTableEditing the call to $editorScope.updateTaBindtaTextElement(); does not actually cause an update 
+                //subscribe to onModalClose event
+                eventBus.onModalClose($scope, 
+                		'modules.templates.edit.controller:resources/editors/views/templates/templateblockmodal.html', 
+                		function(){ 
+                	 		
+                			rmTableEditing($scope, $element);
+                			
+                	 		//console.debug("Cleaned editor is: ", $element.html());
+                		}, true);
             }
         };
         
