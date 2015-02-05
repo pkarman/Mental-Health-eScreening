@@ -11,7 +11,7 @@
 		// Add displayOrder to questions
 		_.each($scope.surveyPages, function(page) {
 			_.each(page.questions, function(question, index) {
-				question.displayOrder = index;
+				question.displayOrder = index + 1;
 			});
 		});
 
@@ -21,7 +21,7 @@
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
                 for (var index in $scope.surveyPages) {
-                    $scope.surveyPages[index].pageNumber = +index;
+                    $scope.surveyPages[index].pageNumber = index + 1;
                 }
             }
         };
@@ -34,7 +34,7 @@
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;
                 for (var index in questions) {
-                    questions[index].displayOrder = +index;
+                    questions[index].displayOrder = index + 1;
                 }
             }
         };
@@ -52,7 +52,7 @@
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            $scope.question = Question.extend({displayOrder: page.questions.length});
+            $scope.question = Question.extend({displayOrder: page.questions.length + 1});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
