@@ -64,9 +64,9 @@ public class SelectVeteranController {
     public String setUpPageSelectVeteran(HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
                                          @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
 
-        accomodateCreateVeteranFormBeamFromSearchResult(request, selectVeteranFormBean, model);
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        accomodateCreateVeteranFormBeamFromSearchResult(request, selectVeteranFormBean, model);
 
         return "dashboard/selectVeteran";
     }
@@ -89,6 +89,12 @@ public class SelectVeteranController {
         }
         if (updateCreateVeteranFormBean) {
             model.addAttribute("selectVeteranFormBean", selectVeteranFormBean);
+
+            // also add the search result previously displayed
+            model.addAttribute("searchResultList", session.getAttribute("searchResultList"));
+            model.addAttribute("searchResultListSize", session.getAttribute("searchResultListSize"));
+
+            model.addAttribute("isPostBack", true);
         }
     }
 
@@ -102,7 +108,7 @@ public class SelectVeteranController {
      * @return
      */
     @RequestMapping(value = "/selectVeteran", method = RequestMethod.POST, params = "searchButton")
-    public String searchPageSelectVeteran(@Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
+    public String searchPageSelectVeteran(HttpServletRequest request, @Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
                                           BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
 
         logger.debug(selectVeteranFormBean.toString());
@@ -119,6 +125,12 @@ public class SelectVeteranController {
 
         if (searchResultList == null) {
             searchResultList = new ArrayList<SelectVeteranResultDto>();
+        }
+
+        {
+            // save the search result in Session Cache so it is available when user presses cancel button
+            request.getSession().setAttribute("searchResultList", searchResultList);
+            request.getSession().setAttribute("searchResultListSize", searchResultList.size());
         }
 
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
