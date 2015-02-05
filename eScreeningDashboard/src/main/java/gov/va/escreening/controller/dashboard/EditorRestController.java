@@ -356,9 +356,7 @@ public class EditorRestController {
     public Map<String, Map<String, String>> handleException(
             AssessmentEngineDataValidationException ex) {
 
-        logger.debug(ex.toString());
-        logger.debug(ex.getErrorResponse().toString());
-
+        logger.error(ex.getErrorResponse().getLogMessage());
         // returns the error response which contains a list of error messages
         //return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
         return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));

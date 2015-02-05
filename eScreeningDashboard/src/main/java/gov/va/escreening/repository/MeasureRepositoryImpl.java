@@ -5,12 +5,13 @@ import com.google.common.collect.Maps;
 
 import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Validation;
-import gov.va.escreening.dto.editors.AnswerInfo;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
 import gov.va.escreening.entity.MeasureValidation;
+import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -159,6 +160,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             Measure m = findOne(measureDto.getMeasureId());
 
             copyFromDTO(m, measureDto);
+            validateMeasure(m);
             update(m);
             assignParent(m, measureDto.getChildMeasures());
 
@@ -168,6 +170,21 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         }
         return null;
     }
+    
+    private void validateMeasure(Measure m){
+    	if(m.getMeasureType() == null){
+        	ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+        	.toAdmin("This error normally represents an issue in the Module editor. Measure: " + m)
+        	.toUser("Question type is required. Please call support.")
+        	.throwIt();
+        }
+        if(m.getDisplayOrder() == null){
+        	ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+        	.toAdmin("This error normally represents an issue in the Module editor. Measure: " + m)
+        	.toUser("Question display order is required. Please call support.")
+        	.throwIt();
+        }
+    }
 
 
     private Measure createMeasureEntity(
@@ -175,7 +192,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         
         Measure m = new Measure();
         copyFromDTO(m, measureDto);
-        
+        validateMeasure(m);
+
         //if this is freetext and no answer was given, add it
         if(m.getMeasureType().getMeasureTypeId() == MeasureTypeEnum.FREETEXT.getMeasureTypeId()
         		&& (m.getMeasureAnswerList() == null || m.getMeasureAnswerList().isEmpty())){
