@@ -2,8 +2,11 @@ package gov.va.escreening.repository;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.Validation;
+import gov.va.escreening.dto.editors.AnswerInfo;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
@@ -169,10 +172,20 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
     private Measure createMeasureEntity(
             gov.va.escreening.dto.ae.Measure measureDto) {
-
+        
         Measure m = new Measure();
         copyFromDTO(m, measureDto);
-
+        
+        //if this is freetext and no answer was given, add it
+        if(m.getMeasureType().getMeasureTypeId() == MeasureTypeEnum.FREETEXT.getMeasureTypeId()
+        		&& (m.getMeasureAnswerList() == null || m.getMeasureAnswerList().isEmpty())){
+        	
+        	MeasureAnswer textAnswer = new MeasureAnswer();
+        	textAnswer.setDisplayOrder(1);
+        	textAnswer.setMeasure(m);
+        	m.setMeasureAnswerList(Lists.newArrayList(textAnswer));
+        }
+        
         create(m);
 
         measureDto.setMeasureId(m.getMeasureId());
