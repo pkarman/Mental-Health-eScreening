@@ -161,7 +161,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
             return m;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error updateing question", e);
         }
         return null;
     }
@@ -282,6 +282,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             ma.setVistaText(answerDto.getVistaText());
             ma.setAnswerType(answerDto.getAnswerType());
             ma.setCalculationValue(answerDto.getCalculationValue());
+            ma.setDisplayOrder(answerDto.getDisplayOrder());
             ma.setMeasure(m);
         }
         return ma;
