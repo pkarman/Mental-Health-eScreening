@@ -107,12 +107,9 @@
 
     <div class="clearfix"></div>
 
-
     <div class="container left-right-shadow">
         <div class="row">
             <div class="col-md-12">
-
-
                 <div class="row">
                     <div class="col-md-12"><a name="skip"> </a>
 
@@ -128,15 +125,10 @@
                 </c:if>
 
                 <div class="clearfix"></div>
-
-
                 <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
                     <div class="border-radius-main-form gray-lighter">
                         <h2>Search Assessments to Select or Create a New Veteran</h2>
-
                         <form:errors path="*" element="div" cssClass="alert alert-danger"/>
-
-
                         <div class="row">
 
                             <div class="col-md-7">
@@ -171,8 +163,6 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
-
-
                 <br>
                 <c:if test="${isPostBack}">
                     <h2>Search Result</h2>
@@ -260,11 +250,8 @@
 
                 </c:if>
                 </form:form>
-
                 <br/><br/>
-
                 <!--  -->
-
             </div>
         </div>
     </div>

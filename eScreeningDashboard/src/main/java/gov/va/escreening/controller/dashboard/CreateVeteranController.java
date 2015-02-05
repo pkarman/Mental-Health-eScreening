@@ -118,7 +118,7 @@ public class CreateVeteranController {
         } catch (DataIntegrityViolationException dve) {
             if (dve.getCause() instanceof ConstraintViolationException) {
                 logger.error("Veteran being created already exists", dve);
-                result.rejectValue(null, null, "You are trying to create a duplicate veteran, please enter more information below or go back.");
+                result.rejectValue(null, null, "You are trying to create a duplicate veteran, please enter more information below or back to search results.");
             } else {
                 throw dve;
             }

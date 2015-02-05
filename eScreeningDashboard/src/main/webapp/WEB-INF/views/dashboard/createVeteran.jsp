@@ -6,50 +6,29 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
-<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
-<link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
-<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" />
-<link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
-<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
-<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/js/bootstrap/css/plugins/bootstrap-datetimepicker.css" />" rel="stylesheet" type="text/css" />
-
-
-<title>Veteran Search</title>
-<script type="text/javascript">
-	$(document).ready(function() {
-		tabsLoad("createBattery");
-	});
-</script>
-<style type="text/css">
-html body {
-	min-width: inherit;
-	margin: 0px !important;
-	position: relative;
-}
-</style>
-
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
+	<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" />
+	<link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
+	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
+	<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/js/bootstrap/css/plugins/bootstrap-datetimepicker.css" />" rel="stylesheet" type="text/css" />
+		
+	<title>Veteran Search</title>
   	<!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
-
-
-
-
 </head>
 <body>
-
-
-
-	<!-- Do we need this div?? -->
+  <!-- Do we need this div?? -->
   <a href="#skip" class="offscreen">Skip to main content</a>
 	<div id="outerPageDiv">
 		<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -74,9 +53,6 @@ html body {
 	</div>
 	<div class="clearfix"></div>
 
-
-
-
 	<div class="container left-right-shadow">
 		<div class="row">
 			<div class="col-md-12">
@@ -89,8 +65,6 @@ html body {
 						autocomplete="off" method="post">
 
 						<form:errors path="*" element="div" cssClass="alert alert-danger" />
-
-
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-group">
@@ -124,8 +98,6 @@ html body {
 								</div>
 							</div>
 						</div>
-
-
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-group">
@@ -219,26 +191,9 @@ html body {
 
 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/bootstrap/js/plugins/bootstrap-datetimepicker.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/plugins/bootstrap-datetimepicker.js" />"></script>
+	<script type="text/javascript" src="<c:url value="resources/js/dashboard/createVeteran.js" />"></script>
 
-	<script type="text/javascript">
-		$(document).ready(function() {
-			// date time picker config
-			$('.form_date').datetimepicker({
-				weekStart : 1,
-				todayBtn : 0,
-				autoclose : 1,
-				todayHighlight : 1,
-				startView : 2,
-				minView : 2,
-				forceParse : 0
-			});
-		});
-	</script>
-    
-    <%@ include
-			file="/WEB-INF/views/partialpage/footer.jsp"%>
+    <%@ include file="/WEB-INF/views/partialpage/footer.jsp"%>
 </body>
-
 </html>
