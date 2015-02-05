@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;
@@ -56,6 +57,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
 			this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
 			this.assessments.put(avIdRowKey, "measureTypeId", m != null ? m.getMeasureType().getMeasureTypeId() : 0);
+			this.assessments.put(avIdRowKey, "parentMeasureId", m != null && m.getParent() != null ? m.getParent().getMeasureId() : 0);
 		}
 
 		@Override
@@ -160,20 +162,20 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		for (AssessmentVariable av : avList) {
 			int avTypeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 			switch (avTypeId) {
-			case 1:
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
 				Collection<Measure> measures = useFilteredMeasures ? filteredMeasures : smList;
 				handleMeasureType(av, measures, avBldr);
 				break;
-			case 2:
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
 				// if caller has asked to filter the measures (see case 1) then do not return measure answers
 				if (!ignoreAnswers) {
 					handleMeasureAnswerType(av, smList, avBldr);
 				}
 				break;
-			case 3:
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
 				handleCustomType(av, avBldr);
 				break;
-			case 4:
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
 				handleFormulaType(survey, av, smList, avBldr, avList, ignoreAnswers);
 				break;
 			default:
