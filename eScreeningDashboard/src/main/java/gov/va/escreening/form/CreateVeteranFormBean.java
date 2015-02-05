@@ -29,7 +29,7 @@ public class CreateVeteranFormBean implements Serializable {
 
     private Date birthDate;
 
-    @Size(min=10, max = 10, message = "Date of Birth must be 10 characters and MM/DD/YYYY")
+    @Size(max = 10, message = "Date of Birth must be 10 characters and MM/DD/YYYY")
     private String birthDateString;
 
     @Size(max = 10, message = "Phone Number must be 10 characters or less")

@@ -165,16 +165,6 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <hr />
-                                    <h2>Or Create New Veteran</h2>
-                                    <br>
-                                    <!--form:form method="post"-->
-                                        <button id="createButton" name="createButton" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
-                                    <!--/form:form-->
-                                </div>
-                            </div>
 
 
                             <div class="clearfix"></div>
@@ -183,7 +173,6 @@
                     </div>
 
 
-                </form:form>
                 <br>
                 <c:if test="${isPostBack}">
                     <h2>Search Result</h2>
@@ -258,7 +247,20 @@
                         </c:if>
                         </tbody>
                     </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <hr />
+                            <h2>Or Create New Veteran</h2>
+                            <br>
+                            <!--form:form method="post"-->
+                            <button id="createButton" name="createButton" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
+                            <!--/form:form-->
+                        </div>
+                    </div>
+
                 </c:if>
+                </form:form>
+
                 <br/><br/>
 
                 <!--  -->

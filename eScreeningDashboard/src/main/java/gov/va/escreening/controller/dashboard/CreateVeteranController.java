@@ -118,7 +118,7 @@ public class CreateVeteranController {
         } catch (DataIntegrityViolationException dve) {
             if (dve.getCause() instanceof ConstraintViolationException) {
                 logger.error("Veteran being created already exists", dve);
-                result.rejectValue(null, null, "Veteran already exists.");
+                result.rejectValue(null, null, "You are trying to create a duplicate veteran, please enter more information below or go back.");
             } else {
                 throw dve;
             }
@@ -136,9 +136,13 @@ public class CreateVeteranController {
      * @return
      */
     @RequestMapping(value = "/createVeteran", method = RequestMethod.POST, params = "cancelButton")
-    public String cancelCreateVeteran(Model model) {
+    public String cancelCreateVeteran(HttpServletRequest request,@Valid @ModelAttribute CreateVeteranFormBean createVeteranFormBean,
+                                      BindingResult result, Model model) {
 
         logger.debug("In cancelCreateVeteran");
+
+        request.getSession().setAttribute("lastName", createVeteranFormBean.getLastName());
+        request.getSession().setAttribute("ssnLastFour", createVeteranFormBean.getSsnLastFour());
 
         return "redirect:/dashboard/selectVeteran";
     }

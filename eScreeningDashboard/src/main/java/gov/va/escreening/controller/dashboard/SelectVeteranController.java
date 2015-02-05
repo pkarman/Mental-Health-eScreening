@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -60,13 +61,35 @@ public class SelectVeteranController {
      * @return
      */
     @RequestMapping(value = "/selectVeteran", method = RequestMethod.GET)
-    public String setUpPageSelectVeteran(@CurrentUser EscreenUser escreenUser,
+    public String setUpPageSelectVeteran(HttpServletRequest request, @CurrentUser EscreenUser escreenUser,
                                          @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
 
+        accomodateCreateVeteranFormBeamFromSearchResult(request, selectVeteranFormBean, model);
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
         return "dashboard/selectVeteran";
+    }
+
+    private void accomodateCreateVeteranFormBeamFromSearchResult(HttpServletRequest request, SelectVeteranFormBean selectVeteranFormBean, Model model) {
+        HttpSession session = request.getSession();
+        String lastName = (String) session.getAttribute("lastName");
+        String ssnLastFour = (String) session.getAttribute("ssnLastFour");
+        boolean updateCreateVeteranFormBean = false;
+
+        if (lastName != null) {
+            selectVeteranFormBean.setLastName(lastName);
+            session.removeAttribute("lastName");
+            updateCreateVeteranFormBean = true;
+        }
+        if (ssnLastFour != null) {
+            selectVeteranFormBean.setSsnLastFour(ssnLastFour);
+            session.removeAttribute("ssnLastFour");
+            updateCreateVeteranFormBean = true;
+        }
+        if (updateCreateVeteranFormBean) {
+            model.addAttribute("selectVeteranFormBean", selectVeteranFormBean);
+        }
     }
 
     /**
