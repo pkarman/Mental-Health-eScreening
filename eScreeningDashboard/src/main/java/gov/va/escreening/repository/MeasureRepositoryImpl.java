@@ -134,7 +134,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     public gov.va.escreening.dto.ae.Measure updateMeasure(
             gov.va.escreening.dto.ae.Measure measureDto) {
 
-        Measure m = updateMeasureEntity(measureDto);
+        updateMeasureEntity(measureDto);
+        Measure m = findOne(measureDto.getMeasureId());
         gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(m, null, null);
 
         return dto;
@@ -144,7 +145,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     public gov.va.escreening.dto.ae.Measure createMeasure(
             gov.va.escreening.dto.ae.Measure measureDto) {
 
-        Measure m = createMeasureEntity(measureDto);
+        createMeasureEntity(measureDto);
         return measureDto;
     }
 
@@ -265,6 +266,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
                 if (child.getMeasureId() == null) {
                     createMeasure(child);
+                    m.addChild(findOne(child.getMeasureId()));
                 } else {
                     updateMeasure(child);
                 }
@@ -276,11 +278,17 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     private MeasureAnswer updateMeasureAnswer(Measure m, MeasureAnswer ma, Answer answerDto) {
         if (answerDto != null) {
             ma.setAnswerText(answerDto.getAnswerText());
-            ma.setExportName(answerDto.getExportName());
+            ma.setExportName(deriveExportName(m, answerDto));
             ma.setVistaText(answerDto.getVistaText());
             ma.setAnswerType(answerDto.getAnswerType());
+            ma.setCalculationValue(answerDto.getCalculationValue());
             ma.setMeasure(m);
         }
         return ma;
+    }
+
+    private String deriveExportName(Measure m, Answer answerDto) {
+        String xn=answerDto.getExportName();
+        return xn==null||xn.isEmpty()?m.getVariableName():xn;
     }
 }

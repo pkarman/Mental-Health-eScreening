@@ -65,6 +65,8 @@ Editors.config(function(RestangularProvider, $provide) {
 
     RestangularProvider.setBaseUrl('services/');
     RestangularProvider.setRequestSuffix('.json');
+    // Explicitly setting cache to false because requests were becoming stale
+    RestangularProvider.setDefaultHttpFields({cache: false});
 
     RestangularProvider.addResponseInterceptor(function(data, operation, what) {
 
@@ -240,7 +242,7 @@ Editors.config(function(RestangularProvider, $provide) {
 	}]);
 });
 
-Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'AlertFactory', function ($rootScope, $state, $stateParams, editableOptions, AlertFactory) {
+Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'MessageFactory', function ($rootScope, $state, $stateParams, editableOptions, MessageFactory) {
 
     // It's very handy to add references to $state and $stateParams to the $rootScope
     // so that you can access them from any scope within your applications.For example,
@@ -248,6 +250,9 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'AlertFa
     // to active whenever 'assessments.list' or one of its descendents is active.
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+
+	// Get all flash messages to be added globally
+    $rootScope.flashMessages = MessageFactory.get(true);
 
     $rootScope.messageHandler = new BytePushers.models.MessageHandler();
 
@@ -309,7 +314,12 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'AlertFa
 
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         $rootScope.messageHandler.clearMessages();
-        AlertFactory.clear();
+
+		// Allow messages to be shared between related states
+		if (!$state.includes(fromState.name.split('.')[0])) {
+			MessageFactory.empty();
+		}
+
     });
 
     //some error logging to reduce the amount of hair I pull out of my head :)

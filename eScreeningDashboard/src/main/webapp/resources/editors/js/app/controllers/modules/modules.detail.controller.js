@@ -1,25 +1,19 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'SurveyService', 'SurveyPageService', 'Question', function($scope, $state, $stateParams, survey, surveySections, SurveyService, SurveyPageService, Question){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, SurveyService, SurveyPageService, Question, MessageFactory){
 
         $scope.survey = survey;
-        $scope.surveyPages = [];
+        $scope.surveyPages = surveyPages;
         $scope.surveySections = surveySections;
-        $scope.alerts = [];
+        $scope.alerts = MessageFactory.get();
 
-        if (survey.id) {
-            survey.getList('pages').then(function(pages) {
-                $scope.surveyPages = pages;
-
-                // Add displayOrder to questions
-                _.each($scope.surveyPages, function(page) {
-                    _.each(page.questions, function(question, index) {
-                        question.displayOrder = index;
-                    });
-                });
-            });
-        }
+		// Add displayOrder to questions
+		_.each($scope.surveyPages, function(page) {
+			_.each(page.questions, function(question, index) {
+				question.displayOrder = index;
+			});
+		});
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -43,14 +37,6 @@
                     questions[index].displayOrder = +index;
                 }
             }
-        };
-
-        $scope.addAlert = function addAlert() {
-            $scope.alerts.push({msg: 'Another alert!'});
-        };
-
-        $scope.closeAlert = function closeAlert(index) {
-            $scope.alerts.splice(index, 1);
         };
 
         $scope.addPage = function addPage() {
@@ -126,11 +112,8 @@
 
         $scope.save = function () {
 
-            // Remove any existing alerts
-            $scope.alerts = [];
-
             $scope.survey.save().then(function(survey) {
-                $scope.alerts.push({type: 'success', msg: 'Module saved successfully'});
+                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.');
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
@@ -142,28 +125,34 @@
                             delete question.selected;
                         });
 
-                        page.save().then(function (page) {}, function (response) {
-                            $scope.alerts.push({type: 'danger', msg: 'There was an error saving module items.'});
+                        page.save().then(function (updatedPage) {
+                            // Update the id of each question with the persisted question ID.
+                            // Questions are not a nested resource and therefore restangular won't
+                            // update the question IDs automatically like it does for actual resources
+                            _.each(updatedPage.questions, function (question, index) {
+                                page.questions[index].id = question.id;
+                                // Same holds true for childQuestions
+                                _.each(question.childQuestions, function(childQuestion, j) {
+                                    page.questions[index].childQuestions[j].id = childQuestion.id;
+                                });
+                            });
+
+							$state.go('modules.detail', { surveyId: survey.id });
+
+                        }, function (response) {
+                            MessageFactory.error('There was an error saving module items.');
                         });
                     } else {
-                        $scope.alerts.push({type: 'danger', msg: 'Page items require a minimum of one question.'});
+                        MessageFactory.warning('Page items require a minimum of one question.');
                     }
                 });
 
                 if (!$stateParams.surveyId) {
-                    $state.transitionTo('modules.detail', {surveyId: survey.id}, {
-                        reload: true, inherit: false, notify: false
-                    });
+                    $state.go('modules.detail', { surveyId: survey.id });
                 }
 
             }, function(response) {
-                $scope.alerts.push({type: 'danger', msg: 'There was an error saving the module.'});
-            });
-
-            $scope.resetForm(false, {
-                name: "modules.detail",
-                params: {surveyId: $scope.survey.id},
-                doTransition: true
+                MessageFactory.set('danger', 'There was an error saving the module.');
             });
         };
 

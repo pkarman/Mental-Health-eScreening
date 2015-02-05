@@ -1,7 +1,11 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailListController', ['$scope', '$state', 'questionTypes', function($scope, $state, questionTypes){
+    angular.module('Editors').controller('ModulesDetailListController', ['$scope', '$state', '$stateParams', 'questionTypes', function($scope, $state, $stateParams, questionTypes){
+
+		if (!$scope.question) {
+			$state.go('modules.detail', { surveyId: $stateParams.surveyId });
+		}
 
         $scope.questionTypes = questionTypes;
 

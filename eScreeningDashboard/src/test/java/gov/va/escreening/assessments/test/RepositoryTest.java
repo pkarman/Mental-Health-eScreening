@@ -217,7 +217,7 @@ public class RepositoryTest {
     
     @Test
 	public void testSS() {
-		List a = ss.getSurveyPages(2);
+		List a = ss.getSurveyPages(2,-1);
 		assertEquals(a.size(), 3);
 	}
 }

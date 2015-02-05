@@ -6,6 +6,13 @@
 			if (question && !question.answers.length) {
 				$scope.question.answers.push(Answer.extend({type: 'none'}));
 			}
+
+			if (question && question.childQuestions) {
+				_.each(question.childQuestions, function(question, index) {
+					// Initialize display order
+					question.displayOrder = index;
+				});
+			}
 		});
 
 		$scope.sortableQuestionOptions = {
@@ -33,9 +40,11 @@
 				},
 				controller: function($scope, $modalInstance, tableQuestion) {
 
+					$scope.isUpdate = angular.isDefined(question);
+
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || Question.extend({});
+					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length});
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
@@ -48,14 +57,14 @@
 					};
 
 					$scope.update = function update() {
-						$modalInstance.close($scope.question);
+						$modalInstance.close({question: $scope.question, update: $scope.isUpdate});
 					}
 				}
 			});
 
-			modalInstance.result.then(function (question) {
-				if (!question.id) {
-					$scope.question.childQuestions.push(question);
+			modalInstance.result.then(function (result) {
+				if (!result.update) {
+					$scope.question.childQuestions.push(result.question);
 				}
 			});
 		};

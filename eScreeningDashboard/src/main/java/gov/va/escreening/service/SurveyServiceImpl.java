@@ -320,20 +320,23 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
+    public List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber) {
         Survey survey = surveyRepository.findOne(surveyId);
         List<SurveyPage> surveyPages = survey.getSurveyPageList();
 
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
         for (SurveyPage surveyPage : surveyPages) {
-            SurveyPageInfo spi = new SurveyPageInfo();
-            BeanUtils.copyProperties(surveyPage, spi);
 
-            spi.setQuestions(new ArrayList<QuestionInfo>());
-            for (Measure measure : surveyPage.getMeasures()) {
-                spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+            if (pageNumber==-1 || surveyPage.getPageNumber()==pageNumber) {
+                SurveyPageInfo spi = new SurveyPageInfo();
+                BeanUtils.copyProperties(surveyPage, spi);
+
+                spi.setQuestions(new ArrayList<QuestionInfo>());
+                for (Measure measure : surveyPage.getMeasures()) {
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                }
+                surveyPageInfos.add(spi);
             }
-            surveyPageInfos.add(spi);
         }
         return surveyPageInfos;
     }
