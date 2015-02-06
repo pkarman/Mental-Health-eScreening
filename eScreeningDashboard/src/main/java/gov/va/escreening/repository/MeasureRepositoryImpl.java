@@ -291,7 +291,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 	        	for(AssessmentVariable av : avList){
 	            	av.setMeasureAnswer(ma);
 	            	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER));
-	            	av.setDisplayName(ma.getExportName());
+	            	av.setDisplayName(ma.getExportName() != null ? ma.getExportName() : "");
 	            	av.setDescription(ma.getAnswerText());
 	            	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
 	            		assessmentVariableRepository.create(av);
