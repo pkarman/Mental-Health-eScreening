@@ -10,7 +10,7 @@
 			if (question && question.childQuestions) {
 				_.each(question.childQuestions, function(question, index) {
 					// Initialize display order
-					question.displayOrder = index;
+					question.displayOrder = index + 1;
 				});
 			}
 		});
@@ -24,7 +24,7 @@
 				// Update the display order
 				var questions = ui.item.scope().$parent.question.childQuestions;
 				for (var index in questions) {
-					questions[index].displayOrder = +index;
+					questions[index].displayOrder = index + 1;
 				}
 			}
 		};
@@ -44,7 +44,7 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length});
+					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length + 1});
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},

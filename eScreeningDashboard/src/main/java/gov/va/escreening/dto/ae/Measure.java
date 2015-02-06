@@ -208,15 +208,16 @@ public class Measure implements Serializable, MeasureBaseProperties {
             }
         }
         
-        //add answers
+        //add tableAnswers if this is a child question and it has not been initialized 
+        if(parentIsTable && tableAnswers == null){
+            tableAnswers = new ArrayList<List<Answer>>();
+        }
+   
+    	//add answers
         List<MeasureAnswer> dbAnswers = dbMeasure.getMeasureAnswerList();
         if(dbAnswers != null && !dbAnswers.isEmpty()){
             answers = new ArrayList<Answer>(dbAnswers.size());
             
-            if(parentIsTable && tableAnswers == null){
-                tableAnswers = new ArrayList<List<Answer>>();
-            }
-       
             for (MeasureAnswer measureAnswer : dbAnswers) {
                 List<SurveyMeasureResponse> answerResponses = surveyMeasureResponseMap == null ? null 
                         : surveyMeasureResponseMap.get(measureAnswer.getMeasureAnswerId());
