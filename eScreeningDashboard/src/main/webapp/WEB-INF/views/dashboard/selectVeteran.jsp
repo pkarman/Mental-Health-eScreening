@@ -114,7 +114,8 @@
                     <div class="col-md-12"><a name="skip"> </a>
 
                         <h1>Create Battery</h1>
-						<h3>Select Veteran from search result; search again; or create a new Veteran record.</h3><br>
+						<h3>Select Veteran from search result; search again; or create a new Veteran record.</h3>
+						<div class="clearfix"></div>
 						</div>
                 </div>
 
