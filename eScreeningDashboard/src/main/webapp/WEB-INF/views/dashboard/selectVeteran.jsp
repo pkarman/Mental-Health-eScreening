@@ -113,7 +113,10 @@
                 <div class="row">
                     <div class="col-md-12"><a name="skip"> </a>
 
-                        <h1>Select Veteran</h1></div>
+                        <h1>Create Battery</h1>
+						<h3>Select Veteran from search result; search again; or create a new Veteran record.</h3>
+						<div class="clearfix"></div>
+						</div>
                 </div>
 
                 <c:if test="${!isCprsVerified}">
@@ -127,7 +130,7 @@
                 <div class="clearfix"></div>
                 <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
                     <div class="border-radius-main-form gray-lighter">
-                        <h2>Search Assessments to Select or Create a New Veteran</h2>
+                        <h2>Search</h2>
                         <form:errors path="*" element="div" cssClass="alert alert-danger"/>
                         <div class="row">
 
@@ -240,7 +243,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <hr />
-                            <h2>Or Create New Veteran</h2>
                             <br>
                             <!--form:form method="post"-->
                             <button id="createButton" name="createButton" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
