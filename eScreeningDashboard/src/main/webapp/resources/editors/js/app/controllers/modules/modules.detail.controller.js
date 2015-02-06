@@ -127,6 +127,8 @@
                         });
 
                         page.save().then(function (updatedPage) {
+							// Restangular for some reason is not updating the page with the newly created ID
+							page.id = updatedPage.id;
                             // Update the id of each question with the persisted question ID.
                             // Questions are not a nested resource and therefore restangular won't
                             // update the question IDs automatically like it does for actual resources
@@ -147,6 +149,7 @@
 						if (page.id) {
 							// Save the page due to constraint on deleted question
 							page.save().then(function() {
+								console.log('page save 2');
 								// Delete the page
 								var index = page.pageNumber - 1;
 								page.remove().then(function() {
