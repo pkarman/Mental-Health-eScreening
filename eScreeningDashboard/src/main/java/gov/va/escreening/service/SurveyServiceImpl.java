@@ -263,24 +263,16 @@ public class SurveyServiceImpl implements SurveyService {
 
             for (final QuestionInfo questionInfo : surveyPageInfo.getQuestions()) {
                 Integer measureId = questionInfo.getId();
-                Measure measure;
                 if (measureId != null && measureId > -1) {
                     measureRepository.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
-                    measure = measureRepository.findOne(questionInfo.getId());
+                    measures.add(measureRepository.findOne(questionInfo.getId()));
                 } else {
                     gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
-                    measure = measureRepository.findOne(measureDTO.getMeasureId());
-
-                    attachMeasureAnswer(measure);
+                    measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
                     
                     // update questionInfo's id with measure id
-                    questionInfo.setId(measure.getMeasureId());
+                    questionInfo.setId(measureDTO.getMeasureId());
                 }
-                
-                updatedAssessmentVar(measure);
-
-                measureRepository.update(measure);
-                measures.add(measure);
             }
 
             if (surveyPageInfo.getSurveyPageId() == null) {
@@ -295,43 +287,6 @@ public class SurveyServiceImpl implements SurveyService {
 
         survey.setSurveyPageList(surveyPageList);
         surveyRepository.update(survey);
-    }
-
-    //TODO: This does not work when the measure is a table and its child is a free text. So in MeasureRepositoryImpl.createMeasureEntity this is done.
-    //This means we can probably remove this
-    private void attachMeasureAnswer(Measure measure) {
-        if (MeasureTypeEnum.FREETEXT.getMeasureTypeId() == measure.getMeasureType().getMeasureTypeId()) {
-            MeasureAnswer ma = new MeasureAnswer();
-            ma.setMeasure(measure);
-            ma.setDisplayOrder(1);
-            ma.setExportName(measure.getVariableName());
-            List<MeasureAnswer> maList = new ArrayList<MeasureAnswer>();
-            maList.add(ma);
-            measure.setMeasureAnswerList(maList);
-        }
-    }
-
-    /**
-     * Updates or initializes the assessment variable list for the given measure. A call to update the measure is needed after calling this.
-     * @param measure
-     */
-    private void updatedAssessmentVar(Measure measure) {
-    	List<AssessmentVariable> avList = measure.getAssessmentVariableList();
-    	if(avList == null){
-    		avList = Lists.newArrayList(new AssessmentVariable());
-    	}
-    	
-        for(AssessmentVariable av : avList){
-        	av.setMeasure(measure);
-        	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
-        	av.setDisplayName(measure.getVariableName());
-        	av.setDescription(measure.getMeasureText());
-        	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
-        		assessmentVariableRepository.create(av);
-        	}
-        }
-        
-        measure.setAssessmentVariableList(avList);
     }
 
     @Override

@@ -3,10 +3,13 @@ package gov.va.escreening.repository;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Validation;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.AssessmentVariableType;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
@@ -34,6 +37,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
     @Autowired
     MeasureTypeRepository measureTypeRepo;
+    
+    @Autowired
+    AssessmentVariableRepository assessmentVariableRepository;
 
     public MeasureRepositoryImpl() {
         super();
@@ -161,6 +167,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
             copyFromDTO(m, measureDto);
             validateMeasure(m);
+            updatedAssessmentVar(m);
             update(m);
             assignParent(m, measureDto.getChildMeasures());
 
@@ -193,19 +200,12 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         Measure m = new Measure();
         copyFromDTO(m, measureDto);
         validateMeasure(m);
-
-        //if this is freetext and no answer was given, add it
-        if(m.getMeasureType().getMeasureTypeId() == MeasureTypeEnum.FREETEXT.getMeasureTypeId()
-        		&& (m.getMeasureAnswerList() == null || m.getMeasureAnswerList().isEmpty())){
-        	
-        	MeasureAnswer textAnswer = new MeasureAnswer();
-        	textAnswer.setDisplayOrder(1);
-        	textAnswer.setMeasure(m);
-        	m.setMeasureAnswerList(Lists.newArrayList(textAnswer));
-        }
-        
+        addDefaultAnswers(m);
+        updatedAssessmentVar(m);
         create(m);
-
+        updatedAssessmentVar(m);
+        update(m);
+        
         measureDto.setMeasureId(m.getMeasureId());
         assignParent(m, measureDto.getChildMeasures());
 
@@ -221,6 +221,45 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             }
         }
     }
+    
+    private void addDefaultAnswers(Measure m){
+    	//if this is freetext and no answer was given, add it
+        if(m.getMeasureType().getMeasureTypeId() == MeasureTypeEnum.FREETEXT.getMeasureTypeId()
+        		&& (m.getMeasureAnswerList() == null || m.getMeasureAnswerList().isEmpty())){
+        	
+        	MeasureAnswer textAnswer = new MeasureAnswer();
+        	textAnswer.setDisplayOrder(1);
+        	textAnswer.setMeasure(m);
+        	m.setMeasureAnswerList(Lists.newArrayList(textAnswer));
+        }
+    }
+    
+    /**
+     * Updates or initializes the assessment variable list for the given measure. A call to update the measure is needed after calling this.
+     * @param measure
+     */
+    private void updatedAssessmentVar(Measure measure) {
+    	List<AssessmentVariable> avList = measure.getAssessmentVariableList();
+    	if(avList == null){
+    		avList = Lists.newArrayList();
+    	}
+    	if(avList.isEmpty()){
+    		avList.add(new AssessmentVariable());
+    	}
+    	
+        for(AssessmentVariable av : avList){
+        	av.setMeasure(measure);
+        	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
+        	av.setDisplayName(measure.getVariableName());
+        	av.setDescription(measure.getMeasureText());
+        	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
+        		assessmentVariableRepository.create(av);
+        	}
+        }
+        
+        measure.setAssessmentVariableList(avList);
+    }
+
 
     private Measure copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto) {
         m.setIsRequired(measureDto.getIsRequired());
