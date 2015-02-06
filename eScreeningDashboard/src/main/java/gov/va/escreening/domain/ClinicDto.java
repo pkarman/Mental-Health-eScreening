@@ -8,7 +8,9 @@ public class ClinicDto implements Serializable {
 
     private Integer clinicId;
     private String clinicName;
-    private Integer programId;
+    private String clinicIen;
+
+	private Integer programId;
     private String programName;
 
     public Integer getClinicId() {
@@ -43,6 +45,13 @@ public class ClinicDto implements Serializable {
         this.programName = programName;
     }
 
+    public String getClinicIen() {
+		return clinicIen;
+	}
+
+	public void setClinicIen(String clinicIen) {
+		this.clinicIen = clinicIen;
+	}
     public ClinicDto() {
 
     }

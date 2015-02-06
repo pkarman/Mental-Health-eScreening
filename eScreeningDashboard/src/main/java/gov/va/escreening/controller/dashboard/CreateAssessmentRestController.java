@@ -1,9 +1,12 @@
 package gov.va.escreening.controller.dashboard;
 
+import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.DataTableResponse;
+import gov.va.escreening.dto.dashboard.VeteranSearchResult;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.VeteranService;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -29,6 +33,9 @@ public class CreateAssessmentRestController {
 
     @Autowired
     private VeteranService veteranService;
+    
+    @Autowired
+    private ClinicService clinicService;
 
     @RequestMapping(value = "/veteranSearch/services/veterans/search2", method = RequestMethod.POST)
     @ResponseBody
@@ -89,5 +96,40 @@ public class CreateAssessmentRestController {
 
         return veterans;
     }
+    
+    
+    @RequestMapping(value = "/clinics/list", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ClinicDto> getAllClinics(@CurrentUser EscreenUser escreenUser) 
+    {
+    	return clinicService.getClinicDtoList();
+    }
+    
+	@RequestMapping(value = "/veteranSearch/veteransbyclinic", method = RequestMethod.POST)
+	@ResponseBody
+	public DataTableResponse<VeteranSearchResult> searchVeterans(
+			@RequestParam int clinicID, @RequestParam String startDate, @RequestParam String endDate,			
+			@CurrentUser EscreenUser escreenUser) {
 
+		logger.debug("In VeteranSearchRestController searchVeterans");
+
+		
+
+		DataTableResponse<VeteranSearchResult> dataTableResponse = new DataTableResponse<VeteranSearchResult>();
+//		dataTableResponse.setEcho(echo);
+//		dataTableResponse.setTotalRecords(serchResult.getTotalNumRowsFound());
+//		dataTableResponse.setTotalDisplayRecords(serchResult.getTotalNumRowsFound());
+//
+//		dataTableResponse.setData(serchResult.getResultList());
+
+		return dataTableResponse;
+	}
+	
+	@RequestMapping(value="/views/**", method=RequestMethod.GET)
+	public String setupBasePages(HttpServletRequest request)
+	{
+		String uri = request.getRequestURI();
+		logger.info("setupBasePages "+uri);
+		return "/dashboard/"+uri.substring(uri.lastIndexOf("/"));
+	}
 }
