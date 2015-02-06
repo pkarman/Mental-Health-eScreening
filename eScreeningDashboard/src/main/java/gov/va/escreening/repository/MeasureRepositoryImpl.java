@@ -2,15 +2,23 @@ package gov.va.escreening.repository;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Validation;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.AssessmentVariableType;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
 import gov.va.escreening.entity.MeasureValidation;
+import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +38,9 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
     @Autowired
     MeasureTypeRepository measureTypeRepo;
+    
+    @Autowired
+    AssessmentVariableRepository assessmentVariableRepository;
 
     public MeasureRepositoryImpl() {
         super();
@@ -155,26 +166,46 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         try {
             Measure m = findOne(measureDto.getMeasureId());
 
-            copyFromDTO(m, measureDto);
+            Map<Integer,MeasureAnswer> removedAnswers = copyFromDTO(m, measureDto);
+            validateMeasure(m);
             update(m);
+            updatedAssessmentVar(m, removedAnswers);
             assignParent(m, measureDto.getChildMeasures());
 
             return m;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error updateing question", e);
         }
         return null;
+    }
+    
+    private void validateMeasure(Measure m){
+    	if(m.getMeasureType() == null){
+        	ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+        	.toAdmin("This error normally represents an issue in the Module editor. Measure: " + m)
+        	.toUser("Question type is required. Please call support.")
+        	.throwIt();
+        }
+        if(m.getDisplayOrder() == null){
+        	ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+        	.toAdmin("This error normally represents an issue in the Module editor. Measure: " + m)
+        	.toUser("Question display order is required. Please call support.")
+        	.throwIt();
+        }
     }
 
 
     private Measure createMeasureEntity(
             gov.va.escreening.dto.ae.Measure measureDto) {
-
+        
         Measure m = new Measure();
-        copyFromDTO(m, measureDto);
-
+        Map<Integer,MeasureAnswer> removedAnswers = copyFromDTO(m, measureDto);
+        validateMeasure(m);
+        addDefaultAnswers(m);
         create(m);
-
+        update(m);
+        updatedAssessmentVar(m, removedAnswers);
+        
         measureDto.setMeasureId(m.getMeasureId());
         assignParent(m, measureDto.getChildMeasures());
 
@@ -190,8 +221,93 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             }
         }
     }
+    
+    private void addDefaultAnswers(Measure m){
+    	//if this is freetext and no answer was given, add it
+        if(m.getMeasureType().getMeasureTypeId() == MeasureTypeEnum.FREETEXT.getMeasureTypeId()
+        		&& (m.getMeasureAnswerList() == null || m.getMeasureAnswerList().isEmpty())){
+        	
+        	MeasureAnswer textAnswer = new MeasureAnswer();
+        	textAnswer.setDisplayOrder(1);
+        	textAnswer.setMeasure(m);
+        	m.setMeasureAnswerList(Lists.newArrayList(textAnswer));
+        }
+    }
+    
+    /**
+     * Updates or initializes the assessment variable list for the given measure. A call to update the measure is needed after calling this.
+     * @param measure
+     */
+    private void updatedAssessmentVar(Measure measure, Map<Integer,MeasureAnswer> removedAnswers) {
+    	List<AssessmentVariable> avList = measure.getAssessmentVariableList();
+    	if(avList == null){
+    		avList = Lists.newArrayList();
+    		measure.setAssessmentVariableList(avList);
+    	}
+    	if(avList.isEmpty()){
+    		avList.add(new AssessmentVariable());
+    	}
+    	
+    	//TODO: there really should be a one to one relationship between measure and AV which would simplify this
+        for(AssessmentVariable av : avList){
+        	av.setMeasure(measure);
+        	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
+        	av.setDisplayName(measure.getVariableName());
+        	av.setDescription(measure.getMeasureText());
+        	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
+        		assessmentVariableRepository.create(av);
+        	}
+        }
+        
+        updateAnswerAssessmentVar(measure, removedAnswers.values());
+    }
+    
+    private void updateAnswerAssessmentVar(Measure measure, Collection<MeasureAnswer> removedAnswers){
+    	
+    	//delete AV for removed answers
+    	if(removedAnswers != null){
+	    	for(MeasureAnswer ma : removedAnswers){
+	        	List<AssessmentVariable> vars = ma.getAssessmentVariableList();
+	        	if(vars != null){
+	        		for(AssessmentVariable av : vars){
+	        			assessmentVariableRepository.delete(av);
+	        		}
+	        	}
+	        }
+    	}
+    	
+    	//update or create for answers that are in measure
+    	if(measure.getMeasureAnswerList() != null){
+    	for(MeasureAnswer ma : measure.getMeasureAnswerList()){
+	        	List<AssessmentVariable> avList = ma.getAssessmentVariableList();
+	        	if(avList == null){
+	        		avList = Lists.newArrayList();
+	        		ma.setAssessmentVariableList(avList);
+	        	}
+	        	if(avList.isEmpty()){
+	        		avList.add(new AssessmentVariable());
+	        	}
+	        	
+	        	for(AssessmentVariable av : avList){
+	            	av.setMeasureAnswer(ma);
+	            	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER));
+	            	av.setDisplayName(ma.getExportName());
+	            	av.setDescription(ma.getAnswerText());
+	            	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
+	            		assessmentVariableRepository.create(av);
+	            	}
+	            }
+	    	}
+    	}
+    }
 
-    private Measure copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto) {
+    /**
+     * 
+     * @param m
+     * @param measureDto
+     * @return the answers which were deleted from the measure 
+     */
+    private Map<Integer,MeasureAnswer> copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto) {
         m.setIsRequired(measureDto.getIsRequired());
         m.setIsPatientProtectedInfo(measureDto.getIsPPI());
         m.setIsMha(measureDto.getIsMha());
@@ -214,17 +330,25 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             }
         }
 
+        Map<Integer,MeasureAnswer> removedAnswers = Maps.newHashMap();
         List<MeasureAnswer> maList = m.getMeasureAnswerList();
-        if (maList != null) {
-            for (MeasureAnswer ma : maList) {
-                Answer answerDto = modifiedAnswerMap.get(ma.getMeasureAnswerId());
-                updateMeasureAnswer(m, ma, answerDto);
+        if(maList == null){
+        	maList = Lists.newArrayList();
+        	m.setMeasureAnswerList(maList);
+        }
+
+        for (MeasureAnswer ma : maList) {
+            Answer answerDto = modifiedAnswerMap.get(ma.getMeasureAnswerId());
+            if(answerDto != null){
+            	updateMeasureAnswer(m, ma, answerDto);
+            }
+            else{
+            	removedAnswers.put(ma.getMeasureAnswerId(), ma);
             }
         }
-        if (maList == null) {
-            m.setMeasureAnswerList(new ArrayList<MeasureAnswer>());
-            maList = m.getMeasureAnswerList();
-        }
+        //remove measures that were deleted
+        maList.removeAll(removedAnswers.values());
+        
         for (Answer newAnswer : newAnswerList) {
             maList.add(updateMeasureAnswer(m, new MeasureAnswer(), newAnswer));
         }
@@ -256,9 +380,6 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
         }
 
-
-        //update(m);
-
         if (measureDto.getChildMeasures() != null) {
 
             for (gov.va.escreening.dto.ae.Measure child : measureDto
@@ -272,7 +393,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
                 }
             }
         }
-        return m;
+        return removedAnswers;
     }
 
     private MeasureAnswer updateMeasureAnswer(Measure m, MeasureAnswer ma, Answer answerDto) {
@@ -282,6 +403,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             ma.setVistaText(answerDto.getVistaText());
             ma.setAnswerType(answerDto.getAnswerType());
             ma.setCalculationValue(answerDto.getCalculationValue());
+            ma.setDisplayOrder(answerDto.getDisplayOrder());
             ma.setMeasure(m);
         }
         return ma;

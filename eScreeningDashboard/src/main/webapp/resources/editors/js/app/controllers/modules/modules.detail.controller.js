@@ -12,7 +12,7 @@
 		// Add displayOrder to questions
 		_.each($scope.surveyPages, function(page) {
 			_.each(page.questions, function(question, index) {
-				question.displayOrder = index;
+				question.displayOrder = index + 1;
 			});
 		});
 
@@ -21,9 +21,9 @@
             cancel: '.unsortable',
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
-                for (var index in $scope.surveyPages) {
-                    $scope.surveyPages[index].pageNumber = +index;
-                }
+				_.each($scope.surveyPages, function(page, index) {
+					page.pageNumber = index + 1;
+				});
             }
         };
 
@@ -34,9 +34,9 @@
             stop: function(e, ui) {
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;
-                for (var index in questions) {
-                    questions[index].displayOrder = +index;
-                }
+				_.each(questions, function(question, index) {
+                    question.displayOrder = index + 1;
+                });
             }
         };
 
@@ -53,7 +53,7 @@
         };
 
         $scope.addQuestion = function addQuestion(page) {
-            $scope.question = Question.extend({displayOrder: page.questions.length});
+            $scope.question = Question.extend({displayOrder: page.questions.length + 1});
             page.questions.push($scope.question);
             $state.go('modules.detail.list');
         };
@@ -109,17 +109,18 @@
 
         $scope.deleteQuestion = function deleteQuestion(page, index){
             page.questions.splice(index, 1);
+			$state.go('modules.detail', {surveyId: $stateParams.surveyId});
         };
 
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
-                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.');
+                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
 
-                    // Only save pages with at least one question
+                    // Only save new pages with at least one question
                     if (page.questions.length) {
                         // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
                         _.each(page.questions, function (question) {
@@ -141,10 +142,23 @@
 							$state.go('modules.detail', { surveyId: survey.id });
 
                         }, function (response) {
-                            MessageFactory.error('There was an error saving module items.');
+                            MessageFactory.error('There was an error saving module items.', true);
                         });
                     } else {
-                        MessageFactory.warning('Page items require a minimum of one question.');
+						if (page.id) {
+							// Save the page due to constraint on deleted question
+							page.save().then(function() {
+								// Delete the page
+								var index = page.pageNumber - 1;
+								page.remove().then(function() {
+									// Remove page from surveyPages array
+									$scope.surveyPages.splice(index, 1);
+								});
+							});
+
+						} else {
+							MessageFactory.warning('Page items require a minimum of one question.', true);
+						}
                     }
                 });
 
@@ -153,7 +167,7 @@
                 }
 
             }, function(response) {
-                MessageFactory.set('danger', 'There was an error saving the module.');
+                MessageFactory.set('danger', 'There was an error saving the module.', false, true);
             });
         };
 
