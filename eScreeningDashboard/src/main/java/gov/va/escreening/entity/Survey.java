@@ -71,7 +71,8 @@ public class Survey implements Serializable, SurveyBaseProperties{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
     @OrderBy("pageNumber")
     private List<SurveyPage> surveyPageList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
+    /** the following are response data which we do not want to change if this survey is changed (no cascade) **/
+    @OneToMany(mappedBy = "survey")
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
     private List<ClinicalReminderSurvey> clinicalReminderSurveyList;

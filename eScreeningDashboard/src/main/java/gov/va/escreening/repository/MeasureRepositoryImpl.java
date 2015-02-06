@@ -203,7 +203,6 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         validateMeasure(m);
         addDefaultAnswers(m);
         create(m);
-        update(m);
         updatedAssessmentVar(m, removedAnswers);
         
         measureDto.setMeasureId(m.getMeasureId());
@@ -264,17 +263,18 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     
     private void updateAnswerAssessmentVar(Measure measure, Collection<MeasureAnswer> removedAnswers){
     	
+    	//TODO: Decide if we are going to be saving reports which means we can remove AV if the associated object is remove, or since now we are keeping measure_answers around as orphans, we keep the associated AV
     	//delete AV for removed answers
-    	if(removedAnswers != null){
-	    	for(MeasureAnswer ma : removedAnswers){
-	        	List<AssessmentVariable> vars = ma.getAssessmentVariableList();
-	        	if(vars != null){
-	        		for(AssessmentVariable av : vars){
-	        			assessmentVariableRepository.delete(av);
-	        		}
-	        	}
-	        }
-    	}
+//    	if(removedAnswers != null){
+//	    	for(MeasureAnswer ma : removedAnswers){
+//	        	List<AssessmentVariable> vars = ma.getAssessmentVariableList();
+//	        	if(vars != null){
+//	        		for(AssessmentVariable av : vars){
+//	        			assessmentVariableRepository.delete(av);
+//	        		}
+//	        	}
+//	        }
+//    	}
     	
     	//update or create for answers that are in measure
     	if(measure.getMeasureAnswerList() != null){
@@ -344,6 +344,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             }
             else{
             	removedAnswers.put(ma.getMeasureAnswerId(), ma);
+            	//orphan the measure answer (this is required)
+            	ma.setMeasure(null);
             }
         }
         //remove measures that were deleted
