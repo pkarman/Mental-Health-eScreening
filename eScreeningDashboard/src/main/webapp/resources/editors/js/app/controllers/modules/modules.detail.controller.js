@@ -119,7 +119,7 @@
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
 
-                    // Only save pages with at least one question
+                    // Only save new pages with at least one question
                     if (page.questions.length) {
                         // Deselect all questions: Server threw an error saying "selected" is not marked as ignorable
                         _.each(page.questions, function (question) {
@@ -144,7 +144,20 @@
                             MessageFactory.error('There was an error saving module items.');
                         });
                     } else {
-                        MessageFactory.warning('Page items require a minimum of one question.');
+						if (page.id) {
+							// Save the page due to constraint on deleted question
+							page.save().then(function() {
+								// Delete the page
+								var index = page.pageNumber - 1;
+								page.remove().then(function() {
+									// Remove page from surveyPages array
+									$scope.surveyPages.splice(index, 1);
+								});
+							});
+
+						} else {
+							MessageFactory.warning('Page items require a minimum of one question.');
+						}
                     }
                 });
 
