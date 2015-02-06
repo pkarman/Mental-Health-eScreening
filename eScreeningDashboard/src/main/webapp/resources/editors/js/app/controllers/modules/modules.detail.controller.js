@@ -20,9 +20,9 @@
             cancel: '.unsortable',
             items: 'li:not(.unsortable)',
             stop: function(e, ui) {
-                for (var index in $scope.surveyPages) {
-                    $scope.surveyPages[index].pageNumber = index + 1;
-                }
+				_.each($scope.surveyPages, function(page, index) {
+					page.pageNumber = index + 1;
+				});
             }
         };
 
@@ -33,9 +33,9 @@
             stop: function(e, ui) {
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;
-                for (var index in questions) {
-                    questions[index].displayOrder = index + 1;
-                }
+				_.each(questions, function(question, index) {
+                    question.displayOrder = index + 1;
+                });
             }
         };
 

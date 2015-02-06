@@ -47,9 +47,9 @@
 					items: 'li:not(.unsortable)',
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.answers;
-						for (var index in answers) {
-							answers[index].displayOrder = index + 1;
-						}
+						_.each(answers, function(answer, index) {
+							answer.displayOrder = index + 1;
+						});
 					}
 				};
 

@@ -25,9 +25,9 @@
 					items: 'li:not(.unsortable)',
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.childQuestions.answers;
-						for (var index in answers) {
-							answers[index].displayOrder = index + 1;
-						}
+						_.each(answers, function(answer, index) {
+							answer.displayOrder = index + 1;
+						});
 					}
 				};
 
@@ -37,9 +37,9 @@
 					items: 'li:not(.unsortable)',
 					stop: function(e, ui) {
 						var questions = ui.item.scope().$parent.question.childQuestions;
-						for (var index in questions) {
-							questions[index].displayOrder = index + 1;
-						}
+						_.each(questions, function(question, index) {
+							question.displayOrder = index + 1;
+						});
 					}
 				};
 
