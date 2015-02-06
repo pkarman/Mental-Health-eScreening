@@ -130,7 +130,11 @@
 
         <div class="clearfix"></div>
 
-           
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#home" role="tab" data-toggle="tab"><strong>Create Assessment for Unscheduled Visit</strong></a></li>
+					<li><a href="#" role="tab"><strong>Create Assessment(s) for Appointment(s)</strong></a></li>
+				</ul>
+				<br>          
                 
                 <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
 					<div class="border-radius-main-form gray-lighter">
