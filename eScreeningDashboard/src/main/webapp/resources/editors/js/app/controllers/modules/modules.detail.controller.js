@@ -108,6 +108,7 @@
 
         $scope.deleteQuestion = function deleteQuestion(page, index){
             page.questions.splice(index, 1);
+			$state.go('modules.detail', {surveyId: $stateParams.surveyId});
         };
 
         $scope.save = function () {
