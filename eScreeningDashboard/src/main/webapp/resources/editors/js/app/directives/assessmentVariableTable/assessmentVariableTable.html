@@ -3,38 +3,261 @@
 	      type="text/css"
 	      href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
 
-	<div class="row">
-		<div class="col-md-6">
-			<label class="sr-only">Select Assessment Variable Type</label>
-			<select class="form-control" data-ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
-			<option value=""> -- Choose Type --</option>
-		</select>
+	<div ng-if="table.show">
+		<div class="row">
+			<div class="col-md-6">
+				<label class="sr-only">Select Assessment Variable Type</label>
+				<select class="form-control" data-ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
+					<option value=""> -- Choose Type --</option>
+				</select>
+			</div>
+			<div class="col-md-6">
+				<label class="sr-only">Assessment Variable Search</label>
+				<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search">
+			</div>
 		</div>
-		<div class="col-md-6">
-			<label class="sr-only">Assessment Variable Search</label>
-			<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search">
-		</div>
-	</div>
-	<br>
+		<br>
 
-	<div class="row">
+		<div class="row">
 
-		<div class="col-md-12">
+			<div class="col-md-12">
 
-			<table ng-table="tableParams" class="table table-hover">
-				<tr ng-repeat="av in $data | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
-					<td data-title="'Variable Name'" class="col-md-4">{{av.name}}</td>
-					<td data-title="'Name'" filter="{ 'displayName': 'text' }" class="col-md-4">{{av.displayName}}</td>
-					<td data-title="'Type'" class="col-md-2">{{av.type}}</td>
-					<td data-title="'Insert'" class="col-md-2">
+				<table ng-table="tableParams" class="table table-hover">
+					<tr ng-repeat="av in $data | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
+						<td data-title="'Variable Name'" class="col-md-4">{{av.name}}</td>
+						<td data-title="'Name'" filter="{ 'displayName': 'text' }" class="col-md-4">{{av.displayName}}</td>
+						<td data-title="'Type'" class="col-md-2">{{av.type}}</td>
+						<td data-title="'Insert'" class="col-md-2">
 	                <span title="Select" class="cursor-pointer pull-right btn btn-link" ng-click="select($event, av);">
 	                    <i class="fa fa-arrow-circle-right" title="Select"></i> Select
 	                </span>
-					</td>
-				</tr>
-			</table>
+						</td>
+					</tr>
+				</table>
 
+			</div>
+
+		</div>
+	</div>
+
+	<div ng-switch on="assessmentVariable.type" class="animate-switch-container" ng-if="table.show === false">
+		<div ng-switch-when="Custom" class="animate-switch" class="col-sm-12">
+			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<form>
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type</label>
+					<div>Delimiter</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputPrefix">Prefix</label>
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" value=",">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputLastPrefix">Last Prefix</label>
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" value="and">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputSuffix">Suffix</label>
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix"  value="&quot;&quot;">
+						</div>
+					</div>
+					<div class="col-md-6"><br>
+						<div class="checkbox">
+							<input type="checkbox" id="suf_check_01"> <label for="suf_check_01"> Suffix After Last Entry</label>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label for="inputDefaultText">Default Text</label>
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text">
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="freeText" class="animate-switch" class="col-sm-12">
+			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<form>
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type</label>
+					<select id="selectTransformationType" class="form-control">
+						<option>No Tranformation</option>
+						<option>Number of Years</option>
+					</select>
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="selelctOneMatrix" class="animate-switch" class="col-sm-12">
+			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<form>
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type (Matrix to list)</label>
+					<div>Delimiter</div>
+				</div>
+
+				<div class="text-info">Have to select at least one column and one row</div>
+				<hr />
+
+				<div class="row">
+					<div class="col-lg-6 col-md-6  col-sm-6 col-xs-6 ">
+						<h5><strong>Columns (Answers)</strong></h5>
+						<ul class="transformation">
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="ans_check_01"> <label for="ans_check_01"> Not at all</label>
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="ans_check_02"> <label for="ans_check_02"> A little bit     </label>
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="ans_check_03"> <label for="ans_check_03"> Somewhat </label>
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="ans_check_04"> <label for="ans_check_04"> Quite a bit     </label>
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="ans_check_05"> <label for="ans_check_05"> Very much </label>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+
+					<div class="col-lg-6 col-md-6 col-sm-6  col-xs-6 ">
+						<h5><strong>Rows (Questions)</strong></h5>
+						<ul class="transformation">
+							<li>
+
+								<div class="checkbox">
+									<input type="checkbox" id="qus_check_01"> <label for="qus_check_01"> pain_intensity</label>
+								</div>
+								<div class="form-group">
+									<label for="TextInput">Output Text</label>
+									<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text">
+								</div>
+							</li>
+							<li>
+								<div class="checkbox">
+									<input type="checkbox" id="qus_check_02"> <label for="qus_check_02"> pain_average </label>
+								</div>
+
+								<div class="form-group">
+									<label for="TextInput">Output Text</label>
+									<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text">
+								</div>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="table" class="animate-switch" class="col-sm-12">
+			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<form>
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type</label>
+					<select id="selectTransformationType" class="form-control">
+						<option>Delimiter</option>
+						<option>Number of Entries</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="selectChildQuestion">Select Child Question</label>
+					<select id="selectChildQuestion" class="form-control">
+						<option>Select Child Question</option>
+						<option>Child Question 1</option>
+						<option>Child Question 2</option>
+					</select>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+
+					</div>
+					<div class="col-md-6">
+
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputPrefix">Prefix</label>
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" value="">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputLastPrefix">Last Prefix</label>
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" value="and">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputSuffix">Suffix</label>
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" value=",">
+						</div>
+					</div>
+					<div class="col-md-6"><br>
+						<div class="checkbox">
+							<input type="checkbox" id="suf_check_01"> <label for="suf_check_01"> Suffix After Last Entry</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="inputDefaultText">Default Text</label>
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text">
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
 		</div>
 
 	</div>
+
 </div>

@@ -23,6 +23,18 @@
 
 		            scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
 
+					scope.transformation = {};
+
+					scope.table = {
+						show: true
+					};
+
+					scope.$watch('show', function(newVal, oldVal) {
+						if (oldVal === false && newVal === true) {
+							scope.table.show = true;
+						}
+					});
+
 		            scope.select = function(e, av) {
 
 			            e.stopPropagation();
@@ -36,10 +48,18 @@
 		                }
 
 		                // Hide table
-			            scope.show = false;
+						if (!scope.table.show) {
+							scope.show = false;
+						}
+
+						scope.table.show = false;
 
 			            scope.tableParams.reload();
 	                };
+
+					scope.dismiss = function dismiess() {
+						scope.show = false;
+					};
 
 		            element.bind('click', function(e) {
 			            // Prevent bubbling
