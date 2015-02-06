@@ -114,7 +114,7 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
-                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.');
+                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
                 _.each($scope.surveyPages, function(page) {
                     page.parentResource.id = survey.id;
@@ -141,7 +141,7 @@
 							$state.go('modules.detail', { surveyId: survey.id });
 
                         }, function (response) {
-                            MessageFactory.error('There was an error saving module items.');
+                            MessageFactory.error('There was an error saving module items.', true);
                         });
                     } else {
 						if (page.id) {
@@ -156,7 +156,7 @@
 							});
 
 						} else {
-							MessageFactory.warning('Page items require a minimum of one question.');
+							MessageFactory.warning('Page items require a minimum of one question.', true);
 						}
                     }
                 });
@@ -166,7 +166,7 @@
                 }
 
             }, function(response) {
-                MessageFactory.set('danger', 'There was an error saving the module.');
+                MessageFactory.set('danger', 'There was an error saving the module.', false, true);
             });
         };
 

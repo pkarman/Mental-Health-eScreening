@@ -77,7 +77,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                             deferred.resolve(existingBatteries);
                         },function(responseError){
 
-                            MessageFactory.set('danger', responseError.getMessage(), true);
+                            MessageFactory.set('danger', responseError.getMessage(), true, true);
                             console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
                             deferred.reject(responseError.getMessage());
                         });
@@ -108,7 +108,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                             BatteryService.query(BatteryService.setQueryBatterySearchCriteria($stateParams.batteryId)).then(function (existingBattery) {
                                 deferred.resolve(existingBattery);
                             }, function (responseError) {
-                                MessageFactory.set('danger', responseError.getMessage(), true);
+                                MessageFactory.set('danger', responseError.getMessage(), true, true);
                                 deferred.reject(responseError.getMessage());
                             });
                         } else {
@@ -175,7 +175,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
                                         }, function(response) {
-                                            MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true);
+                                            MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
                                         });
                                     }
                                     else{
@@ -386,7 +386,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                     console.log(template);
                                     deferred.resolve(template);
                                 }, function(response) {
-                                    MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true);
+                                    MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
                                 });
                             }
                             else{
