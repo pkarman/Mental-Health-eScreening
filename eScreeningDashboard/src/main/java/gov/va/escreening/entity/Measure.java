@@ -92,7 +92,7 @@ public class Measure implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure", orphanRemoval=true)
     private List<MeasureValidation> measureValidationList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure", orphanRemoval=true)
     @OrderBy("displayOrder")
     private List<MeasureAnswer> measureAnswerList;
     

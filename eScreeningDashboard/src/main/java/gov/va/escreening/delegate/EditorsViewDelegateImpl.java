@@ -146,8 +146,6 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	public void updateSurveyPages(Integer surveyId,
 			List<SurveyPageInfo> surveyPageInfo) {
 		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
-
-
 	}
 	@Override
 	public List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber) {
