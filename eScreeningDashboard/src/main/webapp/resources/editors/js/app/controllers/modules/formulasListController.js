@@ -9,12 +9,12 @@ Editors.controller('ModuleFormulasListController', ['$state', '$log', '$scope', 
 
     FormulasService.getModuleById($stateParams.moduleId)
         .then(function (module) {
-            FormulasService.saveCurrentModule(module);
+            FormulasService.setCurrentModule(module);
             $scope.module.name = module.name;
 
             FormulasService.loadCurrentFormulas()
                 .then(function (formulas) {
-                    FormulasService.saveCurrentFormulas(formulas);
+                    FormulasService.setCurrentFormulas(formulas);
                     var data = FormulasService.fetchCurrentFormulas();
                     $log.debug($scope.module.id + ' has [' + data.length + '] formulas: ' + JSON.stringify(data));
                     $scope.pagination.totalItems = data.length;
@@ -38,13 +38,14 @@ Editors.controller('ModuleFormulasListController', ['$state', '$log', '$scope', 
         $log.log('Page changed to: ' + $scope.pagination.currentPage);
     };
 
-    $scope.delete = function (formula) {
-        $log.debug(JSON.stringify(formula) + ' is being deleted');
-    };
-
     $scope.edit = function (formula) {
         $log.debug(JSON.stringify(formula) + ' is being edited');
-        FormulasService.saveCurrentFormula(formula);
+        FormulasService.setCurrentFormula(formula);
+        $state.go('modules.formulasEdit');
+    };
+    $scope.create = function () {
+        $log.debug('Request for new formula to be created');
+        FormulasService.setCurrentFormula({});
         $state.go('modules.formulasEdit');
     };
 }]);

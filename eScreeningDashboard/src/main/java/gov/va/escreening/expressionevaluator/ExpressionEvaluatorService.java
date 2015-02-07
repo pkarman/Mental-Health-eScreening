@@ -8,19 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface ExpressionEvaluatorService {
+    Map extractInputsRecursively(String filteredExpTemplate);
+
+    String evaluateFormula(Map<String, Object> tgtFormula);
+
     String evaluateFormula(FormulaDto formulaDto) throws NoSuchMethodException, SecurityException;
 
-    String evaluateFormulaTemplate(String formulaAsStr);
-
-    void extractAllInputs(Integer avId, List<Integer> avIds);
-
-    FormulaDto createFormulaDto(String expressionTemplate, Map<Integer, String> avDataMap);
+    String evaluateFormula(String formulaAsStr);
 
     AssessmentVariable findAvById(Integer avId);
 
     void readAllFormulas(FormulaHandler formulaHandler);
 
-    Map<String, String> verifyExpressionTemplate(String expressionTemplate, AvMapTypeEnum avMap);
+    Map<String, Object> verifyExpressionTemplate(String expressionTemplate, AvMapTypeEnum avMap);
 
-    void updateFormula(Integer avId, String cleanedFormula);
+    Integer updateFormula(Map<String, Object> tgtFormula);
+
+    public enum key {
+        verifiedIds, success, failed, reason, status;
+    }
 }

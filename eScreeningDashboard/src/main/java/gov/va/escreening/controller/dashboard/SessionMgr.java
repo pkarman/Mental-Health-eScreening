@@ -22,11 +22,16 @@ public class SessionMgr {
     public Object getDD(HttpServletRequest request) {
         Object dd = request.getSession().getAttribute("data_dictionary");
         if (dd == null) {
-            logger.warn(">>>>>>[getDD]DD-CREATE");
+            logger.warn("creating a new instance of data-dictionary");
 
             dd = dds.createDataDictionary();
             request.getSession().setAttribute("data_dictionary", dd);
         }
         return dd;
+    }
+
+    public void invalidateDD(HttpServletRequest request) {
+        logger.warn("removing data-dictionary instance from session cache");
+        request.getSession().removeAttribute("data_dictionary");
     }
 }

@@ -2,56 +2,95 @@
     [ng\:cloak], [ng-cloak], .ng-cloak {
         display: none !important;
     }
+
+    fieldset.test-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+    }
+
+    legend.test-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
 </style>
 <div class="container" ng-cloak class="ng-cloak">
     <h1>Formula Editor</h1>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12">
             <alert ng-repeat="msg in msgs" type="msg.type" close="closeAlert($index)">{{msg.text}}</alert>
         </div>
     </div>
-    <div class="row">
+
+    <form class="form-horizontal" role="form">
         <div class="form-group">
-            <label for="name">Name:</label>
-            <input id="name"
-                   class="form-control"
-                   type="text"
-                   ng-model="formula.name"
-                   placeholder="{{formula.name||'Enter Name...'}}">
-            <label for="desc">Description:</label>
+            <label class="control-label col-lg-2" for="name">Name:</label>
 
-            <input id="desc"
-                   class="form-control"
-                   type="text"
-                   ng-model="formula.description"
-                   placeholder="{{formula.description||'Enter Description...'}}">
+            <div class="col-lg-10">
+                <input id="name"
+                       class="form-control"
+                       type="text"
+                       ng-model="formula.name"
+                       placeholder="{{formula.name||'Enter Name...'}}">
+            </div>
         </div>
-    </div>
+        <div class="form-group">
+            <label class="control-label col-lg-2" for="desc">Description:</label>
 
-    <!--
-    <div class="clearfix form-group">
-        <hr />
-        <div text-angular="text-angular"
-             ta-toolbar="[['h1','h2','h3'],['bold','italics', 'underline'], ['ol', 'ul'], ['justifyLeft', 'justifyCenter', 'justifyRight'], ['indent', 'outdent'], ['insertLink', 'insertImage', 'insertVideo'], ['redo', 'undo'] , ['html'], ['insertVariable']]"
-             ng-model="formula.formula"
-             ta-toolbar-class="btn-toolbar"
-             ta-toolbar-group-class="btn-group"
-             ta-toolbar-button-class="btn btn-default"
-             ta-toolbar-button-active-class="active"
-             name="formula-editor"
-             class="tab-content">
+            <div class="col-lg-10">
+                <input id="desc"
+                       class="form-control"
+                       type="text"
+                       ng-model="formula.description"
+                       placeholder="{{formula.description||'Enter Description...'}}">
+            </div>
         </div>
-    </div>
-    -->
-    <div class="row">
-        <div text-angular
-             ta-toolbar="[['insertVariable'], ['+','-','*','/','(',')'],['bold','italics']]"
-             ta-toolbar-class="btn-toolbar"
-             ta-toolbar-group-class="btn-group"
-             ta-toolbar-button-class="btn btn-default"
-             ta-toolbar-button-active-class="active"
-             ng-model="formula.formula">
+
+        <div class="form-group">
+            <label class="control-label col-lg-2" for="usrEnteredFormula">Formula:</label>
+
+            <div class="col-lg-10">
+                <textarea id="usrEnteredFormula"
+                          class="form-control"
+                          type="text"
+                          ng-model="formula.template"
+                          placeholder="{{formula.template||'Enter Formula Template here...'}}"/>
+            </div>
         </div>
-    </div>
+        <div class="col-lg-offset-2 col-lg-5">
+            <button type="submit" ng-click="produceInputFields()" class="btn btn-primary">Produce input fields</button>
+        </div>
+
+        <div class="form-group col-lg-12">
+            <fieldset class="test-border">
+                <legend class="test-border">Test</legend>
+                <div class="control-group col-lg-7">
+                        <span ng-repeat="token in verifiedIds">
+                            <input type="text" type="text" placeholder="{{token.name}}" ng-model="token.value"/>
+                        </span>
+                </div>
+                <div class="control-group">
+                    <button type="submit" ng-click="runTest()" class="btn btn-default">Test</button>
+                </div>
+            </fieldset>
+            <fieldset class="test-border col-lg-offset-2 col-lg-5">
+                <legend class="test-border">Result</legend>
+                <div class="well">{{result}}</div>
+            </fieldset>
+        </div>
+
+        <div class="col-lg-offset-2 col-lg-5">
+            <button type="submit" ng-click="saveFormula()" class="btn btn-primary">Save Formula</button>
+            <button type="cancel" ng-click="cancelFormula()" class="btn btn-cancel">Cancel Formula</button>
+        </div>
+
+
+    </form>
 </div>
