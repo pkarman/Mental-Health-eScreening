@@ -118,6 +118,19 @@ $("div.content ul li a")
         								+"</li>");
     		    				}
     		    			}
+
+    		    			else if(key=="reports"){
+    		    				str="Reports";
+    		    				if(page == key){
+    		    					tabToShow = $("ul#tabs").append("<li class='active'>" +
+        									"<a href='reports' class='' id='reportsTab' title='Click to open Reports screen'>"+str+"</a>"
+        								+"</li>");
+    		    				}else{
+    		    					tabToShow = $("ul#tabs").append("<li class=''>" +
+        									"<a href='reports'  id='reportsTab' title='Click to open Reports screen'>"+str+"</a>"
+        								+"</li>");
+    		    				}
+    		    			}
     		    			else if(key=="createBattery"){
     		    				str="Create Battery";
     		    				if(page == key){
