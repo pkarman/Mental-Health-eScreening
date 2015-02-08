@@ -198,6 +198,6 @@ public class AssessmentVariable implements Serializable {
     }
 
     public List getAsList() {
-        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate());
+        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length()+1);
     }
 }

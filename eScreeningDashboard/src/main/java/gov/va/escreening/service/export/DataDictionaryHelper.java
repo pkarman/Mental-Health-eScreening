@@ -120,6 +120,9 @@ public class DataDictionaryHelper implements MessageSourceAware {
                     t.put(indexAsStr, msg("formula.template"), formulaTokens.next());
                 }
                 if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("var.size"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
                     t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
                 }
                 if (formulaTokens.hasNext()) {

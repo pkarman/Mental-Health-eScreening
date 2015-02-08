@@ -220,6 +220,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
                 formula.put("formula", entry.getValue().get(ddh.msg("ques.desc")));
                 formula.put("description", entry.getValue().get(ddh.msg("ques.desc.business")));
                 formula.put("template", entry.getValue().get(ddh.msg("formula.template")));
+                formula.put("size", entry.getValue().get(ddh.msg("var.size")));
                 formulas.add(formula);
             }
         }
