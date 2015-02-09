@@ -86,7 +86,7 @@
                                     <div class="form-inline">
                                         <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
                                         <div class="pull-left">
-                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName}}</div>
+                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName || question.text | limitToWithEllipsis: 35 | stripHTML}}</div>
                                             <div style="font-size:12px;">{{question.type}}</div>
                                         </div>
                                         <div class="pull-right margin_top_10">
