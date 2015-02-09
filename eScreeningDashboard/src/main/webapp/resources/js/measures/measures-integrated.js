@@ -318,6 +318,7 @@ function handleServerErrorMessage(data, errorThrown) {
 
 function handleServerError(data, errorThrown) {
 	var message = "";
+	var consoleError;
 	if(data.responseJSON != null){
 		//session timed out
 		if (data.responseJSON.status == 401) {
@@ -333,6 +334,9 @@ function handleServerError(data, errorThrown) {
 				message += error + "<br/>";
 			}
 		});
+		if(data.responseJSON.developerMessage && console && console.error){
+			consoleError = data.responseJSON.developerMessage + " (ERROR ID: " + data.responseJSON.id + ")";
+		}
 	}
 	else if(data.responseText != null){
 		message = data.responseText;
@@ -342,6 +346,10 @@ function handleServerError(data, errorThrown) {
 		message = "Unable to connect.<br/>Please see support staff for assistance.";
 	}
 	displayServerError(message);
+	
+	if(consoleError){
+		console.error(consoleError);
+	}
 }
 
 function callMeasureAutoSave(url, requestJSON, callbackSuccess, logoutOnError)
