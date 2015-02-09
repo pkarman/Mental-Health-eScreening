@@ -6,16 +6,16 @@
     <form class="form" role="form">
       <div class="form-group">
         <label for="txtVariableNm"> Variable Name *</label>
-          <input type="text" id="txtVariableNm" class="form-control" placeholder="Enter Variable Name" ng-model="question.variableName">
+          <input type="text" id="txtVariableNm" class="form-control" placeholder="Enter Variable Name" ng-model="question.variableName" required>
       </div>
 
       <div class="form-group">
-        <label for="question-text"> Question Text </label>
+        <label for="question-text"> Question Text</label>
         <textarea class="form-control" id="question-text" ng-model="question.text" placeholder="Enter Question Text"></textarea>
       </div>
 
       <div class="form-group">
-        <label for="entity-name"> Entity Name </label>
+        <label for="entity-name"> Entity Name</label>
         <input type="text" class="form-control" id="entity-name" ng-model="question.answers[0].text" placeholder="Enter Entity Name">
       </div>
 
