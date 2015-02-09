@@ -27,12 +27,12 @@
 					msg (string or array of strings)
 					flash (boolean) Whether or not the message(s) should be added onto the flashMessages array
 		 */
-		function add(type, msg, flash) {
+		function add(type, msg, flash, sticky) {
 			if (flash) {
 				if (_.isArray(msg)) {
 					_.each(msg, function(message) {
 						flashMessages.push({type: type, msg: message, close: closeFlashMessage, sticky: sticky});
-					})
+					});
 				} else {
 					flashMessages.push({type: type, msg: msg, close: closeFlashMessage, sticky: sticky});
 				}
@@ -41,7 +41,7 @@
 				if (_.isArray(msg)) {
 					_.each(msg, function(message) {
 						messages.push({type: type, msg: message, close: close, sticky: sticky});
-					})
+					});
 				} else {
 					messages.push({type: type, msg: msg, close: close, sticky: sticky});
 				}
@@ -101,10 +101,11 @@
 		}
 
 		// Remove message or reset sticky to false
-		function resetMessages(messages) {
-			_.each(messages, function(message) {
-				message.sticky ? message.sticky = false : messages.splice(messages.indexOf(message), 1);
-			});
+		function resetMessages(msgs) {
+			var index = msgs.length;
+			while (index--) {
+				(msgs[index].sticky) ? msgs[index].sticky = false : msgs.splice(index, 1);
+			}
 		}
 
 		return {
