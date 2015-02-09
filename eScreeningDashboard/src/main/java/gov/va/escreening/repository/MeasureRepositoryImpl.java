@@ -163,20 +163,15 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     private Measure updateMeasureEntity(
             gov.va.escreening.dto.ae.Measure measureDto) {
 
-        try {
-            Measure m = findOne(measureDto.getMeasureId());
+        Measure m = findOne(measureDto.getMeasureId());
 
-            Map<Integer,MeasureAnswer> removedAnswers = copyFromDTO(m, measureDto);
-            validateMeasure(m);
-            update(m);
-            updatedAssessmentVar(m, removedAnswers);
-            assignParent(m, measureDto.getChildMeasures());
+        Map<Integer,MeasureAnswer> removedAnswers = copyFromDTO(m, measureDto);
+        validateMeasure(m);
+        update(m);
+        updatedAssessmentVar(m, removedAnswers);
+        assignParent(m, measureDto.getChildMeasures());
 
-            return m;
-        } catch (Exception e) {
-            logger.error("Error updateing question", e);
-        }
-        return null;
+        return m;
     }
     
     private void validateMeasure(Measure m){
@@ -251,7 +246,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         for(AssessmentVariable av : avList){
         	av.setMeasure(measure);
         	av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
-        	av.setDisplayName(measure.getVariableName());
+        	av.setDisplayName(measure.getVariableName() != null ? measure.getVariableName() : "");
         	av.setDescription(measure.getMeasureText());
         	if(av.getAssessmentVariableId() == null || av.getAssessmentVariableId() < 0){
         		assessmentVariableRepository.create(av);
