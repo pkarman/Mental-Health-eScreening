@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, SurveyService, SurveyPageService, Question, MessageFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'SurveyService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, SurveyService, Question, MessageFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = surveyPages;
@@ -40,10 +40,11 @@
         };
 
         $scope.addPage = function addPage() {
-            var page = SurveyService.one($scope.survey.id).one('pages');
-            page.title = $scope.survey.surveySection.name | $scope.survey.name;
+            var page = $scope.survey.one('pages');
+            page.title = $scope.survey.surveySection.name || $scope.survey.name;
             page.description = $scope.survey.name + ' page';
             page.pageNumber = $scope.surveyPages.length + 1;
+			page.questions = [];
             $scope.surveyPages.push(page);
         };
 
@@ -114,10 +115,18 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
+				// Merge the returned survey with the UI survey to get the newly created ID and to set fromServer to true for subsequent saves
+				_.merge($scope.survey, survey);
+
                 MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
                 _.each($scope.surveyPages, function(page) {
-                    page.parentResource.id = survey.id;
+
+					// Overwrite parentResource since it is doing strange things
+                    page.parentResource = {
+						id: survey.id,
+						route: survey.route
+					};
 
                     // Only save new pages with at least one question
                     if (page.questions.length) {
@@ -127,8 +136,9 @@
                         });
 
                         page.save().then(function (updatedPage) {
-							// Restangular for some reason is not updating the page with the newly created ID
+							// Merge the returned page with the UI page to get the newly created ID and to set fromServer to true for subsequent saves
 							page.id = updatedPage.id;
+							page.fromServer = true;
                             // Update the id of each question with the persisted question ID.
                             // Questions are not a nested resource and therefore restangular won't
                             // update the question IDs automatically like it does for actual resources
@@ -149,9 +159,9 @@
 						if (page.id) {
 							// Save the page due to constraint on deleted question
 							page.save().then(function() {
-								console.log('page save 2');
+								// Store the index of the page in the surveyPages array
+								var index = $scope.surveyPages.indexOf(page);
 								// Delete the page
-								var index = page.pageNumber - 1;
 								page.remove().then(function() {
 									// Remove page from surveyPages array
 									$scope.surveyPages.splice(index, 1);
