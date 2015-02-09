@@ -5,15 +5,21 @@
 	<div class="col-md-12">
 		<form role="form" class="form-horizontal">
 			<div class="form-group">
-				<label>Instruction Text *</label>
+				<label for="instructions">Instruction Text *</label>
 
-				<div text-angular="text-angular"
-						ta-toolbar="taOptions"
-						ng-model="question.text"
-						ta-toolbar-class="btn-toolbar"
-						ta-toolbar-group-class="btn-group"
-						ta-toolbar-button-class="btn btn-default"
-						ta-toolbar-button-active-class="active" required></div>
+				<div name="instructions"
+					id="instructions"
+					class="tab-content"
+					text-angular="text-angular"
+					ta-toolbar="taToolbar"
+					ng-model="question.text"
+					ta-toolbar-class="btn-toolbar"
+					ta-toolbar-group-class="btn-group"
+					ta-toolbar-button-class="btn btn-default"
+					ta-toolbar-button-active-class="active"
+					required>
+				</div>
+
 			</div>
 		</form>
 	</div>
