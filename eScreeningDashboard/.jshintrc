@@ -12,5 +12,6 @@
     "devel" : true,
     "jquery" : true,
     "nomen" : true,
+    "expr": true,
     "predef": [ "angular", "_", "EScreeningDashboardApp", "Editors", "BytePushers" ]
 }
