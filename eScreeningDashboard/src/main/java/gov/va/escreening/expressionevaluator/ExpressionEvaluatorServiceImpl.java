@@ -64,8 +64,11 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         Map<Integer, String> formulaOperands = Maps.newLinkedHashMap();
         for (Map<String, Object> operand : operands) {
             Integer operandId = (Integer) operand.get("id");
-            String operandValue = (String) operand.get("value");
-            formulaOperands.put(operandId, operandValue);
+            Object operandValue = operand.get("value");
+            if (operandValue==null){
+                throw new IllegalStateException(String.format("There is no value provided for %s with an id of %s", operand.get("name"), operand.get("id")));
+            }
+            formulaOperands.put(operandId, (String)operandValue);
         }
 
         try {

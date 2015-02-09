@@ -109,6 +109,9 @@ public class ManageFormulasRestController {
         } else {
             String filteredExpTemplate = formulaAsStr.replaceAll("[$]", "");
             Map result = expressionEvaluator.extractInputsRecursively(filteredExpTemplate);
+            if (result.get(ExpressionEvaluatorService.key.status.name()).equals(ExpressionEvaluatorService.key.failed.name())) {
+                return new ResponseEntity<Map>(result, HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<Map>(result, HttpStatus.OK);
         }
     }

@@ -17,7 +17,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
             addMsg(reset, 'success', reason);
         },
         addDangerMsg = function (reset, reason) {
-            addMsg(reset, 'danger', reason);
+            addMsg(reset, 'danger', reason || 'Sorry, we are unable to process your request at this time. If this continues, please contact your system administrator.');
         };
     $scope.closeAlert = function (index) {
         $scope.msgs.splice(index, 1);
