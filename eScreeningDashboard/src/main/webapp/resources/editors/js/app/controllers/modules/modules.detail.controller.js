@@ -117,13 +117,13 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
-				// Merge the returned survey with the UI survey to get the newly created ID and to set fromServer to true for subsequent saves
-				_.merge($scope.survey, survey);
+				// Set the newly created ID and fromServer to true for subsequent saves
+				$scope.survey.id = survey.id;
+				$scope.survey.fromServer = true;
 
                 MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
                 _.each($scope.surveyPages, function(page) {
-
 					// Overwrite parentResource since it is doing strange things
                     page.parentResource = {
 						id: survey.id,
@@ -138,17 +138,21 @@
                         });
 
                         page.save().then(function (updatedPage) {
-							// Merge the returned page with the UI page to get the newly created ID and to set fromServer to true for subsequent saves
+							// Set the newly created ID and fromServer to true for subsequent saves
 							page.id = updatedPage.id;
 							page.fromServer = true;
                             // Update the id of each question with the persisted question ID.
                             // Questions are not a nested resource and therefore restangular won't
                             // update the question IDs automatically like it does for actual resources
                             _.each(updatedPage.questions, function (question, index) {
-                                page.questions[index].id = question.id;
+								var pageQuestion = page.questions[index];
+								pageQuestion.id = question.id;
+								// Add the answers array from the server onto the question in $scope
+								pageQuestion.answers = question.answers;
                                 // Same holds true for childQuestions
                                 _.each(question.childQuestions, function(childQuestion, j) {
-                                    page.questions[index].childQuestions[j].id = childQuestion.id;
+									pageQuestion.childQuestions[j].id = childQuestion.id;
+									pageQuestion.childQuestions[j].answers = childQuestion.answers;
                                 });
                             });
 
