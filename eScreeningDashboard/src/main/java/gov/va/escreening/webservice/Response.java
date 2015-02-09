@@ -5,7 +5,15 @@ package gov.va.escreening.webservice;
  */
 public class Response <T> {
     private ResponseStatus status;
-    private T payload;
+    public void setStatus(ResponseStatus status) {
+		this.status = status;
+	}
+
+	public void setPayload(T payload) {
+		this.payload = payload;
+	}
+
+	private T payload;
 
 
     public Response() {}
@@ -22,4 +30,6 @@ public class Response <T> {
     public T getPayload() {
         return payload;
     }
+    
+    
 }

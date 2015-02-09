@@ -1,13 +1,19 @@
 package gov.va.escreening.controller.dashboard;
 
+import gov.va.escreening.delegate.BatchBatteryCreateDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.dashboard.VeteranSearchResult;
+import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.vista.dto.VistaClinicAppointment;
+import gov.va.escreening.webservice.Response;
+import gov.va.escreening.webservice.ResponseStatus;
+import gov.va.escreening.webservice.ResponseStatus.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,9 @@ public class CreateAssessmentRestController {
     
     @Autowired
     private ClinicService clinicService;
+    
+    @Autowired
+    private BatchBatteryCreateDelegate batchCreateDelegate;
 
     @RequestMapping(value = "/veteranSearch/services/veterans/search2", method = RequestMethod.POST)
     @ResponseBody
@@ -105,24 +114,29 @@ public class CreateAssessmentRestController {
     	return clinicService.getClinicDtoList();
     }
     
-	@RequestMapping(value = "/veteranSearch/veteransbyclinic", method = RequestMethod.POST)
+	@RequestMapping(value = "/veteranSearch/veteransbyclinic", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public DataTableResponse<VeteranSearchResult> searchVeterans(
-			@RequestParam int clinicID, @RequestParam String startDate, @RequestParam String endDate,			
+	public Response<List<VistaClinicAppointment>> searchVeterans(
+			@RequestParam String clinicIen, @RequestParam String startDate, @RequestParam String endDate,			
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In VeteranSearchRestController searchVeterans");
-
+		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
+		try
+		{
+			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, startDate, endDate);
+			
+			resp.setPayload(appList);
+			resp.setStatus(new ResponseStatus(Request.Succeeded));
+			return resp;
+		}
+		catch(Exception ex)
+		{
+			logger.error("Error getting appointment list for clinic", ex);
+			resp.setStatus(new ResponseStatus(Request.Failed, ex.getMessage()));
+			return resp;
+		}
 		
-
-		DataTableResponse<VeteranSearchResult> dataTableResponse = new DataTableResponse<VeteranSearchResult>();
-//		dataTableResponse.setEcho(echo);
-//		dataTableResponse.setTotalRecords(serchResult.getTotalNumRowsFound());
-//		dataTableResponse.setTotalDisplayRecords(serchResult.getTotalNumRowsFound());
-//
-//		dataTableResponse.setData(serchResult.getResultList());
-
-		return dataTableResponse;
 	}
 	
 	@RequestMapping(value="/views/**", method=RequestMethod.GET)
