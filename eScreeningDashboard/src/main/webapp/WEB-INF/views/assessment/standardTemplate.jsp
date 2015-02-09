@@ -36,6 +36,7 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/jquery/smoothness/jquery-ui.min.css">
 		<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/assessment_new.css">
+        <link rel="stylesheet" type="text/css" href="resources/editors/vendors/textAngular/textAngular.css">
         
   		<script src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   		<script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>

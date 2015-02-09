@@ -127,7 +127,7 @@
 					// Overwrite parentResource since it is doing strange things
                     page.parentResource = {
 						id: survey.id,
-						route: survey.route
+						route: 'surveys'
 					};
 
                     // Only save new pages with at least one question
