@@ -30,6 +30,8 @@
             'ui-floating': false,
             cancel: '.unsortable',
             items: 'li:not(.unsortable)',
+			placeholder: 'well',
+			connectWith: '.sortable-questions',
             stop: function(e, ui) {
                 // Update the display order
                 var questions = ui.item.scope().$parent.page.questions;

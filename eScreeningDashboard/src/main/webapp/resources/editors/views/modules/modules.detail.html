@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
+                            <ul class="list-group app screen sortable-questions" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
                                 <li class="list-group-item text-left"
                                         ng-repeat="question in page.questions | orderBy: 'displayOrder'"
                                         ng-class="{unsortable: question.sortable === false, active: question.selected}"
