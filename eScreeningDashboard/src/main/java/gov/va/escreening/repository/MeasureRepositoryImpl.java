@@ -133,9 +133,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         List<gov.va.escreening.dto.ae.Measure> result = new ArrayList<gov.va.escreening.dto.ae.Measure>();
 
         for (Measure m : measures) {
-            gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(
-                    m, null, null);
-            result.add(dto);
+            result.add(new gov.va.escreening.dto.ae.Measure(m));
         }
         return result;
     }
@@ -147,9 +145,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 
         updateMeasureEntity(measureDto);
         Measure m = findOne(measureDto.getMeasureId());
-        gov.va.escreening.dto.ae.Measure dto = new gov.va.escreening.dto.ae.Measure(m, null, null);
 
-        return dto;
+        return new gov.va.escreening.dto.ae.Measure(m);
     }
 
     @Override

@@ -304,7 +304,7 @@ public class SurveyServiceImpl implements SurveyService {
 
                 spi.setQuestions(new ArrayList<QuestionInfo>());
                 for (Measure measure : surveyPage.getMeasures()) {
-                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure)));
                 }
                 surveyPageInfos.add(spi);
             }
@@ -365,7 +365,7 @@ public class SurveyServiceImpl implements SurveyService {
 
                 spi.setQuestions(new ArrayList<QuestionInfo>());
                 for (Measure measure : surveyPage.getMeasures()) {
-                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure)));
                 }
 
                 return spi;
