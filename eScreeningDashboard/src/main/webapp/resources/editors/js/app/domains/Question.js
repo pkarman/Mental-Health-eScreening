@@ -38,8 +38,7 @@ EScreeningDashboardApp.models.Question = (function question() {
             variableName: '',
             answers: [],
             validations: [],
-            childQuestions: [],
-            tableAnswers: []
+            childQuestions: []
         };
 
         for (var prop in obj) {
