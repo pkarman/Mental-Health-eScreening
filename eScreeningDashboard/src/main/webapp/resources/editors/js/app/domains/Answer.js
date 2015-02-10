@@ -32,7 +32,7 @@ EScreeningDashboardApp.models.Answer = (function answer() {
             type: '',
             exportName: '',
             calculationValue: '',
-            displayOrder: ''
+            displayOrder: 1
         };
 
         for (var prop in obj) {

@@ -107,8 +107,10 @@ public class EditorRestController {
     @ResponseBody
     public Response<SurveyPageInfo> updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
         editorsViewDelegate.updateSurveyPages(surveyId, Arrays.asList(surveyPage));
-        SurveyPageInfo spi = editorsViewDelegate.getSurveyPages(surveyId, surveyPage.getPageNumber()).iterator().next();
-        return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), spi);
+        for(SurveyPageInfo spi : editorsViewDelegate.getSurveyPages(surveyId, surveyPage.getPageNumber())){
+        	return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), spi);
+        }
+        throw new IllegalStateException("The save of page " + pageId + " did not work");
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")
@@ -362,7 +364,7 @@ public class EditorRestController {
     public Map<String, Map<String, String>> handleException(
             AssessmentEngineDataValidationException ex) {
 
-        logger.error(ex.getErrorResponse().getLogMessage());
+        logger.error(ex.getErrorResponse().getLogMessage(), ex);
         // returns the error response which contains a list of error messages
         //return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
         return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));
@@ -372,11 +374,9 @@ public class EditorRestController {
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public Map<String, Map<String, String>> handleException(NotFoundException e) {
+        logger.error("Object not found:", e);
+
         ErrorResponse er = new ErrorResponse();
-
-        logger.debug(e.toString());
-        logger.debug(e.getMessage());
-
         er.setDeveloperMessage(e.getMessage());
         er.setStatus(HttpStatus.NOT_FOUND.value());
         // returns the error response which contains a list of error messages
@@ -388,11 +388,9 @@ public class EditorRestController {
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Map<String, Map<String, String>> handleException(Exception e) {
+        logger.error("Unexpected error:", e);
+
         ErrorResponse er = new ErrorResponse();
-
-        logger.debug(e.toString());
-        logger.debug(e.getMessage());
-
         er.setDeveloperMessage(e.getMessage());
         er.setStatus(HttpStatus.BAD_REQUEST.value());
         // returns the error response which contains a list of error messages

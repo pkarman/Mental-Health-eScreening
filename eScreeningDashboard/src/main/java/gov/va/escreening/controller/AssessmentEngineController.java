@@ -94,7 +94,7 @@ public class AssessmentEngineController {
 			@RequestBody AssessmentRequest assessmentRequest,
 			HttpSession session) {
 
-		logger.debug("processData()::assessmentRequest \n{}", assessmentRequest);
+		logger.debug("POST:/services/assessments/active\nIn processData() \n{}", assessmentRequest);
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
@@ -189,4 +189,17 @@ public class AssessmentEngineController {
         return er;
     }
 	
+	@ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleException(Exception e) {
+		logger.error("Unexpected error:", e);
+		
+		ErrorResponse er = new ErrorResponse();
+		er.setDeveloperMessage("Unexpected error: " + e + "\nCheck system log for stack trace before the ID given from this message.");
+		er.addMessage("An unexpected error has occurred. <br/>Please see the clerk.");
+		logger.error(er.getLogMessage());
+		
+        return er;
+    }
 }

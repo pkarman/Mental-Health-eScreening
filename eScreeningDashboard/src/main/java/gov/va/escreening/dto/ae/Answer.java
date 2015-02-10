@@ -17,7 +17,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         NONE, OTHER, HEIGHT_FEET, HEIGHT_INCHES, TABLE_COLUMN;
         
         public static Type fromString(String name){
-            if(name == null)
+            if(name == null || name.isEmpty())
                 return null;
             String lowerName = name.toLowerCase();
             if(lowerName.equals("none"))

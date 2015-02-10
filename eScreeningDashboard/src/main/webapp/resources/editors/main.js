@@ -1,56 +1,33 @@
 /**
  * Created by Bryan Henderson on 4/16/2014.
  */
-var Editors = angular.module("Editors",
-    [
-        'ngResource',
-        'ui.router',
-        'ui.bootstrap',
-        'ngTable',
-        'xeditable',
-        'ui.tree',
-        'ui.sortable',
-        'ngAnimate',
-        'textAngular',
-        'restangular',
-        'dndLists',
-        'angularUtils.directives.uiBreadcrumbs',
-        'EscreeningDashboardApp.services.battery',
-        'EscreeningDashboardApp.services.surveysection',
-        'EscreeningDashboardApp.services.managesection',
-        'EscreeningDashboardApp.services.question',
-        'EscreeningDashboardApp.services.template',
-        'EscreeningDashboardApp.services.templateType',
-        'EscreeningDashboardApp.services.assessmentVariable',
-        'EscreeningDashboardApp.services.question',
-        'EscreeningDashboardApp.services.templateBlock',
-        'EscreeningDashboardApp.services.eventBus',
-        'EscreeningDashboardApp.filters.messages',
-        'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
-        'EscreeningDashboardApp.filters.limitToWithEllipsis'
-    ]);
-
-/**
- * A generic confirmation for risky actions.
- * Usage: Add attributes: ng-really-message="Are you sure"? ng-really-click="takeAction()" function
- */
-Editors.directive('ngReallyClick', [function() {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            element.bind('click', function() {
-                var message = attrs.ngReallyMessage;
-                var shouldSkip = Object.isDefined(attrs.ngReallySkipWhen) 
-                    && attrs.ngReallySkipWhen.length > 0 
-                    && scope.$apply(attrs.ngReallySkipWhen);
-                    
-                if (shouldSkip || (message && confirm(message))) {
-                    scope.$apply(attrs.ngReallyClick);
-                }
-            });
-        }
-    };
-}]);
+var Editors = angular.module('Editors', [
+	'ngResource',
+	'ui.router',
+	'ui.bootstrap',
+	'ngTable',
+	'xeditable',
+	'ui.tree',
+	'ui.sortable',
+	'ngAnimate',
+	'textAngular',
+	'restangular',
+	'dndLists',
+	'angularUtils.directives.uiBreadcrumbs',
+	'EscreeningDashboardApp.services.battery',
+	'EscreeningDashboardApp.services.surveysection',
+	'EscreeningDashboardApp.services.managesection',
+	'EscreeningDashboardApp.services.question',
+	'EscreeningDashboardApp.services.template',
+	'EscreeningDashboardApp.services.templateType',
+	'EscreeningDashboardApp.services.assessmentVariable',
+	'EscreeningDashboardApp.services.question',
+	'EscreeningDashboardApp.services.templateBlock',
+	'EscreeningDashboardApp.services.eventBus',
+	'EscreeningDashboardApp.filters.messages',
+	'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
+	'EscreeningDashboardApp.filters.limitToWithEllipsis'
+]);
 
 Editors.value('Answer', EScreeningDashboardApp.models.Answer);
 Editors.value('ClinicalReminder', EScreeningDashboardApp.models.ClinicalReminder);
@@ -79,7 +56,7 @@ Editors.config(function(RestangularProvider, $provide) {
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
             // Add the array directly on the response
             // Pages response does NOT match the endpoint
-            newResponse = (what === 'pages') ? data.payload['surveyPages'] || data : data.payload[what] || data.payload;
+            newResponse = (what === 'pages') ? data.payload.surveyPages || data : data.payload[what] || data.payload;
             // Add the status as a meta property on the array
             newResponse.status = data.status;
         }
@@ -88,7 +65,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
             // The saved object is returned on data.payload using the singular form
             // Transform the response by adding the saved object directly on the response
-            newResponse = (_.contains(saveExceptions, what) | what.indexOf('batteries/') === 0 | what.indexOf('surveys/') === 0) ? data : data.payload[what.slice(0,-1)] || data.payload;
+            newResponse = (_.contains(saveExceptions, what) || what.indexOf('batteries/') === 0 || what.indexOf('surveys/') === 0) ? data : data.payload[what.slice(0,-1)] || data.payload;
         }
 
         if (operation === 'get') {
@@ -252,6 +229,9 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
 
+	// Set Angular-xeditable module theme to Bootstrap 3
+	editableOptions.theme = 'bs3';
+
 	// Get all flash messages to be added globally
     $rootScope.flashMessages = MessageFactory.get(true);
 
@@ -310,7 +290,7 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
             else{ msg = message; }
         }
 
-        return new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: msg})
+        return new BytePushers.models.Message({type: BytePushers.models.Message.ERROR, value: msg});
     };
 
     $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
@@ -323,11 +303,7 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
     //some error logging to reduce the amount of hair I pull out of my head :)
     $rootScope.$on('$stateChangeError',
         function(event, toState, toParams, fromState, fromParams, error){
-            console.log("Error transitioning from " + JSON.stringify(fromState)
-            + "\n to state: " + JSON.stringify(toState)
-            + "\n with error: " + JSON.stringify(error));
+            console.log("Error transitioning from " + JSON.stringify(fromState) + "\n to state: " + JSON.stringify(toState) + "\n with error: " + JSON.stringify(error));
         });
-
-    editableOptions.theme = 'bs3';
 
 }]);

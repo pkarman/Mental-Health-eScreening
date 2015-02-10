@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'SurveyPageService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, clinicalReminders, SurveyService, SurveyPageService, Question, MessageFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, clinicalReminders, SurveyService, Question, MessageFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = surveyPages;
@@ -9,12 +9,7 @@
 		$scope.clinicalReminders = clinicalReminders;
         $scope.alerts = MessageFactory.get();
 
-		// Add displayOrder to questions
-		_.each($scope.surveyPages, function(page) {
-			_.each(page.questions, function(question, index) {
-				question.displayOrder = index + 1;
-			});
-		});
+		updateQuestionOrder();
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -31,20 +26,20 @@
             'ui-floating': false,
             cancel: '.unsortable',
             items: 'li:not(.unsortable)',
-            stop: function(e, ui) {
-                // Update the display order
-                var questions = ui.item.scope().$parent.page.questions;
-				_.each(questions, function(question, index) {
-                    question.displayOrder = index + 1;
-                });
+			placeholder: 'list-group-item',
+			connectWith: '.sortable-questions',
+            stop: function() {
+                // Update the display order of all questions for all pages
+				updateQuestionOrder();
             }
         };
 
         $scope.addPage = function addPage() {
-            var page = SurveyService.one($scope.survey.id).one('pages');
-            page.title = $scope.survey.surveySection.name | $scope.survey.name;
+            var page = $scope.survey.one('pages');
+            page.title = $scope.survey.surveySection.name || $scope.survey.name;
             page.description = $scope.survey.name + ' page';
             page.pageNumber = $scope.surveyPages.length + 1;
+			page.questions = [];
             $scope.surveyPages.push(page);
         };
 
@@ -115,10 +110,18 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
+				// Set the newly created ID and fromServer to true for subsequent saves
+				$scope.survey.id = survey.id;
+				$scope.survey.fromServer = true;
+
                 MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
                 _.each($scope.surveyPages, function(page) {
-                    page.parentResource.id = survey.id;
+					// Overwrite parentResource since it is doing strange things
+                    page.parentResource = {
+						id: survey.id,
+						route: 'surveys'
+					};
 
                     // Only save new pages with at least one question
                     if (page.questions.length) {
@@ -128,14 +131,21 @@
                         });
 
                         page.save().then(function (updatedPage) {
+							// Set the newly created ID and fromServer to true for subsequent saves
+							page.id = updatedPage.id;
+							page.fromServer = true;
                             // Update the id of each question with the persisted question ID.
                             // Questions are not a nested resource and therefore restangular won't
                             // update the question IDs automatically like it does for actual resources
                             _.each(updatedPage.questions, function (question, index) {
-                                page.questions[index].id = question.id;
+								var pageQuestion = page.questions[index];
+								pageQuestion.id = question.id;
+								// Add the answers array from the server onto the question in $scope
+								pageQuestion.answers = question.answers;
                                 // Same holds true for childQuestions
                                 _.each(question.childQuestions, function(childQuestion, j) {
-                                    page.questions[index].childQuestions[j].id = childQuestion.id;
+									pageQuestion.childQuestions[j].id = childQuestion.id;
+									pageQuestion.childQuestions[j].answers = childQuestion.answers;
                                 });
                             });
 
@@ -148,8 +158,9 @@
 						if (page.id) {
 							// Save the page due to constraint on deleted question
 							page.save().then(function() {
+								// Store the index of the page in the surveyPages array
+								var index = $scope.surveyPages.indexOf(page);
 								// Delete the page
-								var index = page.pageNumber - 1;
 								page.remove().then(function() {
 									// Remove page from surveyPages array
 									$scope.surveyPages.splice(index, 1);
@@ -176,6 +187,15 @@
                 $state.go('modules');
             }
         };
+
+		function updateQuestionOrder() {
+			// Add displayOrder to questions
+			_.each($scope.surveyPages, function(page) {
+				_.each(page.questions, function(question, index) {
+					question.displayOrder = index + 1;
+				});
+			});
+		}
 
     }]);
 })();
