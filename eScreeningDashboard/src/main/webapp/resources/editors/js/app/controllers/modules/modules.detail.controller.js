@@ -43,7 +43,22 @@
         };
 
         $scope.deletePage = function deletePage(index) {
-            $scope.surveyPages.splice(index, 1);
+            var page = $scope.surveyPages[index];
+			if (page.id) {
+				// Remove page questions
+				page.questions.length = 0;
+				// Save the page due to constraint on deleted question
+				page.save().then(function() {
+					// Delete the page
+					page.remove().then(function() {
+						// Remove page from surveyPages array
+						$scope.surveyPages.splice(index, 1);
+					});
+				});
+			} else {
+				// Remove page from surveyPages array
+				$scope.surveyPages.splice(index, 1);
+			}
         };
 
         $scope.addQuestion = function addQuestion(page) {
