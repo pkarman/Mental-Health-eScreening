@@ -8,12 +8,7 @@
         $scope.surveySections = surveySections;
         $scope.alerts = MessageFactory.get();
 
-		// Add displayOrder to questions
-		_.each($scope.surveyPages, function(page) {
-			_.each(page.questions, function(question, index) {
-				question.displayOrder = index + 1;
-			});
-		});
+		updateQuestionOrder();
 
         $scope.sortablePageOptions = {
             'ui-floating': false,
@@ -30,14 +25,11 @@
             'ui-floating': false,
             cancel: '.unsortable',
             items: 'li:not(.unsortable)',
-			placeholder: 'well',
+			placeholder: 'list-group-item',
 			connectWith: '.sortable-questions',
-            stop: function(e, ui) {
-                // Update the display order
-                var questions = ui.item.scope().$parent.page.questions;
-				_.each(questions, function(question, index) {
-                    question.displayOrder = index + 1;
-                });
+            stop: function() {
+                // Update the display order of all questions for all pages
+				updateQuestionOrder();
             }
         };
 
@@ -194,6 +186,15 @@
                 $state.go('modules');
             }
         };
+
+		function updateQuestionOrder() {
+			// Add displayOrder to questions
+			_.each($scope.surveyPages, function(page) {
+				_.each(page.questions, function(question, index) {
+					question.displayOrder = index + 1;
+				});
+			});
+		}
 
     }]);
 })();
