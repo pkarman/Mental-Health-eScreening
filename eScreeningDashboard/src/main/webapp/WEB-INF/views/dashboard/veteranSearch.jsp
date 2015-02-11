@@ -7,7 +7,8 @@
 <html ng-app="veteranSearchFormApp">
 <head>
 <title>Veteran Search</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css"
 	rel="stylesheet" type="text/css">
 <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">

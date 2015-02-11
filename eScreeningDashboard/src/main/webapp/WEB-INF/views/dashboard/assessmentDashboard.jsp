@@ -7,7 +7,9 @@
 <html ng-app="assessmentDashboardApp">
     <head>
         <title>Assessment Dashboard</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
         <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
 
         <!-- FAVICON -->
@@ -95,7 +97,7 @@
                           <div class="col-md-6">
                             <div class="checkbox pull-right"> <br>
                               <label for="auto-refresh">
-                                <input type="checkbox" id="auto-refresh">Auto-refresh </label>
+                                <input type="checkbox" id="auto-refresh" ng-model="autoRefreshProg"  ng-change="autoRefreshProgChange()" >Auto-refresh </label>
                             </div>
                           </div>
                         </div>
@@ -154,8 +156,8 @@
                           </div>
                           <div class="col-md-6">
                             <div class="checkbox pull-right"> <br>
-                              <label>
-                                <input type="checkbox" ng-model="autorefresh" ng-change="change()" >
+                              <label for="auto_refresh_prog">
+                                <input type="checkbox" ng-model="autorefresh" ng-change="change()" id="auto_refresh_prog" >
                                 Auto-refresh </label>
                             </div>
                           </div>

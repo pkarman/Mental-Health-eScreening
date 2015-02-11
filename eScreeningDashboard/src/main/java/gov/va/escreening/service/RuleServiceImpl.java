@@ -2,7 +2,6 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
-import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
@@ -26,10 +25,7 @@ import gov.va.escreening.repository.RuleRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.variableresolver.AssessmentVariableDto;
-import gov.va.escreening.variableresolver.AssessmentVariableDtoFactory;
-import gov.va.escreening.variableresolver.FormulaAssessmentVariableResolver;
-import gov.va.escreening.variableresolver.VariableResolverService;
+import gov.va.escreening.variableresolver.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,6 +88,9 @@ public class RuleServiceImpl implements RuleService {
 
 	@Autowired
 	private FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
+
+	@Resource(name = "templateSmrNullHandler")
+	NullValueHandler templateSmrNullHandler;
 
 	@Override
 	public void processRules(Integer veteranAssessmentId,
@@ -335,7 +334,7 @@ public class RuleServiceImpl implements RuleService {
 		try {
 			AssessmentVariableDto evaluatedRule = assessmentVariableFactory
 					.createAssessmentVariableDto(variable, veteranAssessmentId,
-							measureAnswerHash);
+							measureAnswerHash, templateSmrNullHandler);
 
 			result = Boolean.parseBoolean(evaluatedRule.getValue());
 		} catch (CouldNotResolveVariableException e) {
