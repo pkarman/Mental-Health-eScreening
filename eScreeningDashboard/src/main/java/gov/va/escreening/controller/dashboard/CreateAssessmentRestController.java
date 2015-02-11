@@ -13,6 +13,7 @@ import gov.va.escreening.dto.dashboard.VeteranSearchResult;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.form.EditVeteranAssessmentFormBean;
 import gov.va.escreening.form.CreateVeteranAssessementsFormBean;
+import gov.va.escreening.form.SelectVeteranFormBean;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.CurrentUser;
@@ -238,4 +239,31 @@ public class CreateAssessmentRestController {
 		
 		return "redirect:/dashboard/views/editVeteransAssessment";
 	}
+	
+	/**
+     * Returns the backing bean for the form.
+     * @return
+     */
+    @ModelAttribute
+    public SelectVeteranFormBean getSelectVeteranFormBean() {
+        logger.debug("Creating new SelectVeteranFormBean");
+        return new SelectVeteranFormBean();
+    }
+
+    /**
+     * Initialize and setup page.
+     * @param selectVeteranFormBean
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/selectVeterans", method = RequestMethod.GET)
+    public String setUpPageSelectVeteran(@CurrentUser EscreenUser escreenUser,
+            @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
+
+        model.addAttribute("isPostBack", false);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+
+        return "dashboard/selectVeterans";
+    }
+
 }
