@@ -262,6 +262,8 @@ public class CreateAssessmentRestController {
 
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        
+        model.addAttribute("clinics", clinicService.getClinicDtoList());
 
         return "dashboard/selectVeterans";
     }
