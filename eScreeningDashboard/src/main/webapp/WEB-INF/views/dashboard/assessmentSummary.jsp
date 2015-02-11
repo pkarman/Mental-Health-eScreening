@@ -880,7 +880,6 @@ $(document).ready(function() {
 		
 		var series   = graphParams.legends;
 		
-		
 		$.each(points, function(date, valueStr){
 			//TODO: Add check if can't be parsed
 			var value = parseFloat(valueStr);
@@ -934,46 +933,62 @@ $(document).ready(function() {
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
 		var dateParser = d3.time.format("%m/%d/%Y").parse;
+		var dateArr = [];
 		
-		var x = d3.time.scale()
-			.domain(d3.extent(ticks, function (d) {
-			var date = dateParser(d.date);
-			return date;
-		}))
-			.range([xRangeStart, width]);
-	
+		// Format date
+		function formatDate (input) {
+		  var datePart = input.match(/\d+/g),
+		  month = datePart[0],
+		  day = datePart[1],
+		  year 	= datePart[2].substring(2);
+		  return month+'/'+day+'/'+year;
+		}
+
+		for (var i = 0; i < ticks.length; i++) {
+			dateArr.push(formatDate(ticks[i].date));
+		}
+		
+		var x = d3.scale.linear().domain([0, ticks.length]).range([xRangeStart, width]);
+
 		var y = d3.scale.linear()
 			.domain([yStartPoint, d3.max(ticks, function (d) {
 			return +d.value;
 		})])
 			.range([height, 0]);
-	
+		
 		var xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom")
-			.ticks(d3.time.days, 100)
-			.tickFormat(d3.time.format("%m/%d/%y"));
-	
+			.tickFormat(function(d, i) {
+				return dateArr[i];
+			}).ticks(ticks.length);
+
 		var yAxis = d3.svg.axis()
 			.scale(y)
 			.orient("left")
 			.ticks(5);
 	
-	
+
 		var line = d3.svg.line().interpolate("cardinal")
-			.x(function (d) {
-			var date = dateParser(d.date);
-			return x(date);
+			.x(function (d, i) {
+			return x(i);
 		})
 			.y(function (d) {
-			return y(+d.value);
-		});
-	
+			return y(d);
+		});		
+		
 		function plot(params) {
 			
 			var intervals 	= params.data.intervals,
 				ticks 		= params.data.ticks;
+
+			var valueArr = [];
 			
+			for (var i = 0; i < ticks.length; i++) {
+				valueArr.push(ticks[i].value);
+			}
+
+						
 			this.append("g")
 				.classed("x axis", true)
 				.attr("transform", "translate(0," + height + ")")
@@ -990,10 +1005,11 @@ $(document).ready(function() {
 				.classed("y axis", true)
 				.attr("transform", "translate(0,0)")
 				.call(params.axis.y);
-	
+			
+			
 			// Enter Plot Started Here
 			this.selectAll(".trendline")
-				.data([ticks])
+				.data(ticks)
 				.enter()
 				.append("path")
 				.classed("trendline", true);
@@ -1014,24 +1030,22 @@ $(document).ready(function() {
 					return +d.value;
 				});
 	
-	
+
 			// Update Plot Started Here
 			this.selectAll(".trendline")
 				.attr("d", function (d) {
-				return line(d);
+				return line(valueArr);
 			});
 			this.selectAll(".point")
-				.attr("cx", function (d) {
-				var date = dateParser(d.date);
-				return x(date);
+				.attr("cx", function (d, i) {
+				return x(i);
 			})
 				.attr("cy", function (d) {
 				return y(+d.value);
 			});
 			this.selectAll(".pointTextValue")
-				.attr("x", function (d) {
-				var date = dateParser(d.date);
-				return x(date);
+				.attr("x", function (d, i) {
+				return x(i);
 			})
 				.attr("y", function (d) {
 				return y(+d.value - 3);
@@ -1039,7 +1053,7 @@ $(document).ready(function() {
 	
 			// Exit Plot Started Here
 			this.selectAll(".trendline")
-				.data([ticks])
+				.data(ticks)
 				.exit()
 				.remove();
 			this.selectAll(".point")
