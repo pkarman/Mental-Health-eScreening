@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -278,5 +279,23 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
 
         return veteranResultList;
     }
+
+	@Override
+	public List<Veteran> getVeteranByIens(String[] iens) {
+		
+		String sql = "From Veteran v where v.veteranIen in (:ien)";
+		
+		StringBuffer sb = new StringBuffer();
+		for(String s: iens)
+		{
+			sb.append(s + ",");
+		}
+		
+		sb.deleteCharAt(sb.lastIndexOf(","));
+		
+		Query q = entityManager.createQuery(sql).setParameter("ien", sb.toString());
+		List<Veteran> result = q.getResultList();
+		return result;
+	}
 
 }

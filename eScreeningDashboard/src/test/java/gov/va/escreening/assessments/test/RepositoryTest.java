@@ -204,6 +204,14 @@ public class RepositoryTest {
 	}
 
 	@Test
+	public void testVeteranRepoSearchByIens() {
+		List<Veteran> vetList = veteranRepo.getVeteranByIens(new String[]{"205"});
+		
+		assertTrue(vetList.size()==1);
+
+	}
+	
+	@Test
     public void testSurveyBatteryTemplate()
     {
     	List<Survey> surveys = surveyRepo.findByTemplateId(25);

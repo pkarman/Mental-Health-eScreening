@@ -1,18 +1,24 @@
 package gov.va.escreening.delegate;
 
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.ClinicRepository;
+import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.service.VeteranServiceImpl;
 import gov.va.escreening.vista.dto.VistaClinicAppointment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +35,9 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 
 	@Autowired
 	private VeteranService veteranService;
+	
+	@Autowired
+	private VeteranRepository veteranRepo;
 
 	@Override
 	public List<VistaClinicAppointment> searchVeteranByAppointments(
@@ -39,9 +48,35 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			start = format.parse(startdate);
 			Date end = format.parse(enddate);
 
-			return vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
+			List<VistaClinicAppointment> appList = vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
 					user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
 					clinicIen, start, end);
+			
+			Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
+			
+			//Now, go through the veterans and only return the closest appointment to the startDate???
+			for(VistaClinicAppointment app : appList)
+			{	
+				String vetIen = app.getVeteranIen();
+				if(appMap.containsKey(vetIen))
+				{
+					Date appTime = app.getAppointmentDate();
+					Date current = Calendar.getInstance().getTime();
+					if(appTime.after(current))
+					{
+						if(appTime.before(appMap.get(vetIen).getAppointmentDate()))
+						{
+							appMap.put(vetIen, app);
+						}
+					}
+				}
+				else
+				{
+					appMap.put(vetIen, app);
+				}
+			}
+			
+			return new ArrayList<VistaClinicAppointment>(appMap.values());
 		} catch (ParseException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -73,4 +108,34 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		return vList;
 	}
 
+	@Override
+	public List<VeteranDto> getVeteranDetails(String[] veteranIens, EscreenUser user) {
+		// TODO Auto-generated method stub
+		List<String> vetInDB = new ArrayList<String>();
+		List<String> vetToImport = new ArrayList<String>();
+		List<Veteran> vetList = veteranRepo.getVeteranByIens(veteranIens);
+		
+		for(Veteran v : vetList)
+		{
+			vetInDB.add(v.getVeteranIen());
+		}
+		
+		for(String s: veteranIens)
+		{
+			if(!vetInDB.contains(s))
+			{
+				vetToImport.add(s);
+			}
+		}
+		
+		List<VeteranDto> imported = importVeterans(vetToImport, user);
+		
+		for(Veteran v:vetList)
+		{
+		imported.add(VeteranServiceImpl.convertVeteranToVeteranDto(v));
+		}
+		return imported;
+	}
+
+	
 }

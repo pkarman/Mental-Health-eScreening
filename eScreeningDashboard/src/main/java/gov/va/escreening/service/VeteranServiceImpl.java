@@ -124,7 +124,7 @@ public class VeteranServiceImpl implements VeteranService {
         return veteranDto;
     }
 
-    private VeteranDto convertVeteranToVeteranDto(Veteran veteran) {
+    public static VeteranDto convertVeteranToVeteranDto(Veteran veteran) {
         VeteranDto veteranDto = new VeteranDto();
 
         veteranDto.setBestTimeToCall(veteran.getBestTimeToCall());
