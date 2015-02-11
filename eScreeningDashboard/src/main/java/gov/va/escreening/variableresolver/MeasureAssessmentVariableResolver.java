@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface MeasureAssessmentVariableResolver {
-    
+
     /**
      * Resolves the given AssessmentVariable to an AssessmentVariableDto
      * @param assessmentVariable
@@ -16,11 +16,11 @@ public interface MeasureAssessmentVariableResolver {
      * @param measureAnswerHash
      * @return
      */
-	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, 
+	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
 			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
-	
-	String resolveCalculationValue(AssessmentVariable assessmentVariable,  
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
+
+	String resolveCalculationValue(AssessmentVariable assessmentVariable,
+								   Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);
 
 	String resolveCalculationValue(AssessmentVariable measureVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer,
