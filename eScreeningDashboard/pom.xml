@@ -387,7 +387,7 @@
 				<version>2.17</version>
 				<configuration>
 					<parallel>classes</parallel>
-					<useUnlimitedThreads>true</useUnlimitedThreads>
+					<threadCountClasses>2</threadCountClasses>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -169,15 +169,20 @@ public class CreateAssessmentRestController {
 		return "/dashboard/"+uri.substring(uri.lastIndexOf("/"));
 	}
 	
+	@ModelAttribute
+	public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean()
+	{
+		return new EditVeteranAssessmentFormBean();
+	}
+	
 	@RequestMapping(value="/veteranSearch/selectVeterans", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
-			@ModelAttribute CreateVeteranAssessementsFormBean editVeteranAssessmentFormBean,
+			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
 	{
 		List<VeteranDto> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
-		CreateVeteranAssessementsFormBean formBean = editVeteranAssessmentFormBean;
-		formBean.setVeterans(vetList);
+		model.addAttribute("vetList", vetList);
 		
 		Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
 		
@@ -192,13 +197,13 @@ public class CreateAssessmentRestController {
 			}
 		}
 		
-		formBean.setVetSurveyMap(vetSurveyMap);
+		model.addAttribute("vetSurveyMap", vetSurveyMap);
 		
 		Clinic c = clinicRepo.findOne(clinicId);
-		formBean.setSelectedClinicId(c.getClinicId());
+		editVeteranAssessmentFormBean.setSelectedClinicId(c.getClinicId());
 		
 		int programId = c.getProgram().getProgramId();
-		formBean.setSelectedProgramId(programId);
+		editVeteranAssessmentFormBean.setSelectedProgramId(programId);
 		
 		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
 		model.addAttribute("batterySurveyList", batterySurveyList);
