@@ -1,51 +1,51 @@
 package gov.va.escreening.dto.dashboard;
 
 public class DataExportCell {
-	String columnName;
-	String cellValue;
-	boolean other;
+    String columnName;
+    String cellValue;
+    char dataType='r';
 
-	public String getColumnName() {
-		return columnName;
-	}
+    public DataExportCell() {
+    }
 
-	public void setColumnName(String columnName) {
-		this.columnName = columnName == null ? "" : columnName;
-	}
+    public DataExportCell(String columnName, String cellValue) {
+        setColumnName(columnName);
+        setCellValue(cellValue);
+    }
 
-	public String getCellValue() {
-		return cellValue;
-	}
+    public DataExportCell(String columnName, String cellValue, char dataType) {
+        setColumnName(columnName);
+        setCellValue(cellValue);
+        setDataType(dataType);
+    }
 
-	public void setCellValue(String cellValue) {
-		this.cellValue = cellValue == null ? "" : cellValue;
-	}
+    public char getDataType() {
+        return dataType;
+    }
 
-	public DataExportCell() {
-	}
+    public void setDataType(char dataType) {
+        this.dataType = dataType;
+    }
 
-	public DataExportCell(String columnName, String cellValue) {
-		setColumnName(columnName);
-		setCellValue(cellValue);
-	}
+    public String getColumnName() {
+        return columnName;
+    }
 
-	public DataExportCell(String columnName, String cellValue, boolean other) {
-		setColumnName(columnName);
-		setCellValue(cellValue);
-		setOther(other);
-	}
+    public void setColumnName(String columnName) {
+        this.columnName = columnName == null ? "" : columnName;
+    }
 
-	public boolean isOther() {
-		return other;
-	}
+    public String getCellValue() {
+        return cellValue;
+    }
 
-	public void setOther(boolean other) {
-		this.other = other;
-	}
+    public void setCellValue(String cellValue) {
+        this.cellValue = cellValue == null ? "" : cellValue;
+    }
 
-	@Override
-	public String toString() {
-		return "name=" + columnName + ", val=" + cellValue+", other="+other;
-	}
+    @Override
+    public String toString() {
+        return "name=" + columnName + ", val=" + cellValue + ", dataType=" + dataType;
+    }
 
 }
