@@ -140,9 +140,9 @@
 					
 						<div class="col-md-4">
 							<div class="form-group">
-			                	<form:label path="lastName">VistA Clinic *</form:label>
-			                	<form:input path="lastName" maxlength="30" cssClass="form-control focus_input" cssErrorClass="form-control" placeholder="Enter Veteran VistA Clinic"  />
-			                	<form:errors path="lastName"  cssClass="help-inline" />
+			                	<form:label path="selectedClinic">VistA Clinic *</form:label>
+			                	<form:input path="selectedClinic" maxlength="30" cssClass="form-control focus_input" cssErrorClass="form-control" placeholder="Enter Veteran VistA Clinic"  />
+			                	<form:errors path="selectedClinic"  cssClass="help-inline" />
                 			</div>
                 		</div>
 
