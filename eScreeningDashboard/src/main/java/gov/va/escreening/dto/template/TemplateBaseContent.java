@@ -1,6 +1,5 @@
 package gov.va.escreening.dto.template;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -151,7 +150,7 @@ public abstract class TemplateBaseContent {
 		
 		if (left.getTransformations() != null && left.getTransformations().size() > 0) {
 			for (VariableTransformationDTO transformation : left.getTransformations()) {
-				StringBuffer s = new StringBuffer(transformation.getName());
+				StringBuilder s = new StringBuilder(transformation.getName());
 				s.append("(").append(translatedVar);
 
 				if (transformation.getParams() != null

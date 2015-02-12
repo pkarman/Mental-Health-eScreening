@@ -60,7 +60,7 @@ public class TemplateBaseBlockDTO implements INode{
 			return "";
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		for(INode node : children)
 		{

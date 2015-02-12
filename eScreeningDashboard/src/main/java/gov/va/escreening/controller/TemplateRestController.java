@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/dashboard")
 public class TemplateRestController {
@@ -71,7 +73,11 @@ public class TemplateRestController {
 	@RequestMapping(value ="/services/templateTypes", params="surveyId", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
+	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, 
+			HttpServletRequest request) {
+		
+		logRequest(request);
+		
         if(surveyId == null || surveyId < 0){
             ErrorBuilder.throwing(EntityNotFoundException.class)
                     .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
@@ -97,8 +103,12 @@ public class TemplateRestController {
 	@RequestMapping(value ="/services/templateTypes", params="batteryId", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<TemplateTypeDTO> getModuleTemplateTypesByBatteryId(@RequestParam("batteryId") Integer batteryId, @CurrentUser EscreenUser escreenUser) {
-        if(batteryId == null || batteryId < 0) {
+	public List<TemplateTypeDTO> getModuleTemplateTypesByBatteryId(@RequestParam("batteryId") Integer batteryId, 
+			HttpServletRequest request) {
+        
+		logRequest(request);
+		
+		if(batteryId == null || batteryId < 0) {
             ErrorBuilder.throwing(EntityNotFoundException.class)
                     .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
                     .toAdmin("Could not find the template types with the battery with ID: " + batteryId)
@@ -126,7 +136,9 @@ public class TemplateRestController {
 			@PathVariable("surveyId") Integer surveyId,
 			@PathVariable("templateTypeId") Integer templateTypeId,
 			@RequestBody TemplateFileDTO templateFile, 
-			@CurrentUser EscreenUser escreenUser){
+			HttpServletRequest request){
+		
+		logRequest(request);
 		
 		if (templateFile.getName() == null){
 			ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -147,7 +159,10 @@ public class TemplateRestController {
 			@PathVariable("batteryId") Integer batteryId,
 	        @PathVariable("templateTypeId") Integer templateTypeId,
 			@RequestBody TemplateFileDTO templateFile, 		
-			@CurrentUser EscreenUser escreenUser) {
+			HttpServletRequest request) {
+		
+		logRequest(request);
+		
 		if (templateFile.getName() == null){
 			ErrorBuilder.throwing(EntityNotFoundException.class)
             .toUser("Template name can not be null.")
@@ -163,7 +178,10 @@ public class TemplateRestController {
     @ResponseBody
 	public TemplateFileDTO getTemplate(
 			@PathVariable("templateId") Integer templateId,
-			@CurrentUser EscreenUser escreenUser) {
+			HttpServletRequest request) {
+		
+		logRequest(request);
+		
 		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
 		
 		if (dto == null){
@@ -190,7 +208,9 @@ public class TemplateRestController {
 	@ResponseBody
 	public Boolean updateTemplateFile(@PathVariable("templateId") Integer templateId, 
 			@RequestBody TemplateFileDTO templateFile, 
-			@CurrentUser EscreenUser escreenUser){
+			HttpServletRequest request){
+		
+		logRequest(request);
 		
 		try{
 			templateService.updateTemplateFile(templateId, templateFile);
@@ -207,7 +227,11 @@ public class TemplateRestController {
 	@RequestMapping(value = "/services/template/{templateId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public Boolean deleteTemplate( @PathVariable("templateId") Integer templateId, @CurrentUser EscreenUser escreenUser) {
+	public Boolean deleteTemplate( @PathVariable("templateId") Integer templateId,
+			HttpServletRequest request){
+		
+		logRequest(request);
+		
 		try {
 			templateService.deleteTemplate(templateId);
 		} catch(IllegalArgumentException e) {
@@ -222,12 +246,15 @@ public class TemplateRestController {
 		
 	
 	
-	@RequestMapping(value="/services/template/addVariableTemplate/{templateId}", method =RequestMethod.POST,
+	@RequestMapping(value="/services/template/addVariableTemplate/{templateId}", method=RequestMethod.POST,
 			consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
-	{
+	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds,
+			HttpServletRequest request){
+		
+		logRequest(request);
+		
 		templateService.addVariableTemplates(templateId, variableTemplateIds);
 		return Boolean.TRUE;
 	}
@@ -236,28 +263,35 @@ public class TemplateRestController {
 			consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public Boolean removeVariableTemplatesFromTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
-	{
+	public Boolean removeVariableTemplatesFromTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds,
+			HttpServletRequest request){
+		
+		logRequest(request);
+		
 		templateService.removeVariableTemplatesFromTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
 	}
 	
-	@RequestMapping(value="/services/template/addVariableTemplates/{templateId}/{variableTemplateId}", method =RequestMethod.POST,
+	@RequestMapping(value="/services/template/addVariableTemplates/{templateId}/{variableTemplateId}", method=RequestMethod.POST,
 			consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
-	{
+	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, 			
+			HttpServletRequest request){
+		
+		logRequest(request);
 		templateService.addVariableTemplate(templateId, variableTemplateId);
 		return Boolean.TRUE;
 	}
 	
-	@RequestMapping(value="/services/template/removeVariableTemplate/{templateId}/{variableTemplateId}", method =RequestMethod.DELETE,
+	@RequestMapping(value="/services/template/removeVariableTemplate/{templateId}/{variableTemplateId}", method=RequestMethod.DELETE,
 			consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public Boolean removeVariableTemplateFromTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, @CurrentUser EscreenUser escreenUser)
-	{
+	public Boolean removeVariableTemplateFromTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, 
+			HttpServletRequest request){
+		
+		logRequest(request);
 		templateService.removeVariableTemplateFromTemplate(templateId, variableTemplateId);
 		return Boolean.TRUE;
 	}
@@ -266,8 +300,10 @@ public class TemplateRestController {
 			consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public Boolean setVariableTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, @CurrentUser EscreenUser escreenUser)
-	{
+	public Boolean setVariableTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, 
+			HttpServletRequest request){
+		
+		logRequest(request);
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
 	}
@@ -275,7 +311,10 @@ public class TemplateRestController {
 	@RequestMapping(value="/services/questions/{measureId}/answers", method = RequestMethod.GET, produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
+	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId,
+			HttpServletRequest request){
+		
+		logRequest(request);
 		return templateService.getMeasureAnswerValues(measureId);
 	}
 	
@@ -283,10 +322,14 @@ public class TemplateRestController {
 	@RequestMapping(value="/services/questions/{measureId}/validations", method = RequestMethod.GET,  produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, @CurrentUser EscreenUser escreenUser){
+	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, 
+			HttpServletRequest request){
 		
+		logRequest(request);
 		return templateService.getMeasureValidations(measureId);
 	}
 	
-
+	private void logRequest(HttpServletRequest request){
+		logger.debug(request.getMethod() + ": "+ request.getRequestURL());
+	}
 }

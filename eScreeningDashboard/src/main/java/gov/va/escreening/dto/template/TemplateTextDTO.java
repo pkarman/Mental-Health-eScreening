@@ -26,7 +26,7 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 	}
 
 	public String toFreeMarkerFormat(Set<Integer>ids) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (this.getName()!=null)
 			sb.append("<#-- NAME:"+this.getName()+"-->\n");
 		if (this.getSection()!=null)

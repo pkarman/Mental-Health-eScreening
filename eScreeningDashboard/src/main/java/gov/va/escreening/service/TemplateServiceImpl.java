@@ -524,7 +524,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 
 	private String generateFreeMarkerTemplateFile(List<INode> blocks, Set<Integer>ids) {
-		StringBuffer file = new StringBuffer();
+		StringBuilder file = new StringBuilder();
 		file.append("<#include \"clinicalnotefunctions\">\n");
 		
 		file.append("<#-- generated file. Do not change -->\n");

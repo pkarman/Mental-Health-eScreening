@@ -113,22 +113,22 @@
 </#function>
 <#-- Formula, Answer, and Custom variable functions -->
 <#-- Facade for WYSIWYG formula type variable -->
-<#function getFormulaDisplayText variableObj='notset'>
+<#function getFormulaDisplayText variableObj=DEFAULT_VALUE>
 	${getVariableDisplayText(variableObj)}
 </#function>
 
 <#-- Facade for WYSIWYG custom type variable -->
-<#function getCustomVariableDisplayText variableObj='notset'>
+<#function getCustomVariableDisplayText variableObj=DEFAULT_VALUE>
 	${getVariableDisplayText(variableObj)}
 </#function>
 
 <#-- Facade for WYSIWYG measure answer type variable -->
-<#function getAnswerDisplayText variableObj='notset'>
+<#function getAnswerDisplayText variableObj=DEFAULT_VALUE>
 	${getVariableDisplayText(variableObj)}
 </#function>
 
-<#function wasAnswerNone variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || variableObj.children?size=0 >
+<#function wasAnswerNone variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
     <#-- The object was not found or there was a problem with the list -->
     <#return false>
   <#else>
@@ -152,8 +152,8 @@
 	<#return "">
 </#function>
 
-<#function wasAnswerTrue variableObj='notset'>
-  <#if variableObj = 'notset'>
+<#function wasAnswerTrue variableObj=DEFAULT_VALUE>
+  <#if variableObj = DEFAULT_VALUE>
     <#-- The object was not found -->
     <#return false>
   <#else>
@@ -166,8 +166,8 @@
 </#function>
 
 <#-- Measure level functions -->
-<#function getNumberOfTableResponseRows variableObj='notset'>
-  <#if variableObj = 'notset'>
+<#function getNumberOfTableResponseRows variableObj=DEFAULT_VALUE>
+  <#if variableObj = DEFAULT_VALUE>
     <#-- The object was not found -->
     <#return -1>
   <#else>
@@ -179,8 +179,8 @@
   </#if>
 </#function>
 
-<#function getSelectOneDisplayText variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || !(variableObj.children?size=1) >
+<#function getSelectOneDisplayText variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || !(variableObj.children?size=1) >
     <#-- The object was not found or there was a problem with the list -->
     <#return 'notfound'>
   <#else>
@@ -226,8 +226,8 @@
  	<#return text>
 </#function>
 
-<#function getSelectMultiDisplayText variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || variableObj.children?size=0 >
+<#function getSelectMultiDisplayText variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
     <#-- The object was not found or there was a problem with the list -->
     <#return 'notfound'>
   <#else>
@@ -247,8 +247,8 @@
   </#if>
 </#function>
 
-<#function getTableMeasureDisplayText variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || variableObj.children?size=0 >
+<#function getTableMeasureDisplayText variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
     <#-- The object was not found or there was a problem with the list -->
     <#return ''>
   <#else>
@@ -273,8 +273,8 @@
 
 
 
-<#function getTableMeasureValueDisplayText variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || variableObj.children?size=0 >
+<#function getTableMeasureValueDisplayText variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
     <#-- The object was not found or there was a problem with the list -->
     <#return ''>
   <#else>
@@ -306,7 +306,7 @@
 
 </#function>
 
-<#function isSet str='notset'>
+<#function isSet str=DEFAULT_VALUE>
 	<#if str?? && (str?has_content) && ( (str?trim) != "notset") &&  ((str?trim) != "notfound")>
 		<#return true>
 	<#else>
@@ -364,8 +364,8 @@
 	<#return rows>
 </#function>
 
-<#function getVariableDisplayText variableObj='notset'>
-  <#if variableObj = 'notset'>
+<#function getVariableDisplayText variableObj=DEFAULT_VALUE>
+  <#if variableObj = DEFAULT_VALUE>
     <#-- The object was not found -->
     <#return 'notfound'>
   <#else>
@@ -385,28 +385,7 @@
     <#return 'notfound' >
   </#if>
 </#function>
-
-<#function getFreeTextAnswer variableObj='notset' deflt=''>
-    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
-        <#-- The object was not found -->
-        <#return deflt>
-    </#if>
-    
-    <#assign answer = variableObj.children[0]>
-    
-    <#assign result = getVariableDisplayText(answer)>
-    <#if result != 'notfound'>
-        <#return result>
-    </#if>
-    
-    <#if (answer.value)?? >
-        <#return answer.value>
-    </#if>
-    
-    <#return deflt>
-    
-</#function>
-
+ 
 
 <#-- ***********************  Template Editor Helper functions ************************* -->
 
@@ -481,62 +460,212 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#return result>
 </#function>
 
-
-<#function getFreeTextAnswer variableObj='notset' deflt=''>
-    <#if variableObj = 'notset' || !(variableObj.children)?? || variableObj.children?size == 0>
-        <#-- The object was not found -->
-        <#return deflt>
-    </#if>
-    
-    <#assign answer = variableObj.children[0]>
-    
-    <#assign result = getResponseText(answer)>
-    <#if result != 'notset'>
-        <#return result>
-    </#if>
-    
-    <#if (answer.value)?? >
-        <#return answer.value>
-    </#if>
-    
-    <#return deflt>
-    
-</#function>
-
-<#function getSelectOneResponse variableObj='notset'>
-  <#if variableObj='notset' || !(variableObj.children??) || !(variableObj.children?size=1) >
-    <#-- The object was not found or there was a problem with the list -->
-    <#return 'notset'>
-  <#else>
-    <#return getResponseText(variableObj.children[0]) >
-  </#if>
-</#function>
-
-<#function getResponseText variableObj='notset'>
-  <#if variableObj = 'notset'>
-    <#-- The object was not found -->
-    <#return 'notset'>
-  <#else>
-    <#-- If there is an other value use that before anything else -->
-    <#if variableObj.otherText?? && !(variableObj.otherText='') >
-      <#return variableObj.otherText >
-    </#if>
-    <#-- If there is an override value use that before the default value -->
-    <#if variableObj.overrideText?? && !(variableObj.overrideText='') >
-      <#return variableObj.overrideText >
-    </#if>
-    <#-- Use the default text -->
-    <#if variableObj.displayText?? && !(variableObj.displayText='') >
-      <#return variableObj.displayText >
-    </#if>
-    <#-- The object does not have text to return -->
-    <#return 'notset' >
-  </#if>
-</#function>
-
-
 <#-- ***********************  Only  Template Editor functions under this line ************************* -->
 
+
+<#-- 
+This transformation takes a table question and allows for the selection of a single child question (i.e. field) 
+childAVId is the child question's AV ID that we should output values for (the field)
+Other parameters are the same as the delimit function below
+-->
+<#function delimitTableField table=DEFAULT_VALUE childAvId=DEFAULT_VALUE prefix='' lastPrefix='' suffix='' includeSuffixAtEnd=true defaultValue=DEFAULT_VALUE>
+	
+	<#-- test to see if no table exists OR no child exists and then return DEFAULT_VALUE -->
+	<#if (childAvId?is_string && childAvId == DEFAULT_VALUE) || table==DEFAULT_VALUE || !(table.children??) || table.children?size == 0 >
+    	<#return defaultValue>
+ 	</#if>
+ 	
+	<#-- iterate over table rows and collect answers for the given question AV ID 
+	(this code can be factored out into its own function PLEASE DON'T COPY IT) -->
+	<#assign valList = []>
+	<#list variableObj.children as row>
+		<#if row.children?? && (row.children?size > 0) >
+			<#list row.children as question>
+				<#-- check to see if the given child question has an answer for this row -->
+				<#if (question.variableId)?? && question.variableId == childAvId >
+					<#assign response = getResponse(question, question.measureTypeId) >
+					<#if response?has_content >
+						<#-- append append response to list -->
+						<#assign valList = valList + [response]>
+					</#if>
+				</#if>
+			</#list>
+		</#if>
+	</#list>
+	
+	<#-- if collected list is empty return defaultValue>
+	<#if valList?size == 0>
+		<#return defaultValue>
+ 	</#if>
+		
+	<#-- return result of calling delimit function using given parameters -->
+	<#return delimitList(valList, prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue) > 
+</#function> 
+
+
+<#-- 
+This transformation takes a table question and returns the number of entries given by the veteran
+-->
+<#function numberOfEntries table=DEFAULT_VALUE >
+	<#if table == DEFAULT_VALUE || !(table.children??) >
+    	<#return 0>
+	<#else>
+		<#return table.children?size>
+	</#if>
+</#function>
+
+
+<#-- This transformation’s goal is to produce a list of text, one per question having at least one required column selected by the veteran
+rowAvIdToOutputMap is a map from row AV ID to the text we should output if the at least once column was selected by the veteran for the given question
+columnVarIdMap is a set of column AV IDs which we are testing to see if the veteran gave one of the responses
+-->
+<#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowAvIdToOutputMap={} columnVarIdList=[] >
+	<#-- test to see if no matrix exists and then return default values -->
+	<#if matrix == DEFAULT_VALUE || !(rowAvIdToOutputMap?has_content) || !(columnVarIdList?has_content) >
+		<#return DEFAULT_VALUE>
+	</#if>
+	
+	<#assign valList = []>
+	<#assign columnSet = {}>
+	<#list columnVarIdList as columnVar>
+		<#assign columnSet = columnSet + { columnVar : true} >
+	</#list>
+	
+	<#-- loop over each of the matrix question's child question assessment variables -->
+	<#list matrix.children as question>
+		<#-- check current child question to see if its question's AV ID is found in rowVarIds -->
+		<#if (question.variableId)?? && rowAvIdToOutputMap[question.variableId]?has_content && question.children?? && (question.children?size > 0) >
+			<#-- get all true answers -->
+			<#assign responses = getSelectedResponses(question)>
+			
+			<#-- check question's response(s) to see one if one of them is in columnVarIds -->
+			<#list responses as response>
+				<#if (response.variableId)?? && columnSet[response.variableId]?? >
+					<#-- append the text found in rowAvIdToOutputMap for the current child question -->
+					<#assign valList = valList + [rowAvIdToOutputMap[question.variableId]]>
+				</#if>
+			</#list>
+		</#if>
+	</#list>
+	
+	<#return delimitList(valList) >
+</#function>  
+
+<#-- a way of using higher order functions to get what we need for the delimitedMatrixQuestions 
+delimit(getAnsweredQuestions(matrix, mapToAlternativeOutput(getChildQuestions(matrix, rowVarId#1, rowVarId#2,...), rowVarAltOutput#1, rowVarAltOutput#2, ...) columnVarId#1, columnVarId#2, ...)))
+
+The array of transformation will be like this:
+List<rowQuestionAVId> getChildQuestions(rowVarId#1, rowVarId#2, ...)
+Map<rowId, altRowOutput> mapToAlternativeOutput(rowVarAltOutput#1, rowVarAltOutput#2, ...)
+List<String - altRowOutput> getAnsweredQuestions(columnVarId#1, columnVarId#2, ...)
+String delimit(prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue)
+-->
+
+
+<#-- 
+yearsFromDate transformation takes a variable's value and returns the number of years from the current date
+It is important to note that what we need is the number of years from the date given by the veteran and the date of the 
+assessment. This function assumes that the templates for a veteran will be rendered at the end of the assessment.
+-->
+<#function yearsFromDate dt=DEFAULT_VALUE > 
+	<#if dt == DEFAULT_VALUE >
+		<#return DEFAULT_VALUE>
+	</#if>
+	
+	<#assign today = .now?date>
+	<#assign startDate = dt?date("MM/dd/yyyy")>
+	
+	<#-- find number of leap years between start and end date -->
+	<#assign startYear = (startDate?string["yyyy"])?int >
+	<#assign startMonth = (startDate?string["MM"])?int >
+	<#assign startDay = (startDate?string["dd"])?int >
+	
+	<#assign endYear = (today?string["yyyy"])?int >
+	<#assign endMonth = (today?string["MM"])?int >
+	<#assign endDay = (today?string["dd"])?int >
+	
+	<#assign age = endYear - startYear>
+	
+	<#-- if it is before the birthday subtract one -->
+	<#if startMonth > endMonth || (startMonth == endMonth && startDay > endDay>
+		<#assign age = age - 1>	
+	</#if>
+	
+	<#return age>
+</#function>
+
+<#-- 
+Delimits given variable.  If there is nothing to delimit the given default value will be returned.
+Checks variable type to use correct delimiter helper functions.
+-->
+<#function delimit var=DEFAULT_VALUE prefix='' lastPrefix='' suffix='' includeSuffixAtEnd=true defaultValue=DEFAULT_VALUE > 
+  	<#assign list=[]>
+  	
+    <#if var.variableId?? && var.variableId == 6>
+	    <#assign list = getChildValues(var)>
+	<#elseif var.measureTypeId?? &&  var.measureTypeId == 3 >  <#--  select-multi questions --> 
+        <#assign list = getChildDisplayText(var)>
+    <#else>
+    	<#return '[Error: unsupported type to delimit]'>
+    </#if>
+
+	<#return delimitList(list, prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue) >
+</#function>
+
+<#-- 
+Returns a string which is generated using the given list of values and delimiter properties 
+If there is only one element in the list it will be output without any prefix or suffix
+-->
+<#function delimitList valList=[] prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
+    <#if valList?size == 1>
+    	<#return vaList?first >
+    </#if>
+    
+    <#assign result = ''>
+    
+    <#list valList as val>
+    	<#assign currentPrefix = prefix>
+    	<#if !val_has_next >
+    		<#assign currentPrefix = lastPrefix>
+    	</#if>
+        <#assign result = result + currentPrefix + val>
+        <#if val_has_next || includeSuffixAtEnd>
+            <#assign result = result + suffix>
+        </#if>
+    </#list>
+    
+    <#if result == ''>
+		<#return defaultValue>
+	</#if>
+	
+    <#return result>
+</#function>
+
+<#-- 
+Returns an array of the 'value' field for each child of the given variable
+--> 
+<#function getChildValues variableObj=DEFAULT_VALUE > 
+    <#assign result = []>
+    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && variableObj.children?size > 0 > 
+	    <#list variableObj.children as child>
+	    	<#assign result = result + [child.value] >
+	    </#list>
+    </#if>
+    <#return result>
+</#function>
+
+<#-- 
+Returns an array of the 'displayText' field for each child of the given variable
+--> 
+<#function getChildDisplayText variableObj=DEFAULT_VALUE > 
+	<#assign result = []>
+    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && variableObj.children?size > 0 > 
+	    <#list variableObj.children as child>
+	    	<#assign result = result + [child.displayText] >
+	    </#list>
+    </#if>
+    <#return result>
+</#function>
 
 
 <#-- 
@@ -544,12 +673,12 @@ Supports the retrieval of a numerical value from a question (of types 1,2,3) or 
 If measureTypeId is null then just casts the given value as number but if var is null, "not set" is returned.  
 The var is tested to make sure it is not an object.
 if measureTypeId==2 or 3:  return the calculated value  -->
-<#function asNumber var='notset' measureTypeId='notset'>
-    <#if var == 'notset'>
+<#function asNumber var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE>
+    <#if var == DEFAULT_VALUE>
         <#return var>
     </#if> 
     
-    <#if measureTypeId == 'notset'>
+    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE> 
         <#if (var.value)?? >
             <#return var.value?number>
         
@@ -558,21 +687,20 @@ if measureTypeId==2 or 3:  return the calculated value  -->
             
         <#elseif (var.otherText)?? >
             <#return var.otherText?number>
-            
         </#if>
         
         <#return var?number>
-        
     </#if>
     
     <#if measureTypeId == 1 >
-        <#assign result = getFreeTextAnswer(var, 'notset') >
-        <#if result == 'notset'>
+        <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
+        <#if result == DEFAULT_VALUE>
             <#return result>
         </#if>
         <#return result?number>
-        
-    <#elseif measureTypeId == 2 || measureTypeId == 3 > 
+    </#if>
+    
+    <#if measureTypeId == 2 || measureTypeId == 3 > 
         <#return (sumCalcValues(var))?number >
     </#if>
     
@@ -587,20 +715,27 @@ For single select the answer's text should be returned
 If the answer's type is "other" then the other value should be returned 
 For multi select - returns a comma delimited list
 -->
-<#function getResponse var='notset' measureTypeId='notset'> 
-    <#if var == 'notset'>
+<#function getResponse var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
+    <#if var == DEFAULT_VALUE>
         <#return var > 
     </#if>
     
+    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE>
+    	<#if var.measureTypeId?has_content>
+    		<#assign measureTypeId = var.measureTypeId>
+    	<#else>
+    		<#return '[Error: no question type given]'>
+    	</#if>
+    </#if>
+    
     <#if measureTypeId == 1 >
-        <#return getFreeTextAnswer(var, 'notset') >
-        
+        <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureTypeId == 2 >
         <#return getSelectOneResponse(var) >
     <#elseif measureTypeId == 3 > 
         <#assign result = delimitChildrenDisplayText( var, '', ',', false)>
         <#if result == ''>
-            <#return 'notset'>
+            <#return DEFAULT_VALUE>
         </#if>
         <#return result >
     </#if>
@@ -613,15 +748,15 @@ For multi select - returns a comma delimited list
 <#--
 takes a custom variable and returns its value which can be a string, number, or array. 
     The variable ID is enough to know which custom variable we are getting. -->
-<#function getCustomValue var='notset'> 
-    <#if var == 'notset'>
+<#function getCustomValue var=DEFAULT_VALUE> 
+    <#if var == DEFAULT_VALUE>
         <#return var>
     </#if>
     
     <#if var.variableId?? && var.variableId == 6>
         <#assign result = delimitChildren( var, '', ', ', false)>
         <#if result == ''>
-            <#return 'notset'>
+            <#return DEFAULT_VALUE>
         </#if>
         <#return result >
     </#if> 
@@ -634,9 +769,9 @@ takes a custom variable and returns its value which can be a string, number, or 
 returns the numerical value of the response or "not set" if it cannot be evaluated.
 This function can return a number or a string. 
 -->
-<#function getFormulaValue var='notset'> 
-    <#if var == 'notset' || !(var.value)?? || !((var.value)?has_content) >
-        <#return 'notset'>
+<#function getFormulaValue var=DEFAULT_VALUE> 
+    <#if var == DEFAULT_VALUE || !(var.value)?? || !((var.value)?has_content) >
+        <#return DEFAULT_VALUE>
     </#if> 
     
     <#return var.value?number>
@@ -648,19 +783,19 @@ This function can return a number or a string.
 returns true if the variable is defined and has a value. 
 If type == 3 then at least one option must be set to true.
  -->
-<#function wasAnswered var='notset' measureTypeId='notset'> 
-    <#if var == 'notset'>
+<#function wasAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
+    <#if var == DEFAULT_VALUE>
         <#return false>
     </#if>
     
-    <#return getResponse(var, measureTypeId) != 'notset'>
+    <#return getResponse(var, measureTypeId) != DEFAULT_VALUE>
     
 </#function>
 
 <#--
-returns the negation of wasAnswered or 'notset'
+returns the negation of wasAnswered or DEFAULT_VALUE
  -->
-<#function wasntAnswered var='notset' measureTypeId='notset'> 
+<#function wasntAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
     <#return !(wasAnswered(var, measureTypeId)) > 
 </#function>
 
@@ -668,36 +803,36 @@ returns the negation of wasAnswered or 'notset'
 <#--
 returns true if the formula can be evaluated 
 -->
-<#function formulaHasResult var='notset' > 
-    <#if var == 'notset'>
+<#function formulaHasResult var=DEFAULT_VALUE > 
+    <#if var == DEFAULT_VALUE>
         <#return false>
     </#if>
     
-    <#return getFormulaValue(var)?string != 'notset'>
+    <#return getFormulaValue(var)?string != DEFAULT_VALUE>
     
 </#function>
 
 
 <#-- returns the negation of formulaHasResult -->
-<#function formulaHasNoResult var='notset'> 
+<#function formulaHasNoResult var=DEFAULT_VALUE> 
     <#return !(formulaHasResult(var)) > 
 </#function>
 
 
 <#-- returns true if the custom variable has some value -->
-<#function customHasResult var='notset' > 
-    <#if var == 'notset'>
+<#function customHasResult var=DEFAULT_VALUE > 
+    <#if var == DEFAULT_VALUE>
         <#return false>
     </#if>
     
-    <#return getCustomValue(var) != 'notset'>
+    <#return getCustomValue(var) != DEFAULT_VALUE>
     
 </#function>
  
 <#--
 returns the negation of customHasResult
  -->
-<#function customHasNoResult var='notset' > 
+<#function customHasNoResult var=DEFAULT_VALUE > 
     <#return !(customHasResult(var)) > 
 </#function>
 
@@ -711,9 +846,17 @@ returns the negation of customHasResult
   
   param right can be an answer object (not supported in UI right now), or an integer
 -->
-<#function responseIs var='notset' right='notset' measureTypeId='notset'> 
-    <#if var == 'notset' || (right?is_string && right == 'notset')>
+<#function responseIs var=DEFAULT_VALUE right=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
+    <#if var == DEFAULT_VALUE || (right?is_string && right == DEFAULT_VALUE)>
         <#return false>
+    </#if>
+    
+    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE>
+    	<#if var.measureTypeId?has_content>
+    		<#assign measureTypeId = var.measureTypeId>
+    	<#else>
+    		<#return '[Error: no question type given]'>
+    	</#if>
     </#if>
     
     <#if measureTypeId == 2 >
@@ -751,8 +894,82 @@ returns the negation of customHasResult
 <#--
 returns the negation of responseIs
 -->
-<#function responseIsnt var='notset' right='notset' measureTypeId='notset'> 
+<#function responseIsnt var=DEFAULT_VALUE right=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
     <#return !(responseIs(var, right, measureTypeId)) > 
+</#function>
+
+<#function getFreeTextAnswer variableObj=DEFAULT_VALUE deflt=''>
+    <#if variableObj = DEFAULT_VALUE || !(variableObj.children)?? || variableObj.children?size == 0>
+        <#-- The object was not found -->
+        <#return deflt>
+    </#if>
+    
+    <#assign answer = variableObj.children[0]>
+    
+    <#assign result = getResponseText(answer)>
+    <#if result != DEFAULT_VALUE>
+        <#return result>
+    </#if>
+    
+    <#if (answer.value)?? >
+        <#return answer.value>
+    </#if>
+    
+    <#return deflt>
+    
+</#function>
+
+<#function getSelectOneResponse variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || !(variableObj.children?size=1) >
+    <#-- The object was not found or there was a problem with the list -->
+    <#return DEFAULT_VALUE>
+  <#else>
+    <#return getResponseText(variableObj.children[0]) >
+  </#if>
+</#function>
+
+<#-- 
+Returns the list of AV objects containing for the select responses (i.e. the options set to true by the veteran).  
+The var given can be single or multi select.
+-->
+<#function getSelectedResponses var=DEFAULT_VALUE >
+	<#assign valList = []>
+	
+	<#if var != DEFAULT_VALUE && var.measureTypeId?? >
+		
+		<#if var.measureTypeId == 2 >  <#--  select-one questions --> 
+			<#assign valList = [getResponseText(column)] >
+		<#elseif var.measureTypeId == 3 && (var.children)??>  <#--  select-multi questions --> 		
+          	<#list var.children as answer>
+				<#if (answer.answerId)?? && (answer.value)?? && answer.value == 'true' >
+        			valList + valList + [answer]
+   				</#if>
+			</#list>
+		</#if>
+	</#if>
+	<#return valList>
+</#function>
+
+<#function getResponseText variableObj=DEFAULT_VALUE>
+  <#if variableObj == DEFAULT_VALUE>
+    <#-- The object was not found -->
+    <#return DEFAULT_VALUE>
+  <#else>
+    <#-- If there is an other value use that before anything else -->
+    <#if variableObj.otherText?? && !(variableObj.otherText='') >
+      <#return variableObj.otherText >
+    </#if>
+    <#-- If there is an override value use that before the default value -->
+    <#if variableObj.overrideText?? && !(variableObj.overrideText='') >
+      <#return variableObj.overrideText >
+    </#if>
+    <#-- Use the default text -->
+    <#if variableObj.displayText?? && !(variableObj.displayText='') >
+      <#return variableObj.displayText >
+    </#if>
+    <#-- The object does not have text to return -->
+    <#return DEFAULT_VALUE >
+  </#if>
 </#function>
 
 
