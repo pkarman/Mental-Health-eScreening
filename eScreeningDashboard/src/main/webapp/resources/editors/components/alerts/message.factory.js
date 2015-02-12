@@ -11,13 +11,13 @@
 		/*
 			Overwrites any existing message and adds a new message or flash message
 		*/
-		function set(type, msg, flash) {
+		function set(type, msg, flash, sticky) {
 			if (flash) {
 				flashMessages.length = 0;
-				flashMessages.push({type: type, msg: msg, close: closeFlashMessage});
+				flashMessages.push({type: type, msg: msg, close: closeFlashMessage, sticky: sticky});
 			} else {
 				messages.length = 0;
-				messages.push({type: type, msg: msg, close: close});
+				messages.push({type: type, msg: msg, close: close, sticky: sticky});
 			}
 		}
 
@@ -27,23 +27,23 @@
 					msg (string or array of strings)
 					flash (boolean) Whether or not the message(s) should be added onto the flashMessages array
 		 */
-		function add(type, msg, flash) {
+		function add(type, msg, flash, sticky) {
 			if (flash) {
 				if (_.isArray(msg)) {
 					_.each(msg, function(message) {
-						flashMessages.push({type: type, msg: message, close: closeFlashMessage});
-					})
+						flashMessages.push({type: type, msg: message, close: closeFlashMessage, sticky: sticky});
+					});
 				} else {
-					flashMessages.push({type: type, msg: msg, close: closeFlashMessage});
+					flashMessages.push({type: type, msg: msg, close: closeFlashMessage, sticky: sticky});
 				}
 
 			} else {
 				if (_.isArray(msg)) {
 					_.each(msg, function(message) {
-						messages.push({type: type, msg: message, close: close});
-					})
+						messages.push({type: type, msg: message, close: close, sticky: sticky});
+					});
 				} else {
-					messages.push({type: type, msg: msg, close: close});
+					messages.push({type: type, msg: msg, close: close, sticky: sticky});
 				}
 			}
 		}
@@ -57,23 +57,23 @@
 		}
 
 		// Convenience method for adding a success message
-		function success(msg) {
-			messages.push({type: 'success', msg: msg, close: close});
+		function success(msg, sticky) {
+			messages.push({type: 'success', msg: msg, close: close, sticky: sticky});
 		}
 
 		// Convenience method for adding an info message
-		function info(msg) {
-			messages.push({type: 'info', msg: msg, close: close});
+		function info(msg, sticky) {
+			messages.push({type: 'info', msg: msg, close: close, sticky: sticky});
 		}
 
 		// Convenience method for adding a warning message */
-		function warning(msg) {
-			messages.push({type: 'warning', msg: msg, close: close});
+		function warning(msg, sticky) {
+			messages.push({type: 'warning', msg: msg, close: close, sticky: sticky});
 		}
 
 		// Convenience method for adding a error message */
-		function error(msg) {
-			messages.push({type: 'danger', msg: msg, close: close});
+		function error(msg, sticky) {
+			messages.push({type: 'danger', msg: msg, close: close, sticky: sticky});
 		}
 
 		// Remove message from messages array
@@ -96,8 +96,16 @@
 
 		// Empties all messages and flashMessages
 		function empty() {
-			flashMessages.length = 0;
-			messages.length = 0;
+			resetMessages(messages);
+			resetMessages(flashMessages);
+		}
+
+		// Remove message or reset sticky to false
+		function resetMessages(msgs) {
+			var index = msgs.length;
+			while (index--) {
+				(msgs[index].sticky) ? msgs[index].sticky = false : msgs.splice(index, 1);
+			}
 		}
 
 		return {

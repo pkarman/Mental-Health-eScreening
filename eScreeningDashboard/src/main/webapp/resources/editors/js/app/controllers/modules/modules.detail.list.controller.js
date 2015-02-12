@@ -15,5 +15,8 @@
             $state.go(stateName);
         };
 
+		// Using this to require clicking next before clicking save
+		$scope.next = '';
+
     }]);
 })();

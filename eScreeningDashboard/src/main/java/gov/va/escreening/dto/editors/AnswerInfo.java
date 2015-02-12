@@ -19,11 +19,9 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String otherResponse;
     private Integer rowId;
     private String calculationValue;
-
-
+    private Integer displayOrder;
 
     public AnswerInfo() {
-
     }
 
     public Integer getId() {
@@ -147,4 +145,12 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     public void setCalculationValue(String calculationValue) {
         this.calculationValue = calculationValue;
     }
+
+	public Integer getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(Integer displayOrder) {
+		this.displayOrder = displayOrder;
+	}
 }

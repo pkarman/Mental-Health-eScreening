@@ -960,26 +960,15 @@ function TableBuilder(formBuilder){
 	function addTableModel(tableQuestion){
 		//create an emptyAnswer field in each measure which contains all answers without any user response
 		for(var i = 0; i < tableQuestion.childMeasures.length; i++){
-			var emptyAnswers = [];
 			var childMeasure = tableQuestion.childMeasures[i];
-			if(childMeasure.tableAnswers != null && childMeasure.tableAnswers.length > 0){
-				var answers = childMeasure.tableAnswers[0];
-				
-				if(answers.length > 0 && answers[0].answerResponse == null){
-					//an empty set of answers were provided so we will just move that over to the emptyAnswers element
-					emptyAnswers = answers;
-					//remove from tableAnswers
-					childMeasure.tableAnswers = [];
-				}
-				else{
-					for(var j = 0; j < answers.length; j++){
-						var answerClone = jQuery.extend(true, {}, answers[j]);
-						delete answerClone["answerResponse"];
-						emptyAnswers.push(answerClone);
-					}
-				}
+			
+			if(childMeasure.tableAnswers == null){
+				childMeasure.tableAnswers = [];
 			}
-			childMeasure["emptyAnswers"] = emptyAnswers;
+			
+			//set the empty answers "entry template" array to the answers for this measure
+			childMeasure.emptyAnswers = childMeasure.answers;
+			childMeasure.answers = [];
 		}
 		
 		tableQuestionLookup[tableQuestion.measureId] = {'childMeasures': tableQuestion.childMeasures, 'answers': tableQuestion.answers};

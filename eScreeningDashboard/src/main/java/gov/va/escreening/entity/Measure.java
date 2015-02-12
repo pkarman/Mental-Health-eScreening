@@ -99,7 +99,8 @@ public class Measure implements Serializable {
     @OneToMany(mappedBy = "measure")
     private List<AssessmentVariable> assessmentVariableList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measure")
+    /** the following are response data which we do not want to change if this survey is changed **/
+    @OneToMany(mappedBy = "measure")
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
     
     @ManyToOne(cascade = { CascadeType.ALL }, optional = true)

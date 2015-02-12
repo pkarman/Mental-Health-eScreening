@@ -32,7 +32,7 @@ EScreeningDashboardApp.models.Survey = (function survey() {
             vistaTitle: '',
             description: '',
             version: '',
-            displayOrder: '',
+            displayOrder: 1,
             mha: '',
             mhaTestName: '',
             mhaResultGroupIen: '',

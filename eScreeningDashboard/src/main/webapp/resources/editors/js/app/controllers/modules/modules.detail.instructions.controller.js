@@ -1,16 +1,17 @@
 (function() {
     'use strict';
+
     angular.module('Editors').controller('ModulesDetailInstructionsController', ['$scope', function ($scope) {
 
-        $scope.taOptions = [
-            ['bold', 'italics', 'underline'],
-            ['ul', 'ol'],
-            ['justifyLeft', 'justifyCenter', 'justifyRight'],
-            ['indent', 'outdent'], ['insertLink', 'insertVideo'],
-            ['redo', 'undo'],
-            ['html']
-        ];
-        
+		$scope.taToolbar = [
+			['h1','h2','h3'],
+			['bold','italics', 'underline'],
+			['ol', 'ul'],
+			['justifyLeft', 'justifyCenter', 'justifyRight'],
+			['indent', 'outdent'],
+			['insertLink', 'insertImage', 'insertVideo'],
+			['html']
+		];
     }]);
 
 })();

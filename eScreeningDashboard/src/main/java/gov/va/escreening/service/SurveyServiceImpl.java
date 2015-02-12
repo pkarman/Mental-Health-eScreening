@@ -268,16 +268,10 @@ public class SurveyServiceImpl implements SurveyService {
                     measures.add(measureRepository.findOne(questionInfo.getId()));
                 } else {
                     gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
-                    Measure measure = measureRepository.findOne(measureDTO.getMeasureId());
-
-                    attachMeasureAnswer(measure);
-                    attachAssessmentVar(measure);
-
-                    measureRepository.update(measure);
-                    measures.add(measure);
-
+                    measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
+                    
                     // update questionInfo's id with measure id
-                    questionInfo.setId(measure.getMeasureId());
+                    questionInfo.setId(measureDTO.getMeasureId());
                 }
             }
 
@@ -295,45 +289,25 @@ public class SurveyServiceImpl implements SurveyService {
         surveyRepository.update(survey);
     }
 
-    private void attachMeasureAnswer(Measure measure) {
-        if (MeasureTypeEnum.FREETEXT.getMeasureTypeId() == measure.getMeasureType().getMeasureTypeId()) {
-            MeasureAnswer ma = new MeasureAnswer();
-            ma.setMeasure(measure);
-            ma.setDisplayOrder(0);
-            ma.setExportName(measure.getVariableName());
-            List<MeasureAnswer> maList = new ArrayList<MeasureAnswer>();
-            maList.add(ma);
-            measure.setMeasureAnswerList(maList);
-        }
-    }
-
-    private void attachAssessmentVar(Measure measure) {
-        AssessmentVariable av = new AssessmentVariable();
-        av.setMeasure(measure);
-        av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE));
-        av.setDisplayName(measure.getMeasureText());
-        assessmentVariableRepository.create(av);
-        List<AssessmentVariable> assessmentVariableList = new ArrayList<AssessmentVariable>();
-        assessmentVariableList.add(av);
-        measure.setAssessmentVariableList(assessmentVariableList);
-    }
-
     @Override
     @Transactional(readOnly = true)
-    public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
+    public List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber) {
         Survey survey = surveyRepository.findOne(surveyId);
         List<SurveyPage> surveyPages = survey.getSurveyPageList();
 
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
         for (SurveyPage surveyPage : surveyPages) {
-            SurveyPageInfo spi = new SurveyPageInfo();
-            BeanUtils.copyProperties(surveyPage, spi);
 
-            spi.setQuestions(new ArrayList<QuestionInfo>());
-            for (Measure measure : surveyPage.getMeasures()) {
-                spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+            if (pageNumber==-1 || surveyPage.getPageNumber()==pageNumber) {
+                SurveyPageInfo spi = new SurveyPageInfo();
+                BeanUtils.copyProperties(surveyPage, spi);
+
+                spi.setQuestions(new ArrayList<QuestionInfo>());
+                for (Measure measure : surveyPage.getMeasures()) {
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure)));
+                }
+                surveyPageInfos.add(spi);
             }
-            surveyPageInfos.add(spi);
         }
         return surveyPageInfos;
     }
@@ -391,7 +365,7 @@ public class SurveyServiceImpl implements SurveyService {
 
                 spi.setQuestions(new ArrayList<QuestionInfo>());
                 for (Measure measure : surveyPage.getMeasures()) {
-                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure, null, null)));
+                    spi.getQuestions().add(EditorsQuestionViewTransformer.transformQuestion(new gov.va.escreening.dto.ae.Measure(measure)));
                 }
 
                 return spi;

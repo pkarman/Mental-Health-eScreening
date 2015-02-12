@@ -25,9 +25,9 @@
 					items: 'li:not(.unsortable)',
 					stop: function(e, ui) {
 						var answers = ui.item.scope().$parent.question.childQuestions.answers;
-						for (var index in answers) {
-							answers[index].displayOrder = +index;
-						}
+						_.each(answers, function(answer, index) {
+							answer.displayOrder = index + 1;
+						});
 					}
 				};
 
@@ -37,9 +37,9 @@
 					items: 'li:not(.unsortable)',
 					stop: function(e, ui) {
 						var questions = ui.item.scope().$parent.question.childQuestions;
-						for (var index in questions) {
-							questions[index].displayOrder = +index;
-						}
+						_.each(questions, function(question, index) {
+							question.displayOrder = index + 1;
+						});
 					}
 				};
 
@@ -66,7 +66,7 @@
 				});
 
 				scope.addAnswer = function addAnswer() {
-					scope.answers.push(Answer.extend({displayOrder: scope.answers.length}));
+					scope.answers.push(Answer.extend({displayOrder: scope.answers.length + 1}));
 				};
 
 				scope.deleteAnswer = function deleteAnswer(index) {
@@ -74,7 +74,7 @@
 				};
 
 				scope.addQuestion = function addQuestion() {
-					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti', displayOrder: scope.question.childQuestions.length }));
+					scope.question.childQuestions.push(Question.extend({type: scope.question.type === 'selectOneMatrix' ? 'selectOne' : 'selectMulti', displayOrder: scope.question.childQuestions.length + 1 }));
 				};
 
 				scope.deleteQuestion = function deleteQuestion(index) {
@@ -85,7 +85,7 @@
 					if (scope.answers.length && scope.question.childQuestions.length) {
 						_.each(scope.question.childQuestions, function(question, index) {
 
-							question.displayOrder = index;
+							question.displayOrder = index + 1;
 
 							// Remove tertiary childQuestions array
 							// Delete question.childQuestions
@@ -98,7 +98,7 @@
 								if (question.type === 'selectMulti') {
 									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
 								}
-								question.answers[j].displayOrder = j;
+								question.answers[j].displayOrder = j + 1;
 							});
 						});
 					}
