@@ -101,8 +101,10 @@ public class EditorRestController {
     @ResponseBody
     public Response<SurveyPageInfo> updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {
         editorsViewDelegate.updateSurveyPages(surveyId, Arrays.asList(surveyPage));
-        SurveyPageInfo spi = editorsViewDelegate.getSurveyPages(surveyId, surveyPage.getPageNumber()).iterator().next();
-        return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), spi);
+        for(SurveyPageInfo spi : editorsViewDelegate.getSurveyPages(surveyId, surveyPage.getPageNumber())){
+        	return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded, "Survey Page saved successfully."), spi);
+        }
+        throw new IllegalStateException("The save of page " + pageId + " did not work");
     }
 
     @RequestMapping(value = "/services/surveys/{surveyId}/pages", method = RequestMethod.GET, produces = "application/json")

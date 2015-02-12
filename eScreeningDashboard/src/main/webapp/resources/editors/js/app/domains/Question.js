@@ -30,7 +30,7 @@ EScreeningDashboardApp.models.Question = (function question() {
             id: '',
             text: '',
             type: '',
-            displayOrder: '',
+            displayOrder: 1,
             required: false,
             ppi: false,
             mha: false,
@@ -38,8 +38,7 @@ EScreeningDashboardApp.models.Question = (function question() {
             variableName: '',
             answers: [],
             validations: [],
-            childQuestions: [],
-            tableAnswers: []
+            childQuestions: []
         };
 
         for (var prop in obj) {

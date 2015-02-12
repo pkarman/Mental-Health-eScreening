@@ -146,8 +146,9 @@ public class RepositoryTest {
 		Measure m = measureRepo.findOne(1);
 		assertEquals(1, m.getMeasureValidationList().size());
 
-		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
-
+		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m);
+		mdto.setDisplayOrder(1);
+		
 		List<gov.va.escreening.dto.ae.Validation> vdtoList = mdto.getValidations();
 
 		vdtoList.clear();
@@ -171,8 +172,9 @@ public class RepositoryTest {
 	public void testMeasureAnswer() {
 		Measure m = measureRepo.findOne(10);
 
-		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
-
+		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m);
+		mdto.setDisplayOrder(1);
+		
 		Answer a = mdto.getAnswers().get(0);
 		a.setExportName("testExport");
 		a.setAnswerText("TEST ANSWER TEXT");

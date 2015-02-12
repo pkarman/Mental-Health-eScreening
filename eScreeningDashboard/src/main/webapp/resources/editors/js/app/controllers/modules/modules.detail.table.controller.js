@@ -23,9 +23,9 @@
 			stop: function(e, ui) {
 				// Update the display order
 				var questions = ui.item.scope().$parent.question.childQuestions;
-				for (var index in questions) {
-					questions[index].displayOrder = index + 1;
-				}
+				_.each(questions, function(question, index) {
+					question.displayOrder = index + 1;
+				});
 			}
 		};
 
@@ -35,7 +35,7 @@
 				templateUrl: 'resources/editors/partials/modules/table-question-modal.html',
 				resolve: {
 					tableQuestion: function() {
-						return $scope.question
+						return $scope.question;
 					}
 				},
 				controller: function($scope, $modalInstance, tableQuestion) {
@@ -58,7 +58,7 @@
 
 					$scope.update = function update() {
 						$modalInstance.close({question: $scope.question, update: $scope.isUpdate});
-					}
+					};
 				}
 			});
 

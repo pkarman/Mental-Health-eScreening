@@ -1,7 +1,6 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.controller.dashboard.AssessmentVariableController;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;

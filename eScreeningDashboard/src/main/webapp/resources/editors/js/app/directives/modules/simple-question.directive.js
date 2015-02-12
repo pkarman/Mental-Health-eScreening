@@ -11,22 +11,7 @@
 			templateUrl: 'resources/editors/partials/modules/simple-question.html',
 			link: function(scope) {
 
-				// Hack to get tableAnswers onto answers array as a result of the server sending answers on tableAnswers
 				scope.$watch('question', function(question) {
-					if (question && question.tableAnswers && question.tableAnswers.length && (!question.answers || !question.answers.length)) {
-						question.answers = [];
-						_.each(question.tableAnswers, function(answers) {
-							// Server sends back and array of array of objects for no good reason
-							_.each(answers, function(answer, index) {
-								var clonedAnswer = _.clone(answer);
-								clonedAnswer.displayOrder = index + 1;
-								question.answers.push(clonedAnswer);
-							});
-						});
-						// Remove the tableAnswers so they don't override the answers
-						delete question.tableAnswers;
-					}
-
 					if (question && question.answers) {
 						// Initialize displayOrder property
 						_.each(question.answers, function(answer, index) {
