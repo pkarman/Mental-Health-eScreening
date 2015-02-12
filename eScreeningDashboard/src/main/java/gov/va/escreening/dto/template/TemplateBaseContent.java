@@ -43,12 +43,28 @@ public abstract class TemplateBaseContent {
 		
 		String translatedVar = inStr;
 		
-		if (operand == null)
-		{
+		
+		// we are going to apply transformation of variable.
+		if (left.getTransformations() != null && left.getTransformations().size() > 0) {
+			for (VariableTransformationDTO transformation : left.getTransformations()) {
+				StringBuilder s = new StringBuilder(transformation.getName());
+				s.append("(").append(translatedVar);
+
+				if (transformation.getParams() != null
+						&& transformation.getParams().size() > 0) {
+					for (String param : transformation.getParams())
+						s.append("," + param);
+				}
+				s.append(" ) ");
+
+				translatedVar = s.toString();
+			}
+		}
+		
+		if (operand == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
+		{//Don't pull value out if transformations were applied
 			if (left.getTypeId()!=null && left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
-				
 			{
-				
 				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
 				
 			}
@@ -72,7 +88,7 @@ public abstract class TemplateBaseContent {
 					try
 					{
 						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != \"notset\" && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
 					}
 					catch(Exception e)
 					{
@@ -94,18 +110,19 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("answered".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.getMeasureTypeId() != null 
+					&& (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3 || left.getMeasureTypeId() == 4))
 			{
-				translatedVar= "wasAnswered("+inStr+", "+left.getMeasureTypeId()+")";
+				translatedVar= "wasAnswered("+inStr+")";
 			}
 		}
 		else if ("nanswered".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.getMeasureTypeId() != null 
+					&& (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3 || left.getMeasureTypeId() == 4))
 			{
-				translatedVar= "wasntAnswered("+inStr+", "+left.getMeasureTypeId()+")";
+				translatedVar= "wasntAnswered("+inStr+")";
 			}
-			 
 		}
 		else if ("result".equals(operand))
 		{
@@ -117,6 +134,11 @@ public abstract class TemplateBaseContent {
 			{
 				translatedVar= "customHasResult("+inStr+")";
 			}
+			else if (left.getTypeId()!=null && (left.getTypeId() == 6 || left.getTypeId() == 7))
+			{
+				translatedVar= "matrixHasResult("+inStr+")";
+			}
+			
 		}
 		else if ("nresult".equals(operand))
 		{
@@ -128,7 +150,10 @@ public abstract class TemplateBaseContent {
 			{
 				translatedVar= "customHasNoResult("+inStr+")";
 			}
-			
+			else if (left.getTypeId()!=null && (left.getTypeId() == 6 || left.getTypeId() == 7))
+			{
+				translatedVar= "matrixHasNoResult("+inStr+")";
+			}
 		}
 		else if ("response".equals(operand))
 		{
@@ -144,26 +169,25 @@ public abstract class TemplateBaseContent {
 				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
-		
-		// now we have the var.
-		// we are going to apply transformation on top ofit.
-		
-		if (left.getTransformations() != null && left.getTransformations().size() > 0) {
-			for (VariableTransformationDTO transformation : left.getTransformations()) {
-				StringBuilder s = new StringBuilder(transformation.getName());
-				s.append("(").append(translatedVar);
-
-				if (transformation.getParams() != null
-						&& transformation.getParams().size() > 0) {
-					for (String param : transformation.getParams())
-						s.append("," + param);
-				}
-				s.append(" ) ");
-
-				translatedVar = s.toString();
-
+		else if ("none".equals(operand))
+		{
+			if (left.getMeasureTypeId() != null 
+					&& (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3|| left.getMeasureTypeId() == 4))
+			{
+				translatedVar= "wasAnswerNone("+inStr+")";
 			}
+			 
 		}
+		else if ("nnone".equals(operand))
+		{
+			if (left.getMeasureTypeId() != null 
+					&& (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3|| left.getMeasureTypeId() == 4))
+			{
+				translatedVar= "wasntAnswerNone("+inStr+")";
+			}
+			 
+		}
+		
 		return translatedVar;
 	}
 }

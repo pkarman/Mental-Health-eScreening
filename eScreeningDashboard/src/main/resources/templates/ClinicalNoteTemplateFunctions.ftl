@@ -127,20 +127,6 @@
 	${getVariableDisplayText(variableObj)}
 </#function>
 
-<#function wasAnswerNone variableObj=DEFAULT_VALUE>
-  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
-    <#-- The object was not found or there was a problem with the list -->
-    <#return false>
-  <#else>
-     <#list variableObj.children as x>
-       <#if x.value?? && x.value='true' && x.type?? && x.type='none'>
-	     <#return true>
-       </#if>
-     </#list>
-     <#return false>
-  </#if>
-</#function>
-
 <#function getFreeformDisplayText obj>
 	
 	<#list obj.children as c>
@@ -478,20 +464,22 @@ Other parameters are the same as the delimit function below
 	<#-- iterate over table rows and collect answers for the given question AV ID 
 	(this code can be factored out into its own function PLEASE DON'T COPY IT) -->
 	<#assign valList = []>
-	<#list variableObj.children as row>
-		<#if row.children?? && (row.children?size > 0) >
-			<#list row.children as question>
-				<#-- check to see if the given child question has an answer for this row -->
-				<#if (question.variableId)?? && question.variableId == childAvId >
-					<#assign response = getResponse(question, question.measureTypeId) >
-					<#if response?has_content >
-						<#-- append append response to list -->
-						<#assign valList = valList + [response]>
+	<#if !(wasAnswerNone(variableObj))>
+		<#list variableObj.children as row>
+			<#if row.children?? && (row.children?size > 0) >
+				<#list row.children as question>
+					<#-- check to see if the given child question has an answer for this row -->
+					<#if (question.variableId)?? && question.variableId == childAvId >
+						<#assign response = getResponse(question, question.measureTypeId) >
+						<#if response?has_content >
+							<#-- append append response to list -->
+							<#assign valList = valList + [response]>
+						</#if>
 					</#if>
-				</#if>
-			</#list>
-		</#if>
-	</#list>
+				</#list>
+			</#if>
+		</#list>
+	</#if>
 	
 	<#-- if collected list is empty return defaultValue>
 	<#if valList?size == 0>
@@ -507,7 +495,7 @@ Other parameters are the same as the delimit function below
 This transformation takes a table question and returns the number of entries given by the veteran
 -->
 <#function numberOfEntries table=DEFAULT_VALUE >
-	<#if table == DEFAULT_VALUE || !(table.children??) >
+	<#if table == DEFAULT_VALUE || !(table.children??) || wasAnswerNone(variableObj) >
     	<#return 0>
 	<#else>
 		<#return table.children?size>
@@ -598,7 +586,7 @@ assessment. This function assumes that the templates for a veteran will be rende
 Delimits given variable.  If there is nothing to delimit the given default value will be returned.
 Checks variable type to use correct delimiter helper functions.
 -->
-<#function delimit var=DEFAULT_VALUE prefix='' lastPrefix='' suffix='' includeSuffixAtEnd=true defaultValue=DEFAULT_VALUE > 
+<#function delimit var=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
   	<#assign list=[]>
   	
     <#if var.variableId?? && var.variableId == 6>
@@ -733,7 +721,7 @@ For multi select - returns a comma delimited list
     <#elseif measureTypeId == 2 >
         <#return getSelectOneResponse(var) >
     <#elseif measureTypeId == 3 > 
-        <#assign result = delimitChildrenDisplayText( var, '', ',', false)>
+        <#assign result = delimit(var)>
         <#if result == ''>
             <#return DEFAULT_VALUE>
         </#if>
@@ -754,7 +742,7 @@ takes a custom variable and returns its value which can be a string, number, or 
     </#if>
     
     <#if var.variableId?? && var.variableId == 6>
-        <#assign result = delimitChildren( var, '', ', ', false)>
+        <#assign result = delimit(var)>
         <#if result == ''>
             <#return DEFAULT_VALUE>
         </#if>
@@ -780,7 +768,7 @@ This function can return a number or a string.
 
 
 <#--
-returns true if the variable is defined and has a value. 
+returns true if the variable is defined and has a value; false otherwise.
 If type == 3 then at least one option must be set to true.
  -->
 <#function wasAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
@@ -788,15 +776,47 @@ If type == 3 then at least one option must be set to true.
         <#return false>
     </#if>
     
+    <#if var?is_string >
+    	<#return var?has_content>
+    </#if>
+    
+    <#if var.measureTypeId?? && var.measureTypeId == 4> <#-- is table question -->
+    	<#return wasAnswerNone(var) || numberOfEntries(var) > 0 >
+    </#if>
+    
     <#return getResponse(var, measureTypeId) != DEFAULT_VALUE>
     
 </#function>
 
 <#--
-returns the negation of wasAnswered or DEFAULT_VALUE
+returns the negation of wasAnswered
  -->
 <#function wasntAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
     <#return !(wasAnswered(var, measureTypeId)) > 
+</#function>
+
+<#-- 
+Returns true if the None typed answer was selected
+-->
+<#function wasAnswerNone variableObj=DEFAULT_VALUE>
+  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
+    <#-- The object was not found or there was a problem with the list -->
+    <#return false>
+  <#else>
+     <#list variableObj.children as x>
+       <#if x.value?? && x.value='true' && x.type?? && x.type='none'>
+	     <#return true>
+       </#if>
+     </#list>
+     <#return false>
+  </#if>
+</#function>
+
+<#--
+returns the negation of wasAnswerNone
+ -->
+<#function wasntAnswerNone variableObj=DEFAULT_VALUE>
+	<#return !(wasAnswerNone(var)) > 
 </#function>
 
 
@@ -836,6 +856,20 @@ returns the negation of customHasResult
     <#return !(customHasResult(var)) > 
 </#function>
 
+<#--
+Returns true if the value given has a value. Currently only supports string values
+-->
+<#function matrixHasResult val=DEFAULT_VALUE>
+	<#if val?is_string && val == DEFAULT_VALUE>
+		<#return false>
+	</#if>  
+	
+	<#return val?has_content> 
+</#function>
+
+<#function matrixHasNoResult var=DEFAULT_VALUE > 
+    <#return !(matrixHasResult(var)) > 
+</#function>
 
 <#--
  returns true if one of the given variable's responses is equal to right. 
