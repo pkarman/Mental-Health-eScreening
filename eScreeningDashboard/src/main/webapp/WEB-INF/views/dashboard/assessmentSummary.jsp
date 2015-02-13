@@ -430,7 +430,8 @@
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/assessmentSummary.js" />"></script>
 <script>
-        
+//TODO: move all the below JS of to assessmentSummary.js
+// Cache all classes and IDs  
 $(document).ready(function() {              
     $(this).on("click", '#VeteranSummaryButton', function(e){
         e.preventDefault();
@@ -639,7 +640,6 @@ $(document).ready(function() {
         
         
 <script>
-
 	/**
 	 * Initializes basic graph parameter using given graph parameters.
 	 * Uses fields: 
@@ -894,6 +894,7 @@ $(document).ready(function() {
 			});
 		});
 		
+		ticks.reverse(); // reverse the order on the ticks 
 		//var maxValue = d3.max(ticks , function(d) { return +d.value;} );
 		
 		// Vars
