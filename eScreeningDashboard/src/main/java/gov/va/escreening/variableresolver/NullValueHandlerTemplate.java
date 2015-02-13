@@ -23,4 +23,9 @@ public class NullValueHandlerTemplate implements NullValueHandler {
                         "There were not any measure responses for measureId: %s, assessmentId: %s",
                         measureId, veteranAssessmentId));
     }
+
+    @Override
+    public String resolveCalculationDefaultValue(MeasureAssessmentVariableResolverImpl measureAssessmentVariableResolver, Integer measureId, Integer veteranAssessmentId) {
+        return "null";
+    }
 }

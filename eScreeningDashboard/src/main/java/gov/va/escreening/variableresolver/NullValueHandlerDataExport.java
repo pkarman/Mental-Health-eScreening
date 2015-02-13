@@ -28,4 +28,9 @@ public class NullValueHandlerDataExport implements NullValueHandler {
                         measureId, veteranAssessmentId));
         return "0";
     }
+
+    @Override
+    public String resolveCalculationDefaultValue(MeasureAssessmentVariableResolverImpl measureAssessmentVariableResolver, Integer measureId, Integer veteranAssessmentId) {
+        return "0";
+    }
 }
