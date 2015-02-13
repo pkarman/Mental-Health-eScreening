@@ -4,6 +4,7 @@ import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.vista.dto.VistaClinicAppointment;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BatchBatteryCreateDelegate {
@@ -16,5 +17,8 @@ public interface BatchBatteryCreateDelegate {
 	 * @return
 	 */
 	List<VeteranDto> getVeteranDetails(String[] veteranIens, EscreenUser user);
+
+	public abstract List<VistaClinicAppointment> searchVeteranByAppointments(EscreenUser user,
+			String clinicIen, Date start, Date end);
 
 }

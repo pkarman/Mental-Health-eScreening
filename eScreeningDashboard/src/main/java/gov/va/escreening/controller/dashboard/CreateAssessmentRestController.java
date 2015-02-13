@@ -163,6 +163,21 @@ public class CreateAssessmentRestController {
 		
 	}
 	
+	@RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params="searchButton")
+	public String searchVeterans(@CurrentUser EscreenUser escreenUser,
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean, Model model) {
+
+		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
+		
+			String clinicIen = selectVeteranFormBean.getSelectedClinic().getClinicIen();
+			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
+					selectVeteranFormBean.getStartDate(), selectVeteranFormBean.getEndDate());
+			
+			model.addAttribute("result",appList);
+		return "dashboard/selectVeterans";
+	}
+	
 	@RequestMapping(value="/views/**", method=RequestMethod.GET)
 	public String setupBasePages(HttpServletRequest request)
 	{
@@ -268,5 +283,5 @@ public class CreateAssessmentRestController {
 
         return "dashboard/selectVeterans";
     }
-
+    
 }

@@ -48,39 +48,45 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			start = format.parse(startdate);
 			Date end = format.parse(enddate);
 
-			List<VistaClinicAppointment> appList = vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
-					user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
-					clinicIen, start, end);
-			
-			Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
-			
-			//Now, go through the veterans and only return the closest appointment to the startDate???
-			for(VistaClinicAppointment app : appList)
-			{	
-				String vetIen = app.getVeteranIen();
-				if(appMap.containsKey(vetIen))
-				{
-					Date appTime = app.getAppointmentDate();
-					Date current = Calendar.getInstance().getTime();
-					if(appTime.after(current))
-					{
-						if(appTime.before(appMap.get(vetIen).getAppointmentDate()))
-						{
-							appMap.put(vetIen, app);
-						}
-					}
-				}
-				else
-				{
-					appMap.put(vetIen, app);
-				}
-			}
-			
-			return new ArrayList<VistaClinicAppointment>(appMap.values());
+			return searchVeteranByAppointments(user, clinicIen, start, end);
 		} catch (ParseException e) {
 			throw new IllegalArgumentException(e);
 		}
 
+	}
+
+	@Override
+	public List<VistaClinicAppointment> searchVeteranByAppointments(
+			EscreenUser user, String clinicIen, Date start, Date end) {
+		List<VistaClinicAppointment> appList = vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
+				user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
+				clinicIen, start, end);
+		
+		Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
+		
+		//Now, go through the veterans and only return the closest appointment to the startDate???
+		for(VistaClinicAppointment app : appList)
+		{	
+			String vetIen = app.getVeteranIen();
+			if(appMap.containsKey(vetIen))
+			{
+				Date appTime = app.getAppointmentDate();
+				Date current = Calendar.getInstance().getTime();
+				if(appTime.after(current))
+				{
+					if(appTime.before(appMap.get(vetIen).getAppointmentDate()))
+					{
+						appMap.put(vetIen, app);
+					}
+				}
+			}
+			else
+			{
+				appMap.put(vetIen, app);
+			}
+		}
+		
+		return new ArrayList<VistaClinicAppointment>(appMap.values());
 	}
 
 	/**
