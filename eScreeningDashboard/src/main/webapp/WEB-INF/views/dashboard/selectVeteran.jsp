@@ -131,8 +131,8 @@
         <div class="clearfix"></div>
 
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active"><a href="#home" role="tab" data-toggle="tab"><strong>Create Assessment for Unscheduled Visit</strong></a></li>
-					<li><a href="#" role="tab"><strong>Create Assessment(s) for Appointment(s)</strong></a></li>
+					<li class="active"><a href="#" role="tab"><strong>Create Assessment for Unscheduled Visit</strong></a></li>
+					<li><a href="selectVeterans" role="tab"><strong>Create Assessment(s) for Appointment(s)</strong></a></li>
 				</ul>
 				<br>          
                 
