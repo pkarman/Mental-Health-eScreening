@@ -1,6 +1,8 @@
 package gov.va.escreening.vista.dto;
 
+import java.beans.Transient;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class VistaClinicAppointment implements Serializable {
@@ -13,7 +15,13 @@ public class VistaClinicAppointment implements Serializable {
     private String lastName;
     private String clinicIen;
     private Date appointmentDate;
-    private String visitStatusName;
+    
+    @org.springframework.data.annotation.Transient
+    public Date getAppointmentDate() {
+		return appointmentDate;
+	}
+
+	private String visitStatusName;
 
     public String getVeteranIen() {
         return veteranIen;
@@ -55,10 +63,6 @@ public class VistaClinicAppointment implements Serializable {
         this.clinicIen = clinicIen;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
-    }
-
     public void setAppointmentDate(Date appointmentDate) {
         this.appointmentDate = appointmentDate;
     }
@@ -74,7 +78,27 @@ public class VistaClinicAppointment implements Serializable {
     public VistaClinicAppointment() {
 
     }
+    
+    public String getApptDate()
+    {
+    	if(appointmentDate != null)
+    	{
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    		return dateFormat.format(appointmentDate);
+    	}
+    	return "";
+    }
 
+    public String getApptTime()
+    {
+    	if(appointmentDate != null)
+    	{
+    		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    		return timeFormat.format(appointmentDate);
+    	}
+    	return "";
+    }
+    
     @Override
     public String toString() {
         return "VistaClinicAppointment [veteranIen=" + veteranIen
