@@ -192,7 +192,7 @@ public class CreateAssessmentRestController {
 		return new EditVeteranAssessmentFormBean();
 	}
 	
-	@RequestMapping(value="/veteranSearch/selectVeterans", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
 			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
