@@ -101,12 +101,9 @@ public class MeasureAssessmentVariableResolverImpl implements
                                 measureTypeId));
         }
 
-        if (result == null)
-            result = "null";
-        // throw new
-        // CouldNotResolveVariableValueException(String.format("Was unable to resolve the calculation value for measureid: %s, assessmentId: %s",
-        // measureId, veteranAssessmentId));
-
+        if (result == null) {
+            result = smrNullHandler.resolveCalculationDefaultValue(this, measureId, veteranAssessmentId);
+        }
         return result;
     }
 

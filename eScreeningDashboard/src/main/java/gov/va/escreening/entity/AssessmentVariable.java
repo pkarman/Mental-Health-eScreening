@@ -6,34 +6,22 @@
 
 package gov.va.escreening.entity;
 
+import com.google.common.collect.Maps;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.util.Map;
 
 /**
- *
  * @author jocchiuzzo
  */
 @Entity
 @Table(name = "assessment_variable")
 @NamedQueries({
-    @NamedQuery(name = "AssessmentVariable.findAll", query = "SELECT a FROM AssessmentVariable a")})
+        @NamedQuery(name = "AssessmentVariable.findAll", query = "SELECT a FROM AssessmentVariable a")})
 public class AssessmentVariable implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -63,12 +51,8 @@ public class AssessmentVariable implements Serializable {
     @JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
     @ManyToOne
     private MeasureAnswer measureAnswer;
-    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
-    //private List<RuleAssessmentVariable> ruleAssessmentVariableList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent")
     private List<AssessmentVarChildren> assessmentVarChildrenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableChild")
-    private List<AssessmentVarChildren> assessmentVarChildrenList1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
 
@@ -173,14 +157,6 @@ public class AssessmentVariable implements Serializable {
         this.assessmentVarChildrenList = assessmentVarChildrenList;
     }
 
-    public List<AssessmentVarChildren> getAssessmentVarChildrenList1() {
-        return assessmentVarChildrenList1;
-    }
-
-    public void setAssessmentVarChildrenList1(List<AssessmentVarChildren> assessmentVarChildrenList1) {
-        this.assessmentVarChildrenList1 = assessmentVarChildrenList1;
-    }
-
     public List<AssessmentVariableColumn> getAssessmentVariableColumnList() {
         return assessmentVariableColumnList;
     }
@@ -213,5 +189,15 @@ public class AssessmentVariable implements Serializable {
     public String toString() {
         return "gov.va.escreening.entity.AssessmentVariable[ assessmentVariableId=" + assessmentVariableId + " ]";
     }
-    
+
+    public Map<String, Object> getAsMap() {
+        Map<String, Object> asMap = Maps.newHashMap();
+        asMap.put("id", assessmentVariableId);
+        asMap.put("name", displayName);
+        return asMap;
+    }
+
+    public List getAsList() {
+        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length()+1);
+    }
 }
