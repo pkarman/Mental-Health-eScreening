@@ -775,13 +775,13 @@ If type == 3 then at least one option must be set to true.
     <#if var == DEFAULT_VALUE>
         <#return false>
     </#if>
-    
-    <#if var?is_string >
+
+    <#if !(var.variableId??) > <#-- if this is not a variable then just see if it has content -->
     	<#return var?has_content>
-    </#if>
+    </#if>    
     
     <#if var.measureTypeId?? && var.measureTypeId == 4> <#-- is table question -->
-    	<#return wasAnswerNone(var) || numberOfEntries(var) > 0 >
+    	<#return wasAnswerNone(var) || (numberOfEntries(var) > 0) >
     </#if>
     
     <#return getResponse(var, measureTypeId) != DEFAULT_VALUE>
@@ -860,7 +860,7 @@ returns the negation of customHasResult
 Returns true if the value given has a value. Currently only supports string values
 -->
 <#function matrixHasResult val=DEFAULT_VALUE>
-	<#if val?is_string && val == DEFAULT_VALUE>
+	<#if val == DEFAULT_VALUE>
 		<#return false>
 	</#if>  
 	

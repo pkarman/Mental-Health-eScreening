@@ -397,7 +397,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 				.getMeasure().getMeasureId());
 		Integer column = getColumn(assessmentVariable);
 		AssessmentVariableDto variableDto = new AssessmentVariableDto(id,
-				variableName, "list", displayName, column);
+				variableName, "list", displayName, column, assessmentVariable.getMeasure().getMeasureType().getMeasureTypeId());
 		return variableDto;
 	}
 

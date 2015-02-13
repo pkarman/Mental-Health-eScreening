@@ -18,6 +18,7 @@ public class AssessmentVariableDto {
 	private String calculationValue;
 	private String otherValue;
 	private String displayName;
+	private Integer measureTypeId;
 	
 	private Integer answerId;
 	
@@ -39,6 +40,15 @@ public class AssessmentVariableDto {
 		this.type = type;
 		this.name = name;
 		this.column = column;
+	}
+	
+	public AssessmentVariableDto(Integer variableId, String key, String type, String name, Integer column, Integer measureTypeId) {
+		this.variableId = variableId;
+		this.key = key;
+		this.type = type;
+		this.name = name;
+		this.column = column;
+		this.measureTypeId = measureTypeId;
 	}
 	
 	public AssessmentVariableDto(Integer variableId, String key, String type, String name, String value,
@@ -178,8 +188,21 @@ public class AssessmentVariableDto {
 		this.children = children;
 	}
 
-	
-	
+	public void setDisplayName(String displayName) {
+		this.displayName=displayName;
+	}
+
+	public String getDisplayName() {
+		return this.displayName;
+	}
+
+	public Integer getMeasureTypeId() {
+		return measureTypeId;
+	}
+
+	public void setMeasureTypeId(Integer measureTypeId) {
+		this.measureTypeId = measureTypeId;
+	}
 
 	@Override
 	public String toString() {
@@ -188,15 +211,8 @@ public class AssessmentVariableDto {
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
-				+ ", otherValue=" + otherValue + ", children=" + children + "]";
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName=displayName;
-	}
-
-	public String getDisplayName() {
-		return this.displayName;
+				+ ", otherValue=" + otherValue + ", children=" + children 
+				+ ", measureTypeId=" + measureTypeId + "]";
 	}
 	
 }
