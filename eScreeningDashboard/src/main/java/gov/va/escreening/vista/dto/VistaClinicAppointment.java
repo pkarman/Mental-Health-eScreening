@@ -1,6 +1,5 @@
 package gov.va.escreening.vista.dto;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +15,6 @@ public class VistaClinicAppointment implements Serializable {
     private String clinicIen;
     private Date appointmentDate;
     
-    @org.springframework.data.annotation.Transient
     public Date getAppointmentDate() {
 		return appointmentDate;
 	}
