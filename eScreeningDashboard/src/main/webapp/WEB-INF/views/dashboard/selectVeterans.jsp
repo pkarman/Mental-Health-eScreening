@@ -167,7 +167,7 @@
 				</div>
 			
 	            
-				<form:form method="post" >
+				<form:form method="post"  action="editVeteransAssessment?vetIens=100022&clinicId=23">
 				<h2>Search Result</h2>
 				<div id="mainContent">
 					<table id="selectVeteransTable" name="selectVeterans" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" width="100%" summary="Export Data Table">

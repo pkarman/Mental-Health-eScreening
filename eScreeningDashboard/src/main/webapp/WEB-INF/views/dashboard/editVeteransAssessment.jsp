@@ -5,15 +5,14 @@
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
-<html>
+<html ng-app="editVeteransAssessmentFormApp">
 <head>
-<title>Batch Create Battery</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
-<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-
-	<link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
+	<title>Batch Create Battery</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
+	<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
 
 	<!-- FAVICON -->
 	<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
@@ -23,6 +22,7 @@
 	<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
 	<meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
 
+	<link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
@@ -78,124 +78,47 @@
 						This battery is read only and no longer editable.
 					</div>
 				</c:if>
-
-                <div class="border-radius-main-form">
-                    <div class="row">
-                        
-						<div class="col-md-6">
-							Name (Last, First Middle)
-							<div class="txt_lable_lg">
-								<c:out value="${veteran.fullName}" />
-							</div>
-						</div>
-						<div class="col-md-3">
-							Status
-							<div class="txt_lable_lg">
-								<c:choose>
-								      <c:when test="${(!empty veteran.veteranId) && (empty veteran.veteranIen)}">
-								      	<div>Only Exists in DB</div>
-								      </c:when>
-									  <c:when test="${(!empty veteran.veteranIen) && (empty veteran.veteranId)}">
-								      	<div>Only Exists in VistA</div>
-								      </c:when>
-								       <c:when test="${(!empty veteran.veteranIen) && (!empty veteran.veteranId)}">
-								      	<div>Mapped Veteran</div>
-								      </c:when>
-								      <c:otherwise>
-								      </c:otherwise>
-								</c:choose>	
-							</div>
-						</div>
-                        
-                        <div class="col-md-2">
-                            Date of Birth
-                            <div class="txt_lable_lg">
-                                <fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${veteran.birthDate}" />
-                            </div>
-                        </div>
-                        <div class="col-md-1 text-right">
-                            SSN-4
-                            <div class="txt_lable_lg text-right">
-                                <c:out value="${veteran.ssnLastFour}" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <div class="row">
-                        <div class="col-md-2">
-                            Phone
-                            <div class="txt_lable_md">
-                                <c:out value="${veteran.phone}" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            Work
-                            <div class="txt_lable_md">
-                                <c:out value="${veteran.workPhone}" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            Cell
-                            <div class="txt_lable_md">
-                                <c:out value="${veteran.cellPhone}" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            Email
-                            <div class="txt_lable_md">
-                                <c:out value="${veteran.email}" />
-                            </div>
-                        </div>
-                        <div class="col-md-2 text-right">
-                            VistA IEN
-                            <div class="txt_lable_md">
-                                <c:out value="${veteran.veteranIen}" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <br/>
 				
-				<c:if test="${not isCreateMode}">
-					<div class="border-radius-main-form">
-						<div class="row">
-							<div class="col-md-2">
-								Battery ID
-								<div class="txt_lable_md">
-									<c:out value="${editVeteranAssessmentFormBean.veteranAssessmentId}" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								Status
-								<div class="txt_lable_md">
-									<c:out value="${veteranAssessmentStatus}" />
-								</div>
-							</div>
-							<div class="col-md-4">
-								Created By
-								<div class="txt_lable_md">
-									<c:out value="${createdByUser}" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								Date Created
-								<div class="txt_lable_md">
-									<fmt:formatDate type="both" pattern="MM/dd/yyyy HH:mm:ss" value="${dateCreated}" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								Date Completed
-								<div class="txt_lable_md">
-									<fmt:formatDate type="both" pattern="MM/dd/yyyy HH:mm:ss" value="${dateCompleted}" />
-								</div>
-							</div>
+								
+				<div>
+				
+					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+					  <div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingOne">
+						  <h3 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							 <strong>Selected Veterans</strong>
+							</a>
+						  </h3>
 						</div>
-					</div>
-				</c:if>
+						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+						  <div class="panel-body">
 
+								<div id="mainContent">
+									<table id="selectVeteransTable" name="selectVeterans" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" width="100%" summary="Export Data Table">
+									  <thead>
+										<tr>
+											<th scope="col" class="col-md-1">SSN-4</th>
+											<th scope="col" class="col-md-2">Last Name</th>
+											<th scope="col" class="col-md-2">First Name</th>
+											<th scope="col" class="col-md-2">Middle Name</th>
+											<th scope="col" class="col-md-2">Date of Birth</th>
+											<th scope="col" class="col-md-1">Appointment Date</th>
+											<th scope="col" class="col-md-1">Appointment Time</th>
+											<th scope="col" class="col-md-1">Clinical Reminders</th>
+										</tr>
+									  </thead>
+									  <tbody>
+									  </tbody>
+									</table>
+								</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+				
+				</div>
+				
 
 
 				<div>
@@ -305,7 +228,7 @@
 				    						<tbody>
 											    <c:forEach var="item" items="${surveyList}">
 				                                    <tr>
-				                                        <td>
+				                                        <td class="tri">
 				                                            <c:set var="classNameVar" value=" " />
 				                                            <c:forEach var="battery" items="${item.batteryList}">
 				                                                <c:set var="classNameVar">

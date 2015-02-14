@@ -41,8 +41,8 @@ app.directive('reportTable', function() {
 				{ "mData": "firstName"},
 				{ "mData": "middleName"},
 				//{ "mData": "dob"},
-				{ "mData": "appointmentDate"},
-	        	{ "mData": "appointmentDate"}];
+				{ "mData": "apptDate"},
+	        	{ "mData": "apptTime"}];
 	        options["aoColumns"] = aoColumns;
 
 	        // apply the plugin
