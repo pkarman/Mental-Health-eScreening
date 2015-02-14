@@ -7,6 +7,7 @@ import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.dto.dashboard.VeteranSearchResult;
@@ -189,17 +190,19 @@ public class CreateAssessmentRestController {
 	@ModelAttribute
 	public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean()
 	{
-		return new EditVeteranAssessmentFormBean();
+		return new CreateVeteranAssessementsFormBean();
 	}
 	
 	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
-			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+			@ModelAttribute CreateVeteranAssessementsFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
 	{
 		List<VeteranDto> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
 		model.addAttribute("vetList", vetList);
+		
+		editVeteranAssessmentFormBean.setVeterans(vetList);
 		
 		Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
 		
@@ -215,6 +218,9 @@ public class CreateAssessmentRestController {
 		}
 		
 		model.addAttribute("vetSurveyMap", vetSurveyMap);
+		editVeteranAssessmentFormBean.setVetSurveyMap(vetSurveyMap);
+		
+		model.addAttribute("isCprsVerified", user.getCprsVerified());
 		
 		Clinic c = clinicRepo.findOne(clinicId);
 		editVeteranAssessmentFormBean.setSelectedClinicId(c.getClinicId());
@@ -284,4 +290,24 @@ public class CreateAssessmentRestController {
         return "dashboard/selectVeterans";
     }
     
+	@RequestMapping(value="/editVeteransAssessment", method = RequestMethod.POST, params="saveButton")
+	public String selectVeteransForBatchCreate(@CurrentUser EscreenUser escreenUser, Model model,
+			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+			BindingResult result)
+	{
+		CreateVeteranAssessementsFormBean formBean = (CreateVeteranAssessementsFormBean)editVeteranAssessmentFormBean;
+		List<BatchBatteryCreateResult> results = batchCreateDelegate.batchCreate(formBean.getVeterans(), 
+				editVeteranAssessmentFormBean.getSelectedBatteryId(),
+				editVeteranAssessmentFormBean.getSelectedClinicId(),
+				editVeteranAssessmentFormBean.getSelectedClinicianId(),
+				editVeteranAssessmentFormBean.getSelectedNoteTitleId(),
+				editVeteranAssessmentFormBean.getSelectedBatteryId(),
+				formBean.getVetSurveyMap(),
+				editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
+				escreenUser);
+		
+				
+		model.addAttribute("batchCreateResult", results);
+		return "dashboard/batchComplete";
+	}
 }
