@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CreateVeteranAssessementsFormBean extends EditVeteranAssessmentFormBean 
+public class BatchCreateFormBean extends EditVeteranAssessmentFormBean 
 {
 	
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class CreateVeteranAssessementsFormBean extends EditVeteranAssessmentForm
 	 */
 	private Map<Integer, Set<Integer>> vetSurveyMap;
 
-	public CreateVeteranAssessementsFormBean() {
+	public BatchCreateFormBean() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

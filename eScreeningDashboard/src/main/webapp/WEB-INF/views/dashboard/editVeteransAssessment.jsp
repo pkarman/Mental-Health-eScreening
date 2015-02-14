@@ -122,7 +122,7 @@
 
 
 				<div>
-					<form:form modelAttribute="editVeteranAssessmentFormBean" autocomplete="off" method="post">
+					<form:form modelAttribute="batchCreateFormBean" autocomplete="off" method="post">
 						<form:hidden path="veteranId"/>
 						<form:hidden path="veteranAssessmentId"/>
 

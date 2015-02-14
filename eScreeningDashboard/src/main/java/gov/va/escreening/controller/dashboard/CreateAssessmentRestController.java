@@ -7,13 +7,15 @@ import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.dto.dashboard.VeteranSearchResult;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.form.EditVeteranAssessmentFormBean;
-import gov.va.escreening.form.CreateVeteranAssessementsFormBean;
+import gov.va.escreening.form.BatchCreateFormBean;
 import gov.va.escreening.form.SelectVeteranFormBean;
+import gov.va.escreening.form.VeteranClinicApptSearchFormBean;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.CurrentUser;
@@ -162,6 +164,21 @@ public class CreateAssessmentRestController {
 		
 	}
 	
+	@RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params="searchButton")
+	public String searchVeterans(@CurrentUser EscreenUser escreenUser,
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean, Model model) {
+
+		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
+		
+			String clinicIen = selectVeteranFormBean.getSelectedClinic().getClinicIen();
+			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
+					selectVeteranFormBean.getStartDate(), selectVeteranFormBean.getEndDate());
+			
+			model.addAttribute("result",appList);
+		return "dashboard/selectVeterans";
+	}
+	
 	@RequestMapping(value="/views/**", method=RequestMethod.GET)
 	public String setupBasePages(HttpServletRequest request)
 	{
@@ -171,19 +188,21 @@ public class CreateAssessmentRestController {
 	}
 	
 	@ModelAttribute
-	public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean()
+	public BatchCreateFormBean getEditVeteranAssessmentFormBean()
 	{
-		return new EditVeteranAssessmentFormBean();
+		return new BatchCreateFormBean();
 	}
 	
 	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
-			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
 	{
 		List<VeteranDto> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
 		model.addAttribute("vetList", vetList);
+		
+		editVeteranAssessmentFormBean.setVeterans(vetList);
 		
 		Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
 		
@@ -199,6 +218,9 @@ public class CreateAssessmentRestController {
 		}
 		
 		model.addAttribute("vetSurveyMap", vetSurveyMap);
+		editVeteranAssessmentFormBean.setVetSurveyMap(vetSurveyMap);
+		
+		model.addAttribute("isCprsVerified", user.getCprsVerified());
 		
 		Clinic c = clinicRepo.findOne(clinicId);
 		editVeteranAssessmentFormBean.setSelectedClinicId(c.getClinicId());
@@ -244,10 +266,10 @@ public class CreateAssessmentRestController {
      * Returns the backing bean for the form.
      * @return
      */
-    @ModelAttribute
-    public SelectVeteranFormBean getSelectVeteranFormBean() {
+    @ModelAttribute("selectVeteranFormBean")
+    public VeteranClinicApptSearchFormBean getSelectVeteranFormBean() {
         logger.debug("Creating new SelectVeteranFormBean");
-        return new SelectVeteranFormBean();
+        return new VeteranClinicApptSearchFormBean();
     }
 
     /**
@@ -258,7 +280,7 @@ public class CreateAssessmentRestController {
      */
     @RequestMapping(value = "/selectVeterans", method = RequestMethod.GET)
     public String setUpPageSelectVeteran(@CurrentUser EscreenUser escreenUser,
-            @ModelAttribute SelectVeteranFormBean selectVeteranFormBean, Model model) {
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean, Model model) {
 
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
@@ -267,5 +289,25 @@ public class CreateAssessmentRestController {
 
         return "dashboard/selectVeterans";
     }
-
+    
+	@RequestMapping(value="/editVeteransAssessment", method = RequestMethod.POST, params="saveButton")
+	public String selectVeteransForBatchCreate(@CurrentUser EscreenUser escreenUser, Model model,
+			@ModelAttribute BatchCreateFormBean batchCreateFormBean,
+			BindingResult result)
+	{
+		
+		List<BatchBatteryCreateResult> results = batchCreateDelegate.batchCreate(batchCreateFormBean.getVeterans(), 
+				batchCreateFormBean.getSelectedBatteryId(),
+				batchCreateFormBean.getSelectedClinicId(),
+				batchCreateFormBean.getSelectedClinicianId(),
+				batchCreateFormBean.getSelectedNoteTitleId(),
+				batchCreateFormBean.getSelectedBatteryId(),
+				batchCreateFormBean.getVetSurveyMap(),
+				batchCreateFormBean.getSelectedSurveyIdList(),
+				escreenUser);
+		
+				
+		model.addAttribute("batchCreateResult", results);
+		return "dashboard/batchComplete";
+	}
 }
