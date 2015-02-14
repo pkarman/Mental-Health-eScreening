@@ -990,7 +990,6 @@ $(document).ready(function() {
 				valueArr.push(ticks[i].value);
 			}
 
-						
 			this.append("g")
 				.classed("x axis", true)
 				.attr("transform", "translate(0," + height + ")")
@@ -999,9 +998,7 @@ $(document).ready(function() {
 				.style("text-anchor", "end")
 				.attr("dx", "-.8em")
 				.attr("dy", ".15em")
-				.attr("transform", function(d) {
-					return "rotate(-65)" 
-				});
+				.attr("transform", function(d) { return "rotate(-65)"; });
 	
 			this.append("g")
 				.classed("y axis", true)
@@ -1028,9 +1025,7 @@ $(document).ready(function() {
 				.enter()
 				.append("text")
 				.classed("pointTextValue", true)
-				.text( function (d) {
-					return +d.value;
-				});
+				.text( function (d) { return +d.value; });
 	
 
 			// Update Plot Started Here
@@ -1039,19 +1034,15 @@ $(document).ready(function() {
 				return line(valueArr);
 			});
 			this.selectAll(".point")
-				.attr("cx", function (d, i) {
-				return x(i);
-			})
-				.attr("cy", function (d) {
-				return y(+d.value);
-			});
+				.attr("cx", function (d, i) { return x(i); })
+				.attr("cy", function (d) { return y(+d.value); });
+
 			this.selectAll(".pointTextValue")
-				.attr("x", function (d, i) {
-				return x(i);
-			})
-				.attr("y", function (d) {
-				return y(+d.value - 3);
-			});
+				.attr("x", function (d, i) { return x(i); })
+				.attr("y", function (d) { return y(+d.value);})
+				.attr("dy", "-1em")
+				.attr("dx", ".2em")
+				.style("text-anchor", "middle");
 	
 			// Exit Plot Started Here
 			this.selectAll(".trendline")
@@ -1080,9 +1071,7 @@ $(document).ready(function() {
 			})
 				.attr("width", 8)
 				.attr("height", 30)
-				.style('fill', function(d, i) {
-			            return colors[i];
-			    });
+				.style('fill', function(d, i) { return colors[i]; });
 	
 			// Add Legend Started Here
 			graphParams.legends.reverse();
