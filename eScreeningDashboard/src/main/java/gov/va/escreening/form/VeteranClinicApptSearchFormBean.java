@@ -7,15 +7,15 @@ import java.util.List;
 
 public class VeteranClinicApptSearchFormBean {
 	
-	private ClinicDto selectedClinic;
+	private String selectedClinic;
 	private Date startDate;
 	private Date endDate;
 	
 	
-	public ClinicDto getSelectedClinic() {
+	public String getSelectedClinic() {
 		return selectedClinic;
 	}
-	public void setSelectedClinic(ClinicDto selectedClinic) {
+	public void setSelectedClinic(String selectedClinic) {
 		this.selectedClinic = selectedClinic;
 	}
 	public Date getStartDate() {

@@ -169,9 +169,10 @@ public class CreateAssessmentRestController {
             @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean, Model model) {
 
 		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+		model.addAttribute("isPostBack", true);
 		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
 		
-			String clinicIen = selectVeteranFormBean.getSelectedClinic().getClinicIen();
+			String clinicIen = selectVeteranFormBean.getSelectedClinic();
 			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
 					selectVeteranFormBean.getStartDate(), selectVeteranFormBean.getEndDate());
 			
@@ -285,8 +286,14 @@ public class CreateAssessmentRestController {
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
         
-        model.addAttribute("clinics", clinicService.getClinicDtoList());
-
+    	List<DropDownObject> clinicList = new ArrayList<DropDownObject>();
+    	for(ClinicDto c : clinicService.getClinicDtoList())
+    	{
+    		DropDownObject o = new DropDownObject(c.getClinicIen(), c.getClinicName());
+    		clinicList.add(o);
+    	}
+    	
+    	 model.addAttribute("clinics", clinicList);
         return "dashboard/selectVeterans";
     }
     
