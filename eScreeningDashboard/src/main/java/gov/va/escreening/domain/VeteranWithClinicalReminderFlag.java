@@ -2,8 +2,6 @@ package gov.va.escreening.domain;
 
 import java.beans.Beans;
 
-import org.apache.commons.beanutils.BeanUtils;
-
 public class VeteranWithClinicalReminderFlag extends VeteranDto {
 	private boolean dueClinicalReminder;
 
