@@ -65,6 +65,166 @@
 
 <div class="clearfix"></div>
 
+
+
+<div class="container left-right-shadow">
+	<div class="row">
+ 		<div class="col-md-12">
+ 		
+ 		
+ 		<div class="row">
+ 			
+ 			<div class="col-md-4 pull-right">
+ 				<form:form method="post">
+			      <button id="createButton" name="createButton" type="submit" class="btn btn-primary form-control h1_button"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
+			    </form:form>
+			</div>
+			<div class="col-md-8 pull-left"><a name="skip" > </a ><h1>Select Veteran</h1></div>
+ 		</div>
+
+			<c:if test="${!isCprsVerified}">
+				<div class="alert alert-danger">
+					Your VistA account information needs to be verified before you can save or read any data from VistA. 
+					Search result will not include any data from VistA. 
+				</div>
+			</c:if>
+
+        <div class="clearfix"></div>
+
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#" role="tab"><strong>Create Assessment for Unscheduled Visit</strong></a></li>
+					<li><a href="selectVeterans" role="tab"><strong>Create Assessment(s) for Appointment(s)</strong></a></li>
+				</ul>
+				<br>          
+                
+                <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
+					<div class="border-radius-main-form gray-lighter">
+					<h2>Search Criteria</h2>
+					
+					<form:errors path="*" element="div" cssClass="alert alert-danger" />
+					
+					
+					
+					<div class="row">
+					
+						<div class="col-md-7">
+							<div class="form-group">
+			                	<form:label path="selectedClinic">Last Name</form:label>
+			                	<form:input path="selectedClinic" maxlength="30" cssClass="form-control focus_input" cssErrorClass="form-control" placeholder="Enter Veteran Last Name"  />
+			                	<form:errors path="lasselectedClinictName"  cssClass="help-inline"/>
+                			</div>
+                		</div>
+                		<div class="col-md-3">
+                			<div class="form-group">
+                				<form:label path="startDate">SSN-4 *</form:label>
+			                	<form:input path="startDate" maxlength="4" cssClass="form-control" cssErrorClass="form-control" placeholder="Enter Veteran Last SSN-4"  />
+			                	<form:errors path="startDate"  cssClass="help-inline"/>
+                			</div>
+                		
+                		</div>
+
+						<div class="col-md-3">
+                			<div class="form-group">
+                				<form:label path="endDate">SSN-4 *</form:label>
+			                	<form:input path="endDate" maxlength="4" cssClass="form-control" cssErrorClass="form-control" placeholder="Enter Veteran Last SSN-4"  />
+			                	<form:errors path="endDate"  cssClass="help-inline"/>
+                			</div>
+                		
+                		</div>
+                		
+                		<div class="col-md-2">
+                			<div class="form-group">
+                				<label for="searchButton">&nbsp;</label>
+                				<input id="searchButton" name="searchButton" value="Search" type="submit" class="btn btn-primary form-control" />
+                			</div>
+                		</div>
+                		
+                		<div class="clearfix"></div>
+                	</div>
+                	<div class="clearfix"></div>
+                	</div>
+                	
+
+                	
+
+	                
+                </form:form>
+
+			<c:if test="${isPostBack}">
+	            <h2>Search Result</h2>
+	            <table class="table table-striped table-hover" summary="Search Result Table">
+	                <thead>
+	                    <tr>
+	                        
+	                        <th scope="col" class="col-md-1">SSN-4</th>
+	                        <th scope="col" class="col-md-2">Last Name</th>
+	                        <th scope="col" class="col-md-2">First Name</th>
+	                        <th scope="col" class="col-md-2">Middle Name</th>
+	                        <th scope="col">Date of Birth</th>
+	                        <th scope="col">Status</th>
+	                        <th scope="col" class="text-right">Action</th>
+	                    </tr>
+	                </thead>
+	                <tfoot>
+	                	<tr>
+		                	<c:if test="${empty searchResultList}">
+	                			<td colspan="8">No record found</td>
+	                		</c:if>
+		                	<c:if test="${not empty searchResultList}">
+	                			<td colspan="8"><c:out value="${searchResultListSize}" /> record(s) found</td>
+	                		</c:if>
+	                	</tr>
+	                </tfoot>
+	                <tbody>
+	                	<c:if test="${not empty searchResultList}">
+							<c:forEach var="item" items="${searchResultList}">
+								<tr>
+									<td class="text-right"><c:if test="${item.isSensitive}"><c:out value="XXXX"/></c:if><c:if test="${!item.isSensitive}"><c:out value="${item.ssnLastFour}" /></c:if></td>
+									<td><c:out value="${item.lastName}" /></td>
+									<td><c:out value="${item.firstName}" /></td>
+									<td><c:out value="${item.middleName}" /></td>
+									<td class="text-right"><c:if test="${item.isSensitive}"><c:out value="XX/XX/XXXX"/></c:if><c:if test="${!item.isSensitive}"><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></c:if></td>
+									
+									<td>
+										<c:choose>
+									      <c:when test="${(!empty item.veteranId) && (empty item.veteranIen)}">
+									      	<div>Only Exists in DB</div>
+									      </c:when>
+										  <c:when test="${(!empty item.veteranIen) && (empty item.veteranId)}">
+									      	<div>Only Exists in VistA</div>
+									      </c:when>
+									       <c:when test="${(!empty item.veteranIen) && (!empty item.veteranId)}">
+									      	<div>Mapped Veteran</div>
+									      </c:when>
+									      <c:otherwise>
+									      </c:otherwise>
+										</c:choose>	
+								
+									</td>
+									<td align="right">
+										<s:url var="veteranDetailUrl" value="/dashboard/veteranDetail" htmlEscape="true">
+											<s:param name="vid" value="${item.veteranId}" />
+											<s:param name="vien" value="${item.veteranIen}" />
+										</s:url>
+										
+										<a href="#" data-vid="${item.veteranId}" data-vien="${item.veteranIen}" class="btn btn-primary btn-xs push" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-chevron-right"></span> Quick View</a>
+										<a href="${veteranDetailUrl}"  class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-chevron-right"></span>  Select</a>
+									</td>
+								</tr>
+							</c:forEach>
+	                	</c:if>
+	                </tbody>
+	            </table>
+			</c:if>
+            <br/><br/>
+            <!--  -->
+
+		</div>
+	</div>
+</div>
+
+
+
 <div class="container left-right-shadow">
 	<div class="row">
  		<div class="col-md-12">
@@ -140,7 +300,8 @@
                         </div>
                       </div>
 
-                      <div class="col-md-3">
+                      <!--
+					  <div class="col-md-3">
                         <div class="form-group">
                               <label class="labelAlign" for="lastname">Last Name</label>
                               <input type="text"
@@ -150,6 +311,7 @@
                                placeholder="Last Name" autocomplete="off" />
                         </div>
                       </div>
+					  -->
 					  
                 		
                 		<div class="col-md-2">

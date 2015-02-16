@@ -10,8 +10,8 @@ app.directive('reportTable', function() {
 		// check dataType to update datatable link	
 
     	var dataTable;
-		var sourceURL = "veteranSearch/veteransbyclinic/?clinicIen=&startDate=&endDate=";
-		// var sourceURL = "veteranSearch/veteransbyclinic/?clinicIen=32&startDate=2000/01/10&endDate=2015/05/01";
+		//var sourceURL = "veteranSearch/veteransbyclinic/?clinicIen=&startDate=&endDate=";
+		var sourceURL = "veteranSearch/veteransbyclinic/?clinicIen=32&startDate=2000/01/10&endDate=2015/05/01";
 		
 		selectVeteransTable(sourceURL);
 		
@@ -36,11 +36,9 @@ app.directive('reportTable', function() {
 	        var aoColumns = {};
 	        aoColumns = [
 				{ "mData": "veteranIen" , "mRender":function(data, type, assessment){ return "<input type='checkbox' name='veteranIen' value=" + assessment.veteranIen + " />"}},
-				///{ "mData": "ssn"},
 				{ "mData": "lastName"},
 				{ "mData": "firstName"},
 				{ "mData": "middleName"},
-				//{ "mData": "dob"},
 				{ "mData": "apptDate"},
 	        	{ "mData": "apptTime"}];
 	        options["aoColumns"] = aoColumns;
