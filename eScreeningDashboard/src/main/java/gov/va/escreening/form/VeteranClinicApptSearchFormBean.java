@@ -1,9 +1,6 @@
 package gov.va.escreening.form;
 
-import gov.va.escreening.domain.ClinicDto;
-
 import java.util.Date;
-import java.util.List;
 
 public class VeteranClinicApptSearchFormBean {
 	

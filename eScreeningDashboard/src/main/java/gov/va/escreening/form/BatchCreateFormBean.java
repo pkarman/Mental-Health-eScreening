@@ -1,6 +1,7 @@
 package gov.va.escreening.form;
 
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class BatchCreateFormBean extends EditVeteranAssessmentFormBean
 	
 	private static final long serialVersionUID = 1L;
 
-	private List<VeteranDto> veterans;
+	private List<VeteranWithClinicalReminderFlag> veterans;
 	
 	/**
 	 * key -- VeteranID, value: list of survey IDs that are in Due clinical Reminders
@@ -23,11 +24,11 @@ public class BatchCreateFormBean extends EditVeteranAssessmentFormBean
 		// TODO Auto-generated constructor stub
 	}
 
-	public List<VeteranDto> getVeterans() {
+	public List<VeteranWithClinicalReminderFlag> getVeterans() {
 		return veterans;
 	}
 
-	public void setVeterans(List<VeteranDto> veterans) {
+	public void setVeterans(List<VeteranWithClinicalReminderFlag> veterans) {
 		this.veterans = veterans;
 	}
 

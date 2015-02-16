@@ -7,6 +7,7 @@ import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
@@ -200,7 +201,7 @@ public class CreateAssessmentRestController {
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
 	{
-		List<VeteranDto> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
+		List<VeteranWithClinicalReminderFlag> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
 		model.addAttribute("vetList", vetList);
 		
 		editVeteranAssessmentFormBean.setVeterans(vetList);
@@ -208,13 +209,14 @@ public class CreateAssessmentRestController {
 		Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
 		
 		//Now getting the list of the surveys per veteran
-		for(VeteranDto v : vetList)
+		for(VeteranWithClinicalReminderFlag v : vetList)
 		{
 			Map<Integer, String> autoAssignedSurveyMap = 
 					createAssessmentDelegate.getPreSelectedSurveyMap(user, v.getVeteranIen());
 			if(!autoAssignedSurveyMap.isEmpty())
 			{
 				vetSurveyMap.put(v.getVeteranId(), autoAssignedSurveyMap.keySet());
+				v.setDueClinicalReminder(true);
 			}
 		}
 		

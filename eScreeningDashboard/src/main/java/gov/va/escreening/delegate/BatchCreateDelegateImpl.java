@@ -1,14 +1,9 @@
 package gov.va.escreening.delegate;
 
-import gov.va.escreening.domain.AssessmentStatusEnum;
-import gov.va.escreening.domain.BatteryDto;
-import gov.va.escreening.domain.BatterySurveyDto;
-import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
-import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.entity.Veteran;
-import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.repository.VistaRepository;
@@ -28,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,7 +122,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	}
 
 	@Override
-	public List<VeteranDto> getVeteranDetails(String[] veteranIens, EscreenUser user) {
+	public List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user) {
 		// TODO Auto-generated method stub
 		List<String> vetInDB = new ArrayList<String>();
 		List<String> vetToImport = new ArrayList<String>();
@@ -149,15 +143,16 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		
 		List<VeteranDto> imported = importVeterans(vetToImport, user);
 		
+		List<VeteranWithClinicalReminderFlag> result = new ArrayList<VeteranWithClinicalReminderFlag>(imported.size());
 		for(Veteran v:vetList)
 		{
-		imported.add(VeteranServiceImpl.convertVeteranToVeteranDto(v));
+			imported.add(new VeteranWithClinicalReminderFlag(VeteranServiceImpl.convertVeteranToVeteranDto(v)));
 		}
-		return imported;
+		return result;
 	}
 
 	@Override
-	public List<BatchBatteryCreateResult> batchCreate(List<VeteranDto> vets, int programId, int clinicId, 
+	public List<BatchBatteryCreateResult> batchCreate(List<VeteranWithClinicalReminderFlag> vets, int programId, int clinicId, 
 			int clinicianId, int noteTitleId, int batteryId, Map<Integer, Set<Integer>> surveyMap, List<Integer> selectedSurvey,
 			EscreenUser escreenUser)
 	{
