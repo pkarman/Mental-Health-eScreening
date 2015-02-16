@@ -178,6 +178,7 @@ public class CreateAssessmentRestController {
 					selectVeteranFormBean.getStartDate(), selectVeteranFormBean.getEndDate());
 			
 			model.addAttribute("result",appList);
+			model.addAttribute("searchResultListSize", appList.size());
 		return "dashboard/selectVeterans";
 	}
 	

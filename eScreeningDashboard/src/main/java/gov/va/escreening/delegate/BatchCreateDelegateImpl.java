@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.hibernate.validator.util.privilegedactions.GetClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +48,8 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	
 	@Autowired
 	private CreateAssessmentDelegate createAssessmentDelegate;
+	
+	private static Logger logger = LoggerFactory.getLogger(BatchCreateDelegateImpl.class);
 
 	@Override
 	public List<VistaClinicAppointment> searchVeteranByAppointments(
@@ -65,6 +70,9 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	@Override
 	public List<VistaClinicAppointment> searchVeteranByAppointments(
 			EscreenUser user, String clinicIen, Date start, Date end) {
+		
+		try
+		{
 		List<VistaClinicAppointment> appList = vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
 				user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
 				clinicIen, start, end);
@@ -94,6 +102,11 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		}
 		
 		return new ArrayList<VistaClinicAppointment>(appMap.values());
+		}catch(Exception ex)
+		{
+			logger.error("Error getting veterans by appointments", ex);
+			return new ArrayList<VistaClinicAppointment>();
+		}
 	}
 
 	/**
