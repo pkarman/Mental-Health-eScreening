@@ -1105,8 +1105,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	@Override
 	public SearchResult<AssessmentSearchResult> searchVeteranAssessment(
-			String programId, SearchAttributes searchAttributes) {
-		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), searchAttributes);
+			String programId, List<Integer> programIdList, SearchAttributes searchAttributes) {
+		SearchResult<VeteranAssessment> veteranAssessmentSearchResult 
+			= vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), programIdList, searchAttributes);
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 	}
 }

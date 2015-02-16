@@ -195,7 +195,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	}
 
 	private SearchResult<VeteranAssessment> searchFilteredVeteranAssessment(
-			Integer programId, SearchAttributes searchAttributes) {
+			Integer programId, List<Integer> programIdList, SearchAttributes searchAttributes) {
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT va ");
 		sqlBldr.append("FROM VeteranAssessment as va ");
@@ -212,7 +212,11 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != null) {
 			sqlBldr.append("AND program.programId = :programId ");
 		}
+		else
+		{
 
+			sqlBldr.append(" AND program.programId in :programIdList ");
+		}
 		String orderByColumn = getOrderByColumn(searchAttributes);
 		String orderByDirection = getOrderByDirection(searchAttributes);
 
@@ -223,11 +227,16 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != null) {
 			query.setParameter("programId", programId);
 		}
+		else
+		{
+			query.setParameter("programIdList", programIdList);
+			
+		}
 
 		query.setFirstResult(searchAttributes.getRowStartIndex()).setMaxResults(searchAttributes.getPageSize());
 		List<VeteranAssessment> resultList = query.getResultList();
 
-		int totalRecsFound = getTotalRecords(programId);
+		int totalRecsFound = getTotalRecords(programId, programIdList);
 
 		SearchResult<VeteranAssessment> searchResult = new SearchResult<VeteranAssessment>();
 		searchResult.setTotalNumRowsFound(totalRecsFound);
@@ -236,7 +245,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		return searchResult;
 	}
 
-	private int getTotalRecords(Integer programId) {
+	private int getTotalRecords(Integer programId, List<Integer> programIdList) {
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT count(va) ");
 		sqlBldr.append("FROM VeteranAssessment as va ");
@@ -244,11 +253,21 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		if (programId != null) {
 			sqlBldr.append("AND program.programId = :programId ");
 		}
+		else
+		{
+
+			sqlBldr.append(" AND program.programId in :programIdList ");
+		}
 
 		Query query = entityManager.createQuery(sqlBldr.toString());
 
 		if (programId != null) {
 			query.setParameter("programId", programId);
+		}
+		else
+		{
+			query.setParameter("programIdList", programIdList);
+			
 		}
 		Long result = (Long) query.getSingleResult();
 		return result.intValue();
@@ -295,11 +314,11 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 
 	@Override
 	public SearchResult<VeteranAssessment> searchVeteranAssessment(
-			Integer programId, SearchAttributes searchAttributes) {
+			Integer programId, List<Integer> programIdList, SearchAttributes searchAttributes) {
 
 		archiveStaleAssessments();
 
-		return searchFilteredVeteranAssessment(programId, searchAttributes);
+		return searchFilteredVeteranAssessment(programId, programIdList, searchAttributes);
 	}
 
 	/**

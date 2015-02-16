@@ -77,7 +77,7 @@ public interface VeteranAssessmentService {
     SearchResult<AssessmentSearchResult> searchVeteranAssessment(AssessmentReportFormBean assessmentReportFormBean,
             SearchAttributes searchAttributes);
 
-    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, SearchAttributes searchAttributes);
+    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, List<Integer> programIdList, SearchAttributes searchAttributes);
 
     /**
      * 
