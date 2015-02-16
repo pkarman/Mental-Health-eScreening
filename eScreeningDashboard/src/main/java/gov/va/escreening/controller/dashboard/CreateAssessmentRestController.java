@@ -196,6 +196,16 @@ public class CreateAssessmentRestController {
 		return new BatchCreateFormBean();
 	}
 	
+	@RequestMapping(value="/selectVeterans", method = RequestMethod.POST, params="selectVeterans")
+	public String selectVeteransForBatchCreate2(Model model,
+			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
+			BindingResult result,
+			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
+	{	
+		return selectVeteransForBatchCreate(model, editVeteranAssessmentFormBean, result, vetIens,
+				clinicId, user);
+	}
+	
 	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
 			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
