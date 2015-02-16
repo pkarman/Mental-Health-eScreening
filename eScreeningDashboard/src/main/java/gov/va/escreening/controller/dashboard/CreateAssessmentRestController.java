@@ -273,7 +273,7 @@ public class CreateAssessmentRestController {
 		List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(programId);
 		model.addAttribute("clinicianList", clinicianList);
 		
-		return "dashboard/editVeteransAssessment";
+		return "redirect:/dashboard/editVeteransAssessment";
 	}
 	
 	/**
