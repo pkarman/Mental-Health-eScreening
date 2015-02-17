@@ -202,8 +202,7 @@ public class CreateAssessmentRestController {
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
 	{	
-		return selectVeteransForBatchCreate(model, editVeteranAssessmentFormBean, result, vetIens,
-				clinicId, user);
+		return "redirect:/dashboard/editVeteransAssessment";
 	}
 	
 	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
@@ -273,7 +272,7 @@ public class CreateAssessmentRestController {
 		List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(programId);
 		model.addAttribute("clinicianList", clinicianList);
 		
-		return "redirect:/dashboard/editVeteransAssessment";
+		return "dashboard/editVeteransAssessment";
 	}
 	
 	/**
