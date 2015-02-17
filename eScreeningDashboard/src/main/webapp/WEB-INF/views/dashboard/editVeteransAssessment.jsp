@@ -5,7 +5,7 @@
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
-<html ng-app="editVeteransAssessmentFormApp">
+<html>
 <head>
 	<title>Batch Create Battery</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,29 +37,30 @@
 <a href="#skip" class="offscreen">Skip to main content</a>
 	<div id="outerPageDiv">
 		<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
-
 		<div class="navbar navbar-default navbar-update" role="navigation">
-			<div class="container bg_transparent">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-				</div>
-				<nav class="navbar-collapse collapse">
-					<ul class="nav navbar-nav" id="tabs">
-					</ul>
-				</nav><!--/.nav-collapse -->
-			</div>
-		</div>
+      <div class="container bg_transparent">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <nav class="navbar-collapse collapse">
+          <ul class="nav navbar-nav" id="tabs">
+           
+          </ul>
+        </nav><!--/.nav-collapse -->
+      </div>
+    </div>
+    
 	</div>
 
 	<div class="mainDiv">
 	</div>
 
-	<div class="container left-right-shadow">
+	<div class="container left-right-shadow editVeteransAssessment">
 		<div class="row">
 			<div class="col-md-12">
 
@@ -94,24 +95,66 @@
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						  <div class="panel-body">
 
-								<div id="mainContent">
-									<table id="selectVeteransTable" name="selectVeterans" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" width="100%" summary="Export Data Table">
-									  <thead>
-										<tr>
-											<th scope="col" class="col-md-1">SSN-4</th>
-											<th scope="col" class="col-md-2">Last Name</th>
-											<th scope="col" class="col-md-2">First Name</th>
-											<th scope="col" class="col-md-2">Middle Name</th>
-											<th scope="col" class="col-md-2">Date of Birth</th>
-											<th scope="col" class="col-md-1">Appointment Date</th>
-											<th scope="col" class="col-md-1">Appointment Time</th>
-											<th scope="col" class="col-md-1">Clinical Reminders</th>
-										</tr>
-									  </thead>
-									  <tbody>
-									  </tbody>
-									</table>
-								</div>
+
+
+
+
+
+
+
+				<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
+					
+					clinicId: <c:out value="${param.clinicId}" /><br>
+					vetIens: <c:out value="${param.vetIens}" /><br>
+					veterans: <c:out value="${veterans.lastName}" /> <br>
+
+				
+					<table class="table table-striped table-hover" summary="Search Result Table">
+						<thead>
+							<tr>
+								<th scope="col" class="col-md-1">SSN-4</th>
+								<th scope="col" class="col-md-2">Last Name</th>
+								<th scope="col" class="col-md-2">First Name</th>
+								<th scope="col" class="col-md-2">Middle Name</th>
+								<th scope="col" class="col-md-2">Date of Birth</th>
+								<th scope="col" class="col-md-1">Appointment Date</th>
+								<th scope="col" class="col-md-1 text-right">Appointment Time</th>
+								<th scope="col" class="col-md-1">Clinical Reminders</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<c:if test="${empty veterans}">
+									<td colspan="6">No record found</td>
+								</c:if>
+								<c:if test="${not empty veterans}">
+									<td colspan="6"><c:out value="${veteransSize}" /> record(s) found</td>
+								</c:if>
+							</tr>
+						</tfoot>
+						<tbody>
+							<c:if test="${not empty veterans}">
+								<c:forEach var="item" items="${veterans}">
+									<tr>
+										<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
+										<td><c:out value="${item.lastName}" /></td>
+										<td><c:out value="${item.firstName}" /></td>
+										<td><c:out value="${item.middleName}" /></td>
+										<td><c:out value="${item.birthDate}" /></td>
+										<td class="text-right"><c:out value="${item.apptDate}" /></td>
+										<td class="text-right"><c:out value="${item.apptTime}" /></td>
+										<td class="text-right"><c:out value="${item.dueClinicalReminders}" /></td>
+									</tr>
+								</c:forEach>
+							</c:if>
+						</tbody>
+					</table>
+					</form:form>
+					
+					
+					
+	
+								
 						  </div>
 						</div>
 					  </div>
@@ -132,22 +175,14 @@
 						<div class="row">
 							<div class="col-md-3">
 								<div class="form-group">
-									<form:label path="selectedProgramId">Program *</form:label>
-									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}">
-										<form:option value="" label="Please Select a Program"/>
-										<form:options items="${programList}" itemValue="stateId" itemLabel="stateName"/>
-									</form:select>
-									<form:errors path="selectedProgramId" cssClass="help-inline"/>
+									<div class="label">Program</div>
+									<div>[Program]</div>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group">
-									<form:label path="selectedClinicId">VistA Clinic *</form:label>
-									<form:select path="selectedClinicId" cssClass="form-control" disabled="${isReadOnly}">
-										<form:option value="" label="Please Select a Clinic"/>
-										<form:options items="${clinicList}" itemValue="stateId" itemLabel="stateName"/>
-									</form:select>
-									<form:errors path="selectedClinicId" cssClass="help-inline"/>
+									<div class="label">VistA Clinic</div>
+									<div>[VistA Clinic NAME]</div>
 								</div>
 							</div>
 							<div class="col-md-3">								
@@ -249,10 +284,10 @@
 								<div class="row">
 									<div class="col-md-8 col-md-offset-4 text-right ">
 										<c:if test="${not isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Save" type="submit" class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" class="btn btn-primary" />
 										</c:if>
 										<c:if test="${isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Save" type="submit" disabled class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary" />
 										</c:if>
 		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
 									</div>

@@ -885,6 +885,24 @@ a.offscreen:focus, a.offscreen:active {
 .logErrorMessage{
   margin:10px 0;
 }
+
+/* editVeteransAssessment page */
+.editVeteransAssessment .fg-toolbar.ui-toolbar.ui-widget-header.ui-helper-clearfix.ui-corner-tl.ui-corner-tr{
+	line-height: 0px;
+	height: 0;
+}
+.editVeteransAssessment .label{
+	display: inline-block;
+	margin-bottom: 5px;
+	font-weight: bold;
+	font-size: 14px;
+	color:#333;
+	padding:0px;
+	margin:0px;
+}
+
+
+
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
