@@ -12,4 +12,6 @@ public interface ClinicRepository extends RepositoryInterface<Clinic> {
      * @return
      */
     List<Clinic> findByProgramId(int programId);
+    
+    Clinic findByIen(String ien);
 }

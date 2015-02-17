@@ -50,6 +50,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -171,14 +173,16 @@ public class CreateAssessmentRestController {
 
 		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
 		model.addAttribute("isPostBack", true);
+		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+		
 		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
 		
-			String clinicIen = selectVeteranFormBean.getSelectedClinic();
-			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
+		String clinicIen = selectVeteranFormBean.getSelectedClinic();
+		List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
 					selectVeteranFormBean.getStartDate(), selectVeteranFormBean.getEndDate());
 			
-			model.addAttribute("result",appList);
-			model.addAttribute("searchResultListSize", appList.size());
+		model.addAttribute("result",appList);
+		model.addAttribute("searchResultListSize", appList.size());
 		return "dashboard/selectVeterans";
 	}
 	
@@ -197,19 +201,22 @@ public class CreateAssessmentRestController {
 	}
 	
 	@RequestMapping(value="/selectVeterans", method = RequestMethod.POST, params="selectVeterans")
-	public String selectVeteransForBatchCreate2(Model model,
+	public ModelAndView selectVeteransForBatchCreate2(Model model,
 			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
-			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
+			@RequestParam String[] vetIens, @RequestParam String clinicId, @CurrentUser EscreenUser user)
 	{	
-		return "redirect:/dashboard/editVeteransAssessment";
+		Map paramMap = new HashMap<>();
+		paramMap.put("vetIens", vetIens);
+		paramMap.put("clinicId", clinicId);
+		return new ModelAndView(new RedirectView("editVeteransAssessment"), paramMap);
 	}
 	
 	@RequestMapping(value="/editVeteransAssessment", method = {RequestMethod.GET, RequestMethod.POST})
 	public String selectVeteransForBatchCreate(Model model,
 			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
 			BindingResult result,
-			@RequestParam String[] vetIens, @RequestParam int clinicId, @CurrentUser EscreenUser user)
+			@RequestParam String[] vetIens, @RequestParam String clinicId, @CurrentUser EscreenUser user)
 	{
 		List<VeteranWithClinicalReminderFlag> vetList = batchCreateDelegate.getVeteranDetails(vetIens, user);
 		model.addAttribute("vetList", vetList);
@@ -235,7 +242,7 @@ public class CreateAssessmentRestController {
 		
 		model.addAttribute("isCprsVerified", user.getCprsVerified());
 		
-		Clinic c = clinicRepo.findOne(clinicId);
+		Clinic c = clinicRepo.findByIen(clinicId);
 		editVeteranAssessmentFormBean.setSelectedClinicId(c.getClinicId());
 		
 		int programId = c.getProgram().getProgramId();

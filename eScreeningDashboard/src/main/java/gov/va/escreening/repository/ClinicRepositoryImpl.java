@@ -33,4 +33,16 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
         return resultList;
     }
 
+	@Override
+	public Clinic findByIen(String ien) {
+		String sql = "SELECT c FROM Clinic c where c.vistaIen = :ien";
+		TypedQuery<Clinic> query = entityManager.createQuery(sql, Clinic.class).setParameter("ien", ien);
+		List<Clinic> resultList = query.getResultList();
+		if(resultList.size()>0)
+		{
+			return resultList.get(0);
+		}
+		return null;
+	}
+
 }
