@@ -282,8 +282,8 @@ Editors.controller('moduleController', ['$rootScope', '$scope', '$state', functi
     };
     $scope.editTemplates = function(){
         $state.go('modules.templates', 
-                {selectedSurveyId: $scope.selectedSurveyUIObject.id,
-                 selectedSurveyName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
+                {relatedObjId: $scope.selectedSurveyUIObject.id,
+                    relatedObjName: encodeURIComponent($scope.selectedSurveyUIObject.name)});
     };
     
     $scope.isModuleSaved = function(){

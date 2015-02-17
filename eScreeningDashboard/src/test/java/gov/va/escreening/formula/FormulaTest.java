@@ -35,6 +35,12 @@ public class FormulaTest {
     }
 
     @Test
+    public void testValidMaxFormula() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).max(3.34,2.23)");
+        Assert.isTrue(result.equals("3.34"));
+    }
+
+    @Test
     public void showFormulasWith_AvId_Plus_AvDisplayName_Plus_OrigFormulaTemplate_Plus_FormulasWithDisplayNames() {
         expressionEvaluator.readAllFormulas(new FormulaHandler() {
             @Override

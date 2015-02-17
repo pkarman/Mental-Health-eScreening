@@ -5,12 +5,14 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
 public interface AssessmentVariableService {
-	/**
+    /**
 	 * return all {@link AssessmentVariable} as a table of name value pair belonging to requested survey
 	 * 
 	 * {@link Table} Table<String, String, String> is defined as row, column name, and column value
@@ -36,7 +38,7 @@ public interface AssessmentVariableService {
 	
 	Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
-	Collection<AssessmentVariable> findAllFormulae();
+	Collection<AssessmentVariable> findAllFormulas();
 
 	void filterBySurvey(Survey survey, AvBuilder avModelBldr,
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
@@ -45,4 +47,8 @@ public interface AssessmentVariableService {
 	boolean compareMeasure(AssessmentVariable av, Measure m);
 
 	boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
+
+    List<Map<String,String>> askFormulasFor(Integer moduleId);
+
+    String getPlainText(String htmlText);
 }

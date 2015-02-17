@@ -1,5 +1,6 @@
 package gov.va.escreening.expressionevaluator;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -58,21 +59,24 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     @Override
     public String evaluateFormula(Map<String, Object> tgtFormula) {
 
-        List<Map<String, Object>> operands = (List<Map<String, Object>>) tgtFormula.get("f2t");
-        String template = (String) tgtFormula.get("template");
+        List<Map<String, Object>> operands = (List<Map<String, Object>>) tgtFormula.get("verifiedIds");
+        List<String> tokens = (List<String>) tgtFormula.get("tokens");
 
         Map<Integer, String> formulaOperands = Maps.newLinkedHashMap();
-        for (Map<String, Object> operand : operands) {
-            Integer operandId = (Integer) operand.get("id");
-            Object operandValue = operand.get("value");
-            if (operandValue==null){
-                throw new IllegalStateException(String.format("There is no value provided for %s with an id of %s", operand.get("name"), operand.get("id")));
+        if (operands != null) {
+            for (Map<String, Object> operand : operands) {
+                Integer operandId = (Integer) operand.get("id");
+                Object operandValue = operand.get("value");
+                if (operandValue == null) {
+                    throw new IllegalStateException(String.format("There is no value provided for %s with an id of %s", operand.get("name"), operand.get("id")));
+                }
+                formulaOperands.put(operandId, (String) operandValue);
             }
-            formulaOperands.put(operandId, (String)operandValue);
         }
 
         try {
-            return evaluateFormula(createFormulaDto(template, formulaOperands));
+            String formula = buildFormulaFromTokenIds(tokens);
+            return evaluateFormula(createFormulaDto(formula, formulaOperands));
         } catch (NoSuchMethodException e) {
             logger.error(e.getMessage());
             throw new IllegalStateException(e);
@@ -177,20 +181,22 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     @Transactional
     public Integer updateFormula(Map<String, Object> tgtFormula) {
 
-        Integer avId = tgtFormula.get("avId") == null ? null : Integer.parseInt(tgtFormula.get("avId").toString());
-        String avName = (String) tgtFormula.get("name");
-        String avDesc = (String) tgtFormula.get("description");
-        String avTemplate = (String) tgtFormula.get("template");
+        Map<String, Object> avMap = (Map<String, Object>) tgtFormula.get("av");
 
+        Integer avId = (Integer) avMap.get("id");
+        String avName = (String) avMap.get("name");
+        String avDesc = (String) avMap.get("description");
 
+        List<String> tokens = (List<String>) tgtFormula.get("tokens");
+        String avTemplate = buildFormulaFromTokenIds(tokens);
         verifyExpressionTemplate(avTemplate, AvMapTypeEnum.ID2NAME);
 
         AssessmentVariable av = avId == null ? new AssessmentVariable() : findAvById(avId);
 
         List<AssessmentVarChildren> children = Lists.newArrayList();
-        List<Map<String, Object>> tokens = (List<Map<String, Object>>) parseFormula(avTemplate.replaceAll("[$]", ""), AvMapTypeEnum.IDONLY);
+        List<Map<String, Object>> parsedFormula = (List<Map<String, Object>>) parseFormula(avTemplate.replaceAll("[$]", ""), AvMapTypeEnum.IDONLY);
 
-        for (Map<String, Object> formulaToken : tokens) {
+        for (Map<String, Object> formulaToken : parsedFormula) {
             AssessmentVarChildren avc = new AssessmentVarChildren();
             avc.setVariableParent(av);
             avc.setVariableChild(findAvById((Integer) formulaToken.get("id")));
@@ -204,6 +210,46 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
 
         AssessmentVariable savedAv = avr.update(av);
         return savedAv.getAssessmentVariableId();
+    }
+
+    @Override
+    public String buildFormulaFromTokenIds(List<String> idList) {
+        List<String> tokens = Lists.newArrayList();
+        for (Object idObj : idList) {
+            tokens.add(buildFormulaTokenFromId(idObj.toString()));
+        }
+
+        String newlyBuiltFormula = Joiner.on("").join(tokens);
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Formula Str:%s == Src tokens:%s", newlyBuiltFormula, idList));
+        }
+        return newlyBuiltFormula;
+    }
+
+    private String buildFormulaTokenFromId(String tokenId) {
+        try {
+            int id = Integer.parseInt(tokenId);
+            AssessmentVariable av = avr.findOne(id);
+            switch (av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()) {
+                case 1:
+                case 2:
+                case 4:
+                    return "[" + tokenId + "]";
+                case 5:
+                    Matcher m = formulaTokenPattern.matcher(av.getDescription());
+                    if (m.find()) {
+                        return m.group(1);
+                    }
+                default:
+                    return "";
+            }
+        } catch (NumberFormatException nfe) {
+            Matcher m = formulaTokenPattern.matcher(tokenId);
+            if (m.find()) {
+                return m.group(1);
+            }
+            return "";
+        }
     }
 
     private void extractAllInputs(Integer avId, List<Map<String, Object>> avIdsMap) {
@@ -222,8 +268,8 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         //first step is to verify this template
         String filteredExpTemplate = expressionTemplate.replaceAll("[$]", "");
         Map<String, Object> verifiedMap = verifyExpressionTemplate(filteredExpTemplate, AvMapTypeEnum.ID2NAME);
-        if (verifiedMap.get("status").equals("verification_failed")) {
-            return null;
+        if (verifiedMap.get(key.status.name()).equals(key.failed.name())) {
+            throw new IllegalStateException(verifiedMap.get(key.reason.name()).toString());
         }
 
         FormulaDto formulaDto = new FormulaDto();
@@ -237,7 +283,6 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         formulaDto.setChildFormulaMap(refFormulaMap);
 
         return formulaDto;
-
     }
 
     private void extractDataFromRefFormulas(Map<String, Object> verifiedMap, Map<Integer, String> childFormulaMap) {

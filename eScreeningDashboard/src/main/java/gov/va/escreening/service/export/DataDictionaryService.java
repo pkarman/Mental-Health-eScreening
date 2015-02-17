@@ -12,8 +12,4 @@ public interface DataDictionaryService {
 	public String getExportNameKeyPrefix();
 
 	public String createTableResponseVarName(String exportName);
-
-	List<Map> askFormulasFor(Object sessionObject, Integer moduleId);
-
-	List<Map> getAllFormulas();
 }

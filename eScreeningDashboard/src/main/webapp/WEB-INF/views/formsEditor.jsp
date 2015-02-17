@@ -31,9 +31,9 @@
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-resource.min.js"></script>
+    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
@@ -110,7 +110,7 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script type="text/javascript" src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
@@ -156,7 +156,6 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleTemplateListController.js"></script>
 
     <!-- Formulas Controller, Service, Directives, Filters, etc -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
@@ -357,6 +356,29 @@
     
     <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script> 	 	
     <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script> 	 	
-    <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script> 	    
+    <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script>
+
+
+    <!-- angular-ui-select for mng formulas (starts after this line)-->
+    <!-- Select2 theme -->
+    <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <!--
+      Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
+    -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <style>
+        body {padding: 15px;}
+        .select2 > .select2-choice.ui-select-match {
+            /* Because of the inclusion of Bootstrap */
+            height: 29px;
+        }
+        .selectize-control > .selectize-dropdown {
+            top: 36px;
+        }
+    </style>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
+    <!-- angular-ui-select for mng formulas (finishes before this line)-->
+
 </body>
 </html>

@@ -35,7 +35,7 @@
                 <tbody>
                 <tr ng-repeat="f in formulas" ng-class-odd="'odd'" ng-class-even="'even'">
                     <td class="col-md-3">{{f.name}}</td>
-                    <td class="col-md-7">{{f.formula}}</td>
+                    <td class="col-md-7" ng-mouseover="f.template">{{f.formula}}</td>
                     <td class="col-md-2">
                         <div class="pull-right">
                             <div class="cursor-pointer">

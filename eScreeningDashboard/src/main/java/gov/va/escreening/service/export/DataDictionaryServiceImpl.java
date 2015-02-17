@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
@@ -133,7 +132,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
         Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
 
         // read all AssessmenetVariables having formulae
-        Collection<AssessmentVariable> avList = avs.findAllFormulae();
+        Collection<AssessmentVariable> avList = avs.findAllFormulas();
 
         // read all measures of free text and its validations
         Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
@@ -199,37 +198,5 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     @Override
     public String createTableResponseVarName(String exportName) {
         return ddh.createTableResponseVarName(exportName);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Map> askFormulasFor(Object sessionObject, Integer moduleId) {
-
-        Survey survey = sr.findOne(moduleId);
-        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) sessionObject;
-        Table<String, String, String> moduleTable = dataDictionary.get(survey.getName());
-        Map<String, Map<String, String>> rowMap = moduleTable.rowMap();
-        Set<Map.Entry<String, Map<String, String>>> entries = rowMap.entrySet();
-
-        List<Map> formulas = Lists.newArrayList();
-        for (Map.Entry<String, Map<String, String>> entry : entries) {
-            if (entry.getKey().startsWith(ddh.FORMULA_KEY_PREFIX)) {
-                Map<String, String> formula = Maps.newHashMap();
-                formula.put("avId", entry.getValue().get(ddh.msg("av.id")));
-                formula.put("name", entry.getValue().get(ddh.msg("var.name")));
-                formula.put("formula", entry.getValue().get(ddh.msg("ques.desc")));
-                formula.put("description", entry.getValue().get(ddh.msg("ques.desc.business")));
-                formula.put("template", entry.getValue().get(ddh.msg("formula.template")));
-                formula.put("size", entry.getValue().get(ddh.msg("var.size")));
-                formulas.add(formula);
-            }
-        }
-
-        return formulas;
-    }
-
-    @Override
-    public List<Map> getAllFormulas() {
-        return Collections.EMPTY_LIST;
     }
 }

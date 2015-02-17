@@ -24,6 +24,8 @@ public interface ExpressionEvaluatorService {
 
     Integer updateFormula(Map<String, Object> tgtFormula);
 
+    String buildFormulaFromTokenIds(List<String> tokens);
+
     public enum key {
         verifiedIds, success, failed, reason, status;
     }

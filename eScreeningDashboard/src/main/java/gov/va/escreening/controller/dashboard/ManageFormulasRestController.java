@@ -6,8 +6,8 @@ import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.SurveyService;
-import gov.va.escreening.service.export.DataDictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,11 +26,11 @@ public class ManageFormulasRestController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Resource(type = DataDictionaryService.class)
-    DataDictionaryService dds;
-
     @Resource(type = SurveyService.class)
     SurveyService ss;
+
+    @Resource(type = AssessmentVariableService.class)
+    AssessmentVariableService avs;
 
     @Resource(name = "sessionMgr")
     SessionMgr sessionMgr;
@@ -41,11 +41,10 @@ public class ManageFormulasRestController {
 
     @RequestMapping(value = "/services/formulas", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<Map> getFormulasForModule(HttpServletRequest request,
-                                          @RequestParam("moduleId") Integer moduleId,
-                                          @CurrentUser EscreenUser escreenUser) {
+    public List<Map<String, String>> getFormulasForModule(@RequestParam("moduleId") Integer moduleId,
+                                                          @CurrentUser EscreenUser escreenUser) {
 
-        List<Map> formulas = dds.askFormulasFor(sessionMgr.getDD(request), moduleId);
+        List<Map<String, String>> formulas = avs.askFormulasFor(moduleId);
         return formulas;
     }
 
@@ -82,7 +81,7 @@ public class ManageFormulasRestController {
         return null;
     }
 
-    @RequestMapping(value = "/services/formulas/test", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "/services/formulas/testSelectedTokens", method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
     public ResponseEntity<Map> testFormula(@RequestBody Map<String, Object> tgtFormula) {
         Map<String, String> m = Maps.newHashMap();
@@ -96,23 +95,25 @@ public class ManageFormulasRestController {
         }
     }
 
-    @RequestMapping(value = "/services/formulas/verify", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "/services/formulas/verifySelectedTokens", method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Map> verifyFormula(@RequestBody Map<String, String> tgtFormula) {
-        String formulaAsStr = tgtFormula.get("f2v");
-
+    public ResponseEntity<Map> verifySelectedTokens(@RequestBody List<String> tokens) {
+        String formulaAsStr = createFormulaFromTokens(tokens);
         if (formulaAsStr == null) {
             Map result = Maps.newHashMap();
             result.put("status", "failed");
             result.put("reason", "missing formula");
             return new ResponseEntity<Map>(result, HttpStatus.BAD_REQUEST);
         } else {
-            String filteredExpTemplate = formulaAsStr.replaceAll("[$]", "");
-            Map result = expressionEvaluator.extractInputsRecursively(filteredExpTemplate);
+            Map result = expressionEvaluator.extractInputsRecursively(formulaAsStr);
             if (result.get(ExpressionEvaluatorService.key.status.name()).equals(ExpressionEvaluatorService.key.failed.name())) {
                 return new ResponseEntity<Map>(result, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<Map>(result, HttpStatus.OK);
         }
+    }
+
+    private String createFormulaFromTokens(List<String> tokens) {
+        return expressionEvaluator.buildFormulaFromTokenIds(tokens);
     }
 }

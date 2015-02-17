@@ -1,6 +1,39 @@
 /**
  * Created by Khalid Rizvi @ 01/24/2015
  */
+
+Editors.filter('propsFilter', function () {
+    return function (items, props) {
+        var out = [];
+
+        if (angular.isArray(items)) {
+            items.forEach(function (item) {
+                var itemMatches = false;
+
+                var keys = Object.keys(props);
+                for (var i = 0; i < keys.length; i++) {
+                    var prop = keys[i];
+                    var text = props[prop].toLowerCase();
+                    if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                        itemMatches = true;
+                        break;
+                    }
+                }
+
+                if (itemMatches) {
+                    out.push(item);
+                }
+            });
+        } else {
+            // Let the output be the input untouched
+            out = items;
+        }
+
+        return out;
+    };
+});
+
+
 Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 'FormulasService', function ($state, $log, $scope, FormulasService) {
     $scope.formula = FormulasService.fetchCurrentFormula();
     $log.debug($scope);
@@ -25,17 +58,18 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     $scope.msgs = [];
 
     $scope.produceInputFields = function () {
-        FormulasService.verifyCurrentFormula().then(function (result) {
+        $scope.toggleDisable();
+        FormulasService.verifySelectedTokens(tokens()).then(function (result) {
             FormulasService.attachWithCurrentFormula(result.verifiedIds);
             $scope.verifiedIds = result.verifiedIds;
             addSuccessMsg(true, 'The formula is verified successfully');
         }, function error(reason) {
-            addDangerMsg(true, reason.reason);
+            addDangerMsg(true, reason.data.reason);
         });
     };
 
     $scope.runTest = function () {
-        FormulasService.testCurrentFormula()
+        FormulasService.testSelectedTokens(tokens())
             .then(function (result) {
                 $scope.result = result.data;
                 addSuccessMsg(true, 'Please verify the result and either save or change the values and test again');
@@ -54,7 +88,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
         if ($scope.formula.avId === undefined) {
             isNew = true;
         }
-        FormulasService.persistCurrentFormula()
+        FormulasService.persistSelectedTokens(tokens())
             .then(function (result) {
                 FormulasService.updateCurrentFormula(result);
                 FormulasService.processSuccessfulSave(isNew);
@@ -64,4 +98,32 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
             }
         );
     };
+
+    $scope.tagFormula = function (newFormula) {
+        var item = {
+            name: newFormula,
+            id: _.uniqueId('udk[' + newFormula + '][') + ']'
+        };
+        return item;
+    };
+
+
+    $scope.formulaTemplate = {};
+    $scope.formulaTemplate.selectedTokens = [];
+    $scope.disable = false;
+    $scope.toggleDisable = function () {
+        $scope.disable = !$scope.disable;
+    }
+
+    var tokens = function () {
+        return _.map($scope.formulaTemplate.selectedTokens, 'id');
+    }
+
+    $scope.refreshVariables = function () {
+        FormulasService.loadVarsByModuleId().then(function (vars) {
+            $scope.variables = vars;
+        }, function error(reason) {
+            addDangerMsg(true, reason);
+        });
+    }
 }]);

@@ -29,26 +29,31 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
                 $log.debug('getting formulas promise for module with an id of' + currentModule.id);
                 return formulasProxy.getList({moduleId: currentModule.id});
             },
+            loadVarsByModuleId: function () {
+                $log.debug('getting all variable promise for module with an id of' + currentModule.id);
+                formulasCache.removeAll()
+                return restAngular.all('uniqueAvs').getList({moduleId: currentModule.id});
+            },
 
             getModuleById: function (moduleId) {
                 $log.debug('getting module details promise for module with an id of ' + moduleId);
                 return restAngular.one('formulas/modules', moduleId).get();
             },
-            verifyCurrentFormula: function () {
-                $log.debug('verifying current formula ' + currentFormula.template);
-                return restAngular.one('formulas/verify').customPUT({f2v: currentFormula.template});
+            verifySelectedTokens: function (tokens) {
+                $log.debug('verifying current tokens ' + tokens);
+                return restAngular.one('formulas/verifySelectedTokens').customPUT(tokens);
             },
-            testCurrentFormula: function () {
-                $log.debug('testing current formula verifiedIds' + currentFormula.verifiedIds);
-                return restAngular.one('formulas/test').customPUT({
-                    template: currentFormula.template,
-                    f2t: currentFormula.verifiedIds
+            testSelectedTokens: function (tokens) {
+                $log.debug('testing selected tokens using verifiedIds' + currentFormula.verifiedIds);
+                return restAngular.one('formulas/testSelectedTokens').customPUT({
+                    tokens: tokens,
+                    verifiedIds: currentFormula.verifiedIds
                 });
             },
-            persistCurrentFormula: function () {
-                $log.debug('persisting current formula ' + currentFormula);
+            persistSelectedTokens: function (tokens) {
+                $log.debug('persisting selected Tokens ' + tokens);
 
-                return formulasProxy.post(_.omit(currentFormula, 'verifiedIds'));
+                return formulasProxy.post({tokens: tokens, av: _.omit(currentFormula, 'verifiedIds')});
             },
             updateCurrentFormula: function (result) {
                 $log.debug('updating current formula with recently saved formula =>CurrentFormula[' + currentFormula + '] RecentlySavedFormula[' + result + ']');
