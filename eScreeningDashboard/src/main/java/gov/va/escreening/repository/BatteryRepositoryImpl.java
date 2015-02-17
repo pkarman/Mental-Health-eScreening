@@ -23,7 +23,7 @@ public class BatteryRepositoryImpl extends AbstractHibernateRepository<Battery>
 	public List<Battery> getBatteryList() {
 
 		List<Battery> resultList = new ArrayList<Battery>();
-		String sql = "SELECT b FROM Battery b ORDER BY b.name";
+		String sql = "SELECT b FROM Battery b where b.isDisabled=0 ORDER BY b.name";
 
 		TypedQuery<Battery> query = entityManager.createQuery(sql,
 				Battery.class);

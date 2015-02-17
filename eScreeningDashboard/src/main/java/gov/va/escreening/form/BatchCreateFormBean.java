@@ -18,6 +18,25 @@ public class BatchCreateFormBean extends EditVeteranAssessmentFormBean
 	 * key -- VeteranID, value: list of survey IDs that are in Due clinical Reminders
 	 */
 	private Map<Integer, Set<Integer>> vetSurveyMap;
+	
+	private String program;
+	private String clinic;
+
+	public String getProgram() {
+		return program;
+	}
+
+	public void setProgram(String program) {
+		this.program = program;
+	}
+
+	public String getClinic() {
+		return clinic;
+	}
+
+	public void setClinic(String clinic) {
+		this.clinic = clinic;
+	}
 
 	public BatchCreateFormBean() {
 		super();

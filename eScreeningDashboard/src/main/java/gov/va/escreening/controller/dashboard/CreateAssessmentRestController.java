@@ -13,6 +13,7 @@ import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.dto.dashboard.VeteranSearchResult;
 import gov.va.escreening.entity.Clinic;
+import gov.va.escreening.entity.Program;
 import gov.va.escreening.form.EditVeteranAssessmentFormBean;
 import gov.va.escreening.form.BatchCreateFormBean;
 import gov.va.escreening.form.SelectVeteranFormBean;
@@ -175,7 +176,6 @@ public class CreateAssessmentRestController {
 		model.addAttribute("isPostBack", true);
 		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 		
-		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
 		
 		String clinicIen = selectVeteranFormBean.getSelectedClinic();
 		List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, 
@@ -183,7 +183,10 @@ public class CreateAssessmentRestController {
 			
 		model.addAttribute("result",appList);
 		model.addAttribute("searchResultListSize", appList.size());
+		selectVeteranFormBean.setResult(appList);
+		
 		return "dashboard/selectVeterans";
+		
 	}
 	
 	@RequestMapping(value="/views/**", method=RequestMethod.GET)
@@ -202,13 +205,15 @@ public class CreateAssessmentRestController {
 	
 	@RequestMapping(value="/selectVeterans", method = RequestMethod.POST, params="selectVeterans")
 	public ModelAndView selectVeteransForBatchCreate2(Model model,
-			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
+			@ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
 			BindingResult result,
 			@RequestParam String[] vetIens, @RequestParam String clinicId, @CurrentUser EscreenUser user)
 	{	
-		Map paramMap = new HashMap<>();
+		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("vetIens", vetIens);
 		paramMap.put("clinicId", clinicId);
+		paramMap.put("vets", selectVeteranFormBean.getResult());
+		
 		return new ModelAndView(new RedirectView("editVeteransAssessment"), paramMap);
 	}
 	
@@ -244,9 +249,28 @@ public class CreateAssessmentRestController {
 		
 		Clinic c = clinicRepo.findByIen(clinicId);
 		editVeteranAssessmentFormBean.setSelectedClinicId(c.getClinicId());
+		editVeteranAssessmentFormBean.setClinic(c.getName());
 		
 		int programId = c.getProgram().getProgramId();
 		editVeteranAssessmentFormBean.setSelectedProgramId(programId);
+		editVeteranAssessmentFormBean.setProgram(c.getProgram().getName());
+		
+		List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
+		List<DropDownObject> availableBatteryList = new ArrayList<>();
+		
+		for (DropDownObject b : batteryList) {
+			List<Program> ps = createAssessmentDelegate.getProgramsForBattery(Integer.parseInt(b.getStateId()));
+			for(Program p : ps)
+			{
+				if(p.getProgramId() == programId)
+				{
+					availableBatteryList.add(b);
+					break;
+				}
+			}
+		}
+	
+		model.addAttribute("batteryList", availableBatteryList);
 		
 		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
 		model.addAttribute("batterySurveyList", batterySurveyList);
@@ -317,23 +341,35 @@ public class CreateAssessmentRestController {
     }
     
 	@RequestMapping(value="/editVeteransAssessment", method = RequestMethod.POST, params="saveButton")
-	public String selectVeteransForBatchCreate(@CurrentUser EscreenUser escreenUser, Model model,
-			@ModelAttribute BatchCreateFormBean batchCreateFormBean,
+	public ModelAndView selectVeteransForBatchCreate(@CurrentUser EscreenUser escreenUser, Model model,
+			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
 			BindingResult result)
 	{
 		
-		List<BatchBatteryCreateResult> results = batchCreateDelegate.batchCreate(batchCreateFormBean.getVeterans(), 
-				batchCreateFormBean.getSelectedBatteryId(),
-				batchCreateFormBean.getSelectedClinicId(),
-				batchCreateFormBean.getSelectedClinicianId(),
-				batchCreateFormBean.getSelectedNoteTitleId(),
-				batchCreateFormBean.getSelectedBatteryId(),
-				batchCreateFormBean.getVetSurveyMap(),
-				batchCreateFormBean.getSelectedSurveyIdList(),
+		Integer selectedBatteryId = editVeteranAssessmentFormBean.getSelectedBatteryId();
+		Integer selectedClinicId = editVeteranAssessmentFormBean.getSelectedClinicId();
+		Integer selectedClinicianId = editVeteranAssessmentFormBean.getSelectedClinicianId();
+		Integer selectedNoteTitleId = editVeteranAssessmentFormBean.getSelectedNoteTitleId();
+		
+		if(selectedBatteryId == null || selectedClinicId==null || selectedClinicianId==null ||selectedNoteTitleId==null)
+		{
+			result.reject("selectedBatteryId");
+			return new ModelAndView("editVeteransAssessment");
+		}
+		
+		
+		List<BatchBatteryCreateResult> results = batchCreateDelegate.batchCreate(editVeteranAssessmentFormBean.getVeterans(), 
+				editVeteranAssessmentFormBean.getSelectedProgramId(),
+				selectedClinicId,
+				selectedClinicianId,
+				selectedNoteTitleId,
+				selectedBatteryId,
+				editVeteranAssessmentFormBean.getVetSurveyMap(),
+				editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
 				escreenUser);
 		
 				
 		model.addAttribute("batchCreateResult", results);
-		return "dashboard/batchComplete";
+		return new ModelAndView(new RedirectView("batchComplete"), "batchCreateResult", results);
 	}
 }
