@@ -383,7 +383,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 console.log("Getting template from server with ID: " + $stateParams.templateId);
 
                                 TemplateService.get($stateParams.templateId).then(function (template) {
-                                    console.log(template);
                                     deferred.resolve(template);
                                 }, function(response) {
                                     MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
