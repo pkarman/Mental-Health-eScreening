@@ -610,7 +610,7 @@ $(document).ready(function() {
    	});
 	   	
 	   	
-	   // Todo - Need to check if that's used anywhere 	
+	// Todo - Need to check if that's used anywhere 	
    	function printElement(elem, append, delimiter) {
    		var domClone = elem.cloneNode(true);
    		var $printSection = document.getElementById("printableArea");
@@ -1171,7 +1171,7 @@ $(document).ready(function() {
 				});
 			}
 	
-	
+		colors.reverse(); // reset colors order
 	
 		} // End of plot function
 	
