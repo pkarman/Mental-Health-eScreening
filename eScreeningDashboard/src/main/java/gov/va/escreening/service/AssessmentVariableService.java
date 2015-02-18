@@ -5,6 +5,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -45,4 +46,13 @@ public interface AssessmentVariableService {
 	boolean compareMeasure(AssessmentVariable av, Measure m);
 
 	boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
+
+	/**
+	 * Retrieves all assessment variables associated with the given measure and its children if applicable
+	 * @param measureId 
+	 * @return Map from AV ID to the AV object
+	 */
+	Map<Integer, AssessmentVariable> getAssessmentVarsForMeasure(Integer measureId);
+	
+	
 }

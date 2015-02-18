@@ -197,7 +197,6 @@ public class MeasureAssessmentVariableResolverImpl implements
 					responses, measureAnswerHash);
 			break;
 		case MEASURE_TYPE_ID_TABLEQUESTION:
-			// TODO need to do some additional work here
 			variableDto = resolveTableAssessmentVariableQuestion(
 					assessmentVariable, veteranAssessmentId, measureAnswerHash);
 			break;
@@ -322,22 +321,34 @@ public class MeasureAssessmentVariableResolverImpl implements
 					List<SurveyMeasureResponse> responses = surveyMeasureResponseRepository
 							.findForAssessmentIdMeasureRow(veteranAssessmentId,
 									childMeasure.getMeasureId(), tabularRow);
-					if (responses == null || responses.size() == 0
+					if (responses == null || responses.isEmpty()
 							|| tabularRow > 1000)
 						break;
 
 					try {
 						// otherwise we have a response to process
+						List<AssessmentVariable> avList = childMeasure.getAssessmentVariableList();
+						if(avList == null || avList.isEmpty()){
+							throw new IllegalStateException("No variable found for question with ID: " + childMeasure.getMeasureId());
+						}
+						// av to measure should be a one-to-one mapping but currently it is one to many. We will fix this soon. For now grab first one:
+						AssessmentVariable childAV = avList.get(0);
+						
 						AssessmentVariableDto childQuestionVariableDto = processMeasureType(
 								childMeasure.getMeasureType()
 										.getMeasureTypeId(),
 								childMeasure.getMeasureId(),
-								veteranAssessmentId, assessmentVariable,
+								veteranAssessmentId, childAV,
 								responses, measureAnswerHash);
-						questionVariableDto.getChildren().add(
-								childQuestionVariableDto);
-					} catch (Exception ex) {
-						logger.warn(ex.getMessage());
+						
+						questionVariableDto.getChildren().add(childQuestionVariableDto);
+						
+					} catch ( AssessmentVariableInvalidValueException avive) {
+						logger.warn(avive.getMessage());
+						//this is so that when a child measure is missing, the parent should still 
+						//be resolved.
+					} catch (CouldNotResolveVariableException cnrve){
+						logger.warn(cnrve.getMessage());
 						//this is so that when a child measure is missing, the parent should still 
 						//be resolved.
 					}

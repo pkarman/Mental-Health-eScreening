@@ -495,19 +495,32 @@ Other parameters are the same as the delimit function below
 This transformation takes a table question and returns the number of entries given by the veteran
 -->
 <#function numberOfEntries table=DEFAULT_VALUE >
-	<#if table == DEFAULT_VALUE || !(table.children??) || wasAnswerNone(variableObj) >
-    	<#return 0>
-	<#else>
-		<#return table.children?size>
-	</#if>
+	<#return createTableHash(table)?size>
 </#function>
 
+<#-- 
+This transformation takes a table question and returns an array of hashes where each entry is a row/entry, and the hash 
+at that location has a key for every question which was answered for that row.  
+It was done this way for simple calculation of number of rows used by numberOfEntries function.
+Note: in the future we can change the way we organize the table question children array so it is not so flat. This would required
+the update of any templates which were hand made (currently template IDs are: 6,12,14,20,22)
+-->
+<#function createTableHash table=DEFAULT_VALUE >
+	<#return 'gov.va.escreening.template.function.TableHashCreator'?new().create(table)>
+</#function>
+
+<#function getTableVariable tableHash=[] tableChildVar=DEFAULT_VALUE rowIndex=0 >
+	<#if tableChildVar==DEFAULT_VALUE || tableHash?size == 0 || !(tableHash[rowIndex]??) || !(tableHash[rowIndex][tableChildVar.variableId]??)>
+		<#return DEFAULT_VALUE>
+	</#if>
+	<#return tableHash[rowIndex][tableChildVar.variableId]>
+</#function> 
 
 <#-- This transformation’s goal is to produce a list of text, one per question having at least one required column selected by the veteran
 rowAvIdToOutputMap is a map from row AV ID to the text we should output if the at least once column was selected by the veteran for the given question
 columnVarIdMap is a set of column AV IDs which we are testing to see if the veteran gave one of the responses
 -->
-<#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowAvIdToOutputMap={} columnVarIdList=[] >
+<#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowAvIdToOutputMap=[] columnVarIdList=[] >
 	<#-- test to see if no matrix exists and then return default values -->
 	<#if matrix == DEFAULT_VALUE || !(rowAvIdToOutputMap?has_content) || !(columnVarIdList?has_content) >
 		<#return DEFAULT_VALUE>
@@ -606,7 +619,7 @@ If there is only one element in the list it will be output without any prefix or
 -->
 <#function delimitList valList=[] prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
     <#if valList?size == 1>
-    	<#return vaList?first >
+    	<#return valList?first >
     </#if>
     
     <#assign result = ''>
@@ -634,7 +647,7 @@ Returns an array of the 'value' field for each child of the given variable
 --> 
 <#function getChildValues variableObj=DEFAULT_VALUE > 
     <#assign result = []>
-    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && variableObj.children?size > 0 > 
+    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && (variableObj.children?size > 0) > 
 	    <#list variableObj.children as child>
 	    	<#assign result = result + [child.value] >
 	    </#list>
@@ -647,7 +660,7 @@ Returns an array of the 'displayText' field for each child of the given variable
 --> 
 <#function getChildDisplayText variableObj=DEFAULT_VALUE > 
 	<#assign result = []>
-    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && variableObj.children?size > 0 > 
+    <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && (variableObj.children?size > 0) > 
 	    <#list variableObj.children as child>
 	    	<#assign result = result + [child.displayText] >
 	    </#list>
@@ -678,6 +691,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         </#if>
         
         <#return var?number>
+        
     </#if>
     
     <#if measureTypeId == 1 >

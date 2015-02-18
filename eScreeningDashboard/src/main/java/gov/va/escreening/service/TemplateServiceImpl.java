@@ -530,9 +530,8 @@ public class TemplateServiceImpl implements TemplateService {
 		file.append("<#-- generated file. Do not change -->\n");
 
 		file.append("${MODULE_START}\n");
-		for(INode block : blocks)
-		{
-			file.append(block.toFreeMarkerFormat(ids));
+		for(INode block : blocks){
+			file = block.appendFreeMarkerFormat(file, ids);
 		}
 		file.append("\n${MODULE_END}\n");
 		
