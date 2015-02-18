@@ -9,11 +9,12 @@
 		    { name: 'If', value: 'if' },
 		    { name: 'Else If', value: 'elseif' },
 		    { name: 'Else', value: 'else' },
-		    { name: 'Text', value: 'text' }
+		    { name: 'Text', value: 'text' },
+			{ name: 'Table', value: 'table' }
 	    ];
 
         function getBlockTypes(parentBlock) {
-            var types = [blockTypes[0], blockTypes[3]];
+            var types = [blockTypes[0], blockTypes[3], blockTypes[4]];
             
             //dropping at root
             if(!Object.isDefined(parentBlock) || parentBlock.type == "else"){
@@ -107,42 +108,51 @@
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
-	                { name: 'Equals',                    value: 'eq',    category: 'numerical' },
-	                { name: 'Doesn\'t Equals',           value: 'neq',   category: 'numerical' },
-	                { name: 'Is Less Than',              value: 'lt',    category: 'numerical' },
-	                { name: 'Is Greater Than',           value: 'gt',    category: 'numerical' },
-	                { name: 'Is Less Than or Equals',    value: 'lte',   category: 'numerical' },
-	                { name: 'Is Greater Than or Equals', value: 'gte',   category: 'numerical' },
+	                { name: 'Equals',                    value: 'eq',    categories: ['numerical'] },
+	                { name: 'Doesn\'t Equals',           value: 'neq',   categories: ['numerical'] },
+	                { name: 'Is Less Than',              value: 'lt',    categories: ['numerical'] },
+	                { name: 'Is Greater Than',           value: 'gt',    categories: ['numerical'] },
+	                { name: 'Is Less Than or Equals',    value: 'lte',   categories: ['numerical'] },
+	                { name: 'Is Greater Than or Equals', value: 'gte',   categories: ['numerical'] },
 
-	                { name: 'Was Answered',     value: 'answered',   category: 'question' },
-	                { name: 'Wasn\'t Answered', value: 'nanswered', category: 'question' },
+	                { name: 'Was Answered',     value: 'answered',   categories: ['question', 'table'] },
+	                { name: 'Wasn\'t Answered', value: 'nanswered', categories: ['question', 'table'] },
 
-	                { name: 'Has Result',      value: 'result',   category: 'formula' },
-	                { name: 'Has No Result',   value: 'nresult', category: 'formula' },
+					{ name: 'Was Answer None',     value: 'none',   categories: ['table'] },
+					{ name: 'Wasn\'t Answer None', value: 'nnone', categories: ['table'] },
 
-	                { name: 'Response is',     value: 'response',  category: 'select' },
-	                { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
+	                { name: 'Has Result',      value: 'result',   categories: ['formula', 'matrix'] },
+	                { name: 'Has No Result',   value: 'nresult', categories: ['formula', 'matrix'] },
+
+	                { name: 'Response is',     value: 'response',  categories: ['select'] },
+	                { name: 'Response isn\'t',  value: 'nresponse', categories: ['select'] }
                 ];
 
                 var filterOperators = function(operator) {
                     var includeOperator = false;
 
 	                if (operator && this.type) {
-		                if(operator.category.toLowerCase() === "numerical") {
-			                if(this.type.toUpperCase() === "CUSTOM" || this.type.toUpperCase() === "FORMULA") {
+		                if(_.contains(operator.categories, 'numerical')) {
+			                if(this.type.toUpperCase() === 'CUSTOM' || this.type.toUpperCase() === 'FORMULA') {
 				                includeOperator = true;
 			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
 				                includeOperator = true;
 			                }
-		                } else if(operator.category.toLowerCase() === "question" && (this.type.toUpperCase() === "QUESTION")) {
+		                } else if(_.contains(operator.categories, 'question') && (this.type.toUpperCase() === 'QUESTION')) {
 			                includeOperator = true;
-		                } else if(operator.category.toLowerCase() === "formula" && (this.type.toUpperCase() === "FORMULA")) {
+		                } else if(_.contains(operator.categories, 'formula') && (this.type.toUpperCase() === 'FORMULA')) {
 			                includeOperator = true;
-		                } else if(operator.category.toLowerCase() === "select" && (this.type.toUpperCase() === "QUESTION")) {
+		                } else if(_.contains(operator.categories, 'select') && (this.type.toUpperCase() === 'QUESTION')) {
 			                if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
 				                includeOperator = true;
 			                }
 		                }
+						else if(_.contains(operator.categories, 'table') && (this.measureTypeId === 4)) {
+							includeOperator = true;
+						}
+						else if(_.contains(operator.categories, 'matrix') && (this.type.toUpperCase() === 'MATRIX')) {
+							includeOperator = true;
+						}
 	                }
 
                     return includeOperator;

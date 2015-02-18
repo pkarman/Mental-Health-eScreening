@@ -42,24 +42,24 @@
 
 	<div ng-switch on="assessmentVariable.type" class="animate-switch-container" ng-if="table.show === false">
 		<div ng-switch-when="Custom" class="animate-switch" class="col-sm-12">
-			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<h4 class="modal-title" id="TransformationLable">{{assessmentVariable.name}} Transformation</h4>
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
-					<div>Delimiter</div>
+					<p>Delimiter</p>
 				</div>
 
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputPrefix">Prefix</label>
-							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" value=",">
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params.prefix">
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputLastPrefix">Last Prefix</label>
-							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" value="and">
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params.lastPrefix">
 						</div>
 					</div>
 				</div>
@@ -68,12 +68,12 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputSuffix">Suffix</label>
-							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix"  value="&quot;&quot;">
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params.suffix">
 						</div>
 					</div>
 					<div class="col-md-6"><br>
 						<div class="checkbox">
-							<input type="checkbox" id="suf_check_01"> <label for="suf_check_01"> Suffix After Last Entry</label>
+							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params.includeSuffixAtEnd"> <label for="suf_check_01"> Suffix After Last Entry</label>
 						</div>
 					</div>
 				</div>
@@ -81,7 +81,7 @@
 
 				<div class="form-group">
 					<label for="inputDefaultText">Default Text</label>
-					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text">
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params.defaultValue">
 				</div>
 
 				<div class="text-right">
@@ -92,7 +92,7 @@
 		</div>
 
 		<div ng-switch-when="freeText" class="animate-switch" class="col-sm-12">
-			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<h4 class="modal-title" id="TransformationLable">{{assessmentVariable.name}} Transformation</h4>
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
@@ -110,11 +110,11 @@
 		</div>
 
 		<div ng-switch-when="selelctOneMatrix" class="animate-switch" class="col-sm-12">
-			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<h4 class="modal-title" id="TransformationLable">{{assessmentVariable.name}} Transformation</h4>
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type (Matrix to list)</label>
-					<div>Delimiter</div>
+					<p>Delimiter</p>
 				</div>
 
 				<div class="text-info">Have to select at least one column and one row</div>
@@ -131,22 +131,22 @@
 							</li>
 							<li>
 								<div class="checkbox">
-									<input type="checkbox" id="ans_check_02"> <label for="ans_check_02"> A little bit     </label>
+									<input type="checkbox" id="ans_check_02"> <label for="ans_check_02"> A little bit</label>
 								</div>
 							</li>
 							<li>
 								<div class="checkbox">
-									<input type="checkbox" id="ans_check_03"> <label for="ans_check_03"> Somewhat </label>
+									<input type="checkbox" id="ans_check_03"> <label for="ans_check_03"> Somewhat</label>
 								</div>
 							</li>
 							<li>
 								<div class="checkbox">
-									<input type="checkbox" id="ans_check_04"> <label for="ans_check_04"> Quite a bit     </label>
+									<input type="checkbox" id="ans_check_04"> <label for="ans_check_04"> Quite a bit</label>
 								</div>
 							</li>
 							<li>
 								<div class="checkbox">
-									<input type="checkbox" id="ans_check_05"> <label for="ans_check_05"> Very much </label>
+									<input type="checkbox" id="ans_check_05"> <label for="ans_check_05"> Very much</label>
 								</div>
 							</li>
 						</ul>
@@ -168,7 +168,7 @@
 							</li>
 							<li>
 								<div class="checkbox">
-									<input type="checkbox" id="qus_check_02"> <label for="qus_check_02"> pain_average </label>
+									<input type="checkbox" id="qus_check_02"> <label for="qus_check_02"> pain_average</label>
 								</div>
 
 								<div class="form-group">
@@ -189,7 +189,7 @@
 		</div>
 
 		<div ng-switch-when="table" class="animate-switch" class="col-sm-12">
-			<h4 class="modal-title" id="TransformationLable">{{av.name}} Transformation</h4>
+			<h4 class="modal-title" id="TransformationLable">{{assessmentVariable.name}} Transformation</h4>
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
@@ -221,13 +221,13 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputPrefix">Prefix</label>
-							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" value="">
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params.prefix">
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputLastPrefix">Last Prefix</label>
-							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" value="and">
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params.lastPrefix">
 						</div>
 					</div>
 				</div>
@@ -236,19 +236,19 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputSuffix">Suffix</label>
-							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" value=",">
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params.suffix">
 						</div>
 					</div>
 					<div class="col-md-6"><br>
 						<div class="checkbox">
-							<input type="checkbox" id="suf_check_01"> <label for="suf_check_01"> Suffix After Last Entry</label>
+							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params.includeSuffixAtEnd"> <label for="suf_check_01"> Suffix After Last Entry</label>
 						</div>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="inputDefaultText">Default Text</label>
-					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text">
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params.defaultValue">
 				</div>
 
 				<div class="text-right">
