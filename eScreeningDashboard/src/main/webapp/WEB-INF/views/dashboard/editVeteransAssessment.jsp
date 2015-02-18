@@ -57,15 +57,12 @@
     
 	</div>
 
-	<div class="mainDiv">
-	</div>
+	<div class="mainDiv"> </div>
 
 	<div class="container left-right-shadow editVeteransAssessment">
 		<div class="row">
 			<div class="col-md-12">
-
 				<a name="skip" > </a ><h1>Create Battery</h1>
-
 				<c:if test="${!isCprsVerified}">
 					<div class="alert alert-danger">
 						Your VistA account information needs to be verified before you can save or read any data from VistA. 
@@ -79,8 +76,6 @@
 						This battery is read only and no longer editable.
 					</div>
 				</c:if>
-				
-								
 				<div>
 				
 					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -93,76 +88,64 @@
 						  </h3>
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-						  <div class="panel-body">
-
-
-
-
-
-				<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
-					
-					clinicId: <c:out value="${param.clinicId}" /><br>
-					vetIens: <c:out value="${param.vetIens}" /><br>
-					veterans: 
-					<%
-					String vetIens[] =  request.getParameterValues("vetIens");
-					if(vetIens != null){ %>
-					<% for(int i=0; i<vetIens.length; i++){ %>
-						<li><%=vetIens[i]%> </li>
-					
-					<% } 
-					}
-					%>
-					 <br>
-
-				
-					<table class="table table-striped table-hover" summary="Search Result Table">
-						<thead>
-							<tr>
-								<th scope="col" class="col-md-1">SSN-4</th>
-								<th scope="col" class="col-md-2">Last Name</th>
-								<th scope="col" class="col-md-2">First Name</th>
-								<th scope="col" class="col-md-2">Middle Name</th>
-								<th scope="col" class="col-md-2">Date of Birth</th>
-								<th scope="col" class="col-md-1">Appointment Date</th>
-								<th scope="col" class="col-md-1 text-right">Appointment Time</th>
-								<th scope="col" class="col-md-1">Clinical Reminders</th>
-							</tr>
-						</thead>
-						<tfoot>
-							<tr>
-								<c:if test="${empty veterans}">
-									<td colspan="6">No record found</td>
-								</c:if>
-								<c:if test="${not empty veterans}">
-									<td colspan="6"><c:out value="${veteransSize}" /> record(s) found</td>
-								</c:if>
-							</tr>
-						</tfoot>
-						<tbody>
-							<c:if test="${not empty veterans}">
-								<c:forEach var="item" items="${veterans}">
-									<tr>
-										<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
-										<td><c:out value="${item.lastName}" /></td>
-										<td><c:out value="${item.firstName}" /></td>
-										<td><c:out value="${item.middleName}" /></td>
-										<td><c:out value="${item.birthDate}" /></td>
-										<td class="text-right"><c:out value="${item.apptDate}" /></td>
-										<td class="text-right"><c:out value="${item.apptTime}" /></td>
-										<td class="text-right"><c:out value="${item.dueClinicalReminders}" /></td>
-									</tr>
-								</c:forEach>
-							</c:if>
-						</tbody>
-					</table>
-					</form:form>
-					
-					
-					
-	
+						<div class="panel-body">
+							<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
+								-- DUMP --<br>
+								clinicId: <c:out value="${param.clinicId}" /><br>
+								vetIens: <c:out value="${param.vetIens}" /><br>
+								veterans: 
+								<%
+								String vetIens[] =  request.getParameterValues("vetIens");
+								if(vetIens != null){ %>
+								<% for(int i=0; i<vetIens.length; i++){ %>
+									<li><%=vetIens[i]%> </li>
 								
-						  </div>
+								<% } 
+								}
+								%>
+								<br>
+								<table class="table table-striped table-hover" summary="Search Result Table">
+									<thead>
+										<tr>
+											<th scope="col" class="col-md-1">SSN-4</th>
+											<th scope="col" class="col-md-2">Last Name</th>
+											<th scope="col" class="col-md-2">First Name</th>
+											<th scope="col" class="col-md-2">Middle Name</th>
+											<th scope="col" class="col-md-2">Date of Birth</th>
+											<th scope="col" class="col-md-1">Appointment Date</th>
+											<th scope="col" class="col-md-1 text-right">Appointment Time</th>
+											<th scope="col" class="col-md-1">Clinical Reminders</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<c:if test="${empty veterans}">
+												<td colspan="6">No record found</td>
+											</c:if>
+											<c:if test="${not empty veterans}">
+												<td colspan="6"><c:out value="${veteransSize}" /> record(s) found</td>
+											</c:if>
+										</tr>
+									</tfoot>
+									<tbody>
+										<c:if test="${not empty veterans}">
+											<c:forEach var="item" items="${veterans}">
+												<tr>
+													<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
+													<td><c:out value="${item.lastName}" /></td>
+													<td><c:out value="${item.firstName}" /></td>
+													<td><c:out value="${item.middleName}" /></td>
+													<td><c:out value="${item.birthDate}" /></td>
+													<td class="text-right"><c:out value="${item.apptDate}" /></td>
+													<td class="text-right"><c:out value="${item.apptTime}" /></td>
+													<td class="text-right"><c:out value="${item.dueClinicalReminders}" /></td>
+												</tr>
+											</c:forEach>
+										</c:if>
+									</tbody>
+								</table>
+								</form:form>
+							</div>
 						</div>
 					  </div>
 					</div>
@@ -310,8 +293,8 @@
 			</div>
 		</div>
 	</div>
-	<br />
-	<br />
+	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+
 </body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>

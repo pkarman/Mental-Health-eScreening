@@ -137,7 +137,6 @@
 						
 				<c:if test="${isPostBack}">
 					<h2>Search Result</h2>
-					
 					<input type='checkbox' name='selectAll' id="selectAll" /> <label for="selectAll">Select All</label>
 					<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
 					<input name="clinicId" value="${param.selectedClinic}" id="clinicId" type="hidden">
@@ -150,7 +149,6 @@
 								<th scope="col" class="col-md-2">Middle Name</th>
 								<th scope="col" class="col-md-2">Appointment Date</th>
 								<th scope="col" class="col-md-2 text-right">Appointment Time</th>
-								
 							</tr>
 						</thead>
 						<tfoot>

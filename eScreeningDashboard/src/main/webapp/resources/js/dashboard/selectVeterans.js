@@ -35,12 +35,13 @@ $(document).ready(function() {
 	});
 	
 
-
 	// Select/Deselect all vetIensCheckbox
-	var selectAll = "#selectAll"
+	var selectAll = "#selectAll";
+	var vetIensCheckbox = ".vetIensCheckbox";
+	
 	$(selectAll).click (function () {
 		 var checkedStatus = this.checked;
-		$('.vetIensCheckbox').each(function () {
+		$(vetIensCheckbox).each(function () {
 			$(this).prop('checked', checkedStatus);
 		 });
 	});
