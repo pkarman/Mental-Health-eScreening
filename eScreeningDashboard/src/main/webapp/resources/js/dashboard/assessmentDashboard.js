@@ -6,6 +6,14 @@ app.directive('reportTable', function() {
 	    	"bProcessing": true,
 	    	"bServerSide": true,
 	    	"bStateSave": true,
+ 			"fnStateSave": function (oSettings, oData) {
+				// set local storage for paging
+            	localStorage.setItem( 'dashboardDT', JSON.stringify(oData) );
+        	},
+        	"fnStateLoad": function (oSettings) {
+            	// load local storage for paging
+				return JSON.parse( localStorage.getItem('dashboardDT') );
+        	},
 	    	"aaSorting": [[0,"desc"]],
 	    	"bFilter": false,
 	    	"bJQueryUI": true,
@@ -51,20 +59,28 @@ app.directive('reportTable', function() {
 			scope.progTimer = setTimeout(scope.updateProgTimer, scope.timerDelay);
 			dataTable.fnClearTable(true);
 		};
+		
 
-		scope.autoRefreshProgChange = function() {
-			if(scope.autoRefreshProg == true){
+		scope.autoRefreshListChange = function() {
+			if(scope.autoRefreshList == true){
 				scope.updateProgTimer();
 			}else{
 				scope.stopProgTimer();
 			}
 		};
-		
+	
 		scope.stopProgTimer = function() {
 			// ClearTimeOUt
 			clearTimeout(scope.progTimer);
 		};
-				
+
+		if( localStorage.getItem( 'autoRefreshListCBS' ) == "true" ) {
+			scope.autoRefreshList = true;
+			scope.updateProgTimer();
+		} else {
+			scope.autoRefreshList = false;
+			scope.stopProgTimer();
+		};		
     };
 });
 
@@ -119,22 +135,31 @@ app.controller("assessmentDashboardController", function($scope, $element,
 				$scope.programId = $scope.showAllId;
 			}
 			// Set timer
-			$scope.timer = setTimeout($scope.updateGraphsTimer, $scope.timerDelay);
-			$scope.updateGraphs();
+			$scope.timer 				= setTimeout($scope.updateGraphsTimer, $scope.timerDelay); // Timer to update the updateGraphsTimer each scope.timer
+			$scope.timerupdateGraphs 	= setTimeout(function(){$scope.updateGraphs()}, $scope.timer); // Timer to update the graphic each scope.timer
 		};
 
 		
 		$scope.stopTimer = function() {
 			// ClearTimeOUt
 			clearTimeout($scope.timer);
+			clearTimeout($scope.timerupdateGraphs);
 		};
 		
-		$scope.change = function() {
-			if($scope.autorefresh == true){
+		$scope.autoRefreshChartsChange = function() {
+			if($scope.autoRefreshCharts == true){
 				$scope.updateGraphsTimer();
 			}else{
 				$scope.stopTimer();
 			}
+		};
+
+		if( localStorage.getItem( 'autoRefreshChartsCBS' ) == "true" ) {
+			$scope.autoRefreshCharts = true;
+			$scope.updateGraphsTimer();
+		} else {
+			$scope.autoRefreshCharts = false;
+			$scope.stopTimer();
 		};
 
 		// Update Graph
@@ -495,5 +520,22 @@ $(document).ready(function() {
     $('#dashboardTab a').click(function (e) {
     	e.preventDefault();
     	$(this).tab('show');
-    });                           
+    });
+	
+	$("#auto-refresh").click(function () {
+		if (localStorage.getItem('autoRefreshListCBS') == "false") {
+			localStorage.setItem("autoRefreshListCBS", "true");
+		} else {
+			localStorage.setItem("autoRefreshListCBS", "false");
+		};
+	});
+
+	$("#auto_refresh_charts").click(function () {
+		if (localStorage.getItem('autoRefreshChartsCBS') == "false") {
+			localStorage.setItem("autoRefreshChartsCBS", "true");
+		} else {
+			localStorage.setItem("autoRefreshChartsCBS", "false");
+		};
+	});   
+	 
 });
