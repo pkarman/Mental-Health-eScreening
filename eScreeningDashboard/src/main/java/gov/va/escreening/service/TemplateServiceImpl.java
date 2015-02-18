@@ -3,27 +3,20 @@ package gov.va.escreening.service;
 import freemarker.core.TemplateElement;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
-import gov.va.escreening.dto.MeasureAnswerDTO;
-import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.entity.Battery;
-import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
-import gov.va.escreening.repository.MeasureAnswerRepository;
-import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
 import gov.va.escreening.repository.VariableTemplateRepository;
-import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
@@ -39,7 +32,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,16 +59,8 @@ public class TemplateServiceImpl implements TemplateService {
 	private BatteryRepository batteryRepository;
 
 	@Autowired
-	private TemplateProcessorService templateProcessorService;
-	
-	@Autowired
 	private AssessmentVariableRepository avRepository;
 	
-	@Autowired
-	private MeasureAnswerRepository measureAnswerRepository;
-	
-	@Autowired
-	private MeasureRepository measureRepository;
 
 	@SuppressWarnings("serial")
 	private static List<TemplateType> surveyTemplates = new ArrayList<TemplateType>() {
@@ -684,7 +668,6 @@ public class TemplateServiceImpl implements TemplateService {
 		return template.getTemplateId();
 		
 	}
-	
 
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -696,50 +679,5 @@ public class TemplateServiceImpl implements TemplateService {
 		batteryRepository.update(battery);
 		
 		return templateId;
-	}
-
-	@Override
-	public List<MeasureAnswerDTO> getMeasureAnswerValues(Integer measureId) {
-		List<MeasureAnswer> answers = measureAnswerRepository.getAnswersForMeasure(measureId);
-		
-		List<MeasureAnswerDTO> answerDTOs = new ArrayList<MeasureAnswerDTO> ();
-		if (answers!=null && answers.size() >0){
-			for (MeasureAnswer a : answers )
-			{
-				MeasureAnswerDTO aDTO = new MeasureAnswerDTO();
-				BeanUtils.copyProperties(a, aDTO);
-				answerDTOs.add(aDTO);
-			}
-		}
-		
-		return answerDTOs;
-	}
-
-	@Override
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	public List<MeasureValidationSimpleDTO> getMeasureValidations(
-			Integer measureId) {
-		gov.va.escreening.entity.Measure measure = measureRepository.findOne(measureId);
-		
-		List<MeasureValidationSimpleDTO> results = new ArrayList<MeasureValidationSimpleDTO>();
-		
-		if (measure!=null && measure.getMeasureValidationList()!=null && measure.getMeasureValidationList().size()>0){
-			for(MeasureValidation mv : measure.getMeasureValidationList()){
-				MeasureValidationSimpleDTO sDTO = new MeasureValidationSimpleDTO();
-				
-				sDTO.setValidateId(mv.getValidation().getValidationId());
-				if (mv.getBooleanValue()!=null){
-					sDTO.setValue(mv.getBooleanValue()+"");
-				}else if (mv.getNumberValue()!=null){
-					sDTO.setValue(mv.getNumberValue()+"");
-				}
-				else{
-					sDTO.setValue(mv.getTextValue());
-				}
-				
-				results.add(sDTO);
-			}
-		}
-		return results;
 	}
 }

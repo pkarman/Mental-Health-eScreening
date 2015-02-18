@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Optional;
+
 import static com.google.common.base.Preconditions.*;
 
 public class FormulaAssessmentVariableResolverImpl implements
@@ -105,9 +106,8 @@ public class FormulaAssessmentVariableResolverImpl implements
 			String result = expressionEvaluatorService
 					.evaluateFormula(rootFormula);
 
-			variableDto = createAssessmentVariableDto(
-					assessmentVariable.getAssessmentVariableId(), result);
-			variableDto.setDisplayName(assessmentVariable.getDisplayName());
+			variableDto = new AssessmentVariableDto(assessmentVariable); 
+			variableDto.setResponse(result);
 		}
 		// warnings, these exceptions typically mean that a question was not
 		// answered
@@ -165,20 +165,6 @@ public class FormulaAssessmentVariableResolverImpl implements
 							assessmentVariable.getAssessmentVariableId(),
 							veteranAssessmentId, e.getMessage()));
 		}
-		return variableDto;
-	}
-
-	// new AssessmentVariable(10, "var10", "string", "formula_10", "25", "25",
-	// null, null)
-	private AssessmentVariableDto createAssessmentVariableDto(
-			int assessmentVariableId, String resolvedValue) {
-		Integer id = assessmentVariableId;
-		String key = String.format("var%s", id);
-		String type = "string";
-		String name = String.format("formula_%s", id);
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(id, key,
-				type, name, resolvedValue, resolvedValue, null, null,
-				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
 		return variableDto;
 	}
 

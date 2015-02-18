@@ -12,7 +12,9 @@ import gov.va.escreening.entity.SurveyPageMeasure;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
+import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.RepositoryInterface;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
@@ -58,6 +60,9 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	@Resource(type = MeasureRepository.class)
 	MeasureRepository measureRepo;
+
+	@Resource(type = MeasureAnswerRepository.class)
+	private MeasureAnswerRepository measureAnswerRepo;
 	
 	public class TableTypeAvModelBuilder implements AvBuilder<Table<String, String, Object>> {
 		final Table<String, String, Object> assessments;
@@ -297,6 +302,32 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return avMap;
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId){
+		MeasureAnswer ma = null;
+		if(measureAnswerId != null){
+			ma = measureAnswerRepo.findOne(measureAnswerId);
+		}
+		if(ma == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+			.toAdmin("An invalid or null measure answer ID was given: " + measureAnswerId)
+			.toUser("An invalid ID for an answer was sent to the server. Please contact support.")
+			.throwIt();
+		}
+		
+		//TODO: update this to just return the single AV (when the following method is removed and replaced with getAssessmentVariable())
+		List<AssessmentVariable> avs = ma.getAssessmentVariableList();
+		
+		if(avs == null || avs.isEmpty()){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+				.toAdmin("There is not assessment variable associated with measure answer with ID: " + measureAnswerId + ". This should never happen.")
+				.toUser("No vairable was found for an answer. Please report this to support.")
+				.throwIt();
+		}
+		return avs.get(0);
+	}
+	
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
 			final Set<Integer> measureTypes) {
 

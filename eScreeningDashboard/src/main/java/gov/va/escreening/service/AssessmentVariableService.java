@@ -1,10 +1,13 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.exception.EntityNotFoundException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Multimap;
@@ -48,11 +51,18 @@ public interface AssessmentVariableService {
 	boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
 
 	/**
-	 * Retrieves all assessment variables associated with the given measure and its children if applicable
+	 * Retrieves all assessment variables associated with the given measure and its child measures if applicable. Does not include answer AVs.
 	 * @param measureId 
 	 * @return Map from AV ID to the AV object
 	 */
 	Map<Integer, AssessmentVariable> getAssessmentVarsForMeasure(Integer measureId);
 	
-	
+	/**
+	 * @param measureAnswerId measure answer to pull AV for. This method gives back a single 
+	 * AV which is because the relationship should be one-to-one. This will be updated soon so 
+	 * for now this will return only one.
+	 * @return the AV associated with the given answer
+	 * @throws EntityNotFoundException if no AV is found for the given answer
+	 */
+	AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId);
 }

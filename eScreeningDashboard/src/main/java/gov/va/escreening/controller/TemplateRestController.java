@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/dashboard")
-public class TemplateRestController {
+public class TemplateRestController extends RestController {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(TemplateRestController.class);
@@ -76,7 +76,7 @@ public class TemplateRestController {
 	public List<TemplateTypeDTO> getModuleTemplateTypesBySurveyId(@RequestParam("surveyId") Integer surveyId, 
 			HttpServletRequest request) {
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
         if(surveyId == null || surveyId < 0){
             ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -106,7 +106,7 @@ public class TemplateRestController {
 	public List<TemplateTypeDTO> getModuleTemplateTypesByBatteryId(@RequestParam("batteryId") Integer batteryId, 
 			HttpServletRequest request) {
         
-		logRequest(request);
+		logRequest(logger, request);
 		
 		if(batteryId == null || batteryId < 0) {
             ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -138,7 +138,7 @@ public class TemplateRestController {
 			@RequestBody TemplateFileDTO templateFile, 
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		if (templateFile.getName() == null){
 			ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -161,7 +161,7 @@ public class TemplateRestController {
 			@RequestBody TemplateFileDTO templateFile, 		
 			HttpServletRequest request) {
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		if (templateFile.getName() == null){
 			ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -180,7 +180,7 @@ public class TemplateRestController {
 			@PathVariable("templateId") Integer templateId,
 			HttpServletRequest request) {
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		TemplateFileDTO dto = templateService.getTemplateFileAsTree(templateId);
 		
@@ -210,7 +210,7 @@ public class TemplateRestController {
 			@RequestBody TemplateFileDTO templateFile, 
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		try{
 			templateService.updateTemplateFile(templateId, templateFile);
@@ -230,7 +230,7 @@ public class TemplateRestController {
 	public Boolean deleteTemplate( @PathVariable("templateId") Integer templateId,
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		try {
 			templateService.deleteTemplate(templateId);
@@ -253,7 +253,7 @@ public class TemplateRestController {
 	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds,
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		templateService.addVariableTemplates(templateId, variableTemplateIds);
 		return Boolean.TRUE;
@@ -266,7 +266,7 @@ public class TemplateRestController {
 	public Boolean removeVariableTemplatesFromTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds,
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		
 		templateService.removeVariableTemplatesFromTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
@@ -279,7 +279,7 @@ public class TemplateRestController {
 	public Boolean addVariableTemplateToTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, 			
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		templateService.addVariableTemplate(templateId, variableTemplateId);
 		return Boolean.TRUE;
 	}
@@ -291,7 +291,7 @@ public class TemplateRestController {
 	public Boolean removeVariableTemplateFromTemplate(@PathVariable Integer templateId, @PathVariable Integer variableTemplateId, 
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		templateService.removeVariableTemplateFromTemplate(templateId, variableTemplateId);
 		return Boolean.TRUE;
 	}
@@ -303,33 +303,8 @@ public class TemplateRestController {
 	public Boolean setVariableTemplate(@PathVariable Integer templateId, @RequestBody List<Integer> variableTemplateIds, 
 			HttpServletRequest request){
 		
-		logRequest(request);
+		logRequest(logger, request);
 		templateService.setVariableTemplatesToTemplate(templateId, variableTemplateIds);
 		return Boolean.TRUE;
-	}
-	
-	@RequestMapping(value="/services/questions/{measureId}/answers", method = RequestMethod.GET, produces="application/json")
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId,
-			HttpServletRequest request){
-		
-		logRequest(request);
-		return templateService.getMeasureAnswerValues(measureId);
-	}
-	
-	
-	@RequestMapping(value="/services/questions/{measureId}/validations", method = RequestMethod.GET,  produces="application/json")
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, 
-			HttpServletRequest request){
-		
-		logRequest(request);
-		return templateService.getMeasureValidations(measureId);
-	}
-	
-	private void logRequest(HttpServletRequest request){
-		logger.debug(request.getMethod() + ": "+ request.getRequestURL());
 	}
 }

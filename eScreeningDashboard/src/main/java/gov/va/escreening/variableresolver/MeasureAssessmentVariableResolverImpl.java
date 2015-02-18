@@ -225,12 +225,10 @@ public class MeasureAssessmentVariableResolverImpl implements
 			AssessmentVariable assessmentVariable, Integer measureId,
 			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
-		AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
-				.resolveAssessmentVariable(assessmentVariable,
-						responses.get(0), veteranAssessmentId,
-						measureAnswerHash);
-		AssessmentVariableDto questionVariableDto = createAssessmentVariableDtoForQuestion(assessmentVariable);
-		questionVariableDto.getChildren().add(answerVariableDto);
+		
+		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
+		addResolvedAnswerTo(questionVariableDto, responses.get(0), measureAnswerHash);
+		
 		return questionVariableDto;
 	}
 
@@ -239,20 +237,18 @@ public class MeasureAssessmentVariableResolverImpl implements
 			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
 
-		AssessmentVariableDto questionVariableDto = createAssessmentVariableDtoForQuestion(assessmentVariable);
+		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
 		// loop to find the first true value then process the answer
 		for (SurveyMeasureResponse response : responses) {
 			if (response.getBooleanValue() != null
 					&& response.getBooleanValue()) {
-				// call the answer level to resolve the value
-				AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
-						.resolveAssessmentVariable(assessmentVariable,
-								response, veteranAssessmentId,
-								measureAnswerHash);
-				questionVariableDto.getChildren().add(answerVariableDto);
-				questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
-				questionVariableDto.setValue(answerVariableDto.getCalculationValue());
+				
+				addResolvedAnswerTo(questionVariableDto, response, measureAnswerHash);
+				
+				//commenting out these because the question should not have these set only the child answer
+				//questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
+				//questionVariableDto.setValue(answerVariableDto.getCalculationValue());
 				break; // found what we were looking for
 			}
 		}
@@ -265,18 +261,15 @@ public class MeasureAssessmentVariableResolverImpl implements
 			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
 
-		AssessmentVariableDto questionVariableDto = createAssessmentVariableDtoForQuestion(assessmentVariable);
+		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
 		// loop to find all of the true values then add them to the collection
 		for (SurveyMeasureResponse response : responses) {
 			if (response.getBooleanValue() != null
 					&& response.getBooleanValue()) {
+				
 				// call the answer level to resolve the value
-				AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
-						.resolveAssessmentVariable(assessmentVariable,
-								response, veteranAssessmentId,
-								measureAnswerHash);
-				questionVariableDto.getChildren().add(answerVariableDto);
+				addResolvedAnswerTo(questionVariableDto, response, measureAnswerHash);
 			}
 		}
 
@@ -287,7 +280,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
 			Map<Integer, AssessmentVariable> measureAnswerHash) {
 
-		AssessmentVariableDto questionVariableDto = createAssessmentVariableDtoForQuestion(assessmentVariable);
+		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
 		Measure parentMeasure = assessmentVariable.getMeasure();
 		List<SurveyMeasureResponse> parentResponses = parentMeasure
@@ -298,11 +291,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 											// for the parent question for table
 											// type
 		if (parentResponse != null && parentResponse.getBooleanValue()) {
-			AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
-					.resolveAssessmentVariable(assessmentVariable,
-							parentResponse, veteranAssessmentId,
-							measureAnswerHash);
-			questionVariableDto.getChildren().add(answerVariableDto);
+			addResolvedAnswerTo(questionVariableDto, parentResponse, measureAnswerHash);
 		} else {
 			Set<Measure> childMeasures = parentMeasure.getChildren();
 			if (childMeasures.size() == 0)
@@ -400,25 +389,27 @@ public class MeasureAssessmentVariableResolverImpl implements
 		return result;
 	}
 
-	private AssessmentVariableDto createAssessmentVariableDtoForQuestion(
-			AssessmentVariable assessmentVariable) {
-		Integer id = assessmentVariable.getAssessmentVariableId();
-		String variableName = String.format("var%s", id);
-		String displayName = String.format("measure_%s", assessmentVariable
-				.getMeasure().getMeasureId());
-		Integer column = getColumn(assessmentVariable);
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(id,
-				variableName, "list", displayName, column, assessmentVariable.getMeasure().getMeasureType().getMeasureTypeId());
-		return variableDto;
+	/**
+	 * Resolves response to an assessment variable for the measure answer represented 
+	 * by the response, and appends this AV dto to the children of the passed in question AV.
+	 * @param questionVariableDto the AV we are adding children to 
+	 * @param response the veteran's response to the given question
+	 * @param measureAnswerHash a map from measure_answer_id to assessment_variable
+	 */
+	private void addResolvedAnswerTo(AssessmentVariableDto questionVariableDto, SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash){
+		Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
+		if(measureAnswerHash.containsKey(measureAnswerId)){
+			// call the answer level to resolve the value
+			AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
+					.resolveAssessmentVariable(measureAnswerHash.get(measureAnswerId), response, measureAnswerHash);
+			
+			questionVariableDto.getChildren().add(answerVariableDto);
+		}
+		else{
+			logger.warn("The measure answer with ID {} was found to not be in the measureAnswerHash. This indicates possible DB data corruption because all measure answers should have a cooresponding assessment variable.", measureAnswerId);
+		}
 	}
-
-	private Integer getColumn(AssessmentVariable assessmentVariable) {
-		if (assessmentVariable.getMeasure() != null
-				&& assessmentVariable.getMeasure().getDisplayOrder() != null)
-			return assessmentVariable.getMeasure().getDisplayOrder();
-		return AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN;
-	}
-
+	
 	@Override
 	public String resolveCalculationValue(AssessmentVariable measureVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer,
