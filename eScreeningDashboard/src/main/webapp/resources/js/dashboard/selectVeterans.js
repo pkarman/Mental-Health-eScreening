@@ -33,5 +33,15 @@ $(document).ready(function() {
 	$('#selectedClinic').on('change', function() {
 		$("#clinicId").val(this.value);
 	});
+	
 
+
+	// Select/Deselect all vetIensCheckbox
+	var selectAll = "#selectAll"
+	$(selectAll).click (function () {
+		 var checkedStatus = this.checked;
+		$('.vetIensCheckbox').each(function () {
+			$(this).prop('checked', checkedStatus);
+		 });
+	});
 });

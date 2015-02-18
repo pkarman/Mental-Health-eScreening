@@ -137,9 +137,10 @@
 						
 				<c:if test="${isPostBack}">
 					<h2>Search Result</h2>
+					
+					<input type='checkbox' name='selectAll' id="selectAll" /> <label for="selectAll">Select All</label>
 					<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
 					<input name="clinicId" value="${param.selectedClinic}" id="clinicId" type="hidden">
-	
 					<table class="table table-striped table-hover" summary="Search Result Table">
 						<thead>
 							<tr>
@@ -166,7 +167,7 @@
 							<c:if test="${not empty result}">
 								<c:forEach var="item" items="${result}">
 									<tr>
-										<td class="text-left"><input type='checkbox' name='vetIens' value="${item.veteranIen}" /></td>
+										<td class="text-left"><input type='checkbox' name='vetIens' value="${item.veteranIen}" class="vetIensCheckbox" /></td>
 										<td><c:out value="${item.lastName}" /></td>
 										<td><c:out value="${item.firstName}" /></td>
 										<td><c:out value="${item.middleName}" /></td>

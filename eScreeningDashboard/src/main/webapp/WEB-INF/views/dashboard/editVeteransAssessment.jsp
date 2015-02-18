@@ -99,14 +99,21 @@
 
 
 
-
-
-
 				<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
 					
 					clinicId: <c:out value="${param.clinicId}" /><br>
 					vetIens: <c:out value="${param.vetIens}" /><br>
-					veterans: <c:out value="${veterans.lastName}" /> <br>
+					veterans: 
+					<%
+					String vetIens[] =  request.getParameterValues("vetIens");
+					if(vetIens != null){ %>
+					<% for(int i=0; i<vetIens.length; i++){ %>
+						<li><%=vetIens[i]%> </li>
+					
+					<% } 
+					}
+					%>
+					 <br>
 
 				
 					<table class="table table-striped table-hover" summary="Search Result Table">
