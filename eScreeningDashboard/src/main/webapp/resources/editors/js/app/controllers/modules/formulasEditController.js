@@ -35,8 +35,6 @@ Editors.filter('propsFilter', function () {
 
 
 Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 'FormulasService', function ($state, $log, $scope, FormulasService) {
-    $scope.formula = FormulasService.fetchCurrentFormula();
-    $log.debug($scope);
     var clearMsgs = function () {
             $scope.msgs = [];
         },
@@ -56,6 +54,18 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
         $scope.msgs.splice(index, 1);
     };
     $scope.msgs = [];
+
+    $scope.formulaTemplate = {};
+
+    $scope.formula = FormulasService.fetchCurrentFormula();
+    $scope.formulaTemplate.selectedTokens = $scope.formula.selectedTokens;
+    // now see if the current formula is not new, if it is not new than we have to load the fresh copy from database
+    if (!FormulasService.isNewFormula()){
+        FormulasService.loadCurrentFormula().then(function(){
+            $scope.formula = FormulasService.fetchCurrentFormula();
+            $scope.formulaTemplate.selectedTokens = $scope.formula.selectedTokens;
+        })
+    }
 
     $scope.produceInputFields = function () {
         $scope.toggleDisable();
@@ -108,8 +118,6 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     };
 
 
-    $scope.formulaTemplate = {};
-    $scope.formulaTemplate.selectedTokens = [];
     $scope.disable = false;
     $scope.toggleDisable = function () {
         $scope.disable = !$scope.disable;

@@ -32,7 +32,7 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             loadVarsByModuleId: function () {
                 $log.debug('getting all variable promise for module with an id of' + currentModule.id);
                 formulasCache.removeAll()
-                return restAngular.all('uniqueAvs').getList({moduleId: currentModule.id});
+                return restAngular.all('avs2MngFormulas').getList({moduleId: currentModule.id});
             },
 
             getModuleById: function (moduleId) {
@@ -53,11 +53,14 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             persistSelectedTokens: function (tokens) {
                 $log.debug('persisting selected Tokens ' + tokens);
 
-                return formulasProxy.post({tokens: tokens, av: _.omit(currentFormula, 'verifiedIds')});
+                return formulasProxy.post({
+                    tokens: tokens,
+                    av: _.omit(currentFormula, ['verifiedIds', 'selectedTokens'])
+                });
             },
             updateCurrentFormula: function (result) {
                 $log.debug('updating current formula with recently saved formula =>CurrentFormula[' + currentFormula + '] RecentlySavedFormula[' + result + ']');
-                currentFormula.avId = parseInt(result.data, 10);
+                currentFormula.id = parseInt(result.data, 10);
             },
 
             setCurrentModule: function (module) {
@@ -70,12 +73,27 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
 
             setCurrentFormula: function (formula) {
                 currentFormula = formula;
+                if (currentFormula.id === undefined) {
+                    currentFormula.selectedTokens = [];
+                }
             },
 
             attachWithCurrentFormula: function (verifiedIds) {
                 currentFormula.verifiedIds = verifiedIds;
             },
 
+            loadCurrentFormula: function () {
+                // now retrieve the details of this formula, that will include the selectedTokens
+                $log.debug('getting details of current formula for ' + currentFormula.id);
+                return restAngular.one('formulas', currentFormula.id).get().then(function (formula) {
+                    currentFormula = formula;
+                }, function error(reason) {
+                    $log.error(reason);
+                })
+            },
+            isNewFormula: function () {
+                return currentFormula.id === undefined;
+            },
             fetchCurrentFormula: function () {
                 return currentFormula;
             },

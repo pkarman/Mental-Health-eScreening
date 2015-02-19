@@ -1,8 +1,11 @@
 package gov.va.escreening.controller.dashboard;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import gov.va.escreening.dto.editors.SurveyInfo;
+import gov.va.escreening.entity.AssessmentFormula;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
@@ -79,6 +82,13 @@ public class ManageFormulasRestController {
             }
         }
         return null;
+    }
+
+    @RequestMapping(value = "/services/formulas/{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> getFormulaById(@PathVariable("id") Integer formulaId, @CurrentUser EscreenUser escreenUser) {
+        Map<String,Object> formulaById=expressionEvaluator.getFormulaById(formulaId);
+        return formulaById;
     }
 
     @RequestMapping(value = "/services/formulas/testSelectedTokens", method = RequestMethod.PUT, produces = "application/json")

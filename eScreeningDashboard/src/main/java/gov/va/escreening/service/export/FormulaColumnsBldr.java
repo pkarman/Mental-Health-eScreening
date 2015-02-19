@@ -103,7 +103,7 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
                 }
             }
             if (!m.getChildren().isEmpty()) {
-                avs.filterBySurvey(survey, this, m.getChildren(), avList, filterMeasures);
+                avs.filterBySurvey(survey, this, m.getChildren(), avList, filterMeasures, false);
             }
         }
     }

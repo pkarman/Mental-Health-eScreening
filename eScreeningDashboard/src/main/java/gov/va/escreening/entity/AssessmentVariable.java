@@ -6,6 +6,7 @@
 
 package gov.va.escreening.entity;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import javax.persistence.*;
@@ -51,10 +52,13 @@ public class AssessmentVariable implements Serializable {
     @JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
     @ManyToOne
     private MeasureAnswer measureAnswer;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent", orphanRemoval = true)
     private List<AssessmentVarChildren> assessmentVarChildrenList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true)
+    @OrderBy("displayOrder")
+    private List<AssessmentFormula> assessmentFormulas;
 
     public AssessmentVariable() {
     }
@@ -154,7 +158,12 @@ public class AssessmentVariable implements Serializable {
     }
 
     public void setAssessmentVarChildrenList(List<AssessmentVarChildren> assessmentVarChildrenList) {
-        this.assessmentVarChildrenList = assessmentVarChildrenList;
+        if (this.assessmentVarChildrenList == null) {
+            this.assessmentVarChildrenList = assessmentVarChildrenList;
+        } else {
+            this.assessmentVarChildrenList.clear();
+            this.assessmentVarChildrenList.addAll(assessmentVarChildrenList);
+        }
     }
 
     public List<AssessmentVariableColumn> getAssessmentVariableColumnList() {
@@ -163,6 +172,19 @@ public class AssessmentVariable implements Serializable {
 
     public void setAssessmentVariableColumnList(List<AssessmentVariableColumn> assessmentVariableColumnList) {
         this.assessmentVariableColumnList = assessmentVariableColumnList;
+    }
+
+    public List<AssessmentFormula> getAssessmentFormulas() {
+        return assessmentFormulas;
+    }
+
+    public void setAssessmentFormulas(List<AssessmentFormula> assessmentFormulas) {
+        if (this.assessmentFormulas == null) {
+            this.assessmentFormulas = assessmentFormulas;
+        } else {
+            this.assessmentFormulas.clear();
+            this.assessmentFormulas.addAll(assessmentFormulas);
+        }
     }
 
     @Override
@@ -198,6 +220,20 @@ public class AssessmentVariable implements Serializable {
     }
 
     public List getAsList() {
-        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length()+1);
+        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length() + 1);
+    }
+
+    public void attachFormulaTokens(List<String> tokens) {
+        int row = 0;
+        List<AssessmentFormula> afList = Lists.newArrayList();
+        for (Object token : tokens) {
+            AssessmentFormula af = new AssessmentFormula();
+            af.setFormulaToken(token.toString());
+            af.setParentAssessment(this);
+            af.setDisplayOrder(++row);
+            af.setDateCreated(new Date());
+            afList.add(af);
+        }
+        setAssessmentFormulas(afList);
     }
 }

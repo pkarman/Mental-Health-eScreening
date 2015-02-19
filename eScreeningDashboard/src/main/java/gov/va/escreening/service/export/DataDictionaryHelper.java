@@ -127,7 +127,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
                           final Set<String> avUsed, Collection<Measure> smList,
                           Collection<AssessmentVariable> avLstWithFormulae) {
         AvBuilder<Set<List<String>>> formulaColumnsBldr = new FormulaColumnsBldr(surveyFormulae, avUsed, avs);
-        avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false);
+        avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false, false);
     }
 
 

@@ -53,19 +53,6 @@
             </div>
         </div>
 
-        <!--
-        <div class="form-group">
-            <label class="control-label col-lg-2" for="usrEnteredFormula">Formula:</label>
-
-            <div class="col-lg-10">
-                <textarea id="usrEnteredFormula"
-                          class="form-control"
-                          type="text"
-                          ng-model="formula.template"
-                          placeholder="{{formula.template||'Enter Formula Template here...'}}"/>
-            </div>
-        </div>
-        -->
         <div class="form-group">
             <label class="control-label col-lg-2">Formula:</label>
 
@@ -105,7 +92,7 @@
 
                 <div class="form-group">
                         <span ng-repeat="token in verifiedIds">
-                            <input type="text" size="{{token.size}}" placeholder="{{token.name}}"
+                            <input type="text" placeholder="{{token.name}}"
                                    ng-model="token.value"/>
                         </span>
                 </div>

@@ -84,4 +84,20 @@ INSERT INTO assessment_variable (assessment_variable_id, assessment_variable_typ
 VALUES ('11023', '5', ',',
         'separator between two operands => [,]');
 
+CREATE TABLE assessment_formula (
+  assessment_formula_id  INT          NOT NULL AUTO_INCREMENT,
+  assessment_variable_id INT          NOT NULL,
+  display_order          INT          NOT NULL,
+  formula_token          VARCHAR(255) NOT NULL,
+  date_created           TIMESTAMP    NOT NULL,
+  PRIMARY KEY (assessment_formula_id),
+  INDEX fk_assessment_var_id_idx (assessment_variable_id ASC),
+  CONSTRAINT fk_assessment_var_id FOREIGN KEY (assessment_variable_id)
+  REFERENCES assessment_variable (assessment_variable_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+/*ALTER TABLE assessment_formula ADD UNIQUE unique_av_disp_order(assessment_variable_id, display_order);*/
+
 

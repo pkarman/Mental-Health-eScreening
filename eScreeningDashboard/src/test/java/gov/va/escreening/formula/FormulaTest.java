@@ -55,53 +55,6 @@ public class FormulaTest {
         logger.info(generateFormulasAsUserWouldEnter().toString());
     }
 
-//    @Test
-//    public void createFormulaDto() {
-//        String formula = "([$10711$]+[$10712$]+([202]?1:0)+([214]?1:0))";
-//        Map<Integer, String> dataMap = newHashMap();
-//        dataMap.put(1536, "false");
-//        dataMap.put(202, "false");
-//        dataMap.put(1535, "false");
-//        dataMap.put(1534, "false");
-//        dataMap.put(1533, "false");
-//        dataMap.put(1532, "false");
-//        dataMap.put(214, "false");
-//        dataMap.put(1524, "false");
-//        dataMap.put(1523, "false");
-//        dataMap.put(1522, "false");
-//
-//        FormulaDto fdto = expressionEvaluator.createFormulaDto(formula, dataMap);
-//        Assert.isTrue(fdto.getChildFormulaMap().size() == 2);
-//    }
-
-//    @Test
-//    @Transactional
-//    public void updateFormula() {
-//        Integer avId=10713;
-//        String formula = "([$10711$]+[$10712$])";
-//
-//        AssessmentVariable avB=expressionEvaluator.findAvById(avId);
-//        Assert.isTrue(!avB.getFormulaTemplate().equals(formula));
-//        Assert.isTrue(avB.getAssessmentVarChildrenList().size()==4);
-//
-//        expressionEvaluator.updateFormula(avId, formula);
-//
-//        AssessmentVariable avC=expressionEvaluator.findAvById(avId);
-//        Assert.isTrue(avC.getFormulaTemplate().equals(formula));
-//        Assert.isTrue(avC.getAssessmentVarChildrenList().size()==2);
-//
-//    }
-
-//    @Test
-//    public void extractAllFormulaInputs() {
-//        List<Map<String, Object>> avIdMap = Lists.newArrayList();
-//        expressionEvaluator.extractAllInputs(10713, avIdMap);
-////        List<Integer> expectedIds = Arrays.asList(1536, 202, 1535, 1534, 1533, 1532, 214, 1524, 1523, 1522);
-////        Assert.isTrue(expectedIds.size() == avIds.size());
-////        Assert.isTrue(expectedIds.containsAll(avIds));
-////        Assert.isTrue(avIds.containsAll(expectedIds));
-//    }
-
     @Test
     public void verifyUserEnteredFormulas() {
         final Set<String> userEnteredFormulas = Sets.newHashSet();
@@ -114,7 +67,7 @@ public class FormulaTest {
         });
 
         for (String uef : userEnteredFormulas) {
-            Map<String, Object> verifedExpressionResult = expressionEvaluator.verifyExpressionTemplate(uef, AvMapTypeEnum.ID2NAME);
+            Map<String, Object> verifedExpressionResult = expressionEvaluator.verifyExpressionTemplate(uef.replaceAll("[$]", ""), AvMapTypeEnum.ID2NAME);
             logger.info(verifedExpressionResult.toString());
         }
     }

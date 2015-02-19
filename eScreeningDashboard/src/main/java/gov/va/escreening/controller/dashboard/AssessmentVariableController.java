@@ -69,7 +69,7 @@ public class AssessmentVariableController {
             ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
         }
 
-        Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId);
+        Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId, true, false);
 
         if (t.isEmpty()) {
             ErrorBuilder
@@ -81,11 +81,23 @@ public class AssessmentVariableController {
         return avTableToList(t);
     }
 
-    @RequestMapping(value = "/services/uniqueAvs", params = "moduleId", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/services/avs2MngFormulas", params = "moduleId", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<Map<String, Object>> getUniqueAvsForModule(@RequestParam("moduleId") Integer moduleId) {
-        List<Map<String, Object>> avs = getAssessmentVarsForSurvey(moduleId);
+    public List<Map<String, Object>> getAssessmentVarsToMngFormulas(@RequestParam("moduleId") Integer moduleId) {
+        if (moduleId == null || moduleId < 0) {
+            ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+        }
 
+        Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(moduleId, true, true);
+
+        if (t.isEmpty()) {
+            ErrorBuilder
+                    .throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin(String.format("No Measures were found to be available for Survey with an Id of %s", moduleId))
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+        }
+        List<Map<String, Object>> avs = avTableToList(t);
         if (avs != null) {
             // remove Assessment Variables which are CUSTOM TYPE
             for (Iterator<Map<String, Object>> mapIter = avs.iterator(); mapIter.hasNext(); ) {

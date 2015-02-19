@@ -13,42 +13,39 @@ import com.google.common.collect.Table;
 
 public interface AssessmentVariableService {
     /**
-	 * return all {@link AssessmentVariable} as a table of name value pair belonging to requested survey
-	 * 
-	 * {@link Table} Table<String, String, String> is defined as row, column name, and column value
-	 * 
-	 * @param surveyId
-	 *            {@link AssessmentVariable} which belongs to this surveyId will be returned
-	 * 
-	 * @return
-	 */
-	Table<String, String, Object> getAssessmentVarsForSurvey(int surveyId);
+     * return all {@link AssessmentVariable} as a table of name value pair belonging to requested survey
+     * <p/>
+     * {@link Table} Table<String, String, String> is defined as row, column name, and column value
+     *
+     * @param surveyId {@link AssessmentVariable} which belongs to this surveyId will be returned
+     * @return
+     */
+    Table<String, String, Object> getAssessmentVarsForSurvey(int surveyId, boolean ignoreAnswers, boolean includeFormulaTokens);
 
-	/**
-	 * Retrieves all assessment variables contained in a battery which means that all measures of the relevant 
-	 * type for each survey currently associated with the battery will be returned. 
-	 * 
-	 * @param batteryId
-	 * 
-	 * @return all {@link AssessmentVariable} as a table of name value pair belonging to requested battery. 
-	 * {@link Table} Table<String, String, String> is defined as row, column name, and column value
-	 */
-	Table<String, String, Object> getAssessmentVarsForBattery(int batteryId);
+    /**
+     * Retrieves all assessment variables contained in a battery which means that all measures of the relevant
+     * type for each survey currently associated with the battery will be returned.
+     *
+     * @param batteryId
+     * @return all {@link AssessmentVariable} as a table of name value pair belonging to requested battery.
+     * {@link Table} Table<String, String, String> is defined as row, column name, and column value
+     */
+    Table<String, String, Object> getAssessmentVarsForBattery(int batteryId);
 
-	
-	Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
-	Collection<AssessmentVariable> findAllFormulas();
+    Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
-	void filterBySurvey(Survey survey, AvBuilder avModelBldr,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList,
-			boolean filterMeasures);
+    Collection<AssessmentVariable> findAllFormulas();
 
-	boolean compareMeasure(AssessmentVariable av, Measure m);
+    void filterBySurvey(Survey survey, AvBuilder avModelBldr,
+                        Collection<Measure> smList, Collection<AssessmentVariable> avList,
+                        boolean filterMeasures, boolean includeFormulaTokens);
 
-	boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
+    boolean compareMeasure(AssessmentVariable av, Measure m);
 
-    List<Map<String,String>> askFormulasFor(Integer moduleId);
+    boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
+
+    List<Map<String, String>> askFormulasFor(Integer moduleId);
 
     String getPlainText(String htmlText);
 }
