@@ -1,8 +1,8 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 
-                                              function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService) {
+    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 'AssessmentVariableManager',
+                                              function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService, AssessmentVariableManager) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -236,26 +236,7 @@
 				            // Get the validations for freetext
 				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
 					            angular.forEach(validations, function(validation) {
-						            switch(validation.validateId) {
-							            case 1:
-								            item.measureValidations[validation.value] = validation.value;
-								            break;
-							            case 4:
-								            item.measureValidations['minLength'] = validation.value || 0;
-								            break;
-							            case 5:
-								            item.measureValidations['maxLength'] = validation.value || 150;
-								            break;
-							            case 6:
-								            item.measureValidations['minValue'] = validation.value;
-								            break;
-							            case 7:
-								            item.measureValidations['maxValue'] = validation.value;
-								            break;
-							            case 9:
-								            item.measureValidations['exactLength'] = validation.value;
-								            break;
-						            }
+									AssessmentVariableManager.setValidations(item.measureValidations, validation);
 					            });
 				            });
 

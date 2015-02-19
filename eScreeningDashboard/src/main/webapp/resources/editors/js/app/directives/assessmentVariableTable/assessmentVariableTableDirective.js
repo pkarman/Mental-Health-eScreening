@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', function(AssessmentVariableService) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', function(AssessmentVariableService, AssessmentVariableManager, MeasureService) {
 
 	        return {
 	            restrict: 'EA',
@@ -14,45 +14,6 @@
 		            show: '='
 	            },
 	            link: function (scope, element) {
-
-					var transformations = {
-						custom: [
-							{
-								name: 'delimit',
-								params: {
-									prefix: ',',
-									lastPrefix: 'and',
-									suffix: '""',
-									includeSuffixAtEnd: true,
-									defaultValue: ''
-								}
-							}
-						],
-						freeText: [
-							{ name: 'yearsFromDate' }
-						],
-						matrix: [
-							{
-								name: 'delimitedMatrixQuestions',
-								params: {
-									lastPrefix: 'and'
-								}
-							}
-						],
-						table: [
-							{ name: 'numberOfEntries' },
-							{
-								name: 'delimitTableField',
-								params: {
-									prefix: ',',
-									lastPrefix: 'and',
-									suffix: '""',
-									includeSuffixAtEnd: true,
-									defaultValue: ''
-								}
-							}
-						]
-					};
 
 		            scope.searchObj = {type: ''};
 
@@ -86,8 +47,7 @@
 		                }
 
 						if (!scope.assessmentVariable.transformations) {
-							updateTransformations(scope.assessmentVariable);
-							console.log(scope.assessmentVariable.transformations);
+							AssessmentVariableManager.setTransformations(scope.assessmentVariable);
 						}
 
 		                // Hide table
@@ -95,7 +55,9 @@
 							scope.show = false;
 						}
 
-						scope.table.show = false;
+						scope.table.show = !scope.assessmentVariable.transformations;
+
+						scope.type = AssessmentVariableManager.getType(scope.assessmentVariable);
 
 			            scope.tableParams.reload();
 	                };
@@ -109,20 +71,29 @@
 			            e.stopPropagation();
 		            });
 
-					function updateTransformations(av) {
-						switch (av.typeId) {
-							case 1:
-								av.transformations = transformations.freeText;
-								break;
-							case 2:
-								av.transformations = transformations.custom;
-								break;
-							case 3:
-								av.transformations = transformations.custom;
-								break;
-							case 4:
-								av.transformations = transformations.table;
-								break;
+					function dostuff(av) {
+
+						var validations = {};
+						var item = {};
+
+						if (av.measureTypeId == 1) {
+
+							// Get the validations for freetext
+							MeasureService.one(av.measureId).getList('validations').then(function (validations) {
+								angular.forEach(validations, function(validation) {
+									AssessmentVariableManager.setValidations(validations, validation);
+								});
+							});
+
+						} else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
+
+							// Get the answer list for multi or single select questions
+							MeasureService.one(av.measureId).getList('answers').then(function (answers) {
+								item.measureAnswers = answers;
+							});
+
+							// Ensure right variable is numeric
+							if (item.right) item.right.content = parseInt(item.right.content);
 						}
 					}
 
