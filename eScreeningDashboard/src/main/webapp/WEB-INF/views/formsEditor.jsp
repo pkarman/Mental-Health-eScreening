@@ -129,9 +129,12 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
     
     <!-- Services -->
+    <script type="text/javascript" src="resources/editors/js/app/services/assessment-variable.manager.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
@@ -171,9 +174,6 @@
     <!-- Template View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.edit.controller.js"></script>
-
-    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     
     <!--  Directives -->
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
