@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!doctype html>
 <html>
@@ -65,7 +66,20 @@
           alert('HTML5 Audio is not supported by your browser!');
         }
       }
-    });
+    
+	if (localStorage.getItem("tabletProgramLSText") === null) {
+  		window.location.href = "tabletConfiguration";
+	}
+
+	
+	if (typeof(Storage) != "undefined") {
+		document.getElementById("tabletProgramBlock").innerHTML = localStorage.getItem("tabletProgramLSText");
+	} else {
+		
+		document.getElementById("tabletProgramBlock").innerHTML = "Sorry, your browser does not support Web Storage...";
+	}
+	
+	});
     
       $(function() {
         $("input[type=text]:first").focus();
