@@ -59,6 +59,12 @@ public class MeasureServiceImpl implements MeasureService {
     @Transactional(readOnly = true)
     public gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId) {
         Measure dbMeasure=measureRepository.findOne(measureId);
+        if(dbMeasure == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+			.toAdmin("No measure with ID: " + measureId)
+			.toUser("An invlid question ID has been sent. Please contact support")
+			.throwIt();
+		}
         return new gov.va.escreening.dto.ae.Measure(dbMeasure);
     }
     

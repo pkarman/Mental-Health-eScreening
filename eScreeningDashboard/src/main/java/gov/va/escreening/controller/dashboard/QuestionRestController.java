@@ -1,8 +1,6 @@
 package gov.va.escreening.controller.dashboard;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,18 +8,16 @@ import gov.va.escreening.controller.RestController;
 import gov.va.escreening.delegate.EditorsViewDelegate;
 import gov.va.escreening.dto.MeasureAnswerDTO;
 import gov.va.escreening.dto.MeasureValidationSimpleDTO;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.editors.QuestionInfo;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.security.CurrentUser;
-import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.MeasureService;
-import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.webservice.Response;
-import gov.va.escreening.webservice.ResponseStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.google.common.collect.ImmutableList;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -58,25 +57,23 @@ public class QuestionRestController extends RestController{
 		this.assessmentVariableService = checkNotNull(assessmentVariableService);
 	}
 
-
 	@RequestMapping(value = "/questions/{questionId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public Response<Map<String, QuestionInfo>> updateQuestion(
+	public Response<QuestionInfo> updateQuestion(
 			@PathVariable("questionId") Integer questionId,
 			@RequestBody QuestionInfo question,
 			HttpServletRequest request) {
 		logRequest(logger, request);
 		
-		QuestionInfo updatedQuestionInfo = EditorsQuestionViewTransformer.transformQuestion(measureRepo.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(question)));
-
-		Map<String, QuestionInfo> questionMap = new HashMap<>();
-		questionMap.put("question", updatedQuestionInfo);
-
-		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), questionMap);
+		Measure updatedMeasure = measureRepo.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(question));
+		QuestionInfo updatedQuestionInfo = EditorsQuestionViewTransformer.transformQuestion(updatedMeasure);
+		
+		return successResponse(updatedQuestionInfo);
 	}
 
 	@RequestMapping(value = "/questions/{questionId}", method = RequestMethod.GET, produces = "application/json")
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public Response<QuestionInfo>  getQuestion(@PathVariable("questionId") Integer questionId,
 			HttpServletRequest request) {
@@ -84,48 +81,46 @@ public class QuestionRestController extends RestController{
 		
 		// Call service class here instead of hard coding it.
 		Measure measure = editorsViewDelegate.findMeasure(questionId);
-		QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
-		return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), question);
+		return successResponse(EditorsQuestionViewTransformer.transformQuestion(measure));
 	}
 
 	@RequestMapping(value="/questions/{measureId}/answers", method = RequestMethod.GET, produces="application/json")
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<MeasureAnswerDTO> getMeasureAnswerValues(@PathVariable Integer measureId,
+	public Response<List<MeasureAnswerDTO>> getMeasureAnswerValues(@PathVariable Integer measureId,
 			HttpServletRequest request){
 
 		logRequest(logger, request);
-		return measureService.getMeasureAnswerValues(measureId);
+		return successResponse(measureService.getMeasureAnswerValues(measureId));
 	}
 
 	@RequestMapping(value="/questions/{measureId}/answers/{answerId}", method = RequestMethod.GET,  produces="application/json")
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public MeasureAnswerDTO getMeasureAnswer(@PathVariable Integer measureId, @PathVariable Integer answerId,  
+	public Response<MeasureAnswerDTO> getMeasureAnswer(@PathVariable Integer measureId, @PathVariable Integer answerId,  
 			HttpServletRequest request){
 
 		logRequest(logger, request);
-		return measureService.getMeasureAnswer(measureId);
+		return successResponse(measureService.getMeasureAnswer(measureId));
 	}
 
 	@RequestMapping(value="/questions/{measureId}/answers/{answerId}/assessment-variables", method = RequestMethod.GET,  produces="application/json")
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public AssessmentVariableDto getMeasureAnswerAssessmentVariable(@PathVariable Integer measureId, @PathVariable Integer answerId,  
+	public Response<List<AssessmentVariableDto>> getMeasureAnswerAssessmentVariable(@PathVariable Integer measureId, @PathVariable Integer answerId,  
 			HttpServletRequest request){
 
 		logRequest(logger, request);
-		
-		return new AssessmentVariableDto(assessmentVariableService.getAssessmentVarsForAnswer(answerId));
+		return successResponse((List<AssessmentVariableDto>) ImmutableList.of(new AssessmentVariableDto(assessmentVariableService.getAssessmentVarsForAnswer(answerId))));
 	}
 	
 	@RequestMapping(value="/questions/{measureId}/validations", method = RequestMethod.GET,  produces="application/json")
-	@org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<MeasureValidationSimpleDTO> getMeasureValidations(@PathVariable Integer measureId, 
+	public Response<List<MeasureValidationSimpleDTO>> getMeasureValidations(@PathVariable Integer measureId, 
 			HttpServletRequest request){
 
 		logRequest(logger, request);
-		return measureService.getMeasureValidations(measureId);
+		return successResponse(measureService.getMeasureValidations(measureId));
 	}
 }

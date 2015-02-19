@@ -1,6 +1,5 @@
 package gov.va.escreening.service;
 
-import gov.va.escreening.domain.BatterySurveyDto;
 import gov.va.escreening.dto.SearchDTO;
 import gov.va.escreening.dto.SearchType;
 import gov.va.escreening.dto.editors.BatteryInfo;
@@ -13,13 +12,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by pouncilt on 8/1/14.
@@ -34,20 +29,10 @@ public class RepositoryBatterySurveyServiceIntegrationTest {
 
     private static final Integer BATTERY_ID = 3;
 
-    /*@Test
-    public void searchWhenSearchTypeIsMethodName() {
-
-    }*/
-
-    /*@Test
-    public void searchWhenSearchTypeIsNamedQuery() {
-
-    }*/
-
     @Transactional
     @Test
     public void searchWhenSearchTypeIsQueryAnnotation() {
-        SearchDTO searchCriteria = createSearchDTO(BATTERY_ID, SearchType.QUERY_ANNOTATION);
+        SearchDTO<Integer> searchCriteria = createSearchDTO(BATTERY_ID, SearchType.QUERY_ANNOTATION);
         List<BatterySurvey> actualBatterySurveys = batterySurveyService.search(searchCriteria);
         assertNotNull(actualBatterySurveys);
         assertTrue(actualBatterySurveys.size() > 0);
@@ -58,12 +43,12 @@ public class RepositoryBatterySurveyServiceIntegrationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void searchWhenSearchTypeIsNull() {
-        SearchDTO searchCriteria = createSearchDTO(BATTERY_ID, null);
+        SearchDTO<Integer> searchCriteria = createSearchDTO(BATTERY_ID, null);
 
         batterySurveyService.search(searchCriteria);
     }
 
-    private SearchDTO createSearchDTO(Integer searchTerm, SearchType searchType) {
+    private SearchDTO<Integer> createSearchDTO(Integer searchTerm, SearchType searchType) {
         SearchDTO<Integer> searchCriteria = new SearchDTO<Integer>();
         searchCriteria.setSearchTerm(searchTerm);
         searchCriteria.setSearchType(searchType);

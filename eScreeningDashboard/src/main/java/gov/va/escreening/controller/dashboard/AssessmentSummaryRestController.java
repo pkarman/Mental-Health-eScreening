@@ -2,6 +2,7 @@ package gov.va.escreening.controller.dashboard;
 
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.controller.RestController;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.ErrorResponseException;
 import gov.va.escreening.exception.ErrorResponseRuntimeException;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-public class AssessmentSummaryRestController {
+public class AssessmentSummaryRestController extends RestController{
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentSummaryRestController.class);
 
@@ -136,21 +137,4 @@ public class AssessmentSummaryRestController {
 
         return progressNoteContent;
     }
-    
-    @ExceptionHandler(FreemarkerRenderException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorResponse handleFreemarkerRenderException(FreemarkerRenderException iae) {
-        if (iae instanceof ErrorResponseRuntimeException){
-        	return ((FreemarkerRenderException)iae).getErrorResponse();
-        }
-        
-        ErrorResponse er = new ErrorResponse();
-
-        er.setDeveloperMessage(iae.getMessage());
-        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
-        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return er;
-    }
-
 }

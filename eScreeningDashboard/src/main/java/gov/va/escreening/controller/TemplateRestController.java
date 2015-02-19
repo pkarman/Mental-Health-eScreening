@@ -37,34 +37,6 @@ public class TemplateRestController extends RestController {
 	
 	@Autowired
 	private TemplateTypeService templateTypeService;
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
-    	ErrorResponse er = enfe.getErrorResponse();
-    	logger.error(er.getLogMessage());
-        return er;
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorResponse handleIllegalArgumentException(Exception iae) {
-        ErrorResponse er;
-        if (iae instanceof ErrorResponseException){
-        	return ((ErrorResponseException)iae).getErrorResponse();
-        }
-        else{
-        	er = new ErrorResponse();
-        	er.setDeveloperMessage(iae.getMessage());
-            er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
-            er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
-
-        logger.error(er.getLogMessage());
-        return er;
-    }
 	
     //TODO: when we have time it would probably be better to have the templateTypes be retrieved via the survey and battery controllers 
     // so something like this: /services/survey/{surveyId}/templateTypes/{templateTypeId}
