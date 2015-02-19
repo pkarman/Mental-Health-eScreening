@@ -1,5 +1,7 @@
 package gov.va.escreening.entity;
 
+import gov.va.escreening.dto.ae.ValidationDataTypeEnum;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -279,6 +281,19 @@ public class Measure implements Serializable {
     @Override
     public String toString() {
         return "gov.va.escreening.entity.Measure[ measureId=" + measureId + " ]";
+    }
+
+    public boolean isNumeric() {
+    	if(measureValidationList != null){
+    		//Iterate through validations looking for the datatype validation, then see if it is NUMBER
+    		for(MeasureValidation validation : measureValidationList){
+    			if(validation.getValidation().getCode().toLowerCase() == "datatype"
+    					&& ValidationDataTypeEnum.NUMBER.toString().equalsIgnoreCase(validation.getTextValue())){
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
     }
 
 }
