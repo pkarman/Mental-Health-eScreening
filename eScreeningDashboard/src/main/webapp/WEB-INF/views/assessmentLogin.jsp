@@ -7,11 +7,11 @@
 <!doctype html>
 <html>
 	<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+  
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" name="viewport" content="user-scalable=no,width=device-width" />
     <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.js"></script>
-      
     <!-- FAVICON -->
     <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
     <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />    

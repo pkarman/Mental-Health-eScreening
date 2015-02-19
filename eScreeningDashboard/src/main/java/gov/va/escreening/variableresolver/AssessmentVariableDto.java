@@ -1,7 +1,9 @@
 package gov.va.escreening.variableresolver;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AssessmentVariableDto {
 
@@ -177,8 +179,6 @@ public class AssessmentVariableDto {
 	public void setChildren(List<AssessmentVariableDto> children) {
 		this.children = children;
 	}
-
-	
 	
 
 	@Override
@@ -188,7 +188,8 @@ public class AssessmentVariableDto {
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
-				+ ", otherValue=" + otherValue + ", children=" + children + "]";
+				+ ", otherValue=" + otherValue 
+				+ ", children=" + children + "]";
 	}
 
 	public void setDisplayName(String displayName) {

@@ -5,9 +5,11 @@
 <!doctype html>
 <html>
 <head>
-    <title>Admin</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+  <title>Admin</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta name="viewport" content="user-scalable=no,width=device-width" >
     <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
     <script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.22/jquery-ui.min.js"></script>

@@ -608,6 +608,35 @@
 								</fileset>
 							</configuration>
 					</execution>
+					<!-- PLEASE NOTE: this is a specific configuration for ticket 787.
+					     Please create another execution entry for all other sprint 31 tickets -->
+					<execution>
+						<id>apply-sprint-31-ticket-787-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_31_787</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-31-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_31</basedir>
+								</fileset>
+							</configuration>
+					</execution>
 					<execution>
 						<id>apply-ticket-related-data</id>
 							<phase>process-test-resources</phase>

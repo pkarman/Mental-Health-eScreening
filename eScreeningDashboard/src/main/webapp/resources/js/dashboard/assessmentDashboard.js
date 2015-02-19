@@ -5,6 +5,7 @@ app.directive('reportTable', function() {
         options = {
 	    	"bProcessing": true,
 	    	"bServerSide": true,
+	    	"bStateSave": true,
 	    	"aaSorting": [[0,"desc"]],
 	    	"bFilter": false,
 	    	"bJQueryUI": true,
@@ -31,7 +32,7 @@ app.directive('reportTable', function() {
 
         // apply the plugin
         var dataTable = element.dataTable(options);
-
+		
         // watch for any changes to our data, rebuild the DataTable
         scope.$watch(attrs.aaData, function(value) {
             var val = value || null;
@@ -40,6 +41,30 @@ app.directive('reportTable', function() {
                 dataTable.fnAddData(scope.$eval(attrs.aaData));
             }
         });     
+
+		//###############################################
+		//##########  Auto Refresh Program  #############
+		//###############################################
+		// Timer for program auto refresh  - Check if checkbox changed for Program Auto Refresh
+        scope.timerDelay		= 60000;  // 1 min
+		scope.updateProgTimer	= function(options) {
+			scope.progTimer = setTimeout(scope.updateProgTimer, scope.timerDelay);
+			dataTable.fnClearTable(true);
+		};
+
+		scope.autoRefreshProgChange = function() {
+			if(scope.autoRefreshProg == true){
+				scope.updateProgTimer();
+			}else{
+				scope.stopProgTimer();
+			}
+		};
+		
+		scope.stopProgTimer = function() {
+			// ClearTimeOUt
+			clearTimeout(scope.progTimer);
+		};
+				
     };
 });
 
@@ -84,17 +109,20 @@ app.controller("assessmentDashboardController", function($scope, $element,
 		$scope.showAllId			= 99; // Default ID to list all programs
 	
    
-	
+
+		//###############################################
+		//##########  Auto Refresh Graphs  ##############
+		//###############################################
 		// Update Graphs Timer Function
 		$scope.updateGraphsTimer = function() {
 			if(($scope.programId === undefined) || ($scope.programId == "")  || ($scope.programId == null)){
 				$scope.programId = $scope.showAllId;
-			}    	
-
+			}
 			// Set timer
 			$scope.timer = setTimeout($scope.updateGraphsTimer, $scope.timerDelay);
 			$scope.updateGraphs();
 		};
+
 		
 		$scope.stopTimer = function() {
 			// ClearTimeOUt
@@ -104,14 +132,11 @@ app.controller("assessmentDashboardController", function($scope, $element,
 		$scope.change = function() {
 			if($scope.autorefresh == true){
 				$scope.updateGraphsTimer();
-				console.log("TimeerEnabled");
 			}else{
-				console.log("Timeerdisabled");
 				$scope.stopTimer();
 			}
 		};
-		
-		
+
 		// Update Graph
 		$scope.updateGraphs = function() {
 			$("#pie_chart svg, #bar_chart svg, #bar_horizontal svg").remove();
@@ -152,8 +177,6 @@ app.controller("assessmentDashboardController", function($scope, $element,
 			});
 		};
 		
-		
-	
 		// Pie Chart
 		$scope.pieChart = function(pieChartJSON) {
 			$.ajax({
@@ -334,7 +357,6 @@ app.controller("assessmentDashboardController", function($scope, $element,
 			});
 		};
 		
-		
 		// Horizontal  Bar Chart 
 		$scope.barChartHori = function(barChartHoriJSON) {
 			 $.ajax({
@@ -397,8 +419,6 @@ app.controller("assessmentDashboardController", function($scope, $element,
 										.text("No Data");
 							};
 							
-							
-						 
 						  chart.selectAll("line")
 								.data(x.ticks(d3.max(dataset.map(function(d) { return d.percentages; })  * 10 )))
 								.enter().append("line")
@@ -468,8 +488,6 @@ app.controller("assessmentDashboardController", function($scope, $element,
 		$scope.barChart($scope.barChartJSON);
 		$scope.barChartHori($scope.barChartHoriJSON);
 });
-
-
 
 // JQuery 
 $(document).ready(function() {	
