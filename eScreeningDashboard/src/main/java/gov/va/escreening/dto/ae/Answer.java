@@ -155,6 +155,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.answerType = measureAnswer.getAnswerType();
         this.vistaText = measureAnswer.getVistaText();
         this.exportName = measureAnswer.getExportName();
+        //TODO: Remove this when the use of calculation type is removed
         this.calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
         this.calculationValue=measureAnswer.getCalculationValue();
         this.displayOrder =  measureAnswer.getDisplayOrder();
