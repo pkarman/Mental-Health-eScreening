@@ -14,7 +14,7 @@ public interface MeasureAnswerAssessmentVariableResolver {
 			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
 	
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable parentAssessmentVariable, SurveyMeasureResponse response, 
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
+			Map<Integer, AssessmentVariable> measureAnswerHash);
 	
 	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, 
 			SurveyMeasureResponse response);

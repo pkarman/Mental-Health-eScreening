@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;
@@ -8,13 +9,19 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
+import gov.va.escreening.repository.MeasureAnswerRepository;
+import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.RepositoryInterface;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -42,6 +49,21 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	@Resource(type = SurveyRepository.class)
 	SurveyRepository sr;
 
+	@Resource(type = AssessmentVariableRepository.class)
+	AssessmentVariableRepository avr;
+
+	@Resource(type = SurveyPageMeasureRepository.class)
+	SurveyPageMeasureRepository spmr;
+	
+	@Resource(type = BatteryRepository.class)
+	BatteryRepository batteryRepo;
+
+	@Resource(type = MeasureRepository.class)
+	MeasureRepository measureRepo;
+
+	@Resource(type = MeasureAnswerRepository.class)
+	private MeasureAnswerRepository measureAnswerRepo;
+	
 	public class TableTypeAvModelBuilder implements AvBuilder<Table<String, String, Object>> {
 		final Table<String, String, Object> assessments;
 
@@ -94,16 +116,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			handleAvChilren(survey, av, smList, this, avList, ignoreAnswers);
 		}
 	}
-
-	@Resource(type = AssessmentVariableRepository.class)
-	AssessmentVariableRepository avr;
-
-	@Resource(type = SurveyPageMeasureRepository.class)
-	SurveyPageMeasureRepository spmr;
 	
-	@Resource(type = BatteryRepository.class)
-	BatteryRepository batteryRepo;
-
 	@Override
 	public Multimap<Survey, Measure> buildSurveyMeasuresMap() {
 		List<SurveyPageMeasure> spmList = spmr.findAll();
@@ -257,7 +270,64 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		}
 		return assessments;
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Map<Integer, AssessmentVariable> getAssessmentVarsForMeasure(
+			Integer measureId) {
+		
+		Measure m = null;
+		if(measureId != null){
+			m = measureRepo.findOne(measureId);
+		}
+		if(m == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+			.toAdmin("An invalid or null measure ID was given: " + measureId)
+			.toUser("An invalid ID for a question was sent to the server. Please contact support.")
+			.throwIt();
+		}
+		
+		Map<Integer, AssessmentVariable> avMap = new HashMap<>();
+		for(AssessmentVariable av : m.getAssessmentVariableList()){
+			avMap.put(av.getAssessmentVariableId(), av);
+		}
+		
+		//get AVs for children
+		for(Measure child : m.getChildren()){
+			for(AssessmentVariable av : child.getAssessmentVariableList()){
+				avMap.put(av.getAssessmentVariableId(), av);
+			}
+		}
+		
+		return avMap;
+	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId){
+		MeasureAnswer ma = null;
+		if(measureAnswerId != null){
+			ma = measureAnswerRepo.findOne(measureAnswerId);
+		}
+		if(ma == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+			.toAdmin("An invalid or null measure answer ID was given: " + measureAnswerId)
+			.toUser("An invalid ID for an answer was sent to the server. Please contact support.")
+			.throwIt();
+		}
+		
+		//TODO: update this to just return the single AV (when the following method is removed and replaced with getAssessmentVariable())
+		List<AssessmentVariable> avs = ma.getAssessmentVariableList();
+		
+		if(avs == null || avs.isEmpty()){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+				.toAdmin("There is not assessment variable associated with measure answer with ID: " + measureAnswerId + ". This should never happen.")
+				.toUser("No vairable was found for an answer. Please report this to support.")
+				.throwIt();
+		}
+		return avs.get(0);
+	}
+	
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
 			final Set<Integer> measureTypes) {
 

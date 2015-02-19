@@ -16,7 +16,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 @JsonSubTypes({ @Type(value = TemplateTextDTO.class, name = "text"), 
 			@Type(value = TemplateIfBlockDTO.class, name = "if"),
 			@Type(value = TemplateElseIfBlockDTO.class, name = "elseif"),
-			@Type(value = TemplateElseBlockDTO.class, name = "else")
+			@Type(value = TemplateElseBlockDTO.class, name = "else"),
+			@Type(value = TemplateTableBlockDTO.class, name = "table")
 			})
 public class TemplateBaseBlockDTO implements INode{
 	private String summary;
@@ -54,18 +55,39 @@ public class TemplateBaseBlockDTO implements INode{
 	}
 	
 	@Override
-	public String toFreeMarkerFormat(Set<Integer> ids) {
-		if (children == null || children.size()==0)
-		{
-			return "";
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(INode node : children)
-		{
-			sb.append(node.toFreeMarkerFormat(ids));
-		}
-		return sb.toString();
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids) {
+		return addChildren(sb, ids);
 	}
+	
+	/**
+	 * Appends all children of this block to the given StringBuilder
+	 * @param sb
+	 * @param ids the 
+	 * @return the same StringBuilder passed in (for chaining)
+	 */
+	protected StringBuilder addChildren(StringBuilder sb, Set<Integer> ids){
+		StringBuilder result = sb;
+		if(getChildren() != null) {
+			for(INode child : getChildren()){
+				result = child.appendFreeMarkerFormat(result, ids);
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Adds the header for this block
+	 * @param sb StringBuilder to append to
+	 * @return same StringBuilder passed in (for chaining)
+	 */
+	protected StringBuilder addHeader(StringBuilder sb) {
+		if (this.getName()!=null)
+			sb.append("<#-- NAME:"+this.getName()+"-->\n");
+		if (this.getSection()!=null)
+			sb.append("<#-- SECTION:"+getSection()+" -->\n");
+		if (this.getSummary()!=null)
+			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
+		return sb;
+	}
+
 }

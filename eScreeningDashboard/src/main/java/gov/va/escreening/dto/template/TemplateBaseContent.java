@@ -50,8 +50,7 @@ public abstract class TemplateBaseContent {
 				StringBuilder s = new StringBuilder(transformation.getName());
 				s.append("(").append(translatedVar);
 
-				if (transformation.getParams() != null
-						&& transformation.getParams().size() > 0) {
+				if (transformation.getParams() != null) {
 					for (String param : transformation.getParams())
 						s.append("," + param);
 				}

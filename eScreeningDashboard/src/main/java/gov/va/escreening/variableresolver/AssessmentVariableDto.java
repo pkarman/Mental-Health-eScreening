@@ -1,10 +1,23 @@
 package gov.va.escreening.variableresolver;
 
+import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.exception.CouldNotResolveVariableException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssessmentVariableDto {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class AssessmentVariableDto {
+	private static final String VARIABLE_FORMAT = "var%s";
+	private static final String DISPLAY_TEXT_FORMAT_FORMULA = "formula_%s";
+	private static final String DISPLAY_TEXT_FORMAT_MEASURE = "measure_%s";
+	private static final String DISPLAY_TEXT_FORMAT_MEASURE_ANSWER = "answer_%s";
+	private static final Logger logger = LoggerFactory.getLogger(AssessmentVariableDto.class);	
+	
 	private Integer variableId;
 	private String key;
 	private String type;
@@ -92,7 +105,163 @@ public class AssessmentVariableDto {
 		this.row = row;
 		this.otherValue = otherValue;
 	}
+	
+	/**
+	 * This constructor creates a DTO using the given AV entity.<br/>
+	 * It is assumed that the av is not a Hibernate transient entity.<br/>
+	 * Custom assessment variables are not supported. <br/>
+	 * Some fields cannot be set because the are based on a veteran response:
+	 * <ol><li>value is not set</li>
+	 * <li>displayText needs a response to be set so this is not set</li>
+	 * <li>overrideText uses the variableTemplate we are in the process of stopping its use. So this is not set</li>
+	 * <li>otherValue is not set because this is only used for response-carrying AVs (only used for measureAnswer AVs)</li>
+	 * <li>row is not set because the response is needed (it is only set for measureAnswer AVs)</li>
+	 */
+	public AssessmentVariableDto(AssessmentVariable av){
+		variableId = av.getAssessmentVariableId();
+		key = String.format(VARIABLE_FORMAT, variableId);
+		type = createVariableTypeString(av);
+		name = createName(av);
+		column = createColumn(av);
+		displayName = av.getDisplayName();
+		
+		if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER){
+			
+			if(av.getMeasureAnswer() != null){
+				System.out.println("measure answer found for AV with ID: " + av.getAssessmentVariableId());
+				answerId = av.getMeasureAnswer().getMeasureAnswerId();
+				calculationValue = av.getMeasureAnswer().getCalculationValue();
+				if(calculationValue == null){
+					System.out.println("null calc value for av: " + av.getAssessmentVariableId());
+				}
+			}
+			else{
+				logger.warn("measure answer not found for AV with ID: " + av.getAssessmentVariableId());
+				System.out.println("measure answer not found for AV with ID: " + av.getAssessmentVariableId());
+			}
+		}
+		else if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE
+				&& av.getMeasure() != null && av.getMeasure().getMeasureType() != null ){
+			measureTypeId = av.getMeasure().getMeasureType().getMeasureTypeId();
+		}
+	}
 
+	public void setResponse(String resolvedValue) {
+		this.displayText = resolvedValue;
+		this.value = resolvedValue;
+	}
+	
+	/**
+	 * Sets all fields having to do with a response except for the setting of OverrideText which should be removed.<br/>
+	 * Note: Much of this logic was taken from MeasureAnswerAssessmentVairableResolverImpl to centralize and simplify this code.
+	 * 
+	 * @param response the response to use for setting fields. This should not be a transient object.
+	 */
+	public void setResponse(SurveyMeasureResponse response){
+		setValue(getAnswerValue(response));
+		setRow(response.getTabularRow());
+		
+		//TODO: the following logic was simplified from MeasureAnswerAssessmentVairableResolverImpl (we should remove one of these)
+		setOtherText(response.getOtherValue());
+		setOtherValue(response.getOtherValue());
+		
+		
+		if(response.getMeasure().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
+			setDisplayText(value);
+		}
+		else{
+			//The constraint has been removed which would set null here if the answer is of type none. Template functions do not assume
+			//this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
+			//delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
+			//show the text of the None answer so null should not be returned.
+			setDisplayText(response.getMeasureAnswer().getAnswerText());
+		}
+	}
+	
+	private Integer createColumn(AssessmentVariable av){
+		switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+				if (av.getMeasure() != null
+					&& av.getMeasure().getDisplayOrder() != null)
+					return av.getMeasure().getDisplayOrder();
+				break;
+				
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+				if (av.getMeasureAnswer() != null
+					&& av.getMeasureAnswer().getDisplayOrder() != null)
+					return av.getMeasureAnswer().getDisplayOrder();
+				break;
+				
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+				return AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN;
+				
+			default:
+				throw new UnsupportedOperationException("Invliad type: " + av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+		}
+		return AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN;
+		
+	}
+	
+	private String createName(AssessmentVariable av){
+		switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+				return String.format(DISPLAY_TEXT_FORMAT_MEASURE, av.getAssessmentVariableId());
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+				return String.format(DISPLAY_TEXT_FORMAT_MEASURE_ANSWER, av.getAssessmentVariableId());
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+				return String.format(DISPLAY_TEXT_FORMAT_FORMULA, av.getAssessmentVariableId());
+				
+			default:
+				throw new UnsupportedOperationException("Invliad type: " + av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+		}
+	}
+	
+	private String getAnswerValue(SurveyMeasureResponse response) {
+		if(response.getBooleanValue() != null)
+			return response.getBooleanValue().toString().toLowerCase();
+		if(response.getNumberValue() != null)
+			return response.getNumberValue().toString();
+		if(response.getTextValue() != null)
+			return response.getTextValue();
+
+		throw new CouldNotResolveVariableException(
+			String.format("A value was not set for surveymeasureresponseid: %s",
+					response.getSurveyMeasureResponseId()));
+	}
+
+	
+	//possible types are string, none, and other
+	private String createVariableTypeString(AssessmentVariable av) {
+		switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+				return "list";
+		
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+				String measureAnswerType = av.getMeasureAnswer().getAnswerType();
+				if(measureAnswerType == null)
+					return "string";
+				if(measureAnswerType.toLowerCase().equals("none"))
+					return "none";
+				if(measureAnswerType.toLowerCase().equals("other"))
+					return "other";
+
+				//otherwise its a string
+				return "string";
+				
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+				return "string";
+			
+			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
+				if(av.getAssessmentVariableId() == CustomAssessmentVariableResolverImpl.CUSTOM_VETERAN_APPOINTMENTS)
+					return "list";
+				return "string";
+				
+			default:
+				throw new UnsupportedOperationException("Invliad type: " + av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+		}
+	}
+
+	
 	public Integer getVariableId() {
 		return variableId;
 	}
@@ -213,6 +382,5 @@ public class AssessmentVariableDto {
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
 				+ ", otherValue=" + otherValue + ", children=" + children 
 				+ ", measureTypeId=" + measureTypeId + "]";
-	}
-	
+	}	
 }

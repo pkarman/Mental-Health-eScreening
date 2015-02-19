@@ -25,14 +25,9 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 		this.contents = contents;
 	}
 
-	public String toFreeMarkerFormat(Set<Integer>ids) {
-		StringBuilder sb = new StringBuilder();
-		if (this.getName()!=null)
-			sb.append("<#-- NAME:"+this.getName()+"-->\n");
-		if (this.getSection()!=null)
-			sb.append("<#-- SECTION:"+getSection()+" -->\n");
-		if (this.getSummary()!=null)
-			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
+	@Override
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids) {
+		addHeader(sb);
 
 		for (TemplateBaseContent content : contents) {
 			if(content instanceof TemplateTextContent)
@@ -41,12 +36,13 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 			}
 			else
 			{
-				// varirable content
-				sb.append("${"+((TemplateVariableContent)content).translate(null, content, null, ids)+"}");
+				// variable content
+				sb.append("${")
+					.append(TemplateVariableContent.translate(null, content, null, ids))
+					.append("}");
 			}
 		}
 
-		return sb.toString();
+		return sb;
 	}
-
 }

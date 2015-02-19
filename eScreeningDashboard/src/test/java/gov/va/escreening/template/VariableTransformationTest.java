@@ -2,19 +2,15 @@ package gov.va.escreening.template;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
 import gov.va.escreening.dto.template.TemplateBaseContent;
 import gov.va.escreening.dto.template.TemplateFileDTO;
-import gov.va.escreening.dto.template.TemplateTextContent;
 import gov.va.escreening.dto.template.TemplateTextDTO;
 import gov.va.escreening.dto.template.TemplateVariableContent;
 import gov.va.escreening.dto.template.VariableTransformationDTO;
-import gov.va.escreening.entity.Template;
 import gov.va.escreening.repository.TemplateRepository;
-import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import javax.annotation.Resource;
 
@@ -25,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -248,7 +243,6 @@ public class VariableTransformationTest {
 		public void testTableWasntAnsweredConditionForFalse() throws Exception{
 			//if no entries and no None answer was selected returns true
 		}	
-		
 		
 		
 		private VariableTransformationDTO createTransformation(String name, String... params){

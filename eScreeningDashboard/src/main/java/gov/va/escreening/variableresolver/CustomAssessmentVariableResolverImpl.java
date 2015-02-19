@@ -275,6 +275,7 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 				break;
 		}
 		
+		//TODO: this should probably have a type of "list"
 		AssessmentVariableDto variableDto = new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", displayName, 
 				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
 		
