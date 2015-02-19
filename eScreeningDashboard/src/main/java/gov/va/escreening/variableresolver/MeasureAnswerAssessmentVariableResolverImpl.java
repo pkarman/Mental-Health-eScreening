@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
