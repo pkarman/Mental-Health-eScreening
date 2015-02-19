@@ -159,7 +159,12 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		List<VeteranWithClinicalReminderFlag> result = new ArrayList<VeteranWithClinicalReminderFlag>(imported.size());
 		for(Veteran v:vetList)
 		{
-			imported.add(new VeteranWithClinicalReminderFlag(VeteranServiceImpl.convertVeteranToVeteranDto(v)));
+			result.add(new VeteranWithClinicalReminderFlag(VeteranServiceImpl.convertVeteranToVeteranDto(v)));
+		}
+		
+		for(VeteranDto dto : imported)
+		{
+			result.add(new VeteranWithClinicalReminderFlag(dto));
 		}
 		return result;
 	}
