@@ -135,7 +135,8 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	}
 
 	@Override
-	public List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user) {
+	public List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user,
+			List<VistaClinicAppointment> appList) {
 		// TODO Auto-generated method stub
 		List<String> vetInDB = new ArrayList<String>();
 		List<String> vetToImport = new ArrayList<String>();
@@ -165,6 +166,19 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		for(VeteranDto dto : imported)
 		{
 			result.add(new VeteranWithClinicalReminderFlag(dto));
+		}
+		
+		for(VeteranWithClinicalReminderFlag v : result)
+		{
+			for(VistaClinicAppointment appt : appList)
+			{
+				if(appt.getVeteranIen().equals(v.getVeteranIen()))
+				{
+					v.setApptDate(appt.getApptDate());
+					v.setApptTime(appt.getApptTime());
+					break;
+				}
+			}
 		}
 		return result;
 	}

@@ -1,16 +1,33 @@
 package gov.va.escreening.domain;
 
-import java.beans.Beans;
 
 public class VeteranWithClinicalReminderFlag extends VeteranDto {
-	private boolean dueClinicalReminder;
+	private boolean dueClinicalReminders;
+	private String apptDate;
+	private String apptTime;
 
-	public boolean isDueClinicalReminder() {
-		return dueClinicalReminder;
+	public String getApptDate() {
+		return apptDate;
 	}
 
-	public void setDueClinicalReminder(boolean dueClinicalReminder) {
-		this.dueClinicalReminder = dueClinicalReminder;
+	public void setApptDate(String appDate) {
+		this.apptDate = appDate;
+	}
+
+	public String getApptTime() {
+		return apptTime;
+	}
+
+	public void setApptTime(String appTime) {
+		this.apptTime = appTime;
+	}
+
+	public boolean getDueClinicalReminders() {
+		return dueClinicalReminders;
+	}
+
+	public void setDueClinicalReminders(boolean dueClinicalReminder) {
+		this.dueClinicalReminders = dueClinicalReminder;
 	}
 
 	public VeteranWithClinicalReminderFlag(VeteranDto dto) {
@@ -23,7 +40,5 @@ public class VeteranWithClinicalReminderFlag extends VeteranDto {
 		setVeteranId(dto.getVeteranId());
 		setVeteranIen(dto.getVeteranIen());
 	}
-	
-	
 	
 }

@@ -19,7 +19,7 @@ public interface BatchBatteryCreateDelegate {
 	 * @param veteranIens
 	 * @return
 	 */
-	List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user);
+	List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user, List<VistaClinicAppointment> appList);
 
 	List<VistaClinicAppointment> searchVeteranByAppointments(EscreenUser user,
 			String clinicIen, Date start, Date end);
@@ -30,5 +30,6 @@ public interface BatchBatteryCreateDelegate {
 			int clinicId, int clinicianId, int noteTitleId, int batteryId,
 			Map<Integer, Set<Integer>> surveyMap, List<Integer> selectedSurvey,
 			EscreenUser escreenUser);
+
 
 }

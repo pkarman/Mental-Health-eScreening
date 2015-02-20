@@ -153,17 +153,17 @@
 						</thead>
 						<tfoot>
 							<tr>
-								<c:if test="${empty result}">
+								<c:if test="${empty searchResult}">
 									<td colspan="6">No record found</td>
 								</c:if>
-								<c:if test="${not empty result}">
-									<td colspan="6"><c:out value="${resultSize}" /> record(s) found</td>
+								<c:if test="${not empty searchResult}">
+									<td colspan="6"><c:out value="${searchResultSize}" /> record(s) found</td>
 								</c:if>
 							</tr>
 						</tfoot>
 						<tbody>
-							<c:if test="${not empty result}">
-								<c:forEach var="item" items="${result}">
+							<c:if test="${not empty searchResult}">
+								<c:forEach var="item" items="${searchResult}">
 									<tr>
 										<td class="text-left"><input type='checkbox' name='vetIens' value="${item.veteranIen}" class="vetIensCheckbox" /></td>
 										<td><c:out value="${item.lastName}" /></td>
