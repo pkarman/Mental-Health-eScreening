@@ -49,12 +49,10 @@
         </div>
         <nav class="navbar-collapse collapse">
           <ul class="nav navbar-nav" id="tabs">
-           
-          </ul>
+		  </ul>
         </nav><!--/.nav-collapse -->
       </div>
-    </div>
-    
+    </div>    
 	</div>
 
 	<div class="mainDiv"> </div>
@@ -151,14 +149,18 @@
 						<div class="row">
 							<div class="col-md-3">
 								<div class="form-group">
-									<div class="label">Program</div>
-									<div>[Program]</div>
+									<form:label path="selectedProgramId">Program *</form:label>
+									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}">
+										<form:option value="" label="Please Select a Program"/>
+										<form:options items="${programList}" itemValue="stateId" itemLabel="stateName"/>
+									</form:select>
+									<form:errors path="selectedProgramId" cssClass="help-inline"/>
 								</div>
 							</div>
 							<div class="col-md-3">
 								<div class="form-group">
 									<div class="label">VistA Clinic</div>
-									<div>[VistA Clinic NAME]</div>
+									<div>${clinic}</div>
 								</div>
 							</div>
 							<div class="col-md-3">								
@@ -221,9 +223,9 @@
 												</li>
 											</c:forEach>
 										</ul>	
-										<hr />
+											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
-                      <span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
+                      						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
 											<hr />					
 									</div>
 
@@ -268,7 +270,6 @@
 		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
 									</div>
 								</div>
-								
 								</div>
 							</div>
 						</div>
@@ -280,7 +281,6 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-
 </body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
