@@ -4,7 +4,7 @@
  * @author Tonté Pouncil
  */
 angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangular'])
-    .factory('AssessmentVariableService', ['Restangular', 'TemplateVariableContent', 'ngTableParams', '$filter', function (Restangular, TemplateVariableContent, ngTableParams, $filter){
+    .factory('AssessmentVariableService', ['Restangular', 'AssessmentVariable', 'ngTableParams', '$filter', function (Restangular, AssessmentVariable, ngTableParams, $filter){
         "use strict";
 
         var restAngular = Restangular.withConfig(function(config) {
@@ -14,10 +14,11 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             service = restAngular.service("assessmentVariables");
 
         restAngular.extendModel("assessmentVariables", function(model) {
-            model = angular.extend(model, TemplateVariableContent);
-            model.setType();
-            return model;
+            return new AssessmentVariable(model);
         });
+
+		var cachedResults = [],
+			cachedHashResults = [];
 
         // Expose the public AssessmentVariableService API to the rest of the application.
         //return service;
@@ -25,23 +26,22 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
             /**
              * Will retrieve the list of assessment variables given the query parameter.
              */
-            cachedResults: [],
-	        cachedHashResults: [],
+
             query: function (queryParams, useQueryCache) {
                 var results = [];
                 useQueryCache = (Object.isBoolean(useQueryCache))? useQueryCache: false;
 
                 if(Object.isDefined(queryParams) && (Object.isDefined(queryParams.surveyId) || Object.isDefined(queryParams.batteryId))) {
                     if(useQueryCache) {
-                        if(Object.isDefined(this.cachedHashResults[queryParams])){
-                            results = this.cachedHashResults[queryParams];
+                        if(Object.isDefined(cachedHashResults[queryParams])){
+                            results = cachedHashResults[queryParams];
                         } else {
-                            this.cachedResults.push(this.cachedHashResults[queryParams] = service.getList(queryParams));
-                            results = this.cachedHashResults[queryParams];
+                            cachedResults.push(cachedHashResults[queryParams] = service.getList(queryParams));
+                            results = cachedHashResults[queryParams];
                         }
                     } else {
-                        this.cachedResults.push(this.cachedHashResults[queryParams] = service.getList(queryParams));
-                        results = this.cachedHashResults[queryParams];
+                        cachedResults.push(cachedHashResults[queryParams] = service.getList(queryParams));
+                        results = cachedHashResults[queryParams];
                     }
                 } else {
                     throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
@@ -49,16 +49,20 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
 
                 return results;
             },
+
             getCachedResults: function(queryParams) {
-                return this.cachedHashResults[queryParams];
+                return cachedHashResults[queryParams];
             },
+
             getLastCachedResults: function(){
-                return this.cachedResults[this.cachedResults.length - 1];
+                return cachedResults[cachedResults.length - 1];
             },
+
             clearCachedResults: function () {
-                this.cachedHashResults = [];
-                this.cachedResults = [];
+                cachedHashResults = [];
+                cachedResults = [];
             },
+
 	        getTableParams: function(searchObj, avs) {
 
 		        var assessmentVariables = this.getLastCachedResults().$object;
@@ -80,5 +84,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
 			        $scope: { $data: {} }
 		        });
 	        }
-        }
-    }]);
+        };
+
+    }]
+);

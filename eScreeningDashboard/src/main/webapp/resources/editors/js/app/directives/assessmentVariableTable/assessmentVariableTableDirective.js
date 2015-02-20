@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', function(AssessmentVariableService) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', function(AssessmentVariableService, AssessmentVariableManager, MeasureService) {
 
 	        return {
 	            restrict: 'EA',
@@ -13,45 +13,12 @@
 		            assessmentVariable: '=',
 		            show: '='
 	            },
+				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
 
-					var transformations = {
-						custom: [
-							{
-								name: 'delimit',
-								params: {
-									prefix: ',',
-									lastPrefix: 'and',
-									suffix: '""',
-									includeSuffixAtEnd: true,
-									defaultValue: ''
-								}
-							}
-						],
-						freeText: [
-							{ name: 'yearsFromDate' }
-						],
-						matrix: [
-							{
-								name: 'delimitedMatrixQuestions',
-								params: {
-									lastPrefix: 'and'
-								}
-							}
-						],
-						table: [
-							{ name: 'numberOfEntries' },
-							{
-								name: 'delimitTableField',
-								params: {
-									prefix: ',',
-									lastPrefix: 'and',
-									suffix: '""',
-									includeSuffixAtEnd: true,
-									defaultValue: ''
-								}
-							}
-						]
+					scope.toggles = {
+						list: true,
+						transformations: false
 					};
 
 		            scope.searchObj = {type: ''};
@@ -62,15 +29,7 @@
 
 		            scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
 
-					scope.table = {
-						show: true
-					};
-
-					scope.$watch('show', function(newVal, oldVal) {
-						if (oldVal === false && newVal === true) {
-							scope.table.show = true;
-						}
-					});
+					scope.freetextNone = false;
 
 		            scope.select = function(e, av) {
 
@@ -85,23 +44,55 @@
 			                scope.assessmentVariable = av;
 		                }
 
+						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
+
 						if (!scope.assessmentVariable.transformations) {
-							updateTransformations(scope.assessmentVariable);
-							console.log(scope.assessmentVariable.transformations);
+							AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function(transformations) {
+							});
 						}
 
-		                // Hide table
-						if (!scope.table.show) {
+						if (av.id !== 6 && scope.transformationName === 'single-select') {
 							scope.show = false;
-						}
+						} else if (scope.transformationName === 'freetext') {
+							// Doing this manually here because setting transformations is not working as intended
+							MeasureService.one(scope.assessmentVariable.measureId).getList('validations').then(function(validations) {
+								var found;
+								_.each(validations, function (validation) {
+									if (validation.value === 'date') {
+										found = true;
+									}
+								});
 
-						scope.table.show = false;
+								if (found) {
+									scope.toggles.list = false;
+									scope.toggles.transformations = true;
+								} else {
+									scope.show = false;
+								}
+							});
+						} else {
+							scope.toggles.list = false;
+							scope.toggles.transformations = true;
+						}
 
 			            scope.tableParams.reload();
 	                };
 
+					scope.applyTransformations = function applyTransformations(av) {
+
+						// This is not working because the ng-if is giving the form its own scope
+						if (scope.freetextNone) {
+							av.transformations = null;
+						}
+
+						scope.show = false;
+						scope.toggles.list = false;
+						scope.toggles.transformations = false;
+					};
+
 					scope.dismiss = function dismiss() {
 						scope.show = false;
+						scope.toggles.transformations = false;
 					};
 
 		            element.bind('click', function(e) {
@@ -109,25 +100,7 @@
 			            e.stopPropagation();
 		            });
 
-					function updateTransformations(av) {
-						switch (av.typeId) {
-							case 1:
-								av.transformations = transformations.freeText;
-								break;
-							case 2:
-								av.transformations = transformations.custom;
-								break;
-							case 3:
-								av.transformations = transformations.custom;
-								break;
-							case 4:
-								av.transformations = transformations.table;
-								break;
-						}
-					}
-
-				},
-	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html'
+				}
 	        };
 
 	    }]
