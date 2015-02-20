@@ -12,4 +12,12 @@ public interface ClinicalReminderSurveyRepository extends RepositoryInterface<Cl
      * @return
      */
     List<ClinicalReminderSurvey> findAllByVistaIen(String vistaIen);
+    
+    /**
+     * remove clinical reminder survey mappings for the survey
+     * @param surveyID
+     */
+    void removeSurveyMapping(int surveyID);
+    
+    void createClinicalReminderSurvey(int clinicalReminderId, int surveyId);
 }

@@ -36,7 +36,7 @@ EScreeningDashboardApp.models.Survey = (function survey() {
             mha: '',
             mhaTestName: '',
             mhaResultGroupIen: '',
-            clinicalReminder: '',
+            clinicalReminderId: '',
             createdDate: '',
             surveySection: {},
             markedForDeletion: '',
