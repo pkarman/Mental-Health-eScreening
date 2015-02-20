@@ -7,15 +7,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
-import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
@@ -219,7 +218,7 @@ public class RepositoryTest {
     
     @Test
 	public void testSS() {
-		List a = ss.getSurveyPages(2,-1);
+		List<SurveyPageInfo> a = ss.getSurveyPages(2,-1);
 		assertEquals(a.size(), 3);
 	}
 }

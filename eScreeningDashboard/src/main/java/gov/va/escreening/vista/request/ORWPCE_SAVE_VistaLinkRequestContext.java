@@ -6,7 +6,7 @@ import gov.va.med.vistalink.rpc.RpcRequest;
 /**
  * Created by pouncilt on 5/6/14.
  */
-public class ORWPCE_SAVE_VistaLinkRequestContext<T extends VistaLinkRequestParameters> extends VistaLinkRequestBaseContext  {
+public class ORWPCE_SAVE_VistaLinkRequestContext<T extends VistaLinkRequestParameters> extends VistaLinkRequestBaseContext<T>  {
     public ORWPCE_SAVE_VistaLinkRequestContext(RpcRequest request, VistaLinkConnection connection, T requestParameters) {
         super(request, connection, requestParameters);
     }

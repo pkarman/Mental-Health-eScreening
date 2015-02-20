@@ -1,16 +1,21 @@
 package gov.va.escreening.service;
 
 import freemarker.core.TemplateElement;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;
+import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -21,6 +26,7 @@ import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +44,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -546,14 +553,12 @@ public class TemplateServiceImpl implements TemplateService {
 			{
 				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
 			}
-			catch(IOException e)
-			{
+			catch(IOException e) {
 				e.printStackTrace();
 				template.setJsonFile(null);
 			}
 			
 			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
-			
 			
 			//get current variable template entries for this template
 			Map<Integer, VariableTemplate> vtMap = new HashMap<>();
@@ -561,31 +566,8 @@ public class TemplateServiceImpl implements TemplateService {
 				vtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
 			}
 			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));
-			
-			//clear out list of variable template entries
-			if (template.getVariableTemplateList()==null){
-				template.setVariableTemplateList(new ArrayList<VariableTemplate>());
-			}
-			else{
-				template.getVariableTemplateList().clear();
-			}
-			
-			if (!assessmentVariableIds.isEmpty()){
-				
-				for(Integer id : assessmentVariableIds){
-					VariableTemplate vt;
-					if(vtMap.containsKey(id)){
-						vt = vtMap.get(id);
-					}
-					else{
-						vt = new VariableTemplate();
-						vt.setAssessmentVariableId(avRepository.findOne(id));
-						vt.setTemplateId(template);
-					}
-					template.getVariableTemplateList().add(vt);
-				}
-			}
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));			
+			setVariableTemplates(template, assessmentVariableIds);
 		}
 		
 		if (template.getTemplateFile()==null)
@@ -597,7 +579,15 @@ public class TemplateServiceImpl implements TemplateService {
 		
 	}
 	
-	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ){
+	/**
+	 * 
+	 * @param templateTypeId
+	 * @param templateFile
+	 * @param templates
+	 * @return
+	 * @throws IllegalSystemStateException if a measure was found which does not have an associated assessment variable
+	 */
+	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ) throws IllegalSystemStateException{
 		
 		Template template = new Template();
 		
@@ -630,22 +620,8 @@ public class TemplateServiceImpl implements TemplateService {
 			Set<Integer> ids = new HashSet<Integer>();
 			
 			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
-			
-			if (ids.size()>0)
-			{
-				for(Integer id : ids){
-					VariableTemplate vt = new VariableTemplate();
-					vt.setDateCreated(new Date());
-					vt.setAssessmentVariableId(avRepository.findOne(id));
-					vt.setTemplateId(template);
-					if (template.getVariableTemplateList()==null)
-					{
-						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
-					}
-					template.getVariableTemplateList().add(vt);
-				}
-			}
-		 }	
+			setVariableTemplates(template, ids);
+		 }
 		
 		if (template.getTemplateFile()==null)
 		{
@@ -667,6 +643,78 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		return template.getTemplateId();
 		
+	}
+
+	/**
+	 * 
+	 * Adds VariableTemplate objects for the given set of assessment variable IDs
+	 * @param template
+	 * @param ids
+	 */
+	private void setVariableTemplates(Template template, Set<Integer> ids) {
+		//clear out list of variable template entries
+		
+		//map from AV ID to VariableTemplate (previously saved)
+		Map<Integer, VariableTemplate> currentVtMap = Collections.emptyMap();
+		
+		if (template.getVariableTemplateList()==null){
+			template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+		}
+		else{
+			currentVtMap = Maps.newHashMapWithExpectedSize(template.getVariableTemplateList().size()); 
+			for(VariableTemplate vt : template.getVariableTemplateList()){
+				currentVtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
+			}
+			template.getVariableTemplateList().clear();
+		}
+		
+		for(Integer id : ids){
+			AssessmentVariable av;
+			if(currentVtMap.containsKey(id)){
+				VariableTemplate vt = currentVtMap.get(id);
+				template.getVariableTemplateList().add(vt);
+				av = vt.getAssessmentVariableId();
+			}
+			else{
+				av = avRepository.findOne(id);
+				template.getVariableTemplateList().add(new VariableTemplate(av, template));
+			}
+			
+			Measure measure = av.getMeasure();
+			addAnswerVariableTemplates(template, measure, currentVtMap);
+			
+			//check for child questions to add
+			if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
+				
+				if(measure.isParent() && measure.getChildren() != null){
+					for(Measure child : measure.getChildren()){
+						AssessmentVariable childAv = child.getAssessmentVariable();
+						if(currentVtMap.containsKey(childAv.getAssessmentVariableId())){
+							template.getVariableTemplateList().add(currentVtMap.get(id));
+						}
+						else{
+							template.getVariableTemplateList().add(new VariableTemplate(childAv, template));
+						}
+						addAnswerVariableTemplates(template, child, currentVtMap);
+					}
+				}
+			}
+			
+		}
+	}
+	
+	private void addAnswerVariableTemplates(Template template, Measure measure, Map<Integer, VariableTemplate> currentVtMap){
+		for(MeasureAnswer ma : measure.getMeasureAnswerList()){
+			AssessmentVariable av = ma.getAssessmentVariable();
+			VariableTemplate vt;
+			if(currentVtMap.containsKey(av.getAssessmentVariableId())){
+				vt = currentVtMap.get(av.getAssessmentVariableId());
+			}
+			else{
+				vt = new VariableTemplate(av, template);
+			}
+			template.getVariableTemplateList().add(vt);
+		}
 	}
 
 	@Override

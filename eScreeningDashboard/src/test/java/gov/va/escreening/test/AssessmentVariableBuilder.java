@@ -183,7 +183,7 @@ public class AssessmentVariableBuilder {
 	}
 	
 	private Measure newFreeTextMeasure(String text){
-		return newMeasure(MeasureAssessmentVariableResolverImpl.MEASURE_TYPE_ID_FREETEXT, text, newMeasureAnswer());
+		return newMeasure(AssessmentConstants.MEASURE_TYPE_FREE_TEXT, text, newMeasureAnswer());
 	}
 	
 	private MeasureAnswer newMeasureAnswer(){

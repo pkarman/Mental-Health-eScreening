@@ -128,16 +128,11 @@ public class AssessmentVariableDto {
 		if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER){
 			
 			if(av.getMeasureAnswer() != null){
-				System.out.println("measure answer found for AV with ID: " + av.getAssessmentVariableId());
 				answerId = av.getMeasureAnswer().getMeasureAnswerId();
 				calculationValue = av.getMeasureAnswer().getCalculationValue();
-				if(calculationValue == null){
-					System.out.println("null calc value for av: " + av.getAssessmentVariableId());
-				}
 			}
 			else{
 				logger.warn("measure answer not found for AV with ID: " + av.getAssessmentVariableId());
-				System.out.println("measure answer not found for AV with ID: " + av.getAssessmentVariableId());
 			}
 		}
 		else if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE
