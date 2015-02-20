@@ -10,7 +10,7 @@
 			if (question && question.childQuestions) {
 				_.each(question.childQuestions, function(question, index) {
 					// Initialize display order
-					question.displayOrder = index;
+					question.displayOrder = index + 1;
 				});
 			}
 		});
@@ -23,9 +23,9 @@
 			stop: function(e, ui) {
 				// Update the display order
 				var questions = ui.item.scope().$parent.question.childQuestions;
-				for (var index in questions) {
-					questions[index].displayOrder = +index;
-				}
+				_.each(questions, function(question, index) {
+					question.displayOrder = index + 1;
+				});
 			}
 		};
 
@@ -35,7 +35,7 @@
 				templateUrl: 'resources/editors/partials/modules/table-question-modal.html',
 				resolve: {
 					tableQuestion: function() {
-						return $scope.question
+						return $scope.question;
 					}
 				},
 				controller: function($scope, $modalInstance, tableQuestion) {
@@ -44,7 +44,7 @@
 
 					$scope.tableQuestion = tableQuestion;
 
-					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length});
+					$scope.question = question || Question.extend({displayOrder: tableQuestion.childQuestions.length + 1});
 
 					$scope.questionTypes = [
 						{id: 0, name: "freeText", displayName: "Free Text"},
@@ -58,7 +58,7 @@
 
 					$scope.update = function update() {
 						$modalInstance.close({question: $scope.question, update: $scope.isUpdate});
-					}
+					};
 				}
 			});
 

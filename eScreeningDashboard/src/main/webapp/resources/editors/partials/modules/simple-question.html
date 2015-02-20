@@ -6,11 +6,12 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="form-group">
-					<label for="txtVariableNm"> Variable Name </label> <input type="text"
+					<label for="txtVariableNm"> Variable Name *</label> <input type="text"
 						ng-model="question.variableName"
 						id="txtVariableNm"
 						class="form-control"
-						placeholder="Variable Name">
+						placeholder="Variable Name"
+						required>
 				</div>
 			</div>
 		</div>
@@ -18,7 +19,8 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="form-group">
-					<label> Question Text </label> <textarea class="form-control" ng-model="question.text"></textarea>
+					<label> Question Text *</label>
+					<textarea class="form-control" ng-model="question.text" required></textarea>
 				</div>
 			</div>
 		</div>

@@ -27,7 +27,8 @@
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
-									<label> {{$index + 1}}. Column Name * </label> <input type="text"
+									<label> {{$index + 1}}. Column Name *</label>
+									<input type="text"
 										class="form-control"
 										ng-model="answer.text"
 										ng-change="updateQuestionAnswers()"
@@ -36,7 +37,7 @@
 							</div>
 							<div class="col-md-5">
 								<div class="form-group" ng-if="question.type === 'selectOneMatrix'">
-									<label>Export Value*</label> <input type="text"
+									<label>Export Value *</label> <input type="text"
 										class="form-control"
 										ng-model="answer.calculationValue"
 										ng-change="updateQuestionAnswers()"
@@ -44,7 +45,8 @@
 										required>
 								</div>
 								<div class="form-group" ng-if="question.type === 'selectMultiMatrix'">
-									<label>Variable Name*</label> <input type="text"
+									<label>Variable Name *</label>
+									<input type="text"
 										class="form-control"
 										ng-model="answer.exportName"
 										ng-change="updateQuestionAnswers()"
@@ -120,7 +122,7 @@
 							</div>
 							<div class="col-md-5">
 								<div class="form-group">
-									<label> Variable Name *</label> <input type="text"
+									<label>Variable Name *</label> <input type="text"
 										class="form-control"
 										ng-model="question.variableName"
 										ng-change="updateQuestionAnswers()"

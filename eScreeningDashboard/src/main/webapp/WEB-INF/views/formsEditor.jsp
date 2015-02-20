@@ -132,7 +132,6 @@
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
@@ -146,6 +145,7 @@
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/strip-html.filter.js"></script>
     
     <!-- Controllers -->
     
@@ -184,6 +184,7 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
 
     <style type="text/css">
 	    <!-- TODO: Need to move to external CSS file -->

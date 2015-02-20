@@ -55,7 +55,7 @@ public class DashboardHomeController {
 
         List<String> tabs = Arrays.asList("home", "userManagement", "formsEditor", "assessmentDashboard",
                 "assessmentReport", "veteranSearch", "exportData", "createBattery", "programManagement",
-                "systemConfiguration", "myAccount");
+                "systemConfiguration", "myAccount", "reports");
 
         Map<String, Boolean> dashboardTabs = new LinkedHashMap<String, Boolean>();
 

@@ -2,7 +2,7 @@
     <h1>Manage {{relatedObj.name}} Templates</h1>
 
     <!-- Alerts and Messages -->
-    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+    <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
     <div class="row clearfix">
         <div class="col-md-12 column">

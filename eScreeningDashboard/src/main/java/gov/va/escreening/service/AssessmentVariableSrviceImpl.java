@@ -18,6 +18,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,8 @@ import com.google.common.collect.TreeBasedTable;
 
 @Service("assessmentVariableService")
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
-
+	private static final Logger logger = LoggerFactory.getLogger(AssessmentVariableSrviceImpl.class);
+	
 	@Resource(name = "filterMeasureTypes")
 	Set<Integer> filterMeasureTypes;
 
@@ -51,8 +54,14 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			String avIdRowKey = String.format("avId_%s", avId);
 			this.assessments.put(avIdRowKey, "id", avId);
 			this.assessments.put(avIdRowKey, "typeId", av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
-			this.assessments.put(avIdRowKey, "name", av.getDisplayName());
-			this.assessments.put(avIdRowKey, "displayName", av.getDescription());
+			
+			if(av.getDisplayName() != null){
+				this.assessments.put(avIdRowKey, "name", av.getDisplayName());
+			}
+			
+			if(av.getDescription() != null){
+				this.assessments.put(avIdRowKey, "displayName", av.getDescription());
+			}
 			this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
 			this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
 			this.assessments.put(avIdRowKey, "measureTypeId", m != null ? m.getMeasureType().getMeasureTypeId() : 0);
@@ -113,7 +122,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	@Override
 	public boolean compareMeasure(AssessmentVariable av, Measure m) {
 		if (av == null) {
-			// ignore formula type, thi scan happen if a formula is pointing to another formula (agreegating)
+			// ignore formula type, this can happen if a formula is pointing to another formula (aggregating)
 			return false;
 		} else if (m.equals(av.getMeasure())) {
 			return true;
@@ -159,6 +168,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		
 		for (AssessmentVariable av : avList) {
 			int avTypeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
+			//logger.debug("Filtering av: " + av.getAssessmentVariableId());
+			
 			switch (avTypeId) {
 			case 1:
 				Collection<Measure> measures = useFilteredMeasures ? filteredMeasures : smList;
@@ -200,6 +211,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		Collection<Measure> measures = Lists.newArrayList();
 		Survey survey = sr.findOne(surveyId);
 
+		//TODO: we don't need all measures, only the measures for the given survey so this is inefficient and should be changed
 		// retrieve a list of all surveys along with their measures
 		Multimap<Survey, Measure> surveyMap = buildSurveyMeasuresMap();
 

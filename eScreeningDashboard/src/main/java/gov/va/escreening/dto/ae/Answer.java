@@ -17,7 +17,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         NONE, OTHER, HEIGHT_FEET, HEIGHT_INCHES, TABLE_COLUMN;
         
         public static Type fromString(String name){
-            if(name == null)
+            if(name == null || name.isEmpty())
                 return null;
             String lowerName = name.toLowerCase();
             if(lowerName.equals("none"))
@@ -50,6 +50,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private Integer rowId;
     private String calculationType;
     private String calculationValue;
+    private Integer displayOrder;
 
     public String getCalculationValue() {
         return calculationValue;
@@ -70,7 +71,15 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
 
 
 
-    public String getVistaText() {
+    public Integer getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(Integer displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	public String getVistaText() {
         return vistaText;
     }
 
@@ -146,8 +155,10 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.answerType = measureAnswer.getAnswerType();
         this.vistaText = measureAnswer.getVistaText();
         this.exportName = measureAnswer.getExportName();
+        //TODO: Remove this when the use of calculation type is removed
         this.calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
         this.calculationValue=measureAnswer.getCalculationValue();
+        this.displayOrder =  measureAnswer.getDisplayOrder();
 
         //set user response
         if(measureResponse != null){
@@ -178,7 +189,8 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     @Override
     public String toString() {
         return "Answer [answerId=" + answerId + ", answerText=" + answerText + ", hasOther=" + answerType
-                + ", answerResponse=" + answerResponse + ", otherAnswerResponse=" + otherAnswerResponse + ", rowId:" + rowId + "]";
+                + ", answerResponse=" + answerResponse + ", otherAnswerResponse=" + otherAnswerResponse + ", rowId:" + rowId 
+                + ", displayOrder=" + displayOrder + ", calculationValue=" + calculationValue + "]";
     }
 
 }

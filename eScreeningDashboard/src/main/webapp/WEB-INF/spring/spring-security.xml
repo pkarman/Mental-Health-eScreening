@@ -33,6 +33,7 @@
 		<intercept-url pattern="/dashboard/userListView/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/userManagement/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/veteranSearch/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/reports/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/vista" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
 
 		<intercept-url pattern="/dashboard/createBattery/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />

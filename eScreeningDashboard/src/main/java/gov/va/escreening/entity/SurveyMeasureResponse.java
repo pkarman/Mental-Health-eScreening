@@ -59,6 +59,8 @@ public class SurveyMeasureResponse implements Serializable {
     @Column(name = "date_modified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateModified;
+	
+	
     @JoinColumn(name = "survey_id", referencedColumnName = "survey_id")
 	@ManyToOne(optional = false)
 	private Survey survey;
@@ -68,6 +70,7 @@ public class SurveyMeasureResponse implements Serializable {
 	@JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
 	@ManyToOne(optional = false)
 	private VeteranAssessment veteranAssessment;
+	
 	@JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
 	@ManyToOne(optional = false)
 	private MeasureAnswer measureAnswer;

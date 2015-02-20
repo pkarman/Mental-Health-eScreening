@@ -103,7 +103,7 @@
                                             <span class="glyphicon glyphicon-remove-circle"
                                                     style="margin-left: 10px;color:red;"
                                                     ng-show="page.pageNumber > 1"
-                                                    ng-click="deletePage($index);"/>
+                                                    ng-really-click="deletePage($index);" ng-really-message="Are you sure you want to delete this page item?"/>
                                         </button>
                                         <button class="btn btn-success btn-sm pull-right" ng-click="addQuestion(page);"><span
                                                 class="glyphicon glyphicon-plus"></span> Add Item
@@ -111,16 +111,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul class="list-group app screen" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
+                            <ul class="list-group app screen sortable-questions" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
                                 <li class="list-group-item text-left"
                                         ng-repeat="question in page.questions | orderBy: 'displayOrder'"
-                                        ng-class="{unsortable: question.sortable === false, active: question.selected}"
-                                        ng-show="question.type">
+                                        ng-class="{unsortable: question.sortable === false, active: question.selected}">
                                     <div class="form-inline">
                                         <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
                                         <div class="pull-left">
-                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName}}</div>
-                                            <div style="font-size:12px;">{{question.type}}</div>
+                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName || question.text | limitToWithEllipsis: 35 | stripHTML}}</div>
+                                            <div style="font-size:12px;">{{question.type || 'Select question type'}}</div>
                                         </div>
                                         <div class="pull-right margin_top_10">
                                             <span>
@@ -128,7 +127,7 @@
                                             </span>
                                             <span class="glyphicon glyphicon-remove-circle cursor_pointer"
                                                     style="margin-left: 10px; color:red;"
-                                                    ng-click="deleteQuestion(page, $index);"></span>
+		                                            ng-really-click="deleteQuestion(page, $index);" ng-really-message="Are you sure you want to delete this question?"></span>
 
                                         </div>
                                         <div class="clearfix"></div>
