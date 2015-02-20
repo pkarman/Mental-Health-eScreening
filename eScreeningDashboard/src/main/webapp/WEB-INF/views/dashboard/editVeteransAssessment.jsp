@@ -119,7 +119,7 @@
 													<td><c:out value="${item.lastName}" /></td>
 													<td><c:out value="${item.firstName}" /></td>
 													<td><c:out value="${item.middleName}" /></td>
-													<td><c:out value="${item.birthDate}" /></td>
+													<td><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
 													<td class="text-right"><c:out value="${item.apptDate}" /></td>
 													<td class="text-right"><c:out value="${item.apptTime}" /></td>
 													<td class="text-right"><c:out value="${item.dueClinicalReminders}" /></td>
