@@ -70,6 +70,9 @@
 									scope.show = false;
 								}
 							});
+						} else {
+							scope.toggles.list = false;
+							scope.toggles.transformations = true;
 						}
 
 			            scope.tableParams.reload();

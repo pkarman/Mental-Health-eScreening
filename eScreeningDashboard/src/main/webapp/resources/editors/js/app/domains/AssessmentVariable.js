@@ -105,7 +105,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 			// If select multi, add delimit (for other answer types pull the veteran text)
 			if (av.measureTypeId === 3) {
-				av.tranformations = [transformations.delimit];
+				av.transformations = [transformations.delimit];
 				// Get the answer list for multi or single select questions
 				_.each(arr, function(answer) {
 					if (answer.answerType === 'Other') {
@@ -118,7 +118,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 			// If table, add delimitTableField and numberOfEntries
 			if (av.measureTypeId === 4) {
-				av.tranformations = [transformations.delimitTableField, transformations.numberOfEntries];
+				av.transformations = [transformations.delimitTableField, transformations.numberOfEntries];
 			}
 
 			// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
