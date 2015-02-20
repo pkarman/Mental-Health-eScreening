@@ -46,7 +46,7 @@
 			                scope.assessmentVariable = av;
 		                }
 
-						scope.transformationType = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
+						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
 						if (!scope.assessmentVariable.transformations) {
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable);
@@ -59,27 +59,8 @@
 
 						scope.table.show = !scope.assessmentVariable.transformations;
 
-						// Get the childQuestions and childQuestion answers for single and multi-matrix variables
-						if (scope.assessmentVariable.measureTypeId === 6 || scope.assessmentVariable.measureTypeId === 7) {
-							var measureId = scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId;
-
-							MeasureService.one(measureId).get().then(function(measure) {
-								scope.matrixQuestions = measure.childQuestions;
-
-								scope.matrixAnswers = measure.childQuestions[0].answers;
-							});
-						}
-
 			            scope.tableParams.reload();
 	                };
-
-					scope.updateSelectedMatrixQuestions = function updateSelectedMatrixQuestions() {
-						scope.slectedMatrixQuestions = $filter('filter')(scope.matrixQuestions, {checked: true});
-					};
-
-					scope.updateSelectedMatrixAnswers = function updateSelectedMatrixAnswers() {
-						scope.slectedMatrixAnswers = $filter('filter')(scope.matrixAnswers, {checked: true});
-					};
 
 					scope.dismiss = function dismiss() {
 						scope.show = false;
