@@ -250,10 +250,6 @@ footer {
   box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container {
-  background-color: #061a43;
-  margin-top: 6px;
-  padding: 10px 10px;
-  line-height: 24px;
 }
 .veteran_block, .staff_block {
   margin-bottom: 20px;
@@ -872,10 +868,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-.print{
-  margin:10px 0px;
-}
-
 .userErrorMessage{
   margin:10px 0;  
 }
@@ -950,15 +942,39 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 @media only print {
-.nonPrintableArea {
-  display: none;
-}
 .modal-header, .modal-content {
   border: none;
 }
 .modal {
   overflow: visible;
   position: absolute;
+  left: 0;
+  top: 0;
+  width: 1100px !important;
+  height: auto !important;
+  background-color: #454545;
+  visibility: visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  padding: 0px;
+  margin: 0px;
+}
+.container_main {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 auto;
+}
+.nonPrintableArea {
+  display: none;
+}
+.modal-header, .modal-content{
+  border:none;
+}
+
+
+.modal{
+  overflow:visible;
+  position:absolute;
   left: 0;
   top: 0;
   width: 1100px !important;

@@ -33,7 +33,7 @@
 <body>
 <div class="nonPrintableArea">
 <a href="#skip" class="offscreen">Skip to main content</a>
-<div id="outerPageDiv" class="nonPrintableArea">
+  <div id="outerPageDiv" class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
   <div class="navbar navbar-default navbar-update" role="navigation">
     <div class="container bg_transparent">
@@ -346,16 +346,15 @@
               </div>
             </div>
           </div>
-                   
 
           <br />
         </div>
       </div>
     </div>
-    <!-- row --> 
+    <!-- row -->
   </form:form>
 </div>
-</div>
+  </div>
          <!-- ### Modal Section Start Here ### -->
           
           

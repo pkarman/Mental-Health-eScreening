@@ -21,45 +21,30 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  *              information about the user.
  * @param {String}  jsonAnswerObject  Represents the JSON representation of a Answer object.
  * @constructor
- * @author Bryan Henderson
+ * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.Answer = function (jsonAnswerObject) {
-    var that = this,
-        id = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.id))? jsonAnswerObject.id : -1,
-        exportName = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.exportName)) ? jsonAnswerObject.exportName : null,
-        text = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.text))? jsonAnswerObject.text : null,
-        type = (Object.isDefined(jsonAnswerObject) && Object.isDefined(jsonAnswerObject.type))? jsonAnswerObject.type : null;
+EScreeningDashboardApp.models.Answer = (function answer() {
 
-    this.getId = function(){
-        return id;
-    };
-    
-    this.getExportName = function(){
-    	return exportName;
-    };
+    function extend(obj) {
+        var answer = {
+            id: '',
+            text: '',
+            type: '',
+            exportName: '',
+            calculationValue: '',
+            displayOrder: 1
+        };
 
-    this.getText = function() {
-        return text;
-    };
+        for (var prop in obj) {
+            if (answer.hasOwnProperty(prop)) {
+                answer[prop] = obj[prop];
+            }
+        }
 
-    this.getType = function() {
-        return type;
-    };
-    
-    this.toString = function() {
-        return "Answer{id: " + id + ", exportName: " + exportName + ", text: " + text + ", type: " + type + "}";
-    };
+        return _.extend(obj, answer);
+    }
 
-    this.toJSON = function () {
-        return angular.toJson(this.toUIObject());
+    return {
+        extend: extend
     };
-    
-    this.toUIObject = function(){
-    	return {
-    		'id' : (Object.isDefined(id) && id > 0)? id : null,
-    		'text' : text,
-    		'type' : type,
-    		'exportName' : exportName
-    	};
-    };
-};
+})();

@@ -48,7 +48,9 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String mhaTestName;
     @Column(name = "mha_result_group_ien")
     private String mhaResultGroupIen;
+
     @Column(name = "display_order_for_section")
+    @Basic(optional = false)
     private Integer displayOrderForSection;
 
     @Column(name = "vista_title")
@@ -69,7 +71,8 @@ public class Survey implements Serializable, SurveyBaseProperties{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
     @OrderBy("pageNumber")
     private List<SurveyPage> surveyPageList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
+    /** the following are response data which we do not want to change if this survey is changed (no cascade) **/
+    @OneToMany(mappedBy = "survey")
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
     private List<ClinicalReminderSurvey> clinicalReminderSurveyList;

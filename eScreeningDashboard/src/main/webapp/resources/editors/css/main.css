@@ -255,6 +255,11 @@ fieldset {
 
 .app{
     cursor:move;
+    min-height: 46px;
+}
+
+.app .list-group-item {
+    min-height: 46px;
 }
 
 .buttonaction {
