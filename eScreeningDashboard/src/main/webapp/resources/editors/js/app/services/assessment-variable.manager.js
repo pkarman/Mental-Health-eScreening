@@ -4,39 +4,6 @@
 	angular.module('Editors')
 		.factory('AssessmentVariableManager', ['MeasureService', '$q', function(MeasureService, $q) {
 
-			var transformations = {
-				delimit: {
-					name: 'delimit',
-					params: {
-						prefix: ',',
-						lastPrefix: 'and',
-						suffix: '""',
-						includeSuffixAtEnd: true,
-						defaultValue: ''
-					}
-				},
-				yearsFromDate: { name: 'yearsFromDate' },
-				delimitedMatrixQuestions: {
-					name: 'delimitedMatrixQuestions',
-					params: {
-						lastPrefix: 'and'
-					}
-				},
-				numberOfEntries: {
-					name: 'numberOfEntries'
-				},
-				delimitTableField:	{
-					name: 'delimitTableField',
-					params: {
-						prefix: ',',
-						lastPrefix: 'and',
-						suffix: '""',
-						includeSuffixAtEnd: true,
-						defaultValue: ''
-					}
-				}
-			};
-
 			function setTransformations(av) {
 				var deferred = $q.defer();
 

@@ -3,7 +3,7 @@
 	      type="text/css"
 	      href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
 
-	<div ng-if="showList">
+	<div ng-if="toggles.list">
 		<div class="row">
 			<div class="col-md-6">
 				<label class="sr-only">Select Assessment Variable Type</label>
@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<div ng-switch on="transformationName" class="animate-switch-container" ng-if="showTransformations">
+	<div ng-switch on="transformationName" class="animate-switch-container" ng-if="toggles.transformations">
 
 		<div ng-switch-when="appointment" class="animate-switch" class="col-sm-12">
 			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
@@ -141,9 +141,9 @@
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
-					<select id="selectTransformationType" class="form-control">
-						<option>No Tranformation</option>
-						<option>Number of Years</option>
+					<select id="selectTransformationType" class="form-control" ng-model="freetextNone">
+						<option value="true" ng-selected="!assessmentVariable.transformations">No Tranformation</option>
+						<option value="false" ng-selected="assessmentVariable.transformations">Number of Years</option>
 					</select>
 				</div>
 
