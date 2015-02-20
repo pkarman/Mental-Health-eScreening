@@ -30,13 +30,13 @@ var Editors = angular.module('Editors', [
 ]);
 
 Editors.value('Answer', EScreeningDashboardApp.models.Answer);
+Editors.value('AssessmentVariable', EScreeningDashboardApp.models.AssessmentVariable);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('Question', EScreeningDashboardApp.models.Question);
 Editors.value('Template', new EScreeningDashboardApp.models.Template());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
 Editors.value('Survey', EScreeningDashboardApp.models.Survey);
 Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
-Editors.value('TemplateVariableContent', new EScreeningDashboardApp.models.TemplateVariableContent());
 
 Editors.config(function(RestangularProvider, $provide) {
 

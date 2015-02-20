@@ -37,88 +37,24 @@
 				}
 			};
 
-			function getType(av) {
-				var type;
-
-				if (av.typeId === 3) {
-
-					type = 'custom';
-
-				} else {
-
-					switch (av.measureTypeId) {
-						case 1:
-							type = 'freetext';
-							break;
-						case 2:
-							type = 'single-select';
-							break;
-						case 3:
-							type = 'multi-select';
-							break;
-						case 4:
-							type = 'table';
-							break;
-						case 6:
-							type = 'single-matrix';
-							break;
-						case 7:
-							type = 'multi-matrix';
-					}
-				}
-
-				return type;
-			}
-
 			function setTransformations(av) {
 
-				console.log(av.measureTypeId, av.type);
-
-				// If free text and date, add yearsFromDate transformation
 				if (av.measureTypeId === 1) {
 					// Get the validations for freetext
 					MeasureService.one(av.measureId).getList('validations').then(function (validations) {
-						var validationMap = {};
-						angular.forEach(validations, function(validation) {
-							setValidations(validationMap, validation);
-						});
-						if (validationMap.date) {
-							av.transformations = [transformations.yearsFromDate];
-						}
+						av.setTransformations(validations);
 					});
 				}
 
-				// If custom variable and appointment, add delimit
-				if (av.typeId === 3) {
-					av.transformations = [transformations.delimit];
-
-				}
-
-				// If select multi, add delimit (for other answer types pull the veteran text)
 				if (av.measureTypeId === 3) {
-					av.tranformations = [transformations.delimit];
 					// Get the answer list for multi or single select questions
 					MeasureService.one(av.measureId).getList('answers').then(function (answers) {
-						angular.forEach(answers, function(answer) {
-							if (answer.answerType === 'Other') {
-								// Pull veteran text
-								// TODO confirm this is correct with Robin
-								av.transformations[0].defaultValue = answer.answerText;
-							}
-						});
+						av.setTransformations(answers);
 					});
 				}
-
-				// If table, add delimitTableField and numberOfEntries
-				if (av.measureTypeId === 4) {
-					av.tranformations = [transformations.delimitTableField, transformations.numberOfEntries];
+				else {
+					av.setTransformations();
 				}
-
-				// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
-				if (av.measureTypeId === 6 || av.measureTypeId === 7) {
-					av.transformations = [transformations.delimitedMatrixQuestions];
-				}
-
 			}
 
 			function setValidations(map, validation) {
@@ -148,7 +84,6 @@
 			}
 
 			return {
-				getType: getType,
 				setTransformations: setTransformations,
 				setValidations: setValidations
 			};

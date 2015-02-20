@@ -88,6 +88,8 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/AnswersTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TableAnswersTransformer.js"></script>
 
+    <script type="text/javascript" src="resources/editors/js/app/domains/AssessmentVariable.js"></script>
+
     <script type="text/javascript" src="resources/editors/js/app/domains/Validation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/ValidationTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/ValidationsTransformer.js"></script>
@@ -106,7 +108,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
 	<!-- Modules -->

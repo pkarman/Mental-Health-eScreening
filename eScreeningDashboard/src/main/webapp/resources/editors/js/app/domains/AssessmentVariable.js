@@ -4,76 +4,127 @@
  *
  * @type {EScreeningDashboardApp|*|EScreeningDashboardApp|*|{}|{}}
  */
-var EScreeningDashboardApp = EScreeningDashboardApp || {};
-/**
- * Represents the application static variable. Use existing static variable, if one already exists,
- * otherwise create a new one.
- *
- * @static
- * @type {*|EScreeningDashboardApp.models|*|EScreeningDashboardApp.models|Object|*|Object|*}
- */
-EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
+var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models") };
 
-/**
- * Constructor method for the AssessmentVariable class.  The properties of this class can be initialized with
- * the jsonUserObject.
- * @class
- * @classdesc   This class is a domain model class; which means it has both behavior and state
- *              information about the user.
- * @param {String}  jsonSurveySectionObject  Represents the JSON representation of an Assessment Variable object.
- * @constructor
- * @author Bryan Henderson
- */
-EScreeningDashboardApp.models.AssessmentVariable = function (jsonAssessmentVariableObject) {
-    var that = this,
-        id = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.id))? jsonAssessmentVariableObject.id : -1,
-        variableTypeId = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.variableTypeId)) ? jsonAssessmentVariableObject.variableTypeId : -1,		
-        displayName = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.displayName))? jsonAssessmentVariableObject.displayName : null,
-        description = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.decription))? jsonAssessmentVariableObject.description : null,
-        measureId = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.measureId))? jsonAssessmentVariableObject.measureId : -1,
-        measureAnswerId = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.measureAnserId))? jsonAssessmentVariableObject.measureAnswerId : -1,
-        formulaTemplate = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.formulaTemplate))? jsonAssessmentVariableObject.formulaTemplate : null,
-        createdDate = (Object.isDefined(jsonAssessmentVariableObject) && Object.isDefined(jsonAssessmentVariableObject.createdDate))? (Object.isDate(jsonAssessmentVariableObject.createdDate)) ? jsonAssessmentVariableObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonAssessmentVariableObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
+(function () {
+	'use strict';
 
-    this.getId = function(){
-        return id;
-    };
-    
-    this.getVariableTypeId = function(){
-    	return variableTypeId;
-    };
+	var AssessmentVariable = function(obj) {
+		this.id = obj.id || null;
+		this.typeId = obj.typeId || null;
+		this.answerId = obj.answerId || null;
+		this.measureId = obj.measureId || null;
+		this.measureTypeId = obj.measureTypeId || null;
+		this.parentMeasureId = obj.parentMeasureId || null;
+		this.name = obj.name || null;
+		this.displayName = obj.displayName || null;
+		this.type = obj.type || null;
+		this.transformations = obj.transformations || null;
 
-    this.getDisplayName = function() {
-        return displayName;
-    };
+		if (obj.typeId) {
+			this.setType();
+		}
+	};
 
-    this.getDescription = function() {
-        return description;
-    };
+	AssessmentVariable.prototype = {
 
-    this.getMeasureId = function(){
-    	return measureId;
-    };
-    
-    this.getMeasureAnswerId = function(){
-    	return measureAnswerId;
-    };
-    
-    this.getFormulaTemplate = function(){
-    	return formulaTemplate;
-    };
+		getMeasureTypeName: function getMeasureTypeName() {
 
-    this.getCreatedDate= function() {
-        return createdDate;
-    };
+			switch (this.measureTypeId) {
+				case 1:
+					this.type = 'freetext';
+					break;
+				case 2:
+					this.type = 'single-select';
+					break;
+				case 3:
+					this.type = 'multi-select';
+					break;
+				case 4:
+					this.type = 'table';
+					break;
+				case 6:
+					this.type = 'single-matrix';
+					break;
+				case 7:
+					this.type = 'multi-matrix';
+			}
 
-    this.toString = function () {
-        return "AssessmentVariable [id: " + id + ", displayName: " + displayNameame + ", description: " + description + ", measureId: " + measureId +
-            ", measureAnswerId: " + measureAnswerId + ", formulaTemplate: " + formulaTemplate + ", createdDate: " + createdDate + "]";
-    };
+		},
 
-    this.toJSON = function () {
-        return "{\"id\": " + id + ",\"displayName\": \"" + displayName + "\",\"description\": \"" + description + "\",\"measureId\": " + measureId +
-            ",\"measureAnswerId\": " + measureAnswerId + ",\"formulaTemplate\": "+ formulaTemplate + ",\"createdDate\": \"" + (createdDate != null) ? createdDate.isISOString() : null + "\"}";
-    };
-};
+		setType: function setType() {
+
+			var types = {
+				1: 'Question',
+				2: 'Answer',
+				3: 'Custom',
+				4: 'Formula'
+			};
+
+			this.type = types[this.typeId] || 'Other';
+		},
+
+		setTransformations: function setTransformations(arr) {
+
+			var av = this;
+
+			var transformations = {
+				delimit: {
+					name: 'delimit',
+					params: [',', 'and', '""', true, '']
+				},
+				yearsFromDate: { name: 'yearsFromDate' },
+				delimitedMatrixQuestions: {
+					name: 'delimitedMatrixQuestions',
+					params: []
+				},
+				numberOfEntries: {
+					name: 'numberOfEntries'
+				},
+				delimitTableField:	{
+					name: 'delimitTableField',
+					params: [',', 'and', '""', true, '']
+				}
+			};
+
+			// If appointment (id 6 is reserved for appointment AV), add delimit
+			if (av.id === 6) {
+				av.transformations = [transformations.delimit];
+			}
+
+			if (av.measureTypeId === 1) {
+				_.each(arr, function(validation) {
+					if (validation.value === 'date') {
+						av.transformations = [transformations.yearsFromDate];
+					}
+				});
+			}
+
+			// If select multi, add delimit (for other answer types pull the veteran text)
+			if (av.measureTypeId === 3) {
+				av.tranformations = [transformations.delimit];
+				// Get the answer list for multi or single select questions
+				_.each(arr, function(answer) {
+					if (answer.answerType === 'Other') {
+						// Pull veteran text
+						// TODO confirm this is correct with Robin
+						av.transformations[0].defaultValue = answer.answerText;
+					}
+				});
+			}
+
+			// If table, add delimitTableField and numberOfEntries
+			if (av.measureTypeId === 4) {
+				av.tranformations = [transformations.delimitTableField, transformations.numberOfEntries];
+			}
+
+			// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
+			if (av.measureTypeId === 6 || av.measureTypeId === 7) {
+				av.transformations = [transformations.delimitedMatrixQuestions];
+			}
+		}
+	};
+
+	EScreeningDashboardApp.models.AssessmentVariable = AssessmentVariable;
+
+})();

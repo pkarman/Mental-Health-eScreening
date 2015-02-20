@@ -60,7 +60,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
             jsonConfig.contents.forEach(function(blockData){
                 var contentObj = angular.copy(blockData);
                 if(contentObj.type == "var"){
-                    contentObj.content = new EScreeningDashboardApp.models.TemplateVariableContent(contentObj.content);
+                    contentObj.content = new EScreeningDashboardApp.models.AssessmentVariable(contentObj.content);
                 }
                 self.contents.push(contentObj);   
             });
