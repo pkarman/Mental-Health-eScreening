@@ -8,7 +8,7 @@
 				restrict: 'E',
 				scope: {
 					assessmentVariable: '=',
-					select: '&',
+					applyTransformations: '&',
 					dismiss: '&'
 				},
 				templateUrl: 'resources/editors/partials/modules/matrix-transformation.html',

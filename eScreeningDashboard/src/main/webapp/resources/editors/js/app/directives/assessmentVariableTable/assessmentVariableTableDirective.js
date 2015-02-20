@@ -15,6 +15,8 @@
 	            },
 	            link: function (scope, element) {
 
+					scope.showList = true;
+
 		            scope.searchObj = {type: ''};
 
 		            scope.tableParams = AssessmentVariableService.getTableParams(scope.searchObj);
@@ -22,16 +24,6 @@
 		            scope.tableParams.settings().$scope = scope;
 
 		            scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
-
-					scope.table = {
-						show: true
-					};
-
-					scope.$watch('show', function(newVal, oldVal) {
-						if (oldVal === false && newVal === true) {
-							scope.table.show = true;
-						}
-					});
 
 		            scope.select = function(e, av) {
 
@@ -49,18 +41,25 @@
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
 						if (!scope.assessmentVariable.transformations) {
-							AssessmentVariableManager.setTransformations(scope.assessmentVariable);
-						}
+							AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function(transformations) {
 
-		                // Hide table
-						if (!scope.table.show) {
-							scope.show = false;
+								if (transformations) {
+									scope.showList = false;
+									scope.showTransformations = true;
+								} else {
+									scope.show = false;
+								}
+							});
 						}
-
-						scope.table.show = !scope.assessmentVariable.transformations;
 
 			            scope.tableParams.reload();
 	                };
+
+					scope.applyTransformations = function applyTransformations(av) {
+						scope.show = false;
+						scope.showList = false;
+						scope.showTransformations = false;
+					};
 
 					scope.dismiss = function dismiss() {
 						scope.show = false;

@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module('Editors')
-		.factory('AssessmentVariableManager', ['MeasureService', function(MeasureService) {
+		.factory('AssessmentVariableManager', ['MeasureService', '$q', function(MeasureService, $q) {
 
 			var transformations = {
 				delimit: {
@@ -38,11 +38,13 @@
 			};
 
 			function setTransformations(av) {
+				var deferred = $q.defer();
 
 				if (av.measureTypeId === 1) {
 					// Get the validations for freetext
 					MeasureService.one(av.measureId).getList('validations').then(function (validations) {
 						av.setTransformations(validations);
+						deferred.resolve(av.transformations);
 					});
 				}
 
@@ -50,11 +52,15 @@
 					// Get the answer list for multi or single select questions
 					MeasureService.one(av.measureId).getList('answers').then(function (answers) {
 						av.setTransformations(answers);
+						deferred.resolve(av.transformations);
 					});
 				}
 				else {
 					av.setTransformations();
+					deferred.resolve(av.transformations);
 				}
+
+				return deferred.promise;
 			}
 
 			function setValidations(map, validation) {

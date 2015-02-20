@@ -94,10 +94,12 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 				av.transformations = [transformations.delimit];
 			}
 
+			// Freetext with date
 			if (av.measureTypeId === 1) {
 				_.each(arr, function(validation) {
 					if (validation.value === 'date') {
 						av.transformations = [transformations.yearsFromDate];
+						return true;
 					}
 				});
 			}
@@ -111,6 +113,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 						// Pull veteran text
 						// TODO confirm this is correct with Robin
 						av.transformations[0].defaultValue = answer.answerText;
+						return true;
 					}
 				});
 			}

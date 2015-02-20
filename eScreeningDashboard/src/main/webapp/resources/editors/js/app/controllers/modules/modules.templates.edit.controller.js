@@ -21,14 +21,13 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     else if($scope.relatedObj.type === "battery") {
     	queryObj = {batteryId: $scope.relatedObj.id};
     }
-    
-    $scope.assessmentVariables = AssessmentVariableService.query(queryObj)
+													AssessmentVariableService.query(queryObj)
         .then(function(assessmentVariables) {
             assessmentVariables.forEach(function(variable){
                     $scope.variableHash[variable.id] = variable;
                 });
-                
-                return assessmentVariables;
+
+															$scope.assessmentVariables = assessmentVariables;
             });
 
     $scope.save = function () {
@@ -37,7 +36,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
         $scope.template.saveFor($scope.relatedObj).then(function (response) {
             $scope.done(true).then(function(){
                 MessageFactory.set('success', 'All template changes have been saved.');
-            })
+            });
         });
     };
 

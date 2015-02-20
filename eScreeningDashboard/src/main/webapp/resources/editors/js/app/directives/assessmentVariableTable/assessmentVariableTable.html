@@ -3,7 +3,7 @@
 	      type="text/css"
 	      href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
 
-	<div ng-if="table.show">
+	<div ng-if="showList">
 		<div class="row">
 			<div class="col-md-6">
 				<label class="sr-only">Select Assessment Variable Type</label>
@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<div ng-switch on="transformationName" class="animate-switch-container" ng-if="table.show === false">
+	<div ng-switch on="transformationName" class="animate-switch-container" ng-if="showTransformations">
 
 		<div ng-switch-when="appointment" class="animate-switch" class="col-sm-12">
 			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
@@ -83,7 +83,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -99,13 +99,13 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputPrefix">Prefix</label>
-							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params.prefix">
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]">
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputLastPrefix">Last Prefix</label>
-							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params.lastPrefix">
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params[1]">
 						</div>
 					</div>
 				</div>
@@ -114,24 +114,23 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputSuffix">Suffix</label>
-							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params.suffix">
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params[2]">
 						</div>
 					</div>
 					<div class="col-md-6"><br>
 						<div class="checkbox">
-							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params.includeSuffixAtEnd"> <label for="suf_check_01"> Suffix After Last Entry</label>
+							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params[3]"> <label for="suf_check_01"> Suffix After Last Entry</label>
 						</div>
 					</div>
 				</div>
 
-
 				<div class="form-group">
 					<label for="inputDefaultText">Default Text</label>
-					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params.defaultValue">
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params[4]">
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -149,14 +148,14 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
 		</div>
 
 		<div ng-switch-when="single-matrix" class="animate-switch" class="col-sm-12">
-			<matrix-transformation assessment-variable="assessmentVariable" select="select($event, assessmentVariable)", dismiss="dismiss"></matrix-transformation>
+			<matrix-transformation assessment-variable="assessmentVariable" applyTransformations="applyTransformations" dismiss="dismiss"></matrix-transformation>
 		</div>
 
 		<div ng-switch-when="multi-matrix" class="animate-switch" class="col-sm-12">
@@ -204,7 +203,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="select();">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -269,7 +268,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="select($event, assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
