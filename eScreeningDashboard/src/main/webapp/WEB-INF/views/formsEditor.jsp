@@ -370,7 +370,7 @@
     -->
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
     <style>
-        body {padding: 15px;}
+        /* body {padding: 15px;} */
         .select2 > .select2-choice.ui-select-match {
             /* Because of the inclusion of Bootstrap */
             height: 29px;

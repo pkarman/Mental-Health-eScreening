@@ -761,6 +761,38 @@ span.countdown {
   font-weight:bold;
   color:#949494;
 }
+
+/*module_formulas_edit*/
+.formula_test_input_block{
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.formula_test_button_block{
+	margin-top:30px;
+	margin-bottom:30px;
+}
+[ng\:cloak], [ng-cloak], .ng-cloak {
+	display: none !important;
+}
+
+fieldset.fieldset-border {
+	border: 1px groove #ddd !important;
+	padding: 0 1.4em 1.4em 1.4em !important;
+	margin: 0 0 1.5em 0 !important;
+	-webkit-box-shadow: 0px 0px 0px 0px #888888;
+	box-shadow: 0px 0px 0px 0px #000;
+	min-height:200px;
+}
+
+legend.fieldset-border {
+	font-size: 1.2em !important;
+	font-weight: bold !important;
+	text-align: left !important;
+	width: auto;
+	padding: 0 10px;
+	border-bottom: none;
+	margin-bottom: 5px;
+}
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 

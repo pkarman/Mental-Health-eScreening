@@ -1,119 +1,110 @@
-<style type="text/css">
-    [ng\:cloak], [ng-cloak], .ng-cloak {
-        display: none !important;
-    }
-
-    fieldset.test-border {
-        border: 1px groove #ddd !important;
-        padding: 0 1.4em 1.4em 1.4em !important;
-        margin: 0 0 1.5em 0 !important;
-        -webkit-box-shadow: 0px 0px 0px 0px #000;
-        box-shadow: 0px 0px 0px 0px #000;
-    }
-
-    legend.test-border {
-        font-size: 1.2em !important;
-        font-weight: bold !important;
-        text-align: left !important;
-        width: auto;
-        padding: 0 10px;
-        border-bottom: none;
-    }
-</style>
 <div class="container" ng-cloak class="ng-cloak">
     <h1>Formula Editor</h1>
-
     <div class="row">
         <div class="col-lg-12">
             <alert ng-repeat="msg in msgs" type="msg.type" close="closeAlert($index)">{{msg.text}}</alert>
         </div>
     </div>
 
-    <form class="form-horizontal" role="form">
-        <div class="form-group">
-            <label class="control-label col-lg-2" for="name">Name:</label>
+    <form class="form" role="form">
+		<div class="border-radius-main-form gray-lighter">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label class="control-label" for="name">Name</label>
+							<input id="name"
+								   class="form-control"
+								   type="text"
+								   ng-model="formula.name"
+								   placeholder="{{formula.name||'Enter Name...'}}">
+					</div>	
+				</div>
+				<div class="col-md-9">
+					<div class="form-group">
+						<label class="control-label" for="desc">Description</label>
+							<input id="desc"
+								   class="form-control"
+								   type="text"
+								   ng-model="formula.description"
+								   placeholder="{{formula.description||'Enter Description...'}}">
+					</div>	
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="formulaEditor">Editor</label>
+					<div>
+						<ui-select
+								multiple tagging="tagFormula"
+								ng-model="formulaTemplate.selectedTokens"
+								theme="bootstrap"
+								ng-disabled="disable"
+								title="Click to select or start typing to continue with formula..." id="formulaEditor">
+		
+							<ui-select-match
+									placeholder="Select or enter formula operand...">
+								{{$item.name}}
+							</ui-select-match>
+		
+							<ui-select-choices
+									repeat="var in variables | propsFilter: {name: $select.search, displayName: $select.search} | orderBy:'typeId'"
+									refresh="refreshVariables()"
+									refresh-delay="0">
+								<medium>
+									[{{var.type}}] [{{var.name}}] [{{var.displayName || 'No Description provided'}}]
+								</medium>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+					<!--<p>Selected: {{formulaTemplate.selectedTokens|json}}</p>-->
+				</div>
+			</div>
+		</div>
 
-            <div class="col-lg-10">
-                <input id="name"
-                       class="form-control"
-                       type="text"
-                       ng-model="formula.name"
-                       placeholder="{{formula.name||'Enter Name...'}}">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-lg-2" for="desc">Description:</label>
-
-            <div class="col-lg-10">
-                <input id="desc"
-                       class="form-control"
-                       type="text"
-                       ng-model="formula.description"
-                       placeholder="{{formula.description||'Enter Description...'}}">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-lg-2">Formula:</label>
-
-            <div class="col-lg-10">
-                <ui-select
-                        multiple tagging="tagFormula"
-                        ng-model="formulaTemplate.selectedTokens"
-                        theme="bootstrap"
-                        ng-disabled="disable"
-                        title="click to select or start typing to continue with formula...">
-
-                    <ui-select-match
-                            placeholder="select or enter formula operand...">
-                        {{$item.name}}
-                    </ui-select-match>
-
-                    <ui-select-choices
-                            repeat="var in variables | propsFilter: {name: $select.search, displayName: $select.search} | orderBy:'typeId'"
-                            refresh="refreshVariables()"
-                            refresh-delay="0">
-                        <medium>
-                            [{{var.type}}] [{{var.name}}] [{{var.displayName || 'No Description provided'}}]
-                        </medium>
-                    </ui-select-choices>
-
-                </ui-select>
-            </div>
-
-            <!--<p>Selected: {{formulaTemplate.selectedTokens|json}}</p>-->
-        </div>
     </form>
 
-    <form class="form-horizontal">
-        <div class="col-md-10">
-            <fieldset class="test-border">
-                <legend class="test-border">Test</legend>
-
-                <div class="form-group">
-                        <span ng-repeat="token in verifiedIds">
-                            <input type="text" placeholder="{{token.name}}"
-                                   ng-model="token.value"/>
-                        </span>
-                </div>
-                <div class="btn-group btn-group-sm" role="toolbar">
-                    <button type="submit" ng-click="produceInputFields()" class="btn btn-primary">Ready to test</button>
-                    <button type="submit" ng-click="runTest()" class="btn btn-warning">Run Test</button>
-                </div>
-
-            </fieldset>
-        </div>
-        <div class="col-md-2">
-            <fieldset class="test-border">
-                <legend class="test-border">Result</legend>
-                <div class="well form-group">{{result}}</div>
-            </fieldset>
-        </div>
+    <form class="form-inline">
+        <div class="row">
+			<div class="col-md-9">
+				<fieldset class="fieldset-border">
+					<legend class="fieldset-border">Test</legend>
+	
+					<div class="row">
+						<div class="col-md-10">	
+						<div class="row">
+											
+							<div ng-repeat="token in verifiedIds" class=" col-md-3 form-group formula_test_input_block">
+								<label for="">{{token.name}}</label>
+								<input type="text" placeholder="{{token.name}}"
+									   ng-model="token.value" class="form-control" />
+							</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="formula_test_button_block" role="toolbar">
+								<button type="submit" ng-click="produceInputFields()" class="btn btn-primary btn-block">Ready to Test</button><br>
+								<button type="submit" ng-click="runTest()" class="btn btn-primary btn-block">Run Test</button>
+							</div>
+						</div>
+					</div>
+	
+				</fieldset>
+			</div>
+			<div class="col-md-3">
+				<fieldset class="fieldset-border">
+					<legend class="fieldset-border">Result</legend>
+					<div class="form-group">{{result}}</div>
+				</fieldset>
+			</div>
+		</div>
     </form>
-
-
-    <div class="btn-group" role="group">
-        <button type="submit" ng-click="saveFormula()" class="btn btn-primary">Save Formula</button>
-        <button type="cancel" ng-click="cancelFormula()" class="btn btn-cancel">Cancel Formula</button>
-    </div>
+    <div role="group" class="text-right">
+		<button type="submit" ng-click="saveFormula()" class="btn btn-primary">Save</button>
+		<button type="cancel" ng-click="cancelFormula()" class="btn btn-cancel">Cancel</button>
+	</div>
 </div>
+<br>
+<br>
