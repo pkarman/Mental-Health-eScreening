@@ -71,9 +71,6 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(dbVariables);
         
         for(AssessmentVariable dbVariable : dbVariables){
-        	if ("prior_dx_score".equals(dbVariable.getDisplayName())){
-        		int i=0;
-        	}
             assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, veteranAssessmentId, measureAnswerHash).asSet());
         }
         

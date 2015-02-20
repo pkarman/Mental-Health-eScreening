@@ -1,5 +1,8 @@
 package gov.va.escreening.entity;
 
+import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.exception.IllegalSystemStateException;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -202,6 +205,23 @@ public class MeasureAnswer implements Serializable {
     public void setAssessmentVariableList(List<AssessmentVariable> assessmentVariableList) {
         this.assessmentVariableList = assessmentVariableList;
     }
+    
+    /**
+     * This is a method to move our code base from a one to many between measure and assessment variables to a one to one (as it should be)
+     * @return
+     * @throws IllegalSystemStateException is there is no AV for this measure.
+     */
+	public AssessmentVariable getAssessmentVariable() {
+		List<AssessmentVariable> avList = getAssessmentVariableList();
+		if(avList == null || avList.isEmpty()){
+			ErrorBuilder.throwing(IllegalSystemStateException.class)
+				.toAdmin("Each measure answer should have an assessment variable assigned to it but the measure answer with the following ID doesn't: " + getMeasureAnswerId())
+				.toUser("A system issue has been detected. Please contact support")
+				.throwIt();
+		}
+		
+		return avList.get(0);
+	}
 
     public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
         return surveyMeasureResponseList;

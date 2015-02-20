@@ -288,15 +288,13 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		}
 		
 		Map<Integer, AssessmentVariable> avMap = new HashMap<>();
-		for(AssessmentVariable av : m.getAssessmentVariableList()){
-			avMap.put(av.getAssessmentVariableId(), av);
-		}
+		AssessmentVariable av = m.getAssessmentVariable();
+		avMap.put(av.getAssessmentVariableId(), av);
 		
 		//get AVs for children
 		for(Measure child : m.getChildren()){
-			for(AssessmentVariable av : child.getAssessmentVariableList()){
-				avMap.put(av.getAssessmentVariableId(), av);
-			}
+			av = child.getAssessmentVariable();
+			avMap.put(av.getAssessmentVariableId(), av);
 		}
 		
 		return avMap;
