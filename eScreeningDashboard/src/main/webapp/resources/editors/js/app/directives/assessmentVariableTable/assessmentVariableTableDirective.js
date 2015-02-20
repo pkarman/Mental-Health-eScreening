@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', function(AssessmentVariableService, AssessmentVariableManager, MeasureService) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, $filter) {
 
 	        return {
 	            restrict: 'EA',
@@ -46,6 +46,8 @@
 			                scope.assessmentVariable = av;
 		                }
 
+						scope.transformationType = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
+
 						if (!scope.assessmentVariable.transformations) {
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable);
 						}
@@ -57,10 +59,27 @@
 
 						scope.table.show = !scope.assessmentVariable.transformations;
 
-						scope.type = AssessmentVariableManager.getType(scope.assessmentVariable);
+						// Get the childQuestions and childQuestion answers for single and multi-matrix variables
+						if (scope.assessmentVariable.measureTypeId === 6 || scope.assessmentVariable.measureTypeId === 7) {
+							var measureId = scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId;
+
+							MeasureService.one(measureId).get().then(function(measure) {
+								scope.matrixQuestions = measure.childQuestions;
+
+								scope.matrixAnswers = measure.childQuestions[0].answers;
+							});
+						}
 
 			            scope.tableParams.reload();
 	                };
+
+					scope.updateSelectedMatrixQuestions = function updateSelectedMatrixQuestions() {
+						scope.slectedMatrixQuestions = $filter('filter')(scope.matrixQuestions, {checked: true});
+					};
+
+					scope.updateSelectedMatrixAnswers = function updateSelectedMatrixAnswers() {
+						scope.slectedMatrixAnswers = $filter('filter')(scope.matrixAnswers, {checked: true});
+					};
 
 					scope.dismiss = function dismiss() {
 						scope.show = false;
@@ -70,32 +89,6 @@
 			            // Prevent bubbling
 			            e.stopPropagation();
 		            });
-
-					function dostuff(av) {
-
-						var validations = {};
-						var item = {};
-
-						if (av.measureTypeId == 1) {
-
-							// Get the validations for freetext
-							MeasureService.one(av.measureId).getList('validations').then(function (validations) {
-								angular.forEach(validations, function(validation) {
-									AssessmentVariableManager.setValidations(validations, validation);
-								});
-							});
-
-						} else if (av.measureTypeId === 2 || av.measureTypeId === 3) {
-
-							// Get the answer list for multi or single select questions
-							MeasureService.one(av.measureId).getList('answers').then(function (answers) {
-								item.measureAnswers = answers;
-							});
-
-							// Ensure right variable is numeric
-							if (item.right) item.right.content = parseInt(item.right.content);
-						}
-					}
 
 				},
 	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html'
