@@ -90,20 +90,6 @@
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						<div class="panel-body">
 							<form:form method="post"  modelAttribute="editVeteranAssessmentFormBean">
-								-- DUMP --<br>
-								clinicId: <c:out value="${param.clinicId}" /><br>
-								vetIens: <c:out value="${param.vetIens}" /><br>
-								veterans: 
-								<%
-								String vetIens[] =  request.getParameterValues("vetIens");
-								if(vetIens != null){ %>
-								<% for(int i=0; i<vetIens.length; i++){ %>
-									<li><%=vetIens[i]%> </li>
-								
-								<% } 
-								}
-								%>
-								<br>
 								<table class="table table-striped table-hover" summary="Search Result Table">
 									<thead>
 										<tr>

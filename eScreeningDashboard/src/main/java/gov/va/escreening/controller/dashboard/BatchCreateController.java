@@ -44,7 +44,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-@SessionAttributes({ "vetIens", "vetSurveyMap", "clinicId", "searchResult" })
+@SessionAttributes({ "vetIens", "vetSurveyMap", "clinicId", "searchResult", "clinics" })
 public class BatchCreateController {
 
 	private static final Logger logger = LoggerFactory
@@ -111,8 +111,7 @@ public class BatchCreateController {
 		model.addAttribute("vetIens", vetIens);
 		model.addAttribute("clinicId", clinicId);
 		// model.addAttribute("selectVeteranFormBean", selectVeteranFormBean);
-		return new ModelAndView(new RedirectView("editVeteransAssessment"),
-				model.asMap());
+		return new ModelAndView(new RedirectView("editVeteransAssessment"));
 	}
 
 	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.GET)
@@ -265,19 +264,16 @@ public class BatchCreateController {
 		return "dashboard/selectVeterans";
 	}
 
-	// @RequestMapping(value="/editVeteransAssessment", method =
-	// RequestMethod.GET)
-	// public String setupPage(@CurrentUser EscreenUser escreenUser, Model
-	// model,
-	// @ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
-	// BindingResult result)
-	// {
-	// model.addAttribute("isPostBack", false);
-	// model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-	// return "dashboard/editVeteransAssessment";
-	// }
+	 @RequestMapping(value="/batchComplete", method =
+	 RequestMethod.GET)
+	 public String setupPage(@CurrentUser EscreenUser escreenUser, Model model, BindingResult result)
+	 {
+		 model.addAttribute("isPostBack", false);
+		 model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+		 return "dashboard/batchComplete";
+	 }
 
-	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.POST, params = "saveButton")
+	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.POST)
 	public ModelAndView selectVeteransForBatchCreate(
 			@CurrentUser EscreenUser escreenUser, Model model,
 			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
