@@ -70,7 +70,7 @@
                     </ui-select-match>
 
                     <ui-select-choices
-                            repeat="var in variables | propsFilter: {name: $select.search, displayName: $select.search} | orderBy:typeId"
+                            repeat="var in variables | propsFilter: {name: $select.search, displayName: $select.search} | orderBy:'typeId'"
                             refresh="refreshVariables()"
                             refresh-delay="0">
                         <medium>

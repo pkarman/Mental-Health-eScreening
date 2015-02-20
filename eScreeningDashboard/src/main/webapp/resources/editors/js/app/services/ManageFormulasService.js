@@ -110,6 +110,10 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
                 if (isNew) {
                     currentFormulas.unshift(currentFormula);
                 }
+            },
+
+            guid: function (prefix) {
+                return _.uniqueId('udk[' + prefix + '][') + ']';
             }
         };
         return service;

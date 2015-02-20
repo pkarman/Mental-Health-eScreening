@@ -60,8 +60,8 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     $scope.formula = FormulasService.fetchCurrentFormula();
     $scope.formulaTemplate.selectedTokens = $scope.formula.selectedTokens;
     // now see if the current formula is not new, if it is not new than we have to load the fresh copy from database
-    if (!FormulasService.isNewFormula()){
-        FormulasService.loadCurrentFormula().then(function(){
+    if (!FormulasService.isNewFormula()) {
+        FormulasService.loadCurrentFormula().then(function () {
             $scope.formula = FormulasService.fetchCurrentFormula();
             $scope.formulaTemplate.selectedTokens = $scope.formula.selectedTokens;
         })
@@ -95,7 +95,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
 
     $scope.saveFormula = function () {
         var isNew = false;
-        if ($scope.formula.avId === undefined) {
+        if ($scope.formula.id === undefined) {
             isNew = true;
         }
         FormulasService.persistSelectedTokens(tokens())
@@ -112,7 +112,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     $scope.tagFormula = function (newFormula) {
         var item = {
             name: newFormula,
-            id: _.uniqueId('udk[' + newFormula + '][') + ']'
+            id: FormulasService.guid(newFormula)
         };
         return item;
     };
@@ -126,8 +126,9 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     var tokens = function () {
         return _.map($scope.formulaTemplate.selectedTokens, 'id');
     }
-
+    var refVars = [];
     $scope.refreshVariables = function () {
+        // load variables from rest endpoint
         FormulasService.loadVarsByModuleId().then(function (vars) {
             $scope.variables = vars;
         }, function error(reason) {
