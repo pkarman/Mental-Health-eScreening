@@ -29,27 +29,29 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	AssessmentVariable.prototype = {
 
 		getMeasureTypeName: function getMeasureTypeName() {
+			var type;
 
 			switch (this.measureTypeId) {
 				case 1:
-					this.type = 'freetext';
+					type = 'freetext';
 					break;
 				case 2:
-					this.type = 'single-select';
+					type = 'single-select';
 					break;
 				case 3:
-					this.type = 'multi-select';
+					type = 'multi-select';
 					break;
 				case 4:
-					this.type = 'table';
+					type = 'table';
 					break;
 				case 6:
-					this.type = 'single-matrix';
+					type = 'single-matrix';
 					break;
 				case 7:
-					this.type = 'multi-matrix';
+					type = 'multi-matrix';
 			}
 
+			return type;
 		},
 
 		setType: function setType() {
