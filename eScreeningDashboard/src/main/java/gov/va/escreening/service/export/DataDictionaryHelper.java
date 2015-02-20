@@ -1,15 +1,12 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.collect.*;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.AvBuilder;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -22,10 +19,6 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
 
 @Component("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
@@ -101,13 +94,13 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			Set<String> avUsed) {
 
-		Set<String> tgtFormulaeSet = Sets.newLinkedHashSet();
+        Set<List<String>> tgtFormulaeSet = Sets.newLinkedHashSet();
 		buildFormulaeFor(s, tgtFormulaeSet, avUsed, smList, avList);
 
 		if (tgtFormulaeSet != null) {
 			int index = 0;
-			for (String formula : tgtFormulaeSet) {
-				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
+            for (List<String> formula : tgtFormulaeSet) {
+                Iterator<String> formulaTokens = formula.iterator();
 				String indexAsStr = String.format("%s_%s_%s", FORMULA_KEY_PREFIX, s.getSurveyId(), index++);
 
 				t.put(indexAsStr, msg("ques.type"), "formula");
@@ -115,9 +108,20 @@ public class DataDictionaryHelper implements MessageSourceAware {
 				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
 
 				if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("av.id"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("ques.desc.business"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("formula.template"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("var.size"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
 					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
 				}
-
 				if (formulaTokens.hasNext()) {
 					t.put(indexAsStr, msg("vals.desc"), formulaTokens.next());
 				}
@@ -143,11 +147,11 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-	void buildFormulaeFor(Survey survey, final Set<String> surveyFormulae,
+    void buildFormulaeFor(Survey survey, final Set<List<String>> surveyFormulae,
 			final Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avLstWithFormulae) {
 
-		AvBuilder<Set<String>> avBldr = new AvBuilder<Set<String>>() {
+        AvBuilder<Set<List<String>>> avBldr = new AvBuilder<Set<List<String>>>() {
 			@Override
 			public void buildFromMeasureAnswer(
 					AssessmentVariable avWithFormula,
@@ -162,16 +166,16 @@ public class DataDictionaryHelper implements MessageSourceAware {
 				addSurveyFormula(avWithFormula, buildXportNameFromMeasure(avWithFormula));
 			}
 
-			private void addSurveyFormula(AssessmentVariable avWithFormula, String formula) {
+            private void addSurveyFormula(AssessmentVariable avWithFormula, List<String> formulaDetails) {
 				// each formula is unique and can only be used only once across all surveys.
 				// If it is already used, then do not try to add it again
 				if (avUsed.add(avWithFormula.getDisplayName())) {
-					surveyFormulae.add(formula);
+                    surveyFormulae.add(formulaDetails);
 				}
 			}
 
 			@Override
-			public Set<String> getResult() {
+            public Set<List<String>> getResult() {
 				return surveyFormulae;
 			}
 
@@ -200,18 +204,20 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		avs.filterBySurvey(survey, avBldr, smList, avLstWithFormulae, false);
 	}
 
-	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {
+    private List<String> buildXportNameFromMeasureAnswer(AssessmentVariable av) {
 		String formula = extractFormula(av, new MeasureAnswerNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
 
-	private String buildXportNameFromMeasure(AssessmentVariable av) {
+    private List<String> buildXportNameFromMeasure(AssessmentVariable av) {
 		String formula = extractFormula(av, new MeasureNameExtractor());
 		return formulaPlusExportName(formula, av);
 	}
 
-	private String formulaPlusExportName(String formula, AssessmentVariable av) {
-		return String.format("%s,%s", formula, av.getDisplayName());
+    private List<String> formulaPlusExportName(String formula, AssessmentVariable av) {
+        List<String> formulaDetails = Lists.newArrayList(formula);
+        formulaDetails.addAll(av.getAsList());
+        return formulaDetails;
 	}
 
 	private String extractFormula(AssessmentVariable av,
@@ -223,9 +229,6 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
 			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
 		}
-		// displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0",
-		// "").replaceAll(">=\\s*1", "");
-		// displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
 		displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
 
 		if (logger.isDebugEnabled()) {

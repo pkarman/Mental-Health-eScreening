@@ -26,6 +26,28 @@ public class FormulaExpressionTest {
 	}
 
 	@Test
+	public void formulaWithMin0() {
+		ExpressionParser parser = new SpelExpressionParser();
+		String mathFormula = "(0f + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + T(Math).min(0f,(1f - 0)))";
+        String answer=parser.parseExpression(mathFormula).getValue(String.class);
+		Assert.assertTrue(answer.equals("0.0"));
+	}
+	@Test
+	public void formulaWithMin1() {
+		ExpressionParser parser = new SpelExpressionParser();
+		String mathFormula = "(1f + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + T(Math).min(1f,(1f - 0)))";
+        String answer=parser.parseExpression(mathFormula).getValue(String.class);
+		Assert.assertTrue(answer.equals("2.0"));
+	}
+	@Test
+	public void formulaWithMin2() {
+		ExpressionParser parser = new SpelExpressionParser();
+		String mathFormula = "(1f + 1 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + T(Math).min(1f,(1f - 0)))";
+        String answer=parser.parseExpression(mathFormula).getValue(String.class);
+		Assert.assertTrue(answer.equals("3.0"));
+	}
+
+	@Test
 	public void formula2() {
 		ExpressionParser parser = new SpelExpressionParser();
 		String mathFormula = "( ( (true?1:0 + false?1:0 + false?1:0) )  +  ( (true?1:0 + false?1:0 + false?1:0 + false?1:0 + false?1:0) ) )";
