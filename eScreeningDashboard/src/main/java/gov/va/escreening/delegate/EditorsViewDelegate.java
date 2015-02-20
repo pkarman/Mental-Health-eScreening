@@ -32,8 +32,12 @@ public interface EditorsViewDelegate {
     void removeQuestionFromSurvey(Integer surveyId, Integer questionId);
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
-	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber);
 	SurveyInfo createSurvey(SurveyInfo survey);
 
     Measure findMeasure(Integer questionId);
+
+    SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
+
+    void deleteSurveyPage(Integer surveyId, Integer pageId);
 }

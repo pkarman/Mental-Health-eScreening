@@ -1,0 +1,17 @@
+{
+    "bitwise" : true,
+    "latedef" : true,
+    "newcap" : true,
+    "noarg" : true,
+    "noempty" : true,
+    "nonew" : true,
+    "regexp" : true,
+    "undef" : true,
+    "trailing" : true,
+    "browser" : true,
+    "devel" : true,
+    "jquery" : true,
+    "nomen" : true,
+    "expr": true,
+    "predef": [ "angular", "_", "EScreeningDashboardApp", "Editors", "BytePushers" ]
+}

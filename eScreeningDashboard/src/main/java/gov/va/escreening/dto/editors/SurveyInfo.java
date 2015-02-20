@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,10 +13,10 @@ import gov.va.escreening.serializer.JsonDateSerializer;
 
 @JsonRootName(value="survey")
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"isIncludedInBattery", "surveyStatusItemInfo"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private static final long serialVersionUID = 1L;
-
 
     private Integer surveyId;
     private String name;
@@ -26,14 +27,23 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private String mhaTestName;
     private String mhaResultGroupIen;
     private Boolean clinicalReminder;
-    private Integer displayOrderForSection;
+    private Integer displayOrderForSection=1;
 	private Date dateCreated;
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
     private SurveyStatusInfo surveyStatusInfo;
+    private Integer clinicalReminderId;
 
 
-    @JsonProperty("id")
+    public Integer getClinicalReminderId() {
+		return clinicalReminderId;
+	}
+
+	public void setClinicalReminderId(Integer clinicalReminderId) {
+		this.clinicalReminderId = clinicalReminderId;
+	}
+
+	@JsonProperty("id")
     public Integer getSurveyId() {
         return surveyId;
     }
@@ -144,9 +154,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     public void setSurveySectionInfo(SurveySectionInfo surveySectionInfo) {
         this.surveySectionInfo = surveySectionInfo;
-//        if (surveySectionInfo!=null) {
-//            surveySectionInfo.getSurveyInfoList().add(this);
-//        }
     }
 
     public SurveyStatusInfo getSurveyStatusInfo() {

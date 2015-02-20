@@ -253,8 +253,19 @@ fieldset {
     margin:5px 0;
 }
 
+.editing,
+.editing th,
+.editing td {
+	border: 1px solid #ddd;
+}
+
 .app{
     cursor:move;
+    min-height: 46px;
+}
+
+.app .list-group-item {
+    min-height: 46px;
 }
 
 .buttonaction {
@@ -354,4 +365,19 @@ fieldset {
 
 .angular-ui-tree{
 	border: none;
+}
+
+
+.ui-resizable-s{
+	height: 4px;
+	background: rgba(173, 173, 223, 0.54);
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.ui-resizable-e{
+	background: rgba(173, 173, 223, 0.54);
+	width: 4px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
 }

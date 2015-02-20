@@ -1,16 +1,14 @@
-/**
- * 
- */
-Editors.controller('batteryAbstractController',['$rootScope','$scope','$state','sections',function($rootScope,$scope,$state, sections){
-			 $rootScope.batteries = [];
-			 $scope.sections = sections;
-			 
-			 
-             $scope.save = function(battery){
-                 $state.go('home');
-             };
+Editors.controller('batteryAbstractController',['$scope','$state', 'batteries', 'sections',function($scope, $state, batteries, sections){
 
-             $scope.cancel = function(){
-                 $state.go('home');
-             };
-         }]);
+    $scope.batteries = batteries;
+    $scope.sections = sections;
+
+    $scope.save = function(battery){
+        $state.go('home');
+    };
+
+    $scope.cancel = function(){
+        $state.go('home');
+    };
+
+}]);

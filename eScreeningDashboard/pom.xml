@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.va</groupId>
 	<artifactId>escreeningdashboard</artifactId>
@@ -637,6 +637,19 @@
                             </fileset>
                         </configuration>
                     </execution>
+					<execution>
+						<id>apply-sprint-31-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_31</basedir>
+								</fileset>
+							</configuration>
+					</execution>
 					<execution>
 						<id>apply-ticket-related-data</id>
 							<phase>process-test-resources</phase>
