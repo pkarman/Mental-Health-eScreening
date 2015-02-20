@@ -78,10 +78,89 @@ Editors.config(function(RestangularProvider, $provide) {
     
     $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', 'textAngularManager', '$delegate', '$modal', 'TemplateBlockService',
                                      function(taRegisterTool, taCustomRenderers, taSelectableElements, textAngularManager, $delegate, $modal, TemplateBlockService){
-	    
-	    $delegate.setup.textEditorSetup = function($element){
-	        $element.attr('template-block-text-editor', '');
-	    };
+
+
+    	function createTable(tableParams) {
+    		if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
+    				&& tableParams.row > 0 && tableParams.col > 0){
+    			var table = "<table class='w-table no-border" 
+    				+ (tableParams.style ? " border-" + tableParams.style : '')	
+    				+ "'>";
+
+    			var colWidth = 100/tableParams.col;
+    			for (var idxRow = 0; idxRow < tableParams.row; idxRow++) {
+    				var row = "<tr>";
+    				for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
+    					row += "<td" 
+    						+ (idxRow == 0 ? ' style="width: ' + colWidth + '%;"' : '')
+    						+">&nbsp;</td>";
+    				}
+    				table += row + "</tr>";
+    			}
+    			return table + "</table>";
+    		}
+    	}
+
+    	//This is necessary because that.$editor().wrapSelection('insertHtml', html); does not work when used with FireFox.
+    	function insertIntoTextEditor(ele){
+    		var $taEl = $("div[id^='taTextElement']");				
+    		$taEl.find(".rangySelectionBoundary").first().before($(ele));
+    		$taEl.focus();
+    	}
+
+    	// $delegate is the taOptions we are decorating
+    	$delegate.setup.textEditorSetup = function($element){
+    		$element.attr('template-block-text-editor', '');
+    	};
+
+    	$delegate.disableSanitizer = true;
+
+    	//credit: https://github.com/fraywing/textAngular/issues/436
+    	taRegisterTool('insertTable', {
+    		iconclass: 'fa fa-table',
+    		tooltiptext: 'Insert table',
+    		action: function(promise, restoreSelection){
+    			var that=this;
+
+    			var modalInstance=$modal.open({
+    				templateUrl: 'resources/editors/views/templates/textblocktable.html',
+    				windowClass: 'modal-window-sm',
+    				backdrop: 'static',
+    				keyboard: false,
+    				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+    					$scope.newtable ={};
+    					$scope.tablestyles = [
+    					                      { name: 'Dotted', value: 'dotted' },
+    					                      { name: 'Dashed', value: 'dashed' },
+    					                      { name: 'Solid', value: 'solid' },
+    					                      { name: 'Double', value: 'double' },
+    					                      { name: 'Groove', value: 'groove' },
+    					                      { name: 'Ridge', value: 'ridge' },
+    					                      { name: 'Inset', value: 'inset' },
+    					                      { name: 'Outset', value: 'outset' }];
+
+    					$scope.tblInsert = function () {
+    						$modalInstance.close($scope.newtable);
+    					};
+
+    					$scope.tblCancel = function () {
+    						$modalInstance.dismiss("cancel");
+    					};
+    				}],
+    				size: 'sm'
+    			});
+    			//define result modal , when user complete result information 
+    			modalInstance.result.then(function(result){
+    				if (result) {
+    					insertIntoTextEditor(createTable(result));
+    					restoreSelection();                        
+    					promise.resolve();  
+    				}
+    			});
+    			return false;
+    		}
+    	});
+
 	    
 		// Register the custom addVariable tool with textAngular
 	    // $delegate is the taOptions we are decorating
@@ -126,15 +205,9 @@ Editors.config(function(RestangularProvider, $provide) {
 				});
 
 				modalInstance.result.then(function(embed) {                    
-					var $taEl = $("div[id^='taTextElement']");
-					
-					$taEl.focus();					
-					$taEl.find(".rangySelectionBoundary").first().before($(embed));
-					
+					insertIntoTextEditor(embed);
 					restoreSelection();
-				    
 					deferred.resolve();
-					
 				});
 
 				return false;

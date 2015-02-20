@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard_new.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/section_surveys.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/css/main.css">
+    <link rel="stylesheet" type="text/css" href="resources/css/common.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
@@ -40,6 +41,7 @@
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
 
+    
     <!-- Utility classes and non-Angular, non-framework classes -->
     <script type="text/javascript" src="resources/editors/js/app/utils/HttpRejectionProcessor.js"></script>
 
