@@ -5,16 +5,15 @@
 </style>
 <div class="container" ng-cloak class="ng-cloak">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-10">
             <h1>Manage Formulas for {{module.name}}</h1>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-2">
             <div class="btn-layout pull-right">
                 <button ng-click="create();" class="btn btn-primary h1_button" type="button">Create Formula</button>
             </div>
         </div>
     </div>
-
 
     <div class="row">
         <div class="col-md-12">
@@ -24,7 +23,7 @@
 
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <table show-filter="false" class="table table-hover">
+            <table show-filter="false" class="table table-hover" ng-table="tableParams"  summary="Manage Formulas Table">
                 <thead>
                 <tr>
                     <th class="col-md-3">Variable Name</th>
@@ -58,6 +57,8 @@
             </table>
         </div>
     </div>
-    <pagination total-items="pagination.totalItems" ng-model="pagination.currentPage" max-size="pagination.maxSize"
+    <!--
+	<pagination total-items="pagination.totalItems" ng-model="pagination.currentPage" max-size="pagination.maxSize"
                 class="pagination-sm" boundary-links="true"></pagination>
+	-->
 </div>

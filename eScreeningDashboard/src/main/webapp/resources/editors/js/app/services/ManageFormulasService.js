@@ -36,9 +36,12 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             loadVarsByModuleId: function () {
                 $log.debug('getting all variable promise for module with an id of' + currentModule.id);
                 //formulasCache.removeAll()
+
                 return restAngular.all('avs2MngFormulas').getList({moduleId: currentModule.id});
             },
-
+            hasValidModule: function () {
+                return currentModule != undefined && currentModule.id != undefined;
+            },
             getModuleById: function (moduleId) {
                 $log.debug('getting module details promise for module with an id of ' + moduleId);
                 return restAngular.one('formulas/modules', moduleId).get();

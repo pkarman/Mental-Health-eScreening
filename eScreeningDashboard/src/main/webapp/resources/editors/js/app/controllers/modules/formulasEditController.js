@@ -128,6 +128,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     }
     var refVars = [];
     $scope.refreshVariables = function () {
+        if (!FormulasService.hasValidModule()) return;
         // load variables from rest endpoint
         FormulasService.loadVarsByModuleId().then(function (vars) {
             $scope.variables = vars;
