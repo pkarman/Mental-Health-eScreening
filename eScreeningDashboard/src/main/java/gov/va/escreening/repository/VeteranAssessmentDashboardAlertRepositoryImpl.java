@@ -206,7 +206,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		sqlBldr.append("inner JOIN va.clinician as clinician ");
 		sqlBldr.append("inner JOIN va.createdByUser as user ");
 
-		sqlBldr.append("WHERE va.dateArchived is null ");
+		sqlBldr.append("WHERE vas.assessmentStatusId not in (7) ");
+		sqlBldr.append("AND va.dateArchived is null ");
 		// if user wants data for only certain program Id then use programId in
 		// the sql else ignore it
 		if (programId != null) {
@@ -248,14 +249,16 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	private int getTotalRecords(Integer programId, List<Integer> programIdList) {
 		StringBuilder sqlBldr = new StringBuilder();
 		sqlBldr.append("SELECT count(va) ");
-		sqlBldr.append("FROM VeteranAssessment as va ");
-		sqlBldr.append("WHERE va.dateArchived is null ");
+        sqlBldr.append("FROM VeteranAssessment as va ");
+        sqlBldr.append("inner JOIN va.program as program ");
+        sqlBldr.append("inner JOIN va.assessmentStatus as vas ");
+        sqlBldr.append("WHERE vas.assessmentStatusId not in (7) ");
+        sqlBldr.append("AND va.dateArchived is null ");
 		if (programId != null) {
 			sqlBldr.append("AND program.programId = :programId ");
 		}
 		else
 		{
-
 			sqlBldr.append(" AND program.programId in :programIdList ");
 		}
 
