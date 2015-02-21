@@ -3,20 +3,24 @@
  */
 angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular'])
     .factory('FormulasService', ['$log', 'Restangular', '$cacheFactory', function ($log, Restangular, $cacheFactory) {
-        var formulasCache;
+        //var formulasCache;
         var restAngular = Restangular.withConfig(function (config) {
-            formulasCache = $cacheFactory('http');
-            config.setDefaultHttpFields({cache: formulasCache});
+            //formulasCache = $cacheFactory('http');
+            config.setDefaultHttpFields({cache: false});
             config.setBaseUrl('services');
             config.setRequestSuffix('.json');
         });
 
-        restAngular.setResponseInterceptor(function (response, operation) {
-            if (operation === 'post' || operation === 'delete') {
-                formulasCache.removeAll();
-            }
-            return response;
-        })
+        //restAngular.setResponseInterceptor(function (response, operation) {
+        //    if (operation === 'post' || operation === 'delete') {
+        //        formulasCache.removeAll();
+        //    }
+        //    return response;
+        //})
+
+        restAngular.addResponseInterceptor(function (data, operation, what, url, response, deferred) {
+            return data;
+        });
 
         var formulasProxy = restAngular.all('formulas');
         var currentFormula = {};
@@ -31,7 +35,7 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             },
             loadVarsByModuleId: function () {
                 $log.debug('getting all variable promise for module with an id of' + currentModule.id);
-                formulasCache.removeAll()
+                //formulasCache.removeAll()
                 return restAngular.all('avs2MngFormulas').getList({moduleId: currentModule.id});
             },
 

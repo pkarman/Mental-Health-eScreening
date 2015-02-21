@@ -19,167 +19,41 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @class
  * @classdesc   This class is a domain model class; which means it has both behaviour and state
  *              information about the user.
- * @param {String}  jsonSurveyObject  Represents the JSON representation of a Survey object.
+ * @param {String}  jsonSurvey  Represents the JSON representation of a Survey object.
  * @constructor
- * @author <a href="mailto:pouncilt.developer@gmail.com">Tont&eacute; Pouncil</a>
+ * @author Aaron Roberson
  */
-EScreeningDashboardApp.models.Survey = function (jsonSurveyObject) {
-    var that = this,
-        id = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.id))? jsonSurveyObject.id : -1,
-        name = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.name))? jsonSurveyObject.name : null,
-        vistaTitle = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.vistaTitle))? jsonSurveyObject.vistaTitle : null,
-        description = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.description))? jsonSurveyObject.description : null,
-        version = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.version))? jsonSurveyObject.version : null,
-        displayOrder = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.displayOrder))? jsonSurveyObject.displayOrder : null,
-        mha = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mha) && Object.isBoolean((jsonSurveyObject.mha)))? jsonSurveyObject.mha : false,
-        mhaTestName = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mhaTestName))? jsonSurveyObject.mhaTestName : null,
-        mhaResultGroupIen = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.mhaResultGroupIen))? jsonSurveyObject.mhaResultGroupIen : null,
-        clinicalReminder = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.clinicalReminder) && Object.isBoolean((jsonSurveyObject.clinicalReminder)))? jsonSurveyObject.clinicalReminder : false,
-        createdDate = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.createdDate))? (Object.isDate(jsonSurveyObject.createdDate)) ? jsonSurveyObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonSurveyObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
-        surveySection = (Object.isDefined(jsonSurveyObject) && Object.isDefined(jsonSurveyObject.surveySection))? new EScreeningDashboardApp.models.SurveySection(jsonSurveyObject.surveySection): undefined,
-        markedForDeletion = (Object.isDefined(jsonSurveyObject) && Object.isBoolean(jsonSurveyObject.markedForDeletion))? jsonSurveyObject.markedForDeletion: false,
-        visible = (Object.isDefined(jsonSurveyObject) && Object.isBoolean(jsonSurveyObject.visible))? jsonSurveyObject.visible: false;
+EScreeningDashboardApp.models.Survey = (function survey() {
 
-    var generateSurveySectionUIObject = function(){
-        if (Object.isDefined(surveySection)){
-            return this.surveySection.toUIObject();
-        } else{
-            return null;
+    function extend(obj) {
+        var survey = {
+            id: '',
+            name: '',
+            vistaTitle: '',
+            description: '',
+            version: '',
+            displayOrder: 1,
+            mha: '',
+            mhaTestName: '',
+            mhaResultGroupIen: '',
+            clinicalReminderId: '',
+            createdDate: '',
+            surveySection: {},
+            markedForDeletion: '',
+            visible: ''
+        };
+
+        for (var prop in obj) {
+            if (survey.hasOwnProperty(prop)) {
+                survey[prop] = obj[prop];
+            }
         }
-    };
 
-    this.getId = function(){
-        return id;
-    };
-
-    this.getName = function() {
-        return name;
-    };
-
-    this.getVistaTitle = function () {
-        return vistaTitle;
-    };
-
-    this.getDescription = function() {
-        return description;
-    };
-
-    this.getVersion = function() {
-        return version;
-    };
-
-    this.getDisplayOrder = function() {
-        return displayOrder;
-    };
-
-    this.isMHA = function() {
-        return mha;
-    };
-
-    this.getMhaTestName = function () {
-        return mhaTestName;
-    };
-
-    this.getMhaResultGroupIen = function() {
-        return mhaResultGroupIen;
-    };
-
-    this.isClinicalReminder = function () {
-        return clinicalReminder;
-    };
-
-    this.getCreatedDate= function() {
-        return createdDate;
-    };
-
-    this.getSurveySection = function () {
-        return surveySection;
-    };
-
-    this.isMarkedForDeletion = function(){
-        return markedForDeletion;
-    };
-
-    this.markedForDeletion = function(){
-        markedForDeletion = true;
-    };
-
-    this.isVisible = function(){
-        return visible;
-    };
-
-    this.toString = function () {
-        return "Survey {id: " + id + ", name: " + name + ", vistaTitle: " + vistaTitle + ", description: " + description + ", version: " + version +
-            ", displayOrder: " + displayOrder + ", mha: " + mha + ", mhaTestName: " + mhaTestName + ", mhaResultGroupIen: " + mhaResultGroupIen +
-            ", clinicalReminder" + clinicalReminder + ", markedForDeletion: " + markedForDeletion +
-            ", visible: " + visible + ", createdDate: " + createdDate + "}";
-    };
-
-    this.toJSON = function (serializeUIProperties) {
-        serializeUIProperties = (Object.isDefined(serializeUIProperties) && Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
-        var jsonId = (Object.isDefined(id) && id > 0)? id : null,
-            jsonName = (Object.isDefined(name))? "\"" + name + "\"":  null,
-            jsonVistaTitle = (Object.isDefined(vistaTitle))? "\"" + vistaTitle + "\"":  null,
-            jsonDescription = (Object.isDefined(description))? "\"" + description + "\"": null,
-            jsonVersion = (Object.isDefined(version))? version: null,
-            jsonDisplayOrder = (Object.isDefined(displayOrder))? displayOrder: null,
-            jsonIsMha = (Object.isDefined(mha))? mha: false,
-            jsonMhaTestName = (Object.isDefined(mhaTestName))? "\"" + mhaTestName + "\"":  null,
-            jsonMhaResultGroupIen = (Object.isDefined(mhaResultGroupIen ))? "\"" + mhaResultGroupIen + "\"":  null,
-            jsonIsClinicalReminder = (Object.isDefined(clinicalReminder))? clinicalReminder: false,
-            jsonVisible = (serializeUIProperties)? Object.isDefined(visible)? "\"visible\": " + visible + ",": false: "",
-            jsonMarkForDeletion = (serializeUIProperties)? Object.isDefined(markedForDeletion)? "\"markedForDeletion\": " + markedForDeletion + ",": false: "",
-            jsonCreatedDate = (Object.isDefined(createdDate))? "\"" + createdDate.toISOString().substring(0, createdDate.toISOString().length-1) + "\"": null,
-            jsonSurveySection = (Object.isDefined(surveySection))? ",\"surveySection\":" + surveySection.toJSON(false, serializeUIProperties): "",
-            json =  "{" +
-                "\"id\": " + jsonId + "," +
-                "\"name\": " + jsonName + "," +
-                "\"description\": " +  jsonDescription + "," +
-                "\"version\": " + jsonVersion + "," +
-                "\"displayOrder\": " + jsonDisplayOrder + "," +
-                "\"mha\": "+ jsonIsMha + "," +
-                "\"mhaTestName\": "+ jsonMhaTestName + "," +
-                "\"mhaResultGroupIen\": "+ jsonMhaResultGroupIen + "," +
-                "\"clinicalReminder\": "+ jsonIsClinicalReminder + "," +
-                jsonVisible +
-                jsonMarkForDeletion +
-                "\"createdDate\": " + jsonCreatedDate +
-                jsonSurveySection +
-            "}";
-
-        return json;
-    };
-    
-    this.toUIObject = function(){
-    	var surveyUIObject = JSON.parse(this.toJSON(true));
-        surveyUIObject.createdDate = this.getCreatedDate();
-    	return surveyUIObject;
-    };
-};
-EScreeningDashboardApp.models.Survey.toUIObjects = function(surveys) {
-    var surveyUIObjects = [];
-
-    if(Object.isDefined(surveys) && Object.isArray(surveys)) {
-        surveys.forEach(function(survey) {
-            surveyUIObjects.push(survey.toUIObject());
-        });
+        return _.extend(obj, survey);
     }
 
-    return surveyUIObjects;
-};
-EScreeningDashboardApp.models.Survey.sortByDisplayOrder = function (surveys, sortDirection) {
-    sortDirection = (Object.isDefined(sortDirection) && sortDirection === "-")? "-" : "+";
-    if(Object.isArray(surveys)){
-        if(sortDirection === "+") {
-            surveys.sort(function (a, b) {
-                return a.getDisplayOrder() - b.getDisplayOrder();
-            });
-        } else if(sortDirection === "-") {
-            surveys.sort(function (a, b) {
-                return b.getDisplayOrder() - a.getDisplayOrder();
-            });
-        }
-    }
+    return {
+        extend: extend
+    };
 
-    return surveys;
-};
+})();

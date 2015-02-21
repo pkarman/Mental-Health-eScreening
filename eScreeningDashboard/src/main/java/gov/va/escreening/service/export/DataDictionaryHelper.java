@@ -1,6 +1,7 @@
 package gov.va.escreening.service.export;
 
 import com.google.common.collect.*;
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
@@ -269,8 +270,7 @@ class SelectOneResolver extends Resolver {
         }
 
         List<MeasureAnswer> maList = m.getMeasureAnswerList();
-        int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
-        if (calculationType == 1) {
+        if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
             int min = Integer.MAX_VALUE;
             int max = Integer.MIN_VALUE;
             for (MeasureAnswer ma : maList) {
@@ -280,7 +280,7 @@ class SelectOneResolver extends Resolver {
             }
             return String.format("%s-%s,999", min, max);
         }
-        return "TO-DO";
+		return "undefined";
     }
 
     /**
@@ -295,8 +295,7 @@ class SelectOneResolver extends Resolver {
             return ddh.findResolver(1).getValuesDescription(m, unusedMa, isOther);
         }
         List<MeasureAnswer> maList = m.getMeasureAnswerList();
-        int calculationType = maList.iterator().next().getCalculationType().getCalculationTypeId();
-        if (calculationType == 1) {
+		if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
             StringBuilder sb = new StringBuilder();
             for (MeasureAnswer ma : maList) {
                 sb.append(String.format("%s=%s,", ma.getCalculationValue(), ma.getAnswerText()));
@@ -305,7 +304,7 @@ class SelectOneResolver extends Resolver {
             return sb.toString();
 
         }
-        return "TO-DO";
+        return "undefined";
     }
 }
 

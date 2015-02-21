@@ -19,6 +19,8 @@ Editors.controller('ModuleFormulasListController', ['$state', '$log', '$scope', 
                     $log.debug($scope.module.id + ' has [' + data.length + '] formulas: ' + JSON.stringify(data));
                     $scope.pagination.totalItems = data.length;
                     $scope.formulas = data.slice(($scope.pagination.currentPage - 1) * $scope.pagination.itemsPerPage, $scope.pagination.itemsPerPage);
+                }, function error(reason) {
+                    $log.error(reason);
                 });
         });
 

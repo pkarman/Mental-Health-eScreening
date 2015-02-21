@@ -45,8 +45,14 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
             String avIdRowKey = String.format("avId_%s", avId);
             this.assessments.put(avIdRowKey, "id", avId);
             this.assessments.put(avIdRowKey, "typeId", av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
+
+			if(av.getDisplayName() != null){
             this.assessments.put(avIdRowKey, "name", av.getDisplayName());
+			}
+
+			if(av.getDescription() != null){
             this.assessments.put(avIdRowKey, "displayName", av.getDescription());
+			}
             this.assessments.put(avIdRowKey, "answerId", ma != null ? ma.getMeasureAnswerId() : 0);
             this.assessments.put(avIdRowKey, "measureId", m != null ? m.getMeasureId() : 0);
             this.assessments.put(avIdRowKey, "measureTypeId", m != null ? m.getMeasureType().getMeasureTypeId() : 0);

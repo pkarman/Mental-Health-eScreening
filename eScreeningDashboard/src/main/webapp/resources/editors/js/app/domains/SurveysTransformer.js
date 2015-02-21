@@ -90,7 +90,7 @@ EScreeningDashboardApp.models.SurveysTransformer.transformJSONSurveys = function
     }
 
     jsonSurveys.forEach(function(jsonSurvey){
-        existingSurveys.push(new EScreeningDashboardApp.models.Survey(jsonSurvey));
+        existingSurveys.push(EScreeningDashboardApp.models.Survey.extend(jsonSurvey));
     });
 
     return existingSurveys;

@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "measure_answer")
 @NamedQueries({
-        @NamedQuery(name = "MeasureAnswer.findAll", query = "SELECT m FROM MeasureAnswer m") })
+        @NamedQuery(name = "MeasureAnswer.findAll", query = "SELECT m FROM MeasureAnswer m")})
 public class MeasureAnswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,17 +53,21 @@ public class MeasureAnswer implements Serializable {
     private Date dateCreated;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer")
     private List<MeasureAnswerValidation> measureAnswerValidationList;
+
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Measure measure;
     @JoinColumn(name = "calculation_type_id", referencedColumnName = "calculation_type_id")
     @ManyToOne
     private CalculationType calculationType;
     @OneToMany(mappedBy = "measureAnswer")
     private List<AssessmentVariable> assessmentVariableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer")
+    /**
+     * the following are response data which we do not want to change if this survey is changed *
+     */
+    @OneToMany(mappedBy = "measureAnswer")
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
-    
+
     @Column(name = "vista_text")
     private String vistaText;
 

@@ -1,8 +1,10 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.entity.ClinicalReminder;
 import gov.va.escreening.repository.ClinicalReminderRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,15 @@ public class ClinicalReminderServiceImpl implements ClinicalReminderService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ClinicalReminder> findAll() {
-        return clinicalReminderRepository.findAll();
+    public List<ClinicalReminderDto> findAll() {
+        List<ClinicalReminder> list = clinicalReminderRepository.findAll();
+        
+        List<ClinicalReminderDto> dtoList = new ArrayList<ClinicalReminderDto>(list.size());
+        for(ClinicalReminder c : list)
+        {
+        	dtoList.add(new ClinicalReminderDto(c.getClinicalReminderId(), c.getPrintName()));
+        }
+        return dtoList;
     }
 
     @Override

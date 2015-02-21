@@ -65,11 +65,15 @@ public interface SurveyService {
 
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 
-	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber);
 
 	SurveyInfo createSurvey(SurveyInfo survey);
 
-    List<SurveyInfo> toSurveyInfo(List<Survey> surveyList, SurveySectionInfo ssInfo);
+    List<SurveyInfo> toSurveyInfo(List<Survey> surveyList);
 
     SurveyInfo findSurveyById(Integer surveyId);
+
+    SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
+
+    void removeSurveyPage(Integer surveyId, Integer pageId);
 }

@@ -22,6 +22,7 @@
     <link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/common-ui-styles/circle.css" />" rel="stylesheet" type="text/css" />
+    <link href="<c:url value="/resources/css/common.css" />" rel="stylesheet" type="text/css" />
     
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
@@ -33,7 +34,7 @@
 <body>
 <div class="nonPrintableArea">
 <a href="#skip" class="offscreen">Skip to main content</a>
-<div id="outerPageDiv" class="nonPrintableArea">
+  <div id="outerPageDiv" class="nonPrintableArea">
   <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
   <div class="navbar navbar-default navbar-update" role="navigation">
     <div class="container bg_transparent">
@@ -346,16 +347,15 @@
               </div>
             </div>
           </div>
-                   
 
           <br />
         </div>
       </div>
     </div>
-    <!-- row --> 
+    <!-- row -->
   </form:form>
 </div>
-</div>
+  </div>
          <!-- ### Modal Section Start Here ### -->
           
           
