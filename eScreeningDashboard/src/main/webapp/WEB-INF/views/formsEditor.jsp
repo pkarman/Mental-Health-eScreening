@@ -161,6 +161,12 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesSelectionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAddEditController.js"></script>
 
+    <!-- Formula Management files -->
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageFormulasService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasEditController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
+
+
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
 
@@ -366,5 +372,28 @@
     <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script> 	 	
     <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script> 	 	
     <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script> 	    
+
+
+    <!-- angular-ui-select for mng formulas (starts after this line)-->
+    <!-- Select2 theme -->
+    <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <!--
+      Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
+    -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <style>
+        /* body {padding: 15px;} */
+        .select2 > .select2-choice.ui-select-match {
+            /* Because of the inclusion of Bootstrap */
+            height: 29px;
+        }
+        .selectize-control > .selectize-dropdown {
+            top: 36px;
+        }
+    </style>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
+    <!-- angular-ui-select for mng formulas (finishes before this line)-->
+
 </body>
 </html>

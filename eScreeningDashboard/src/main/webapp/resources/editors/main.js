@@ -13,10 +13,12 @@ var Editors = angular.module('Editors', [
 	'textAngular',
 	'restangular',
 	'dndLists',
+    'ui.select',
 	'angularUtils.directives.uiBreadcrumbs',
 	'EscreeningDashboardApp.services.battery',
 	'EscreeningDashboardApp.services.surveysection',
 	'EscreeningDashboardApp.services.managesection',
+    'EscreeningDashboardApp.services.manageformulas',
 	'EscreeningDashboardApp.services.question',
 	'EscreeningDashboardApp.services.template',
 	'EscreeningDashboardApp.services.templateType',
@@ -50,7 +52,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
         var newResponse;
         // List of array collection endpoints that do not conform to response.payload[resource]
-        var listExceptions = ['validations', 'templateTypes', 'sections', 'assessmentVariables', 'answers'];
+        var listExceptions = ['validations', 'templateTypes', 'sections', 'assessmentVariables', 'answers', 'formulas', 'avs2MngFormulas'];
         var saveExceptions = ['template', 'answers'];
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
@@ -65,7 +67,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
             // The saved object is returned on data.payload using the singular form
             // Transform the response by adding the saved object directly on the response
-            newResponse = (_.contains(saveExceptions, what) || what.indexOf('batteries/') === 0 || what.indexOf('surveys/') === 0) ? data : data.payload[what.slice(0,-1)] || data.payload;
+            newResponse = (_.contains(saveExceptions, what) || what.indexOf('batteries/') === 0 || what.indexOf('surveys/') === 0 || what.indexOf('formulas') === 0) ? data : data.payload[what.slice(0, -1)] || data.payload;
         }
 
         if (operation === 'get') {
@@ -263,7 +265,9 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
             if(Object.isDefined(message.getValue)){
                 msg = message.getValue();
             }
-            else{ msg = message; }
+            else {
+                msg = message;
+        }
         }
 
         return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_DELETE, value: msg});
@@ -275,7 +279,9 @@ Editors.run(['$rootScope', '$state', '$stateParams', 'editableOptions', 'Message
             if(Object.isDefined(message.getValue)){
                 msg = message.getValue();
             }
-            else{ msg = message; }
+            else {
+                msg = message;
+        }
         }
 
         return new BytePushers.models.Message({type: BytePushers.models.Message.SUCCESSFUL_SAVE, value: msg});

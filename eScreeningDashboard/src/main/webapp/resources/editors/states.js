@@ -51,11 +51,6 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
             .state('sections',{
                 url:'/sections',
                 templateUrl:'resources/editors/views/sections/sectionseditor.html',
-                resolve:{
-                    sections: ['ManageSectionService', function(ManageSectionService){
-                        return ManageSectionService.getList();
-                    }]
-                },
                 controller: 'sectionsController'
             })
 
@@ -363,6 +358,16 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                     }]
                 },
                 controller: 'ModulesTemplatesController'
+                })
+                .state('modules.formulasList',{
+                    url:'/:moduleId/module_formulas_list',
+                    templateUrl:'resources/editors/views/formulas/module_formulas_list.html',
+                    controller: 'ModuleFormulasListController'
+                })
+                .state('modules.formulasEdit',{
+                    url:'/module_formulas_edit',
+                    templateUrl:'resources/editors/views/formulas/module_formulas_edit.html',
+                    controller: 'ModuleFormulasEditController'
             })
 
             .state('modules.templateeditor', {

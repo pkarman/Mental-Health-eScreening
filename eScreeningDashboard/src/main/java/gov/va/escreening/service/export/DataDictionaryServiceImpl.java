@@ -5,6 +5,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Validation;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.ValidationRepository;
 import gov.va.escreening.service.AssessmentVariableService;
 
@@ -27,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
@@ -39,163 +39,164 @@ import com.google.common.collect.TreeBasedTable;
 
 @Service("dataDictionaryService")
 public class DataDictionaryServiceImpl implements DataDictionaryService, MessageSourceAware {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private MessageSource msgSrc;
+    private MessageSource msgSrc;
 
-	@Resource(name = "dataDictionaryHelper")
-	DataDictionaryHelper ddh;
+    @Resource(name = "dataDictionaryHelper")
+    DataDictionaryHelper ddh;
 
-	@Resource(type = ValidationRepository.class)
-	ValidationRepository vr;
+    @Resource(type = ValidationRepository.class)
+    ValidationRepository vr;
 
-	@Resource(type = AssessmentVariableService.class)
-	AssessmentVariableService avs;
+    @Resource(type = SurveyRepository.class)
+    SurveyRepository sr;
 
-	private Multimap<Integer, String> buildMeasureValidationMap() {
+    @Resource(type = AssessmentVariableService.class)
+    AssessmentVariableService avs;
 
-		List<Validation> validations = vr.findAll();
-		/**
-		 * Validations for a free text measure (only) are defined in measure_validation table which relate a measure to
-		 * a validation. A measure can have more than one validation which is applied.
-		 * 
-		 * The way validations work is there is a type id (taken from the validation table), combined with some value in
-		 * the measure_validation table. Each type only has one valid value in measure_validation table.
-		 * 
-		 * For example minValue will have an entry in measure_validation.number_value to indicate the minimum allowable
-		 * value.
-		 * 
-		 * the property this{@link #measureValidationsMap} will keep a map of measure id with a list of validation in
-		 * the form 'Min Value=1970, Max Value=2020, Exact Number=4' would mean that the measure answer is a date and it
-		 * should be between 1970 and 2020 and must contain century too
-		 * */
-		Multimap<Integer, String> measureValidationsMap = LinkedHashMultimap.create();
+    private Multimap<Integer, String> buildMeasureValidationMap() {
 
-		for (Validation v : validations) {
-			for (MeasureValidation mv : v.getMeasureValidationList()) {
-				measureValidationsMap.put(mv.getMeasure().getMeasureId(), buildMeasureValidation(mv));
-			}
-		}
-		return measureValidationsMap;
-	}
+        List<Validation> validations = vr.findAll();
+        /**
+         * Validations for a free text measure (only) are defined in measure_validation table which relate a measure to
+         * a validation. A measure can have more than one validation which is applied.
+         *
+         * The way validations work is there is a type id (taken from the validation table), combined with some value in
+         * the measure_validation table. Each type only has one valid value in measure_validation table.
+         *
+         * For example minValue will have an entry in measure_validation.number_value to indicate the minimum allowable
+         * value.
+         *
+         * the property this{@link #measureValidationsMap} will keep a map of measure id with a list of validation in
+         * the form 'Min Value=1970, Max Value=2020, Exact Number=4' would mean that the measure answer is a date and it
+         * should be between 1970 and 2020 and must contain century too
+         * */
+        Multimap<Integer, String> measureValidationsMap = LinkedHashMultimap.create();
 
-	private String buildMeasureValidation(MeasureValidation mv) {
-		Validation v = mv.getValidation();
-		String mvStr = null;
-		switch (v.getDataType()) {
-		case "string":
-			mvStr = String.format("%s=%s", v.getDescription(), mv.getTextValue());
-			break;
-		case "number":
-			mvStr = String.format("%s=%s", v.getDescription(), mv.getNumberValue());
-			break;
-		default:
-			mvStr = "";
-			break;
-		}
-		return mvStr;
-	}
+        for (Validation v : validations) {
+            for (MeasureValidation mv : v.getMeasureValidationList()) {
+                measureValidationsMap.put(mv.getMeasure().getMeasureId(), buildMeasureValidation(mv));
+            }
+        }
+        return measureValidationsMap;
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public Map<String, Table<String, String, String>> createDataDictionary() {
-		/**
-		 * <pre>
-		 * 
-		 * 	pt#1: each survey (also called module) will have its own table (excel sheet)
-		 * 	pt#2: each table has rows 
-		 * 	pt#3: each row has columns 
-		 * 	pt#4: and each column has values
-		 * 
-		 * 	each [survey] has a [Table]
-		 * 		each [Table] has bunch of rows
-		 * 	  		==> row column=value
-		 * 	  		==> row column=value
-		 * 	  		==> row column=value
-		 * </pre>
-		 * 
-		 * Perfect data abstraction to capture the above model is to have Google Guava's Table Table <row, col name, col
-		 * value>
-		 */
-		Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap(new Comparator<String>() {
+    private String buildMeasureValidation(MeasureValidation mv) {
+        Validation v = mv.getValidation();
+        String mvStr = null;
+        switch (v.getDataType()) {
+            case "string":
+                mvStr = String.format("%s=%s", v.getDescription(), mv.getTextValue());
+                break;
+            case "number":
+                mvStr = String.format("%s=%s", v.getDescription(), mv.getNumberValue());
+                break;
+            default:
+                mvStr = "";
+                break;
+        }
+        return mvStr;
+    }
 
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.toLowerCase().compareTo(o2.toLowerCase());
-			}
-		});
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, Table<String, String, String>> createDataDictionary() {
+        /**
+         * <pre>
+         *
+         * 	pt#1: each survey (also called module) will have its own table (excel sheet)
+         * 	pt#2: each table has rows
+         * 	pt#3: each row has columns
+         * 	pt#4: and each column has values
+         *
+         * 	each [survey] has a [Table]
+         * 		each [Table] has bunch of rows
+         * 	  		==> row column=value
+         * 	  		==> row column=value
+         * 	  		==> row column=value
+         * </pre>
+         *
+         * Perfect data abstraction to capture the above model is to have Google Guava's Table Table <row, col name, col
+         * value>
+         */
+        Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap(new Comparator<String>() {
 
-		// partition all survey with its list of measures
-		Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.toLowerCase().compareTo(o2.toLowerCase());
+            }
+        });
 
-		// read all AssessmenetVariables having formulae
-		Collection<AssessmentVariable> avList = avs.findAllFormulae();
+        // partition all survey with its list of measures
+        Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
 
-		// read all measures of free text and its validations
-		Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
+        // read all AssessmenetVariables having formulae
+        Collection<AssessmentVariable> avList = avs.findAllFormulas();
 
-		// bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
-		// the data dictionary
-		Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
+        // read all measures of free text and its validations
+        Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
 
-		for (Survey s : surveyMeasuresMap.keySet()) {
-			Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
+        // bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
+        // the data dictionary
+        Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
 
-			// bind the survey (or module with its sheet)
-			dataDictionary.put(s.getName(), sheet);
+        for (Survey s : surveyMeasuresMap.keySet()) {
+            Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));
-			}
-		}
+            // bind the survey (or module with its sheet)
+            dataDictionary.put(s.getName(), sheet);
 
-		if (logger.isDebugEnabled()) {
-			List<String> l1 = Lists.newArrayList(formulaeAvTouched);
-			Collections.sort(l1);
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));
+            }
+        }
 
-			String refAssessmentVars = getRefAssessmentVars(avList);
-			List<String> l2 = Lists.newArrayList(Strings.split(refAssessmentVars, ','));
-			Collections.sort(l2);
+        if (logger.isDebugEnabled()) {
+            Set<String> avUsedInDataDictionary = Sets.newHashSet(formulaeAvTouched);
 
-			Preconditions.checkArgument(l1.equals(l2), String.format("(Ref AssessmentVariable List) [%s] is not same as asscoiated AssessmentVariable List [%s]", l2, l1));
-			logger.debug("returning data dictionary with surveys in this order:{}", dataDictionary.keySet());
-		}
-		return dataDictionary;
-	}
+            String refAssessmentVars = getRefAssessmentVars(avList);
+            Set<String> avReference = Sets.newHashSet(Strings.split(refAssessmentVars, ','));
 
-	private String getRefAssessmentVars(Collection<AssessmentVariable> avList) {
-		Iterable<String> displayNames = Iterables.transform(avList, new Function<AssessmentVariable, String>() {
-			public String apply(AssessmentVariable input) {
-				// extract display names from Assessment Variables
-				return (input == null) ? null : input.getDisplayName();
-			}
-		});
-		String joinedDisplayNames = Joiner.on(",").skipNulls().join(displayNames);
-		return joinedDisplayNames;
-	}
+            Set<String> unusedAv = Sets.difference(avUsedInDataDictionary, avReference);
+            logger.debug(String.format("AvSizeUsedInDD:%s==AvReferenceDD:%s==AvUnusedInDD:%s", avUsedInDataDictionary.size(), avReference.size(), unusedAv));
+        }
+        return dataDictionary;
+    }
 
-	private Table<String, String, String> buildSheetFor(Survey s,
-			Collection<Measure> surveyMeasures, Multimap mvMap,
-			Collection<AssessmentVariable> avList, Set<String> avUsed) {
+    private String getRefAssessmentVars(Collection<AssessmentVariable> avList) {
+        Iterable<String> displayNames = Iterables.transform(avList, new Function<AssessmentVariable, String>() {
+            public String apply(AssessmentVariable input) {
+                // extract display names from Assessment Variables
+                return (input == null) ? null : input.getDisplayName();
+            }
+        });
+        String joinedDisplayNames = Joiner.on(",").skipNulls().join(displayNames);
+        return joinedDisplayNames;
+    }
 
-		Table<String, String, String> t = TreeBasedTable.create();
-		ddh.buildDataDictionaryFor(s, t, surveyMeasures, mvMap, avList, avUsed);
+    private Table<String, String, String> buildSheetFor(Survey s,
+                                                        Collection<Measure> surveyMeasures, Multimap mvMap,
+                                                        Collection<AssessmentVariable> avList, Set<String> avUsed) {
 
-		return t;
-	}
+        Table<String, String, String> t = TreeBasedTable.create();
+        ddh.buildDataDictionaryFor(s, t, surveyMeasures, mvMap, avList, avUsed);
 
-	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.msgSrc = messageSource;
-	}
+        return t;
+    }
 
-	@Override
-	public String getExportNameKeyPrefix() {
-		return ddh.EXPORT_KEY_PREFIX;
-	}
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.msgSrc = messageSource;
+    }
 
-	@Override
-	public String createTableResponseVarName(String exportName) {
-		return ddh.createTableResponseVarName(exportName);
-	}
+    @Override
+    public String getExportNameKeyPrefix() {
+        return ddh.EXPORT_KEY_PREFIX;
+    }
+
+    @Override
+    public String createTableResponseVarName(String exportName) {
+        return ddh.createTableResponseVarName(exportName);
+    }
 }
