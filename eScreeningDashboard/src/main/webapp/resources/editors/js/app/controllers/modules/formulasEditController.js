@@ -109,12 +109,21 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
         );
     };
 
-    $scope.tagFormula = function (newFormula) {
-        var item = {
-            name: newFormula,
-            id: FormulasService.guid(newFormula)
-        };
-        return item;
+    $scope.tagFormula = function (userEnteredToken) {
+        // try to find this userEnteredToken in the list of variables already present in the reference variables
+        var existingToken = _.find($scope.variables, function (variable) {
+            return variable.name === userEnteredToken;
+        });
+        if (existingToken != undefined) {
+            existingToken.guid = _.uniqueId(existingToken.id + '_');
+            return existingToken;
+        } else {
+            var item = {
+                name: userEnteredToken,
+                id: FormulasService.guid(userEnteredToken)
+            };
+            return item;
+        }
     };
 
 
@@ -149,7 +158,9 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
                 var existingToken = _.find(refVars, function (refVar) {
                     return refVar.id === formulaToken.id;
                 });
-                existingToken.guid = _.uniqueId(formulaToken.id + '_');
+                if (existingToken != undefined) {
+                    existingToken.guid = _.uniqueId(formulaToken.id + '_');
+                }
             }
         }
     });
