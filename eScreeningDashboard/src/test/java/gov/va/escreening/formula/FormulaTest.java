@@ -38,6 +38,12 @@ public class FormulaTest {
         String result = expressionEvaluator.evaluateFormula("((2f)*(3f))");
         Assert.isTrue(result.equals("6.0"));
     }
+    @Test
+    public void mathRemoval() {
+        String result = "T(Math).round([demo_weight])+T(Math).pow(T(Math).max([demo_weight],[demo_race_pacisl]),3)";
+        String cleaned = result.replaceAll("[T][(]Math[)][.]","");
+        Assert.isTrue(cleaned.equals("round([demo_weight])+pow(max([demo_weight],[demo_race_pacisl]),3)"));
+    }
 
     @Test
     public void testValidMaxFormula() {

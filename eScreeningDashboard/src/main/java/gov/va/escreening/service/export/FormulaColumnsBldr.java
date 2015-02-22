@@ -44,12 +44,22 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
             String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
             displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
         }
-        displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
+        displayableFormula = removeJavaMathFunctions(displayableFormula);
+        displayableFormula = removeTernaries(displayableFormula);
 
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
         }
         return displayableFormula;
+    }
+
+    private String removeJavaMathFunctions(String displayableFormula) {
+        // this will remove all T(Math).
+        return displayableFormula.replaceAll("[T][(]Math[)][.]", "");
+    }
+
+    private String removeTernaries(String displayableFormula) {
+        return displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
     }
 
     private List<String> buildXportNameFromMeasureAnswer(AssessmentVariable av) {
