@@ -5,21 +5,9 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
     .factory('FormulasService', ['$log', 'Restangular', '$cacheFactory', function ($log, Restangular, $cacheFactory) {
         //var formulasCache;
         var restAngular = Restangular.withConfig(function (config) {
-            //formulasCache = $cacheFactory('http');
             config.setDefaultHttpFields({cache: false});
             config.setBaseUrl('services');
             config.setRequestSuffix('.json');
-        });
-
-        //restAngular.setResponseInterceptor(function (response, operation) {
-        //    if (operation === 'post' || operation === 'delete') {
-        //        formulasCache.removeAll();
-        //    }
-        //    return response;
-        //})
-
-        restAngular.addResponseInterceptor(function (data, operation, what, url, response, deferred) {
-            return data;
         });
 
         var formulasProxy = restAngular.all('formulas');
@@ -60,9 +48,10 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             persistSelectedTokens: function (tokens) {
                 $log.debug('persisting selected Tokens ' + tokens);
 
+                // we send only the formula tokens and av.id, av.name, plus the av.description
                 return formulasProxy.post({
                     tokens: tokens,
-                    av: _.omit(currentFormula, ['verifiedIds', 'selectedTokens'])
+                    av: _.pick(currentFormula, ['id', 'name', 'description'])
                 });
             },
             updateCurrentFormula: function (result) {

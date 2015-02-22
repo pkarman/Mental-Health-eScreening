@@ -61,7 +61,7 @@ public class ManageFormulasRestController {
         try {
             Integer avId = expressionEvaluator.updateFormula(tgtFormula);
             m.put("data", String.valueOf(avId));
-            // invalidate the session so cached DD is reflecting the correct data
+            // invalidate the session so cached DD reflect latest data
             sessionMgr.invalidateDD(request);
             return new ResponseEntity<Map>(m, HttpStatus.OK);
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class ManageFormulasRestController {
     @RequestMapping(value = "/services/formulas/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map<String, Object> getFormulaById(@PathVariable("id") Integer formulaId, @CurrentUser EscreenUser escreenUser) {
-        Map<String,Object> formulaById=expressionEvaluator.getFormulaById(formulaId);
+        Map<String, Object> formulaById = expressionEvaluator.getFormulaById(formulaId);
         return formulaById;
     }
 

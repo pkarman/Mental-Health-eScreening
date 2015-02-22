@@ -128,12 +128,30 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     }
     var refVars = [];
     $scope.refreshVariables = function () {
-        if (!FormulasService.hasValidModule()) return;
-        // load variables from rest endpoint
-        FormulasService.loadVarsByModuleId().then(function (vars) {
-            $scope.variables = vars;
-        }, function error(reason) {
-            addDangerMsg(true, reason);
-        });
+        if ($scope.variables === undefined) {
+            if (!FormulasService.hasValidModule()) return;
+            // load variables from rest endpoint
+            FormulasService.loadVarsByModuleId().then(function (vars) {
+                $scope.variables = vars;
+                refVars = _.clone(vars, true);
+            }, function error(reason) {
+                addDangerMsg(true, reason);
+            });
+        } else {
+            $scope.variables = _.clone(refVars, true);
+        }
     }
+
+    $scope.$watch('formulaTemplate.selectedTokens', function (newValue, oldValue) {
+        if (oldValue != newValue && newValue.length > 0) {
+            var formulaToken = newValue[newValue.length - 1];
+            if (parseInt(formulaToken.id, 10) != undefined) {
+                var existingToken = _.find(refVars, function (refVar) {
+                    return refVar.id === formulaToken.id;
+                });
+                existingToken.guid = _.uniqueId(formulaToken.id + '_');
+            }
+        }
+    });
+
 }]);

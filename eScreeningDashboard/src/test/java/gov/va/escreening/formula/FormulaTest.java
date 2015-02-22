@@ -29,6 +29,11 @@ public class FormulaTest {
     ExpressionEvaluatorService expressionEvaluator;
 
     @Test
+    public void testValidRoundFormula() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).round(199/T(Math).pow( ( ( 6 * 12 ) + 0 ) ,2)*703)");
+        Assert.isTrue(result.equals("27"));
+    }
+    @Test
     public void testValidFormula() {
         String result = expressionEvaluator.evaluateFormula("((2f)*(3f))");
         Assert.isTrue(result.equals("6.0"));

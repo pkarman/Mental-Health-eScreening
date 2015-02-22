@@ -240,36 +240,30 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     @Transactional(readOnly = true)
     public Map<String, Object> getFormulaById(Integer formulaId) {
         AssessmentVariable av = findAvById(formulaId);
+        final Map<String, Object> asFormulaVar = av.getAsFormulaVar();
 
-        Map<String, Object> formulaAsMap = Maps.newHashMap();
-        formulaAsMap.put("name", av.getDisplayName());
-        formulaAsMap.put("id", av.getAssessmentVariableId());
-        formulaAsMap.put("description", av.getDescription());
-
-        List<Map<String, String>> selectedTokens = Lists.newArrayList();
-        formulaAsMap.put("selectedTokens", selectedTokens);
+        List<Map<String, Object>> selectedTokens = Lists.newArrayList();
+        asFormulaVar.put("selectedTokens", selectedTokens);
 
         List<AssessmentFormula> formulaTokens = av.getAssessmentFormulas();
         if (formulaTokens != null) {
             for (AssessmentFormula af : formulaTokens) {
-                Map<String, String> selectedToken = Maps.newHashMap();
                 String ft = af.getFormulaToken();
                 try {
                     Integer ftId = Integer.parseInt(ft);
-                    AssessmentVariable avEntity = findAvById(ftId);
-                    selectedToken.put("id", ftId.toString());
-                    selectedToken.put("name", avEntity.getDisplayName());
-                    selectedToken.put("displayName", avEntity.getDescription());
+                    final AssessmentVariable avById = findAvById(ftId);
+                    selectedTokens.add(avById.getAsFormulaVar());
                 } catch (NumberFormatException nfe) {
+                    Map<String, Object> selectedToken = Maps.newHashMap();
                     selectedToken.put("id", ft);
                     String[] nameAry = ft.split("\\[");
                     String[] name1Ary = nameAry[1].split("]");
                     selectedToken.put("name", name1Ary[0]);
+                    selectedTokens.add(selectedToken);
                 }
-                selectedTokens.add(selectedToken);
             }
         }
-        return formulaAsMap;
+        return asFormulaVar;
     }
 
     private String buildFormulaTokenFromId(String tokenId) {
