@@ -236,4 +236,14 @@ public class AssessmentVariable implements Serializable {
         }
         setAssessmentFormulas(afList);
     }
+
+    public List<AssessmentFormula> buildTokensFromTemplate() {
+        return null;
+    }
+
+    public Map<String,Object> getAsFormulaVar() {
+        Map<String, Object> formulaAsMap = getAsMap();
+        formulaAsMap.put("description", getDescription());
+        return formulaAsMap;
+    }
 }
