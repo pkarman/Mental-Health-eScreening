@@ -3,8 +3,10 @@
       <h1>Manage Module</h1>
     </div>
     <div class="col-md-6">
-      <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
-      <button ng-click="editFormulas(survey.id);" ng-disabled="!survey.id;" class="btn btn-primary h1_button pull-right" type="button">Manage Formulas</button>
+        <div class="btn-layout pull-right">
+          <button ng-click="editFormulas(survey.id);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Formulas</button>
+          <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Templates</button>
+        </div>
     </div>
 </div>
 
@@ -89,9 +91,9 @@
                   <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
                   <div class="clearfix"></div>
                  </div>
-                 
-                    
-                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
+
+
+                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
                     <ul class="list-group app screen first" ng-model="surveyPages">
                         <li class="list-group-item text-left" ng-repeat="page in surveyPages | orderBy: 'pageNumber'"
                                 ng-class="{'unsortable': page.sortable === false}">

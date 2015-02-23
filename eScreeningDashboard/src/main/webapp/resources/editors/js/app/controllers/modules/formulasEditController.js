@@ -2,18 +2,18 @@
  * Created by Khalid Rizvi @ 01/24/2015
  */
 
-Editors.filter('propsFilter', function () {
-    return function (items, props) {
+Editors.filter('tokensfilter', function () {
+    return function (tokens, srchThis) {
         var out = [];
 
-        if (angular.isArray(items)) {
-            items.forEach(function (item) {
+        if (angular.isArray(tokens)) {
+            tokens.forEach(function (item) {
                 var itemMatches = false;
 
-                var keys = Object.keys(props);
+                var keys = Object.keys(srchThis);
                 for (var i = 0; i < keys.length; i++) {
                     var prop = keys[i];
-                    var text = props[prop].toLowerCase();
+                    var text = srchThis[prop].toLowerCase();
                     if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
                         itemMatches = true;
                         break;
@@ -26,9 +26,8 @@ Editors.filter('propsFilter', function () {
             });
         } else {
             // Let the output be the input untouched
-            out = items;
+            out = tokens;
         }
-
         return out;
     };
 });
