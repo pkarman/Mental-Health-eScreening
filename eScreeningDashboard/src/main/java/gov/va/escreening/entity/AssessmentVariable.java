@@ -209,7 +209,7 @@ public class AssessmentVariable implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.AssessmentVariable[ assessmentVariableId=" + assessmentVariableId + " ]";
+        return "[id=" + assessmentVariableId + "]";
     }
 
     public Map<String, Object> getAsMap() {
@@ -237,11 +237,7 @@ public class AssessmentVariable implements Serializable {
         setAssessmentFormulas(afList);
     }
 
-    public List<AssessmentFormula> buildTokensFromTemplate() {
-        return null;
-    }
-
-    public Map<String,Object> getAsFormulaVar() {
+    public Map<String, Object> getAsFormulaVar() {
         Map<String, Object> formulaAsMap = getAsMap();
         formulaAsMap.put("description", getDescription());
         return formulaAsMap;
