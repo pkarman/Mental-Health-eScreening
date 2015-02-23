@@ -110,8 +110,10 @@ public class BatchCreateController {
 			@RequestParam String clinicId, @CurrentUser EscreenUser user) {
 		model.addAttribute("vetIens", vetIens);
 		model.addAttribute("clinicId", clinicId);
-		// model.addAttribute("selectVeteranFormBean", selectVeteranFormBean);
-		return new ModelAndView(new RedirectView("editVeteransAssessment"));
+		
+		RedirectView view = new RedirectView("editVeteransAssessment");
+		view.setExposeModelAttributes(false);
+		return new ModelAndView(view);
 	}
 
 	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.GET)
@@ -291,7 +293,10 @@ public class BatchCreateController {
 		if (selectedBatteryId == null || selectedClinicId == null
 				|| selectedClinicianId == null || selectedNoteTitleId == null) {
 			result.reject("selectedBatteryId");
-			return new ModelAndView("editVeteransAssessment");
+			Map params = new HashMap<String, Object>();
+			params.put("clinicId", model.asMap().get("clinicId"));
+			params.put("vetIens", model.asMap().get("vetIens"));
+			return new ModelAndView("editVeteransAssessment", params);
 		}
 
 		List<BatchBatteryCreateResult> results = batchCreateDelegate
