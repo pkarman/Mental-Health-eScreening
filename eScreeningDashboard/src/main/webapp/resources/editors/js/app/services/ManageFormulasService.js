@@ -109,7 +109,7 @@ angular.module('EscreeningDashboardApp.services.manageformulas', ['restangular']
             },
 
             guid: function (prefix) {
-                return _.uniqueId('udk[' + prefix + '][') + ']';
+                return _.uniqueId(prefix + '_');
             }
         };
         return service;

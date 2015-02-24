@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author jocchiuzzo
@@ -226,9 +228,20 @@ public class AssessmentVariable implements Serializable {
     public void attachFormulaTokens(List<String> tokens) {
         int row = 0;
         List<AssessmentFormula> afList = Lists.newArrayList();
-        for (Object token : tokens) {
+        for (String token : tokens) {
             AssessmentFormula af = new AssessmentFormula();
-            af.setFormulaToken(token.toString());
+
+            String rawToken = token;
+            String formulaToken = null;
+            if (rawToken.substring(0, 1).equals("t")) {
+                formulaToken = rawToken.substring(2);
+                af.setUserDefined(true);
+            } else {
+                formulaToken = rawToken.substring(2);
+                af.setUserDefined(false);
+            }
+
+            af.setFormulaToken(formulaToken);
             af.setParentAssessment(this);
             af.setDisplayOrder(++row);
             af.setDateCreated(new Date());

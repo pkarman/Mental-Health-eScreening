@@ -40,6 +40,10 @@ public class AssessmentFormula implements Serializable {
     private String formulaToken;
 
     @Basic(optional = false)
+    @Column(name = "user_defined")
+    private Boolean userDefined;
+
+    @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
@@ -112,5 +116,13 @@ public class AssessmentFormula implements Serializable {
                 ", order=" + displayOrder +
                 ", token='" + formulaToken + '\'' +
                 '}';
+    }
+
+    public Boolean getUserDefined() {
+        return userDefined;
+    }
+
+    public void setUserDefined(Boolean userDefined) {
+        this.userDefined = userDefined;
     }
 }

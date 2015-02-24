@@ -18,7 +18,6 @@ import gov.va.escreening.repository.AssessmentVariableRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.SpelParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,8 +59,9 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
 
     @Override
     public String evaluateFormula(Map<String, Object> tgtFormula) {
-
+        // operands means variables. The variable is basically the assessment variable id + its value user has provided
         List<Map<String, Object>> operands = (List<Map<String, Object>>) tgtFormula.get("verifiedIds");
+        // formula which is a combination of variables and operators
         List<String> tokens = (List<String>) tgtFormula.get("tokens");
 
         Map<Integer, String> formulaOperands = Maps.newLinkedHashMap();
@@ -77,7 +77,7 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         }
 
         try {
-            String formula = buildFormulaFromTokenIds(tokens);
+            String formula = buildFormulaFromMin(tokens);
             return evaluateFormula(createFormulaDto(formula, formulaOperands));
         } catch (NoSuchMethodException e) {
             logger.error(e.getMessage());
@@ -195,7 +195,7 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
         String avDesc = (String) avMap.get("description");
 
         List<String> tokens = (List<String>) tgtFormula.get("tokens");
-        String avTemplate = buildFormulaFromTokenIds(tokens);
+        String avTemplate = buildFormulaFromMin(tokens);
         verifyExpressionTemplate(avTemplate.replaceAll("[$]", ""), AvMapTypeEnum.ID2NAME);
 
         AssessmentVariable av = avId == null ? new AssessmentVariable() : findAvById(avId);
@@ -210,8 +210,8 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
             children.add(avc);
         }
         av.setFormulaTemplate(avTemplate);
-        av.setDisplayName(avName);
-        av.setDescription(avDesc);
+        av.setDisplayName(avName.trim());
+        av.setDescription((avDesc == null || avDesc.trim().isEmpty()) ? "No Description provided" : avDesc.trim());
         av.setAssessmentVariableTypeId(new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
         av.setAssessmentVarChildrenList(children);
 
@@ -223,10 +223,10 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
     }
 
     @Override
-    public String buildFormulaFromTokenIds(List<String> idList) {
+    public String buildFormulaFromMin(List<String> idList) {
         List<String> tokens = Lists.newArrayList();
         for (Object idObj : idList) {
-            tokens.add(buildFormulaTokenFromId(idObj.toString()));
+            tokens.add(buildFromMin(idObj.toString()));
         }
 
         String newlyBuiltFormula = Joiner.on("").join(tokens);
@@ -238,44 +238,61 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
 
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Object> getFormulaById(Integer formulaId) {
+    public Map<String, Object> fetchFormulaFromDbById(Integer formulaId) {
         AssessmentVariable av = findAvById(formulaId);
         final Map<String, Object> asFormulaVar = av.getAsFormulaVar();
 
-        List<Map<String, Object>> selectedTokens = Lists.newArrayList();
-        asFormulaVar.put("selectedTokens", selectedTokens);
-
-        List<AssessmentFormula> formulaTokens = av.getAssessmentFormulas();
-        if (formulaTokens != null) {
-            for (AssessmentFormula af : formulaTokens) {
-                String ft = af.getFormulaToken();
-                try {
-                    Integer ftId = Integer.parseInt(ft);
-                    final AssessmentVariable avById = findAvById(ftId);
-                    selectedTokens.add(avById.getAsFormulaVar());
-                } catch (NumberFormatException nfe) {
-                    Map<String, Object> selectedToken = Maps.newHashMap();
-                    selectedToken.put("id", ft);
-                    String[] nameAry = ft.split("\\[");
-                    String[] name1Ary = nameAry[1].split("]");
-                    selectedToken.put("name", name1Ary[0]);
-                    selectedTokens.add(selectedToken);
-                }
-            }
-        }
+        asFormulaVar.put("selectedTokens", buildSelectedTokensFor(av));
         return asFormulaVar;
     }
 
-    private String buildFormulaTokenFromId(String tokenId) {
-        try {
-            int id = Integer.parseInt(tokenId);
+    private List<Map<String, Object>> buildSelectedTokensFor(AssessmentVariable av) {
+        List<Map<String, Object>> selectedTokens = Lists.newArrayList();
+        List<AssessmentFormula> formulaTokens = av.getAssessmentFormulas();
+        if (formulaTokens != null) {
+            for (AssessmentFormula af : formulaTokens) {
+                if (!af.getUserDefined()) {
+                    final AssessmentVariable avById = findAvById(Integer.parseInt(af.getFormulaToken()));
+                    selectedTokens.add(systemGenerated(avById.getAsFormulaVar()));
+                } else {
+                    selectedTokens.add(createUserDefined(af));
+                }
+            }
+        }
+        return selectedTokens;
+    }
+
+    private Map<String, Object> systemGenerated(Map<String, Object> asFormulaVar) {
+        asFormulaVar.put("id", "f|" + asFormulaVar.get("id"));
+        return asFormulaVar;
+    }
+
+    private Map<String, Object> createUserDefined(AssessmentFormula af) {
+        Map<String, Object> selectedToken = Maps.newHashMap();
+        selectedToken.put("id", "t|" + af.getFormulaToken());
+        selectedToken.put("name", af.getFormulaToken());
+        return selectedToken;
+    }
+
+    private String buildFromMin(String tokenId) {
+        if (tokenId == null || tokenId.trim().isEmpty()) {
+            return "";
+        }
+        // find if this is user defined or not
+        boolean isUserDefined = "t".equals(tokenId.substring(0, 1));
+        String onlyToken = tokenId.substring(2);
+
+        if (isUserDefined) {
+            return onlyToken;
+        } else {
+            int id = Integer.parseInt(onlyToken);
             AssessmentVariable av = avr.findOne(id);
             switch (av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()) {
                 case 1:
                 case 2:
-                    return "[" + tokenId + "]";
+                    return "[" + onlyToken + "]";
                 case 4:
-                    return "[$" + tokenId + "$]";
+                    return "[$" + onlyToken + "$]";
 
                 case 5:
                     Matcher m = formulaTokenPattern.matcher(av.getDescription());
@@ -285,12 +302,6 @@ public class ExpressionEvaluatorServiceImpl implements ExpressionEvaluatorServic
                 default:
                     return "";
             }
-        } catch (NumberFormatException nfe) {
-            Matcher m = formulaTokenPattern.matcher(tokenId);
-            if (m.find()) {
-                return m.group(1);
-            }
-            return "";
         }
     }
 

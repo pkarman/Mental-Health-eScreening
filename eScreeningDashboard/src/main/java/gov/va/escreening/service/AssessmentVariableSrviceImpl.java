@@ -178,8 +178,6 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
             formulaMap.put("name", formulaColumnsIter.next());
             formulaMap.put("id", formulaColumnsIter.next());
             formulaMap.put("description", formulaColumnsIter.next());
-            //formulaMap.put("template", formulaColumnsIter.next());
-            //formulaMap.put("size", formulaColumnsIter.next());
             formulas.add(formulaMap);
         }
         return formulas;

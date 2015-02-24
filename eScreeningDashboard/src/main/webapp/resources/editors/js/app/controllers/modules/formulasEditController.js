@@ -34,6 +34,10 @@ Editors.filter('tokensfilter', function () {
 
 
 Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 'FormulasService', function ($state, $log, $scope, FormulasService) {
+    $scope.module = function () {
+        return FormulasService.fetchCurrentModule().name;
+    };
+
     var clearMsgs = function () {
             $scope.msgs = [];
         },
@@ -67,25 +71,33 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
     }
 
     $scope.produceInputFields = function () {
+        clearMsgs();
         $scope.toggleDisable();
-        FormulasService.verifySelectedTokens(tokens()).then(function (result) {
-            FormulasService.attachWithCurrentFormula(result.verifiedIds);
-            $scope.verifiedIds = result.verifiedIds;
-            addSuccessMsg(true, 'The formula is verified successfully');
-        }, function error(reason) {
-            addDangerMsg(true, reason.data.reason);
-        });
+        var t = tokens();
+        if (validate(t)) {
+            FormulasService.verifySelectedTokens(t).then(function (result) {
+                FormulasService.attachWithCurrentFormula(result.verifiedIds);
+                $scope.verifiedIds = result.verifiedIds;
+                addSuccessMsg(true, 'The formula is verified successfully');
+            }, function error(reason) {
+                addDangerMsg(true, reason.data.reason);
+            });
+        }
     };
 
     $scope.runTest = function () {
-        FormulasService.testSelectedTokens(tokens())
-            .then(function (result) {
-                $scope.result = result.data;
-                addSuccessMsg(true, 'Please verify the result and either save or change the values and test again');
-            }, function error(reason) {
-                addDangerMsg(true, reason.data.data);
-            }
-        )
+        clearMsgs();
+        var t = tokens();
+        if (validate(t)) {
+            FormulasService.testSelectedTokens(t)
+                .then(function (result) {
+                    $scope.result = result.data;
+                    addSuccessMsg(true, 'Please verify the result and either save or change the values and test again');
+                }, function error(reason) {
+                    addDangerMsg(true, reason.data.data);
+                }
+            );
+        }
     };
 
     $scope.cancelFormula = function () {
@@ -97,7 +109,22 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
         if ($scope.formula.id === undefined) {
             isNew = true;
         }
-        FormulasService.persistSelectedTokens(tokens())
+
+        //verify data -- name is required
+        var n = FormulasService.fetchCurrentFormula().name;
+        clearMsgs();
+        if (n === undefined || n.length === 0) {
+            addDangerMsg(false, 'Name of the formula is required.');
+        }
+
+        var t = tokens();
+        validate(t);
+
+        if ($scope.msgs.length > 0) {
+            return;
+        }
+
+        FormulasService.persistSelectedTokens(t)
             .then(function (result) {
                 FormulasService.updateCurrentFormula(result);
                 FormulasService.processSuccessfulSave(isNew);
@@ -108,18 +135,27 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
         );
     };
 
+    validate = function (t) {
+        if (t.length === 0) {
+            addDangerMsg(false, 'Please build an equation by selecting questions, answers, constants, operators, or you can also enter constants or any operator not found in the list.');
+            return false;
+        }
+        return true;
+    };
+
     $scope.tagFormula = function (userEnteredToken) {
         // try to find this userEnteredToken in the list of variables already present in the reference variables
         var existingToken = _.find($scope.variables, function (variable) {
             return variable.name === userEnteredToken;
         });
         if (existingToken != undefined) {
-            existingToken.guid = _.uniqueId(existingToken.id + '_');
+            existingToken.guid = FormulasService.guid(existingToken.id);
             return existingToken;
         } else {
             var item = {
                 name: userEnteredToken,
-                id: FormulasService.guid(userEnteredToken)
+                id: 't|' + userEnteredToken.trim(),
+                guid: FormulasService.guid(userEnteredToken)
             };
             return item;
         }
@@ -158,7 +194,7 @@ Editors.controller('ModuleFormulasEditController', ['$state', '$log', '$scope', 
                     return refVar.id === formulaToken.id;
                 });
                 if (existingToken != undefined) {
-                    existingToken.guid = _.uniqueId(formulaToken.id + '_');
+                    existingToken.guid = FormulasService.guid(existingToken.id);
                 }
             }
         }
