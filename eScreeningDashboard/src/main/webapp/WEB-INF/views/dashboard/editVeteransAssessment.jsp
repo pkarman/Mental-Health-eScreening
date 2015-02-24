@@ -142,7 +142,7 @@
 					<form:form modelAttribute="batchCreateFormBean" autocomplete="off" method="post">
 						<form:hidden path="veteranId"/>
 						<form:hidden path="veteranAssessmentId"/>
-
+						<form:hidden path="selectedClinicId"/>
 						<form:errors path="*" element="div" cssClass="alert alert-danger" />
 						<br />
 						

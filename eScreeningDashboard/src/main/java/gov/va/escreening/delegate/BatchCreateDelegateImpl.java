@@ -189,7 +189,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			EscreenUser escreenUser)
 	{
 		List<BatchBatteryCreateResult> resultList = new ArrayList<BatchBatteryCreateResult>(vets.size());
-		for(VeteranDto vet : vets)
+		for(VeteranWithClinicalReminderFlag vet : vets)
 		{
 			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
 			if(surveyList == null)

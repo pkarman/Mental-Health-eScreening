@@ -22,6 +22,7 @@ import gov.va.escreening.vista.dto.VistaClinicAppointment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +45,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-@SessionAttributes({ "vetIens", "vetSurveyMap", "clinicId", "searchResult", "clinics" })
+@SessionAttributes({ "vetIens", "vetSurveyMap", "clinicId", "searchResult", "clinics", "veterans" })
 public class BatchCreateController {
 
 	private static final Logger logger = LoggerFactory
@@ -137,13 +138,13 @@ public class BatchCreateController {
 					.getPreSelectedSurveyMap(user, v.getVeteranIen());
 			if (!autoAssignedSurveyMap.isEmpty()) {
 				vetSurveyMap.put(v.getVeteranId(),
-						autoAssignedSurveyMap.keySet());
+						new HashSet(autoAssignedSurveyMap.keySet()));
 				v.setDueClinicalReminders(true);
 			}
 		}
 
 		model.addAttribute("vetSurveyMap", vetSurveyMap);
-		batchCreateFormBean.setVetSurveyMap(vetSurveyMap);
+		//batchCreateFormBean.setVetSurveyMap(vetSurveyMap);
 
 		model.addAttribute("isCprsVerified", user.getCprsVerified());
 		model.addAttribute("isCreateMode", true);
@@ -266,11 +267,10 @@ public class BatchCreateController {
 		return "dashboard/selectVeterans";
 	}
 
-	 @RequestMapping(value="/batchComplete", method =
-	 RequestMethod.GET)
-	 public String setupPage(@CurrentUser EscreenUser escreenUser, Model model, BindingResult result)
+	 @RequestMapping(value="/batchComplete", method =RequestMethod.GET)
+	 public String setupPage(@CurrentUser EscreenUser escreenUser, Model model)
 	 {
-		 model.addAttribute("isPostBack", false);
+		 model.addAttribute("isPostBack", true);
 		 model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 		 return "dashboard/batchComplete";
 	 }
@@ -289,30 +289,32 @@ public class BatchCreateController {
 				.getSelectedClinicianId();
 		Integer selectedNoteTitleId = editVeteranAssessmentFormBean
 				.getSelectedNoteTitleId();
+		
 
 		if (selectedBatteryId == null || selectedClinicId == null
 				|| selectedClinicianId == null || selectedNoteTitleId == null) {
 			result.reject("selectedBatteryId");
-			Map params = new HashMap<String, Object>();
-			params.put("clinicId", model.asMap().get("clinicId"));
-			params.put("vetIens", model.asMap().get("vetIens"));
-			return new ModelAndView("editVeteransAssessment", params);
+
+			throw new IllegalArgumentException("Required ");
 		}
 
+		List<VeteranWithClinicalReminderFlag> vets = (List<VeteranWithClinicalReminderFlag>)model.asMap().get("veterans");
 		List<BatchBatteryCreateResult> results = batchCreateDelegate
 				.batchCreate(
-						editVeteranAssessmentFormBean.getVeterans(),
+						vets,
 						editVeteranAssessmentFormBean.getSelectedProgramId(),
 						selectedClinicId,
 						selectedClinicianId,
 						selectedNoteTitleId,
 						selectedBatteryId,
-						editVeteranAssessmentFormBean.getVetSurveyMap(),
+						(Map<Integer, Set<Integer>>)model.asMap().get("vetSurveyMap"),
 						editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
 						escreenUser);
 
 		model.addAttribute("batchCreateResult", results);
-		return new ModelAndView(new RedirectView("batchComplete"),
+		RedirectView view = new RedirectView("batchComplete");
+		view.setExposeModelAttributes(false);
+		return new ModelAndView(view,
 				"batchCreateResult", results);
 	}
 
