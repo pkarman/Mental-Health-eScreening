@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.service.AssessmentVariableService;
-import gov.va.escreening.template.VariableTransformationTest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,16 +17,17 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * This class is concerned with testing how each block type is translated into freemarker
+ * @author Robin Carnow
+ *
+ */
 @RunWith(JUnit4.class)
 public class TemplateBlockFreeMarkerTranslationTest {
 
-		private static final Logger logger = LoggerFactory.getLogger(VariableTransformationTest.class);
-		
 		/** TESTS table translation into freemarker **/
 		
 		@Test

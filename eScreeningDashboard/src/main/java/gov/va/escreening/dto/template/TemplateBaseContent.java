@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
+import static gov.va.escreening.constants.AssessmentConstants.*;
+
 @JsonInclude(Include.NON_NULL)
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
 @JsonSubTypes({ @Type(value = TemplateTextContent.class, name = "text"), 
@@ -43,35 +45,48 @@ public abstract class TemplateBaseContent {
 		
 		String translatedVar = inStr;
 		
-		
 		// we are going to apply transformation of variable.
-		if (left.getTransformations() != null && left.getTransformations().size() > 0) {
+		if (left.getTransformations() != null && !left.getTransformations().isEmpty()) {
 			for (VariableTransformationDTO transformation : left.getTransformations()) {
 				StringBuilder s = new StringBuilder(transformation.getName());
 				s.append("(").append(translatedVar);
 
 				if (transformation.getParams() != null) {
-					for (String param : transformation.getParams())
-						s.append("," + param);
+					for (String param : transformation.getParams()){
+						String trimmed = param.trim();
+						//check to see if we need to quote the parameter value
+						if((trimmed.startsWith("[") && trimmed.endsWith("]"))
+							|| (trimmed.startsWith("{") && trimmed.endsWith("}"))){
+							//we don't quote when it is an array or map
+							s.append(",").append(param);
+						}
+						//this is done separately from the above statement because we must lower case booleans
+						else if(trimmed.equalsIgnoreCase("true") 
+							  || trimmed.equalsIgnoreCase("false")){
+							s.append(",").append(param.toLowerCase());
+						}
+						else{
+							s.append(",\"").append(param).append("\"");
+						}
+					}
 				}
-				s.append(" ) ");
-
-				translatedVar = s.toString();
+				//replace translatedVar with transformed variable
+				translatedVar = s.append(")").toString();
 			}
 		}
 		
 		if (operand == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
 		{//Don't pull value out if transformations were applied
-			if (left.getTypeId()!=null && left.getTypeId() == 1 && (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
 			{
 				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
 				
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 4 )
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
 				translatedVar =  "getFormulaValue("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 3)
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
 				translatedVar =  "getCustomValue("+inStr+")";
 			}
@@ -80,7 +95,7 @@ public abstract class TemplateBaseContent {
 				"lt".equals(operand) || "gt".equals(operand) || "lte".equals(operand) 
 				|| "gte".equals(operand))
 		{
-			if (left.getMeasureId()!=null && left.getMeasureTypeId() == 1)			
+			if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))			
 			{
 				if (right instanceof TemplateTextContent)
 				{
@@ -98,42 +113,51 @@ public abstract class TemplateBaseContent {
 				else
 					translatedVar =  "getResponse("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 3)
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
 				translatedVar =  "asNumber(getCustomValue("+inStr+"))?string != \"notset\" && asNumber(getCustomValue("+inStr+"))";
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 4)
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
 				translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
 			}
 		}
 		else if ("answered".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null 
-					&& (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3 || left.getMeasureTypeId() == 4))
+			if (left.measureTypeIn(
+					MEASURE_TYPE_FREE_TEXT, 
+					MEASURE_TYPE_SELECT_ONE, 
+					MEASURE_TYPE_SELECT_MULTI, 
+					MEASURE_TYPE_TABLE))
 			{
 				translatedVar= "wasAnswered("+inStr+")";
 			}
 		}
 		else if ("nanswered".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null 
-					&& (left.getMeasureTypeId() == 1 || left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3 || left.getMeasureTypeId() == 4))
+			if (left.measureTypeIn(
+					MEASURE_TYPE_FREE_TEXT,
+					MEASURE_TYPE_SELECT_ONE, 
+					MEASURE_TYPE_SELECT_MULTI, 
+					MEASURE_TYPE_TABLE))
 			{
 				translatedVar= "wasntAnswered("+inStr+")";
 			}
 		}
 		else if ("result".equals(operand))
 		{
-			if (left.getTypeId()!=null && left.getTypeId() == 4)
+			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
 				translatedVar= "formulaHasResult("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 3)
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
 				translatedVar= "customHasResult("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && (left.getTypeId() == 6 || left.getTypeId() == 7))
+			else if (left.typeIn(
+					ASSESSMENT_VARIABLE_TYPE_MEASURE, 
+					MEASURE_TYPE_SELECT_ONE_MATRIX, 
+					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
 				translatedVar= "matrixHasResult("+inStr+")";
 			}
@@ -141,37 +165,45 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("nresult".equals(operand))
 		{
-			if (left.getTypeId()!=null && left.getTypeId() == 4)
+			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
 				translatedVar= "formulaHasNoResult("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && left.getTypeId() == 3)
+			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
 				translatedVar= "customHasNoResult("+inStr+")";
 			}
-			else if (left.getTypeId()!=null && (left.getTypeId() == 6 || left.getTypeId() == 7))
+			else if (left.measureTypeIn(
+					MEASURE_TYPE_SELECT_ONE_MATRIX, 
+					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
 				translatedVar= "matrixHasNoResult("+inStr+")";
 			}
 		}
 		else if ("response".equals(operand))
 		{
-			if (left.getMeasureTypeId() !=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.measureTypeIn(
+					MEASURE_TYPE_SELECT_ONE, 
+					MEASURE_TYPE_SELECT_MULTI))
 			{
 				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operand))
 		{
-			if (left.getMeasureTypeId()!=null && (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3))
+			if (left.measureTypeIn(
+					MEASURE_TYPE_SELECT_ONE, 
+					MEASURE_TYPE_SELECT_MULTI))
 			{
 				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("none".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null 
-					&& (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3|| left.getMeasureTypeId() == 4))
+			if (left.measureTypeIn( 
+					MEASURE_TYPE_SELECT_ONE,
+					MEASURE_TYPE_SELECT_MULTI,
+					MEASURE_TYPE_TABLE))
 			{
 				translatedVar= "wasAnswerNone("+inStr+")";
 			}
@@ -179,8 +211,10 @@ public abstract class TemplateBaseContent {
 		}
 		else if ("nnone".equals(operand))
 		{
-			if (left.getMeasureTypeId() != null 
-					&& (left.getMeasureTypeId() == 2 || left.getMeasureTypeId() == 3|| left.getMeasureTypeId() == 4))
+			if (left.measureTypeIn(
+					MEASURE_TYPE_SELECT_ONE, 
+					MEASURE_TYPE_SELECT_MULTI,
+					MEASURE_TYPE_TABLE))
 			{
 				translatedVar= "wasntAnswerNone("+inStr+")";
 			}

@@ -1,13 +1,11 @@
 package gov.va.escreening.service;
 
-import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.exception.EntityNotFoundException;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Multimap;
@@ -42,7 +40,7 @@ public interface AssessmentVariableService {
 
 	Collection<AssessmentVariable> findAllFormulae();
 
-	void filterBySurvey(Survey survey, AvBuilder avModelBldr,
+	void filterBySurvey(Survey survey, AvBuilder<?> avModelBldr,
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			boolean filterMeasures);
 

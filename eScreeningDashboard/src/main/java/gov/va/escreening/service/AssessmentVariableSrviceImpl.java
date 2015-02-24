@@ -14,7 +14,6 @@ import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.repository.RepositoryInterface;
 import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
@@ -26,8 +25,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +38,6 @@ import com.google.common.collect.TreeBasedTable;
 
 @Service("assessmentVariableService")
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
-	private static final Logger logger = LoggerFactory.getLogger(AssessmentVariableSrviceImpl.class);
 	
 	@Resource(name = "filterMeasureTypes")
 	Set<Integer> filterMeasureTypes;
@@ -171,7 +167,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 
 	@Override
-	public void filterBySurvey(Survey survey, AvBuilder avBldr,
+	public void filterBySurvey(Survey survey, AvBuilder<?> avBldr,
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			boolean useFilteredMeasures) {
 		
@@ -339,19 +335,19 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		return result;
 	}
 
-	private void handleCustomType(AssessmentVariable av, AvBuilder avModelBldr) {
+	private void handleCustomType(AssessmentVariable av, AvBuilder<?> avModelBldr) {
 		avModelBldr.buildFromMeasureAnswer(av, null, null, null);
 	}
 
 	private void handleFormulaType(Survey survey, AssessmentVariable av,
-			Collection<Measure> smList, AvBuilder avBldr,
+			Collection<Measure> smList, AvBuilder<?> avBldr,
 			Collection<AssessmentVariable> avList, boolean ignoreAnswers) {
 
 		avBldr.buildFormula(survey, av, smList, avList, ignoreAnswers);
 	}
 
 	private void handleAvChilren(Survey survey, AssessmentVariable avFormula,
-			Collection<Measure> smList, AvBuilder avBldr,
+			Collection<Measure> smList, AvBuilder<?> avBldr,
 			Collection<AssessmentVariable> avList, boolean ignoreAnswers) {
 
 		List<AssessmentVarChildren> avcList = avFormula.getAssessmentVarChildrenList();
@@ -379,7 +375,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 
 	private void handleMeasureAnswerType(AssessmentVariable av,
-			Collection<Measure> smList, AvBuilder avModelBldr) {
+			Collection<Measure> smList, AvBuilder<?> avModelBldr) {
 		for (Measure m : smList) {
 			if (compareMeasureAnswer(av, m)) {
 				avModelBldr.buildFromMeasureAnswer(av, null, m, av.getMeasureAnswer());
@@ -389,7 +385,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 
 	private void handleMeasureType(AssessmentVariable av,
-			Collection<Measure> smList, AvBuilder avModelBldr) {
+			Collection<Measure> smList, AvBuilder<?> avModelBldr) {
 		for (Measure m : smList) {
 			if (compareMeasure(av, m)) {
 				avModelBldr.buildFromMeasure(av, null, m);
