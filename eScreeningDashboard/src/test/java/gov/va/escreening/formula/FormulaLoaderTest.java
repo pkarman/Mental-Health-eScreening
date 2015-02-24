@@ -1,8 +1,6 @@
 package gov.va.escreening.formula;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import gov.va.escreening.entity.AssessmentFormula;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
@@ -13,15 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import sun.misc.IOUtils;
 
 import javax.annotation.Resource;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -43,19 +39,20 @@ public class FormulaLoaderTest {
      * or brackets or constants or assessment_variable pks into tokens for assessment_formula table
      */
     @Test
+    @Transactional
     public void loadFormulaTemplatesToAssessmentFormulas() throws Exception {
 
         StringBuilder inserts = new StringBuilder();
 
         List<AssessmentVariable> formulas = avr.findAllFormulae();
         for (AssessmentVariable formulaVar : formulas) {
-            if (formulaVar.getAssessmentVariableId()==12){
+            if (formulaVar.getAssessmentVariableId() == 12) {
                 // ignore formula #calculateAge
                 continue;
             }
-            List<String> tokensFromTemplate = buildFormulaTokensFor(formulaVar);
+            List<String> formulaTokensAsMin = buildFormulaTokensAsMin(formulaVar);
             String origTemplate = formulaVar.getFormulaTemplate().replaceAll("\\s", "");
-            String templateFromTokens = expressionEvaluator.buildFormulaFromTokenIds(tokensFromTemplate);
+            String templateFromTokens = expressionEvaluator.buildFormulaFromMin(formulaTokensAsMin);
 
             Assert.isTrue(origTemplate.equals(templateFromTokens));
 
@@ -63,7 +60,7 @@ public class FormulaLoaderTest {
             //asMap.put("av", formulaVar.getAsFormulaVar());
             //asMap.put("tokens", tokensFromTemplate);
 
-            addFormulaTokensAsDbInserts(inserts, formulaVar.getAssessmentVariableId(), tokensFromTemplate);
+            addFormulaTokensAsDbInserts(inserts, formulaVar, formulaTokensAsMin);
 
             //expressionEvaluator.updateFormula(asMap);
         }
@@ -76,15 +73,16 @@ public class FormulaLoaderTest {
         // copy this string and save it in a file to run the script in mysql
     }
 
-    private void addFormulaTokensAsDbInserts(StringBuilder inserts, Integer assessmentVariableId, List<String> tokensFromTemplate) {
-        int displayOrder = 1;
-        for (String formulaToken : tokensFromTemplate) {
-            String insertStatement = String.format("insert into assessment_formula (assessment_variable_id,display_order,formula_token) values (%s, %s, '%s');", assessmentVariableId, displayOrder++, formulaToken);
+    private void addFormulaTokensAsDbInserts(StringBuilder inserts, AssessmentVariable av, List<String> tokensFromTemplate) {
+        av.attachFormulaTokens(tokensFromTemplate);
+
+        for (AssessmentFormula af : av.getAssessmentFormulas()) {
+            String insertStatement = String.format("insert into assessment_formula (assessment_variable_id,display_order,formula_token,user_defined) values (%s, %s, '%s',%s);", af.getParentAssessment().getAssessmentVariableId(), af.getDisplayOrder(), af.getFormulaToken(), af.getUserDefined());
             inserts.append(insertStatement).append("\n");
         }
     }
 
-    private List<String> buildFormulaTokensFor(AssessmentVariable formulaVar) throws Exception {
+    private List<String> buildFormulaTokensAsMin(AssessmentVariable formulaVar) throws Exception {
         String formulaTemplate = formulaVar.getFormulaTemplate().replaceAll("\\s", "");
         Reader formulaReader = new StringReader(formulaTemplate);
 
@@ -102,7 +100,7 @@ public class FormulaLoaderTest {
             } else if (c == ']') {
                 bracketSeen = false;
                 if (!varId.isEmpty()) {
-                    tokens.add(varId.replaceAll("[$]", ""));
+                    tokens.add(buildToken(varId.replaceAll("[$]", ""), false));
                     varId = "";
                 }
             } else if (bracketSeen) {
@@ -113,24 +111,28 @@ public class FormulaLoaderTest {
             } else {
                 if (!varId.isEmpty()) {
                     // this will be a number entered by user as a CONSTANT
-                    tokens.add("udk[" + varId + "][" + index++ + "]");
+                    tokens.add(buildToken(varId, true));
                     varId = "";
                     numberSeen = false;
                 }
                 // should should be any other single character
-                tokens.add("udk[" + (char) c + "][" + index++ + "]");
+                tokens.add(buildToken(String.valueOf((char) c),true));
             }
         }
 
         if (!bracketSeen && !varId.isEmpty()) {
             if (numberSeen) {
-                tokens.add("udk[" + varId + "][" + index++ + "]");
+                tokens.add(buildToken(varId, true));
             } else {
-                tokens.add(varId);
+                tokens.add(buildToken(varId, false));
             }
         }
 
         return tokens;
 
+    }
+
+    private String buildToken(String token, boolean userDefined) {
+        return String.format("%s|%s", userDefined ? "t" : "f", token);
     }
 }

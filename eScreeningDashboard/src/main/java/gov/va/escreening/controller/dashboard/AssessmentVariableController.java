@@ -66,7 +66,7 @@ public class AssessmentVariableController {
     public List<Map<String, Object>> getAssessmentVarsForSurvey(@RequestParam("surveyId") Integer surveyId) {
 
         if (surveyId == null || surveyId < 0) {
-			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Invalid or missing module ID.  Please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+            ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Invalid or missing module ID.  Please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
         }
 
         Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId, true, false);
@@ -74,8 +74,8 @@ public class AssessmentVariableController {
         if (t.isEmpty()) {
             ErrorBuilder
                     .throwing(EntityNotFoundException.class)
-				.toUser("No variables were found for this module.  Please contact your system administrator.")
-				.toAdmin(String.format("No assessment variables were found for Survey with an Id of %s", surveyId))
+                    .toUser("No variables were found for this module.  Please contact your system administrator.")
+                    .toAdmin(String.format("No assessment variables were found for Survey with an Id of %s", surveyId))
                     .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
         }
         return avTableToList(t);
@@ -99,19 +99,11 @@ public class AssessmentVariableController {
         }
         List<Map<String, Object>> avs = avTableToList(t);
         if (avs != null) {
-            // remove Assessment Variables which are CUSTOM TYPE
-//            for (Iterator<Map<String, Object>> mapIter = avs.iterator(); mapIter.hasNext(); ) {
-//                Map<String, Object> avDataMap = mapIter.next();
-//                if (avDataMap.get("typeId").equals(3)) {
-//                    mapIter.remove();
-//                }
-//            }
-
             // assign a unique guid to allow duplicate use of assessment variables inside  formula
             for (Map<String, Object> m : avs) {
                 int typeId = (int) m.get("typeId");
                 m.put("type", typeId == 1 ? "Question" : typeId == 2 ? "Answer" : typeId == 3 ? "Custom" : typeId == 4 ? "Formula" : "Operator");
-                m.put("guid", System.nanoTime());
+                m.put("id", "f|" + m.get("id"));
             }
         }
         return avs;
