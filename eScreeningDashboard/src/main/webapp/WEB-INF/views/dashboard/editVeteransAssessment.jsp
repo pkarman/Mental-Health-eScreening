@@ -95,10 +95,10 @@
 											<th scope="col" class="col-md-2">Last Name</th>
 											<th scope="col" class="col-md-2">First Name</th>
 											<th scope="col" class="col-md-2">Middle Name</th>
-											<th scope="col" class="col-md-2">Date of Birth</th>
+											<th scope="col" class="col-md-1">Date of Birth</th>
 											<th scope="col" class="col-md-1">Appointment Date</th>
 											<th scope="col" class="col-md-1 text-right">Appointment Time</th>
-											<th scope="col" class="col-md-1">Clinical Reminders</th>
+											<th scope="col" class="col-md-2">Clinical Reminders</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -115,14 +115,14 @@
 										<c:if test="${not empty veterans}">
 											<c:forEach var="item" items="${veterans}">
 												<tr>
-													<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
+													<td class="text-right"><c:out value="${item.ssnLastFour}" /></td>
 													<td><c:out value="${item.lastName}" /></td>
 													<td><c:out value="${item.firstName}" /></td>
 													<td><c:out value="${item.middleName}" /></td>
-													<td><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
+													<td class="text-right"><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
 													<td class="text-right"><c:out value="${item.apptDate}" /></td>
 													<td class="text-right"><c:out value="${item.apptTime}" /></td>
-													<td class="text-right"><c:out value="${item.dueClinicalReminders}" /></td>
+													<td class="text-right  text-capitalize"><c:out value="${item.dueClinicalReminders}" /></td>
 												</tr>
 											</c:forEach>
 										</c:if>

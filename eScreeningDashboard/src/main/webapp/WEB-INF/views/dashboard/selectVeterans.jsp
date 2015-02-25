@@ -104,10 +104,11 @@
 								<div class="form-group">
 										<form:label path="startDate">From Date *</form:label>
 									<div class="input-group date" id="fromAssessmentDateGroup">
-										<form:input path="startDate" maxlength="10" cssClass="form-control" cssErrorClass="form-control" placeholder="MM/DD/YYYY"  value="02/01/2010" />
+										<form:input path="startDate" maxlength="10" cssClass="form-control startDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY"  />
 										<form:errors path="startDate"  cssClass="help-inline"/>
 										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>
+									<div class="help-inline hide startDateError">Enter a valid date</div>
 								</div>
 							</div>
 	
@@ -115,10 +116,11 @@
 								<div class="form-group">
 									<form:label path="endDate">To Date *</form:label>
 									<div class="input-group date" id="toAssessmentDateGroup">
-										<form:input path="endDate" maxlength="10" cssClass="dateField form-control" cssErrorClass="form-control" placeholder="MM/DD/YYYY"   value="02/01/2015"  />
+										<form:input path="endDate" maxlength="10" cssClass="form-control endDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY"   />
 										<form:errors path="endDate"  cssClass="help-inline"/>
 										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>
+									<div class="help-inline hide endDateError">Enter a valid date</div>
 								</div>							
 							</div>
 							

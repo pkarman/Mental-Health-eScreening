@@ -60,12 +60,10 @@
         		<h1>Batch Complete</h1>
 				
 					<div class="alert alert-success">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						Battery Creation Successful for the Below Veterans.
 					</div>
 					
 					<div class="alert alert-danger">
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						Battery Creation Failed for the Below Veterans.
 					</div>
 					
@@ -93,11 +91,40 @@
 											<th scope="col" class="col-md-1">Appointment Date</th>
 											<th scope="col" class="col-md-1">Appointment Time</th>
 											<th scope="col" class="col-md-1">Clinical Reminders</th>
+											<th scope="col" class="col-md-1">Status</th>
 											<th scope="col" class="col-md-1">Action</th>
 										</tr>
 									  </thead>
-									  <tbody>
-									  </tbody>
+										<tbody>
+											<c:if test="${not empty veterans}">
+												<c:forEach var="item" items="${veterans}">
+													<tr>
+														<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
+														<td><c:out value="${item.lastName}" /></td>
+														<td><c:out value="${item.firstName}" /></td>
+														<td><c:out value="${item.middleName}" /></td>
+														<td><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
+														<td class="text-right"><c:out value="${item.apptDate}" /></td>
+														<td class="text-right"><c:out value="${item.apptTime}" /></td>
+														<td class="text-center text-capitalize"><c:out value="${item.dueClinicalReminders}" /></td>
+														<td class="text-center"></td>
+														<td class="text-right">
+														<c:if test="${isCprsVerified}">
+															<c:if test="${not empty item.veteranId}">
+																<s:url var="mapVeteranToVistaUrl" value="/dashboard/veteranDetail" htmlEscape="true">
+																	<s:param name="vid" value="${item.veteranId}" />
+																</s:url>
+																<div class="text-left">
+																	<a href="${mapVeteranToVistaUrl}"  title="View Details">View</a>
+																</div>
+															</c:if>
+														</c:if>		
+														</td>		
+													</tr>
+												</c:forEach>
+											</c:if>
+										</tbody>
+						
 									</table>
 								</div>
 						  </div>
@@ -105,9 +132,9 @@
 					  </div>
 					</div>			
 
-					<div>
-						<button id="dashbaordBtn" name="dashbaordBtn" type="submit" class="btn btn-primary pull-right">Dashboard</button>
-						<button id="returnToAppointmentsBtn" name="returnToAppointmentsBtn" type="submit" class="btn btn-primary pull-right">Return to Appointments</button>
+					<div class="pull-right">
+						<button id="dashbaordBtn" name="dashbaordBtn" type="submit" class="btn btn-primary">Dashboard</button>
+						<button id="returnToAppointmentsBtn" name="returnToAppointmentsBtn" type="submit" class="btn btn-primary">Return to Appointments</button>
 					</div>	
 			</div>
 		</div>
