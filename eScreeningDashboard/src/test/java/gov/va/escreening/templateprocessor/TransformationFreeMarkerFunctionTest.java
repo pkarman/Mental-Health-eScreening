@@ -1,20 +1,16 @@
 package gov.va.escreening.templateprocessor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import gov.va.escreening.test.TestAssessmentVariableBuilder;
 
-import java.io.IOException;
-
-import org.junit.Before;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import freemarker.template.TemplateException;
-import gov.va.escreening.test.AssessmentVariableBuilder;
 
 /**
  * This class is concerned with testing Freemarker functions used for Assessment Variable transformations<br/>
@@ -26,6 +22,8 @@ import gov.va.escreening.test.AssessmentVariableBuilder;
 @RunWith(JUnit4.class)
 public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest{
 	private static final Logger logger = LoggerFactory.getLogger(TransformationFreeMarkerFunctionTest.class);
+	private static DateTimeFormatter STANDARD_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
+	private static DateTimeFormatter APPOINTMENT_FORMAT = DateTimeFormat.forPattern("MM-dd-yy@hh:mm");
 	
 	@Test
 	public void testGetResponseForFreeText() throws Exception{
@@ -36,7 +34,24 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	
 	@Test
 	public void testDelimitTransformationForAppointments() throws Exception {
-				
+		DateTime firstApptTime = new DateTime().plusDays(5);
+		DateTime secondApptTime = new DateTime().plusDays(6);
+		
+		assertEquals("*" + APPOINTMENT_FORMAT.print(firstApptTime) + "Clinic 1-**" + APPOINTMENT_FORMAT.print(secondApptTime) + "Clinic 2-", 
+				render(avBuilder
+						.addCustomAV(6)
+						.addAppointment("Clinic 1", firstApptTime.toDate(), "active")
+						.addAppointment("Clinic 2", secondApptTime.toDate(), "active"),
+						"${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVal\")}"));
+	}
+	
+	@Test
+	public void testDelimitTransformationForAppointmentsNoResponseGiven() throws Exception {
+		//test that transformation still works when no veteran response is available
+		assertEquals("defaultVaLL", 
+				render(avBuilder
+						.addCustomAV(6),
+						"${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test
@@ -50,6 +65,11 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	}
 	
 	@Test
+	public void testDelimitTransformationForSelectMultiNoResponseGiven() throws Exception{
+		//test that transformation still works when no veteran response is available
+	}
+	
+	@Test
 	public void testDelimitTransformationForSingleValueCase() throws Exception{
 		//when there is only one value the prefix, lastPrefix, and suffix should never be returned
 		
@@ -59,7 +79,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	
 	@Test
 	public void testDelimitTranslationForPrefix() throws Exception{
-		
+
 	}
 	
 	@Test
@@ -79,6 +99,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	
 	@Test
 	public void testDelimitTranslationForDefaultValue() throws Exception{
+		//if no response is given default value should be used
 		
 	}
 	
@@ -87,13 +108,48 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	//Transformation takes value and emits the number of years between the veteran entered date and the assessment date
 	
 	@Test
-	public void testYearsFromDateTranslation() throws Exception{
-		//test before today's date, on today's date and after today's date 
+	public void testYearsFromDateTranslationSameDay() throws Exception{
+		DateTime date = new DateTime().minusYears(3);
+		
+		assertEquals("3", 
+				render(avBuilder
+						.addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+						.setDataTypeValidation("date"), 
+						"${yearsFromDate(var1)}"));
 	}
 	
 	@Test
-	public void testYearsFromDateTranslationRendering() throws Exception{
-		//we have to ensure that the correct date is being calculated
+	public void testYearsFromDateTranslationDayBefore() throws Exception{
+		//test before today's date which should count current year 
+		DateTime date = new DateTime().minusYears(3).minusDays(1);
+		
+		assertEquals("3", 
+				render(avBuilder
+						.addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+						.setDataTypeValidation("date"), 
+						"${yearsFromDate(var1)}"));
+	}
+	
+	@Test
+	public void testYearsFromDateTranslationDayAfter() throws Exception{
+		//after today's date which should not count last year as complete
+		DateTime date = new DateTime().minusYears(3).plusDays(1);
+		
+		assertEquals("2", 
+				render(avBuilder
+						.addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+						.setDataTypeValidation("date"), 
+						"${yearsFromDate(var1)}"));
+	}
+	
+	@Test
+	public void testYearsFromDateTransformationNoResponseGiven() throws Exception{
+		//the freemarker function should gracefully deal with not having an answer
+		assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
+				render(avBuilder
+						.addFreeTextAV(1, "dob", null)
+						.setDataTypeValidation("date"), 
+						"${yearsFromDate(var1)}"));
 	}
 
 	/** TESTS for delimitedMatrixQuestions translation Select-One and Select-Multi Matrix Questions  **/
@@ -113,11 +169,21 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 		
 	}
 	
+	@Test
+	public void testDelimitedMatrixQuestionsTranslationForSingleNoResponseGiven() throws Exception{
+		//test that transformation still works when no veteran response is available
+	}
+	
 	/** TESTS for numberOfEntries translation for table questions  **/
 	
 	@Test
 	public void testNumberOfEntriesTranslation() throws Exception{
 		
+	}
+	
+	@Test
+	public void testNumberOfEntriesTranslationNoResponseGiven() throws Exception{
+		//test that transformation still works when no veteran response is available
 	}
 	
 	/** TESTS for delimitTableField translation for table questions  **/
@@ -127,13 +193,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 		
 	}
 	
+	@Test
+	public void testDelimitTableFieldTranslationNoResponseGiven() throws Exception{
+		//test that transformation still works when no veteran response is available
+	}
+	
+	
 	//TODO: Add a test for each setting 
 	
-	
-	private String render(AssessmentVariableBuilder avBuilder, String templateText) throws IOException, TemplateException{
-		return templateService.processTemplate(
-				"<#include \"clinicalnotefunctions\">" + templateText, 
-				avBuilder.getDTOs(), 1);
-	}
 	
 }

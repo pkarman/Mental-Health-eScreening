@@ -1,17 +1,33 @@
 package gov.va.escreening.templateprocessor;
 
+import java.io.IOException;
+
+import freemarker.template.TemplateException;
 import gov.va.escreening.test.AssessmentVariableBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder;
 
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FreeMarkerFunctionTest {
-
-	protected static final TemplateProcessorServiceImpl templateService = new TemplateProcessorServiceImpl();
-	protected AssessmentVariableBuilder avBuilder;
+	private static final Logger logger = LoggerFactory.getLogger(FreeMarkerFunctionTest.class);
+	
+	protected TestAssessmentVariableBuilder avBuilder;
 	
     @Before
     public void setUp() {
-    	avBuilder = new AssessmentVariableBuilder();
+    	avBuilder = new TestAssessmentVariableBuilder();
     }
-	
+
+	protected String render(AssessmentVariableBuilder avBuilder, String templateText) throws IOException, TemplateException{
+		//creating a new processor every time to avoid caching of templates
+		String result = new TemplateProcessorServiceImpl().processTemplate(
+				"<#include \"clinicalnotefunctions\">" + templateText, 
+				avBuilder.getDTOs(), 1);
+		System.out.println("template rendered:\n" + result);
+		
+		return result;
+	}
+		
 }

@@ -568,27 +568,29 @@ yearsFromDate transformation takes a variable's value and returns the number of 
 It is important to note that what we need is the number of years from the date given by the veteran and the date of the 
 assessment. This function assumes that the templates for a veteran will be rendered at the end of the assessment.
 -->
-<#function yearsFromDate dt=DEFAULT_VALUE > 
-	<#if dt == DEFAULT_VALUE >
+<#function yearsFromDate dt=DEFAULT_VALUE >
+    <#assign dateValue = getFreeTextAnswer(dt)>
+    
+	<#if dateValue == DEFAULT_VALUE >
 		<#return DEFAULT_VALUE>
 	</#if>
 	
 	<#assign today = .now?date>
-	<#assign startDate = dt?date("MM/dd/yyyy")>
+	<#assign startDate = dateValue?date("MM/dd/yyyy")>
 	
 	<#-- find number of leap years between start and end date -->
-	<#assign startYear = (startDate?string["yyyy"])?int >
-	<#assign startMonth = (startDate?string["MM"])?int >
-	<#assign startDay = (startDate?string["dd"])?int >
+	<#assign startYear = ((startDate?string["yyyy"])?number) >
+	<#assign startMonth = ((startDate?string["MM"])?number) >
+	<#assign startDay = ((startDate?string["dd"])?number) >
 	
-	<#assign endYear = (today?string["yyyy"])?int >
-	<#assign endMonth = (today?string["MM"])?int >
-	<#assign endDay = (today?string["dd"])?int >
+	<#assign endYear = ((today?string["yyyy"])?number) >
+	<#assign endMonth = ((today?string["MM"])?number) >
+	<#assign endDay = ((today?string["dd"])?number) >
 	
 	<#assign age = endYear - startYear>
 	
 	<#-- if it is before the birthday subtract one -->
-	<#if startMonth > endMonth || (startMonth == endMonth && startDay > endDay>
+	<#if (startMonth > endMonth) || (startMonth == endMonth && startDay > endDay) >
 		<#assign age = age - 1>	
 	</#if>
 	
@@ -602,12 +604,15 @@ Checks variable type to use correct delimiter helper functions.
 <#function delimit var=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
   	<#assign list=[]>
   	
-    <#if var.variableId?? && var.variableId == 6>
-	    <#assign list = getChildValues(var)>
-	<#elseif var.measureTypeId?? &&  var.measureTypeId == 3 >  <#--  select-multi questions --> 
-        <#assign list = getChildDisplayText(var)>
-    <#else>
-    	<#return '[Error: unsupported type to delimit]'>
+  	
+  	<#if var != DEFAULT_VALUE>
+        <#if var.variableId?? && var.variableId == 6>
+    	    <#assign list = getChildValues(var)>
+    	<#elseif var.measureTypeId?? &&  var.measureTypeId == 3 >  <#--  select-multi questions --> 
+            <#assign list = getChildDisplayText(var)>
+        <#else>
+        	<#return '[Error: unsupported type to delimit]'>
+        </#if>
     </#if>
 
 	<#return delimitList(list, prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue) >
@@ -946,7 +951,7 @@ returns the negation of responseIs
     <#return !(responseIs(var, right, measureTypeId)) > 
 </#function>
 
-<#function getFreeTextAnswer variableObj=DEFAULT_VALUE deflt=''>
+<#function getFreeTextAnswer variableObj=DEFAULT_VALUE deflt=DEFAULT_VALUE>
     <#if variableObj = DEFAULT_VALUE || !(variableObj.children)?? || variableObj.children?size == 0>
         <#-- The object was not found -->
         <#return deflt>
