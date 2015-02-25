@@ -47,9 +47,9 @@ public class ProgramListViewController {
     
     @RequestMapping(value = "/programList", method = RequestMethod.GET)
     @ResponseBody
-    public List<DropDownObject> setUpPageProgramListView(Model model, @CurrentUser EscreenUser user) {
+    public List<DropDownObject> getProgramList(Model model) {
 
-        List<DropDownObject> programList = programService.getProgramDropDownObjects(user.getProgramIdList());
+        List<DropDownObject> programList = programService.getDropdownObjects();
         return programList;
     }
 }
