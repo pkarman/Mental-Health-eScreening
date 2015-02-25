@@ -68,17 +68,19 @@
       }
     
 	if (localStorage.getItem("tabletProgramLSText") === null) {
-  		window.location.href = "tabletConfiguration";
+		window.location.href = "tabletConfiguration";
+	}else{
+		if (localStorage.getItem("tabletProgramLSValue") != null) {
+			$("#programId").val(localStorage.getItem("tabletProgramLSValue"));  // update program input with the programID from the localStorage
+		}
 	}
 
-	
-	if (typeof(Storage) != "undefined") {
-		document.getElementById("tabletProgramBlock").innerHTML = localStorage.getItem("tabletProgramLSText");
-	} else {
-		
-		document.getElementById("tabletProgramBlock").innerHTML = "Sorry, your browser does not support Web Storage...";
-	}
-	
+		var tabletProgramBlock ="#tabletProgramBlock";
+		if (typeof(Storage) != "undefined") {
+			$(tabletProgramBlock).html(localStorage.getItem("tabletProgramLSText"));
+		} else {
+			$(tabletProgramBlock).html( "Sorry, your browser does not support Web Storage..." );
+		}
 	});
     
       $(function() {
@@ -173,7 +175,6 @@
 			 %>
   	</div>
   	
-  	
         <form:form id="assessmentLoginForm" method="post" modelAttribute="assessmentLoginFormBean" autocomplete="off" role="form">
        
         <%-- <div><span class="requireMark">*</span> indicates required fields</div> --%>
@@ -187,8 +188,10 @@
            <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
+					<input id="programId" name="programId" type="hidden" />
                     <form:label path="lastName">Last Name</form:label>
-                    <form:input path="lastName" id="lastName" class="immediate-help form-control input-lg" maxlength="30" placeholder="Enter Last Name" />
+                    
+					<form:input path="lastName" id="lastName" class="immediate-help form-control input-lg" maxlength="30" placeholder="Enter Last Name" />
                     <c:if test="${status.error}">
                           <div id="errorDiv" class="input-help"> <img id="errorImage" src="resources/images/errorIcon.jpg" class="errorImgWidth"/><form:errors path="lastName"/></div>
                      </c:if>
@@ -210,8 +213,6 @@
             <div class="row">
                   <div class="col-md-12">
                 <div class="form-group">
-
-
                           <form:label path="birthDate">Date of Birth</form:label>
                           <form:input path="birthDate" class="immediate-help form-control input-lg" maxlength="10" placeholder="MM/DD/YYYY"/>
                           <c:if test="${status.error}">
@@ -219,16 +220,12 @@
                               <form:errors path="birthDate" />
                             </div>
                       </c:if>
-
-
                     </div>
               </div>
                 </div>
             <div class="row">
                   <div class="col-md-12">
                 <div class="form-group">
-
-
                           <form:label path="middleName">Middle Name</form:label>
                           <form:input path="middleName" class="form-control input-lg"  maxlength="30" placeholder="Enter Middle Name" />
                           <c:if test="${status.error}">
@@ -237,8 +234,6 @@
                               <form:errors path="middleName" cssClass="error" />
                             </div>
                       </c:if>
-
-
                     </div>
               </div>
                 </div>

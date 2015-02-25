@@ -4,8 +4,8 @@ app.factory('programListService', function($http) {
 	return {
 		getProgramList : function() {
 			return $http({
-				method : "POST",
-				url : "dashboard/assessmentReport/services/user/programs",
+				method : "GET",
+				url : "dashboard/programList",
 				responseType : "json"
 			}).then(function(result) {
 				console.log("result.data" + result);
