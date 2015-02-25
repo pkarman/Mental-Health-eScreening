@@ -46,7 +46,7 @@ $(document).ready(function() {
 			 });
 		});
 
-
+	/* Disabled for testing purpose
 	$("#startDate").on("change focusout input", function() {
 			var date = $('#startDate').val();
 			var endDate 	= $('#endDate').val();
@@ -81,6 +81,6 @@ $(document).ready(function() {
 							parseInt(parts[0], 10));    // day
 		return date;
 	}
-
+	*/
 								
 });
