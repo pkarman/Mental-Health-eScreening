@@ -97,7 +97,7 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
         return zipfile;
     }
 
-    private void saveDataDictionaryAsExcel(
+    public void saveDataDictionaryAsExcel(
             String dirName, Map<String, Table<String, String, String>> dataDictionary, Date now) throws Exception {
 
         Map<String, Map<String, Table<String, String, String>>> model = Maps.newHashMap();

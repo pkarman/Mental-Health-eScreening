@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
-    private static final Logger logger = LoggerFactory.getLogger(ExportDataServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource(type = AssessmentVariableRepository.class)
     private AssessmentVariableRepository avr;
@@ -377,6 +377,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     public void takeAssessmentSnapShot(Integer exportedById) {
+        logger.warn(">>>>>>[takeAssessmentSnapShot]DD-CREATE");
+
         Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
 
         Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();
