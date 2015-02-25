@@ -1,44 +1,49 @@
 /**
  * Created by Khalid Rizvi @ 01/10/2015
  */
-Editors.controller('ModuleFormulasListController', ['$state', '$log', '$scope', '$stateParams', 'FormulasService', function ($state, $log, $scope, $stateParams, FormulasService) {
+Editors.controller('ModuleFormulasListController', ['$state', '$filter', '$log', '$scope', '$stateParams', 'FormulasService', 'ngTableParams', function ($state, $filter, $log, $scope, $stateParams, FormulasService, ngTableParams) {
 
-    $scope.formulas = [];
-    $scope.pagination = {currentPage: 1, itemsPerPage: 10, maxSize: 10};
+    var formulas = [];
     $scope.module = {};
+    $data = [];
 
     FormulasService.getModuleById($stateParams.moduleId)
         .then(function (module) {
             FormulasService.setCurrentModule(module);
-            $scope.module.name = module.name;
+            $scope.module = module;
 
             FormulasService.loadCurrentFormulas()
                 .then(function (formulas) {
+
                     FormulasService.setCurrentFormulas(formulas);
-                    var data = FormulasService.fetchCurrentFormulas();
-                    $log.debug($scope.module.id + ' has [' + data.length + '] formulas: ' + JSON.stringify(data));
-                    $scope.pagination.totalItems = data.length;
-                    $scope.formulas = data.slice(($scope.pagination.currentPage - 1) * $scope.pagination.itemsPerPage, $scope.pagination.itemsPerPage);
+                    formulas = FormulasService.fetchCurrentFormulas();
+                    $log.debug($scope.module.name + ' has [' + formulas.length + '] formulas: ' + JSON.stringify(_.pluck(formulas, 'name')));
+
+                    $scope.tableParams = new ngTableParams({
+                        page: 1,            // show first page
+                        count: 10           // count per page
+                        //filter: {
+                        //    name: '' // initial filter
+                        //},
+                        //sorting: {
+                        //    name: 'asc'
+                        //}
+                    }, {
+                        total: formulas.length, // length of data
+                        getData: function ($defer, params) {
+                            //params.total(formulas.length);
+                            //var filteredData = params.filter() ?
+                            //    $filter('filter')(formulas, params.filter()) : formulas;
+                            //var orderedData = params.sorting() ?
+                            //    $filter('orderBy')(filteredData, params.orderBy()) : formulas;
+                            $defer.resolve(formulas.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                        }
+                    });
+
                 }, function error(reason) {
                     $log.error(reason);
                 });
         });
-
-
-    $scope.$watch('pagination.currentPage', function (newValue, oldValue) {
-        if (oldValue != newValue) {
-            var data = FormulasService.fetchCurrentFormulas();
-            $scope.formulas = data.slice(($scope.pagination.currentPage - 1) * $scope.pagination.itemsPerPage, (($scope.pagination.currentPage - 1) * $scope.pagination.itemsPerPage) + $scope.pagination.itemsPerPage);
-        }
-    });
-
-    $scope.setPage = function (pageNo) {
-        $scope.pagination.currentPage = pageNo;
-    };
-
-    $scope.pageChanged = function () {
-        $log.log('Page changed to: ' + $scope.pagination.currentPage);
-    };
 
     $scope.edit = function (formula) {
         $log.debug(JSON.stringify(formula) + ' is being edited');

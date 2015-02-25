@@ -23,37 +23,28 @@
 
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <table show-filter="false" class="table table-hover" ng-table="tableParams"  summary="Manage Formulas Table">
-                <thead>
-                <tr>
-                    <th class="col-md-3">Variable Name</th>
-                    <th class="col-md-7">Formula</th>
-                    <th class="col-md-2">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="f in formulas" ng-class-odd="'odd'" ng-class-even="'even'">
-                    <td class="col-md-3">{{f.name}}</td>
-                    <td class="col-md-7" ng-mouseover="f.template">{{f.formula}}</td>
-                    <td class="col-md-2">
+            <table show-filter="false" class="table table-hover" ng-table="tableParams" summary="Manage Formulas Table">
+                <tr ng-repeat="formulaData in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+                    <td data-title="'Variable Name'" class="col-md-3">{{formulaData.name}}</td>
+                    <td data-title="'Formula'" class="col-md-7">{{formulaData.formula}}</td>
+                    <td data-title="'Action'" class="col-md-2">
                         <div class="pull-right">
                             <div class="cursor-pointer">
                                     <span title="Edit"
-                                          ng-click="edit(f);" class="btn btn-default btn-xs"><i
+                                          ng-click="edit(formulaData);" class="btn btn-default btn-xs"><i
                                             class="glyphicon glyphicon-edit"></i> Edit  &nbsp; &nbsp;</span>
 
-                                    <!-- TODO implement this after we have designed the soft-delete concept
-                                    <span title="Delete"
-                                          ng-really-message="Permanently delete template?"
-                                          ng-really-click="delete(f);" class="btn btn-default btn-xs"><i
-                                            class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
-                                    -->
+                                <!-- TODO implement this after we have designed the soft-delete concept
+                                <span title="Delete"
+                                      ng-really-message="Permanently delete template?"
+                                      ng-really-click="delete(f);" class="btn btn-default btn-xs"><i
+                                        class="glyphicon glyphicon-remove-circle delete-red"></i> Delete </span>
+                                -->
 
                             </div>
                         </div>
                     </td>
                 </tr>
-                </tbody>
             </table>
         </div>
     </div>
