@@ -552,16 +552,6 @@ columnVarIdMap is a set of column AV IDs which we are testing to see if the vete
 	<#return delimitList(valList) >
 </#function>  
 
-<#-- a way of using higher order functions to get what we need for the delimitedMatrixQuestions 
-delimit(getAnsweredQuestions(matrix, mapToAlternativeOutput(getChildQuestions(matrix, rowVarId#1, rowVarId#2,...), rowVarAltOutput#1, rowVarAltOutput#2, ...) columnVarId#1, columnVarId#2, ...)))
-
-The array of transformation will be like this:
-List<rowQuestionAVId> getChildQuestions(rowVarId#1, rowVarId#2, ...)
-Map<rowId, altRowOutput> mapToAlternativeOutput(rowVarAltOutput#1, rowVarAltOutput#2, ...)
-List<String - altRowOutput> getAnsweredQuestions(columnVarId#1, columnVarId#2, ...)
-String delimit(prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue)
--->
-
 
 <#-- 
 yearsFromDate transformation takes a variable's value and returns the number of years from the current date
@@ -603,7 +593,6 @@ Checks variable type to use correct delimiter helper functions.
 -->
 <#function delimit var=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
   	<#assign list=[]>
-  	
   	
   	<#if var != DEFAULT_VALUE>
         <#if var.variableId?? && var.variableId == 6>
@@ -661,13 +650,14 @@ Returns an array of the 'value' field for each child of the given variable
 </#function>
 
 <#-- 
-Returns an array of the 'displayText' field for each child of the given variable
+Returns an array of the 'displayText' field for each child of the given variable.
+This uses getResponseText to pull out the value which checks several fields
 --> 
 <#function getChildDisplayText variableObj=DEFAULT_VALUE > 
 	<#assign result = []>
     <#if variableObj != DEFAULT_VALUE && (variableObj.children)?? && (variableObj.children?size > 0) > 
 	    <#list variableObj.children as child>
-	    	<#assign result = result + [child.displayText] >
+	    	<#assign result = result + [getResponseText(child)] >
 	    </#list>
     </#if>
     <#return result>

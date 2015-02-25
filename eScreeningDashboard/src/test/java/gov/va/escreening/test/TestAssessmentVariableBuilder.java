@@ -5,18 +5,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.entity.AssessmentVarChildren;
@@ -54,6 +58,7 @@ import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 import static org.mockito.Mockito.*;
 import static com.google.common.base.Preconditions.*;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -66,9 +71,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 	public static final String DEFAULT_VALUE = "notset";
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestAssessmentVariableBuilder.class); 
-	private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
-	private static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE);
-	private static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM);
+	private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
+	private static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE);
+	private static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_CUSTOM);
 	
 	//Tracks what is added/built
 	private final Map<Integer, AssessmentVariable> avMap = new HashMap<>();
@@ -115,12 +120,41 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 	public FreeTextAvBuilder addFreeTextAV(int id, String measureText, @Nullable String response){
 		return new FreeTextAvBuilder(this, id, measureText, response);
 	}
-
+	
+		
+	@Override
+	public SelectAVBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText){
+		return new SelectAVBuilder(this, MEASURE_TYPE_SELECT_ONE, avId, questionText);
+	}
+	
+	@Override
+	public SelectAVBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText){
+		return new SelectAVBuilder(this, MEASURE_TYPE_SELECT_MULTI, avId, questionText);
+	}
+	
+	@Override
+	public MatrixAVBuilder addSelectOneMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+		return new MatrixAVBuilder(this, MEASURE_TYPE_SELECT_ONE_MATRIX, avId, questionText);
+	}
+	
+	@Override
+	public MatrixAVBuilder addSelectMultiMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+		return new MatrixAVBuilder(this, MEASURE_TYPE_SELECT_MULTI_MATRIX, avId, questionText);
+	}
+	
 	@Override
 	public CustomAvBuilder addCustomAV(int id){
 		return new CustomAvBuilder(this, id);
 	}
 	
+	
+	//Builder methods 
+	
+	/**
+	 * It is important to note that calling this a second time with the same measure ID will overwrite the previous call.
+	 * @param measureId
+	 * @param smrs
+	 */
 	private void setMeasureResponses(int measureId, SurveyMeasureResponse... smrs){
 		List<SurveyMeasureResponse> responseList;
 		if(smrs == null){ 
@@ -131,9 +165,19 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		}
 		
 		when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-	}	
+	}
 	
-	private AssessmentVariable newAssessmentVariable(Integer id, AssessmentVariableType type){
+	private void addMeasureResponse(int measureId, SurveyMeasureResponse response){
+		List<SurveyMeasureResponse> responseList = surveyResponseRepo.getForVeteranAssessmentAndMeasure(4, measureId);
+		if(responseList == null){
+			responseList = new LinkedList<>();
+		}
+		responseList.add(response);
+		when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
+		
+	}
+	
+	private AssessmentVariable newAssessmentVariable(@Nullable Integer id, AssessmentVariableType type){
 		AssessmentVariable var = id == null ? new AssessmentVariable(avId++) : new AssessmentVariable(id);
 		List<VariableTemplate> vtList = new ArrayList<>();
 		vtList.add(new VariableTemplate());
@@ -169,91 +213,204 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 	private void addVeteranAppointment(VistaVeteranAppointment vva){
 		appointments.add(vva);
 	}
-//	
-//	//from resolveSelectOneAssessmentVariableQuestion
-//	createSelectOneAV();
-//	addOption(displayValue, calculationValue, isSelected)
-//	addNone(isSelected)
-//	addOther(isSelected, otherText)
-//	
-//	//resolveSelectMultiAssessmentVariableQuestion
-//	createSelectMultiAV();
-//	addOption(isSelected)
-//	addNone(isSelected)
-//	addOther(isSelected, otherText)
-//	
+	
 //	//resolveTableAssessmentVariableQuestion
 //	createTableAV(children)
 //	addNone(isSelected)
-//	
-//	
-//	createMatrixAV(children)
-//	
-//	
-//	
 
 	
-	public class CustomAvBuilder extends ForwardingAssessmentVariableBuilder{
+	public class SelectAVBuilder extends ForwardingAssessmentVariableBuilder{
+		private final Measure measure;
 		private final AssessmentVariable av;
+		private Double defaultCalculationValue = 0.0;
 		
-		private CustomAvBuilder(AssessmentVariableBuilder rootBuilder, Integer customAvId){
+		private SelectAVBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
+				@Nullable Integer avId, @Nullable String questionText){
 			super(rootBuilder);
 			
-			av = newAssessmentVariable(customAvId, TYPE_CUSTOM);
-			avMap.put(customAvId, av);
-			
-		}
-		
-		public CustomAvBuilder addAppointments(VistaVeteranAppointment... appointments){
-			for(VistaVeteranAppointment appointment : appointments){
-				addAppointment(appointment);
+			if(measureTypeId != MEASURE_TYPE_SELECT_ONE 
+					&& measureTypeId != MEASURE_TYPE_SELECT_MULTI){
+				throw new IllegalArgumentException("measure type ID must be a select");
 			}
-			return this;
-		}
-
-		public CustomAvBuilder addAppointment(VistaVeteranAppointment appointment){
-			addVeteranAppointment(appointment);
-			return this;
-		}
-		
-		public CustomAvBuilder addAppointment(String clinicName, Date date, String status){
-			VistaVeteranAppointment appointment = new VistaVeteranAppointment();
-			appointment.setClinicName(clinicName);
-			appointment.setAppointmentDate(date);
-			appointment.setStatus(status);
 			
-			addVeteranAppointment(appointment);
+			measure = newMeasure(measureTypeId, questionText);
+			
+			av = newAssessmentVariable(avId, TYPE_MEASURE);
+			av.setMeasure(measure);
+			avMap.put(avId, av);
+		}
+		
+		private Measure getMeasure(){
+			return measure;
+		}
+		
+		/**
+		 * 
+		 * @param avId
+		 * @param answerText
+		 * @param answerType should be "other", "none", or null
+		 * @param calculationValue 
+		 * @param response
+		 * @param otherTextResponse if the type of this answer is other this response is the veteran's entered text
+		 * @return
+		 */
+		public SelectAVBuilder addAnswer(@Nullable Integer avId, 
+				@Nullable String answerText, 
+				@Nullable String answerType, 
+				@Nullable Double calculationValue,
+				@Nullable Boolean response,
+				@Nullable String otherTextResponse){
+			
+			MeasureAnswer answer = newMeasureAnswer();
+			answer.setAnswerText(answerText);
+			answer.setAnswerType(answerType);
+			answer.setCalculationValue(calculationValue != null ? calculationValue.toString() : defaultCalculationValue.toString());
+			defaultCalculationValue++;
+			
+			measure.getMeasureAnswerList().add(answer);
+			
+			//create av for answer
+			AssessmentVariable aav = newAssessmentVariable(avId, TYPE_ANSWER);
+			aav.setMeasureAnswer(answer);
+			answer.getAssessmentVariableList().add(aav);
+			measureAnswerHash.put(answer.getMeasureAnswerId(), aav);
+			
+			//create response
+			if(response != null){
+				SurveyMeasureResponse srm = new SurveyMeasureResponse();
+				srm.setBooleanValue(response);
+				srm.setMeasure(measure);
+				srm.setMeasureAnswer(answer);
+				srm.setOtherValue(otherTextResponse);
+				addMeasureResponse(measure.getMeasureId(), srm);
+			}
+			
 			return this;
 		}
 		
-		//TODO: implemented the following methods
-		//addChild --> look at examples CustomAssessmentVariableResolverImpl.getVeteranAppointments (not sure if this is needed)
-		
-		//sets the clinician's name in assessment.getClinician	
-//		setClinicianName(String first, String last)
-		
-	    //sets getDuration
-//		setAssessmentDuration(int durationSeconds)
+		//TODO: add the following methods
+//		//from resolveSelectOneAssessmentVariableQuestion
+//		createSelectOneAV();
+//		addOption(displayValue, calculationValue, isSelected)
+//		addNone(isSelected)
+//		addOther(isSelected, otherText)
+	//	
+//		//resolveSelectMultiAssessmentVariableQuestion
+//		createSelectMultiAV();
+//		addOption(isSelected)
+//		addNone(isSelected)
+//		addOther(isSelected, otherText)
+	}
+	
+	
+	public class MatrixAVBuilder extends ForwardingAssessmentVariableBuilder{
+		private final Measure matrixMeasure;
+		private final AssessmentVariable av;
+		private final List<SelectAVBuilder> childBuilders = new LinkedList<>();
+		private final List<MeasureAnswer> columns = new LinkedList<>();
 
-		//should this be at a higher level?
-		//  setVeteran()
-
+		/**
+		 * 
+		 * @param rootBuilder
+		 * @param measureTypeId should be either Assessment
+		 * @param avId assessment variable ID for the matrix
+		 * @param questionText
+		 */
+		private MatrixAVBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
+				@Nullable Integer avId, @Nullable String questionText){
+			super(rootBuilder);
+			
+			if(measureTypeId != MEASURE_TYPE_SELECT_ONE_MATRIX 
+					&& measureTypeId != MEASURE_TYPE_SELECT_MULTI_MATRIX){
+				throw new IllegalArgumentException("measure type ID must be a matrix");
+			}
+			
+			matrixMeasure = newMeasure(measureTypeId, questionText);
+			matrixMeasure.setChildren(new HashSet<Measure>());
+			
+			av = newAssessmentVariable(avId, TYPE_MEASURE);
+			av.setMeasure(matrixMeasure);
+			avMap.put(avId, av);
+		}
+		
+		/**
+		 * Adds a new child question to the matrix.  If this is called after a column was added, answers will be added but
+		 * no responses will be set.
+		 * @param childQuestionAvId
+		 * @param questionText
+		 * @return
+		 */
+		public MatrixAVBuilder addChildQuestion(@Nullable Integer childQuestionAvId, @Nullable String questionText){
+			Integer childMeasureTypeId = matrixMeasure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
+					?  MEASURE_TYPE_SELECT_ONE :  MEASURE_TYPE_SELECT_MULTI;
+			
+			SelectAVBuilder selectBuilder = new SelectAVBuilder(getRootBuilder(), childMeasureTypeId, childQuestionAvId, questionText);
+			childBuilders.add(selectBuilder);
+			
+			//add any answers that have been defined
+			for(MeasureAnswer col : columns){
+				selectBuilder.addAnswer(null, col.getAnswerText(), null, 
+						col.getCalculationValue() == null ? null: Double.valueOf(col.getCalculationValue()), null, null);
+			}
+			
+			//associate child with this parent
+			Measure childMeasure = selectBuilder.getMeasure();
+			childMeasure.setParent(matrixMeasure);
+			matrixMeasure.getChildren().add(childMeasure);
+			
+			return this;
+		}
+		
+		/**
+		 * Adds a new column to this matrix which means that every question which was added will have a new answer added.
+		 * If responses should be set then all questions should be added first and then columns.
+		 * @param answerText the column's (answer's) text shown to the veteran
+		 * @param answerType should be null, "none", or "other"
+		 * @param calculationValue 
+		 * @param responses this should be null or have a response for each question that was added to this matrix. The pair is 
+		 * a boolean (whether the option is selected), and an optional string (can be null) representing the "other" text value
+		 * the veteran entered into the answer. In the context of a matrix question, other answers are used to allow the 
+		 * veteran to set the question they are answering (because there are added topics that the other matrix questions didn't 
+		 * cover). So be careful with the other type.
+		 * @return
+		 */
+		public MatrixAVBuilder addColumn(
+				@Nullable String answerText,  
+				@Nullable String answerType, 
+				@Nullable Double calculationValue, 
+				@Nullable Iterable<Pair<Boolean,String>> responses){
+			
+			//save in case a new question is added after this
+			MeasureAnswer ma = new MeasureAnswer();
+			ma.setAnswerText(answerText);
+			ma.setCalculationValue(calculationValue.toString());
+			columns.add(ma);
+			
+			Iterator<Pair<Boolean,String>> responseIter = responses == null ? null : responses.iterator();
+			for(SelectAVBuilder childBuilder : childBuilders){
+				Pair<Boolean,String> response = responseIter != null && responseIter.hasNext() ? responseIter.next() : null; 
+				childBuilder.addAnswer(null, answerText, answerType, calculationValue, response.getLeft(), response.getRight());
+			}
+			
+			return this;
+		}
+		
 	}
 	
 	public class FreeTextAvBuilder extends ForwardingAssessmentVariableBuilder{
 		private final Measure measure;
 		
-		private FreeTextAvBuilder(AssessmentVariableBuilder rootBuilder, int id, String measureText, @Nullable String response){
+		private FreeTextAvBuilder(AssessmentVariableBuilder rootBuilder, int avId, String measureText, @Nullable String response){
 			super(rootBuilder);
-			
+		
 			//create a measure
 			measure = newFreeTextMeasure(measureText);
 			MeasureAnswer answer = measure.getMeasureAnswerList().get(0);
 			
 			//create av for measure
-			AssessmentVariable av = newAssessmentVariable(id, TYPE_MEASURE);
+			AssessmentVariable av = newAssessmentVariable(avId, TYPE_MEASURE);
 			av.setMeasure(measure);
-			avMap.put(id, av);
+			avMap.put(avId, av);
 			
 			//create av for answer
 			AssessmentVariable aav = newAssessmentVariable(null, TYPE_ANSWER);
@@ -267,7 +424,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 				srm.setTextValue(response);
 				srm.setMeasure(measure);
 				srm.setMeasureAnswer(answer);
-				setMeasureResponses(av.getMeasure().getMeasureId(), srm);
+				setMeasureResponses(measure.getMeasureId(), srm);
 			}
 		}
 		
@@ -286,13 +443,80 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		}
 		
 		private Measure newFreeTextMeasure(String text){
-			Measure m = newMeasure(AssessmentConstants.MEASURE_TYPE_FREE_TEXT, text, newMeasureAnswer());
+			Measure m = newMeasure(MEASURE_TYPE_FREE_TEXT, text, newMeasureAnswer());
 			m.setMeasureValidationList(new ArrayList<MeasureValidation>());
 			return m;
 		}
 	}
 	
-	
+	public class CustomAvBuilder extends ForwardingAssessmentVariableBuilder{
+		
+		private CustomAvBuilder(AssessmentVariableBuilder rootBuilder, Integer customAvId){
+			super(rootBuilder);
+			
+			AssessmentVariable av = newAssessmentVariable(customAvId, TYPE_CUSTOM);
+			avMap.put(customAvId, av);
+		}
+		
+		public CustomAvBuilder addAppointments(VistaVeteranAppointment... appointments){
+			for(VistaVeteranAppointment appointment : appointments){
+				addAppointment(appointment);
+			}
+			return this;
+		}
+
+		public CustomAvBuilder addAppointment(VistaVeteranAppointment appointment){
+			addVeteranAppointment(appointment);
+			return this;
+		}
+		
+		/**
+		 * Adds an appointment used by the AV with ID: {@link CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS}
+		 * @param clinicName
+		 * @param date
+		 * @param status
+		 * @return
+		 */
+		public CustomAvBuilder addAppointment(String clinicName, Date date, String status){
+			VistaVeteranAppointment appointment = new VistaVeteranAppointment();
+			appointment.setClinicName(clinicName);
+			appointment.setAppointmentDate(date);
+			appointment.setStatus(status);
+			
+			addVeteranAppointment(appointment);
+			return this;
+		}
+		
+		/**
+		 * Set the assigned clinician for this assessment (used by custom variables)
+		 * @param user
+		 * @return this builder
+		 */
+		public CustomAvBuilder setClinician(User user){
+			when(assessment.getClinician()).thenReturn(user);
+			return this;
+		}
+		
+		/**
+		 * Set the duration of the assessment (used by custom variables)
+		 * @param durationSeconds
+		 * @return this builder
+		 */
+		public CustomAvBuilder setAssessmentDuration(int durationSeconds){
+			when(assessment.getDuration()).thenReturn(durationSeconds);
+			return this;
+		}
+
+		/**
+		 * Set the veteran who took this assessment (used by custom variables)
+		 * @param vet
+		 * @return this builder
+		 */
+		public  CustomAvBuilder setVeteran(Veteran vet){
+			when(assessment.getVeteran()).thenReturn(vet);
+			return this;
+		}
+	}
 	
 	private CustomAssessmentVariableResolver createCustomResolver(){
 		//setup packet version lookup

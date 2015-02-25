@@ -1,7 +1,11 @@
 package gov.va.escreening.templateprocessor;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.Date;
+
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
+import gov.va.escreening.variableresolver.CustomAssessmentVariableResolver;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest{
 	private static final Logger logger = LoggerFactory.getLogger(TransformationFreeMarkerFunctionTest.class);
 	private static DateTimeFormatter STANDARD_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
-	private static DateTimeFormatter APPOINTMENT_FORMAT = DateTimeFormat.forPattern("MM-dd-yy@hh:mm");
 	
 	@Test
 	public void testGetResponseForFreeText() throws Exception{
@@ -34,14 +37,15 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	
 	@Test
 	public void testDelimitTransformationForAppointments() throws Exception {
-		DateTime firstApptTime = new DateTime().plusDays(5);
-		DateTime secondApptTime = new DateTime().plusDays(6);
+		Date firstApptTime = new DateTime().plusDays(5).toDate();
+		Date secondApptTime = new DateTime().plusDays(6).toDate();
 		
-		assertEquals("*" + APPOINTMENT_FORMAT.print(firstApptTime) + "Clinic 1-**" + APPOINTMENT_FORMAT.print(secondApptTime) + "Clinic 2-", 
+		assertEquals("*" + CustomAssessmentVariableResolver.APPOINTMENT_DATE_FORMAT.format(firstApptTime) + "Clinic 1-**" 
+						+ CustomAssessmentVariableResolver.APPOINTMENT_DATE_FORMAT.format(secondApptTime) + "Clinic 2-", 
 				render(avBuilder
-						.addCustomAV(6)
-						.addAppointment("Clinic 1", firstApptTime.toDate(), "active")
-						.addAppointment("Clinic 2", secondApptTime.toDate(), "active"),
+						.addCustomAV(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)
+						.addAppointment("Clinic 1", firstApptTime, "active")
+						.addAppointment("Clinic 2", secondApptTime, "active"),
 						"${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVal\")}"));
 	}
 	
@@ -50,18 +54,34 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 		//test that transformation still works when no veteran response is available
 		assertEquals("defaultVaLL", 
 				render(avBuilder
-						.addCustomAV(6),
+						.addCustomAV(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS),
 						"${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test
 	public void testDelimitTransformationForSelectMulti() throws Exception{
-		
+		assertEquals("*first-*third-**fourth-", 
+				render(avBuilder
+						.addSelectMultiAV(1, null)
+						.addAnswer(null, "first", null, null, true, null)
+						.addAnswer(null, "second", null, null, false, null)
+						.addAnswer(null, "third", null, null, true, null)
+						.addAnswer(null, "fourth", null, null, true, null),
+						"${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test
 	public void testDelimitTransformationForMultiSelectWithOtherAnswer() throws Exception{
+		String otherResponse = "my other answer";
 		
+		assertEquals("*first-*"+ otherResponse + "-**fourth-", 
+				render(avBuilder
+						.addSelectMultiAV(1, null)
+						.addAnswer(null, "first", null, null, true, null)
+						.addAnswer(null, "second", null, null, false, null)
+						.addAnswer(null, "third", "other", null, true, otherResponse)
+						.addAnswer(null, "fourth", null, null, true, null),
+						"${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test

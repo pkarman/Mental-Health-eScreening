@@ -31,18 +31,8 @@ import static com.google.common.base.Preconditions.*;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVariableResolver {
-	public static final int CUSTOM_PACKET_VERSION_VARIABLE_ID = 1;
-	public static final int CUSTOM_ASSIGNED_CLINICIAN_VARIABLE_ID = 2;
-	public static final int CUSTOM_SIGNING_CLINICIAN_VARIABLE_ID = 3;
-	public static final int CUSTOM_TODAYS_DATE = 4;
-	public static final int CUSTOM_ASSESSMENT_DURATION = 5;
-	public static final int CUSTOM_VETERAN_APPOINTMENTS = 6;
-	public static final int CUSTOM_ASSESSMENT_LAST_MODIFIED = 7;
-	
-	public static final int SYSTEM_PROPERTIES_ESCREENING_PACKET_VERSION_ID = 1;
 	
     private static final Logger logger = LoggerFactory.getLogger(CustomAssessmentVariableResolverImpl.class);
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
     
     //Please add to the constructor and do not use field based @Autowired	
     private final SystemPropertyService systemPropertyService;
@@ -169,7 +159,7 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 	/* new AssessmentVariable(4, "var4", "string", "custom_4", "05-14-2014", "05-14-2014", null, null) */
 	private AssessmentVariableDto getCurrentDate() {
 	    Date now = new Date();
-	    String strDate = DATE_FORMAT.format(now);
+	    String strDate = TODAYS_DATE_FORMAT.format(now);
 		
 		String varName = String.format("var%s", CUSTOM_TODAYS_DATE);
 		String displayName = String.format("custom_%s", CUSTOM_TODAYS_DATE);
@@ -259,11 +249,10 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 		// Create DTOs
 		String varName = String.format("var%s", CUSTOM_VETERAN_APPOINTMENTS);
 		String displayName = String.format("custom_%s", CUSTOM_VETERAN_APPOINTMENTS);
-		SimpleDateFormat dateFormatWithTime = new SimpleDateFormat("MM-dd-yy@hh:mm");
 		
 		List<AssessmentVariableDto> children = new ArrayList<>(3);
 		for(VistaVeteranAppointment appointment : appointments){
-			String appointmentText = dateFormatWithTime.format(appointment.getAppointmentDate()) 
+			String appointmentText = APPOINTMENT_DATE_FORMAT.format(appointment.getAppointmentDate()) 
 									+ appointment.getClinicName();
 			
 			children.add(new AssessmentVariableDto(CUSTOM_VETERAN_APPOINTMENTS, varName, "string", 
@@ -299,7 +288,7 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 			throw new CouldNotResolveVariableException(String.format("Assessment last update date was null for VeteranAssessment with id of: %s", veteranAssessmentId));
 		}
 		
-		String strDate = DATE_FORMAT.format(veteranAssessment.getDateUpdated());
+		String strDate = TODAYS_DATE_FORMAT.format(veteranAssessment.getDateUpdated());
 		
 		String varName = String.format("var%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
 		String displayName = String.format("custom_%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
