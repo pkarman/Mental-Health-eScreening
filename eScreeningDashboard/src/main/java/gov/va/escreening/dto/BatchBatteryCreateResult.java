@@ -1,8 +1,8 @@
 package gov.va.escreening.dto;
 
-import java.io.Serializable;
+import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 
-import gov.va.escreening.domain.VeteranDto;
+import java.io.Serializable;
 
 /**
  * This class represents the batch battery create result
@@ -10,16 +10,18 @@ import gov.va.escreening.domain.VeteranDto;
  *
  */
 public class BatchBatteryCreateResult implements Serializable{
-	private VeteranDto vet;
+	private VeteranWithClinicalReminderFlag vet;
 	private boolean succeed;
 	private String errorMsg;
-	public VeteranDto getVet() {
-		return vet;
-	}
-	public void setVet(VeteranDto vet) {
+
+	public void setVet(VeteranWithClinicalReminderFlag vet) {
 		this.vet = vet;
 	}
-	public boolean isSucceed() {
+	
+	public VeteranWithClinicalReminderFlag getVet() {
+		return vet;
+	}
+	public boolean getSucceed() {
 		return succeed;
 	}
 	public void setSucceed(boolean succeed) {

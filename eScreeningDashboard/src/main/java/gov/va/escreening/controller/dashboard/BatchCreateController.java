@@ -311,11 +311,11 @@ public class BatchCreateController {
 						editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
 						escreenUser);
 
-		model.addAttribute("batchCreateResult", results);
+		model.addAttribute("veterans", results);
 		RedirectView view = new RedirectView("batchComplete");
 		view.setExposeModelAttributes(false);
-		return new ModelAndView(view,
-				"batchCreateResult", results);
+		return new ModelAndView(view, model.asMap());
+				
 	}
 
 }

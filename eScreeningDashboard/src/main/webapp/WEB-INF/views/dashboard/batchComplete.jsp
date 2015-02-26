@@ -99,20 +99,20 @@
 											<c:if test="${not empty veterans}">
 												<c:forEach var="item" items="${veterans}">
 													<tr>
-														<td class="text-left"><c:out value="${item.ssnLastFour}" /></td>
-														<td><c:out value="${item.lastName}" /></td>
-														<td><c:out value="${item.firstName}" /></td>
-														<td><c:out value="${item.middleName}" /></td>
-														<td><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.birthDate}" /></td>
-														<td class="text-right"><c:out value="${item.apptDate}" /></td>
-														<td class="text-right"><c:out value="${item.apptTime}" /></td>
-														<td class="text-center text-capitalize"><c:out value="${item.dueClinicalReminders}" /></td>
-														<td class="text-center"></td>
+														<td class="text-left"><c:out value="${item.vet.ssnLastFour}" /></td>
+														<td><c:out value="${item.vet.lastName}" /></td>
+														<td><c:out value="${item.vet.firstName}" /></td>
+														<td><c:out value="${item.vet.middleName}" /></td>
+														<td><fmt:formatDate type="date" pattern="MM/dd/yyyy" value="${item.vet.birthDate}" /></td>
+														<td class="text-right"><c:out value="${item.vet.apptDate}" /></td>
+														<td class="text-right"><c:out value="${item.vet.apptTime}" /></td>
+														<td class="text-center text-capitalize"><c:out value="${item.vet.dueClinicalReminders}" /></td>
+														<td class="text-center"><c:out value="${item.succeed}"/></td>
 														<td class="text-right">
 														<c:if test="${isCprsVerified}">
-															<c:if test="${not empty item.veteranId}">
+															<c:if test="${not empty item.vet.veteranId}">
 																<s:url var="mapVeteranToVistaUrl" value="/dashboard/veteranDetail" htmlEscape="true">
-																	<s:param name="vid" value="${item.veteranId}" />
+																	<s:param name="vid" value="${item.vet.veteranId}" />
 																</s:url>
 																<div class="text-left">
 																	<a href="${mapVeteranToVistaUrl}"  title="View Details">View</a>

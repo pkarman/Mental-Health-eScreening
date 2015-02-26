@@ -10,6 +10,7 @@ import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -283,19 +284,17 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
 	@Override
 	public List<Veteran> getVeteranByIens(String[] iens) {
 		
-		String sql = "From Veteran v where v.veteranIen in (:ien)";
-		
-		StringBuffer sb = new StringBuffer();
-		for(String s: iens)
+		if(iens!= null && iens.length>0)
 		{
-			sb.append(s + ",");
+			List<String> ienList = Arrays.asList(iens);
+		
+			String sql = "from Veteran v where v.veteranIen in :ien";
+		
+			Query q = entityManager.createQuery(sql, Veteran.class).setParameter("ien", ienList);
+			List<Veteran> result = q.getResultList();
+			return result;
 		}
-		
-		sb.deleteCharAt(sb.lastIndexOf(","));
-		
-		Query q = entityManager.createQuery(sql).setParameter("ien", sb.toString());
-		List<Veteran> result = q.getResultList();
-		return result;
+		return new ArrayList<>();
 	}
 
 }
