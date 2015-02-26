@@ -62,12 +62,12 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 	}
 
 	@Override
-	public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable parentAssessmentVariable,
+	public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable measureAnswerAssessmentVariable,
 			SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash) {
 
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(parentAssessmentVariable);
+		AssessmentVariableDto variableDto = new AssessmentVariableDto(measureAnswerAssessmentVariable);
 		//TODO: This is wrong (will fix this soon):
-		variableDto.setVariableId(getAnswerAssessmentVariableId(parentAssessmentVariable, response, measureAnswerHash));
+		variableDto.setVariableId(getAnswerAssessmentVariableId(measureAnswerAssessmentVariable, response, measureAnswerHash));
 		
 		variableDto.setResponse(response);
 		

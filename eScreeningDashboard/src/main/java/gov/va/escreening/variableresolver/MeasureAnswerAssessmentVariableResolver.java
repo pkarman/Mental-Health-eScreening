@@ -13,7 +13,7 @@ public interface MeasureAnswerAssessmentVariableResolver {
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, 
 			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
 	
-	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable parentAssessmentVariable, SurveyMeasureResponse response, 
+	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable measureAnswerAssessmentVariable, SurveyMeasureResponse response, 
 			Map<Integer, AssessmentVariable> measureAnswerHash);
 	
 	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, 

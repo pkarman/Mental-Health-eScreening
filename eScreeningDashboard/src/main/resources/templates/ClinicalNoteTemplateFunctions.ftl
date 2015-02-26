@@ -46,6 +46,13 @@
 
 <#assign DEFAULT_VALUE = 'notset' />
 
+<#-- Please remember: be very careful about naming variables. If a variable 
+in the function1 is named the same thing as a variable in a function2 which 
+is called from function1, changes made in function2 *will change* the variable in function1.
+For this to happen, you don't have to pass the variable from function1 to function2.  
+It is as if the scope bleeds over...a hard lesson learned :( -->
+
+
 <#-- String functions -->
 <#function hasValue stringValue>
 	<#if stringValue='notfound' >
@@ -517,7 +524,7 @@ the update of any templates which were hand made (currently template IDs are: 6,
 </#function> 
 
 <#-- This transformation’s goal is to produce a list of text, one per question having at least one required column selected by the veteran
-rowAvIdToOutputMap is a map from row AV ID to the text we should output if the at least once column was selected by the veteran for the given question
+rowAvIdToOutputMap is a map from row AV ID to the text we should output if at least one column was selected by the veteran for the given question
 columnVarIdMap is a set of column AV IDs which we are testing to see if the veteran gave one of the responses
 -->
 <#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowAvIdToOutputMap=[] columnVarIdList=[] >
@@ -528,26 +535,30 @@ columnVarIdMap is a set of column AV IDs which we are testing to see if the vete
 	
 	<#assign valList = []>
 	<#assign columnSet = {}>
-	<#list columnVarIdList as columnVar>
-		<#assign columnSet = columnSet + { columnVar : true} >
+	<#list columnVarIdList as columnVarId>
+		<#assign columnSet = columnSet + {columnVarId?string : true} >
 	</#list>
-	
+
 	<#-- loop over each of the matrix question's child question assessment variables -->
 	<#list matrix.children as question>
 		<#-- check current child question to see if its question's AV ID is found in rowVarIds -->
-		<#if (question.variableId)?? && rowAvIdToOutputMap[question.variableId]?has_content && question.children?? && (question.children?size > 0) >
-			<#-- get all true answers -->
+		
+		<#if (question.variableId??) && (rowAvIdToOutputMap[question.variableId?string]?has_content) && (question.children??) && (question.children?size > 0) >
+		
 			<#assign responses = getSelectedResponses(question)>
 			
 			<#-- check question's response(s) to see one if one of them is in columnVarIds -->
 			<#list responses as response>
-				<#if (response.variableId)?? && columnSet[response.variableId]?? >
+			
+				<#if (response.variableId??) && (columnSet[response.variableId?string]?has_content) >
 					<#-- append the text found in rowAvIdToOutputMap for the current child question -->
-					<#assign valList = valList + [rowAvIdToOutputMap[question.variableId]]>
+                    <#assign newOutput = rowAvIdToOutputMap[question.variableId?string]>
+					<#assign valList = valList + [newOutput]>
 				</#if>
 			</#list>
 		</#if>
 	</#list>
+	
 	
 	<#return delimitList(valList) >
 </#function>  
@@ -611,14 +622,15 @@ Checks variable type to use correct delimiter helper functions.
 Returns a string which is generated using the given list of values and delimiter properties 
 If there is only one element in the list it will be output without any prefix or suffix
 -->
-<#function delimitList valList=[] prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
-    <#if valList?size == 1>
-    	<#return valList?first >
+<#function delimitList parts=[] prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE > 
+    <#if parts?size == 1>
+    	<#return parts?first >
     </#if>
     
     <#assign result = ''>
     
-    <#list valList as val>
+    <#list parts as val>
+    
     	<#assign currentPrefix = prefix>
     	<#if !val_has_next >
     		<#assign currentPrefix = lastPrefix>
@@ -976,21 +988,16 @@ Returns the list of AV objects containing for the select responses (i.e. the opt
 The var given can be single or multi select.
 -->
 <#function getSelectedResponses var=DEFAULT_VALUE >
-	<#assign valList = []>
+	<#assign responseList = []>
 	
-	<#if var != DEFAULT_VALUE && var.measureTypeId?? >
-		
-		<#if var.measureTypeId == 2 >  <#--  select-one questions --> 
-			<#assign valList = [getResponseText(column)] >
-		<#elseif var.measureTypeId == 3 && (var.children)??>  <#--  select-multi questions --> 		
-          	<#list var.children as answer>
-				<#if (answer.answerId)?? && (answer.value)?? && answer.value == 'true' >
-        			valList + valList + [answer]
-   				</#if>
-			</#list>
-		</#if>
+	<#if var != DEFAULT_VALUE && (var.children)??>
+      	<#list var.children as answer>
+			<#if (answer.value)?? && answer.value == 'true' >
+    			<#assign responseList = responseList + [answer]>
+			</#if>
+		</#list>
 	</#if>
-	<#return valList>
+	<#return responseList>
 </#function>
 
 <#function getResponseText variableObj=DEFAULT_VALUE>

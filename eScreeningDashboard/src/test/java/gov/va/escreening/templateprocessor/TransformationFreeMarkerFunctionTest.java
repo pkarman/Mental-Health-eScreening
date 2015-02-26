@@ -3,7 +3,9 @@ package gov.va.escreening.templateprocessor;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.List;
 
+import gov.va.escreening.test.AssessmentVariableBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 import gov.va.escreening.variableresolver.CustomAssessmentVariableResolver;
 
@@ -15,6 +17,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
 /**
  * This class is concerned with testing Freemarker functions used for Assessment Variable transformations<br/>
@@ -87,40 +92,37 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	@Test
 	public void testDelimitTransformationForSelectMultiNoResponseGiven() throws Exception{
 		//test that transformation still works when no veteran response is available
+		assertEquals("defaultVaLL", 
+				render(avBuilder
+						.addSelectMultiAV(1, null)
+						.addAnswer(null, "first", null, null, null, null)
+						.addAnswer(null, "second", null, null, null, null)
+						.addAnswer(null, "third", null, null, null, null)
+						.addAnswer(null, "fourth", null, null, null, null),
+						"${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test
 	public void testDelimitTransformationForSingleValueCase() throws Exception{
 		//when there is only one value the prefix, lastPrefix, and suffix should never be returned
-		
-	}
-	
-	/**    TESTS for delimit transformation settings    **/
-	
-	@Test
-	public void testDelimitTranslationForPrefix() throws Exception{
-
-	}
-	
-	@Test
-	public void testDelimitTranslationForLastPrefix() throws Exception{
-		
-	}
-	
-	@Test
-	public void testDelimitTranslationForSuffix() throws Exception{
-		
+		assertEquals("third", 
+				render(avBuilder
+						.addSelectMultiAV(1, null)
+						.addAnswer(null, "first", null, null, false, null)
+						.addAnswer(null, "second", null, null, false, null)
+						.addAnswer(null, "third", null, null, true, null)
+						.addAnswer(null, "fourth", null, null, false, null),
+						"${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}"));
 	}
 	
 	@Test
 	public void testDelimitTranslationForSuffixAfterLastEntry() throws Exception{
-		
-	}
-	
-	@Test
-	public void testDelimitTranslationForDefaultValue() throws Exception{
-		//if no response is given default value should be used
-		
+		assertEquals("*first-**second", 
+				render(avBuilder
+						.addSelectMultiAV(1, null)
+						.addAnswer(null, "first", null, null, true, null)
+						.addAnswer(null, "second", null, null, true, null),
+						"${delimit(var1,\"*\",\"**\",\"-\",false,\"defaultVaLL\")}"));
 	}
 	
 	/**    TESTS for yearsFromDate transformation  **/
@@ -176,22 +178,145 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	
 	@Test
 	public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix() throws Exception{
+		List<Integer> columnAvList = avBuilder
+			.addSelectOneMatrixAV(123, "test matrix question")
+			.addChildQuestion(111, "q1")
+			.addChildQuestion(222, "q2")
+			.addChildQuestion(333, "q3")
+			.addColumn(null, null, null, ImmutableList.of(true, false, false), null)
+			.addColumn(null, null, null, ImmutableList.of(false, true, false), null)
+			.addColumn(null, null, null, ImmutableList.of(false, false, true), null)
+			.getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
+			
 		
+		//the map we give maps from the child questions we want to possibly show to the text we want to emit
+		StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"111\":\"first question\",\"222\":\"second question\"},[");
+		sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+		
+		assertEquals("first question, and second question", render(avBuilder, sb.toString()));
+	}
+	
+	@Test
+	public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrixTestSkippingOfUnselectedAnswers() throws Exception{
+		List<Integer> columnAvList = avBuilder
+			.addSelectOneMatrixAV(123, "test matrix question")
+			.addChildQuestion(111, "q1")
+			.addChildQuestion(222, "q2")
+			.addChildQuestion(333, "q3")
+			.addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+			.addColumn(null, null, null, ImmutableList.of(false, true, false), null)
+			.addColumn(null, null, null, ImmutableList.of(false, false, true), null)
+			.getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
+			
+		
+		//the map we give maps from the child questions we want to possibly show to the text we want to emit
+		StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"111\":\"first question\",\"222\":\"second question\"},[");
+		sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+		
+		assertEquals("second question", render(avBuilder, sb.toString()));
 	}
 	
 	@Test
 	public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix() throws Exception{
-		
+		List<Integer> columnAvList = avBuilder
+				.addSelectMultiMatrixAV(123, "test matrix question")
+				.addChildQuestion(111, "q1")
+				.addChildQuestion(222, "q2")
+				.addChildQuestion(333, "q3")
+				.addColumn(null, null, null, ImmutableList.of(true, false, false), null)
+				.addColumn(null, null, null, ImmutableList.of(false, true, true), null)
+				.addColumn(null, null, null, ImmutableList.of(false, true, false), null)
+				.getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
+				
+			
+			//the map we give maps from the child questions we want to possibly show to the text we want to emit
+			StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"111\":\"first question\",\"222\":\"second question\"},[");
+			sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+			
+			assertEquals("first question, and second question", render(avBuilder, sb.toString()));
 	}
 	
 	@Test
-	public void testDelimitedMatrixQuestionsTranslationForSingleValueOutputCase() throws Exception{
-		
+	public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix_SingleValueOutputCase() throws Exception{
+		List<Integer> columnAvList = avBuilder
+				.addSelectOneMatrixAV(123, "test matrix question")
+				.addChildQuestion(111, "q1")
+				.addChildQuestion(222, "q2")
+				.addChildQuestion(333, "q3")
+				.addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+				.addColumn(null, null, null, ImmutableList.of(false, true, false), null)
+				.addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+				.getColumnAvs(1); //we select the second column as the one we want the veteran to select
+				
+			
+			//the map we give maps from the child questions we want to possibly show to the text we want to emit
+			StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
+			sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+			
+			assertEquals("second question", render(avBuilder, sb.toString()));
 	}
 	
 	@Test
-	public void testDelimitedMatrixQuestionsTranslationForSingleNoResponseGiven() throws Exception{
+	public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_SingleValueOutputCase() throws Exception{
+		List<Integer> columnAvList = avBuilder
+				.addSelectMultiMatrixAV(123, "test matrix question")
+				.addChildQuestion(111, "q1")
+				.addChildQuestion(222, "q2")
+				.addChildQuestion(333, "q3")
+				.addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+				.addColumn(null, null, null, ImmutableList.of(false, true, false), null)
+				.addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+				.getColumnAvs(1); //we select the second column as the one we want the veteran to select
+				
+			
+			//the map we give maps from the child questions we want to possibly show to the text we want to emit
+			StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
+			sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+			
+			assertEquals("second question", render(avBuilder, sb.toString()));
+	}
+	
+	
+	@Test
+	public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix_NoResponseGiven() throws Exception{
 		//test that transformation still works when no veteran response is available
+		List<Integer> columnAvList = avBuilder
+				.addSelectOneMatrixAV(123, "test matrix question")
+				.addChildQuestion(111, "q1")
+				.addChildQuestion(222, "q2")
+				.addChildQuestion(333, "q3")
+				.addColumn(null, null, null, null, null)
+				.addColumn(null, null, null, null, null)
+				.addColumn(null, null, null, null, null)
+				.getColumnAvs(1); //we select the second column as the one we want the veteran to select
+				
+			
+			//the map we give maps from the child questions we want to possibly show to the text we want to emit
+			StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
+			sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+			
+			assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(avBuilder, sb.toString()));
+	}
+	
+	@Test
+	public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_NoResponseGiven() throws Exception{
+		//test that transformation still works when no veteran response is available
+		List<Integer> columnAvList = avBuilder
+				.addSelectMultiMatrixAV(123, "test matrix question")
+				.addChildQuestion(111, "q1")
+				.addChildQuestion(222, "q2")
+				.addChildQuestion(333, "q3")
+				.addColumn(null, null, null, null, null)
+				.addColumn(null, null, null, null, null)
+				.addColumn(null, null, null, null, null)
+				.getColumnAvs(1); //we select the second column as the one we want the veteran to select
+				
+			
+			//the map we give maps from the child questions we want to possibly show to the text we want to emit
+			StringBuilder sb = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
+			sb.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+			
+			assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(avBuilder, sb.toString()));
 	}
 	
 	/** TESTS for numberOfEntries translation for table questions  **/

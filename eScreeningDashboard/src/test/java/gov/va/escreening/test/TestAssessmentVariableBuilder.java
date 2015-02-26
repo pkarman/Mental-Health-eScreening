@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
@@ -195,6 +196,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		m.setMeasureType(new MeasureType(type));
 		m.setMeasureText(text);
 		m.setMeasureAnswerList(new ArrayList<MeasureAnswer>());
+		m.setAssessmentVariableList(new ArrayList<AssessmentVariable>());
 		
 		for(MeasureAnswer ma : maList){
 			ma.setMeasure(m);
@@ -223,6 +225,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		private final Measure measure;
 		private final AssessmentVariable av;
 		private Double defaultCalculationValue = 0.0;
+		private List<AssessmentVariable> answerAvs = new ArrayList<>();
 		
 		private SelectAVBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
 				@Nullable Integer avId, @Nullable String questionText){
@@ -237,6 +240,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			
 			av = newAssessmentVariable(avId, TYPE_MEASURE);
 			av.setMeasure(measure);
+			measure.getAssessmentVariableList().add(av);
 			avMap.put(avId, av);
 		}
 		
@@ -275,6 +279,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			answer.getAssessmentVariableList().add(aav);
 			measureAnswerHash.put(answer.getMeasureAnswerId(), aav);
 			
+			answerAvs.add(aav);
+			
 			//create response
 			if(response != null){
 				SurveyMeasureResponse srm = new SurveyMeasureResponse();
@@ -286,6 +292,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			}
 			
 			return this;
+		}
+		
+		public List<AssessmentVariable> getAnswerAvs(){
+			return ImmutableList.copyOf(answerAvs);
 		}
 		
 		//TODO: add the following methods
@@ -330,15 +340,16 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			
 			av = newAssessmentVariable(avId, TYPE_MEASURE);
 			av.setMeasure(matrixMeasure);
+			matrixMeasure.getAssessmentVariableList().add(av);
 			avMap.put(avId, av);
 		}
 		
 		/**
 		 * Adds a new child question to the matrix.  If this is called after a column was added, answers will be added but
 		 * no responses will be set.
-		 * @param childQuestionAvId
-		 * @param questionText
-		 * @return
+		 * @param childQuestionAvId optional AV ID for the question
+		 * @param questionText optional question text
+		 * @return this MatrixAVBuilder
 		 */
 		public MatrixAVBuilder addChildQuestion(@Nullable Integer childQuestionAvId, @Nullable String questionText){
 			Integer childMeasureTypeId = matrixMeasure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
@@ -367,32 +378,48 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param answerText the column's (answer's) text shown to the veteran
 		 * @param answerType should be null, "none", or "other"
 		 * @param calculationValue 
-		 * @param responses this should be null or have a response for each question that was added to this matrix. The pair is 
-		 * a boolean (whether the option is selected), and an optional string (can be null) representing the "other" text value
+		 * @param responses this should be null or have a response for each question that was added to this matrix.
+		 * The boolean indicates whether the option is selected. 
+		 * @param otherResponses an optional list of the veteran's other text for the column. Represents the "other" text value
 		 * the veteran entered into the answer. In the context of a matrix question, other answers are used to allow the 
 		 * veteran to set the question they are answering (because there are added topics that the other matrix questions didn't 
-		 * cover). So be careful with the other type.
+		 * cover). So be careful with the other type especially since it is normally only a couple of questions and not all of them.
+		 * 
 		 * @return
 		 */
 		public MatrixAVBuilder addColumn(
 				@Nullable String answerText,  
 				@Nullable String answerType, 
 				@Nullable Double calculationValue, 
-				@Nullable Iterable<Pair<Boolean,String>> responses){
+				@Nullable Iterable<Boolean> responses,
+				@Nullable Iterable<String> otherResponses){
 			
 			//save in case a new question is added after this
 			MeasureAnswer ma = new MeasureAnswer();
 			ma.setAnswerText(answerText);
-			ma.setCalculationValue(calculationValue.toString());
+			ma.setCalculationValue(calculationValue != null ? calculationValue.toString(): null);
 			columns.add(ma);
 			
-			Iterator<Pair<Boolean,String>> responseIter = responses == null ? null : responses.iterator();
+			Iterator<Boolean> responseIter = responses == null ? null : responses.iterator();
+			Iterator<String> otherResponseIter = otherResponses == null ? null : otherResponses.iterator();
 			for(SelectAVBuilder childBuilder : childBuilders){
-				Pair<Boolean,String> response = responseIter != null && responseIter.hasNext() ? responseIter.next() : null; 
-				childBuilder.addAnswer(null, answerText, answerType, calculationValue, response.getLeft(), response.getRight());
+				Boolean response = responseIter != null && responseIter.hasNext() ? responseIter.next() : null;
+				String otherResponse = otherResponseIter != null && otherResponseIter.hasNext() ? otherResponseIter.next() : null;
+				childBuilder.addAnswer(null, answerText, answerType, calculationValue, response, otherResponse);
 			}
 			
 			return this;
+		}
+
+		public List<Integer> getColumnAvs(Integer... columnIndices) {
+			List<Integer> columnAvs = new ArrayList<>(childBuilders.size() * columnIndices.length);
+			for(SelectAVBuilder childBuilder : childBuilders){
+				List<AssessmentVariable> childAvs = childBuilder.getAnswerAvs();
+				for(Integer index : columnIndices){
+					columnAvs.add(childAvs.get(index).getAssessmentVariableId());
+				}
+			}
+			return columnAvs;
 		}
 		
 	}
@@ -410,6 +437,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			//create av for measure
 			AssessmentVariable av = newAssessmentVariable(avId, TYPE_MEASURE);
 			av.setMeasure(measure);
+			measure.getAssessmentVariableList().add(av);
 			avMap.put(avId, av);
 			
 			//create av for answer

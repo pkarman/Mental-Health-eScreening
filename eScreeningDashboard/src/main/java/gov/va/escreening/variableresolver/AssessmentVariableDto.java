@@ -110,7 +110,7 @@ public class AssessmentVariableDto {
 	 * This constructor creates a DTO using the given AV entity.<br/>
 	 * It is assumed that the av is not a Hibernate transient entity.<br/>
 	 * Custom assessment variables are not supported. <br/>
-	 * Some fields cannot be set because the are based on a veteran response:
+	 * Some fields cannot be set because they are based on a veteran response:
 	 * <ol><li>value is not set</li>
 	 * <li>displayText needs a response to be set so this is not set</li>
 	 * <li>overrideText uses the variableTemplate we are in the process of stopping its use. So this is not set</li>
