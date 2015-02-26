@@ -46,6 +46,8 @@
         $scope.formulaTemplate = {};
         $scope.formula = FormulasService.fetchCurrentFormula();
         $scope.formulaTemplate.selectedTokens = $scope.formula.selectedTokens;
+        $scope.verifiedIds = [];
+        $scope.result = {};
 
         // now see if the current formula is not new, if it is not new than we have to load the fresh copy from database
         if (!FormulasService.isNewFormula()) {
@@ -69,12 +71,32 @@
             }
         };
 
+        $scope.formulaReady = function () {
+            return $scope.formulaTemplate.selectedTokens.length > 0;
+        };
+
+        $scope.tested = function () {
+            return $scope.result.data != undefined;
+        };
+
+        $scope.inputsAvailable = function () {
+            function haveValues(verifiedIds) {
+                var incompleteInput = _.find(verifiedIds, function (verifiedId) {
+                    return _.isEmpty(verifiedId.value);
+                });
+
+                return _.isEmpty(incompleteInput);
+            }
+
+            return $scope.verifiedIds.length > 0 && haveValues($scope.verifiedIds);
+        };
+
         $scope.runTest = function () {
             var t = tokens();
             if (validate(t)) {
                 FormulasService.testSelectedTokens(t)
                     .then(function (result) {
-                        $scope.result = result.data;
+                        $scope.result.data = result.data;
                         MessageFactory.set('success', 'Please verify the result and either save or change the values and test again', false, true);
                     }, function error(reason) {
                         MessageFactory.set("danger", reason.data.data, false, true);
@@ -128,6 +150,7 @@
             return true;
         };
 
+        // called when user presses ENTER key
         $scope.tagFormula = function (userEnteredToken) {
             // try to find this userEnteredToken in the list of variables already present in the reference variables
             var existingToken = _.find($scope.variables, function (variable) {
@@ -154,6 +177,8 @@
         var tokens = function () {
             return _.map($scope.formulaTemplate.selectedTokens, 'id');
         };
+
+        // select-ui will call this as soon as user starts typing data by hand (not by clicking on drop down) in the edit area
         var refVars = [];
         $scope.refreshVariables = function () {
             if ($scope.variables === undefined) {
@@ -170,16 +195,22 @@
             }
         };
 
+        // this function is called as soon as data is added or subtracted from selectedTokens array.
+        // This will happens when user clicks on drop down and select a token from drop down or add
+        // a token by hand and press enter or use backspace to delete a token
         $scope.$watch('formulaTemplate.selectedTokens', function (newValue, oldValue) {
             if (oldValue != newValue && newValue.length > 0) {
+                // reset the result && verified fields so user is unable to save or run test
+                $scope.result = {};
+                $scope.verifiedIds = [];
+
+                // all new data goes to the end of the list
                 var formulaToken = newValue[newValue.length - 1];
-                if (!isNaN(parseInt(formulaToken.id, 10))) {
-                    var existingToken = _.find(refVars, function (refVar) {
-                        return refVar.id === formulaToken.id;
-                    });
-                    if (existingToken != undefined) {
-                        existingToken.guid = FormulasService.guid(existingToken.id);
-                    }
+                var existingToken = _.find(refVars, function (refVar) {
+                    return refVar.id === formulaToken.id;
+                });
+                if (existingToken != undefined) {
+                    existingToken.guid = FormulasService.guid(existingToken.id);
                 }
             }
         });
