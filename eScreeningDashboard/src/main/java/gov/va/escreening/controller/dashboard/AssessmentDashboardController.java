@@ -51,7 +51,8 @@ public class AssessmentDashboardController extends BaseDashboardRestController {
         String programIdString = request.getParameter("programId");
 
         // Get the data.
-        SearchResult<AssessmentSearchResult> assessmentSearchResult = veteranAssessmentService.searchVeteranAssessment(programIdString, searchAttributes);
+        SearchResult<AssessmentSearchResult> assessmentSearchResult 
+        	= veteranAssessmentService.searchVeteranAssessment(programIdString, escreenUser.getProgramIdList(), searchAttributes);
 
         // Populate the DataTableResponse for the datatable.
         DataTableResponse<AssessmentSearchResult> dataTableResponse = new DataTableResponse<AssessmentSearchResult>();
