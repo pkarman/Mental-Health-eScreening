@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,14 +110,24 @@ public class FormulaLoaderTest {
                 numberSeen = true;
                 varId += (char) c;
             } else {
+                // code will come here if number is finished and a new operator starts
+                // in this case-- we need to pack the number and ad that
                 if (!varId.isEmpty()) {
                     // this will be a number entered by user as a CONSTANT
                     tokens.add(buildToken(varId, true));
                     varId = "";
                     numberSeen = false;
                 }
-                // should should be any other single character
-                tokens.add(buildToken(String.valueOf((char) c),true));
+
+                // PLUS read the operator too
+                // should be any other single character
+                String operator = String.valueOf((char) c);
+                try {
+                    final AssessmentVariable oneByDisplayName = avr.findOneByDisplayName(operator);
+                    tokens.add(buildToken(String.valueOf(oneByDisplayName.getAssessmentVariableId()), false));
+                } catch (EmptyResultDataAccessException e) {
+                    tokens.add(buildToken(operator, true));
+                }
             }
         }
 

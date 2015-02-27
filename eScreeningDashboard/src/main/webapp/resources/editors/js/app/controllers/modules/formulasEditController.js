@@ -59,6 +59,7 @@
 
         $scope.produceInputFields = function () {
             $scope.toggleDisable();
+            $scope.result = {};
             var t = tokens();
             if (validate(t)) {
                 FormulasService.verifySelectedTokens(t).then(function (result) {
