@@ -6,7 +6,8 @@
 	        return {
 	            restrict: 'EA',
 	            scope: {
-	                assessmentVariable: '='
+	                assessmentVariable: '=',
+					block: '='
 	            },
 		        require: '^form',
 	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',

@@ -23,12 +23,13 @@
 							       ng-model="block.left.content"
 							       ng-change="updateLogicalOptions(block)"
 							       update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group"
-						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}">
+						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}"
+							 ng-if="block.type !== 'table'">
 							<select name="blockOperator"
 							        class="form-control"
 							        ng-model="block.operator"

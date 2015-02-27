@@ -5,13 +5,14 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', function(AssessmentVariableService, AssessmentVariableManager, MeasureService) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, ngTableParams, $filter) {
 
 	        return {
 	            restrict: 'EA',
 	            scope: {
 		            assessmentVariable: '=',
-		            show: '='
+		            show: '=',
+					block: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
@@ -23,13 +24,42 @@
 
 		            scope.searchObj = {type: ''};
 
-		            scope.tableParams = AssessmentVariableService.getTableParams(scope.searchObj);
+					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
+
+					scope.assessmentVariables = AssessmentVariableService.getLastCachedResults().$object;
+
+		            scope.tableParams = new ngTableParams({
+						page: 1, // show first page
+						count: 10, // count per page
+						filter: scope.searchObj
+					}, {
+						counts: [],
+						total: 0,
+						getData: function ($defer, params) {
+							var avs,
+								filteredData;
+
+							if (scope.block.type && scope.block.type === 'table') {
+								// Only display table questions for table block
+								filteredData = [];
+								_.each(scope.assessmentVariables, function(av) {
+									if (av.getMeasureTypeName() === 'table') {
+										filteredData.push(av);
+									}
+								});
+							} else {
+								filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+							}
+
+							avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+
+							params.total(filteredData.length); // set total for recalc pagination
+							$defer.resolve(avs);
+						},
+						$scope: { $data: {} }
+					});
 
 		            scope.tableParams.settings().$scope = scope;
-
-		            scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
-
-					scope.freetextNone = false;
 
 		            scope.select = function(e, av) {
 
@@ -48,6 +78,13 @@
 
 						if (!scope.assessmentVariable.transformations) {
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function(transformations) {
+							});
+						}
+
+						if (av.getMeasureTypeName() === 'table') {
+							// Get the childQuestions and childQuestion answers for single and multi-matrix variables
+							MeasureService.one(av.measureId).get().then(function(measure) {
+								scope.childQuestions = measure.childQuestions;
 							});
 						}
 
@@ -78,16 +115,22 @@
 			            scope.tableParams.reload();
 	                };
 
-					scope.applyTransformations = function applyTransformations(av) {
-
-						// This is not working because the ng-if is giving the form its own scope
-						if (scope.freetextNone) {
-							av.transformations = null;
-						}
+					scope.applyTransformations = function applyTransformations(newScope) {
 
 						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
+
+						// Apply select transformation to AV
+						if (newScope.transformationType) {
+							scope.assessmentVariable.transformations = [newScope.transformationType];
+							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+						}
+
+						// Apply AV to block.table for table block types
+						if (scope.block.type === 'table') {
+							scope.block.table = scope.assessmentVariable;
+						}
 					};
 
 					scope.dismiss = function dismiss() {

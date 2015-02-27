@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module('Editors')
-		.directive('matrixTransformation', function(MeasureService) {
+		.directive('matrixTransformation', function(MeasureService, $filter) {
 
 			return {
 				restrict: 'E',

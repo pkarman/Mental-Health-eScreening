@@ -189,7 +189,7 @@ Editors.config(function(RestangularProvider, $provide) {
 						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
 
 							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
-							    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
+							    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.name);
 							    
 								$modalInstance.close(embed);
 	                        }

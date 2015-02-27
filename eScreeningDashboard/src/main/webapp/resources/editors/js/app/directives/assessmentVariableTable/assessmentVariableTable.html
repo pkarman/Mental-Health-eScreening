@@ -8,7 +8,7 @@
 			<div class="col-md-6">
 				<label class="sr-only">Select Assessment Variable Type</label>
 				<select class="form-control" ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
-					<option value=""> -- Choose Type --</option>
+					<option value="">-- Choose Type --</option>
 				</select>
 			</div>
 			<div class="col-md-6">
@@ -83,7 +83,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -130,7 +130,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -141,14 +141,16 @@
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
-					<select id="selectTransformationType" class="form-control" ng-model="freetextNone">
-						<option value="true" ng-selected="!assessmentVariable.transformations">No Tranformation</option>
-						<option value="false" ng-selected="assessmentVariable.transformations">Number of Years</option>
+					<select id="selectTransformationType"
+							class="form-control"
+							ng-model="transformationType"
+							ng-options="transformation as transformation.name for transformation in assessmentVariable.transformations">
+						<option value="">No Transformation</option>
 					</select>
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
@@ -159,54 +161,7 @@
 		</div>
 
 		<div ng-switch-when="multi-matrix" class="animate-switch" class="col-sm-12">
-			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
-
-			<h5>Transformation Type (Matrix to list)</h5>
-
-			<p>Delimiter</p>
-
-			<p class="bg-info">Have to select at least one column and one row</p>
-
-			<hr />
-
-			<form>
-				<div class="row">
-					<div class="col-sm-6 col-xs-6">
-						<h5>Columns (Answers)</h5>
-						<ul class="list-group">
-							<li class="list-group-item" ng-repeat="answer in matrixAnswers track by $index">
-								<div class="checkbox">
-									<input type="checkbox" id="{{ answer.id }}" ng-model="answer.checked" ng-change="updateSelectedMatrixAnswers()">
-									<label for="{{ answer.id }}" ng-bind="answer.text"></label>
-								</div>
-							</li>
-						</ul>
-
-					</div>
-
-					<div class="col-sm-6  col-xs-6">
-						<h5>Rows (Questions)</h5>
-						<ul class="list-group">
-							<li class="list-group-item" ng-repeat="question in matrixQuestions track by $index">
-
-								<div class="checkbox">
-									<input type="checkbox" id="{{ question.id }}" ng-model="question.checked" ng-change="updateSelectedMatrixQuestions()">
-									<label for="{{ question.id }}" ng-bind="question.variableName"></label>
-								</div>
-								<div class="form-group">
-									<label for="TextInput">Output Text</label>
-									<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText">
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-
-				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
-					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
-				</div>
-			</form>
+			<matrix-transformation assessment-variable="assessmentVariable" applyTransformations="applyTransformations" dismiss="dismiss"></matrix-transformation>
 		</div>
 
 		<div ng-switch-when="table" class="animate-switch" class="col-sm-12">
@@ -214,20 +169,20 @@
 			<form>
 				<div class="form-group">
 					<label for="selectTransformationType">Transformation Type</label>
-					<select id="selectTransformationType" class="form-control" ng-model="transformationType">
-						<option value="delimiter">Delimiter</option>
-						<option value="number">Number of Entries</option>
+					<select id="selectTransformationType"
+							class="form-control"
+							ng-model="transformationType"
+							ng-options="transformation as transformation.name for transformation in assessmentVariable.transformations">
+						<option value="">-- Select Transformation --</option>
 					</select>
 				</div>
 
-				<div ng-if="transformationType === 'delimiter'">
+				<div ng-if="transformationType.name === 'delimitTableField'">
 
 					<div class="form-group">
 						<label for="selectChildQuestion">Select Child Question</label>
-						<select id="selectChildQuestion" class="form-control">
-							<option>Select Child Question</option>
-							<option>Child Question 1</option>
-							<option>Child Question 2</option>
+						<select id="selectChildQuestion" class="form-control" ng-options="question as question.text for question in childQuestions" ng-model="somethingUnknown">
+							<option value="">-- Select Child Question --</option>
 						</select>
 					</div>
 
@@ -268,7 +223,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(assessmentVariable);">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>
