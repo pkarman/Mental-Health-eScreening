@@ -1,5 +1,8 @@
 package gov.va.escreening.variableresolver;
 
+import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -377,5 +380,5 @@ public class AssessmentVariableDto {
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
 				+ ", otherValue=" + otherValue + ", children=" + children 
 				+ ", measureTypeId=" + measureTypeId + "]";
-	}	
+	}
 }

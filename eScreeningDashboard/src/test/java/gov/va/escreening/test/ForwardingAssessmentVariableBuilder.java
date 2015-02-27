@@ -5,6 +5,7 @@ import gov.va.escreening.test.TestAssessmentVariableBuilder.CustomAvBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.FreeTextAvBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.MatrixAVBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAVBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAVBuilder;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import java.util.List;
@@ -63,5 +64,11 @@ public class ForwardingAssessmentVariableBuilder implements AssessmentVariableBu
 	@Override
 	public List<AssessmentVariableDto> getDTOs(){
 		return delegate.getDTOs();
+	}
+
+	@Override
+	public TableQuestionAVBuilder addTableQuestionAv(Integer avId,
+			String questionText, boolean hasNone, Boolean noneResponse) {
+		return delegate.addTableQuestionAv(avId, questionText, hasNone, noneResponse);
 	}
 }

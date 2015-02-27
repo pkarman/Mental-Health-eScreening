@@ -497,7 +497,6 @@ Other parameters are the same as the delimit function below
 	<#return delimitList(valList, prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultValue) > 
 </#function> 
 
-
 <#-- 
 This transformation takes a table question and returns the number of entries given by the veteran
 -->
@@ -512,9 +511,7 @@ It was done this way for simple calculation of number of rows used by numberOfEn
 Note: in the future we can change the way we organize the table question children array so it is not so flat. This would required
 the update of any templates which were hand made (currently template IDs are: 6,12,14,20,22)
 -->
-<#function createTableHash table=DEFAULT_VALUE >
-	<#return 'gov.va.escreening.template.function.TableHashCreator'?new().create(table)>
-</#function>
+<#assign createTableHash = 'gov.va.escreening.template.function.TableHashCreator'?new() >
 
 <#function getTableVariable tableHash=[] tableChildVar=DEFAULT_VALUE rowIndex=0 >
 	<#if tableChildVar==DEFAULT_VALUE || tableHash?size == 0 || !(tableHash[rowIndex]??) || !(tableHash[rowIndex][tableChildVar.variableId]??)>
@@ -558,7 +555,6 @@ columnVarIdMap is a set of column AV IDs which we are testing to see if the vete
 			</#list>
 		</#if>
 	</#list>
-	
 	
 	<#return delimitList(valList) >
 </#function>  

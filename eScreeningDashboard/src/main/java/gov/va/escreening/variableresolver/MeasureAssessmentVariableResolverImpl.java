@@ -297,7 +297,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 		List<SurveyMeasureResponse> parentResponses = parentMeasure
 				.getSurveyMeasureResponseList();
 
-		SurveyMeasureResponse parentResponse = parentResponses.isEmpty() ? null
+		SurveyMeasureResponse parentResponse = parentResponses == null || parentResponses.isEmpty() ? null
 				: parentResponses.get(0); // there should only be one response
 											// for the parent question for table
 											// type
@@ -314,10 +314,10 @@ public class MeasureAssessmentVariableResolverImpl implements
 								parentMeasure.getMeasureId(),
 								assessmentVariable.getAssessmentVariableId(),
 								veteranAssessmentId));
-
+			//TODO: This should be refactored to pull all row answers for a given child measure and create DTOs for each instead of guessing which row to query for (up to 1000)
 			for (Measure childMeasure : childMeasures) {
 				int tabularRow = 0;
-				do {
+				do { 
 					List<SurveyMeasureResponse> responses = surveyMeasureResponseRepository
 							.findForAssessmentIdMeasureRow(veteranAssessmentId,
 									childMeasure.getMeasureId(), tabularRow);

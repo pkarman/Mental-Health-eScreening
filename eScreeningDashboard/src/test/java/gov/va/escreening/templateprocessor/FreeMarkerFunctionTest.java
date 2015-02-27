@@ -20,7 +20,7 @@ public class FreeMarkerFunctionTest {
     	avBuilder = new TestAssessmentVariableBuilder();
     }
 
-	protected String render(AssessmentVariableBuilder avBuilder, String templateText) throws IOException, TemplateException{
+	protected String render(String templateText, AssessmentVariableBuilder avBuilder) throws IOException, TemplateException{
 		//creating a new processor every time to avoid caching of templates
 		String result = new TemplateProcessorServiceImpl().processTemplate(
 				"<#include \"clinicalnotefunctions\">" + templateText, 

@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import freemarker.ext.beans.StringModel;
+import freemarker.template.DefaultObjectWrapper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import org.junit.Test;
@@ -13,9 +15,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 @RunWith(JUnit4.class)
 public class TableHashCreatorTest {
+	
+	private List<StringModel> createParam(AssessmentVariableDto av){
+		StringModel sm = new StringModel(av, new DefaultObjectWrapper());
+		return Lists.newArrayList(sm);
+	}
 	
 	@Test
 	public void testTableHashStructure() throws Exception {
@@ -25,7 +33,7 @@ public class TableHashCreatorTest {
 				createQuestionVariable(2, 5),
 				createQuestionVariable(3, 5)));
 		
-		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().create(table);
+		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
 		
 		assertTrue(rows.get(0).isEmpty());
 		assertTrue(rows.get(1).isEmpty());
@@ -45,7 +53,7 @@ public class TableHashCreatorTest {
 		table.setChildren(ImmutableList.of(
 				createQuestionVariable(1, null)));
 		
-		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().create(table);
+		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
 		
 		assertTrue(rows.isEmpty());
 	}
@@ -53,14 +61,14 @@ public class TableHashCreatorTest {
 	@Test
 	public void testTableHashNullTable() throws Exception {
 		TableHashCreator creator = new TableHashCreator();
-		assertTrue("A null parameter should give back an empty List", creator.create(null).size() == 0);
+		assertTrue("A null parameter should give back an empty List", creator.exec(createParam(null)).size() == 0);
 	}
 
 	@Test
 	public void testTableHashNullChildrenTable() throws Exception {
 		TableHashCreator creator = new TableHashCreator();
 		AssessmentVariableDto table = new AssessmentVariableDto();
-		assertTrue("A null parameter should give back an empty List", creator.create(table).size() == 0);
+		assertTrue("A null parameter should give back an empty List", creator.exec(createParam(table)).size() == 0);
 	}
 
 	@Test
@@ -68,7 +76,7 @@ public class TableHashCreatorTest {
 		TableHashCreator creator = new TableHashCreator();
 		AssessmentVariableDto table = new AssessmentVariableDto();
 		table.setChildren(Collections.<AssessmentVariableDto>emptyList());
-		assertTrue("A null parameter should give back an empty List", creator.create(table).size() == 0);
+		assertTrue("A null parameter should give back an empty List", creator.exec(createParam(table)).size() == 0);
 	}
 	
 	private AssessmentVariableDto createQuestionVariable(Integer id, Integer rowIndex){

@@ -301,7 +301,7 @@ public class Measure implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Measure[ measureId=" + measureId + " ]";
+        return "gov.va.escreening.entity.Measure[ measureId=" + measureId + ", text=\"" + measureText + "\" ]";
     }
 
     public boolean isNumeric() {

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModelException;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 /**
  * Freemarker helper function takes a table question and returns an array of Maps where each entry is a row/entry, and the Map 
@@ -17,12 +19,22 @@ import gov.va.escreening.variableresolver.AssessmentVariableDto;
  * @author Robin Carnow
  *
  */
-public class TableHashCreator {
-
-	public List<Map<Integer, AssessmentVariableDto>> create(AssessmentVariableDto table){
+public class TableHashCreator extends TemplateFunction implements TemplateMethodModelEx{
+	
+	@Override
+	public List<Map<Integer, AssessmentVariableDto>> exec(@SuppressWarnings("rawtypes") List params) 
+			throws TemplateModelException{
+		
+		if(params == null || params.isEmpty()){
+			return Collections.emptyList();
+		}
+		
+		AssessmentVariableDto table = unwrapParam(params.get(0), AssessmentVariableDto.class);
+		
 		if(table == null || table.getChildren() == null || table.getChildren().isEmpty()){
 			return Collections.emptyList();
 		}
+		
 		List<Map<Integer, AssessmentVariableDto>> rows = new ArrayList<>();
 		
 		for(AssessmentVariableDto qVar : table.getChildren()){
@@ -46,7 +58,7 @@ public class TableHashCreator {
 			}
 		}
 	}
-	
+
 /*	was using this originally:
  * <#assign rows = []>
 	<#if table != DEFAULT_VALUE && table.children?? && !(wasAnswerNone(variableObj)) >
