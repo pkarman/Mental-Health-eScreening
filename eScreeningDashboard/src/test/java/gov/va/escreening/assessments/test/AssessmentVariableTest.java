@@ -48,7 +48,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
         }
 
         String updateString = sb.toString();
-        saveUpdateString(System.getProperty("FILE_NAME", "./assessment_vars_update_script.sql"), updateString);
+        //saveUpdateString(System.getProperty("FILE_NAME", "./assessment_vars_update_script.sql"), updateString);
         logger.info(updateString);
     }
 
