@@ -6,12 +6,16 @@ import gov.va.escreening.service.VeteranService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +38,7 @@ public class CreateVeteranController {
 
     /**
      * Returns the backing bean for the form.
+     *
      * @return
      */
     @ModelAttribute
@@ -44,18 +49,42 @@ public class CreateVeteranController {
 
     /**
      * Initialize and setup page.
+     *
      * @param createVeteranFormBean
      * @param model
      * @return
      */
     @RequestMapping(value = "/createVeteran", method = RequestMethod.GET)
-    public String setUpPageCreateVeteran(@ModelAttribute CreateVeteranFormBean createVeteranFormBean, Model model) {
-
+    public String setUpPageCreateVeteran(HttpServletRequest request, @ModelAttribute CreateVeteranFormBean createVeteranFormBean, Model model) {
+        accomodateCreateVeteranFormBeamFromSearchResult(request, createVeteranFormBean, model);
         return "dashboard/createVeteran";
+    }
+
+    private void accomodateCreateVeteranFormBeamFromSearchResult(HttpServletRequest request, CreateVeteranFormBean createVeteranFormBean, Model model) {
+        HttpSession session = request.getSession();
+        String lastName = (String) session.getAttribute("lastName");
+        String ssnLastFour = (String) session.getAttribute("ssnLastFour");
+        boolean updateCreateVeteranFormBean = false;
+
+        if (lastName != null) {
+            createVeteranFormBean.setLastName(lastName);
+            session.removeAttribute("lastName");
+            updateCreateVeteranFormBean = true;
+        }
+        if (ssnLastFour != null) {
+            createVeteranFormBean.setSsnLastFour(ssnLastFour);
+            session.removeAttribute("ssnLastFour");
+            updateCreateVeteranFormBean = true;
+        }
+        if (updateCreateVeteranFormBean) {
+            model.addAttribute("createVeteranFormBean", createVeteranFormBean);
+        }
+
     }
 
     /**
      * Saves the form into the database.
+     *
      * @param createVeteranFormBean
      * @param result
      * @param model
@@ -63,7 +92,7 @@ public class CreateVeteranController {
      */
     @RequestMapping(value = "/createVeteran", method = RequestMethod.POST, params = "saveButton")
     public String processCreateVeteran(@Valid @ModelAttribute CreateVeteranFormBean createVeteranFormBean,
-            BindingResult result, Model model) {
+                                       BindingResult result, Model model) {
 
         // Need to validate birthDate.
         if (StringUtils.isNotBlank(createVeteranFormBean.getBirthDateString())) {
@@ -71,10 +100,9 @@ public class CreateVeteranController {
 
             try {
                 createVeteranFormBean.setBirthDate(sdf.parse(createVeteranFormBean.getBirthDateString()));
-            }
-            catch (ParseException e) {
+            } catch (ParseException pe) {
                 result.rejectValue("birthDateString", "birthDateString", "A valid Date of Birth is required.");
-                logger.error("Failed to parse birthDateString", e);
+                logger.error("Failed to parse birthDateString", pe);
             }
         }
 
@@ -84,20 +112,37 @@ public class CreateVeteranController {
         }
 
         // Save to database, get veteranId, and then redirect to next page.
-        Integer veteranId = veteranService.add(createVeteranFormBean);
+        try {
+            Integer veteranId = veteranService.add(createVeteranFormBean);
+            return "redirect:/dashboard/veteranDetail?vid=" + veteranId;
+        } catch (DataIntegrityViolationException dve) {
+            if (dve.getCause() instanceof ConstraintViolationException) {
+                logger.error("Veteran being created already exists", dve);
+                result.rejectValue(null, null, "You are creating a duplicate record. Add more information in the fields, or click Cancel.");
+            } else {
+                throw dve;
+            }
+        }
 
-        return "redirect:/dashboard/veteranDetail?vid=" + veteranId;
+        // If we get here there is an error, return the same view.
+        return "dashboard/createVeteran";
+
     }
 
     /**
      * User clicked on the cancel button. Redirect to select veteran page.
+     *
      * @param model
      * @return
      */
     @RequestMapping(value = "/createVeteran", method = RequestMethod.POST, params = "cancelButton")
-    public String cancelCreateVeteran(Model model) {
+    public String cancelCreateVeteran(HttpServletRequest request,@Valid @ModelAttribute CreateVeteranFormBean createVeteranFormBean,
+                                      BindingResult result, Model model) {
 
         logger.debug("In cancelCreateVeteran");
+
+        request.getSession().setAttribute("lastName", createVeteranFormBean.getLastName());
+        request.getSession().setAttribute("ssnLastFour", createVeteranFormBean.getSsnLastFour());
 
         return "redirect:/dashboard/selectVeteran";
     }

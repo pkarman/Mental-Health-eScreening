@@ -65,4 +65,6 @@ public interface ProgramService {
      * @param isDisabled
      */
     void updatePrgoramStatus(int programId, boolean isDisabled);
+
+	List<DropDownObject> getProgramDropDownObjects(int userId);
 }

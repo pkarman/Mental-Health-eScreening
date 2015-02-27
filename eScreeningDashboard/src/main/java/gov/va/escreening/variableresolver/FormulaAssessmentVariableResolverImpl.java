@@ -41,7 +41,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 	@Override
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-			Map<Integer, AssessmentVariable> measureAnswerHash) {
+			Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler) {
 
 		List<AssessmentVariable> answerTypeList = new ArrayList<AssessmentVariable>();
 		List<AssessmentVariable> measureTypeList = new ArrayList<AssessmentVariable>();
@@ -69,8 +69,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 
 			for (AssessmentVariable answerVariable : answerTypeList) {
 				String value = measureAnswerVariableResolver
-						.resolveCalculationValue(answerVariable,
-								veteranAssessmentId);
+						.resolveCalculationValue(answerVariable, veteranAssessmentId, smrNullHandler);
 				rootFormula.getVariableValueMap().put(
 						answerVariable.getAssessmentVariableId(), value);
 			}
@@ -78,7 +77,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 			for (AssessmentVariable measureVariable : measureTypeList) {
 				String value = measureVariableResolver
 						.resolveCalculationValue(measureVariable,
-								veteranAssessmentId, measureAnswerHash);
+								veteranAssessmentId, measureAnswerHash, smrNullHandler);
 				rootFormula.getVariableValueMap().put(
 						measureVariable.getAssessmentVariableId(), value);
 			}

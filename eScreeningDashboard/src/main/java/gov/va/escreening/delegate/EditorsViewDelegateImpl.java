@@ -146,12 +146,10 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 	public void updateSurveyPages(Integer surveyId,
 			List<SurveyPageInfo> surveyPageInfo) {
 		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
-
-
 	}
 	@Override
-	public List<SurveyPageInfo> getSurveyPages(Integer surveyId) {
-		return surveyService.getSurveyPages(surveyId);
+	public List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber) {
+		return surveyService.getSurveyPages(surveyId, pageNumber);
 	}
 	@Override
 	public SurveyInfo createSurvey(SurveyInfo survey) {
@@ -162,6 +160,16 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     @Override
     public Measure findMeasure(Integer measureId) {
         return measureService.findMeasure(measureId);
+    }
+
+    @Override
+    public SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId) {
+        return surveyService.getSurveyPage(surveyId, pageId);
+    }
+
+    @Override
+    public void deleteSurveyPage(Integer surveyId, Integer pageId) {
+        surveyService.removeSurveyPage(surveyId, pageId);
     }
 }
 

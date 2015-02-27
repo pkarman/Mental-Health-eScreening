@@ -1,11 +1,13 @@
 package gov.va.escreening.dto.editors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Created by pouncilt on 8/5/14.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ValidationInfo {
     private Integer id;
     private String name;

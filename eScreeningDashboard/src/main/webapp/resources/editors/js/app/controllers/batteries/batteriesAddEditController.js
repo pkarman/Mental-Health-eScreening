@@ -1,5 +1,6 @@
 Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$stateParams','battery','sections','BatteryService',function($rootScope,$scope,$state,$stateParams,battery,sections,BatteryService){
-	$scope.totalSections = 0;
+
+    $scope.totalSections = 0;
 	$scope.totalModules = 0;
 	$scope.isDirty = false;
     $scope.selectedSurveyModulesIsDirty = false;
@@ -15,19 +16,18 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 	
 	
 	$scope.$watch('sections',function(newVal, oldVal){
-		$scope.sections.forEach(function(section){
-			var sec = section.toUIObject();
-			sec.visible = false;
+		angular.forEach($scope.sections, function(section){
+			section.visible = false;
 			
-			for (var i=0;i<sec.surveys.length;i++)
+			for (var i=0;i<section.surveys.length;i++)
 			{
 				$scope.totalSurveysLen++;
 			}
 			
-			sec.surveys.forEach(function(survey){
+			angular.forEach(section.surveys, function(survey){
 				survey.visible = false;
 			});
-			$scope.availSections.push(sec);
+			$scope.availSections.push(section);
 		});
 		//alert('Total Surveys Length::' + $scope.totalSurveysLen);
 		// Now, make a batterySections copy, otherwise we will be databound to availSections.
@@ -145,7 +145,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
             });
 
             if(previouslyPersistedSurveyFound == false){
-                previouslySelectedSurvey.markedForDeletion();
+                previouslySelectedSurvey.markedForDeletion;
                 previouslyPersistedSurveys.remove(previouslySelectedSurvey);
 
                 if (selectedSurveyDirty === false) {

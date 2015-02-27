@@ -25,23 +25,29 @@ public class MeasureServiceImpl implements MeasureService {
     @Transactional(readOnly = true)
     @Override
     public List<Measure> getMeasureIdsForTableTypeQuestions(Integer surveyId) {
-    	MeasureType type = measureTypeRepository.findOne(MeasureTypeEnum.TABLEQUESTION.getMeasureTypeId());
-    	List<Measure> parentMeasures = measureRepository.getMeasureForTypeSurvey(surveyId, type);
-    	return parentMeasures;
+        MeasureType type = measureTypeRepository.findOne(MeasureTypeEnum.TABLEQUESTION.getMeasureTypeId());
+        List<Measure> parentMeasures = measureRepository.getMeasureForTypeSurvey(surveyId, type);
+        return parentMeasures;
     }
-    
+
     @Transactional(readOnly = true)
     @Override
     public List<Measure> getMeasuresBySurvey(Integer surveyId) {
-    	List<Measure> measures = measureRepository.getMeasuresBySurvey(surveyId);
-    	return measures;
+        List<Measure> measures = measureRepository.getMeasuresBySurvey(surveyId);
+        return measures;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MeasureType> loadAllMeasureTypes() {
+        List<MeasureType> l = measureTypeRepository.findAll();
+        return l;
     }
 
     @Override
     @Transactional(readOnly = true)
     public gov.va.escreening.dto.ae.Measure findMeasure(Integer measureId) {
         Measure dbMeasure=measureRepository.findOne(measureId);
-        gov.va.escreening.dto.ae.Measure dtoMeasure=new gov.va.escreening.dto.ae.Measure(dbMeasure,null,null);
-        return dtoMeasure;
+        return new gov.va.escreening.dto.ae.Measure(dbMeasure);
     }
 }

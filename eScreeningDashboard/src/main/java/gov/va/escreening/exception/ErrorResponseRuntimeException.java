@@ -35,7 +35,9 @@ public class ErrorResponseRuntimeException extends RuntimeException implements E
     
     @Override
     public String getMessage() {
-        return response == null ? "null" : response.getDeveloperMessage();
+    	StringBuilder sBuilder = new StringBuilder(response.getDeveloperMessage());
+    	sBuilder.append("\nUser messages:\n").append(response.getUserMessage("\n"));
+        return response == null ? "null" : sBuilder.toString();
     }
     
     @Override

@@ -35,6 +35,11 @@ public class VariableResolverServiceImpl implements VariableResolverService {
 	@Resource(name = "veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
 
+	@Resource(name = "templateSmrNullHandler")
+    NullValueHandler templateSmrNullHandler;
+	@Resource(name = "exportDataSmrNullHandler")
+    NullValueHandler exportDataSmrNullHandler;
+
     private static final Logger logger = LoggerFactory.getLogger(VariableResolverServiceImpl.class);
     
     //TODO: If we don't need to support the use of template ID and we can just use a template object that we already have queried, that would make this faster.
@@ -53,7 +58,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
             
             for(VariableTemplate variableTemplate : variableTemplates) {
                 AssessmentVariable assessmentVariable = variableTemplate.getAssessmentVariableId();
-                assessmentVariableDtos.addAll(resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash).asSet());
+                assessmentVariableDtos.addAll(resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash, templateSmrNullHandler ).asSet());
             }
     	}
     	
@@ -71,10 +76,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(dbVariables);
         
         for(AssessmentVariable dbVariable : dbVariables){
-        	if ("prior_dx_score".equals(dbVariable.getDisplayName())){
-        		int i=0;
-        	}
-            assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, veteranAssessmentId, measureAnswerHash).asSet());
+            assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, veteranAssessmentId, measureAnswerHash, exportDataSmrNullHandler).asSet());
         }
         
         return assessmentVariableDtos;
@@ -88,9 +90,9 @@ public class VariableResolverServiceImpl implements VariableResolverService {
      * @return an {@code Optional} of the resolved dto. Will be absent of an allowable exception occurred.
      * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
      */
-    private Optional<AssessmentVariableDto> resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash){
+    private Optional<AssessmentVariableDto> resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler){
         try {
-            AssessmentVariableDto variableDto = assessmentVariableFactory.createAssessmentVariableDto(assessmentVariable, veteranAssessmentId, measureAnswerHash);
+            AssessmentVariableDto variableDto = assessmentVariableFactory.createAssessmentVariableDto(assessmentVariable, veteranAssessmentId, measureAnswerHash, smrNullHandler);
             
             if(variableDto != null) {
                 return Optional.of(variableDto);

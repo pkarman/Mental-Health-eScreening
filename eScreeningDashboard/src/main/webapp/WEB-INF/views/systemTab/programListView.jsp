@@ -9,23 +9,25 @@
 
 <head>
 <title>Program List View</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
-<link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
-<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/jquery.dataTables.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/formButtons.css" />" rel="stylesheet" type="text/css" />
-
-<!-- Bootstrap -->
-<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
-
-<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
+  <link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
+  <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/css/jquery.dataTables.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/css/formButtons.css" />" rel="stylesheet" type="text/css" />
+  
+  <!-- Bootstrap -->
+  <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+  <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
+  
+  <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
 
 </head>
 <body>
@@ -60,10 +62,10 @@
     <table class="table table-striped table-hover" summary="Program List View">
       <thead>
         <tr>
-          <th scope="col"  class="col-md-1 text-right">ID</th>
-          <th>Name</th>
-          <th class="col-md-1 text-center">Disabled</th>
-          <th class="col-md-1 text-right">Action</th>
+          <th scope="col"  class="col-md-1 text-right ui-state-default ">ID</th>
+          <th class="ui-state-default ">Name</th>
+          <th class="col-md-1 ui-state-default text-center">Disabled</th>
+          <th class="col-md-1 ui-state-default text-right">Action</th>
         </tr>
       </thead>
       <c:forEach var="item" items="${programList}">

@@ -4,9 +4,11 @@
 <!doctype html>
 <html>
 <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="viewport" content="user-scalable=no,width=device-width" /> -->
+  
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="viewport" content="user-scalable=no,width=device-width" />
-	
   <!-- FAVICON -->
   <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />
@@ -23,6 +25,7 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/assessmenttemplate.css">
         <link rel="stylesheet" type="text/css" href="resources/css/common-ui-styles/assessment-measures-master.css">
         <link rel="stylesheet" type="text/css" href="resources/css/measuresWIP.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common.css">
         
         <link rel="stylesheet" type="text/css" href="resources/css/checkswitch.css">
          <link rel="stylesheet" type="text/css" href="resources/css/formButtons.css">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.va</groupId>
 	<artifactId>escreeningdashboard</artifactId>
@@ -596,6 +596,61 @@
 							</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-30-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_30</basedir>
+								</fileset>
+							</configuration>
+					</execution>
+					<!-- PLEASE NOTE: this is a specific configuration for ticket 787.
+					     Please create another execution entry for all other sprint 31 tickets -->
+					<execution>
+						<id>apply-sprint-31-ticket-787-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_31_787</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-31-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_31</basedir>
+								</fileset>
+							</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-32-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_32</basedir>
+								</fileset>
+							</configuration>
+					</execution>
+					<execution>
 						<id>apply-ticket-related-data</id>
 							<phase>process-test-resources</phase>
 							<goals>
@@ -607,6 +662,20 @@
 									<basedir>src/main/sql/ticketRelatedChanges</basedir>
 								</fileset>
 							</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-32-ticket-809-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_32_809</basedir>
+							</fileset>
+						</configuration>
 					</execution>
 					<execution>
 						<id>test-data-fill</id>

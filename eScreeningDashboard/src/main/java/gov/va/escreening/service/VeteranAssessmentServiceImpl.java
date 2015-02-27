@@ -3,7 +3,6 @@ package gov.va.escreening.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
-import gov.va.escreening.domain.AssessmentExpirationDaysEnum;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.domain.VeteranAssessmentDto;
@@ -13,6 +12,7 @@ import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.ClinicalNote;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
@@ -31,6 +31,7 @@ import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.ClinicalNoteRepository;
@@ -48,12 +49,19 @@ import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import gov.va.escreening.variableresolver.VariableResolverService;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,14 +70,12 @@ import java.util.TreeSet;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -109,6 +115,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private VariableResolverService variableResolverSvc;
+	
+	@Autowired
+	private AssessmentVariableRepository assessmentVariableRepo;
 
 	@Resource(name = "esVeteranAssessmentDashboardAlertRepository")
 	VeteranAssessmentDashboardAlertRepository vadar;
@@ -1105,8 +1117,80 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	@Override
 	public SearchResult<AssessmentSearchResult> searchVeteranAssessment(
-			String programId, SearchAttributes searchAttributes) {
-		SearchResult<VeteranAssessment> veteranAssessmentSearchResult = vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), searchAttributes);
+			String programId, List<Integer> programIdList, SearchAttributes searchAttributes) {
+		SearchResult<VeteranAssessment> veteranAssessmentSearchResult 
+			= vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), programIdList, searchAttributes);
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
+	}
+
+	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	@Override
+	public Map<String, String> getVeteranAssessmentVariableSeries(
+			int veteranId, int assessmentVariableID, int numOfMonth) {
+		
+		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
+		List<AssessmentVariable> dbVariables = new ArrayList<>(1);
+		dbVariables.add(dbVariable);
+		List<VeteranAssessment> assessmentList = veteranAssessmentRepository
+				.findByVeteranId(veteranId);
+
+		Collections.sort(assessmentList, new Comparator<VeteranAssessment>()
+		{
+
+			@Override
+			public int compare(VeteranAssessment va1, VeteranAssessment va2) {
+				if((va1.getDateCompleted()!=null) && (va2.getDateCompleted()!=null))
+				{
+					return va1.getDateCompleted().compareTo(va2.getDateCompleted());
+				}
+				else if(va1.getDateUpdated() !=null && va2.getDateUpdated() !=null)
+				{
+					return va1.getDateUpdated().compareTo(va2.getDateUpdated());
+				}
+				else
+				{
+					if(va1.getDateUpdated() == null)
+					{
+						return -1;
+					}
+					else
+					{
+						return 1;
+					}
+				}
+			}
+			
+		});
+		
+		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
+		int total = 0;
+		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
+		{
+			VeteranAssessment va = assessmentList.get(i);
+			try {
+				Date d = va.getDateUpdated();
+				long time = d.getTime()/1000;
+				
+				long secInMonth = 30*24*3600*numOfMonth;
+				long current = Calendar.getInstance().getTimeInMillis()/1000;
+				long timeDiff = current - time;
+				if(timeDiff > secInMonth)
+				{
+					continue;
+				}
+					
+				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
+				
+				AssessmentVariableDto result = dto.iterator().next();
+				if (result.getValue() != null) {
+					timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  result.getValue());
+					total++;
+				}
+			} catch (Exception ex) {// do nothing
+				logger.warn("exception getting a assessment variable for time series", ex);
+			}
+		}
+		
+		return timeSeries;
 	}
 }

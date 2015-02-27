@@ -15,6 +15,7 @@ import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,5 +153,15 @@ public class AssessmentSummaryRestController {
         er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return er;
     }
+    
+    @RequestMapping(value = "/assessmentSummary/assessmentvarseries/{veteranId}/{assessmentVarId}/{numMonth}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map<String, String> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
+    		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth) {
+    	logger.debug(String.format("Get time series for veteran %d, assessment variable ID %d.", veteranId, assessmentVarId));
+    	
+    	return veteranAssessmentService.getVeteranAssessmentVariableSeries(veteranId, assessmentVarId, numMonth);
+    	
+   }
 
 }
