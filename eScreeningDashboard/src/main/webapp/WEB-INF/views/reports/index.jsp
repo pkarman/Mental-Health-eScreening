@@ -8,10 +8,12 @@
 <head>
   <title>Reports</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
+	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
+	<script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 		
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
@@ -23,6 +25,8 @@
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
+
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
 </head>
 <body>
 <a href="#skip" class="offscreen">Skip to main content</a>
@@ -50,12 +54,12 @@
 
 <div class="container left-right-shadow">
 	<div class="row">
-		<div class="col-md-9 pull-left"><a name="skip" > </a ><h1>Reports</h1></div>
+		<div class="col-md-12"><a name="skip" > </a ><h1>Reports</h1></div>
 	</div>
 	<div class="clear-fix"></div>
 
 	<div id="mainContent">
-		<table class="table table-striped table-hover" summary="Program List View">
+		<table class="table table-striped table-hover" summary="Reports List View">
 			<thead>
 				<tr>
 					<th class="ui-state-default text-left">Report Name</th>
@@ -63,15 +67,14 @@
 				</tr>
 			</thead>
 			<tr>
-				<td class="text-left">&nbsp;</td>
-				<td class="text-center">&nbsp; </td>
+				<td class="text-left">Individual Statistic Reports</td>
+				<td class="text-right"><a href="reports/individualStatistics" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-			<!--
+			
 			<tr>
-				<td class="text-left">Clinic Statistic Reports Part VI: Positive Screens Report</td>
-				<td class="text-center"><a href="#" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part VI: Positive Screens Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+				<td class="text-left">Average Scores for Patients by Clinic Report</td>
+				<td class="text-right"><a href="reports/averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-			-->
 		</table>
 	</div>
 </div>

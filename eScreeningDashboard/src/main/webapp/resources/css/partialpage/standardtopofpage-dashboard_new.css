@@ -917,6 +917,44 @@ a.offscreen:focus, a.offscreen:active {
   stroke:#2d5277;
   stroke-width: 2px;
 }
+
+
+/* Reports */
+.vertical_scoll_list_b {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 140px;
+  margin: 5px;
+  border: 0px solid #D4D4D4;
+}
+
+.vertical_scoll_list_b ul, .vertical_scoll_list_b li{
+	margin:0px;
+	padding:0px;
+}
+.vertical_scoll_list_b ul li{
+	
+}
+.vertical_scoll_list_b input[type=checkbox], .checkbox_margin_right input[type=checkbox] {
+  margin-right: 5px;
+}
+.hr_margin_5{
+	margin:5px 0px !important;
+}
+.checkbox_group{
+}
+.checkbox_group_label{
+	margin:5px auto;
+}
+.form-group .help-block {
+  display: none;
+}
+ 
+.form-group.has-error .help-block {
+  display: block;
+}
+
+
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
