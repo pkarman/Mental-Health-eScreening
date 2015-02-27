@@ -24,6 +24,8 @@
 
 		            scope.searchObj = {type: ''};
 
+					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
+
 					scope.assessmentVariables = AssessmentVariableService.getLastCachedResults().$object;
 
 		            scope.tableParams = new ngTableParams({
@@ -58,10 +60,6 @@
 					});
 
 		            scope.tableParams.settings().$scope = scope;
-
-		            scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
-
-					scope.freetextNone = false;
 
 		            scope.select = function(e, av) {
 
@@ -110,16 +108,16 @@
 			            scope.tableParams.reload();
 	                };
 
-					scope.applyTransformations = function applyTransformations(av) {
-
-						// This is not working because the ng-if is giving the form its own scope
-						if (scope.freetextNone) {
-							av.transformations = null;
-						}
+					scope.applyTransformations = function applyTransformations(newScope) {
 
 						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
+
+						if (newScope.transformationType) {
+							scope.assessmentVariable.transformations = [newScope.transformationType];
+							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+						}
 					};
 
 					scope.dismiss = function dismiss() {
