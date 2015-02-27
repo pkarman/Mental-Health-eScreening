@@ -81,6 +81,13 @@
 							});
 						}
 
+						if (av.getMeasureTypeName() === 'table') {
+							// Get the childQuestions and childQuestion answers for single and multi-matrix variables
+							MeasureService.one(av.measureId).get().then(function(measure) {
+								scope.childQuestions = measure.childQuestions;
+							});
+						}
+
 						if (av.id !== 6 && scope.transformationName === 'single-select') {
 							scope.show = false;
 						} else if (scope.transformationName === 'freetext') {
