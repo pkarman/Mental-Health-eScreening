@@ -1,10 +1,14 @@
 package gov.va.escreening.assessments.test;
 
+import com.google.common.io.Files;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
+import org.springframework.util.FileSystemUtils;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -35,7 +40,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
     AssessmentVariableRepository avr;
 
     @Test
-    public void synvAvWithMeasureDdl() {
+    public void produceUpdateScript() throws IOException {
         Collection<AssessmentVariable> avList = avr.findAll();
         StringBuffer sb = new StringBuffer();
         for (AssessmentVariable av : avList) {
@@ -43,7 +48,14 @@ public class AssessmentVariableTest extends AssessmentTestBase {
         }
 
         String updateString = sb.toString();
+        saveUpdateString(System.getProperty("FILE_NAME", "./assessment_vars_update_script.sql"), updateString);
         logger.info(updateString);
+    }
+
+    private void saveUpdateString(String fileName, String updateString) throws IOException {
+        File fileToWriteTo = new File(fileName);
+
+        Files.write(updateString, fileToWriteTo, Charset.defaultCharset());
     }
 
     private void buildUpdate(AssessmentVariable av, StringBuffer sb) {
@@ -134,7 +146,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
         String insertStatements = sb.toString();
     }
 
-    @Test
+    //@Test
     public void testReplaceTickTick() {
         String hh = "Loss of consciousness/\"knocked out\"".replaceAll("\"", "'");
         int i = 0;
