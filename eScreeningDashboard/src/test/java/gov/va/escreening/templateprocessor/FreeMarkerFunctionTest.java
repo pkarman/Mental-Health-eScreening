@@ -25,7 +25,8 @@ public class FreeMarkerFunctionTest {
 		String result = new TemplateProcessorServiceImpl().processTemplate(
 				"<#include \"clinicalnotefunctions\">" + templateText, 
 				avBuilder.getDTOs(), 1);
-		System.out.println("template rendered:\n" + result);
+		
+		logger.debug("template rendered:\n" + result);
 		
 		return result;
 	}

@@ -814,7 +814,7 @@ If type == 3 then at least one option must be set to true.
     <#if var == DEFAULT_VALUE>
         <#return false>
     </#if>
-
+    
     <#if !(var.variableId??) > <#-- if this is not a variable then just see if it has content -->
     	<#return var?has_content>
     </#if>    
@@ -838,24 +838,25 @@ returns the negation of wasAnswered
 Returns true if the None typed answer was selected
 -->
 <#function wasAnswerNone variableObj=DEFAULT_VALUE>
-  <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
-    <#-- The object was not found or there was a problem with the list -->
+    <#if variableObj=DEFAULT_VALUE || !(variableObj.children??) || variableObj.children?size=0 >
+        <#-- The object was not found or there was a problem with the list -->
+        <#return false>
+    </#if>
+ 
+    <#list variableObj.children as x>
+        <#if x.value?? && x.value='true' && x.type?? && x.type='none'>
+            <#return true>
+        </#if>
+    </#list>
+ 
     <#return false>
-  <#else>
-     <#list variableObj.children as x>
-       <#if x.value?? && x.value='true' && x.type?? && x.type='none'>
-	     <#return true>
-       </#if>
-     </#list>
-     <#return false>
-  </#if>
 </#function>
 
 <#--
 returns the negation of wasAnswerNone
  -->
 <#function wasntAnswerNone variableObj=DEFAULT_VALUE>
-	<#return !(wasAnswerNone(var)) > 
+    <#return !(wasAnswerNone(variableObj)) > 
 </#function>
 
 
@@ -898,12 +899,23 @@ returns the negation of customHasResult
 <#--
 Returns true if the value given has a value. Currently only supports string values
 -->
-<#function matrixHasResult val=DEFAULT_VALUE>
-	<#if val == DEFAULT_VALUE>
+<#function matrixHasResult matrix=DEFAULT_VALUE>
+	<#if matrix == DEFAULT_VALUE>
 		<#return false>
-	</#if>  
+	</#if>
 	
-	<#return val?has_content> 
+	<#assign responseList = []>
+	<#list matrix.children as question>
+        <#if (question.children??) && (question.children?size > 0) >
+        
+            <#assign responses = getSelectedResponses(question)>
+            <#if (responses?size > 0)>
+                <#return true>
+            </#if>
+        </#if>
+    </#list>
+	
+	<#return false>
 </#function>
 
 <#function matrixHasNoResult var=DEFAULT_VALUE > 
