@@ -70,6 +70,7 @@ public class BatchCreateController {
 	public String searchVeterans(
 			@CurrentUser EscreenUser escreenUser,
 			@ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
+			BindingResult result,
 			Model model) {
 
 		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
@@ -77,6 +78,11 @@ public class BatchCreateController {
 		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
 		String clinicIen = selectVeteranFormBean.getSelectedClinic();
+		if(clinicIen == null)
+		{
+			result.reject("clinicIen");
+			return "dashboard/selectVeterans";
+		}
 		List<VistaClinicAppointment> appList = batchCreateDelegate
 				.searchVeteranByAppointments(escreenUser, clinicIen,
 						selectVeteranFormBean.getStartDate(),
