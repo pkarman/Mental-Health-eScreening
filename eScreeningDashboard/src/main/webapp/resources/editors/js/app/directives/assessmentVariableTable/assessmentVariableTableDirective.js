@@ -5,13 +5,14 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', function(AssessmentVariableService, AssessmentVariableManager, MeasureService) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, ngTableParams, $filter) {
 
 	        return {
 	            restrict: 'EA',
 	            scope: {
 		            assessmentVariable: '=',
-		            show: '='
+		            show: '=',
+					blockType: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
@@ -23,7 +24,38 @@
 
 		            scope.searchObj = {type: ''};
 
-		            scope.tableParams = AssessmentVariableService.getTableParams(scope.searchObj);
+					scope.assessmentVariables = AssessmentVariableService.getLastCachedResults().$object;
+
+		            scope.tableParams = new ngTableParams({
+						page: 1, // show first page
+						count: 10, // count per page
+						filter: scope.searchObj
+					}, {
+						counts: [],
+						total: 0,
+						getData: function ($defer, params) {
+							var avs,
+								filteredData;
+
+							if (scope.blockType && scope.blockType === 'table') {
+								// Only display table questions for table block
+								filteredData = [];
+								_.each(scope.assessmentVariables, function(av) {
+									if (av.getMeasureTypeName() === 'table') {
+										filteredData.push(av);
+									}
+								});
+							} else {
+								filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+							}
+
+							avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+
+							params.total(filteredData.length); // set total for recalc pagination
+							$defer.resolve(avs);
+						},
+						$scope: { $data: {} }
+					});
 
 		            scope.tableParams.settings().$scope = scope;
 

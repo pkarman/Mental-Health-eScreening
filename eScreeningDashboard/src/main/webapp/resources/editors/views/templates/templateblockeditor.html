@@ -23,7 +23,7 @@
 							       ng-model="block.left.content"
 							       ng-change="updateLogicalOptions(block)"
 							       update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" block-type="block.type" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">
