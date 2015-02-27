@@ -664,6 +664,20 @@
 							</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-32-ticket-809-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_32_809</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
