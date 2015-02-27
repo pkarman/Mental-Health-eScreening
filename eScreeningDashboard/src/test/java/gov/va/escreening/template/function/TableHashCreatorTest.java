@@ -33,17 +33,17 @@ public class TableHashCreatorTest {
 				createQuestionVariable(2, 5),
 				createQuestionVariable(3, 5)));
 		
-		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
+		List<Map<String, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
 		
 		assertTrue(rows.get(0).isEmpty());
 		assertTrue(rows.get(1).isEmpty());
 		assertTrue(rows.get(2).isEmpty());
 		//row 3 should have one AV with an ID of 1
-		assertTrue(rows.get(3).containsKey(1));
+		assertTrue(rows.get(3).containsKey("1"));
 		assertTrue(rows.get(4).isEmpty());
 		//row 5 should have two AVs (id 2 and 3)
-		assertTrue(rows.get(5).containsKey(2));
-		assertTrue(rows.get(5).containsKey(3));
+		assertTrue(rows.get(5).containsKey("2"));
+		assertTrue(rows.get(5).containsKey("3"));
 		assertEquals(6, rows.size());
 	}
 	
@@ -53,7 +53,7 @@ public class TableHashCreatorTest {
 		table.setChildren(ImmutableList.of(
 				createQuestionVariable(1, null)));
 		
-		List<Map<Integer, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
+		List<Map<String, AssessmentVariableDto>> rows = new TableHashCreator().exec(createParam(table));
 		
 		assertTrue(rows.isEmpty());
 	}

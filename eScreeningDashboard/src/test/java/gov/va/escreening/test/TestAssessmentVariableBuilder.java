@@ -125,30 +125,30 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 	}
 	
 	@Override
-	public SelectAVBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText){
-		return new SelectAVBuilder(this, MEASURE_TYPE_SELECT_ONE, avId, questionText);
+	public SelectAvBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText){
+		return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_ONE, avId, questionText);
 	}
 	
 	@Override
-	public SelectAVBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText){
-		return new SelectAVBuilder(this, MEASURE_TYPE_SELECT_MULTI, avId, questionText);
+	public SelectAvBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText){
+		return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_MULTI, avId, questionText);
 	}
 	
 	@Override
-	public MatrixAVBuilder addSelectOneMatrixAV(@Nullable Integer avId, @Nullable String questionText){
-		return new MatrixAVBuilder(this, MEASURE_TYPE_SELECT_ONE_MATRIX, avId, questionText);
+	public MatrixAvBuilder addSelectOneMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+		return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_ONE_MATRIX, avId, questionText);
 	}
 	
 	@Override
-	public MatrixAVBuilder addSelectMultiMatrixAV(@Nullable Integer avId, @Nullable String questionText){
-		return new MatrixAVBuilder(this, MEASURE_TYPE_SELECT_MULTI_MATRIX, avId, questionText);
+	public MatrixAvBuilder addSelectMultiMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+		return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_MULTI_MATRIX, avId, questionText);
 	}
 	
 	@Override
-	public TableQuestionAVBuilder addTableQuestionAv(@Nullable Integer avId, @Nullable String questionText, 
+	public TableQuestionAvBuilder addTableQuestionAv(@Nullable Integer avId, @Nullable String questionText, 
 			boolean hasNone, @Nullable Boolean noneResponse){
 			
-		return new TableQuestionAVBuilder(this, avId, questionText, hasNone, noneResponse);
+		return new TableQuestionAvBuilder(this, avId, questionText, hasNone, noneResponse);
 	}
 	
 	@Override
@@ -243,13 +243,29 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		return ma;
 	}
 	
+	/**
+	 * Interface for builders which create questions (aka measures)
+	 * 
+	 * @author Robin Carnow
+	 *
+	 */
+	public interface MeasureAvBuilder{
+		public Measure getMeasure();
+	}
 	
-	public class TableQuestionAVBuilder extends ForwardingAssessmentVariableBuilder{
+	/**
+	 * An AV builder class for the building of Table type question AVs
+	 * 
+	 * @author Robin Carnow
+	 *
+	 */
+	public class TableQuestionAvBuilder extends ForwardingAssessmentVariableBuilder{
 		private final Measure tableMeasure;
+		private MeasureAvBuilder currentBuilder = null;
 		private FreeTextAvBuilder currentFreeTextBuilder = null;
-		private SelectAVBuilder currentSelectBuilder = null;
+		private SelectAvBuilder currentSelectBuilder = null;
 		
-		private TableQuestionAVBuilder(AssessmentVariableBuilder rootBuilder,  
+		private TableQuestionAvBuilder(AssessmentVariableBuilder rootBuilder,  
 				@Nullable Integer avId, 
 				@Nullable String questionText, 
 				boolean hasNone, 
@@ -292,10 +308,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * an entry in the list is null, that means for that entry no response was given by the veteran.
 		 * @return this builder for chaining
 		 */
-		public TableQuestionAVBuilder addChildFreeText(@Nullable Integer avId, 
+		public TableQuestionAvBuilder addChildFreeText(@Nullable Integer avId, 
 				@Nullable String measureText, @Nullable List<String> responses){
 			FreeTextAvBuilder childBuilder = new FreeTextAvBuilder(getRootBuilder(), avId, measureText, null);
 			currentFreeTextBuilder = childBuilder;
+			currentBuilder = childBuilder;
+			
 			Measure childMeasure = childBuilder.getMeasure();
 			
 			//associate child with this parent
@@ -326,7 +344,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param format
 		 * @return this builder for chaining
 		 */
-		public TableQuestionAVBuilder setDataTypeValidation(String format){
+		public TableQuestionAvBuilder setDataTypeValidation(String format){
 			if(currentFreeTextBuilder == null){
 				throw new IllegalStateException("Only after a freetext AV has been added to this table can you set a validation to it.");
 			}
@@ -339,9 +357,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * Adds a child select one question
 		 * @param avId
 		 * @param questionText
-		 * @return
+		 * @return this builder for chaining
 		 */
-		public TableQuestionAVBuilder addChildSelectOne(@Nullable Integer avId, @Nullable String questionText){
+		public TableQuestionAvBuilder addChildSelectOne(@Nullable Integer avId, @Nullable String questionText){
 			return addChildSelect(MEASURE_TYPE_SELECT_ONE, avId, questionText);
 		}
 		
@@ -349,9 +367,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * Adds a child select multi question
 		 * @param avId
 		 * @param questionText
-		 * @return
+		 * @return this builder for chaining
 		 */
-		public TableQuestionAVBuilder addChildSelectMulti(@Nullable Integer avId, @Nullable String questionText){
+		public TableQuestionAvBuilder addChildSelectMulti(@Nullable Integer avId, @Nullable String questionText){
 			return addChildSelect(MEASURE_TYPE_SELECT_MULTI, avId, questionText);
 		}
 		
@@ -363,12 +381,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param calculationValue
 		 * @param responses the list of responses (one per entry). Please note that for select type questions if all answers
 		 * are false for a give answer, then no answers will be given to the template for the question. An answer will all 
-		 * falses amounts to an unanswered question, which in the context of a table question will change the entry count.
+		 * false answers amounts to an unanswered question, which in the context of a table question will change the entry count.
 		 * @param otherTextResponses this should be the same size as responses or null.  For each entry in 
 		 * responses (even null ones) this list can have a value which will be set on the answer for that entry.
-		 * @return
+		 * @return this builder for chaining
 		 */
-		public TableQuestionAVBuilder addChildSelectAnswer(
+		public TableQuestionAvBuilder addChildSelectAnswer(
 				@Nullable Integer avId, 
 				@Nullable String answerText, 
 				@Nullable String answerType, 
@@ -405,11 +423,20 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			return this;
 		}
 		
-		private TableQuestionAVBuilder addChildSelect(Integer measureTypeId, 
+		/**
+		 * @return the builder for the last child question added.
+		 */
+		public MeasureAvBuilder getCurrentChildBuilder(){
+			return currentBuilder;
+		}
+		
+		private TableQuestionAvBuilder addChildSelect(Integer measureTypeId, 
 				@Nullable Integer avId, @Nullable String questionText){
 			
-			SelectAVBuilder childBuilder = new SelectAVBuilder(getRootBuilder(), measureTypeId, avId, questionText);
+			SelectAvBuilder childBuilder = new SelectAvBuilder(getRootBuilder(), measureTypeId, avId, questionText);
 			currentSelectBuilder = childBuilder;
+			currentBuilder = childBuilder;
+			
 			Measure childMeasure = childBuilder.getMeasure();
 			
 			//associate child with this parent
@@ -420,13 +447,13 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		}
 	}
 	
-	public class SelectAVBuilder extends ForwardingAssessmentVariableBuilder{
+	public class SelectAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder {
 		private final Measure measure;
 		private final AssessmentVariable av;
 		private Double defaultCalculationValue = 0.0;
 		private List<AssessmentVariable> answerAvs = new ArrayList<>();
 		
-		private SelectAVBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
+		private SelectAvBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
 				@Nullable Integer avId, @Nullable String questionText){
 			super(rootBuilder);
 			
@@ -443,7 +470,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			avMap.put(av.getAssessmentVariableId(), av);
 		}
 		
-		private Measure getMeasure(){
+		@Override
+		public Measure getMeasure(){
 			return measure;
 		}
 		
@@ -457,7 +485,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param otherTextResponse if the type of this answer is other this response is the veteran's entered text
 		 * @return
 		 */
-		public SelectAVBuilder addAnswer(@Nullable Integer avId, 
+		public SelectAvBuilder addAnswer(@Nullable Integer avId, 
 				@Nullable String answerText, 
 				@Nullable String answerType, 
 				@Nullable Double calculationValue,
@@ -499,10 +527,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 	}
 	
 	
-	public class MatrixAVBuilder extends ForwardingAssessmentVariableBuilder{
+	public class MatrixAvBuilder extends ForwardingAssessmentVariableBuilder{
 		private final Measure matrixMeasure;
 		private final AssessmentVariable av;
-		private final List<SelectAVBuilder> childBuilders = new LinkedList<>();
+		private final List<SelectAvBuilder> childBuilders = new LinkedList<>();
 		private final List<MeasureAnswer> columns = new LinkedList<>();
 
 		/**
@@ -512,7 +540,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param avId assessment variable ID for the matrix
 		 * @param questionText
 		 */
-		private MatrixAVBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
+		private MatrixAvBuilder(AssessmentVariableBuilder rootBuilder, Integer measureTypeId, 
 				@Nullable Integer avId, @Nullable String questionText){
 			super(rootBuilder);
 			
@@ -537,11 +565,11 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * @param questionText optional question text
 		 * @return this MatrixAVBuilder
 		 */
-		public MatrixAVBuilder addChildQuestion(@Nullable Integer childQuestionAvId, @Nullable String questionText){
+		public MatrixAvBuilder addChildQuestion(@Nullable Integer childQuestionAvId, @Nullable String questionText){
 			Integer childMeasureTypeId = matrixMeasure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
 					?  MEASURE_TYPE_SELECT_ONE :  MEASURE_TYPE_SELECT_MULTI;
 			
-			SelectAVBuilder selectBuilder = new SelectAVBuilder(getRootBuilder(), childMeasureTypeId, childQuestionAvId, questionText);
+			SelectAvBuilder selectBuilder = new SelectAvBuilder(getRootBuilder(), childMeasureTypeId, childQuestionAvId, questionText);
 			childBuilders.add(selectBuilder);
 			
 			//add any answers that have been defined
@@ -573,7 +601,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		 * 
 		 * @return
 		 */
-		public MatrixAVBuilder addColumn(
+		public MatrixAvBuilder addColumn(
 				@Nullable String answerText,  
 				@Nullable String answerType, 
 				@Nullable Double calculationValue, 
@@ -588,7 +616,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			
 			Iterator<Boolean> responseIter = responses == null ? null : responses.iterator();
 			Iterator<String> otherResponseIter = otherResponses == null ? null : otherResponses.iterator();
-			for(SelectAVBuilder childBuilder : childBuilders){
+			for(SelectAvBuilder childBuilder : childBuilders){
 				Boolean response = responseIter != null && responseIter.hasNext() ? responseIter.next() : null;
 				String otherResponse = otherResponseIter != null && otherResponseIter.hasNext() ? otherResponseIter.next() : null;
 				childBuilder.addAnswer(null, answerText, answerType, calculationValue, response, otherResponse);
@@ -599,7 +627,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
 		public List<Integer> getColumnAvs(Integer... columnIndices) {
 			List<Integer> columnAvs = new ArrayList<>(childBuilders.size() * columnIndices.length);
-			for(SelectAVBuilder childBuilder : childBuilders){
+			for(SelectAvBuilder childBuilder : childBuilders){
 				List<AssessmentVariable> childAvs = childBuilder.getAnswerAvs();
 				for(Integer index : columnIndices){
 					columnAvs.add(childAvs.get(index).getAssessmentVariableId());
@@ -610,7 +638,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 		
 	}
 	
-	public class FreeTextAvBuilder extends ForwardingAssessmentVariableBuilder{
+	public class FreeTextAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder{
 		private final Measure measure;
 		
 		private FreeTextAvBuilder(AssessmentVariableBuilder rootBuilder, 
@@ -659,7 +687,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 			return this;
 		}
 		
-		private Measure getMeasure(){
+		@Override
+		public Measure getMeasure(){
 			return measure;
 		}
 		

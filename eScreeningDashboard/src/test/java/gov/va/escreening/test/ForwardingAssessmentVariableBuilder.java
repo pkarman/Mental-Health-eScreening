@@ -3,9 +3,9 @@ package gov.va.escreening.test;
 import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.CustomAvBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.FreeTextAvBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.MatrixAVBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAVBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAVBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.MatrixAvBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAvBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAvBuilder;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import java.util.List;
@@ -40,23 +40,23 @@ public class ForwardingAssessmentVariableBuilder implements AssessmentVariableBu
 	}
 	
 	@Override
-	public SelectAVBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText) {
+	public SelectAvBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText) {
 		return delegate.addSelectOneAV(avId, questionText);
 	}
 
 	@Override
-	public SelectAVBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText) {
+	public SelectAvBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText) {
 		return delegate.addSelectMultiAV(avId, questionText);
 	}
 
 	@Override
-	public MatrixAVBuilder addSelectOneMatrixAV(Integer avId,
+	public MatrixAvBuilder addSelectOneMatrixAV(Integer avId,
 			String questionText) {
 		return delegate.addSelectOneMatrixAV(avId, questionText);
 	}
 
 	@Override
-	public MatrixAVBuilder addSelectMultiMatrixAV(Integer avId,
+	public MatrixAvBuilder addSelectMultiMatrixAV(Integer avId,
 			String questionText) {
 		return delegate.addSelectMultiMatrixAV(avId, questionText);
 	}
@@ -67,7 +67,7 @@ public class ForwardingAssessmentVariableBuilder implements AssessmentVariableBu
 	}
 
 	@Override
-	public TableQuestionAVBuilder addTableQuestionAv(Integer avId,
+	public TableQuestionAvBuilder addTableQuestionAv(Integer avId,
 			String questionText, boolean hasNone, Boolean noneResponse) {
 		return delegate.addTableQuestionAv(avId, questionText, hasNone, noneResponse);
 	}

@@ -461,7 +461,7 @@ This transformation takes a table question and allows for the selection of a sin
 childAVId is the child question's AV ID that we should output values for (the field)
 Other parameters are the same as the delimit function below
 -->
-<#function delimitTableField table=DEFAULT_VALUE childAvId=DEFAULT_VALUE prefix='' lastPrefix='' suffix='' includeSuffixAtEnd=true defaultValue=DEFAULT_VALUE>
+<#function delimitTableField table=DEFAULT_VALUE childAvId=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE>
 	
 	<#-- test to see if no table exists OR no child exists and then return DEFAULT_VALUE -->
 	<#if (childAvId?is_string && childAvId == DEFAULT_VALUE) || table==DEFAULT_VALUE || !(table.children??) || table.children?size == 0 >
@@ -471,19 +471,15 @@ Other parameters are the same as the delimit function below
 	<#-- iterate over table rows and collect answers for the given question AV ID 
 	(this code can be factored out into its own function PLEASE DON'T COPY IT) -->
 	<#assign valList = []>
-	<#if !(wasAnswerNone(variableObj))>
-		<#list variableObj.children as row>
-			<#if row.children?? && (row.children?size > 0) >
-				<#list row.children as question>
-					<#-- check to see if the given child question has an answer for this row -->
-					<#if (question.variableId)?? && question.variableId == childAvId >
-						<#assign response = getResponse(question, question.measureTypeId) >
-						<#if response?has_content >
-							<#-- append append response to list -->
-							<#assign valList = valList + [response]>
-						</#if>
-					</#if>
-				</#list>
+	<#if !(wasAnswerNone(table))>
+		<#list table.children as question>
+		    <#-- check to see if the given child question is the one to output -->
+			<#if question.variableId?? && question.variableId == childAvId && question.children?? && (question.children?size > 0) >
+				<#assign response = getResponse(question, question.measureTypeId) >
+				<#if response?has_content >
+					<#-- append append response to list -->
+					<#assign valList = valList + [response]>
+				</#if>
 			</#if>
 		</#list>
 	</#if>
@@ -513,12 +509,27 @@ the update of any templates which were hand made (currently template IDs are: 6,
 -->
 <#assign createTableHash = 'gov.va.escreening.template.function.TableHashCreator'?new() >
 
-<#function getTableVariable tableHash=[] tableChildVar=DEFAULT_VALUE rowIndex=0 >
-	<#if tableChildVar==DEFAULT_VALUE || tableHash?size == 0 || !(tableHash[rowIndex]??) || !(tableHash[rowIndex][tableChildVar.variableId]??)>
-		<#return DEFAULT_VALUE>
+<#--
+This is a helper function which replaces raw references to a table's child fields to a lookup 
+in a tableHash which gives the value of the needed entry for the given rowIndex.  Normally
+we are looping through table entries and the rowIndex gives the context needed to get the 
+correct assessment variable object.
+-->
+<#function getTableVariable tableHash=[] tableChildVar=[] rowIndex=0 >
+
+	<#if !(tableChildVar?has_content) || !(tableChildVar.variableId??) || !(tableHash[rowIndex]??) >
+	   <#return DEFAULT_VALUE>
 	</#if>
-	<#return tableHash[rowIndex][tableChildVar.variableId]>
-</#function> 
+	
+    <#assign row = tableHash[rowIndex]>
+        
+    <#if row?? && row?has_content>
+        <#return row[tableChildVar.variableId?string["#"]]!DEFAULT_VALUE >
+    </#if>
+    
+    <#return DEFAULT_VALUE>
+    
+</#function>
 
 <#-- This transformation’s goal is to produce a list of text, one per question having at least one required column selected by the veteran
 rowAvIdToOutputMap is a map from row AV ID to the text we should output if at least one column was selected by the veteran for the given question
@@ -713,6 +724,23 @@ if measureTypeId==2 or 3:  return the calculated value  -->
     
 </#function>
 
+<#--
+Used because we pass in the measure type and now we are moving to 
+the use of the measureTypeId field on AVs.
+-->
+<#function getMeasureType var measureTypeId=DEFAULT_VALUE>
+    
+    <#if measureTypeId?string != DEFAULT_VALUE && measureTypeId?is_number>
+        <#return measureTypeId>
+    </#if>
+    
+    <#if var.measureTypeId??>
+        <#return var.measureTypeId?number>
+    </#if>
+
+    <#return '[Error: no question type given]'>
+    
+</#function>
 
 <#-- 
 retrieves a value for the given Measure typed variable which is of the given measure type. 
@@ -725,19 +753,13 @@ For multi select - returns a comma delimited list
         <#return var > 
     </#if>
     
-    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE>
-    	<#if var.measureTypeId?has_content>
-    		<#assign measureTypeId = var.measureTypeId>
-    	<#else>
-    		<#return '[Error: no question type given]'>
-    	</#if>
-    </#if>
+    <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureTypeId == 1 >
+    <#if measureType?number == 1 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
-    <#elseif measureTypeId == 2 >
+    <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
-    <#elseif measureTypeId == 3 > 
+    <#elseif measureType?number == 3 > 
         <#assign result = delimit(var)>
         <#if result == ''>
             <#return DEFAULT_VALUE>
@@ -902,15 +924,9 @@ Returns true if the value given has a value. Currently only supports string valu
         <#return false>
     </#if>
     
-    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE>
-    	<#if var.measureTypeId?has_content>
-    		<#assign measureTypeId = var.measureTypeId>
-    	<#else>
-    		<#return '[Error: no question type given]'>
-    	</#if>
-    </#if>
+    <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureTypeId == 2 >
+    <#if measureType == 2 >
     	<#if (var.answerId)??>
     		<#if (var.answerId = right) >
     			<#return true>
@@ -919,7 +935,7 @@ Returns true if the value given has a value. Currently only supports string valu
     	<#return false >
     </#if>
     
-    <#if measureTypeId == 3 >
+    <#if measureType == 3 >
         <#if (!(right?is_number) && (right.variableId)??)>
             <#return isSelectedAnswer(var, right)>
         </#if>

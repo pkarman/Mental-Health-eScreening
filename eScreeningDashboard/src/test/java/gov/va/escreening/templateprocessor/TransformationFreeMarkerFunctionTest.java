@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAvBuilder;
 import gov.va.escreening.variableresolver.CustomAssessmentVariableResolver;
 
 import org.joda.time.DateTime;
@@ -366,19 +367,164 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 	}
 	
 	/** TESTS for delimitTableField translation for table questions  **/
+	// delimitTableField table=DEFAULT_VALUE childAvId=DEFAULT_VALUE prefix='' lastPrefix='' suffix='' includeSuffixAtEnd=true defaultValue=DEFAULT_VALUE
+	@Test
+	public void testDelimitTableFieldTranslationWithDefaultParameters() throws Exception{
+		TableQuestionAvBuilder tableBuilder = avBuilder
+			.addTableQuestionAv(1, null, false, null)
+			.addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
+			.addChildSelectOne(null, "select one question")
+				.addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
+				.addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
+				.addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
+		
+		//grab the select one's AV which we will be delimiting
+		Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+		
+		tableBuilder.addChildSelectMulti(null, "select multi question")
+			.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
+			.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+		
+		
+		assertEquals("answer 3, answer 2, and answer 1", 
+				render("${delimitTableField(var1," + childAvId + ")}",
+						avBuilder));
+	}
 	
 	@Test
-	public void testDelimitTableFieldTranslation() throws Exception{
+	public void testDelimitTableFieldTranslationWithPassedInParameters() throws Exception{
+		TableQuestionAvBuilder tableBuilder = avBuilder
+			.addTableQuestionAv(1, null, false, null)
+			.addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
+			.addChildSelectOne(null, "select one question")
+				.addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
+				.addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
+				.addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
 		
+		//grab the select one's AV which we will be delimiting
+		Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+		
+		tableBuilder.addChildSelectMulti(null, "select multi question")
+			.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
+			.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+		
+		assertEquals("*answer 3}*answer 2}**answer 1}", 
+				render("${delimitTableField(var1," + childAvId + ", \"*\", \"**\", \"}\", true, \"my default!\")}",
+						avBuilder));
+		
+		assertEquals("*answer 3}*answer 2}**answer 1", 
+				render("${delimitTableField(var1," + childAvId + ", \"*\", \"**\", \"}\", false, \"my default!\")}",
+						avBuilder));
+		
+		assertEquals("*answer 3}*answer 2}@answer 1", 
+				render("${delimitTableField(var1," + childAvId + ", \"*\", \"@\", \"}\", false, \"my default!\")}",
+						avBuilder));
 	}
 	
 	@Test
 	public void testDelimitTableFieldTranslationNoResponseGiven() throws Exception{
 		//test that transformation still works when no veteran response is available
+		TableQuestionAvBuilder tableBuilder = avBuilder
+				.addTableQuestionAv(1, null, false, null)
+				.addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
+				.addChildSelectOne(null, "select one question")
+					.addChildSelectAnswer(null, "answer 1", null, null, null, null)
+					.addChildSelectAnswer(null, "answer 2", null, null, null, null)
+					.addChildSelectAnswer(null, "answer 3", null, null, null, null);
+			
+			//grab the select one's AV which we will be delimiting
+			Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+			
+			tableBuilder.addChildSelectMulti(null, "select multi question")
+				.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
+				.addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+			
+			assertEquals("my default!", 
+					render("${delimitTableField(var1," + childAvId + ", \"*\", \"@\", \"}\", false, \"my default!\")}",
+							avBuilder));
+			
+			assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
+					render("${delimitTableField(var1," + childAvId + ")}",
+							avBuilder));
 	}
 	
-	
-	//TODO: Add a test for each setting 
-	
-	
+	@Test
+	public void testGetTableVariableFreeMarkerFunction() throws Exception{
+		TableQuestionAvBuilder tableBuilder = avBuilder
+				.addTableQuestionAv(1, null, false, null)
+				.addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"));
+		
+		Integer freeTextChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+		
+		tableBuilder.addChildSelectOne(null, "select one question")
+					.addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
+					.addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
+					.addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
+			
+		Integer selectOneChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+		
+			
+		tableBuilder.addChildSelectMulti(null, "select multi question")
+				.addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(true, true, false), null)
+				.addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, true), null);
+		
+		Integer selectMultiChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+		
+		//test freetext for each row value
+		assertEquals("first", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",0))}",
+						avBuilder));
+		
+		assertEquals("second", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",1))}",
+						avBuilder));
+		
+		assertEquals("third", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",2))}",
+						avBuilder));
+		
+		assertEquals("fourth", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",3))}",
+						avBuilder));
+		//test when it doesn't exis
+		assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",4))}",
+						avBuilder));
+		
+		// test select one for each row
+		assertEquals("answer 3", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectOneChildAvId + ",0))}",
+						avBuilder));
+		
+		assertEquals("answer 2", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectOneChildAvId + ",1))}",
+						avBuilder));
+		
+		assertEquals("answer 1", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectOneChildAvId + ",2))}",
+						avBuilder));
+		
+		//test when it doesn't exist
+		assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectOneChildAvId + ",20))}",
+						avBuilder));
+		
+		//test select multi
+		assertEquals("answer 1", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectMultiChildAvId + ",0))}",
+						avBuilder));
+		
+		assertEquals("answer 1, and answer 2", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectMultiChildAvId + ",1))}",
+						avBuilder));
+		
+		assertEquals("answer 2", 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + selectMultiChildAvId + ",2))}",
+						avBuilder));
+		
+		//test when child ID doesn't exist
+		assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
+				render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + 99999999 + ",0))}",
+						avBuilder));
+	}
 }

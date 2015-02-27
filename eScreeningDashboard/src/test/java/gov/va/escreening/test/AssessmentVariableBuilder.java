@@ -2,9 +2,9 @@ package gov.va.escreening.test;
 
 import gov.va.escreening.test.TestAssessmentVariableBuilder.CustomAvBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.FreeTextAvBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.MatrixAVBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAVBuilder;
-import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAVBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.MatrixAvBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAvBuilder;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAvBuilder;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public interface AssessmentVariableBuilder{
 	 * @return SelectAVBuilder so select-question-AV-specific methods can be called to further 
 	 * customize the added AV (e.g. add answers)
 	 */
-	public SelectAVBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText);
+	public SelectAvBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText);
 	
 	/**
 	 * Adds a select multi question
@@ -49,7 +49,7 @@ public interface AssessmentVariableBuilder{
 	 * @return SelectAVBuilder so select-question-AV-specific AV-specific methods can be called to further 
 	 * customize the added AV (e.g. add answers)
 	 */
-	public SelectAVBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText);
+	public SelectAvBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText);
 	
 	/**
 	 * Adds a select one matrix question AV
@@ -59,7 +59,7 @@ public interface AssessmentVariableBuilder{
 	 * @return MatrixAVBuilder so matrix-AV-specific methods can be called to further 
 	 * customize the added AV (e.g. add questions and columns)
 	 */
-	public MatrixAVBuilder addSelectOneMatrixAV(Integer avId, String questionText);
+	public MatrixAvBuilder addSelectOneMatrixAV(Integer avId, String questionText);
 	
 	/**
 	 * Adds a select multi matrix question AV
@@ -69,7 +69,7 @@ public interface AssessmentVariableBuilder{
 	 * @return MatrixAVBuilder so matrix-AV-specific methods can be called to further 
 	 * customize the added AV (e.g. add questions and columns)
 	 */
-	public MatrixAVBuilder addSelectMultiMatrixAV(Integer avId, String questionText);
+	public MatrixAvBuilder addSelectMultiMatrixAV(Integer avId, String questionText);
 	
 	/**
 	 * 
@@ -81,7 +81,7 @@ public interface AssessmentVariableBuilder{
 	 * this is not given (and hasNone is true) it is like the veteran didn't submit any response for the None answer.
 	 * @return
 	 */
-	public TableQuestionAVBuilder addTableQuestionAv(@Nullable Integer avId, @Nullable String questionText, 
+	public TableQuestionAvBuilder addTableQuestionAv(@Nullable Integer avId, @Nullable String questionText, 
 			boolean hasNone, @Nullable Boolean noneResponse);
 			
 	/**
