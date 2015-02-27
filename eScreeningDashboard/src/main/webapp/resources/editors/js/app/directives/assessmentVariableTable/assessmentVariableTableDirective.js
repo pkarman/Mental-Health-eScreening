@@ -12,7 +12,7 @@
 	            scope: {
 		            assessmentVariable: '=',
 		            show: '=',
-					blockType: '='
+					block: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
@@ -39,7 +39,7 @@
 							var avs,
 								filteredData;
 
-							if (scope.blockType && scope.blockType === 'table') {
+							if (scope.block.type && scope.block.type === 'table') {
 								// Only display table questions for table block
 								filteredData = [];
 								_.each(scope.assessmentVariables, function(av) {
@@ -121,9 +121,15 @@
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
 
+						// Apply select transformation to AV
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+						}
+
+						// Apply AV to block.table for table block types
+						if (scope.block.type === 'table') {
+							scope.block.table = scope.assessmentVariable;
 						}
 					};
 
