@@ -43,7 +43,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
 		}
 
 		String updateString = sb.toString();
-		logger.info(updateString);
+		logger.debug(updateString);
 	}
 
 	private void buildUpdate(AssessmentVariable av, StringBuffer sb) {

@@ -329,7 +329,7 @@ public class SurveyServiceImpl implements SurveyService {
 			surveyPageList.add(surveyPage);
 		}
 		
-		System.out.println("aaaaaab");
+		//System.out.println("aaaaaab");
 		survey.setSurveyPageList(surveyPageList);
 		surveyRepository.update(survey);
 	}

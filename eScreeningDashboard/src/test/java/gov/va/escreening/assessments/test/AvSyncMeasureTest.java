@@ -214,7 +214,7 @@ public class AvSyncMeasureTest {
 
 		Gson gson = new Gson();
 		String json = gson.toJson(avs);
-		logger.info(String.format("AV => sId %s==>%s", surveyId, json));
+		logger.debug(String.format("AV => sId %s==>%s", surveyId, json));
 	}
 
 	@Test

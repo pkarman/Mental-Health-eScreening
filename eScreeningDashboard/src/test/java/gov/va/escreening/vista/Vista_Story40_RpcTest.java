@@ -1,5 +1,6 @@
 package gov.va.escreening.vista;
 
+import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VeteranAssessmentService;
@@ -30,6 +31,8 @@ import javax.resource.ResourceException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -43,6 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/data-config.xml", "file:src/main/webapp/WEB-INF/spring/spring-security.xml", "file:src/main/webapp/WEB-INF/spring/business-config.xml", "/application-context-vistalink-test.xml" })
 public class Vista_Story40_RpcTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(Vista_Story40_RpcTest.class);
 
 	@Resource(name = "duzConnSpec-10000000056")
 	gov.va.med.vistalink.adapter.cci.VistaLinkDuzConnectionSpec connSpec;
@@ -148,7 +153,7 @@ public class Vista_Story40_RpcTest {
 		VistaLinkClientStrategy vistaLinkClientStrategy = createVistaLinkClientStrategy(null, "", "OR CPRS GUI CHART");
 		VistaLinkClient client = vistaLinkClientStrategy.getClient();
 		try {
-			System.out.println(client.getIENsMapForResponseList());
+			logger.error(""+client.getIENsMapForResponseList());
 		} finally {
 			client.closeConnection();
 		}
@@ -201,7 +206,7 @@ public class Vista_Story40_RpcTest {
 			exportColumnsMap.put("TBI_consult_where", "Baghdad, Iraq");
 			//exportColumnsMap.put("TBI_consult_when", "2003");
 			//exportColumnsMap.put("TBI_consult_how", "Shell exploded within 100 feet");
-			System.out.println(client.saveTBIConsultOrders(va, qoi, exportColumnsMap));
+			logger.debug(""+client.saveTBIConsultOrders(va, qoi, exportColumnsMap));
 		} finally {
 			client.closeConnection();
 		}
@@ -212,7 +217,7 @@ public class Vista_Story40_RpcTest {
 		VistaLinkClientStrategy vistaLinkClientStrategy = createVistaLinkClientStrategy(null, "", "OR CPRS GUI CHART");
 		VistaLinkClient client = vistaLinkClientStrategy.getClient();
 		try {
-			System.out.println(client.getConsultInfo("C"));
+			logger.debug(""+client.getConsultInfo("C"));
 		} finally {
 			client.closeConnection();
 		}
@@ -244,7 +249,7 @@ public class Vista_Story40_RpcTest {
 
 			RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 			String results = vResp.getResults();
-			System.out.println(results);
+			logger.debug(results);
 
 		} catch (VistaLinkFaultException e) {
 			e.printStackTrace();

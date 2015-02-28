@@ -483,7 +483,7 @@ public class XportDataTest {
 			assertTrue(!progressNoteContent.isEmpty() && !progressNoteContent.contains("<") && !progressNoteContent.contains(">") && !progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 		return true;
 	}
@@ -500,7 +500,7 @@ public class XportDataTest {
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 		return true;
 	}
@@ -517,7 +517,7 @@ public class XportDataTest {
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 		return true;
 	}
 
@@ -531,7 +531,7 @@ public class XportDataTest {
 			sw.stop();
 			assertTrue(!progressNoteContent.isEmpty());
 		}
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / 2);
 		return true;
 	}
 	
@@ -595,7 +595,7 @@ public class XportDataTest {
 			sw.stop();
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 	}
 
@@ -608,9 +608,9 @@ public class XportDataTest {
 			sw.start(name+"_iter_" + i);
 			String vetSummary = templateProcessorService.generateVeteranPrintout(18);
 			sw.stop();
-			System.out.println(vetSummary);
+			//System.out.println(vetSummary);
 		}
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 
 	}
 
@@ -790,7 +790,7 @@ public class XportDataTest {
 			assertTrue(!progressNoteContent.isEmpty() && progressNoteContent.contains("<") && progressNoteContent.contains(">") && progressNoteContent.contains("</"));
 		}
 		// System.out.println(sw.prettyPrint());
-		System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
+		//System.out.println(name + ":avg-(ms)->" + sw.getTotalTimeMillis() / totalRuns);
 	}
 
 	@Resource(type = ExportDataRestController.class)

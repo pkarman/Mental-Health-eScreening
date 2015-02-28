@@ -631,7 +631,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 	public static void main(String[] args)
 	{
-		System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
+		//System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
 	}
 }
 

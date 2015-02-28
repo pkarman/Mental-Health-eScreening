@@ -178,7 +178,7 @@ public class VistaRPCTest {
 	}
 
 	private String deleteProgressNote(Long progressNoteIEN) throws VistaLinkFaultException, FoundationsException, ResourceException {
-		System.out.println("Delete Progress Note - IEN: " + progressNoteIEN);
+		//System.out.println("Delete Progress Note - IEN: " + progressNoteIEN);
 		VistaLinkConnection connection = getVistaLinkDuzConnection("500", "10000000056");
 		RpcRequest request = createRpcRequest("OR CPRS GUI CHART", connection, true);
 		List requestParams = new ArrayList();
@@ -189,7 +189,7 @@ public class VistaRPCTest {
 		request.setParams(requestParams);
 
 		RpcResponse response = connection.executeRPC(request);
-		System.out.println("Delete Progress Note Response: " + response.getResults());
+		//System.out.println("Delete Progress Note Response: " + response.getResults());
 		request = null;
 		connection = null;
 		return response.getResults();

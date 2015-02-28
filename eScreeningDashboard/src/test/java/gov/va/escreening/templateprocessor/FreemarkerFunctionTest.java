@@ -22,7 +22,7 @@ public class FreemarkerFunctionTest {
 		List<AssessmentVariableDto> assessmentVariables = ImmutableList.of(getExampleQuestionFactory(1, "test output"));
 		
 		String result = templateService.processTemplate("${var1}", assessmentVariables, 1);
-		System.out.println("Result is: " + result);
+		//System.out.println("Result is: " + result);
 	}
 	
 	//Below is an example factory which generates a AssessmentVariableDto.  What we need is an accurate factory for the following:

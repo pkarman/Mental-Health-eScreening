@@ -51,7 +51,7 @@ public class TemplateRestController {
     public ErrorResponse handleIllegalArgumentException(Exception iae) {
         logger.debug(iae.getMessage());
         
-        System.out.println(iae.getClass());
+        //System.out.println(iae.getClass());
         
         if (iae instanceof ErrorResponseRuntimeException){
         	return ((ErrorResponseRuntimeException)iae).getErrorResponse();

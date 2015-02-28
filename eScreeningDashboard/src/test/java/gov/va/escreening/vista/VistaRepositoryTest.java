@@ -1,25 +1,24 @@
 package gov.va.escreening.vista;
 
-import static org.junit.Assert.*;
 import gov.va.escreening.domain.VeteranDto;
-import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.repository.HealthFactorRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.service.VistaService;
 import gov.va.escreening.vista.dto.DialogComponent;
-
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.annotation.Resource;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -27,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VistaRepositoryTest {
     
     private static final String ESCREENING_TEST = "ESCREENING_TEST";
-    private static final Logger logger = Logger.getLogger("VistaRepositoryTest");
+    private static final Logger logger = LoggerFactory.getLogger(VistaRepositoryTest.class);
     public static final String DIVISION = "500";
     public static final String DUZ = "10000000056";
     
@@ -48,7 +47,7 @@ public class VistaRepositoryTest {
     {
         List<DialogComponent> result = vistaRepo.getClinicalReminderDialogs(DIVISION, null, DUZ, ESCREENING_TEST, "56");
         
-        logger.info(result.toString());
+        logger.debug(result.toString());
         
     }
     
@@ -94,8 +93,8 @@ public class VistaRepositoryTest {
     @Test
     public void testGetMHA()
     {
-        logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "GAD-7"));
-        logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
+        logger.debug(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "GAD-7"));
+        logger.debug(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
     }
     
 //    @Test
@@ -110,7 +109,7 @@ public class VistaRepositoryTest {
     	List<VeteranDto> vList = vistaRepo.searchVeteran(DIVISION, null, DUZ, null, "0034");
     	for(VeteranDto dto : vList)
     	{
-    		logger.info(dto.toString());
+    		logger.debug(dto.toString());
     	}
     }
 }
