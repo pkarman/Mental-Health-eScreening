@@ -26,6 +26,6 @@ public interface VeteranAssessmentDashboardAlertRepository extends RepositoryInt
 
 	List<Map<String, Object>> findSlowMovingAssessments(int programId, int totalRequestedRecords);
 
-	SearchResult<VeteranAssessment> searchVeteranAssessment(Integer programId,
+	SearchResult<VeteranAssessment> searchVeteranAssessment(Integer programId,List<Integer> programIdList,
 			SearchAttributes searchAttributes);
 }

@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.DataTableResponse;
@@ -13,11 +12,9 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataFilterOptionsService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.service.export.ExportLogService;
-import gov.va.escreening.util.DataExportAndDictionaryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -55,8 +51,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @Autowired
     private VeteranAssessmentService veteranAssessmentService;
 
-    @Resource(type = DataDictionaryService.class)
-    DataDictionaryService dds;
+    @Resource(name = "sessionMgr")
+    SessionMgr sessionMgr;
 
     @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
     @ResponseBody
@@ -96,7 +92,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
         exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)sessionMgr.getDD(request);
         AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(dd, exportDataFormBean);
 
         if (dataExport != null) {
@@ -128,7 +124,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
     public ModelAndView generateDataDictionary(ModelAndView modelAndView,
                                                HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)sessionMgr.getDD(request);
 
         modelAndView.setViewName("dataDictionaryExcelView");
         modelAndView.addObject("dataDictionary", dataDictionary);

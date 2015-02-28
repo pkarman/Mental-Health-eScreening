@@ -22,4 +22,6 @@ public interface FormulaAssessmentVariableResolver {
 			FormulaDto formula,
 			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
 			Map<Integer, AssessmentVariable> measureAnswerHash);
+
+
 }

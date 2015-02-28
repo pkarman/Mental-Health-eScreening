@@ -1,6 +1,7 @@
 package gov.va.escreening.repository;
 
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.security.EscreenUser;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface ProgramRepository extends RepositoryInterface<Program> {
      * @return
      */
     List<Program> findByProgramIdList(List<Integer> programIdList);
+    
+    List<Program> findProgramForUser(int userId);
 }

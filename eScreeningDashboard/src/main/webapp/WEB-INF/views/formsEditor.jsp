@@ -41,7 +41,7 @@
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
 
-    
+
     <!-- Utility classes and non-Angular, non-framework classes -->
     <script type="text/javascript" src="resources/editors/js/app/utils/HttpRejectionProcessor.js"></script>
 
@@ -98,9 +98,9 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/Battery.js"></script>
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteryTransformer.js"></script> 
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
-
-    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
 	
+    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
+
 	<!-- Template Domain -->
 
 	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
@@ -125,13 +125,13 @@
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
-
+    
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>
 
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>
-    
+
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
@@ -150,7 +150,7 @@
     <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/strip-html.filter.js"></script>
-    
+
     <!-- Controllers -->
     
     <!-- Entry View -->
@@ -160,6 +160,12 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAbstractController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesSelectionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAddEditController.js"></script>
+
+    <!-- Formula Management files -->
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageFormulasService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasEditController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
+
 
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
@@ -365,6 +371,29 @@
     
     <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script> 	 	
     <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script> 	 	
-    <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script> 	    
+    <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script>
+
+
+    <!-- angular-ui-select for mng formulas (starts after this line)-->
+    <!-- Select2 theme -->
+    <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <!--
+      Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
+    -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <style>
+        /* body {padding: 15px;} */
+        .select2 > .select2-choice.ui-select-match {
+            /* Because of the inclusion of Bootstrap */
+            height: 29px;
+        }
+        .selectize-control > .selectize-dropdown {
+            top: 36px;
+        }
+    </style>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
+    <!-- angular-ui-select for mng formulas (finishes before this line)-->
+
 </body>
 </html>
