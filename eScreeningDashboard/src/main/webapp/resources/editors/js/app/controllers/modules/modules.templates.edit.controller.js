@@ -37,7 +37,10 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
             $scope.done(true).then(function(){
                 MessageFactory.set('success', 'All template changes have been saved.');
             });
-        });
+        }, function(response) {
+				MessageFactory.error('An error occurred trying to save the template.');
+			}
+		);
     };
 
     $scope.done = function (wasSaved) {
