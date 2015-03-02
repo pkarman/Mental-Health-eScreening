@@ -78,19 +78,24 @@
 
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
-						if (scope.assessmentVariable.transformations.length === 0) {
-							AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function(transformations) {
-							});
+						console.log(scope.block.type);
+
+						// Do not apply transformations to parent table blocks
+						if (scope.block.type !== 'table') {
+							if (scope.assessmentVariable.transformations.length === 0) {
+								AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function (transformations) {
+								});
+							}
+
+							if (av.getMeasureTypeName() === 'table') {
+								// Get the childQuestions table variables
+								MeasureService.one(av.measureId).get().then(function (measure) {
+									scope.childQuestions = measure.childQuestions;
+								});
+							}
 						}
 
-						if (av.getMeasureTypeName() === 'table') {
-							// Get the childQuestions table variables
-							MeasureService.one(av.measureId).get().then(function(measure) {
-								scope.childQuestions = measure.childQuestions;
-							});
-						}
-
-						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select') {
+						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || scope.block.type === 'table') {
 							scope.show = false;
 						} else if (scope.transformationName === 'freetext') {
 							// Doing this manually here because setting transformations is not working as intended
