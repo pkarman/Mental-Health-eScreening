@@ -152,9 +152,10 @@
 						}
 						else if(_.contains(operator.categories, 'matrix') && (this.type.toUpperCase() === 'MATRIX')) {
 							includeOperator = true;
+						} else if (this.type.toUpperCase() === 'CUSTOM' && operator.value === 'result') {
+							includeOperator = true;
 						}
 	                }
-
                     return includeOperator;
                 };
                 
