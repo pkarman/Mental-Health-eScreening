@@ -90,7 +90,7 @@
 							});
 						}
 
-						if (av.id !== 6 && scope.transformationName === 'single-select') {
+						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select') {
 							scope.show = false;
 						} else if (scope.transformationName === 'freetext') {
 							// Doing this manually here because setting transformations is not working as intended
