@@ -29,12 +29,12 @@
 				<li class="list-group-item" ng-repeat="question in matrixQuestions track by $index">
 
 					<div class="checkbox">
-						<input type="checkbox" id="{{ question.id }}" ng-model="question.checked" ng-change="updateSelectedMatrixQuestions()">
+						<input type="checkbox" id="{{ question.id }}" ng-model="question.checked" ng-checked="true" ng-change="updateSelectedMatrixQuestions()">
 						<label for="{{ question.id }}" ng-bind="question.variableName"></label>
 					</div>
 					<div class="form-group">
 						<label for="TextInput">Output Text</label>
-						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText">
+						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-keyup="updateTransformation()">
 					</div>
 				</li>
 			</ul>
@@ -42,7 +42,7 @@
 	</div>
 
 	<div class="text-right">
-		<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
+		<button type="button" class="btn btn-primary" ng-click="applyTransformations({this: this});">Insert</button>
 		<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 	</div>
 </form>

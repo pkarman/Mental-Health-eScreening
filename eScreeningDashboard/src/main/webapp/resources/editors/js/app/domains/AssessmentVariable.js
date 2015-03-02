@@ -19,7 +19,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 		this.name = obj.name || null;
 		this.displayName = obj.displayName || null;
 		this.type = obj.type || null;
-		this.transformations = obj.transformations || null;
+		this.transformations = obj.transformations || [];
 
 		if (obj.typeId) {
 			this.setType();
@@ -85,7 +85,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 				},
 				delimitTableField:	{
 					name: 'delimitTableField',
-					params: [',', 'and', '""', true, '']
+					params: ['0', ',', 'and', '""', true, '']
 				}
 			};
 
