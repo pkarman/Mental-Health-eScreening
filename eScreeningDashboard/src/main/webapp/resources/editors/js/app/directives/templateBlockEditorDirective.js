@@ -159,7 +159,7 @@
                 };
                 
                 scope.$watch('block.type', function(newValue, oldValue) {
-                    if(newValue != null && oldValue != null && newValue != oldValue){
+                    if(newValue !== null && oldValue !== null && newValue !== oldValue){
                         scope.block.reset();
                     }
                 });
@@ -200,9 +200,9 @@
 		            var result = (operatorValue);
 		            angular.forEach(scope.operators, function(operator) {
 			            if (operator.value === "" + operatorValue) {
-				            if (operator.category === 'formula' || operator.category === 'question') {
+				            if (_.contains(operator.categories, 'formula') || _.contains(operator.categories, 'question') || _.contains(operator.categories, 'table')) {
 					            result = false;
-					            return true;
+					            return;
 				            }
 			            }
 		            });
