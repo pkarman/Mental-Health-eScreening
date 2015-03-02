@@ -46,8 +46,10 @@
 									if (av.getMeasureTypeName() === 'table') {
 										filteredData.push(av);
 									}
+
 								});
 							} else {
+								// TODO filter out child table questions
 								filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
 							}
 
@@ -76,13 +78,13 @@
 
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
-						if (!scope.assessmentVariable.transformations) {
+						if (scope.assessmentVariable.transformations.length === 0) {
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function(transformations) {
 							});
 						}
 
 						if (av.getMeasureTypeName() === 'table') {
-							// Get the childQuestions and childQuestion answers for single and multi-matrix variables
+							// Get the childQuestions table variables
 							MeasureService.one(av.measureId).get().then(function(measure) {
 								scope.childQuestions = measure.childQuestions;
 							});
@@ -125,6 +127,13 @@
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+
+							if (newScope.transformationType.params) {
+								// Convert params into strings for freeMarker
+								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
+									return JSON.stringify(param);
+								});
+							}
 						}
 
 						// Apply AV to block.table for table block types
