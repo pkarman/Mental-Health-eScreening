@@ -285,5 +285,8 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
 		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
+
+        // after the assessment is done, we will calculate the score first before returing to UI.
+        //TODO: kliu.ctr
 	}
 }
