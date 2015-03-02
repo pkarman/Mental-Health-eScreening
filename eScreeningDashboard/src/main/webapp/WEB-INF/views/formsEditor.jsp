@@ -98,9 +98,9 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/Battery.js"></script>
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteryTransformer.js"></script> 
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
-
-    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
 	
+    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
+
 	<!-- Template Domain -->
 
 	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
@@ -125,13 +125,13 @@
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
-
+    
     <!-- Application Definition file -->
     <script type="text/javascript" src="resources/editors/main.js"></script>
 
     <!-- UI-Router View States definition -->
     <script type="text/javascript" src="resources/editors/states.js"></script>
-    
+
     <!-- Services -->
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>

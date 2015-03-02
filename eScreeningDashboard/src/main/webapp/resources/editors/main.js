@@ -77,10 +77,9 @@ Editors.config(function(RestangularProvider, $provide) {
 
         return newResponse || data.payload || data;
     });
-    
+
     $provide.decorator('taOptions', ['taRegisterTool', 'taCustomRenderers', 'taSelectableElements', 'textAngularManager', '$delegate', '$modal', 'TemplateBlockService',
                                      function(taRegisterTool, taCustomRenderers, taSelectableElements, textAngularManager, $delegate, $modal, TemplateBlockService){
-
 
     	function createTable(tableParams) {
     		if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)

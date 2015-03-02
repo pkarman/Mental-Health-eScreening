@@ -107,8 +107,8 @@ public class AssessmentVariableController {
             }
         }
         return avs;
-    }
-
+	}
+	
 	@RequestMapping(value = "/services/assessmentVariables", params="batteryId", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Map<String, Object>> getAssessmentVarsForBattery(@RequestParam("batteryId") Integer batteryId) {
