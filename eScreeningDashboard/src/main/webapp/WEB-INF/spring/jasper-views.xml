@@ -47,4 +47,15 @@
           p:url="classpath:/reports/assessmentAuditLogReport.jrxml"
           p:reportDataKey="datasource" />
 
+    <!-- Individual statistics Reports -->
+    <bean id="IndividualStatisticsReportsNumericOnlyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/IndividualStatisticsNumericOnlyReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <bean id="GraphChart"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/GraphChart.jrxml"
+          p:reportDataKey="datasource"/>
+
 </beans>

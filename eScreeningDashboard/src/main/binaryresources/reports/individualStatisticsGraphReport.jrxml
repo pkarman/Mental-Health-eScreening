@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsNumericOnlyReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="124"/>
+	<parameter name="lastNameSSN" class="java.lang.String"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="screeningModuleName" class="java.lang.String"/>
+	<field name="score" class="java.lang.String"/>
+	<field name="historyByClinic" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="180" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Individual Statistics Report]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="16" y="143" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="129" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="256" splitType="Stretch">
+			<staticText>
+				<reportElement x="16" y="10" width="100" height="25" uuid="d823c831-a055-495f-9b22-82ab2fef6829"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PHQ-9]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="39" width="572" height="3" uuid="b0ff8068-cb09-4475-8205-c2e3f59a1f28"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="130" width="572" height="1" uuid="89e79a09-5b5c-420d-94d7-a3d98fe22284"/>
+			</line>
+			<lineChart>
+				<chart>
+					<reportElement x="258" y="73" width="200" height="100" uuid="e7308e3b-b024-442b-af41-4502edebf690"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset/>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

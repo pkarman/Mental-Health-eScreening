@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ModuleGraphReportDTO implements Serializable{
 
-
+    private String veteranLastNameAndLastFourSSN;
     private String moduleName;
     private String scoreName;
     private String score;
@@ -74,5 +74,13 @@ public class ModuleGraphReportDTO implements Serializable{
 
     public void setScoreHistory(List<ScoreHistoryDTO> scoreHistory) {
         this.scoreHistory = scoreHistory;
+    }
+
+    public String getVeteranLastNameAndLastFourSSN() {
+        return veteranLastNameAndLastFourSSN;
+    }
+
+    public void setVeteranLastNameAndLastFourSSN(String veteranLastNameAndLastFourSSN) {
+        this.veteranLastNameAndLastFourSSN = veteranLastNameAndLastFourSSN;
     }
 }
