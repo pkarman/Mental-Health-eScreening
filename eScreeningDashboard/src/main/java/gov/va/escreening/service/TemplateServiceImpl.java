@@ -538,10 +538,10 @@ public class TemplateServiceImpl implements TemplateService {
 		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
 		template.setTemplateType(templateType);
 		
-		template.setDateCreated(new Date());
+		
 		template.setIsGraphical(templateFile.getIsGraphical());
 		
-		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
+		if (templateFile.getBlocks() == null || templateFile.getBlocks().isEmpty())
 		{
 			template.setJsonFile(null);
 		}
@@ -554,7 +554,7 @@ public class TemplateServiceImpl implements TemplateService {
 				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
 			}
 			catch(IOException e) {
-				e.printStackTrace();
+				logger.error("Error setting block data", e);
 				template.setJsonFile(null);
 			}
 			
@@ -680,12 +680,12 @@ public class TemplateServiceImpl implements TemplateService {
 				template.getVariableTemplateList().add(new VariableTemplate(av, template));
 			}
 			
-			Measure measure = av.getMeasure();
-			addAnswerVariableTemplates(template, measure, currentVtMap);
-			
-			//check for child questions to add
+			//Add measure specific VariableTemplates
 			if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
-				
+    			Measure measure = av.getMeasure();
+    			addAnswerVariableTemplates(template, measure, currentVtMap);
+    			
+    			//check for child questions to add
 				if(measure.isParent() && measure.getChildren() != null){
 					for(Measure child : measure.getChildren()){
 						AssessmentVariable childAv = child.getAssessmentVariable();
@@ -699,7 +699,6 @@ public class TemplateServiceImpl implements TemplateService {
 					}
 				}
 			}
-			
 		}
 	}
 	
