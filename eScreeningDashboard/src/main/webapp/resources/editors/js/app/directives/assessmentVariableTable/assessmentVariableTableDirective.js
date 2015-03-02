@@ -17,6 +17,8 @@
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
 
+					var parentBlock = (scope.block) ? scope.block.getParent() : {};
+
 					scope.toggles = {
 						list: true,
 						transformations: false
@@ -39,7 +41,7 @@
 							var avs,
 								filteredData;
 
-							if (scope.block.type && scope.block.type === 'table') {
+							if (scope.block && scope.block.type === 'table') {
 								// Only display table questions for table block
 								filteredData = [];
 								_.each(scope.assessmentVariables, function(av) {
@@ -49,8 +51,11 @@
 
 								});
 							} else {
-								// TODO filter out child table questions
-								filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+								if (parentBlock && parentBlock.type === 'table') {
+									filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: parentBlock.table.measureId});
+								} else {
+									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+								}
 							}
 
 							avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
@@ -78,10 +83,9 @@
 
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
-						console.log(scope.block.type);
-
 						// Do not apply transformations to parent table blocks
-						if (scope.block.type !== 'table') {
+						// NOTE: Blocks are not passsed in when directive is called from textAngular
+						if (!scope.block || scope.block.type !== 'table') {
 							if (scope.assessmentVariable.transformations.length === 0) {
 								AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function (transformations) {
 								});
@@ -95,8 +99,14 @@
 							}
 						}
 
-						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || scope.block.type === 'table') {
+						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
 							scope.show = false;
+
+							// Apply AV to block.table for table block types
+							if (scope.block && scope.block.type === 'table') {
+								scope.block.table = scope.assessmentVariable;
+							}
+
 						} else if (scope.transformationName === 'freetext') {
 							// Doing this manually here because setting transformations is not working as intended
 							MeasureService.one(scope.assessmentVariable.measureId).getList('validations').then(function(validations) {
@@ -139,11 +149,6 @@
 									return JSON.stringify(param);
 								});
 							}
-						}
-
-						// Apply AV to block.table for table block types
-						if (scope.block.type === 'table') {
-							scope.block.table = scope.assessmentVariable;
 						}
 					};
 
