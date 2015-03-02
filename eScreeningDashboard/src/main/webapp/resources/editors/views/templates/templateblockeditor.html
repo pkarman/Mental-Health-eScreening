@@ -110,12 +110,12 @@
 				<button title="AND"
 				        class="btn btn-default"
 				        ng-click="addAndConditionBlock(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND
+				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">AND
 				</button>
 				<button title="OR"
 				        class="btn btn-default"
 				        ng-click="addOrConditionBlock(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else'"
+				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'"
 				        ng-disable="templateBlockEditorForm.$invalid">OR
 				</button>
 				<!--button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button-->
