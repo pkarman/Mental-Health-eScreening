@@ -163,7 +163,7 @@
                 };
                 
                 scope.$watch('block.type', function(newValue, oldValue) {
-                    if(newValue !== null && oldValue !== null && newValue !== oldValue){
+                    if(newValue !== null && newValue !== oldValue){
                         scope.block.reset();
                     }
                 });

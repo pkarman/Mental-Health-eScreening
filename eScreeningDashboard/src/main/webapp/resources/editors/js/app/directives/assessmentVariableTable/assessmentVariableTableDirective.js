@@ -120,7 +120,7 @@
 
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
-								scope.block.table = scope.assessmentVariable;
+								scope.block.table.content = scope.assessmentVariable;
 							}
 
 						} else if (scope.transformationName === 'freetext') {
