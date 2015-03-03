@@ -148,6 +148,7 @@
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/on-enter.directive.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/strip-html.filter.js"></script>
     
     <!-- Controllers -->

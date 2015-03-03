@@ -4,6 +4,7 @@
 			<div class="form-group">
 				<label class="control-label">Block Type
 					<select class="form-control input-block-level"
+							tabindex="2"
 					        ng-model="block.type"
 					        ng-disabled="!enableTypes"
 					        ng-options="blockType.value as blockType.name for blockType in blockTypes">

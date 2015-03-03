@@ -7,13 +7,13 @@
 		<div class="row">
 			<div class="col-md-6">
 				<label class="sr-only">Select Assessment Variable Type</label>
-				<select class="form-control" ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
+				<select class="form-control" ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes" tabindex="4">
 					<option value="">-- Choose Type --</option>
 				</select>
 			</div>
 			<div class="col-md-6">
 				<label class="sr-only">Assessment Variable Search</label>
-				<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search">
+				<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search" tabindex="5">
 			</div>
 		</div>
 		<br>
@@ -23,13 +23,13 @@
 			<div class="col-md-12">
 
 				<table ng-table="tableParams" class="table table-hover">
-					<tr ng-repeat="av in $data | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
+					<tr ng-repeat="av in $data track by $index | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
 						<td data-title="'Variable Name'" class="col-md-4">{{av.name}}</td>
 						<td data-title="'Name'" filter="{ 'displayName': 'text' }" class="col-md-4">{{av.displayName}}</td>
 						<td data-title="'Type'" class="col-md-2">{{av.type}}</td>
 						<td data-title="'Insert'" class="col-md-2">
 	                <span title="Select" class="cursor-pointer pull-right btn btn-link" ng-click="select($event, av);">
-	                    <i class="fa fa-arrow-circle-right" title="Select"></i> Select
+	                    <span on-enter="select($event, av)" tabindex="{{(tabCount = tabCount + 1)}}"><i class="fa fa-arrow-circle-right" title="Select"></i> Select</span>
 	                </span>
 						</td>
 					</tr>
@@ -52,7 +52,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputPrefix">Prefix</label>
-							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]">
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]" tabindex="6">
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -99,7 +99,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="inputPrefix">Prefix</label>
-							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]">
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]" tabindex="6">
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -143,6 +143,7 @@
 					<label for="selectTransformationType">Transformation Type</label>
 					<select id="selectTransformationType"
 							class="form-control"
+							tabindex="6"
 							ng-model="transformationType"
 							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
 						<option value="">No Transformation</option>
@@ -171,6 +172,7 @@
 					<label for="selectTransformationType">Transformation Type</label>
 					<select id="selectTransformationType"
 							class="form-control"
+							tabindex="6"
 							ng-model="transformationType"
 							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
 						<option value="">-- Select Transformation --</option>

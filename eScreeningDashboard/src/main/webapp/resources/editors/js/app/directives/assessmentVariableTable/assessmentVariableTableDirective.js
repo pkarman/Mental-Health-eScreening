@@ -24,6 +24,8 @@
 						transformations: false
 					};
 
+					scope.tabCount = 5;
+
 		            scope.searchObj = {type: ''};
 
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
@@ -65,7 +67,6 @@
 											});
 
 											if (parent && parent.measureTypeId === 4) {
-												console.log(parent);
 												filteredData.splice(index, 1);
 											}
 										}
@@ -85,7 +86,7 @@
 
 		            scope.select = function(e, av) {
 
-			            e.stopPropagation();
+			            if (e) e.stopPropagation();
 
 		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
 
@@ -159,7 +160,7 @@
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
-							scope.assessmentVariable.displayName = newScope.transformationType.displayName + '_' + scope.assessmentVariable.displayName;
+							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.name || scope.assessmentVariable.displayName;
 
 							if (newScope.transformationType.params) {
 								// Convert params into strings for freeMarker

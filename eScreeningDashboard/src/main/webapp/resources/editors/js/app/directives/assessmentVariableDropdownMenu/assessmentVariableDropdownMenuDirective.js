@@ -28,7 +28,7 @@
 
 		            scope.openSelections = function(e) {
 			            // Stop bubbling
-			            e.stopPropagation();
+			            if (e) e.stopPropagation();
 
 			            scope.avMenu.show = true;
 		            };
