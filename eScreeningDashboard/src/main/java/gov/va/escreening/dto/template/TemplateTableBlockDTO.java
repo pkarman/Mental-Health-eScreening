@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static com.google.common.base.Preconditions.*;
 
 @Configurable
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -17,16 +18,9 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	@JsonProperty("type")
 	private String nodeType(){return "table";}
 	
-	private AssessmentVariableService assessmentVariableService = null;
-	
 	private TemplateVariableContent table;
 	static final String VAR_FORMAT = "[var%d]";
 	static final String REPLACEMENT_FORMAT = "getTableVariable(%s, %s, %s)";
-	
-	//TODO: remove the use of this method
-	public void setAssessmentVariableService(AssessmentVariableService assessmentVariableService){
-	    this.assessmentVariableService = assessmentVariableService;
-	}
 	
 	public TemplateVariableContent getTable() {
 		return table;
@@ -38,11 +32,9 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	
 	@Override
 	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService) {
-		StringBuilder result = addHeader(sb);
-		
-		//TODO: REMOVE THIS
-		if(assessmentVariableService == null)
-		    assessmentVariableService = this.assessmentVariableService;
+	    checkNotNull(assessmentVariableService, "AssessmentVariableService is required");
+	    
+	    StringBuilder result = addHeader(sb);
 		
 		String varName = String.format(VAR_FORMAT, table.getContent().getId());
 		String tableHashName = createTableHashName(result);
