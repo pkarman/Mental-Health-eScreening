@@ -28,6 +28,10 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 	AssessmentVariable.prototype = {
 
+		getName: function getName() {
+			return this.name ?  this.name : this.displayName ? this.displayName: 'var' + this.id;
+		},
+
 		getMeasureTypeName: function getMeasureTypeName() {
 			var type;
 
