@@ -56,9 +56,9 @@
 								} else {
 									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
 
-									/*
+
 									// Remove child table AVs
-									_.each(filteredData, function(av, index) {
+									_.each(filteredData, function(av) {
 										var parent;
 										if (av && av.parentMeasureId) {
 											parent = _.find(scope.assessmentVariables, function(fd) {
@@ -66,11 +66,10 @@
 											});
 
 											if (parent && parent.measureTypeId === 4) {
-												filteredData.splice(index, 1);
+												filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: '!' + parent.measureId});
 											}
 										}
 									});
-									*/
 								}
 							}
 
@@ -115,7 +114,9 @@
 							}
 
 							// Apply assessmentVariable to block even though it should be done via the two-way data binding
-							scope.block.left.content = scope.assessmentVariable;
+							if (scope.block) {
+								scope.block.left.content = scope.assessmentVariable;
+							}
 						}
 
 						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
