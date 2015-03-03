@@ -657,6 +657,19 @@
 							</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-33-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_33</basedir>
+								</fileset>
+							</configuration>
+					</execution>
+					<execution>
 						<id>apply-ticket-related-data</id>
 							<phase>process-test-resources</phase>
 							<goals>
