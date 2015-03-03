@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.List;
 import java.util.Set;
 
@@ -55,8 +57,8 @@ public class TemplateBaseBlockDTO implements INode{
 	}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids) {
-		return addChildren(sb, ids);
+	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids) {
+		return addChildren(assessmentVariableService, sb, ids);
 	}
 	
 	/**
@@ -65,11 +67,11 @@ public class TemplateBaseBlockDTO implements INode{
 	 * @param ids the 
 	 * @return the same StringBuilder passed in (for chaining)
 	 */
-	protected StringBuilder addChildren(StringBuilder sb, Set<Integer> ids){
+	protected StringBuilder addChildren(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids){
 		StringBuilder result = sb;
 		if(getChildren() != null) {
 			for(INode child : getChildren()){
-				result = child.appendFreeMarkerFormat(result, ids);
+				result = child.appendFreeMarkerFormat(assessmentVariableService, result, ids);
 			}
 		}
 		return result;

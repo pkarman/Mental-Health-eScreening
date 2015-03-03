@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import freemarker.core.TemplateElement;
 import static gov.va.escreening.constants.AssessmentConstants.*;
+import static org.mockito.Matchers.any;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
@@ -67,6 +68,9 @@ public class TemplateServiceImpl implements TemplateService {
 
 	@Autowired
 	private AssessmentVariableRepository avRepository;
+	
+	@Autowired
+	AssessmentVariableService assessmentVariableService;
 	
 
 	@SuppressWarnings("serial")
@@ -522,7 +526,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 		file.append("${MODULE_START}\n");
 		for(INode block : blocks){
-			file = block.appendFreeMarkerFormat(file, ids);
+			file = block.appendFreeMarkerFormat(assessmentVariableService, file, ids);
 		}
 		file.append("\n${MODULE_END}\n");
 		
