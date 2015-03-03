@@ -26,8 +26,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	static final String VAR_FORMAT = "[var%d]";
 	static final String REPLACEMENT_FORMAT = "getTableVariable(%s, %s, %s)";
 	
-	//TODO: Get this to work and then remove extra param from appendFreeMarkerFormat method
-	@Autowired
+	//TODO: remove the use of this method
 	public void setAssessmentVariableService(AssessmentVariableService assessmentVariableService){
 	    this.assessmentVariableService = assessmentVariableService;
 	}
@@ -41,7 +40,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer>ids) {
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService) {
 		StringBuilder result = addHeader(sb);
 		
 		//TODO: REMOVE THIS
@@ -53,7 +52,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		String rowIndexName = createRowIndexName(result);
 		
 		//add id for table
-		ids.add(table.getContent().getId());
+		avIds.add(table.getContent().getId());
 		
 		//create table hash object
 		result.append("<#assign ").append(tableHashName).append("=createTableHash(").append(varName).append(")> \n");		
@@ -64,7 +63,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		result.append("<#list 0..lastIndex as ").append(rowIndexName).append("> \n");
 		
 		//add all child blocks
-		result = addChildren(assessmentVariableService, result, ids);
+		result = addChildren(result, avIds, assessmentVariableService);
 		
 		//close if and list loop
 		result.append("</#list>\n</#if>\n");

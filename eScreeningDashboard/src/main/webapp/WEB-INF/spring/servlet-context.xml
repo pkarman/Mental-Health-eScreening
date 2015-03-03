@@ -39,7 +39,6 @@
 
     <beans:bean id="jsonAnnotationIntrospector" class="com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector"/>
     
-    <context:spring-configured/>
 	<context:component-scan base-package="gov.va.escreening.controller" />
     <context:component-scan base-package="gov.va.escreening.serializer" />
 

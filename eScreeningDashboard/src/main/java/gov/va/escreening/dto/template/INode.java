@@ -24,15 +24,15 @@ public interface INode {
 	
 	/**
 	 * Appends the FreeMarker translation of this block to the given StringBuilder and return the result
-	 * @param assessmentVariableService TODO
 	 * @param sb this is being appended to
 	 * @param ids during translation each block is responsible for added assessment variable IDs for variables they contain and need for rendering 
 	 * @return a StringBuilder which contains the content passed in (via sb) along with this block's content.  
 	 * <b>Please Note:</b> The returned StringBuilder does not have to be the same one passed in.  So callers should use the 
 	 * returned result (functional style) instead of reusing the passed in StringBuilder (shared mutable state-style). 
 	 * Implementing it this way allows for efficient translation into freemarker *and* allows for simple testing.
+	 * @param assessmentVariableService the assessment variable service which can be used to find child AVs
 	 */
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids);
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> AvIds, AssessmentVariableService assessmentVariableService);
 	
 
 }

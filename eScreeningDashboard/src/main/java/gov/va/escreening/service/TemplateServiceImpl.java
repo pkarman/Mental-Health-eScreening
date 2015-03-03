@@ -1,8 +1,6 @@
 package gov.va.escreening.service;
 
-import freemarker.core.TemplateElement;
 import static gov.va.escreening.constants.AssessmentConstants.*;
-import static org.mockito.Matchers.any;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateDTO;
@@ -34,7 +32,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -385,123 +382,6 @@ public class TemplateServiceImpl implements TemplateService {
 		}*/
 		return dto;
 	}
-
-	private Properties parseMetaData() {
-		String[] data = metaStr.replace("<#--", "").replace("-->", "").trim()
-				.split(",");
-
-		Properties p = new Properties();
-		for (int i = 0; i < data.length; i++) {
-			String dat[] = data[i].split("=");
-			p.put(dat[0], dat[1]);
-		}
-
-		return p;
-
-	}
-
-	private String metaStr = null;
-
-	private INode nodeIterate(TemplateElement node, List<Long> templateVariables) {
-
-		INode nodeDTO = null;
-
-	/*	String type = node.getClass().getSimpleName();
-
-		String content = node.getCanonicalForm();
-
-		if (!node.isLeaf()) {
-			try {
-				// nodeDTO.setContent(content.substring(0,
-				// content.indexOf(((TemplateElement)node.getChildNodes().get(0)).getCanonicalForm())));
-
-				if (type.equals("IfBlock")) {
-					nodeDTO = new TemplateIfBlockDTO();
-				} else if (type.equals("ConditionalBlock")) {
-
-					// nodeDTO.setContent(content.substring(0, content
-					// .indexOf(((TemplateElement) node.getChildAt(0))
-					// .getCanonicalForm())));
-
-					if (content.equals("<#else>")) {
-						nodeDTO = new TemplateBaseBlockDTO();
-						nodeDTO.setType("elseBlock");
-					} else if (content.startsWith("<#if")) {
-						nodeDTO = new TemplateConditionBlockDTO();
-						nodeDTO.setType("ifBlock");
-						
-						String formula = content.substring(0, content
-								 .indexOf(((TemplateElement) node.getChildAt(0))
-								 .getCanonicalForm())).replace("<#if ", "").trim();
-						formula = formula.substring(0, formula.length()-1);
-						
-						// parse the content here
-						
-						parseFormula(formula, (TemplateConditionBlockDTO)nodeDTO);
-						
-						
-						
-					} else {
-						nodeDTO = new TemplateConditionBlockDTO();
-						nodeDTO.setType("elseIfBlock");
-						// parse the content here
-					}
-				} else {
-				}
-				// nodeDTO.setContent(content);
-				// if (metaStr != null) {
-				// Properties p = parseMetaData();
-				// nodeDTO.setTitle(p.getProperty("TITLE"));
-				// nodeDTO.setSection(p.getProperty("SECTION"));
-				// metaStr = null;
-				// }
-
-			
-
-			for (int i = 0; i < node.getChildCount(); i++) {
-				TemplateElement childTemplateElement = (TemplateElement) node
-						.getChildAt(i);
-				INode n = nodeIterate(childTemplateElement,
-				 templateVariables);
-				if (n != null)
-				{
-					if (((TemplateBaseBlockDTO)nodeDTO).getChildren()==null)
-					{
-						((TemplateBaseBlockDTO)nodeDTO).setChildren(new ArrayList<INode>());
-					}
-				 ((TemplateBaseBlockDTO)nodeDTO).getChildren().add(n);
-				}
-			}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			if (type.equals("Comment")) {
-				metaStr = content;
-				return null;
-			}
-
-			if (type.equals("TextBlock")) {
-				nodeDTO = new TemplateTextDTO();
-				nodeDTO.setType(type);
-				((TemplateTextDTO) nodeDTO).setContent(content);
-
-				if (metaStr != null) {
-					Properties p = parseMetaData();
-					((TemplateTextDTO) nodeDTO)
-							.setTitle(p.getProperty("TITLE"));
-					((TemplateTextDTO) nodeDTO).setSection(p
-							.getProperty("SECTION"));
-					metaStr = null;
-				}
-
-			}
-		}*/
-
-		return nodeDTO;
-	}
-	
-	
  
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -526,7 +406,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 		file.append("${MODULE_START}\n");
 		for(INode block : blocks){
-			file = block.appendFreeMarkerFormat(assessmentVariableService, file, ids);
+			file = block.appendFreeMarkerFormat(file, ids, assessmentVariableService);
 		}
 		file.append("\n${MODULE_END}\n");
 		

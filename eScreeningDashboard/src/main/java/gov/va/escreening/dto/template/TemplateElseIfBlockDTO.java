@@ -14,19 +14,19 @@ public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 	private String nodeType(){return "elseif";}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer>ids) {
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService) {
 
 		sb.append("\n<#elseif ( ")
 			.append(FormulaUtil.createFormula(getOperator(), getLeft(),
-						getRight(), ids)).append(")");
+						getRight(), avIds)).append(")");
 
 		if (getConditions() != null && getConditions().size() > 0) {
 			for (TemplateFollowingConditionBlock tfcb : getConditions()) {
-				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
+				sb.append(tfcb.toFreeMarkerFormatFormula(avIds));
 			}
 		}
 		sb.append(" >\n");
 
-		return addChildren(assessmentVariableService, sb, ids);
+		return addChildren(sb, avIds, assessmentVariableService);
 	}
 }

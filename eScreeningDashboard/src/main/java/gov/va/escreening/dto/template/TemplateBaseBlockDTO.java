@@ -57,8 +57,8 @@ public class TemplateBaseBlockDTO implements INode{
 	}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids) {
-		return addChildren(assessmentVariableService, sb, ids);
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
+		return addChildren(sb, ids, assessmentVariableService);
 	}
 	
 	/**
@@ -67,11 +67,11 @@ public class TemplateBaseBlockDTO implements INode{
 	 * @param ids the 
 	 * @return the same StringBuilder passed in (for chaining)
 	 */
-	protected StringBuilder addChildren(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids){
+	protected StringBuilder addChildren(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService){
 		StringBuilder result = sb;
 		if(getChildren() != null) {
 			for(INode child : getChildren()){
-				result = child.appendFreeMarkerFormat(assessmentVariableService, result, ids);
+				result = child.appendFreeMarkerFormat(result, ids, assessmentVariableService);
 			}
 		}
 		return result;

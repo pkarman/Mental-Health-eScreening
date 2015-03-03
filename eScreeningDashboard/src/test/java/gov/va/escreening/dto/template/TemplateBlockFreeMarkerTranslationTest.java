@@ -17,7 +17,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.internal.matchers.AnyVararg;
 
 import com.google.common.collect.ImmutableMap;
 import static org.mockito.Mockito.*;
@@ -43,7 +42,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			block.setSection(section);
 			block.setSummary(summary);
 			
-			String result = block.appendFreeMarkerFormat(null, new StringBuilder(), new HashSet<Integer>()).toString();
+			String result = block.appendFreeMarkerFormat(new StringBuilder(), new HashSet<Integer>(), null).toString();
 			
 			assertTrue("Name is not in header", result.contains(name));
 			assertTrue("Section is not in header", result.contains(section));
@@ -56,7 +55,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			TemplateTableBlockDTO block = createTableBlock(null, null);
 			StringBuilder sb = new StringBuilder();
 			Set<Integer> ids = new HashSet<>();
-			StringBuilder result = block.appendFreeMarkerFormat(null, sb, ids);
+			StringBuilder result = block.appendFreeMarkerFormat(sb, ids, null);
 			
 			assertNotEquals(result.indexOf("createTableHash"), -1);
 		}
@@ -66,7 +65,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			TemplateTableBlockDTO block = createTableBlock(999, null);
 			StringBuilder sb = new StringBuilder();
 			Set<Integer> ids = new HashSet<>();
-			block.appendFreeMarkerFormat(null, sb, ids);
+			block.appendFreeMarkerFormat(sb, ids, null);
 			
 			assertTrue(ids.contains(999));
 		}
@@ -79,13 +78,13 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			
 			List<INode> children = new ArrayList<>();
 			INode child1 = mock(INode.class);
-			when(child1.appendFreeMarkerFormat(any(AssessmentVariableService.class), eq(sb), eq(ids))).thenReturn(sb);
+			when(child1.appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class))).thenReturn(sb);
 			children.add(child1);
 			block.setChildren(children);
 			
-			block.appendFreeMarkerFormat(null, sb, ids);
+			block.appendFreeMarkerFormat(sb, ids, null);
 			
-			verify(child1).appendFreeMarkerFormat(any(AssessmentVariableService.class), eq(sb), eq(ids));
+			verify(child1).appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class));
 		}
 		
 		/**
@@ -123,11 +122,11 @@ public class TemplateBlockFreeMarkerTranslationTest {
 					+"more content" + var111
 					+"even more content"+ var222 + "lastContent");
 			
-			when(child1.appendFreeMarkerFormat(any(AssessmentVariableService.class), eq(sb), eq(ids))).thenReturn(childContent);
+			when(child1.appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class))).thenReturn(childContent);
 			children.add(child1);
 			block.setChildren(children);
 			
-			String result = block.appendFreeMarkerFormat(null, sb, ids).toString();
+			String result = block.appendFreeMarkerFormat(sb, ids, null).toString();
 			
 			String expected = "test content" + var111Replacement
 					+"table var next" + tableVar    // this should not be changed

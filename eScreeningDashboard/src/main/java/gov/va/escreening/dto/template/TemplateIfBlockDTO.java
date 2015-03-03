@@ -55,7 +55,7 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	}
 
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids) {
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
 		addHeader(sb);
 		
 		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right, ids)).append(")");
@@ -69,6 +69,6 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 		}
 		sb.append(" >\n");
 		
-		return addChildren(assessmentVariableService, sb, ids).append("\n</#if>\n");
+		return addChildren(sb, ids, assessmentVariableService).append("\n</#if>\n");
 	}
 }

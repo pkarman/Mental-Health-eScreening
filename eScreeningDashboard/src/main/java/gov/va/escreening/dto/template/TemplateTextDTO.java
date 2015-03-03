@@ -28,7 +28,7 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 	}
 
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids) {
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
 		addHeader(sb);
 
 		for (TemplateBaseContent content : contents) {

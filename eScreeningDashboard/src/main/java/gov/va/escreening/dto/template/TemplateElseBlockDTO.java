@@ -14,7 +14,7 @@ public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 	private String nodeType(){return "else";}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer>ids){
-		return addChildren(assessmentVariableService, new StringBuilder("\n<#else>\n"), ids);
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService){
+		return addChildren(sb.append("\n<#else>\n"), avIds, assessmentVariableService);
 	}
 }
