@@ -58,6 +58,19 @@
 								}
 							}
 
+							// Remove child table AVs
+							_.each(filteredData, function(av, index) {
+								var parent;
+								if (av && av.parentMeasureId) {
+									parent = _.find(filteredData, function(fd) {
+										return fd.measureId === av.parentMeasureId;
+									});
+									if (parent && parent.measureTypeId === 4) {
+										filteredData.splice(index, 1);
+									}
+								}
+							});
+
 							avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
 
 							params.total(filteredData.length); // set total for recalc pagination
