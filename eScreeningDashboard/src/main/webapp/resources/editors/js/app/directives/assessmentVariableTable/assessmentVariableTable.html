@@ -144,7 +144,7 @@
 					<select id="selectTransformationType"
 							class="form-control"
 							ng-model="transformationType"
-							ng-options="transformation as transformation.name for transformation in assessmentVariable.transformations">
+							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
 						<option value="">No Transformation</option>
 					</select>
 				</div>
@@ -172,7 +172,7 @@
 					<select id="selectTransformationType"
 							class="form-control"
 							ng-model="transformationType"
-							ng-options="transformation as transformation.name for transformation in assessmentVariable.transformations">
+							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
 						<option value="">-- Select Transformation --</option>
 					</select>
 				</div>

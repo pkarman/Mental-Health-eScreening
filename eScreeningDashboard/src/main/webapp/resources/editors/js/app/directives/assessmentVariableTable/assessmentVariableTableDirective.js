@@ -166,6 +166,8 @@
 									return JSON.stringify(param);
 								});
 							}
+							// Remove displayName property which is not to be persisted
+							delete scope.assessmentVariable.transformations[0].displayName;
 						}
 					};
 

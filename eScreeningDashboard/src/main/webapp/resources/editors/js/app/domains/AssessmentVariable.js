@@ -70,21 +70,29 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 			var av = this;
 
+			// NOTE: displayName property must be removed before persisting
 			var transformations = {
 				delimit: {
 					name: 'delimit',
+					displayName: 'Delimit',
 					params: [',', 'and', '""', true, '']
 				},
-				yearsFromDate: { name: 'yearsFromDate' },
+				yearsFromDate: {
+					name: 'yearsFromDate',
+					displayName: 'Years from Date'
+				},
 				delimitedMatrixQuestions: {
 					name: 'delimitedMatrixQuestions',
+					displayName: 'Delimited Matrix Questions',
 					params: []
 				},
 				numberOfEntries: {
-					name: 'numberOfEntries'
+					name: 'numberOfEntries',
+					displayName: 'Number of Entries'
 				},
 				delimitTableField:	{
 					name: 'delimitTableField',
+					displayName: 'Delimited Table Field',
 					params: ['0', ',', 'and', '""', true, '']
 				}
 			};
