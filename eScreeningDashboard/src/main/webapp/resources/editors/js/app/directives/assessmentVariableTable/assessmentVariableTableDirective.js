@@ -163,7 +163,7 @@
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
-							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.name || scope.assessmentVariable.displayName;
+							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 
 							if (newScope.transformationType.params) {
 								// Convert params into strings for freeMarker
