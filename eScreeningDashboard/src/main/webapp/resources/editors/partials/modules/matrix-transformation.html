@@ -8,7 +8,7 @@
 
 <hr />
 
-<form>
+<form name="matrixForm">
 	<div class="row">
 		<div class="col-sm-6 col-xs-6">
 			<h5>Columns (Answers)</h5>
@@ -34,7 +34,7 @@
 					</div>
 					<div class="form-group">
 						<label for="TextInput">Output Text</label>
-						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-keyup="updateTransformation()">
+						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-required="question.checked" ng-keyup="updateTransformation()">
 					</div>
 				</li>
 			</ul>
@@ -42,7 +42,7 @@
 	</div>
 
 	<div class="text-right">
-		<button type="button" class="btn btn-primary" ng-click="applyTransformations({this: this});">Insert</button>
+		<button type="button" class="btn btn-primary" ng-click="applyTransformations({this: this});" ng-disabled="matrixForm.$invalid">Insert</button>
 		<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 	</div>
 </form>
