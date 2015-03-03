@@ -133,24 +133,27 @@
 
 	                if (operator && this.type) {
 		                if(_.contains(operator.categories, 'numerical')) {
+							if (this.measureTypeId === 4 && this.transformations && this.transformations[0].name === 'numberOfEntries') {
+								includeOperator = true;
+							}
 			                if(this.type.toUpperCase() === 'CUSTOM' || this.type.toUpperCase() === 'FORMULA') {
 				                includeOperator = true;
 			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
 				                includeOperator = true;
 			                }
-		                } else if(_.contains(operator.categories, 'question') && (this.type.toUpperCase() === 'QUESTION')) {
+		                } else if((this.type.toUpperCase() === 'QUESTION') && _.contains(operator.categories, 'question')) {
 			                includeOperator = true;
-		                } else if(_.contains(operator.categories, 'formula') && (this.type.toUpperCase() === 'FORMULA')) {
+		                } else if((this.type.toUpperCase() === 'FORMULA') && _.contains(operator.categories, 'formula')) {
 			                includeOperator = true;
-		                } else if(_.contains(operator.categories, 'select') && (this.type.toUpperCase() === 'QUESTION')) {
+		                } else if((this.type.toUpperCase() === 'QUESTION') && _.contains(operator.categories, 'select')) {
 			                if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
 				                includeOperator = true;
 			                }
 		                }
-						else if(_.contains(operator.categories, 'table') && (this.measureTypeId === 4)) {
+						else if((this.measureTypeId === 4) && _.contains(operator.categories, 'table')) {
 							includeOperator = true;
 						}
-						else if(_.contains(operator.categories, 'matrix') && (this.type.toUpperCase() === 'MATRIX')) {
+						else if((this.type.toUpperCase() === 'MATRIX') && _.contains(operator.categories, 'matrix')) {
 							includeOperator = true;
 						} else if (this.type.toUpperCase() === 'CUSTOM' && operator.value === 'result') {
 							includeOperator = true;
