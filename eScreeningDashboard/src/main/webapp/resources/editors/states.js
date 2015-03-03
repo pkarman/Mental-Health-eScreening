@@ -175,7 +175,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
                                         }, function(response) {
-                                            MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
+                                            MessageFactory.set('danger', response.data.error.errorMessages[0].description || response.data.error.errorMessages[0].developerMessage || "There was an error", true, true);
                                         });
                                     }
                                     else{
@@ -385,7 +385,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                                 TemplateService.get($stateParams.templateId).then(function (template) {
                                     deferred.resolve(template);
                                 }, function(response) {
-                                    MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
+                                    MessageFactory.set('danger', response.data.error.errorMessages[0].description || response.data.error.errorMessages[0].developerMessage || "There was an error", true, true);
                                 });
                             }
                             else{
