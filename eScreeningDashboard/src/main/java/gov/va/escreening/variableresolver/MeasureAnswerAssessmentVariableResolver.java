@@ -24,5 +24,10 @@ public interface MeasureAnswerAssessmentVariableResolver {
 	String resolveCalculationValue(AssessmentVariable answerVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer);
 
-	String resolveCalculationValue(Measure left, Answer answerVal);
+	/**
+	 * @param answer
+	 * @param index if index is null then null is returned
+	 * @return
+	 */
+	String resolveCalculationValue(Pair<Measure, gov.va.escreening.dto.ae.Measure> answer, Integer index);
 }

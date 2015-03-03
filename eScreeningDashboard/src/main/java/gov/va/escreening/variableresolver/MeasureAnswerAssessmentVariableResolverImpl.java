@@ -2,11 +2,13 @@ package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
@@ -276,32 +278,56 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
             AssessmentVariable answerVariable,
             Pair<gov.va.escreening.entity.Measure, Measure> answer) {
 
+        int dbAnswerCount = answer.getLeft().getMeasureAnswerList().size();
+        int dtoAnswerCount = answer.getRight().getAnswers().size();
+        if(dbAnswerCount != dtoAnswerCount){
+            ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+                .toAdmin("UI sent a different number of responses (" + dtoAnswerCount + ") than what was expected(" +  dbAnswerCount + ").")
+                .toUser("A system error has occurred. Please contact support.")
+                .throwIt();
+        }
+        
         MeasureAnswer measureAnswer = answerVariable.getMeasureAnswer();
 
-        String answerValue = null;
-        for (Answer ans : answer.getRight().getAnswers()) {
+        Integer answerIndex = null;
+        for (int i = 0; i < dtoAnswerCount; i++) {
+            Answer ans = answer.getRight().getAnswers().get(i);
             if (ans.getAnswerId().intValue() == measureAnswer.getMeasureAnswerId()) {
-                answerValue = ans.getAnswerResponse();
+                answerIndex = i;
                 break;
             }
         }
 
-		  return formatValue(answerValue, answer.getLeft());
+		return formatValue(answer, answerIndex);
     }
 
     @Override
-    public String resolveCalculationValue(
-            gov.va.escreening.entity.Measure measure, Answer answerVal) {
-		return formatValue(answerVal.getAnswerResponse(), measure);
+    public String resolveCalculationValue(Pair<gov.va.escreening.entity.Measure, gov.va.escreening.dto.ae.Measure> answer, Integer index) {
+		return formatValue(answer, index);
 	}
 	
-	private String formatValue(String answerValue, gov.va.escreening.entity.Measure measure){
+	private String formatValue(Pair<gov.va.escreening.entity.Measure, gov.va.escreening.dto.ae.Measure> answer, Integer index){
+		if(index == null)
+		    return null;
 		
-		if(isSelectOne(measure) || measure.isNumeric()){
-				//treat numbers as floats to handle decimals when dividing numbers
-                return String.format("%sf",answerValue);
+		gov.va.escreening.entity.Measure dbMeasure = answer.getLeft();
+        gov.va.escreening.dto.ae.Measure measureDto = answer.getRight();
+		
+        String answerResponse = measureDto.getAnswers().get(index).getAnswerResponse();
+        
+	    if(dbMeasure.isNumeric()){
+	        return String.format("%sf",answerResponse);
+	    }
+	    
+		if(isSelectOne(dbMeasure)){
+			//treat numbers as floats to handle decimals when dividing numbers
+		    String calculationValue = dbMeasure.getMeasureAnswerList().get(index).getCalculationValue();
+		    if(calculationValue == null){
+		        calculationValue = answerResponse.trim().toLowerCase() == "true" ? "1" : "0";
+		    }
+            return String.format("%sf", calculationValue);
 		}
 		
-		return answerValue;
+		return answerResponse;
     }
 }
