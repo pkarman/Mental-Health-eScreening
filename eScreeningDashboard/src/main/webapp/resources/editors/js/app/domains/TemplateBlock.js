@@ -56,6 +56,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
         this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
+		if (jsonConfig.table) {
+			this.table = jsonConfig.table;
+		}
+
         if(Object.isArray(jsonConfig.contents)){
             jsonConfig.contents.forEach(function(blockData){
                 var contentObj = angular.copy(blockData);
