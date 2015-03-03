@@ -155,7 +155,7 @@
 						}
 						else if((this.type.toUpperCase() === 'MATRIX') && _.contains(operator.categories, 'matrix')) {
 							includeOperator = true;
-						} else if (this.type.toUpperCase() === 'CUSTOM' && operator.value === 'result') {
+						} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'formula')) {
 							includeOperator = true;
 						}
 	                }
