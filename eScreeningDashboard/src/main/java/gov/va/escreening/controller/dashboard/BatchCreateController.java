@@ -96,14 +96,6 @@ public class BatchCreateController {
 
 	}
 
-	// @RequestMapping(value="/views/**", method=RequestMethod.GET)
-	// public String setupBasePages(HttpServletRequest request)
-	// {
-	// String uri = request.getRequestURI();
-	// logger.info("setupBasePages "+uri);
-	// return "/dashboard/"+uri.substring(uri.lastIndexOf("/"));
-	// }
-
 	@ModelAttribute
 	public BatchCreateFormBean getEditVeteranAssessmentFormBean() {
 		return new BatchCreateFormBean();
@@ -230,8 +222,48 @@ public class BatchCreateController {
 				}
 			}
 		}
+		
+		//Set pre-selected
+		Map<Integer, Integer> preselectedSurveys = new HashMap<Integer, Integer>();
+		
+		for(Map.Entry<Integer, Set<Integer>> entry : vetSurveyMap.entrySet())
+		{
+			for(Integer surveyId: entry.getValue())
+			{
+				if(!preselectedSurveys.containsKey(surveyId))
+				{
+					preselectedSurveys.put(surveyId, 1);
+				}
+				else
+				{
+					preselectedSurveys.put(surveyId, preselectedSurveys.get(surveyId)+1);
+				}
+			}
+		}
 		model.addAttribute("surveyList", surveyList);
-
+		
+		int[] checkIndicator = new int[surveyList.size()];
+		
+		for(int i=0; i<surveyList.size(); i++)
+		{
+			int checked = 0;
+			SurveyDto s = surveyList.get(i);
+			if(preselectedSurveys.containsKey(s.getSurveyId()))
+			{
+				int num = preselectedSurveys.get(s.getSurveyId());
+				if(num == vetIens.length)
+				{
+					checked = 2;
+				}
+				else
+				{
+					checked = 1;
+				}
+			}
+			checkIndicator[i]=checked;
+		}
+		logger.info("Check indicators: " + checkIndicator);
+		model.addAttribute("dueClinicalReminders", checkIndicator);
 		return "dashboard/editVeteransAssessment";
 	}
 
