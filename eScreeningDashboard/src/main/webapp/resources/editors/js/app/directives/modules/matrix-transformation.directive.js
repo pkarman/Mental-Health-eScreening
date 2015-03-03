@@ -16,21 +16,25 @@
 
 					// Get the childQuestions and childQuestion answers for single and multi-matrix variables
 					MeasureService.one(scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId).get().then(function(measure) {
-						scope.matrixQuestions = _.map(measure.childQuestions, function(question) {
-							// Default checked to true
+						scope.matrixQuestions = measure.childQuestions;
+
+						/*
+						_.each(scope.matrixQuestions, function(question) {
 							question.checked = true;
-							return question;
 						});
+						*/
 
 						scope.matrixAnswers = measure.childQuestions[0].answers;
 					});
 
 					scope.updateSelectedMatrixAnswers = function updateSelectedMatrixAnswers() {
+						console.log('update answers');
 						scope.selectedMatrixAnswers = $filter('filter')(scope.matrixAnswers, {checked: true});
 						scope.updateTransformation();
 					};
 
 					scope.updateSelectedMatrixQuestions = function updateSelectedMatrixQuestions() {
+						console.log('update questions');
 						scope.selectedMatrixQuestions = $filter('filter')(scope.matrixQuestions, {checked: true});
 						scope.updateTransformation();
 					};
@@ -72,6 +76,7 @@
 							name: 'delimitedMatrixQuestions',
 							params: [questions, answerIds]
 						};
+						// console.log(scope.transformationType);
 					};
 
 				}
