@@ -16,7 +16,11 @@
 
 					// Get the childQuestions and childQuestion answers for single and multi-matrix variables
 					MeasureService.one(scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId).get().then(function(measure) {
-						scope.matrixQuestions = measure.childQuestions;
+						scope.matrixQuestions = _.map(measure.childQuestions, function(question) {
+							// Default checked to true
+							question.checked = true;
+							return question;
+						});
 
 						scope.matrixAnswers = measure.childQuestions[0].answers;
 					});
