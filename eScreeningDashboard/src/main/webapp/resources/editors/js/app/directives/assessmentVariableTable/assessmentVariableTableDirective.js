@@ -24,8 +24,6 @@
 						transformations: false
 					};
 
-					scope.tabCount = 5;
-
 		            scope.searchObj = {type: ''};
 
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
