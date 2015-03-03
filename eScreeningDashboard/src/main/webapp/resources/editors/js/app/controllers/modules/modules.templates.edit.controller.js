@@ -261,8 +261,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		            return $scope.template;
 	            }
 			},
-			controller: ['$scope', '$modalInstance', 'eventBus', 'template', 'textAngularManager', 
-			             function($scope, $modalInstance, eventBus, template, textAngularManager) {
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template',
+			             function($scope, $modalInstance, eventBus, template) {
 
                 $scope.templateName = template.name;
 
@@ -304,7 +304,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 			                if (!selectedBlock) template.blocks.push($scope.block);
 			                //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
-			                else if (selectedBlock.type == 'if') {
+			                else if (selectedBlock.type == 'if' || selectedBlock.type === 'table') {
 				                if ($scope.block.type == 'if') {
 					                insertAfterText(selectedBlock);
 				                }
