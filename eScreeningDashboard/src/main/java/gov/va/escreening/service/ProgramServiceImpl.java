@@ -122,6 +122,22 @@ public class ProgramServiceImpl implements ProgramService {
 
 	@Transactional(readOnly = true)
 	@Override
+	public List<DropDownObject> getProgramDropDownObjects(int userId)
+	{
+		List<DropDownObject> dropDownList = new ArrayList<DropDownObject>();
+
+		List<Program> programList = programRepository.findProgramForUser(userId);
+		
+		for (Program program : programList) {
+			DropDownObject dropDown = new DropDownObject(String.valueOf(program.getProgramId()), program.getName());
+			dropDownList.add(dropDown);
+		}
+
+		return dropDownList;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
 	public ProgramDto find(int programId) {
 
 		Program program = programRepository.findOne(programId);

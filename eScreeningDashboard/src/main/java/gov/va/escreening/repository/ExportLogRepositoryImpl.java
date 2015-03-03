@@ -8,6 +8,7 @@ import java.util.List;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -46,7 +47,8 @@ public class ExportLogRepositoryImpl extends AbstractHibernateRepository<ExportL
         Date lastSnapshotDate = query.getSingleResult();
         if (lastSnapshotDate == null) {
             logger.warn("This is the first time snapshot being taken");
-            lastSnapshotDate = LocalDate.now().toDate();
+            // since snap shot was never taken so take snapshot of the entire database
+            lastSnapshotDate = new LocalDate(1970, 1, 1).toDate();
         }
         return new DateMidnight(lastSnapshotDate.getTime()).toDate();
     }

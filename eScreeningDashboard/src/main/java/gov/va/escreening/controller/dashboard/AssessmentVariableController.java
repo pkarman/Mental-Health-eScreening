@@ -1,11 +1,13 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.service.AssessmentVariableService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,7 +69,7 @@ public class AssessmentVariableController {
 			ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Invalid or missing module ID.  Please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 
-		Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId);
+        Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(surveyId, true, false);
 
 		if (t.isEmpty()) {
 			ErrorBuilder
@@ -77,6 +79,34 @@ public class AssessmentVariableController {
 				.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 		return avTableToList(t);
+    }
+
+    @RequestMapping(value = "/services/avs2MngFormulas", params = "moduleId", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<Map<String, Object>> getAssessmentVarsToMngFormulas(@RequestParam("moduleId") Integer moduleId) {
+        if (moduleId == null || moduleId < 0) {
+            ErrorBuilder.throwing(EntityNotFoundException.class).toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.").toAdmin("The survey id passed in is 0 or null").setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+        }
+
+        Table<String, String, Object> t = avs.getAssessmentVarsForSurvey(moduleId, false, true);
+
+        if (t.isEmpty()) {
+            ErrorBuilder
+                    .throwing(EntityNotFoundException.class)
+                    .toUser("Sorry, we are unable to process your request at this time.  If this continues, please contact your system administrator.")
+                    .toAdmin(String.format("No Measures were found to be available for Survey with an Id of %s", moduleId))
+                    .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+        }
+        List<Map<String, Object>> avs = avTableToList(t);
+        if (avs != null) {
+            // assign a unique guid to allow duplicate use of assessment variables inside  formula
+            for (Map<String, Object> m : avs) {
+                int typeId = (int) m.get("typeId");
+                m.put("type", typeId == 1 ? "Question" : typeId == 2 ? "Answer" : typeId == 3 ? "Custom" : typeId == 4 ? "Formula" : "Operator");
+                m.put("id", "f|" + m.get("id"));
+            }
+        }
+        return avs;
 	}
 	
 	@RequestMapping(value = "/services/assessmentVariables", params="batteryId", method = RequestMethod.GET, produces = "application/json")
@@ -106,10 +136,11 @@ public class AssessmentVariableController {
 		for (String rowKey : t.rowKeySet()) {
 			Map<String, Object> m = Maps.newHashMap(t.row(rowKey)); // need HashMap as it allows nulls as key or values
 
-			// replace all 0 with null
-			for (Entry<String, Object> e : m.entrySet()) {
+            // remove properties with 0 -- only send that data on the wire which makes sense
+            for (Iterator<Entry<String, Object>> eIter = m.entrySet().iterator(); eIter.hasNext(); ) {
+                Entry<String, Object> e = eIter.next();
 				if (e.getValue().equals(0)) {
-					e.setValue(null);
+                    eIter.remove();
 				}
 			}
 			avs.add(m);

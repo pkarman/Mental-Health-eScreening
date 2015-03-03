@@ -55,4 +55,7 @@ Editors.controller('ModulesController', ['$scope', '$state', '$filter', 'SurveyS
                 {selectedSurveyId: surveyId,
                  selectedSurveyName: encodeURIComponent(surveyName)});
     };
+    $scope.editFormulas = function(surveyId){
+        $state.go('modules.formulasList', {moduleId: surveyId});
+    };
 }]);

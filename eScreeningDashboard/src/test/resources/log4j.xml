@@ -12,7 +12,12 @@
 		</layout>
 	</appender>
 
-	<!-- 3rdparty Loggers
+	<!-- Application Loggers -->
+	<logger name="gov.va.escreening">
+		<level value="info" />
+	</logger>
+
+	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>
