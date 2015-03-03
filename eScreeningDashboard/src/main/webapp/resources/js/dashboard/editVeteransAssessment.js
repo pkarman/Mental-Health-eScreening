@@ -1,7 +1,18 @@
 $(document).ready(function() {
     // Load current tab
     tabsLoad("createBattery");
+	
+	// Load Selected Program 
+	var $li = $('.battery_list').find('li');
+	
+	var selectedProgramId 	= "#selectedProgramId";
+	var selectedClinicId 	= "#selectedClinicId";
+	var clearAllBtn 		= ".clear_all";
+	var clearAllModulesBtn 	= ".clear_all_modules"
 
+	
+	loadSelectedProgram();
+	
 	// Tri State Check
    	var $check = $(".tri input[type=checkbox]"), el;
 	$check
@@ -39,12 +50,12 @@ $(document).ready(function() {
 		   module_values.push($(this).val());
 	});
 	
-	$(".clear_all").on("click", function(e) {
+	$(clearAllBtn).on("click", function(e) {
 		e.preventDefault();
 		clearAllSelectins();
 	});
 
-	$(".clear_all_modules").on("click", function(e) {
+	$(clearAllModulesBtn).on("click", function(e) {
 		e.preventDefault();
 		clearAllModulesSelectins();
 	});		
@@ -82,6 +93,8 @@ $(document).ready(function() {
 	
 	
 	
+
+
 	$(".battery_list input").on("click", function(e) {
 			$(".module_list tr input").prop('checked', false);
 			
@@ -102,27 +115,27 @@ $(document).ready(function() {
 			}
 	});
 	
-	
+	/*
 	var selectedProgramId = $("#selectedProgramId").val();
 	$li.hide().filter(".program_" + selectedProgramId).show();
 	if((selectedProgramId == "") || (typeof selectedProgramId == "undefined" )){
 		$li.show();	
 	}
-	
+	*/
 	
 	
 	/* Need to clean - From edit Veteran Assessment */
 	
-		$('#selectedProgramId').change(function() {
+		$(selectedProgramId).change(function() {
 		$.ajax({
-			url: 'editVeteranAssessment/programs/' + $('#selectedProgramId').val() + '/clinics',
+			url: 'editVeteranAssessment/programs/' + $(selectedProgramId).val() + '/clinics',
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
-				$('#selectedClinicId').empty(); // clear the current elements in select box
-				$('#selectedClinicId').append($('<option></option>').attr('value', '').text('Please Select a Clinic'));
+				$(selectedClinicId).empty(); // clear the current elements in select box
+				$(selectedClinicId).append($('<option></option>').attr('value', '').text('Please Select a Clinic'));
 				for (row in data) {
-					$('#selectedClinicId').append($('<option></option>').attr('value', data[row].stateId).text(data[row].stateName));
+					$(selectedClinicId).append($('<option></option>').attr('value', data[row].stateId).text(data[row].stateName));
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -131,7 +144,7 @@ $(document).ready(function() {
 		});
 
 		$.ajax({
-			url: 'editVeteranAssessment/programs/' + $('#selectedProgramId').val() + '/noteTitles',
+			url: 'editVeteranAssessment/programs/' + $(selectedProgramId).val() + '/noteTitles',
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
@@ -147,7 +160,7 @@ $(document).ready(function() {
 		});
 
 		$.ajax({
-			url: 'editVeteranAssessment/programs/' + $('#selectedProgramId').val() + '/clinicians',
+			url: 'editVeteranAssessment/programs/' + $(selectedProgramId).val() + '/clinicians',
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
@@ -167,7 +180,12 @@ $(document).ready(function() {
 	});
 	
 	
+
+	$("#dueClinicalReminder").on("click", function(e) {
+			console.log($(this).attr("data-ref"));
+	});
 	
+		
 	// Filter Batteries that assigned to a specific program - JH
 	function clearAllSelectins() {
 		$('input:checkbox').removeAttr('checked');
@@ -182,19 +200,25 @@ $(document).ready(function() {
 		reset_check = true;
 	}
 	
-	var $li = $('.battery_list').find('li');
-	$("#selectedProgramId").on("change", function(e) {
-		var selectedProgramId = $("#selectedProgramId").val();
-		$li.hide().filter(".program_" + selectedProgramId).show();
-		//clearAllSelectins(); // Clear All Module Selections
-		
-		if((selectedProgramId == "") || (typeof selectedProgramId == "undefined" )){
-			$li.show();	
-		}
+
+	$(selectedProgramId).on("change", function(e) {
+		loadSelectedProgram();
 	});
 	
+
+	
+	function loadSelectedProgram(){
+		var selectedProgramIdVal = $("#selectedProgramId").val();
+		$li.hide().filter(".program_" + selectedProgramIdVal).show();
+		//clearAllSelectins(); // Clear All Module Selections
+		
+		if((selectedProgramIdVal == "") || (typeof selectedProgramIdVal == "undefined" )){
+			$li.show();	
+		}
+	}
+	
 	$(function() {
-		$('#selectedClinicId').change(function() {
+		$(selectedClinicId).change(function() {
 		});
 	});
 			

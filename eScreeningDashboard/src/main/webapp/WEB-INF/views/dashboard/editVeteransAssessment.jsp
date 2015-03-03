@@ -222,6 +222,7 @@
 													</div>
 												</li>
 											</c:forEach>
+											<!--<li><input type="radio" data-ref="[{'selectedSurveyIdList1':'1'}, {'selectedSurveyIdList2':'2'}, {'selectedSurveyIdList3':'0'}]" id="dueClinicalReminder"> <label for="selectedBatteryId1">Due Clinical R-->eminder</label></li>
 										</ul>	
 											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
@@ -241,19 +242,21 @@
 				    						<tbody>
 											    <c:forEach var="item" items="${surveyList}">
 				                                    <tr>
-				                                        <td class="tri">
-				                                            <c:set var="classNameVar" value=" " />
-				                                            <c:forEach var="battery" items="${item.batteryList}">
-				                                                <c:set var="classNameVar">
-				                                                    <c:out value="${classNameVar} battery_${battery.batteryId}"  />
-				                                                </c:set>
-				                                            </c:forEach>
-				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" />
-				                                        </td>
+				                                        <td class="">
+				                                            <div class="checkbox tri">
+																<c:set var="classNameVar" value=" " />
+																<c:forEach var="battery" items="${item.batteryList}">
+																	<c:set var="classNameVar">
+																		<c:out value="${classNameVar} battery_${battery.batteryId}"  />
+																	</c:set>
+																</c:forEach>
+																<form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" />
+															</div>
+														</td>
 				                                        <td><c:out value="${item.description}" /></td>
 				                                        <td><c:out value="${item.note}" /></td>
 				                                    </tr>
-				                                </c:forEach>                
+				                                </c:forEach>   
 				    						</tbody>
 				    					</table>
 			    					</div>
