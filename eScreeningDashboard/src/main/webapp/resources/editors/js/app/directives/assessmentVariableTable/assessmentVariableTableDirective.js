@@ -97,6 +97,9 @@
 									scope.childQuestions = measure.childQuestions;
 								});
 							}
+
+							// Apply assessmentVariable to block even though it should be done via the two-way data binding
+							scope.block.left.content = scope.assessmentVariable;
 						}
 
 						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
@@ -104,7 +107,6 @@
 
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
-								console.log(scope.block);
 								scope.block.table = scope.assessmentVariable;
 							}
 
