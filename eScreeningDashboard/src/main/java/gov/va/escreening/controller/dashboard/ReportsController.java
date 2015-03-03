@@ -26,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.script.ScriptEngineManager;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/dashboard/reports")
+@RequestMapping(value = "/dashboard")
 public class ReportsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
@@ -80,28 +81,34 @@ public class ReportsController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports", method = RequestMethod.GET)
     public String setUpPageListView(Model model) {
-
         return "reports/index";
     }
 
-    @RequestMapping(value = "/listresports", method = RequestMethod.GET)
-    public List<ReportTypeDTO> getAllReportTypes() {
-        return reportTypeService.getAllReportTypes();
+    @RequestMapping(value = "/reports/averageScoresForPatientsByClinic", method = RequestMethod.GET)
+    public String getAverageScoresForPatientsByClinic(Model model) {
+        return "reports/averageScoresForPatientsByClinic";
     }
 
-    @RequestMapping(value = "/listsurveys", method = RequestMethod.GET)
+//    @RequestMapping(value = "/listresports", method = RequestMethod.GET)
+//    public List<ReportTypeDTO> getAllReportTypes() {
+//        return reportTypeService.getAllReportTypes();
+//    }
+
+    @RequestMapping(value = "/reports/listSurveys", method = RequestMethod.GET)
+    @ResponseBody
     public List<SurveyDto> getAllSurveys() {
         return surveyService.getSurveyList();
     }
 
-    @RequestMapping(value = "/listclinics", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports/listClinics", method = RequestMethod.GET)
+    @ResponseBody
     public List<ClinicDto> getAllClinics() {
         return clinicService.getClinicDtoList();
     }
 
-    @RequestMapping(value = "/getindividualstatisticsreports", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports/individualStatistics", method = RequestMethod.GET)
     public ModelAndView generateIndividuleStatisticsReport() {
         logger.debug("Generating the individual statistics reports numeric only.");
         //logger.debug("Generating the individual statistics reports ssn:" + reportSearchForm.getLastFourSsn());
@@ -172,12 +179,8 @@ public class ReportsController {
 
 
 
-       // return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
-
-        return new ModelAndView("GraphChart", parameterMap);
-
-
-
+       return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
+       //return new ModelAndView("GraphChart", parameterMap);
     }
 
 
