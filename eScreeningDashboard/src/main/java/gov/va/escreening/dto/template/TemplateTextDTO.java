@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +28,7 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 	}
 
 	@Override
-	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids) {
+	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer> ids) {
 		addHeader(sb);
 
 		for (TemplateBaseContent content : contents) {

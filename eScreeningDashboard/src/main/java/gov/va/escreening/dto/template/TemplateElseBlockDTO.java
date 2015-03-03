@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,7 +14,7 @@ public class TemplateElseBlockDTO extends TemplateBaseBlockDTO {
 	private String nodeType(){return "else";}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>ids){
-		return addChildren(new StringBuilder("\n<#else>\n"), ids);
+	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer>ids){
+		return addChildren(assessmentVariableService, new StringBuilder("\n<#else>\n"), ids);
 	}
 }

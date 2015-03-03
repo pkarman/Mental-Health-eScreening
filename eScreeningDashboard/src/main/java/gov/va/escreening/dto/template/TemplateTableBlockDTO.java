@@ -5,25 +5,31 @@ import gov.va.escreening.service.AssessmentVariableService;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+@Configurable
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 
 	@JsonProperty("type")
 	private String nodeType(){return "table";}
 	
-	private final AssessmentVariableService assessmentVariableService;
+	private AssessmentVariableService assessmentVariableService = null;
+	
 	private TemplateVariableContent table;
 	static final String VAR_FORMAT = "[var%d]";
 	static final String REPLACEMENT_FORMAT = "getTableVariable(%s, %s, %s)";
 	
-	
+	//TODO: Get this to work and then remove extra param from appendFreeMarkerFormat method
 	@Autowired
-    public TemplateTableBlockDTO(AssessmentVariableService assessmentVariableService){
-		this.assessmentVariableService = assessmentVariableService;
+	public void setAssessmentVariableService(AssessmentVariableService assessmentVariableService){
+	    this.assessmentVariableService = assessmentVariableService;
 	}
 	
 	public TemplateVariableContent getTable() {
@@ -35,8 +41,12 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	}
 	
 	@Override
-	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>ids) {
+	public StringBuilder appendFreeMarkerFormat(AssessmentVariableService assessmentVariableService, StringBuilder sb, Set<Integer>ids) {
 		StringBuilder result = addHeader(sb);
+		
+		//TODO: REMOVE THIS
+		if(assessmentVariableService == null)
+		    assessmentVariableService = this.assessmentVariableService;
 		
 		String varName = String.format(VAR_FORMAT, table.getContent().getId());
 		String tableHashName = createTableHashName(result);
@@ -54,7 +64,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		result.append("<#list 0..lastIndex as ").append(rowIndexName).append("> \n");
 		
 		//add all child blocks
-		result = addChildren(result, ids);
+		result = addChildren(assessmentVariableService, result, ids);
 		
 		//close if and list loop
 		result.append("</#list>\n</#if>\n");
