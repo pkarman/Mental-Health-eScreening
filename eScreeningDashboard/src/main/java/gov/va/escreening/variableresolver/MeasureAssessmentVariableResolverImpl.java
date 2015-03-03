@@ -2,9 +2,11 @@ package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
@@ -445,11 +447,22 @@ public class MeasureAssessmentVariableResolverImpl implements
 
         String result = null;
 
+        Measure dbMeasure = answer.getLeft();
+        gov.va.escreening.dto.ae.Measure measureDto = answer.getRight();
+        
+        if(dbMeasure.getMeasureAnswerList().size() != measureDto.getAnswers().size()){
+            ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
+                .toAdmin("UI sent a different number of responses (" + measureDto.getAnswers().size() + ") than what was expected(" +  dbMeasure.getMeasureAnswerList().size() + ").")
+                .toUser("A system error has occurred. Please contact support.")
+                .throwIt();
+        }
+        
         // look for the true value then call answer to pull the value
-        for (Answer answerVal : answer.getRight().getAnswers()) {
+        for (int i = 0; i < measureDto.getAnswers().size(); i++) {
+            Answer answerVal = measureDto.getAnswers().get(i);
             if (answerVal.getAnswerResponse() != null && answerVal.getAnswerResponse().equalsIgnoreCase("true")) {
                 // call the answer level to resolve the value
-                result = measureAnswerVariableResolver.resolveCalculationValue(answer.getLeft(), answerVal);
+                result = measureAnswerVariableResolver.resolveCalculationValue(answer, i);
                 break;
             }
         }
