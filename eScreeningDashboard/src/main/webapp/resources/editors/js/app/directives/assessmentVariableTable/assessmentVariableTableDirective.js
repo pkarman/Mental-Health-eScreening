@@ -52,10 +52,11 @@
 								});
 							} else {
 								if (parentBlock && parentBlock.type === 'table') {
-									filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: parentBlock.table.measureId});
+									filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: parentBlock.table.content.measureId});
 								} else {
 									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
 
+									/*
 									// Remove child table AVs
 									_.each(filteredData, function(av, index) {
 										var parent;
@@ -69,6 +70,7 @@
 											}
 										}
 									});
+									*/
 								}
 							}
 
