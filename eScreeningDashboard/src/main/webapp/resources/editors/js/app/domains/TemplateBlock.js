@@ -164,13 +164,20 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				}
 			}
 		}
-
-		if (block.type !== 'text' && block.type !== 'else') {
+		else if(block.type == 'table'){
+			if(angular.isDefined(block.table) 
+				&& angular.isDefined(block.table.content)){
+				
+				block.name = angular.isDefined(block.table.content.name) ?  block.table.content.name : "table_" + block.table.content.id;
+				block.summary = block.table.content.displayName;
+			} 
+		}
+		else if (block.type !== 'else') {
 		    var rightContentSummary = "";
 		    var rightContentName = "";
 		    
 		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
-		        var rightContent = block.right.content
+		        var rightContent = block.right.content;
 		        if(angular.isArray(block.measureAnswers)){
 		            block.measureAnswers.some(function(answer){
 		                if(answer.measureAnswerId === rightContent){
