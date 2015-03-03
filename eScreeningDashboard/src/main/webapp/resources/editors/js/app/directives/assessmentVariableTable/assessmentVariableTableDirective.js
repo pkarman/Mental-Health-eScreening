@@ -72,7 +72,7 @@
 
 			            e.stopPropagation();
 
-		                if(av.id !== scope.assessmentVariable.id) {
+		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
 
 			                // This is needed to trigger a change on $scope.$watch (unknown hack)
 			                angular.copy(av, scope.assessmentVariable);
@@ -102,8 +102,9 @@
 						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
 							scope.show = false;
 
-							// Apply AV to block.table for table block types
+							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
+								console.log(scope.block);
 								scope.block.table = scope.assessmentVariable;
 							}
 
@@ -144,6 +145,7 @@
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
 
 							if (newScope.transformationType.params) {
+								console.log(newScope.transformationType.params);
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
 									return JSON.stringify(param);

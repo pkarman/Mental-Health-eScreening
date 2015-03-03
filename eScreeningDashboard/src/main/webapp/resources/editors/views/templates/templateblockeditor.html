@@ -17,13 +17,20 @@
 			<div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
 				<div class="row">
 					<div class="col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-if="block.type !== 'table'">
 							<label class="sr-only">Select Variable</label>
 							<input type="hidden"
 							       ng-model="block.left.content"
 							       ng-change="updateLogicalOptions(block)"
 							       update-hidden>
 							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+						</div>
+						<div class="form-group" ng-if="block.type === 'table'">
+							<label class="sr-only">Select Variable</label>
+							<input type="hidden"
+									ng-model="block.table"
+									update-hidden>
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.table" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">
