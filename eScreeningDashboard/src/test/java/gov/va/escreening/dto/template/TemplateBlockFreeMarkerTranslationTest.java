@@ -42,7 +42,8 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			block.setSection(section);
 			block.setSummary(summary);
 			
-			String result = block.appendFreeMarkerFormat(new StringBuilder(), new HashSet<Integer>(), null).toString();
+			String result = block.appendFreeMarkerFormat(new StringBuilder(), 
+			        new HashSet<Integer>(), createServiceForBlock(block)).toString();
 			
 			assertTrue("Name is not in header", result.contains(name));
 			assertTrue("Section is not in header", result.contains(section));
@@ -55,7 +56,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			TemplateTableBlockDTO block = createTableBlock(null, null);
 			StringBuilder sb = new StringBuilder();
 			Set<Integer> ids = new HashSet<>();
-			StringBuilder result = block.appendFreeMarkerFormat(sb, ids, null);
+			StringBuilder result = block.appendFreeMarkerFormat(sb, ids, createServiceForBlock(block));
 			
 			assertNotEquals(result.indexOf("createTableHash"), -1);
 		}
@@ -65,7 +66,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			TemplateTableBlockDTO block = createTableBlock(999, null);
 			StringBuilder sb = new StringBuilder();
 			Set<Integer> ids = new HashSet<>();
-			block.appendFreeMarkerFormat(sb, ids, null);
+			block.appendFreeMarkerFormat(sb, ids, createServiceForBlock(block));
 			
 			assertTrue(ids.contains(999));
 		}
@@ -82,7 +83,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			children.add(child1);
 			block.setChildren(children);
 			
-			block.appendFreeMarkerFormat(sb, ids, null);
+			block.appendFreeMarkerFormat(sb, ids, createServiceForBlock(block));
 			
 			verify(child1).appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class));
 		}
@@ -126,7 +127,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			children.add(child1);
 			block.setChildren(children);
 			
-			String result = block.appendFreeMarkerFormat(sb, ids, null).toString();
+			String result = block.appendFreeMarkerFormat(sb, ids, createServiceForBlock(block)).toString();
 			
 			String expected = "test content" + var111Replacement
 					+"table var next" + tableVar    // this should not be changed
@@ -144,13 +145,6 @@ public class TemplateBlockFreeMarkerTranslationTest {
 				 tableMeasureId = 555;
 			 }
 			
-			AssessmentVariableService avService = mock(AssessmentVariableService.class);
-			Map<Integer, AssessmentVariable> avMap = ImmutableMap.of(
-					tableAvId, mock(AssessmentVariable.class), 
-					111, mock(AssessmentVariable.class),
-					222, mock(AssessmentVariable.class));
-			when(avService.getAssessmentVarsForMeasure(tableMeasureId)).thenReturn(avMap);
-			
 			//create block
 			TemplateAssessmentVariableDTO tableDTO = new TemplateAssessmentVariableDTO();
 			tableDTO.setId(tableAvId);
@@ -160,9 +154,24 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			tableVar.setContent(tableDTO);
 			
 			TemplateTableBlockDTO block = new TemplateTableBlockDTO();
-			block.setAssessmentVariableService(avService);
+			
 			block.setTable(tableVar);
 			
 			return block;
+		}
+		
+		private AssessmentVariableService createServiceForBlock(TemplateTableBlockDTO block){
+		    TemplateAssessmentVariableDTO tableDTO = block.getTable().getContent();
+		    Integer tableAvId = tableDTO.getId();
+		    Integer tableMeasureId = tableDTO.getMeasureId();
+		    
+	        AssessmentVariableService avService = mock(AssessmentVariableService.class);
+	            Map<Integer, AssessmentVariable> avMap = ImmutableMap.of(
+	                    tableAvId, mock(AssessmentVariable.class), 
+	                    111, mock(AssessmentVariable.class),
+	                    222, mock(AssessmentVariable.class));
+	       when(avService.getAssessmentVarsForMeasure(tableMeasureId)).thenReturn(avMap);
+	       
+	       return avService; 
 		}
 }
