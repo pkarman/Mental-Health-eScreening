@@ -2,7 +2,7 @@
 	<div ng-click="openSelections($event)">
 		<link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.css">
 		<input type="hidden" name="selectedAssessmentVariable" ng-model="assessmentVariable" required update-hidden>
-		<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable.name || 'Select Variable'}}</span>
+		<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable.displayName || 'Select Variable'}}</span>
 	</div>
 	<mhe-assessment-var-tbl-dir assessment-variable="assessmentVariable" block="block" show="avMenu.show" ng-if="avMenu.show" class="assessmentVariableTable" />
 </div>

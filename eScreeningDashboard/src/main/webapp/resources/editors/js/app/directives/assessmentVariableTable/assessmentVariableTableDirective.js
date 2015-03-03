@@ -55,21 +55,23 @@
 									filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: parentBlock.table.measureId});
 								} else {
 									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+
+									// Remove child table AVs
+									_.each(filteredData, function(av, index) {
+										var parent;
+										if (av && av.parentMeasureId) {
+											parent = _.find(scope.assessmentVariables, function(fd) {
+												return fd.measureId === av.parentMeasureId;
+											});
+
+											if (parent && parent.measureTypeId === 4) {
+												console.log(parent);
+												filteredData.splice(index, 1);
+											}
+										}
+									});
 								}
 							}
-
-							// Remove child table AVs
-							_.each(filteredData, function(av, index) {
-								var parent;
-								if (av && av.parentMeasureId) {
-									parent = _.find(filteredData, function(fd) {
-										return fd.measureId === av.parentMeasureId;
-									});
-									if (parent && parent.measureTypeId === 4) {
-										filteredData.splice(index, 1);
-									}
-								}
-							});
 
 							avs = filteredData.slice((params.page() - 1) * params.count(), params.page() * params.count());
 
@@ -157,10 +159,9 @@
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
-							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+							scope.assessmentVariable.displayName = newScope.transformationType.displayName + '_' + scope.assessmentVariable.displayName;
 
 							if (newScope.transformationType.params) {
-								console.log(newScope.transformationType.params);
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
 									return JSON.stringify(param);
