@@ -57,19 +57,21 @@
 									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
 
 
-									// Remove child table AVs
-									_.each(filteredData, function(av) {
-										var parent;
-										if (av && av.parentMeasureId) {
-											parent = _.find(scope.assessmentVariables, function(fd) {
-												return fd.measureId === av.parentMeasureId;
-											});
+									if (scope.block) {
+										// Remove child table AVs
+										_.each(filteredData, function (av) {
+											var parent;
+											if (av && av.parentMeasureId) {
+												parent = _.find(scope.assessmentVariables, function (fd) {
+													return fd.measureId === av.parentMeasureId;
+												});
 
-											if (parent && parent.measureTypeId === 4) {
-												filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: '!' + parent.measureId});
+												if (parent && parent.measureTypeId === 4) {
+													filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: '!' + parent.measureId});
+												}
 											}
-										}
-									});
+										});
+									}
 								}
 							}
 
