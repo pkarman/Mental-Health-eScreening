@@ -24,6 +24,8 @@
 						transformations: false
 					};
 
+					scope.tabCount = 5;
+
 		            scope.searchObj = {type: ''};
 
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
@@ -55,6 +57,20 @@
 									filteredData = $filter('filter')(scope.assessmentVariables, {parentMeasureId: parentBlock.table.measureId});
 								} else {
 									filteredData = params.filter() ? $filter('filter')(scope.assessmentVariables, params.filter()) : scope.assessmentVariables;
+
+									// Remove child table AVs
+									_.each(filteredData, function(av, index) {
+										var parent;
+										if (av && av.parentMeasureId) {
+											parent = _.find(scope.assessmentVariables, function(fd) {
+												return fd.measureId === av.parentMeasureId;
+											});
+
+											if (parent && parent.measureTypeId === 4) {
+												filteredData.splice(index, 1);
+											}
+										}
+									});
 								}
 							}
 
@@ -70,7 +86,7 @@
 
 		            scope.select = function(e, av) {
 
-			            e.stopPropagation();
+			            if (e) e.stopPropagation();
 
 		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
 
@@ -107,7 +123,7 @@
 
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
-								scope.block.table = scope.assessmentVariable;
+								scope.block.table.content = scope.assessmentVariable;
 							}
 
 						} else if (scope.transformationName === 'freetext') {
@@ -144,15 +160,16 @@
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
-							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.displayName;
+							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.name || scope.assessmentVariable.displayName;
 
 							if (newScope.transformationType.params) {
-								console.log(newScope.transformationType.params);
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
 									return JSON.stringify(param);
 								});
 							}
+							// Remove displayName property which is not to be persisted
+							delete scope.assessmentVariable.transformations[0].displayName;
 						}
 					};
 

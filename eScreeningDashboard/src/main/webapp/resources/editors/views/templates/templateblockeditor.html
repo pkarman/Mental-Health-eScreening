@@ -4,6 +4,7 @@
 			<div class="form-group">
 				<label class="control-label">Block Type
 					<select class="form-control input-block-level"
+							tabindex="2"
 					        ng-model="block.type"
 					        ng-disabled="!enableTypes"
 					        ng-options="blockType.value as blockType.name for blockType in blockTypes">
@@ -28,9 +29,9 @@
 						<div class="form-group" ng-if="block.type === 'table'">
 							<label class="sr-only">Select Variable</label>
 							<input type="hidden"
-									ng-model="block.table"
+									ng-model="block.table.content"
 									update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.table" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.table.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">

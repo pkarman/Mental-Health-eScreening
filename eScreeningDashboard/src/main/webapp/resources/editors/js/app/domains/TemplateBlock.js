@@ -82,6 +82,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = '';
         this.children = [];
         this.contents = [];
+
+		if (this.type === 'table') {
+			this.table = { type : 'var' };
+		}
     }
 
     function swapNbspForSpaces(text){
