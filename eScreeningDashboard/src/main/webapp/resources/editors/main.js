@@ -186,15 +186,13 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						$scope.assessmentVariable = {};
 
-						$scope.$watch('assessmentVariable.id', function(newValue, oldValue) {
+						$scope.$on('assessmentVariableSelected', function() {
+							if ($scope.assessmentVariable && $scope.assessmentVariable.id) {
+								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.name);
 
-							if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
-							    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.name);
-							    
 								$modalInstance.close(embed);
-	                        }
-
-                        }, true);
+							}
+						});
 
 						$scope.cancel = function() {
 						    $modalInstance.close("");
