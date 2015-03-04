@@ -42,4 +42,15 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (760
 /* Link rule to ShowQuestion events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(7602, 7602);
 
+/********** Prior Hospitalizations and Meds module *******************/
+INSERT INTO rule (rule_id, name, expression) VALUES (7610, 'Med VA', '[10955]==2');
+
+/* Associate rules to the assessment variables they contain in their expressions */
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7610, 10955);
+
+/* Create ShowQuestion events (type_id=4) */
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (7610, 4, 'Show - I stopped because:?', 623);
+
+/* Link rule to ShowQuestion events */
+INSERT INTO rule_event (rule_id, event_id) VALUES(7610, 7610);
 
