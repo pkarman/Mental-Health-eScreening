@@ -14,7 +14,7 @@ import com.google.common.base.Optional;
 
 public interface FormulaAssessmentVariableResolver {
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,  
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
+			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);
 
 
 	Optional<String> resolveAssessmentVariable(
@@ -22,4 +22,6 @@ public interface FormulaAssessmentVariableResolver {
 			FormulaDto formula,
 			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
 			Map<Integer, AssessmentVariable> measureAnswerHash);
+
+
 }

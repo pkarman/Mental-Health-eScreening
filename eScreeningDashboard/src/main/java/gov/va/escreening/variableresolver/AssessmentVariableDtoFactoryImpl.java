@@ -42,7 +42,7 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 	@Override
 	public AssessmentVariableDto createAssessmentVariableDto(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-			Map<Integer, AssessmentVariable> measureAnswerHash) {
+			Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler) {
 		AssessmentVariableDto variableDto = null;
 		Integer type = assessmentVariable.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
 		switch (type) {
@@ -58,7 +58,7 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 		case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
 
 			int id = assessmentVariable.getAssessmentVariableId();
-			variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash);
+			variableDto = formulaAssessmentVariableResolver.resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash, smrNullHandler);
 			break;
 		default:
 			throw new UnsupportedOperationException(String.format("Assessment variable of type id: %s is not supported.", type));

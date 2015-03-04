@@ -8,9 +8,10 @@
 <htmL>
 <head>
 	<title>Welcome Page</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" name="viewport" content="user-scalable=no,width=device-width" />
 	
 	<!-- FAVICON -->
 	<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
@@ -19,7 +20,6 @@
 	<link rel="apple-touch-icon" sizes="114x114" href="resources/images/favico_va_touch_114x114.png" />
 	<link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
 	<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
-    	
 	
 	<link href="resources/css/home.css" rel="stylesheet" type="text/css">
 	<link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>

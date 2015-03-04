@@ -9,7 +9,9 @@ import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,7 +356,7 @@ public class AssessmentVariableDto {
 	public void setChildren(List<AssessmentVariableDto> children) {
 		this.children = children;
 	}
-
+	
 	public void setDisplayName(String displayName) {
 		this.displayName=displayName;
 	}
@@ -370,7 +372,6 @@ public class AssessmentVariableDto {
 	public void setMeasureTypeId(Integer measureTypeId) {
 		this.measureTypeId = measureTypeId;
 	}
-
 	@Override
 	public String toString() {
 		return "AssessmentVariableDto [displayName="+displayName+", variableId=" + variableId + ", key="

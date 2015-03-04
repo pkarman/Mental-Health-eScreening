@@ -1,16 +1,16 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.collect.*;
 import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.entity.*;
+import gov.va.escreening.entity.AssessmentVarChildren;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.Survey;
 import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.AvBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -23,43 +23,16 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
 
 @Component("dataDictionaryHelper")
 public class DataDictionaryHelper implements MessageSourceAware {
 
 	public final String SALT_DEFAULT = "1";
-
-	@Resource(name = "assessmentVariableService")
-	AssessmentVariableService avs;
-
-	interface ExportNameExtractor {
-		String extractExportName(AssessmentVarChildren avc);
-	}
-
-	class MeasureAnswerNameExtractor implements ExportNameExtractor {
-		public String extractExportName(AssessmentVarChildren avc) {
-			MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
-			String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
-			return exportName;
-		}
-	}
-
-	class MeasureNameExtractor implements ExportNameExtractor {
-		public String extractExportName(AssessmentVarChildren avc) {
-			Measure m = avc.getVariableChild().getMeasure();
-			String exportName = m != null ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
-			return exportName;
-		}
-	}
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-
 	public final String EXPORT_KEY_PREFIX = "EXPORT";
 	public final String FORMULA_KEY_PREFIX = "FORMULA";
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Resource(name = "assessmentVariableService")
+    AssessmentVariableService avs;
 	MessageSource msgSrc;
 
 	Map<Integer, Resolver> resolverMap;
@@ -70,10 +43,6 @@ public class DataDictionaryHelper implements MessageSourceAware {
 
 	public Resolver findResolver(int measureTypeId) {
 		return this.resolverMap.get(measureTypeId);
-	}
-
-	public String getPlainText(String htmlString) {
-		return htmlString != null ? htmlString.replaceAll("\\<.*?>", "") : "";
 	}
 
 	public void buildDataDictionaryFor(Survey s,
@@ -102,13 +71,13 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			Collection<Measure> smList, Collection<AssessmentVariable> avList,
 			Set<String> avUsed) {
 
-		Set<String> tgtFormulaeSet = Sets.newLinkedHashSet();
+        Set<List<String>> tgtFormulaeSet = Sets.newLinkedHashSet();
 		buildFormulaeFor(s, tgtFormulaeSet, avUsed, smList, avList);
 
 		if (tgtFormulaeSet != null) {
 			int index = 0;
-			for (String formula : tgtFormulaeSet) {
-				Iterator<String> formulaTokens = Splitter.on(",").split(formula).iterator();
+            for (List<String> formula : tgtFormulaeSet) {
+                Iterator<String> formulaTokens = formula.iterator();
 				String indexAsStr = String.format("%s_%s_%s", FORMULA_KEY_PREFIX, s.getSurveyId(), index++);
 
 				t.put(indexAsStr, msg("ques.type"), "formula");
@@ -116,9 +85,20 @@ public class DataDictionaryHelper implements MessageSourceAware {
 				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
 
 				if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("av.id"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("ques.desc.business"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("formula.template"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
+                    t.put(indexAsStr, msg("var.size"), formulaTokens.next());
+                }
+                if (formulaTokens.hasNext()) {
 					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
 				}
-
 				if (formulaTokens.hasNext()) {
 					t.put(indexAsStr, msg("vals.desc"), formulaTokens.next());
 				}
@@ -144,101 +124,22 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-	void buildFormulaeFor(Survey survey, final Set<String> surveyFormulae,
+    private void buildFormulaeFor(Survey survey, final Set<List<String>> surveyFormulae,
 			final Set<String> avUsed, Collection<Measure> smList,
 			Collection<AssessmentVariable> avLstWithFormulae) {
-
-		AvBuilder<Set<String>> avBldr = new AvBuilder<Set<String>>() {
-			@Override
-			public void buildFromMeasureAnswer(
-					AssessmentVariable avWithFormula,
-					AssessmentVarChildren avc, Measure m, MeasureAnswer ma) {
-				addSurveyFormula(avWithFormula, buildXportNameFromMeasureAnswer(avWithFormula));
-
+        AvBuilder<Set<List<String>>> formulaColumnsBldr = new FormulaColumnsBldr(surveyFormulae, avUsed, avs);
+        avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false, false);
 			}
 
-			@Override
-			public void buildFromMeasure(AssessmentVariable avWithFormula,
-					AssessmentVarChildren avc, Measure m) {
-				addSurveyFormula(avWithFormula, buildXportNameFromMeasure(avWithFormula));
-			}
 
-			private void addSurveyFormula(AssessmentVariable avWithFormula, String formula) {
-				// each formula is unique and can only be used only once across all surveys.
-				// If it is already used, then do not try to add it again
-				if (avUsed.add(avWithFormula.getDisplayName())) {
-					surveyFormulae.add(formula);
+    String msg(String propertySuffix) {
+        return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
 				}
+
+    public String getPlainText(String htmlText) {
+        return avs.getPlainText(htmlText);
 			}
-
-			@Override
-			public Set<String> getResult() {
-				return surveyFormulae;
-			}
-
-			@Override
-			public void buildFormula(Survey survey, AssessmentVariable av,
-					Collection<Measure> smList,
-					Collection<AssessmentVariable> avList,
-					boolean filterMeasures) {
-
-				for (Measure m : smList) {
-					for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-						AssessmentVariable av1 = avc.getVariableChild();
-						if (avs.compareMeasure(av1, m)) {
-							buildFromMeasure(av, avc, m);
-						} else if (avs.compareMeasureAnswer(av1, m)) {
-							buildFromMeasureAnswer(av, avc, m, av1.getMeasureAnswer());
 						}
-					}
-					if (!m.getChildren().isEmpty()) {
-						avs.filterBySurvey(survey, this, m.getChildren(), avList, filterMeasures);
-					}
-				}
-			}
-		};
-
-		avs.filterBySurvey(survey, avBldr, smList, avLstWithFormulae, false);
-	}
-
-	private String buildXportNameFromMeasureAnswer(AssessmentVariable av) {
-		String formula = extractFormula(av, new MeasureAnswerNameExtractor());
-		return formulaPlusExportName(formula, av);
-	}
-
-	private String buildXportNameFromMeasure(AssessmentVariable av) {
-		String formula = extractFormula(av, new MeasureNameExtractor());
-		return formulaPlusExportName(formula, av);
-	}
-
-	private String formulaPlusExportName(String formula, AssessmentVariable av) {
-		return String.format("%s,%s", formula, av.getDisplayName());
-	}
-
-	private String extractFormula(AssessmentVariable av,
-			ExportNameExtractor extractor) {
-		String dbFormula = av.getFormulaTemplate();
-		String displayableFormula = dbFormula;
-		for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
-			String exportName = extractor.extractExportName(avc);
-			String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
-			displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
-		}
-		// displayableFormula = displayableFormula.replaceAll("[$]", "").replaceAll("[?]", "").replaceAll("1\\s*:\\s*0",
-		// "").replaceAll(">=\\s*1", "");
-		// displayableFormula = displayableFormula.replaceAll("[$]|[?]|[1\\s*:\\s*0]|[>=\\s*1]", "");
-		displayableFormula = displayableFormula.replaceAll("([$])|(\\?\\s*[1]\\s*[:]\\s*[0])", "").replaceAll("(>\\s*=\\s*[1])", " >= 1 then 1 else 0");
-
-		if (logger.isDebugEnabled()) {
-			logger.debug(String.format("Formula=%s==>DisplayableFormula=%s", dbFormula, displayableFormula));
-		}
-		return displayableFormula;
-	}
-
-	String msg(String propertySuffix) {
-		return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
-	}
-}
 
 abstract class Resolver {
 	protected final DataDictionaryHelper ddh;
@@ -395,7 +296,7 @@ class SelectOneResolver extends Resolver {
 
 	/**
 	 * consolidate measure answers' calculationValue wirh the answer text. The output will be in following format
-	 * 
+     * <p/>
 	 * 1=English,2=Spanish,3=Tagalog,4=Chinese,5=German,6=Japanese,7=Korean,8=Russian,9=Vietnamese,10=Other, please
 	 * specify,999=missing
 	 */
@@ -412,6 +313,7 @@ class SelectOneResolver extends Resolver {
 			}
 			sb.append("999=missing");
 			return sb.toString();
+
 		}
         return "undefined";
 	}

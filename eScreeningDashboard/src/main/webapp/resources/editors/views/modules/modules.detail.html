@@ -3,7 +3,10 @@
       <h1>Manage Module</h1>
     </div>
     <div class="col-md-6">
-      <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button pull-right" type="button">Manage Templates</button>
+        <div class="btn-layout pull-right">
+          <button ng-click="editFormulas(survey.id);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Formulas</button>
+          <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Templates</button>
+        </div>
     </div>
 </div>
 
@@ -14,38 +17,71 @@
 <div class="row">
     <div class="col-md-12">
 
-            <div class="border-radius-main-form gray-lighter">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="inputTitle">Title *</label>
-                            <input name="inputTitle" id="inputTitle" type="text" class="form-control"
-                                   ng-model="survey.name"
-                                   placeholder="Enter Module Title" requried>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputDescription">Description</label>
-                            <input name="inputDescription" id="inputDescription" type="text" class="form-control"
-                                   ng-model="survey.description"
-                                   placeholder="Enter Module Description">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="selectSurveySection">Section *</label>
-
-                                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
-                                        ng-model="survey.surveySection"
-                                        ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
-                                        required>
-                                    <option value=""> -- Choose Section --</option>
-                                </select>
-                            </div>
-                       
+        <div class="border-radius-main-form gray-lighter">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="inputTitle">Title *</label>
+                        <input name="inputTitle" id="inputTitle" type="text" class="form-control"
+                               ng-model="survey.name"
+                               placeholder="Enter Module Title" requried>
                     </div>
                 </div>
+                <div class="col-sm-4">
+	                <div class="form-group">
+		                <label for="selectSurveySection">Section *</label>
 
+		                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
+				                ng-model="survey.surveySection"
+				                ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
+				                required>
+			                <option value=""> -- Choose Section --</option>
+		                </select>
+	                </div>
+	            </div>
             </div>
+            <div class="row">
+	            <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="inputDescription">Description</label>
+                        <input name="inputDescription" id="inputDescription" type="text" class="form-control"
+                               ng-model="survey.description"
+                               placeholder="Enter Module Description">
+                    </div>
+		        </div>
+	            <div class="col-md-4">
+		            <div class="form-group">
+			            <label for="selectClinicalReminder">Clinical Reminder</label>
+
+			            <select id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
+					            ng-model="survey.clinicalReminderId"
+					            ng-options="clinicalReminder.id as clinicalReminder.name for clinicalReminder in clinicalReminders">
+				            <option value="">No Clinical Reminder</option>
+			            </select>
+		            </div>
+	            </div>
+	        </div>
+            <div class="row">
+                <div ng-if="survey.clinicalReminderId" class="col-sm-3">
+                    <div class="form-group">
+	                    <label class="checkbox">
+		                    <input type="checkbox"
+			                    ng-model="survey.mha"> Is MHA?
+	                    </label>
+                    </div>
+                </div>
+                <div ng-if="survey.mha" class="col-sm-5">
+                    <div class="form-group">
+	                    <label for="mhaTestName">MHA Test Name *</label>
+	                    <input name="mhaTestName" id="mhaTestName" type="text" class="form-control"
+			                    ng-model="survey.mhaTestName"
+			                    placeholder="MHA Test Name"
+			                    required>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <br>
 
         <div class="row">
@@ -55,9 +91,9 @@
                   <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
                   <div class="clearfix"></div>
                  </div>
-                 
-                    
-                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">     
+
+
+                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
                     <ul class="list-group app screen first" ng-model="surveyPages">
                         <li class="list-group-item text-left" ng-repeat="page in surveyPages | orderBy: 'pageNumber'"
                                 ng-class="{'unsortable': page.sortable === false}">

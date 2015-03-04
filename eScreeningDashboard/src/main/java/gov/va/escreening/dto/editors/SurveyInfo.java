@@ -32,9 +32,18 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
     private SurveyStatusInfo surveyStatusInfo;
+    private Integer clinicalReminderId;
 
 
-    @JsonProperty("id")
+    public Integer getClinicalReminderId() {
+		return clinicalReminderId;
+	}
+
+	public void setClinicalReminderId(Integer clinicalReminderId) {
+		this.clinicalReminderId = clinicalReminderId;
+	}
+
+	@JsonProperty("id")
     public Integer getSurveyId() {
         return surveyId;
     }

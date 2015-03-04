@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -29,33 +30,24 @@ import java.util.Map.Entry;
 public class DataDictionaryTest {
     Logger logger = LoggerFactory.getLogger(DataDictionaryTest.class);
 
-    @Resource(type = DataDictionaryService.class)
-    DataDictionaryService dds;
+    @Resource(type = DDCache.class)
+    DDCache ddCache;
 
     @Resource(name="dataExportAndDictionaryUtil")
     DataExportAndDictionaryUtil dedUtil;
 
-
     @Test
     public void createDataDictionary() throws Exception {
-        Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
-//        Gson gson = new GsonBuilder().create();
-//        String ddAsString = gson.toJson(dataDictionary);
-//        int ddSize = ddAsString.length();
-//
-//        Map<String, Table<String, String, String>> dataDictionary1 = reconstructDataDictionary(ddAsString);
-//        Gson gson1 = new GsonBuilder().create();
-//        String dd1AsString = gson1.toJson(dataDictionary1);
-//
-//        int dd1Size = dd1AsString.length();
-//
-//        Assert.assertEquals(dataDictionary, dataDictionary1);
-//
-//        logDataDictionary(dataDictionary);
-        //Map d= Maps.newHashMap();
-        //d.put("dd", dataDictionary);
-        //dedUtil.createZipFor(d,  );
+        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
     }
+
+    @Test
+    public void saveDDAsExcel() throws Exception {
+        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
+        String tstDirName=System.getProperty("user.home") + File.separator + "Documents" + File.separator+"escrTestOut";
+        dedUtil.saveDataDictionaryAsExcel(tstDirName, dataDictionary, new Date());
+    }
+
 
     private Map<String, Table<String, String, String>> reconstructDataDictionary(String ddAsString) {
         Gson gson1 = new GsonBuilder().create();

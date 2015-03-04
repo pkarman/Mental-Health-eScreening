@@ -67,6 +67,8 @@ INSERT INTO veteran_assessment (veteran_assessment_id, veteran_id,clinician_id,c
 INSERT INTO veteran_assessment (veteran_assessment_id, veteran_id,clinician_id,clinic_id,access_mode,duration,percent_complete,assessment_status_id, created_by_user_id) VALUES (46, 46, 5, 7, 0, 0, 0, 2, 2);
 INSERT INTO veteran_assessment (veteran_assessment_id, veteran_id,clinician_id,clinic_id,access_mode,duration,percent_complete,assessment_status_id, created_by_user_id) VALUES (47, 47, 5, 7, 0, 0, 0, 2, 2);
 INSERT INTO veteran_assessment (veteran_assessment_id, veteran_id,clinician_id,clinic_id,access_mode,duration,percent_complete,assessment_status_id, created_by_user_id) VALUES (48, 48, 5, 7, 0, 0, 0, 2, 1);
+INSERT INTO `veteran_assessment` (`veteran_assessment_id`,`veteran_id`,`clinician_id`,`clinic_id`,`program_id`,`assessment_status_id`,`note_title_id`,`battery_id`,`access_mode`,`duration`,`percent_complete`,`created_by_user_id`,`signed_by_user_id`,`date_completed`,`date_updated`,`date_created`,`date_archived`) VALUES (56,16,5,17,4,3,8,5,NULL,0,100,4,NULL,'2014-09-23 12:36:48','2014-09-23 12:36:48','2014-09-23 12:34:22',NULL);
+INSERT INTO `veteran_assessment` (`veteran_assessment_id`,`veteran_id`,`clinician_id`,`clinic_id`,`program_id`,`assessment_status_id`,`note_title_id`,`battery_id`,`access_mode`,`duration`,`percent_complete`,`created_by_user_id`,`signed_by_user_id`,`date_completed`,`date_updated`,`date_created`,`date_archived`) VALUES (57,16,5,18,4,3,7,5,NULL,0,100,4,NULL,'2015-01-23 12:51:17','2015-01-23 12:51:17','2015-01-23 12:38:59',NULL);
 
 
 /* insert veteran assessment audit log example data */
@@ -119,6 +121,7 @@ INSERT INTO `veteran_assessment_survey` (`veteran_assessment_survey_id`,`veteran
 INSERT INTO `veteran_assessment_survey` (`veteran_assessment_survey_id`,`veteran_assessment_id`,`survey_id`,`total_question_count`,`total_response_count`,`mha_result`,`date_created`) VALUES (46,18,36,5,5,NULL,'2014-08-06 14:09:18');
 INSERT INTO `veteran_assessment_survey` (`veteran_assessment_survey_id`,`veteran_assessment_id`,`survey_id`,`total_question_count`,`total_response_count`,`mha_result`,`date_created`) VALUES (47,18,37,1,1,NULL,'2014-08-06 14:09:18');
 INSERT INTO `veteran_assessment_survey` (`veteran_assessment_survey_id`,`veteran_assessment_id`,`survey_id`,`total_question_count`,`total_response_count`,`mha_result`,`date_created`) VALUES (48,18,38,1,1,NULL,'2014-08-06 14:09:18');
+
 
 
 /* Add a short OOO assessment for veteran 16 */
@@ -240,6 +243,10 @@ INSERT INTO veteran_assessment_survey (veteran_assessment_id, survey_id) VALUES 
 INSERT INTO veteran_assessment (veteran_assessment_id, veteran_id, clinician_id, clinic_id, access_mode, duration, percent_complete, assessment_status_id, created_by_user_id) VALUES (55, 44, 5, 7, 0, 0, 0, 3, 1);
 INSERT INTO veteran_assessment_survey (veteran_assessment_id, survey_id) VALUES (55, 1);
 INSERT INTO veteran_assessment_survey (veteran_assessment_id, survey_id) VALUES (55, 32);
+
+INSERT INTO `veteran_assessment_survey` (`veteran_assessment_id`,`survey_id`) VALUES (16, 30);
+INSERT INTO `veteran_assessment_survey` (`veteran_assessment_id`,`survey_id`) VALUES (56, 30);
+INSERT INTO `veteran_assessment_survey` (`veteran_assessment_id`,`survey_id`) VALUES (57, 30);
 
 -- Update the pgoram_id field to be the clinic's
 UPDATE veteran_assessment va 

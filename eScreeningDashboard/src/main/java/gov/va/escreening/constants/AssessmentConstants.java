@@ -15,6 +15,7 @@ public class AssessmentConstants {
 	public static final int ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER = 2;
 	public static final int ASSESSMENT_VARIABLE_TYPE_CUSTOM = 3;
 	public static final int ASSESSMENT_VARIABLE_TYPE_FORMULA = 4;
+	public static final int ASSESSMENT_VARIABLE_TYPE_TIME_SERIES = 5;
 	
 	//Assessment events
 	public static final int ASSESSMENT_EVENT_CREATED = 1;

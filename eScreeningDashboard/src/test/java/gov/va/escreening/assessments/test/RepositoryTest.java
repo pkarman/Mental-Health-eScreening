@@ -18,6 +18,7 @@ import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.ProgramRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -69,6 +70,9 @@ public class RepositoryTest {
 
 	@Resource
 	VeteranRepository veteranRepo;
+	
+	@Resource
+	ProgramRepository programRepo;
 
 	@Test
 	public void testgetSurveyPage() {
@@ -221,4 +225,10 @@ public class RepositoryTest {
 		List<SurveyPageInfo> a = ss.getSurveyPages(2,-1);
 		assertEquals(a.size(), 3);
 	}
+    
+    @Test
+    public void testProgramByUser()
+    {
+    	assertEquals(5, programRepo.findProgramForUser(4).size());
+    }
 }

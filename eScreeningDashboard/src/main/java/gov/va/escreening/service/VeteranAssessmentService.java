@@ -15,6 +15,7 @@ import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jocchiuzzo
@@ -77,7 +78,7 @@ public interface VeteranAssessmentService {
     SearchResult<AssessmentSearchResult> searchVeteranAssessment(AssessmentReportFormBean assessmentReportFormBean,
             SearchAttributes searchAttributes);
 
-    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, SearchAttributes searchAttributes);
+    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, List<Integer> programIdList, SearchAttributes searchAttributes);
 
     /**
      * 
@@ -252,4 +253,14 @@ public interface VeteranAssessmentService {
      * @return
      */
     List<String> getHealthFactorReport(int veteranAssessmentId);
+    
+    /**
+     * Returns the a map of assessment vairable values overtime
+     * @param veteranID
+     * @param assessmentVariableID
+     * @param numOfMonth
+     * @return
+     */
+    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    		int numOfMonth);
 }

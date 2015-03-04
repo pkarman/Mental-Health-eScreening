@@ -53,6 +53,7 @@ import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolve
 import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolverImpl;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl;
+import gov.va.escreening.variableresolver.NullValueHandler;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 import static org.mockito.Mockito.*;
 import static com.google.common.base.Preconditions.*;
@@ -109,7 +110,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         List<AssessmentVariableDto> dtoList = new ArrayList<>(avMap.size());
         for(AssessmentVariable av : avMap.values()){
             try{
-                dtoList.add(variableResolver.createAssessmentVariableDto(av, 123, measureAnswerHash));
+                dtoList.add(variableResolver.createAssessmentVariableDto(av, 123, measureAnswerHash, mock(NullValueHandler.class)));
             }
             catch(CouldNotResolveVariableException e){
                 /*ignored*/

@@ -1,5 +1,6 @@
 package gov.va.escreening.util;
 
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -9,8 +10,11 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -19,9 +23,21 @@ import java.util.Set;
  * Created by munnoo on 1/18/15.
  */
 @Component("dataDictAsExcelUtil")
-public class DataDictExcelUtil {
+public class DataDictExcelUtil implements MessageSourceAware{
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private MessageSource messageSource;
 
+    private Set<String> allowedHeaderColumns;
+    @PostConstruct
+    private void initializeHeaderColumns(){
+        String headerColumnKeys=messageSource.getMessage("data.dict.column.show.list", null, null);
+        String[] headerColKeyArray=headerColumnKeys.split(",");
+
+        allowedHeaderColumns = Sets.newHashSet();
+        for(String colKey:headerColKeyArray){
+            allowedHeaderColumns.add(messageSource.getMessage(colKey.trim(), null, null));
+        }
+    }
     public void buildDdAsExcel(Map model, HSSFWorkbook workbook) {
 
         Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) model.get("dataDictionary");
@@ -67,11 +83,17 @@ public class DataDictExcelUtil {
 
         int columnIndex = 0;
         for (String header : headerColumns) {
-            HSSFCell cell = headerRow.createCell(columnIndex);
-            cell.setCellValue(header.substring(2));
-            columnIndex++;
+            if (isAllowed(header)) {
+                HSSFCell cell = headerRow.createCell(columnIndex);
+                cell.setCellValue(header.substring(2));
+                columnIndex++;
+            }
         }
         return headerRow;
+    }
+
+    private boolean isAllowed(String header) {
+        return this.allowedHeaderColumns.contains(header.trim());
     }
 
     private HSSFRow createRow_SurveyName(HSSFWorkbook workbook,
@@ -100,14 +122,16 @@ public class DataDictExcelUtil {
                     debugString.append(String.format("%s:%s:%s$", rowId, rowData.getKey(), rowData.getValue()));
                 }
 
-                HSSFCell aCell = excelRow.createCell(columnIndex);
-                aCell.setCellValue(rowData.getValue());
+                if (isAllowed(rowData.getKey().trim())) {
+                    HSSFCell aCell = excelRow.createCell(columnIndex);
+                    aCell.setCellValue(rowData.getValue());
 
-                if (columnIndex == 1 || columnIndex == 4) {
-                    aCell.setCellStyle(cs);
+                    if (columnIndex == 1 || columnIndex == 4) {
+                        aCell.setCellStyle(cs);
+                    }
+
+                    columnIndex++;
                 }
-
-                columnIndex++;
             }
 
             if (logger.isDebugEnabled()) {
@@ -116,4 +140,8 @@ public class DataDictExcelUtil {
         }
     }
 
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource=messageSource;
+    }
 }

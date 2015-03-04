@@ -9,7 +9,7 @@ import java.util.Map;
 public interface AssessmentVariableDtoFactory {
     
 	AssessmentVariableDto createAssessmentVariableDto(AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-			Map<Integer, AssessmentVariable> measureAnswerHash);
+			Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);
 	
 	/**
 	 * Creates a Map from {@link gov.va.escreening.entity.MeasureAnswer} ID to AssessmentVariable. Only 

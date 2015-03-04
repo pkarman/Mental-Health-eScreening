@@ -33,7 +33,7 @@
 	</logger>
 
 	<category name="org.springframework.jdbc.core.JdbcTemplate">
-		<priority value="DEBUG" />
+		<priority value="WARN" />
 	</category>
 
 	<logger name="org.springframework.web">
@@ -54,7 +54,7 @@
 	-->
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="gov.va.escreening.interceptor">
