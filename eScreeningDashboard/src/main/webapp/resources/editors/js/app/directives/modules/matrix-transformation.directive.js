@@ -14,6 +14,9 @@
 				templateUrl: 'resources/editors/partials/modules/matrix-transformation.html',
 				link: function(scope) {
 
+					scope.selectedMatrixAnswers = [];
+					scope.selectedMatrixQuestions = [];
+
 					// Get the childQuestions and childQuestion answers for single and multi-matrix variables
 					MeasureService.one(scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId).get().then(function(measure) {
 						scope.matrixQuestions = measure.childQuestions;
