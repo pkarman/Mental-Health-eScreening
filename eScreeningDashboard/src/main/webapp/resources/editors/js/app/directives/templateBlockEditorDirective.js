@@ -121,8 +121,8 @@
 					{ name: 'Was Answer None',     value: 'none',   categories: ['table'] },
 					{ name: 'Wasn\'t Answer None', value: 'nnone', categories: ['table'] },
 
-	                { name: 'Has Result',      value: 'result',   categories: ['formula', 'matrix'] },
-	                { name: 'Has No Result',   value: 'nresult', categories: ['formula', 'matrix'] },
+	                { name: 'Has Result',      value: 'result',   categories: ['formula', 'matrix', 'custom'] },
+	                { name: 'Has No Result',   value: 'nresult', categories: ['formula', 'matrix', 'custom'] },
 
 	                { name: 'Response is',     value: 'response',  categories: ['select'] },
 	                { name: 'Response isn\'t',  value: 'nresponse', categories: ['select'] }
@@ -155,7 +155,7 @@
 						}
 						else if((this.getMeasureTypeName() === 'single-matrix' || this.getMeasureTypeName() === 'multi-matrix') && _.contains(operator.categories, 'matrix')) {
 							includeOperator = true;
-						} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'formula')) {
+						} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'custom')) {
 							includeOperator = true;
 						}
 	                }
