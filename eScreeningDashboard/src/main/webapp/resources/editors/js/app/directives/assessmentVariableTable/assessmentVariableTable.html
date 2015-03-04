@@ -174,9 +174,8 @@
 							class="form-control"
 							tabindex="6"
 							ng-model="transformationType"
-							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations"
-							required>
-						<option value="">-- Select Transformation --</option>
+							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
+						<option value="">{{ (block) ? 'No Transformation' : '-- Select Transformation --' }}</option>
 					</select>
 				</div>
 
@@ -230,7 +229,7 @@
 				</div>
 
 				<div class="text-right">
-					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);" ng-disabled="tableForm.$invalid">Insert</button>
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);" ng-disabled="!block && !transformationType">Insert</button>
 					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
 				</div>
 			</form>

@@ -176,6 +176,10 @@
 							}
 							// Remove displayName property which is not to be persisted
 							delete scope.assessmentVariable.transformations[0].displayName;
+						} else {
+							if (scope.assessmentVariable.getMeasureTypeName() === 'table') {
+								scope.assessmentVariable.transforamtions = [];
+							}
 						}
 					};
 
