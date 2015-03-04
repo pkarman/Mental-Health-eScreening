@@ -15,6 +15,7 @@ import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VistaService;
 import gov.va.escreening.validation.MyAccountFormBeanValidator;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
@@ -115,10 +116,18 @@ public class MyAccountRestController extends BaseDashboardRestController {
             vistaVerifyAccountCount = Integer.valueOf(request.getSession().getAttribute("VISTA_VERIFY_ACCOUNT_COUNT")
                     .toString());
         }
-
-        String accessCode = request.getParameter("accessCode");
-        String verifyCode = request.getParameter("verifyCode");
-
+        String accessCode="";
+        String verifyCode="";
+        
+        try
+        {
+           accessCode = URLDecoder.decode(request.getParameter("accessCode"), "UTF-8");
+           verifyCode = URLDecoder.decode(request.getParameter("verifyCode"), "UTF-8");
+        }catch(Exception ex)
+        {
+        	logger.error("Error getting access/verify code", ex);
+        }
+        
         boolean hasError = false;
         String userMessage = "";
 
@@ -131,7 +140,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
             hasError = true;
             userMessage += "Verify Code is required. ";
         }
-
+        
         if (!hasError) {
             String clientIp = request.getRemoteAddr();
             logger.debug(clientIp);
