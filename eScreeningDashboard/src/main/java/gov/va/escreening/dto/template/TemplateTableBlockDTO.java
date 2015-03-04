@@ -4,14 +4,12 @@ import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.google.common.base.Preconditions.*;
 
-@Configurable
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 

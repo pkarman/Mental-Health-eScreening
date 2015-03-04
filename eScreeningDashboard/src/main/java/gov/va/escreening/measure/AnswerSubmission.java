@@ -10,15 +10,13 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * Facade class to contain all data needed to process an answer submission (validate and persistence)
@@ -33,14 +31,14 @@ public class AnswerSubmission {
     private final Integer measureId;
     private final boolean isVisible;
     private final ValidationDataTypeEnum measureType;
-    private final Multimap<Integer, Answer> userAnswerMap;
+    private final ListMultimap<Integer, Answer> userAnswerMap;
     private final Map<Integer, MeasureAnswer> dbAnswerMap;
     private final Map<String, MeasureValidation> validations;
     private final SurveyMeasureResponse measureResponse;
     private final ErrorResponse errorResponse;
 
     private AnswerSubmission(Answer userAnswer,
-    		Multimap<Integer, Answer> userAnswerMap,
+            ListMultimap<Integer, Answer> userAnswerMap,
             Map<Integer, MeasureAnswer> dbAnswerMap,
             Map<String, MeasureValidation> validations,
             Integer measureId,
@@ -85,12 +83,15 @@ public class AnswerSubmission {
     
     public String getResponse(Integer rowId){
     	List<Answer> answers = getUserAnswers(getAnswerId());
-    	if(rowId == 0)
-    		return answers.get(0).getAnswerResponse();
     	
-    	for(Answer answer : answers) {
-    		if(answer.getRowId() == rowId) 
-    			return answer.getAnswerResponse();
+    	if(answers != null && !answers.isEmpty()){
+        	if(rowId == 0)
+        		return answers.get(0).getAnswerResponse();
+        	
+        	for(Answer answer : answers) {
+        		if(answer.getRowId() == rowId) 
+        			return answer.getAnswerResponse();
+        	}
     	}
     	
     	//TODO throw an exception here!!!
@@ -99,19 +100,14 @@ public class AnswerSubmission {
     
     public Answer getUserAnswer(Integer id, Integer index) {
     	List<Answer> answers = getUserAnswers(id);
-    	return answers.get(index);
+    	if(answers != null && index < answers.size()){
+    	    return answers.get(index);
+    	}
+    	return null;
     }
     
     public List<Answer> getUserAnswers(Integer id) {
-    	Collection<Answer> answers = userAnswerMap.get(id);
-    	Object[] answerObjs = answers.toArray();
-    	
-    	List<Answer> convertedAnswers = new ArrayList<Answer>();
-    	for(Object answerObj : answerObjs) {
-    		convertedAnswers.add((Answer)answerObj);
-    	}
-
-    	return convertedAnswers;
+    	return userAnswerMap.get(id);
     }
     
     public MeasureAnswer getDbAnswer(Integer id){
@@ -145,7 +141,7 @@ public class AnswerSubmission {
         private final Map<Integer, Boolean> measureVisibilityMap;
         private ValidationDataTypeEnum measureType;
         //private Map<Integer, Answer> userAnswerMap;
-        private Multimap<Integer, Answer> userAnswerMap;
+        private ListMultimap<Integer, Answer> userAnswerMap;
         private Map<Integer, MeasureAnswer> dbAnswerMap;
         
         private Map<String, MeasureValidation> validations;
@@ -173,7 +169,7 @@ public class AnswerSubmission {
             measureId = measure.getMeasureId();
             
             //create map from answer id to user answer
-            userAnswerMap = HashMultimap.create();
+            userAnswerMap = ArrayListMultimap.create();
             
             if(measure.getAnswers() != null) {
 	            for(Answer answer : measure.getAnswers()) {
