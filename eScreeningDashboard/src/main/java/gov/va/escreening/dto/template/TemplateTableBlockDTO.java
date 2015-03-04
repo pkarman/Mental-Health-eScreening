@@ -4,14 +4,12 @@ import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.google.common.base.Preconditions.*;
 
-@Configurable
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 
@@ -19,7 +17,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 	private String nodeType(){return "table";}
 	
 	private TemplateVariableContent table;
-	static final String VAR_FORMAT = "[var%d]";
+	static final String VAR_FORMAT = "var%d";
 	static final String REPLACEMENT_FORMAT = "getTableVariable(%s, %s, %s)";
 	
 	public TemplateVariableContent getTable() {
@@ -48,7 +46,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		result.append("<#assign lastIndex=(").append(tableHashName).append("?size)-1 > \n");
 		
 		//start loop over rows using rowIndexName as the index
-		result.append("<#if lastIndex >= 0> \n");
+		result.append("<#if (lastIndex >= 0)> \n");
 		result.append("<#list 0..lastIndex as ").append(rowIndexName).append("> \n");
 		
 		//add all child blocks
@@ -60,7 +58,7 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		//collect all child question variable IDs and search for their use in child blocks (i.e. VAR_FORMAT)
 		//for usages of each child question, substitute a call to look up the appropriate AV by row (i.e. REPLACEMENT_FORMAT)
 		for(Integer avId : assessmentVariableService.getAssessmentVarsForMeasure(table.getContent().getMeasureId()).keySet()){
-			if(avId != table.getContent().getId()){
+			if(!avId.equals(table.getContent().getId())){
 				String varValue = String.format(VAR_FORMAT, avId);
 				String replacement = String.format(REPLACEMENT_FORMAT, tableHashName, varValue, rowIndexName);
 				int foundVarIndex = result.indexOf(varValue);

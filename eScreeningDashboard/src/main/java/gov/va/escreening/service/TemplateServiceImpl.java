@@ -444,12 +444,6 @@ public class TemplateServiceImpl implements TemplateService {
 			
 			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
 			
-			//get current variable template entries for this template
-			Map<Integer, VariableTemplate> vtMap = new HashMap<>();
-			for(VariableTemplate vt : template.getVariableTemplateList()){
-				vtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
-			}
-			
 			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));			
 			setVariableTemplates(template, assessmentVariableIds);
 		}
@@ -552,51 +546,55 @@ public class TemplateServiceImpl implements TemplateService {
 			template.getVariableTemplateList().clear();
 		}
 		
+		Set<Integer> addedAvIds = new HashSet<>();
+		
 		for(Integer id : ids){
-			AssessmentVariable av;
-			if(currentVtMap.containsKey(id)){
-				VariableTemplate vt = currentVtMap.get(id);
-				template.getVariableTemplateList().add(vt);
-				av = vt.getAssessmentVariableId();
-			}
-			else{
-				av = avRepository.findOne(id);
-				template.getVariableTemplateList().add(new VariableTemplate(av, template));
-			}
+			AssessmentVariable av = currentVtMap.containsKey(id) ? currentVtMap.get(id).getAssessmentVariableId() : avRepository.findOne(id);
+			addVariableTemplate(template, av, currentVtMap, addedAvIds);
 			
 			//Add measure specific VariableTemplates
 			if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
     			Measure measure = av.getMeasure();
-    			addAnswerVariableTemplates(template, measure, currentVtMap);
+    			addAnswerVariableTemplates(template, measure, currentVtMap, addedAvIds);
     			
     			//check for child questions to add
 				if(measure.isParent() && measure.getChildren() != null){
 					for(Measure child : measure.getChildren()){
 						AssessmentVariable childAv = child.getAssessmentVariable();
-						if(currentVtMap.containsKey(childAv.getAssessmentVariableId())){
-							template.getVariableTemplateList().add(currentVtMap.get(id));
-						}
-						else{
-							template.getVariableTemplateList().add(new VariableTemplate(childAv, template));
-						}
-						addAnswerVariableTemplates(template, child, currentVtMap);
+						addVariableTemplate(template, childAv, currentVtMap, addedAvIds);
+						addAnswerVariableTemplates(template, child, currentVtMap, addedAvIds);
 					}
 				}
 			}
 		}
 	}
 	
-	private void addAnswerVariableTemplates(Template template, Measure measure, Map<Integer, VariableTemplate> currentVtMap){
+	/**
+	 * Adds a variableTemplate to the given template if it has not bee added already. Uses previously saved VT if there is one
+	 * @param template
+	 * @param vt
+	 * @param addedAvIds
+	 */
+	private void addVariableTemplate(Template template, AssessmentVariable av, Map<Integer, VariableTemplate> currentVtMap, Set<Integer>addedAvIds){
+	    
+	    Integer avId = av.getAssessmentVariableId();
+	    if(!addedAvIds.contains(avId)){
+	        VariableTemplate vt;
+            if(currentVtMap.containsKey(avId)){
+                vt = currentVtMap.get(avId);
+            }
+            else{
+                vt = new VariableTemplate(av, template);
+            }
+	        
+            template.getVariableTemplateList().add(vt);
+            addedAvIds.add(avId);
+        }
+	}
+	
+	private void addAnswerVariableTemplates(Template template, Measure measure, Map<Integer, VariableTemplate> currentVtMap, Set<Integer>addedAvIds){
 		for(MeasureAnswer ma : measure.getMeasureAnswerList()){
-			AssessmentVariable av = ma.getAssessmentVariable();
-			VariableTemplate vt;
-			if(currentVtMap.containsKey(av.getAssessmentVariableId())){
-				vt = currentVtMap.get(av.getAssessmentVariableId());
-			}
-			else{
-				vt = new VariableTemplate(av, template);
-			}
-			template.getVariableTemplateList().add(vt);
+		    addVariableTemplate(template, ma.getAssessmentVariable(), currentVtMap, addedAvIds);
 		}
 	}
 
