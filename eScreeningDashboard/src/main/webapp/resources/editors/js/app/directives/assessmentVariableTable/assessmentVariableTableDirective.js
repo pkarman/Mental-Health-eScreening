@@ -174,6 +174,8 @@
 							}
 							// Remove displayName property which is not to be persisted
 							delete scope.assessmentVariable.transformations[0].displayName;
+
+							scope.assessmentVariables.push(scope.assessmentVariable);
 						} else {
 							if (scope.assessmentVariable.getMeasureTypeName() === 'table') {
 								scope.assessmentVariable.transforamtions = [];
