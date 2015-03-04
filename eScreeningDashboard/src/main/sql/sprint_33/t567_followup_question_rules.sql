@@ -8,7 +8,7 @@
 
 /**** Presenting Mental Health Issue MODULE ****/
 
-INSERT INTO rule (rule_id, name, expression) VALUES (7600, 'Today Drug', '[10875]==1');
+INSERT INTO rule (rule_id, name, expression) VALUES (7600, 'Today Drug', '[10875]');
 
 /* Associate rules to the assessment variables they contain in their expressions */
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7600, 10875);
@@ -20,7 +20,7 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (760
 INSERT INTO rule_event (rule_id, event_id) VALUES(7600, 7600);
 
 
-INSERT INTO rule (rule_id, name, expression) VALUES (7601, 'Today Worth', '[10879]==1');
+INSERT INTO rule (rule_id, name, expression) VALUES (7601, 'Today Worth', '[10879]');
 
 /* Associate rules to the assessment variables they contain in their expressions */
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7601, 10879);
@@ -31,7 +31,7 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (760
 /* Link rule to ShowQuestion events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(7601, 7601);
 
-INSERT INTO rule (rule_id, name, expression) VALUES (7602, 'Today Form', '[10881]==1');
+INSERT INTO rule (rule_id, name, expression) VALUES (7602, 'Today Form', '[10881]');
 
 /* Associate rules to the assessment variables they contain in their expressions */
 INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7602, 10881);
@@ -42,14 +42,4 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (760
 /* Link rule to ShowQuestion events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(7602, 7602);
 
-INSERT INTO rule (rule_id, name, expression) VALUES (7603, 'Today Other', '[10884]==1');
-
-/* Associate rules to the assessment variables they contain in their expressions */
--- INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7603, 10884);
-
-/* Create ShowQuestion events (type_id=4) */
--- INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (7603, 4, 'Show - Which paperwork/forms do you need help with?', 613);
-
-/* Link rule to ShowQuestion events */
--- INSERT INTO rule_event (rule_id, event_id) VALUES(7602, 7602);
 
