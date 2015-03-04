@@ -101,7 +101,6 @@ $(document).ready(function() {
       $(this).removeClass("ng-pristine");
       $("#newPassword").addClass("ng-pristine");
       $("#confirmedPassword").addClass("ng-pristine")
-      
     });
     $("#newPassword").click(function(){
       $(this).removeClass("ng-pristine");
@@ -131,7 +130,8 @@ $(document).ready(function() {
          $('.acc_roleName').empty().html(data['roleName']);
          
          var cprsVerified = data['cprsVerified'];
-         if(cprsVerified == "false"){
+         
+		 if(cprsVerified == "false"){
            $('.acc_cprsVerified').empty().html("Not Verified");
            $(".user_verification_link").removeClass("hide");
            $(".user_verification_link").attr("aria-hidden", "false");
@@ -149,33 +149,35 @@ $(document).ready(function() {
 
       $('#btn_verify').button();
       $("#btn_verify").button('loading');
-            
+      //console.log('accessCode='+ encodeURIComponent(accessCode) + '&verifyCode=' + encodeURIComponent(verifyCode)); 
       $.ajax({
           type : 'post',
            url : 'myAccount/services/users/active/verifyVistaAccount', // in here you should put your query 
-           data :  'accessCode='+ accessCode + '&verifyCode=' + verifyCode, // here you pass your id via ajax . vid & vien
+           data :  'accessCode='+ encodeURIComponent(accessCode) + '&verifyCode=' + encodeURIComponent(verifyCode), // here you pass your id via ajax . vid & vien
            // in php you should use $_POST['post_id'] to get this value 
            success : function(r){
-           var isSuccessful = r['isSuccessful'];
-           var userMessage = r['userMessage'];
-          
+           var isSuccessful 		= r['isSuccessful'];
+           var userMessage			= r['userMessage'];
+		   var verification_message = "#verification_message";
+		   var acc_cprsVerified 	= ".acc_cprsVerified";
+
           //isSuccessful = "true";
           if(isSuccessful == "true"){
-            $("#verification_message").removeClass("hide");
-            $("#verification_message").addClass("alert-success");
-            $("#verification_message").removeClass("alert-danger");
-            $('#verification_message').empty().html(userMessage);
-            $('.acc_cprsVerified').empty().html("Verified");
+            $(verification_message).removeClass("hide");
+            $(verification_message).addClass("alert-success");
+            $(verification_message).removeClass("alert-danger");
+            $(verification_message).empty().html(userMessage);
+            $(acc_cprsVerified).empty().html("Verified");
             $(".user_verification_link, #btn_verify").addClass("hide");
             $('#btn_close').text("Continue");
         $(':input','#verifyForm')
           .not(':button, :submit, :reset, :hidden')
           .val('');
           }else{
-            $("#verification_message").removeClass("hide");
-            $("#verification_message").addClass("alert-danger");
-            $("#verification_message").removeClass("alert-success");
-            $('#verification_message').empty().html(userMessage);
+            $(verification_message).removeClass("hide");
+            $(verification_message).addClass("alert-danger");
+            $(verification_message).removeClass("alert-success");
+            $(verification_message).empty().html(userMessage);
             $("#btn_verify").removeAttr('disabled');
             $("#btn_verify").removeClass('disabled');
             $("#btn_verify").text('Verify Now');
