@@ -76,7 +76,31 @@ module.directive('showErrors', function ($timeout, showErrorsConfig) {
   });
 
 
-module.controller('reportsController', function($scope,$http,$window) {
+
+module.factory('surveysListService', function($http) {
+	return {
+		getSurveysList : function() {
+			return $http({
+				method : "GET",
+				url : "reports/listSurveys",
+				responseType : "json"
+			}).then(function(result) {
+				return result.data;
+			});
+		}
+	};
+});
+
+
+module.controller('reportsController', function($scope,$http,$window, surveysListService) {
+
+	// Load Surveys List Service 
+	surveysListService.getSurveysList().then(function(data) {
+		$scope.surveysList = data;
+	});
+  
+  
+  
   $scope.save = function() {
     $scope.$broadcast('show-errors-check-validity');
     
@@ -126,11 +150,11 @@ $(document).ready(function() {
 	$('.selectAll').click(function(event) {  //on click 		
 		//alert( $(this).attr("data-cbgroup") );
         if(this.checked) { // check select status
-            $(".checkbox_group_modules").each(function() { //loop through each checkbox
+            $(".checkbox_group_survey").each(function() { //loop through each checkbox
                 this.checked = true;  //select all checkboxes with class "checkbox_group"            
             });
         }else{
-            $(".checkbox_group_modules").each(function() { //loop through each checkbox
+            $(".checkbox_group_survey").each(function() { //loop through each checkbox
                 this.checked = false; //deselect all checkboxes with class "checkbox_group"                       
             });         
         }

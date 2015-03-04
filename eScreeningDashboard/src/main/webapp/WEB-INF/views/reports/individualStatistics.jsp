@@ -60,7 +60,7 @@
 	<div class="clear-fix"></div>
 
 	<div id="mainContent">
-		<div class="border-radius-main-form gray-lighter">									
+		<div class="border-radius-main-form gray-lighter">											
 			<form id="veteranSearchForm" name="reportForm" novalidate>
 				<div class="row">
 					<div class="col-md-6">				
@@ -116,20 +116,19 @@
 						
 						<div class="row">
 							<div class="col-md-6">
-								<div><strong>Report Type *</strong></div>
+								<div><strong>Report Type</strong></div>
 								<div class="form-group">
-									<div class="checkbox">
-									<input type="checkbox" id="reportTypeNumeric" name="reportTypeNumeric"
-										ng-model="report.reportTypeNumeric" checked />
-										<label class="labelAlign" for="reportTypeNumeric">Numeric</label>
-										<!--<span class="error" ng-show="veteranSearchForm.lastName.$invalid && veteranSearchForm.submitted">*</span>-->											
+									<div class="radio">
+										<input type="radio" id="reportTypeBoth" name="reportType" checked />
+										<label class="labelAlign" for="reportTypeBoth">Graph and Numeric</label>
 									</div>
-									<div class="checkbox">
-									<input type="checkbox"
-										id="reportTypeGraph" name="reportTypeGraph" 
-										ng-model="report.reportTypeGraph" checked />
+									<div class="radio">
+									<input type="radio" id="reportTypeGraph" name="reportType" />
 										<label class="labelAlign" for="reportTypeGraph">Graph</label>
-										<!--<span class="error" ng-show="veteranSearchForm.reportTypeGraph.$invalid && veteranSearchForm.submitted">*</span>-->										
+									</div>
+									<div class="radio">
+										<input type="radio" id="reportTypeNumeric" name="reportType" />
+										<label class="labelAlign" for="reportTypeNumeric">Numeric</label>
 									</div>
 								</div>										
 							</div>
@@ -141,23 +140,13 @@
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							<div class="checkbox">
-								<input type="checkbox" id="selectAll" class="selectAll" name="selectAll" data-cbgroup="checkbox_group_modules" />
-								<label class="labelAlign" for="selectAll"  data-cbgroup="checkbox_group_modules">Select All</label>
+								<input type="checkbox" id="selectAll" class="selectAll" name="selectAll" data-cbgroup="checkbox_group_survey" />
+								<label class="labelAlign" for="selectAll"  data-cbgroup="checkbox_group_survey">Select All</label>
 							</div>
 							<hr class="hr_margin_5">
 							<div class="vertical_scoll_list_b module_list">	 
-								 <ul>
-									<!-- PLACEHOLDER FOR MODULES -->
-									<li><div class="checkbox"><input type="checkbox" id="module_1" name="module_1" class="checkbox_group_modules"  />  <label class="labelAlign" for="module_1">Basic Pain</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_2" name="module_2" class="checkbox_group_modules" />  <label class="labelAlign" for="module_2">WHODAS</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_3" name="module_3" class="checkbox_group_modules" />  <label class="labelAlign" for="module_3">PHQ-9</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_4" name="module_4" class="checkbox_group_modules" />  <label class="labelAlign" for="module_4">GAD-7</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_5" name="module_5" class="checkbox_group_modules" />  <label class="labelAlign" for="module_5">Basic Pain</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_1" name="module_1" class="checkbox_group_modules"  />  <label class="labelAlign" for="module_1">Basic Pain</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_2" name="module_2" class="checkbox_group_modules" />  <label class="labelAlign" for="module_2">WHODAS</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_3" name="module_3" class="checkbox_group_modules" />  <label class="labelAlign" for="module_3">PHQ-9</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_4" name="module_4" class="checkbox_group_modules" />  <label class="labelAlign" for="module_4">GAD-7</label></div></li>
-									<li><div class="checkbox"><input type="checkbox" id="module_5" name="module_5" class="checkbox_group_modules" />  <label class="labelAlign" for="module_5">Basic Pain</label></div></li>
+								 <ul ng-repeat="surveys in surveysList">
+									<li><div class="checkbox"><input type="checkbox" id="survey_{{surveys.surveyId}}" name="survey{{surveys.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{surveys.surveyId}}">{{surveys.name}}</label></div></li>
 								 </ul>
 							</div>
 						</div>
