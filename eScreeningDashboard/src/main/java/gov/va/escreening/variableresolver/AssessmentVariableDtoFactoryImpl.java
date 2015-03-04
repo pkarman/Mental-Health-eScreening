@@ -15,17 +15,30 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor = { CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class })
 public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFactory {
-	@Autowired
-	private CustomAssessmentVariableResolver customVariableResolver;
-	@Autowired
-	private FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
-	@Autowired
-	private MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	@Autowired
-	private MeasureAssessmentVariableResolver measureVariableResolver;
+	
+	//Please add to the constructor and do not use field based @Autowired
+	private final CustomAssessmentVariableResolver customVariableResolver;
+	private final FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
+	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
+	private final MeasureAssessmentVariableResolver measureVariableResolver;
 
+	@Autowired
+	public AssessmentVariableDtoFactoryImpl(
+			CustomAssessmentVariableResolver cvr, 
+			FormulaAssessmentVariableResolver favr,
+			MeasureAnswerAssessmentVariableResolver mavr,
+			MeasureAssessmentVariableResolver mvr){
+		
+		customVariableResolver = checkNotNull(cvr);
+		formulaAssessmentVariableResolver = checkNotNull(favr);
+		measureAnswerVariableResolver = checkNotNull(mavr);
+		measureVariableResolver = checkNotNull(mvr);
+	}
+	
 	@Override
 	public AssessmentVariableDto createAssessmentVariableDto(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
@@ -57,12 +70,12 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 	@Override
 	public Map<Integer, AssessmentVariable> createMeasureAnswerTypeHash(
 			List<VariableTemplate> variableTemplates) {
-		Map<Integer, AssessmentVariable> measureAnswerHash = new Hashtable<Integer, AssessmentVariable>();
+		Map<Integer, AssessmentVariable> measureAnswerHash = new HashMap<Integer, AssessmentVariable>();
 
-		for (VariableTemplate template : variableTemplates) {
-			if (template.getAssessmentVariableId().getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER) {
-				MeasureAnswer measureAnswer = template.getAssessmentVariableId().getMeasureAnswer();
-				AssessmentVariable assessmentVariable = template.getAssessmentVariableId();
+		for (VariableTemplate variableTemplate : variableTemplates) {
+			if (variableTemplate.getAssessmentVariableId().getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER) {
+				MeasureAnswer measureAnswer = variableTemplate.getAssessmentVariableId().getMeasureAnswer();
+				AssessmentVariable assessmentVariable = variableTemplate.getAssessmentVariableId();
 				if (measureAnswer != null && assessmentVariable != null)
 					measureAnswerHash.put(measureAnswer.getMeasureAnswerId(), assessmentVariable);
 			}
