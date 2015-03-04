@@ -153,9 +153,9 @@
 						else if((this.measureTypeId === 4) && _.contains(operator.categories, 'table')) {
 							includeOperator = true;
 						}
-						else if((this.type.toUpperCase() === 'MATRIX') && _.contains(operator.categories, 'matrix')) {
+						else if((this.getMeasureTypeName() === 'single-matrix' || this.getMeasureTypeName() === 'multi-matrix') && _.contains(operator.categories, 'matrix')) {
 							includeOperator = true;
-						} else if (this.type.toUpperCase() === 'CUSTOM' && operator.value === 'result') {
+						} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'formula')) {
 							includeOperator = true;
 						}
 	                }

@@ -123,6 +123,7 @@
 
 						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
 							scope.show = false;
+							scope.$emit('assessmentVariableSelected');
 
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
@@ -144,6 +145,7 @@
 									scope.toggles.transformations = true;
 								} else {
 									scope.show = false;
+									scope.$emit('assessmentVariableSelected');
 								}
 							});
 						} else {
@@ -159,6 +161,7 @@
 						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
+						scope.$emit('assessmentVariableSelected');
 
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
