@@ -141,7 +141,7 @@
 			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
 				                includeOperator = true;
 			                }
-		                } else if((this.type.toUpperCase() === 'QUESTION') && (this.getMeasureTypeName() !== 'single-matrix' || this.getMeasureTypeName() !== 'multi-matrix') && _.contains(operator.categories, 'question')) {
+		                } else if((this.type.toUpperCase() === 'QUESTION') && (this.getMeasureTypeName() !== 'single-matrix' && this.getMeasureTypeName() !== 'multi-matrix') && _.contains(operator.categories, 'question')) {
 			                includeOperator = true;
 		                } else if((this.type.toUpperCase() === 'FORMULA') && _.contains(operator.categories, 'formula')) {
 			                includeOperator = true;
