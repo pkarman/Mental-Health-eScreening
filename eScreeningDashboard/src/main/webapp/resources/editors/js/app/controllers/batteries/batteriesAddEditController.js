@@ -97,10 +97,9 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
     var performDirtyCheckOfSelectedModules = function (addNewlySelectedSurveys){
         // check to see if the battToSave.surveys has the same survey collection. If it is the same, do not mark the form as dirty. Otherwise mark the form as dirty.
         if(Object.isArray($scope.currentlySelectedBattery.getSurveys()) && Object.isArray($scope.batterySections)){
-            var selectedSurveySectionDomainObjects = EScreeningDashboardApp.models.Battery.convertToSurveySectionDomainObjects($scope.batterySections);
-            var selectedVisibleSurveysDomainObjects = EScreeningDashboardApp.models.Battery.findVisibleSurveys(selectedSurveySectionDomainObjects);
+            var selectedSurveys = EScreeningDashboardApp.models.Battery.findVisibleSurveys($scope.batterySections);
 
-            if(isSelectedSurveyListDirty($scope.currentlySelectedBattery.getSurveys(), selectedVisibleSurveysDomainObjects, addNewlySelectedSurveys)) {
+            if(isSelectedSurveyListDirty($scope.currentlySelectedBattery.getSurveys(), selectedSurveys, addNewlySelectedSurveys)) {
                 $scope.selectedSurveyModulesIsDirty = true;
             } else {
                 $scope.selectedSurveyModulesIsDirty = false;
@@ -118,7 +117,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
         // persisted surveys, if the addNewlySelectedSurveys boolean is true.
         modifiedSelectedSurveys.forEach(function(modifiedSelectedSurvey){
             var modifiedSelectedSurveyFound = previouslyPersistedSurveys.some(function(previouslyPersistedSurvey){
-                if(modifiedSelectedSurvey.getId() === previouslyPersistedSurvey.getId()){
+                if(modifiedSelectedSurvey.id === previouslyPersistedSurvey.id){
                     return true;
                 }
             });
@@ -139,7 +138,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
         // If so, mark for deletion.
         previouslyPersistedSurveys.forEach(function(previouslySelectedSurvey){
             var previouslyPersistedSurveyFound = modifiedSelectedSurveys.some(function(modifiedSelectedSurvey){
-                if(previouslySelectedSurvey.getId() === modifiedSelectedSurvey.getId()) {
+                if(previouslySelectedSurvey.id === modifiedSelectedSurvey.id) {
                     return true;
                 }
             });
@@ -265,7 +264,8 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
     // Button actions
     $scope.saveBattery = function(){
     	performDirtyCheckOfSelectedModules(true);
-        $scope.currentlySelectedBatteryUIObject.surveys = $scope.currentlySelectedBattery.getSurveysAsSurveyUIObjects();
+    	//we are migrating away from the use of UIObjects so this will just return the surveys which now works the same way
+        $scope.currentlySelectedBatteryUIObject.surveys = $scope.currentlySelectedBattery.surveys;
     	var currentlySelectedUpdatedBattery = new EScreeningDashboardApp.models.Battery($scope.currentlySelectedBatteryUIObject);
     	if (currentlySelectedUpdatedBattery.getId() === -1){
     		// Create.
@@ -288,7 +288,6 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
     
     $scope.isBatterySaved = function(){
         return Object.isDefined($scope.currentlySelectedBattery) 
-        		&& Object.isDefined($scope.currentlySelectedBattery.getId()) 
         		&& $scope.currentlySelectedBattery.getId() >= 0;
     }
     
