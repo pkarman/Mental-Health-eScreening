@@ -90,12 +90,10 @@
 			            if (e) e.stopPropagation();
 
 		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
-
-			                // This is needed to trigger a change on $scope.$watch (unknown hack)
+			                // This is needed to trigger a change on in main.js for textAngular (unknown hack)
 			                angular.copy(av, scope.assessmentVariable);
-
 			                // This is also needed to the populate the $scope.assessmentVariable
-			                scope.assessmentVariable = av;
+			                scope.assessmentVariable = angular.copy(av);
 		                }
 
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
