@@ -17,7 +17,7 @@
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
 
-					var parentBlock = (scope.block) ? scope.block.getParent() : {};
+					var parentBlock = AssessmentVariableService.parentBlock || {};
 
 					scope.toggles = {
 						list: true,

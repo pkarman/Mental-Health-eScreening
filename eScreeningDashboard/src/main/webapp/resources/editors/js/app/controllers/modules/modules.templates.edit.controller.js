@@ -277,7 +277,9 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				// Copy the selected or new block so that potential changes in modal don't update object in page
 				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
 				$scope.isAdding = angular.isUndefined(isAdding) ? false : isAdding;
-				
+
+				AssessmentVariableService.parentBlock = $scope.block.getParent();
+
 				$scope.block.setTextContent(TemplateBlockService);
 
 				// Dismiss modal
