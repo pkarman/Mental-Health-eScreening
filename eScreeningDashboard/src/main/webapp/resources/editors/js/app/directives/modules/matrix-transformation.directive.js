@@ -28,13 +28,11 @@
 					});
 
 					scope.updateSelectedMatrixAnswers = function updateSelectedMatrixAnswers() {
-						console.log('update answers');
 						scope.selectedMatrixAnswers = $filter('filter')(scope.matrixAnswers, {checked: true});
 						scope.updateTransformation();
 					};
 
 					scope.updateSelectedMatrixQuestions = function updateSelectedMatrixQuestions() {
-						console.log('update questions');
 						scope.selectedMatrixQuestions = $filter('filter')(scope.matrixQuestions, {checked: true});
 						scope.updateTransformation();
 					};
@@ -76,7 +74,6 @@
 							name: 'delimitedMatrixQuestions',
 							params: [questions, answerIds]
 						};
-						// console.log(scope.transformationType);
 					};
 
 				}
