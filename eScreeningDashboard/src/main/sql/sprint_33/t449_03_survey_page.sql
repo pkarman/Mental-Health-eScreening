@@ -15,3 +15,7 @@ INSERT INTO `survey_page` (`survey_page_id`,`survey_id`,`title`,`description`,`p
 INSERT INTO `survey_page` (`survey_page_id`,`survey_id`,`title`,`description`,`page_number`,`date_created`) VALUES (84,42,'Psychological Health','Prior Hospitalizations and Meds page',4,'2015-02-26 02:24:23');
 INSERT INTO `survey_page` (`survey_page_id`,`survey_id`,`title`,`description`,`page_number`,`date_created`) VALUES (85,42,'Psychological Health','Prior Hospitalizations and Meds page',5,'2015-02-26 02:24:23');
 INSERT INTO `survey_page` (`survey_page_id`,`survey_id`,`title`,`description`,`page_number`,`date_created`) VALUES (86,43,'Goals','Goals page',1,'2015-02-26 10:53:06');
+
+UPDATE survey SET display_order_for_section='101' WHERE survey_id='40';
+UPDATE survey SET display_order_for_section='102' WHERE survey_id='41';
+UPDATE survey SET display_order_for_section='103' WHERE survey_id='42'; 
