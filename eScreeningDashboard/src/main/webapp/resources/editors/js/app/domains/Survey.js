@@ -32,13 +32,13 @@ EScreeningDashboardApp.models.Survey = (function survey() {
             vistaTitle: '',
             description: '',
             version: '',
-            displayOrder: 1,
             mha: '',
             mhaTestName: '',
             mhaResultGroupIen: '',
             clinicalReminderId: '',
             createdDate: '',
             surveySection: {},
+            displayOrderForSection: '',  //do not default this to any valid number
             markedForDeletion: '',
             visible: ''
         };
