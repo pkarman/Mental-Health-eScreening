@@ -3,17 +3,22 @@ package gov.va.escreening.service;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.domain.SurveyDto;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.QuestionInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
+import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.repository.*;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -172,13 +178,30 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SurveyInfo update(SurveyInfo surveyInfo) {
+        
+        if(surveyInfo.getSurveySectionInfo() == null || 
+                surveyInfo.getSurveySectionInfo().getSurveySectionId() == null){
+            ErrorBuilder.throwing(EscreeningDataValidationException.class)
+            .toAdmin("surveyInfo passed in with null section ID. Debug UI.")
+            .toUser("Invalid request. Please contact support")
+            .throwIt();
+        }
+        
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
-        // copy any changed propertires from incoming surveyInfo to the data for database 'survey'
+        SurveySection newSurveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
+            
+        boolean isNewSection = !survey.getSurveySection().getSurveySectionId().equals(newSurveySection.getSurveySectionId());
+            
+        if(isNewSection && surveyInfo.getDisplayOrderForSection() == null){
+            //the module's section has changed and no order was set so set it the the next larger index
+            surveyInfo.setDisplayOrderForSection(newSurveySection.getSurveyList().size()+1);
+        }
+            
+        // copy any changed properties from incoming surveyInfo to the data for database 'survey'
         copyProperties(surveyInfo, survey);
 
         // and now make sure that surveyInfo's survey Section is also reflected back to the survey
-        SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
-        survey.setSurveySection(surveySection);
+        survey.setSurveySection(newSurveySection);
 
         surveyRepository.update(survey);
         
@@ -327,7 +350,10 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional
     public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
-
+        
+        //we have to always set this to the last index of the section
+        surveyInfo.setDisplayOrderForSection(surveySection.getSurveyList().size()+1);
+        
         Survey survey = new Survey();
         BeanUtils.copyProperties(surveyInfo, survey);
         survey.setSurveySection(surveySection);
