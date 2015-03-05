@@ -16,6 +16,7 @@ import gov.va.escreening.service.VistaService;
 import gov.va.escreening.validation.MyAccountFormBeanValidator;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
@@ -118,11 +119,43 @@ public class MyAccountRestController extends BaseDashboardRestController {
         }
         String accessCode="";
         String verifyCode="";
-        
+       
         try
         {
-           accessCode = URLDecoder.decode(request.getParameter("accessCode"), "UTF-8");
-           verifyCode = URLDecoder.decode(request.getParameter("verifyCode"), "UTF-8");
+        	accessCode = URLEncoder.encode(request.getParameter("accessCode"), "UTF-8")   
+       			   .replaceAll("\\%28", "(")                          
+       			   .replaceAll("\\%29", ")")   		
+       			   .replaceAll("\\+", "%20")                       
+       			   .replaceAll("\\%27", "'")
+       			   .replaceAll("\\%21", "!")
+       			   .replaceAll("\\%25", "%")
+       			   .replaceAll("\\%3B", ";")
+       			   .replaceAll("\\%40", "@")
+       			   .replaceAll("\\%23", "#")
+       			   .replaceAll("\\%24", "\\$")
+       			   .replaceAll("\\%5E", "^")
+       			   .replaceAll("\\%26", "&")
+       			   .replaceAll("\\%20", " ")
+       			   .replaceAll("\\%7E", "~");
+        
+
+        	verifyCode = URLEncoder.encode(request.getParameter("verifyCode"), "UTF-8")   
+      			   .replaceAll("\\%28", "(")                          
+      			   .replaceAll("\\%29", ")")   		
+      			   .replaceAll("\\+", "%20")                       
+      			   .replaceAll("\\%27", "'")
+      			   .replaceAll("\\%21", "!")
+      			   .replaceAll("\\%25", "%")
+      			   .replaceAll("\\%3B", ";")
+      			   .replaceAll("\\%40", "@")
+      			   .replaceAll("\\%23", "#")
+      			   .replaceAll("\\%24", "\\$")
+      			   .replaceAll("\\%5E", "^")
+      			   .replaceAll("\\%26", "&")
+      			   .replaceAll("\\%20", " ")
+      			   .replaceAll("\\%7E", "~");
+           //accessCode = URLDecoder.decode(request.getParameter("accessCode"), "UTF-8");
+           //verifyCode = URLDecoder.decode(request.getParameter("verifyCode"), "UTF-8");
         }catch(Exception ex)
         {
         	logger.error("Error getting access/verify code", ex);

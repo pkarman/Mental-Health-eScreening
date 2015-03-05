@@ -151,25 +151,28 @@ $(document).ready(function() {
 	}
 	*/
 	
-	function fixedEncodeURIComponent (str) {
-		return encodeURIComponent(str).
-			replace(/['()]/g, escape). // i.e., %27 %28 %29
-			replace(/\*/g, '%2A').
-				replace(/%(?:7C|60|5E)/g, unescape);
-	}
          
     $('#verifyForm').submit(function(){
 	
       var accessCode = $('#cprsAccessCode').val();
       var verifyCode = $('#cprsVerifyCode').val();
 
+      accessCode = encodeURIComponent(accessCode);
+      verifyCode = encodeURIComponent(verifyCode);
+
       $('#btn_verify').button();
       $("#btn_verify").button('loading');
+
+
       //console.log('accessCode='+ fixedEncodeURIComponent(accessCode) + '&verifyCode=' + fixedEncodeURIComponent(verifyCode)); 
+	  
+	  console.log('accessCode='+ accessCode + '&verifyCode=' + verifyCode);
+	  
       $.ajax({
           type : 'post',
            url : 'myAccount/services/users/active/verifyVistaAccount', // in here you should put your query 
-           data :  'accessCode='+ fixedEncodeURIComponent(accessCode) + '&verifyCode=' + fixedEncodeURIComponent (verifyCode), // here you pass your id via ajax . vid & vien
+		   contentType: "application/x-www-form-urlencoded;charset=utf-8",
+           data :  'accessCode='+ accessCode + '&verifyCode=' + verifyCode, // here you pass your id via ajax . vid & vien
            // in php you should use $_POST['post_id'] to get this value 
            success : function(r){
            var isSuccessful 		= r['isSuccessful'];
