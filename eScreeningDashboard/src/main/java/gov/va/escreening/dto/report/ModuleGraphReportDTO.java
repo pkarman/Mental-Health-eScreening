@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.report;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -8,13 +9,12 @@ import java.util.List;
  */
 public class ModuleGraphReportDTO implements Serializable{
 
-    private String veteranLastNameAndLastFourSSN;
     private String moduleName;
     private String scoreName;
     private String score;
     private String scoreMeaning;
 
-    private String imageFileName;
+    private InputStream inmageInputStream;
 
     private String scoreHistoryTitle;
 
@@ -52,14 +52,6 @@ public class ModuleGraphReportDTO implements Serializable{
         this.scoreMeaning = scoreMeaning;
     }
 
-    public String getImageFileName() {
-        return imageFileName;
-    }
-
-    public void setImageFileName(String imageFileName) {
-        this.imageFileName = imageFileName;
-    }
-
     public String getScoreHistoryTitle() {
         return scoreHistoryTitle;
     }
@@ -76,11 +68,11 @@ public class ModuleGraphReportDTO implements Serializable{
         this.scoreHistory = scoreHistory;
     }
 
-    public String getVeteranLastNameAndLastFourSSN() {
-        return veteranLastNameAndLastFourSSN;
+    public InputStream getInmageInputStream() {
+        return inmageInputStream;
     }
 
-    public void setVeteranLastNameAndLastFourSSN(String veteranLastNameAndLastFourSSN) {
-        this.veteranLastNameAndLastFourSSN = veteranLastNameAndLastFourSSN;
+    public void setInmageInputStream(InputStream inmageInputStream) {
+        this.inmageInputStream = inmageInputStream;
     }
 }
