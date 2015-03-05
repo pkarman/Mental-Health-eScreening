@@ -159,7 +159,7 @@
 									<td colspan="6">No record found</td>
 								</c:if>
 								<c:if test="${not empty searchResult}">
-									<td colspan="6"><c:out value="${searchResultSize}" /> record(s) found</td>
+									<td colspan="6"><c:out value="${searchResultListSize}" /> record(s) found</td>
 								</c:if>
 							</tr>
 						</tfoot>

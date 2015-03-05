@@ -217,7 +217,7 @@
 													<div class="row">
 														<div class="col-md-6 padding_5">
 														<div class="radio border_right_gray">
-		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId}" disabled="${isReadOnly}" /> 
+		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId}" disabled="${isReadOnly}" data-ref="${dueClinicalReminders}" /> 
 		                                            	</div>
 		                                            	</div>
 														<div class="col-md-6 padding_5">
@@ -226,11 +226,9 @@
 													</div>
 												</li>
 											</c:forEach>
-											
+												<li style="display:block"><input type="radio" data-ref="{1, 2, 0}" id="dueClinicalReminder"> <label for="dueClinicalReminder">Due Clinical Reminder</label></li>											
 										</ul>	
-											
-											<hr />
-											<div><input type="radio" data-ref="[1, 2, 0]" id="dueClinicalReminder"> <label for="dueClinicalReminder">Due Clinical Reminder</label></div>
+								
 											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
                       						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>

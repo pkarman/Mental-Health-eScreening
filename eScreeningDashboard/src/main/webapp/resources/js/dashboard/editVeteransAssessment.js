@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 			for(var i=0; i<classes.length; i++){
 				  $("."+classes[i]).closest("tr").addClass("highlight"); 
-				}
+			}
 		}
 	});
 	
@@ -95,6 +95,8 @@ $(document).ready(function() {
 	
 
 
+	
+	/*
 	$(".battery_list input").on("click", function(e) {
 			$(".module_list tr input").prop('checked', false);
 			
@@ -113,7 +115,8 @@ $(document).ready(function() {
 			for(var i=0; i<classes.length; i++){
 				  $(".module_list ."+classes[i]).closest("tr").addClass("highlight"); 
 			}
-	});
+	});*/
+	
 	
 	/*
 	var selectedProgramId = $("#selectedProgramId").val();
@@ -179,9 +182,14 @@ $(document).ready(function() {
 		$(".program_1").addClass("hide2");	        
 	});
 	
-	
 
-	$("#dueClinicalReminder").on("click", function(e) {
+
+	
+		
+
+	$(".battery_list input").on("click", function(e) {
+		 clearAllCheckbox();
+		//$(".module_list tr input").prop('checked', false);
 		// console.log($(this).attr("data-ref"));
 		function check(x, i){
 			if(x == 0){
@@ -206,28 +214,82 @@ $(document).ready(function() {
 				$(element).attr('checked', true);
 			}
 		}
-		var data = [0, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1];
-		for (i = 1; i < data.length; ++i) {   
-			check(data[i], i);
+
+		
+		function dataFormat(data){
+			data.replace('{','').replace('}','').replace(/\s/g,"").split(',');
+			return data;			
 		}
+		var data = $(this).attr("data-ref")
+		data = data.replace('{','').replace('}','').replace(/\s/g,"").split(',');
+		
+		console.log("data>>>>>>>>>> "+data);
+		console.log("data length >>>>>>>>> "+data.length);
+		
+		for (i = 0; i < data.length; ++i) {   
+			check(data[i], i+1);
+		}
+
+
+			
+			
+			/*
+			if(reset_check == false){
+				for ( var i in module_values ) {
+					$("input:checkbox[value="+module_values[i]+"]").prop('checked', true);
+				}
+			}
+			*/
+			
+
+
+			$(".module_list  ." + $(this).attr('class')).prop('checked', true);
+			$(".module_list tr").removeClass("highlight");
+			
+			var classes = $(this).attr('class').split(' ');
+
+			
+			for(var i=0; i<classes.length; i++){
+				  $(".module_list ."+classes[i]).closest("tr").addClass("highlight"); 
+			}
+			
 	});
 	
 		
 	// Filter Batteries that assigned to a specific program - JH
+	function clearAllCheckbox() {
+		var checkbox 	= 'input:checkbox';
+		var tr 			= 'tr';
+		
+		$(checkbox).removeAttr('checked');
+		$(tr).removeClass("highlight");
+		$(checkbox).removeAttr('indeterminate');
+		$(checkbox).prop("indeterminate", false); 
+		reset_check = true;
+	}
+	
 	function clearAllSelectins() {
-		$('input:checkbox').removeAttr('checked');
-		$('input:radio').removeAttr('checked');
-		$("tr").removeClass("highlight");
+		var checkbox 	= 'input:checkbox';
+		var radio 		= 'input:radio';
+		var tr 			= 'tr';
+		
+		$(checkbox).removeAttr('checked');
+		$(radio).removeAttr('checked');
+		$(tr).removeClass("highlight");
+		$(checkbox).removeAttr('indeterminate');
+		$(checkbox).prop("indeterminate", false); 
 		reset_check = true;
 	}
 	
 	function clearAllModulesSelectins() {
-		$('input:checkbox').removeAttr('checked');
-		$("tr").removeClass("highlight");
+		var checkbox 	= 'input:checkbox';
+		var tr 			= 'tr';
+
+		$(checkbox).removeAttr('checked');
+		$(tr).removeClass("highlight");
 		reset_check = true;
 	}
 	
-
 	$(selectedProgramId).on("change", function(e) {
 		loadSelectedProgram();
 	});
