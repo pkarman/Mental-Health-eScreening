@@ -104,7 +104,7 @@
 								<div class="form-group">
 										<form:label path="startDate">From Date *</form:label>
 									<div class="input-group date" id="fromAssessmentDateGroup">
-										<form:input path="startDate" maxlength="10" cssClass="form-control startDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY" value="01/01/2010" />
+										<form:input path="startDate" maxlength="10" cssClass="form-control startDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY" value="01/01/2010"   required="true"   />
 										<form:errors path="startDate"  cssClass="help-inline"/>
 										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>

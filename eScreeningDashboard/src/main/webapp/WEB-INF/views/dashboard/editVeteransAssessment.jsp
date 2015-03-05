@@ -34,6 +34,7 @@
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
 </head>
 <body>
+
 <a href="#skip" class="offscreen">Skip to main content</a>
 	<div id="outerPageDiv">
 		<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -95,10 +96,10 @@
 											<th scope="col" class="col-md-2">Last Name</th>
 											<th scope="col" class="col-md-2">First Name</th>
 											<th scope="col" class="col-md-2">Middle Name</th>
-											<th scope="col" class="col-md-1">Date of Birth</th>
+											<th scope="col" class="col-md-2">Date of Birth</th>
 											<th scope="col" class="col-md-1">Appointment Date</th>
 											<th scope="col" class="col-md-1 text-right">Appointment Time</th>
-											<th scope="col" class="col-md-2">Clinical Reminders</th>
+											<th scope="col" class="col-md-1">Clinical Reminders</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -107,7 +108,7 @@
 												<td colspan="6">No record found</td>
 											</c:if>
 											<c:if test="${not empty veterans}">
-												<td colspan="6"><c:out value="${veteransSize}" /> record(s) found</td>
+												<td colspan="8"><c:out value="${veteransSize}" /> record(s) found</td>
 											</c:if>
 										</tr>
 									</tfoot>
@@ -184,6 +185,9 @@
 								</div>
 							</div>
 						</div>
+
+
+
 						<hr/>
 						<div class="row">
 							<div class="col-md-12">
@@ -222,7 +226,7 @@
 													</div>
 												</li>
 											</c:forEach>
-											<!--<li><input type="radio" data-ref="[{'selectedSurveyIdList1':'1'}, {'selectedSurveyIdList2':'2'}, {'selectedSurveyIdList3':'0'}]" id="dueClinicalReminder"> <label for="selectedBatteryId1">Due Clinical R-->eminder</label></li>
+											<!--<li><input type="radio" data-ref="[{'selectedSurveyIdList1':'1'}, {'selectedSurveyIdList2':'2'}, {'selectedSurveyIdList3':'0'}]" id="dueClinicalReminder"> <label for="selectedBatteryId1">Due Clinical Reminder--></label></li>
 										</ul>	
 											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
@@ -242,17 +246,15 @@
 				    						<tbody>
 											    <c:forEach var="item" items="${surveyList}">
 				                                    <tr>
-				                                        <td class="">
-				                                            <div class="checkbox tri">
-																<c:set var="classNameVar" value=" " />
-																<c:forEach var="battery" items="${item.batteryList}">
-																	<c:set var="classNameVar">
-																		<c:out value="${classNameVar} battery_${battery.batteryId}"  />
-																	</c:set>
-																</c:forEach>
-																<form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" />
-															</div>
-														</td>
+				                                        <td class="tri">
+				                                            <c:set var="classNameVar" value=" " />
+				                                            <c:forEach var="battery" items="${item.batteryList}">
+				                                                <c:set var="classNameVar">
+				                                                    <c:out value="${classNameVar} battery_${battery.batteryId}"  />
+				                                                </c:set>
+				                                            </c:forEach>
+				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" indeterminate="true"  />
+				                                        </td>
 				                                        <td><c:out value="${item.description}" /></td>
 				                                        <td><c:out value="${item.note}" /></td>
 				                                    </tr>

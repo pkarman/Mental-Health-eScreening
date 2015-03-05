@@ -904,6 +904,13 @@ a.offscreen:focus, a.offscreen:active {
 .text-capitalize{
 	text-transform:capitalize;
 }
+.table thead tr:first-child th {
+	background-color: #30333E;
+	color: white;
+	border:1px solid #8F8F8F;
+	vertical-align:middle;
+	font-size:12px;
+}
 
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
