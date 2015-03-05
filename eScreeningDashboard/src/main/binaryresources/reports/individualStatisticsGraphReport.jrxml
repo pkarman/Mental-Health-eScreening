@@ -2,13 +2,15 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsNumericOnlyReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="124"/>
+	<property name="ireport.y" value="130"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<field name="moduleName" class="java.lang.String"/>
-	<field name="screeningModuleName" class="java.lang.String"/>
 	<field name="score" class="java.lang.String"/>
-	<field name="historyByClinic" class="java.lang.String"/>
+	<field name="scoreHistoryTitle" class="java.lang.String"/>
+	<field name="scoreMeaning" class="java.lang.String"/>
+	<field name="scoreName" class="java.lang.String"/>
+	<field name="scoreHistory" class="java.util.Collection"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -51,49 +53,68 @@
 	</title>
 	<detail>
 		<band height="256" splitType="Stretch">
-			<staticText>
-				<reportElement x="16" y="10" width="100" height="25" uuid="d823c831-a055-495f-9b22-82ab2fef6829"/>
+			<textField>
+				<reportElement x="10" y="10" width="150" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
 				<textElement verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PHQ-9]]></text>
-			</staticText>
-			<line>
-				<reportElement x="0" y="39" width="572" height="3" uuid="b0ff8068-cb09-4475-8205-c2e3f59a1f28"/>
-				<graphicElement>
-					<pen lineWidth="3.0"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="0" y="130" width="572" height="1" uuid="89e79a09-5b5c-420d-94d7-a3d98fe22284"/>
-			</line>
-			<lineChart>
-				<chart>
-					<reportElement x="258" y="73" width="200" height="100" uuid="e7308e3b-b024-442b-af41-4502edebf690"/>
-					<chartTitle/>
-					<chartSubtitle/>
-					<chartLegend/>
-				</chart>
-				<categoryDataset/>
-				<linePlot>
-					<plot/>
-					<categoryAxisFormat>
-						<axisFormat/>
-					</categoryAxisFormat>
-					<valueAxisFormat>
-						<axisFormat/>
-					</valueAxisFormat>
-				</linePlot>
-			</lineChart>
+				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="42" width="118" height="178" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField isStretchWithOverflow="true">
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="19" width="118" height="31" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="120" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="68" width="118" height="37" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
+					<textElement textAlignment="Center">
+						<font size="20" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="118" y="42" width="280" height="178" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+			</frame>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="398" y="42" width="174" height="178" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField>
+					<reportElement x="0" y="19" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="0" y="50" width="174" height="128" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber.jasper"]]></subreportExpression>
+				</subreport>
+			</frame>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

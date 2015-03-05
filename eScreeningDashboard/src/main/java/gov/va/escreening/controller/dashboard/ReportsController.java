@@ -6,6 +6,8 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.ReportTypeDTO;
 import gov.va.escreening.dto.dashboard.AssessmentAuditLogReport;
+import gov.va.escreening.dto.report.ModuleGraphReportDTO;
+import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.form.AssessmentLoginFormBean;
@@ -64,7 +66,6 @@ public class ReportsController {
         public File resolveFile(String fileName) {
             URI uri;
             try {
-                System.out.println(fileName);
                 uri = new URI(ReportsController.class.getResource(fileName).getPath());
                 return new File(uri.getPath());
             } catch (URISyntaxException e) {
@@ -106,6 +107,72 @@ public class ReportsController {
     @ResponseBody
     public List<ClinicDto> getAllClinics() {
         return clinicService.getClinicDtoList();
+    }
+
+
+    @RequestMapping(value = "/reports/individualStatisticsGraph", method = RequestMethod.GET)
+    public ModelAndView generateIndividuleStatisticsGraphReport(){
+
+
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+
+
+        parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
+        parameterMap.put("lastNameSSN","Veteran1123, 1234");
+
+        List<ModuleGraphReportDTO> resultList = new ArrayList<>();
+
+        ModuleGraphReportDTO moduleGraphReportDTO = new ModuleGraphReportDTO();
+
+        moduleGraphReportDTO.setScore("20");
+        moduleGraphReportDTO.setModuleName("PHQ-9");
+        moduleGraphReportDTO.setScoreMeaning("Severe");
+        moduleGraphReportDTO.setScoreName("Last Depression Score");
+        moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
+
+        List<ScoreHistoryDTO> history = new ArrayList<>();
+
+        for(int i=0; i<15; i++) {
+            ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
+            scoreHistoryDTO.setClinicName(" Test Clinic "+i);
+            scoreHistoryDTO.setScreeningDate("01/"+i+"/2015");
+            history.add(scoreHistoryDTO);
+        }
+
+
+        moduleGraphReportDTO.setScoreHistory(history);
+
+        resultList.add(moduleGraphReportDTO);
+
+        moduleGraphReportDTO = new ModuleGraphReportDTO();
+
+        moduleGraphReportDTO.setScore("24");
+        moduleGraphReportDTO.setModuleName("PCL-C");
+        moduleGraphReportDTO.setScoreMeaning("Moderate");
+        moduleGraphReportDTO.setScoreName("Last Depression Score");
+        moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
+
+        history = new ArrayList<>();
+
+        for(int i=0; i<5; i++) {
+            ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
+            scoreHistoryDTO.setClinicName(" Test Clinic "+i);
+            scoreHistoryDTO.setScreeningDate("02/"+i+"/2015");
+            history.add(scoreHistoryDTO);
+        }
+
+        moduleGraphReportDTO.setScoreHistory(history);
+
+        resultList.add(moduleGraphReportDTO);
+
+
+        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        System.out.println("aaaaaaacccsaa");
+        return new ModelAndView("individualStatisticsGraphReport", parameterMap);
     }
 
     @RequestMapping(value = "/reports/individualStatistics", method = RequestMethod.GET)
@@ -156,13 +223,13 @@ public class ReportsController {
 
         resultList.add(tb);
 
-        JRDataSource JRdataSource = new JRBeanCollectionDataSource(resultList);
+        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
 
         parameterMap.put("lastNameSSN","Veteran1123, 1234");
         parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
-        parameterMap.put("datasource", JRdataSource);
+        parameterMap.put("datasource", dataSource);
 
         parameterMap.put("cast", resultList);
 
