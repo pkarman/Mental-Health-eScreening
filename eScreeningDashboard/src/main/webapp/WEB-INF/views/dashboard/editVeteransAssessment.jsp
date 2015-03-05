@@ -226,8 +226,11 @@
 													</div>
 												</li>
 											</c:forEach>
-											<!--<li><input type="radio" data-ref="[{'selectedSurveyIdList1':'1'}, {'selectedSurveyIdList2':'2'}, {'selectedSurveyIdList3':'0'}]" id="dueClinicalReminder"> <label for="selectedBatteryId1">Due Clinical Reminder--></label></li>
+											
 										</ul>	
+											
+											<hr />
+											<div><input type="radio" data-ref="[1, 2, 0]" id="dueClinicalReminder"> <label for="dueClinicalReminder">Due Clinical Reminder</label></div>
 											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
                       						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
@@ -247,14 +250,16 @@
 											    <c:forEach var="item" items="${surveyList}">
 				                                    <tr>
 				                                        <td class="tri">
-				                                            <c:set var="classNameVar" value=" " />
+				                                            <div class="checkbox">
+															<c:set var="classNameVar" value=" " />
 				                                            <c:forEach var="battery" items="${item.batteryList}">
 				                                                <c:set var="classNameVar">
 				                                                    <c:out value="${classNameVar} battery_${battery.batteryId}"  />
 				                                                </c:set>
 				                                            </c:forEach>
-				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" indeterminate="true"  />
-				                                        </td>
+				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" />
+				                                        	</div>
+														</td>
 				                                        <td><c:out value="${item.description}" /></td>
 				                                        <td><c:out value="${item.note}" /></td>
 				                                    </tr>

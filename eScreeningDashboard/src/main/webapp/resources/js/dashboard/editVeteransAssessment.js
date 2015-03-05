@@ -182,7 +182,34 @@ $(document).ready(function() {
 	
 
 	$("#dueClinicalReminder").on("click", function(e) {
-			console.log($(this).attr("data-ref"));
+		// console.log($(this).attr("data-ref"));
+		function check(x, i){
+			if(x == 0){
+				console.log("selectedSurveyIdList"+i);
+				console.log("value "+ x);
+				//element = "selectedSurveyIdList"+i;
+				//document.getElementById(element).indeterminate = false;
+				//$(element).prop("indeterminate", false);
+			}
+			if(x == 1){
+				console.log("selectedSurveyIdList"+i);
+				console.log("value "+ x);
+				element = "selectedSurveyIdList"+i;
+				document.getElementById(element).indeterminate = true;
+				$(element).prop("indeterminate", true);    
+			}
+			if(x == 2){
+				console.log("selectedSurveyIdList"+i);
+				console.log("value "+ x);
+				element = "#selectedSurveyIdList"+i;
+				//document.getElementById(element).indeterminate = false;
+				$(element).attr('checked', true);
+			}
+		}
+		var data = [0, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1, 0, 0, 1, 1, 2, 1];
+		for (i = 1; i < data.length; ++i) {   
+			check(data[i], i);
+		}
 	});
 	
 		

@@ -59,13 +59,39 @@
 				<a name="skip" > </a >
         		<h1>Batch Complete</h1>
 				
-					<div class="alert alert-success">
-						Battery Creation Successful for the Below Veterans.
-					</div>
-					
-					<div class="alert alert-danger">
-						Battery Creation Failed for the Below Veterans.
-					</div>
+
+
+
+					<c:if test="${callResult.hasError}">
+					  <div class="alert alert-danger">
+						<!-- MESSAGE | Battery Creation Failed for the Below Veterans. -->
+						<c:out value="${callResult.userMessage}"/>
+					  </div>
+					  <div class="panel-danger-system">
+						<div class="panel-group" id="accordion">
+						  <div class="panel panel-default">
+							<div class="panel-heading">
+							  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse">
+							  <div class="panel-body">
+								<c:out value="${callResult.systemMessage}"/>
+							  </div>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</c:if>
+					<c:if test="${!callResult.hasError}">
+					  <c:if test="${not empty callResult.userMessage}">
+						<div class="alert alert-success">
+						  <!-- MESSAGE | Battery Creation Successful for the Below Veterans. -->
+						  <c:out value="${callResult.userMessage}"/>
+						</div>
+					  </c:if>
+					</c:if>
+		
+		
 					
 					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					  <div class="panel panel-default">
@@ -91,8 +117,8 @@
 											<th scope="col" class="col-md-1">Appointment Date</th>
 											<th scope="col" class="col-md-1">Appointment Time</th>
 											<th scope="col" class="col-md-1">Clinical Reminders</th>
-											<th scope="col" class="col-md-1">Status</th>
-											<th scope="col" class="col-md-1">Action</th>
+											<th scope="col" class="col-md-1 text-center">Status</th>
+											<th scope="col" class="col-md-1 text-center">Action</th>
 										</tr>
 									  </thead>
 										<tbody>
@@ -107,7 +133,7 @@
 														<td class="text-right"><c:out value="${item.vet.apptDate}" /></td>
 														<td class="text-right"><c:out value="${item.vet.apptTime}" /></td>
 														<td class="text-center text-capitalize"><c:out value="${item.vet.dueClinicalReminders}" /></td>
-														<td class="text-center"><c:out value="${item.succeed}"/></td>
+														<td class="text-center text-capitalize"><c:out value="${item.succeed}"/></td>
 														<td class="text-right">
 														<c:if test="${isCprsVerified}">
 															<c:if test="${not empty item.vet.veteranId}">
@@ -115,7 +141,7 @@
 																	<s:param name="vid" value="${item.vet.veteranId}" />
 																</s:url>
 																<div class="text-left">
-																	<a href="${mapVeteranToVistaUrl}"  title="View Details">View</a>
+																	<a href="${mapVeteranToVistaUrl}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-chevron-right"></span> View</a>
 																</div>
 															</c:if>
 														</c:if>		
