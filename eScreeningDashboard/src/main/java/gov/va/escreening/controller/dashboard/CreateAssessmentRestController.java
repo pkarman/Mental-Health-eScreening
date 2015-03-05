@@ -119,30 +119,5 @@ public class CreateAssessmentRestController {
     {
     	return clinicService.getClinicDtoList();
     }
-    
-	@RequestMapping(value = "/veteranSearch/veteransbyclinic", method = {RequestMethod.GET, RequestMethod.POST})
-	@ResponseBody
-	public Response<List<VistaClinicAppointment>> searchVeterans(
-			@RequestParam String clinicIen, @RequestParam String startDate, @RequestParam String endDate,			
-			@CurrentUser EscreenUser escreenUser) {
-
-		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
-		Response<List<VistaClinicAppointment>> resp = new Response<List<VistaClinicAppointment>>();
-		try
-		{
-			List<VistaClinicAppointment> appList = batchCreateDelegate.searchVeteranByAppointments(escreenUser, clinicIen, startDate, endDate);
-			
-			resp.setPayload(appList);
-			resp.setStatus(new ResponseStatus(Request.Succeeded));
-			return resp;
-		}
-		catch(Exception ex)
-		{
-			logger.error("Error getting appointment list for clinic", ex);
-			resp.setStatus(new ResponseStatus(Request.Failed, ex.getMessage()));
-			return resp;
-		}
-		
-	}
 	
 }
