@@ -52,8 +52,12 @@
 					if (question && question.childQuestions.length) {
 						// Create question agnostic answers
 						// Find questions with mha to use for prototype answers
+						prototypeQuestions = $filter('filter')(question.childQuestions, { mha: true} );
+
 						// Set the first question in childQuestions as the prototype if no mha is found
-						prototypeQuestions = $filter('filter')(question.childQuestions, { mha: true} ) || question.childQuestions;
+						if (!prototypeQuestions || !prototypeQuestions.length) {
+							prototypeQuestions = question.childQuestions;
+						}
 
 						_.each(prototypeQuestions[0].answers, function (answer) {
 							scope.answers.push({
