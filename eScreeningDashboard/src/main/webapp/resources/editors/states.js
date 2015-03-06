@@ -291,7 +291,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
 
             .state('modules.detail.question.simple', {
                 url:'/simple/:questionId',
-                template:'<simple-question question="question"></simple-question>',
+                template:'<simple-question question="question" survey="survey"></simple-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Simple'
                 }
@@ -299,7 +299,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
 
             .state('modules.detail.question.matrix', {
                 url:'/matrix/:questionId',
-                template:'<matrix-question question="question"></simple-matrix>',
+                template:'<matrix-question question="question" survey="survey"></matrix-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Matrix'
                 }
