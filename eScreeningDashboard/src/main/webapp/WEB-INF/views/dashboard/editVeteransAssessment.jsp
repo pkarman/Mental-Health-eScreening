@@ -151,7 +151,7 @@
 							<div class="col-md-3">
 								<div class="form-group">
 									<form:label path="selectedProgramId">Program *</form:label>
-									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Program"/>
 										<form:options items="${programList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -167,7 +167,7 @@
 							<div class="col-md-3">								
 								<div class="form-group">
 									<form:label path="selectedNoteTitleId">Note Title *</form:label>
-									<form:select path="selectedNoteTitleId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedNoteTitleId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Note Title"/>
 										<form:options items="${noteTitleList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -177,7 +177,7 @@
 							<div class="col-md-3">								
 								<div class="form-group">
 									<form:label path="selectedClinicianId">Clinician *</form:label>
-									<form:select path="selectedClinicianId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedClinicianId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Clinician"/>
 										<form:options items="${clinicianList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -217,7 +217,7 @@
 													<div class="row">
 														<div class="col-md-6 padding_5">
 														<div class="radio border_right_gray">
-		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId}" disabled="${isReadOnly}" data-ref="${dueClinicalReminders}" /> 
+		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId} " disabled="${isReadOnly}" data-ref="${dueClinicalReminders}"  required="true" /> 
 		                                            	</div>
 		                                            	</div>
 														<div class="col-md-6 padding_5">
@@ -225,10 +225,8 @@
 														</div>
 													</div>
 												</li>
-											</c:forEach>
-												<li style="display:block"><input type="radio" data-ref="{1, 2, 0}" id="dueClinicalReminder"> <label for="dueClinicalReminder">Due Clinical Reminder</label></li>											
-										</ul>	
-								
+											</c:forEach>										
+										</ul>
 											<hr />
 											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
                       						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
