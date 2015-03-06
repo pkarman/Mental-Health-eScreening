@@ -398,6 +398,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             ma.setAnswerType(answerDto.getAnswerType());
             ma.setCalculationValue(answerDto.getCalculationValue());
             ma.setDisplayOrder(answerDto.getDisplayOrder());
+            ma.setMhaValue(answerDto.getMhaValue());
             ma.setMeasure(m);
         }
         return ma;

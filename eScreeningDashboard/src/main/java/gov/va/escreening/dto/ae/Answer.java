@@ -15,7 +15,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
      * These should all be lower case */
     public enum Type{
         NONE, OTHER, HEIGHT_FEET, HEIGHT_INCHES, TABLE_COLUMN;
-        
+
         public static Type fromString(String name){
             if(name == null || name.isEmpty())
                 return null;
@@ -24,20 +24,20 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
                 return NONE;
             if(lowerName.equals("other"))
                 return OTHER;
-            
+
             if(lowerName.equals("feet"))
                 return HEIGHT_FEET;
-            
+
             if(lowerName.equals("inches"))
                 return HEIGHT_INCHES;
-            
+
             if(lowerName.equals("tablecolumn"))
                 return TABLE_COLUMN;
-            
+
             throw new IllegalArgumentException("Invalid Answer type: " + name);
         }
     }
-	
+
     private static final long serialVersionUID = 1L;
 
     private Integer answerId;
@@ -51,6 +51,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private String calculationType;
     private String calculationValue;
     private Integer displayOrder;
+    private String mhaValue;
 
     public String getCalculationValue() {
         return calculationValue;
@@ -68,18 +69,23 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.calculationType = calculationType;
     }
 
-
-
-
     public Integer getDisplayOrder() {
-		return displayOrder;
-	}
+        return displayOrder;
+    }
 
-	public void setDisplayOrder(Integer displayOrder) {
-		this.displayOrder = displayOrder;
-	}
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
+    }
 
-	public String getVistaText() {
+    public String getMhaValue() {
+        return mhaValue;
+    }
+
+    public void setMhaValue(String mhaValue) {
+        this.mhaValue = mhaValue;
+    }
+
+    public String getVistaText() {
         return vistaText;
     }
 
@@ -95,9 +101,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.exportName = exportName;
     }
 
-
-
-	public Integer getAnswerId() {
+    public Integer getAnswerId() {
         return answerId;
     }
 
@@ -136,7 +140,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public void setOtherAnswerResponse(String otherAnswerResponse) {
         this.otherAnswerResponse = otherAnswerResponse;
     }
-    
+
     public Integer getRowId() {
         return rowId;
     }
@@ -146,10 +150,10 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     }
 
     public Answer() {}
-    
+
     public Answer(MeasureAnswer measureAnswer, 
             @Nullable SurveyMeasureResponse measureResponse){
-       
+
         this.answerId = measureAnswer.getMeasureAnswerId();
         this.answerText = measureAnswer.getAnswerText();
         this.answerType = measureAnswer.getAnswerType();
@@ -159,15 +163,16 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
         this.calculationValue=measureAnswer.getCalculationValue();
         this.displayOrder =  measureAnswer.getDisplayOrder();
+        this.mhaValue = measureAnswer.getMhaValue();
 
         //set user response
         if(measureResponse != null){
             this.rowId = measureResponse.getTabularRow();
-            
+
             if (StringUtils.isNotBlank(measureResponse.getOtherValue())) {
                 this.otherAnswerResponse = measureResponse.getOtherValue();
             }
-    
+
             if (measureResponse.getNumberValue() != null) {                   
                 this.answerResponse = measureResponse.getNumberValue().toString();
             }
@@ -190,7 +195,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public String toString() {
         return "Answer [answerId=" + answerId + ", answerText=" + answerText + ", hasOther=" + answerType
                 + ", answerResponse=" + answerResponse + ", otherAnswerResponse=" + otherAnswerResponse + ", rowId:" + rowId 
-                + ", displayOrder=" + displayOrder + ", calculationValue=" + calculationValue + "]";
+                + ", displayOrder=" + displayOrder + ", calculationValue=" + calculationValue + ", mhaValue=" + mhaValue + "]";
     }
 
 }
