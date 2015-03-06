@@ -59,7 +59,7 @@
 
 						<div class="row" ng-if="survey.mha && question.type === 'selectOneMatrix'">
 							<div class="col-sm-offset-1 col-sm-12">
-								<label class="checkbox"> <input type="checkbox" ng-model="childQuestion.mha" ng-change="updateMHAQuestions()"> Is MHA </label>
+								<label class="checkbox"> <input type="checkbox" ng-model="childQuestion.mha" ng-change="updateQuestionAnswers()"> Is MHA </label>
 							</div>
 						</div>
 
@@ -136,6 +136,7 @@
 											<label>MHA Value *</label> <input type="text"
 												class="form-control"
 												ng-model="answer.mhaValue"
+												ng-change="updateQuestionAnswers()"
 												placeholder="MHA Value"
 												required>
 										</div>

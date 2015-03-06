@@ -56,7 +56,7 @@
 							});
 						});
 
-						scope.updateMHAQuestions();
+						updateMHAQuestions();
 					}
 
 				});
@@ -69,9 +69,9 @@
 					scope.updateQuestionAnswers();
 				});
 
-				scope.updateMHAQuestions = function() {
+				function updateMHAQuestions() {
 					scope.selectedMHAQuestions = $filter('filter')(scope.question.childQuestions, { mha: true });
-				};
+				}
 
 				scope.addAnswer = function addAnswer() {
 					scope.answers.push(Answer.extend({displayOrder: scope.answers.length + 1}));
@@ -90,7 +90,9 @@
 				};
 
 				scope.updateQuestionAnswers = function updateQuestionAnswers () {
+
 					if (scope.answers.length && scope.question.childQuestions.length) {
+
 						_.each(scope.question.childQuestions, function(question, index) {
 
 							question.displayOrder = index + 1;
@@ -102,14 +104,27 @@
 								if (!question.answers[j]) {
 									question.answers.push(_.clone(answer));
 								}
+
 								_.merge(question.answers[j], scope.answers[j]);
+
+								// Remove mhaAnswer from answers associated to questions without MHA
+								/*
+								if (!question.mha) {
+									delete question.answers[j].mhaValue;
+								}
+								*/
+
 								if (question.type === 'selectMulti') {
 									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
 								}
+
 								question.answers[j].displayOrder = j + 1;
 							});
 						});
 					}
+
+					updateMHAQuestions();
+
 				};
 			}
 		};
