@@ -1,17 +1,19 @@
 (function() {
 	'use strict';
 
-	angular.module('Editors').directive('matrixQuestion', ['Answer', 'Question', function(Answer, Question) {
+	angular.module('Editors').directive('matrixQuestion', ['$filter', 'Answer', 'Question', function($filter, Answer, Question) {
 
 		return {
 			restrict: 'EA',
 			scope: {
-				question: '='
+				question: '=',
+				survey: '='
 			},
 			templateUrl: 'resources/editors/partials/modules/matrix-question.html',
 			link: function(scope) {
 
 				scope.answers = [];
+				scope.selectedMHAQuestions = [];
 
 				scope.answerTypes = [
 					{ name: 'Other', value: 'other' },
@@ -53,6 +55,8 @@
 								calculationValue: answer.calculationValue
 							});
 						});
+
+						scope.updateMHAQuestions();
 					}
 
 				});
@@ -64,6 +68,10 @@
 				scope.$watchCollection('question.childQuestions', function(childQuestions) {
 					scope.updateQuestionAnswers();
 				});
+
+				scope.updateMHAQuestions = function() {
+					scope.selectedMHAQuestions = $filter('filter')(scope.question.childQuestions, { mha: true });
+				};
 
 				scope.addAnswer = function addAnswer() {
 					scope.answers.push(Answer.extend({displayOrder: scope.answers.length + 1}));

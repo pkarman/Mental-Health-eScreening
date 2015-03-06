@@ -30,6 +30,7 @@
 				<div class="form-group form-inline">
 					<label class="checkbox"> <input type="checkbox" ng-model="question.required"> Required </label>
 					<label class="checkbox"> <input type="checkbox" ng-model="question.ppi"> PPI </label>
+					<label class="checkbox" ng-if="survey.mha && question.type === 'selectOne'"> <input type="checkbox" ng-model="question.mha"> Is MHA </label>
 				</div>
 			</div>
 		</div>
@@ -68,7 +69,7 @@
 								required>
 						</div>
 						<div class="form-group" ng-if="question.type === 'selectMulti'">
-							<label>Variable Name*</label> <input type="text"
+							<label>Variable Name *</label> <input type="text"
 								class="form-control"
 								ng-model="answer.exportName"
 								placeholder="Enter Value"
@@ -83,15 +84,25 @@
 				</div>
 				<div class="row">
 					<div class="col-md-offset-1 col-md-12">
-						<div class="form-group">
-							<div ng-if="question.type === 'selectOne'">
-								<label class="checkbox"> <input type="checkbox"
-										ng-model="answer.type"
-										ng-true-value="other"
-										ng-false-value="{{ null }}"> Other </label>
-							</div>
-							<div class="row" ng-if="question.type === 'selectMulti'">
-								<div class="col-xs-3">
+
+						<div class="row">
+							<div class="form-group">
+								<div class="col-md-5" ng-if="question.type === 'selectOne'">
+									<label class="checkbox"> <input type="checkbox"
+											ng-model="answer.type"
+											ng-true-value="other"
+											ng-false-value="{{ null }}"> Other </label>
+								</div>
+
+								<div class="col-md-5" ng-if="question.mha && question.type === 'selectOne'">
+									<label>MHA Value *</label> <input type="text"
+										class="form-control"
+										ng-model="answer.mhaValue"
+										placeholder="MHA Value"
+										required>
+								</div>
+
+								<div class="col-xs-3" ng-if="question.type === 'selectMulti'">
 									<label for="answerType">Type</label>
 									<select id="answerType"
 											class="form-control"
@@ -102,7 +113,9 @@
 									</select>
 								</div>
 							</div>
+
 						</div>
+
 					</div>
 				</div>
 			</li>

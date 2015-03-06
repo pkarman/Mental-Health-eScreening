@@ -6,7 +6,8 @@
 		return {
 			restrict: 'EA',
 			scope: {
-				question: '='
+				question: '=',
+				survey: '='
 			},
 			templateUrl: 'resources/editors/partials/modules/simple-question.html',
 			link: function(scope) {
