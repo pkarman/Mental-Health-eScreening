@@ -60,6 +60,9 @@ public class SurveyServiceImpl implements SurveyService {
     private ClinicalReminderSurveyRepository clinicalReminderSurveyRepo;
     
     @Autowired
+    private ClinicalReminderRepository clinicalReminderRepo;
+    
+    @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
     }
@@ -364,6 +367,9 @@ public class SurveyServiceImpl implements SurveyService {
         if(surveyInfo.getClinicalReminderId() != null && surveyInfo.getClinicalReminderId() > 0)
         {
         	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
+        	ClinicalReminder reminder = clinicalReminderRepo.findOne(surveyInfo.getClinicalReminderId());
+        	cr.setClinicalReminder(reminder);
+        	cr.setSurvey(survey);
         	clinicalReminderSurveyRepo.create(cr);
         	
         }
