@@ -658,6 +658,20 @@
                             </fileset>
                         </configuration>
                     </execution>
+                    <execution>
+						<id>apply-sprint-32-ticket-809-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_32_809</basedir>
+							</fileset>
+						</configuration>
+					</execution>
 					<execution>
 						<id>apply-sprint-33-data</id>
 							<phase>process-test-resources</phase>
@@ -685,44 +699,17 @@
 							</configuration>
 					</execution>
 					<execution>
-						<id>apply-sprint-32-ticket-809-data</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-						<configuration>
-						 	<delimiter>;;</delimiter>
-						 	<orderFile>ascending</orderFile>
-							<fileset>
-								<basedir>src/main/sql/sprint_32_809</basedir>
-							</fileset>
-						</configuration>
-					</execution>
-					<execution>
-						<id>apply-sprint-33-ticket-data</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-						<configuration>
-						 	<orderFile>ascending</orderFile>
-							<fileset>
-								<basedir>src/main/sql/sprint_33</basedir>
-							</fileset>
-						</configuration>
-					</execution>
-					<execution>
-						<id>test-data-fill</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-						<configuration>
-							<orderFile>ascending</orderFile>
-							<fileset>
-								<basedir>src/test/sql</basedir>
-							</fileset>
-						</configuration>
+						<id>apply-test-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/test/sql</basedir>
+								</fileset>
+							</configuration>
 					</execution>
 				</executions>
 			</plugin>
