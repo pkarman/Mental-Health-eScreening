@@ -53,14 +53,17 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private Integer displayOrder;
     private String mhaValue;
 
+    @Override
     public String getCalculationValue() {
         return calculationValue;
     }
 
+    @Override
     public void setCalculationValue(String calculationValue) {
         this.calculationValue = calculationValue;
     }
 
+    
     public String getCalculationType() {
         return calculationType;
     }
@@ -69,66 +72,82 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.calculationType = calculationType;
     }
 
+    @Override
     public Integer getDisplayOrder() {
         return displayOrder;
     }
 
+    @Override
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
     }
 
+    @Override
     public String getMhaValue() {
         return mhaValue;
     }
 
+    @Override
     public void setMhaValue(String mhaValue) {
         this.mhaValue = mhaValue;
     }
 
+    @Override
     public String getVistaText() {
         return vistaText;
     }
 
+    @Override
     public void setVistaText(String vistaText) {
         this.vistaText = vistaText;
     }
 
+    @Override
     public String getExportName() {
         return exportName;
     }
 
+    @Override
     public void setExportName(String exportName) {
         this.exportName = exportName;
     }
 
+    @Override
     public Integer getAnswerId() {
         return answerId;
     }
 
+    @Override
     public void setAnswerId(Integer answerId) {
         this.answerId = answerId;
     }
 
+    @Override
     public String getAnswerText() {
         return answerText;
     }
 
+    @Override
     public void setAnswerText(String answerText) {
         this.answerText = answerText;
     }
 
+    @Override
     public String getAnswerType() {
         return answerType;
     }
 
+    @Override
     public void setAnswerType(String type) {
         this.answerType = type;
     }
 
+    @Override
     public String getAnswerResponse() {
         return answerResponse;
     }
 
+    @Override
     public void setAnswerResponse(String answerResponse) {
         this.answerResponse = answerResponse;
     }
@@ -137,14 +156,17 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         return otherAnswerResponse;
     }
 
+    @Override
     public void setOtherAnswerResponse(String otherAnswerResponse) {
         this.otherAnswerResponse = otherAnswerResponse;
     }
 
+    @Override
     public Integer getRowId() {
         return rowId;
     }
 
+    @Override
     public void setRowId(Integer rowId) {
         this.rowId = rowId;
     }
