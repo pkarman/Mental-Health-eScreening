@@ -96,4 +96,6 @@ public interface AssessmentDelegate {
 	 * context or the battery does not have a welcome message template defined for it. 
 	 */
 	public String getWelcomeMessage() throws IllegalSystemStateException;
+
+    void recordAllReportableScores(VeteranAssessment veteranAssessment);
 }

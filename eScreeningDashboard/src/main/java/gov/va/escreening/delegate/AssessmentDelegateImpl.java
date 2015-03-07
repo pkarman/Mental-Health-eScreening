@@ -31,22 +31,15 @@ import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
-import gov.va.escreening.repository.AssessmentStatusRepository;
-import gov.va.escreening.repository.BatteryRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.SurveySectionRepository;
-import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
-import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.service.AssessmentEngineService;
-import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.VeteranAssessmentSurveyService;
-import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.repository.*;
+import gov.va.escreening.service.*;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import gov.va.escreening.variableresolver.VariableResolverServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +79,9 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Resource(type = TemplateProcessorService.class)
 	private TemplateProcessorService templateProcessorService;
+
+	@Resource(type = VeteranAssessmentSurveyScoreService.class)
+	private VeteranAssessmentSurveyScoreService vassSrv;
 
 	@Override
 	public List<VeteranDto> findVeterans(VeteranDto veteran) {
@@ -287,6 +283,12 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
         // after the assessment is done, we will calculate the score first before returing to UI.
-        //TODO: kliu.ctr
+        recordAllReportableScores(veteranAssessment);
 	}
+
+    @Override
+    public void recordAllReportableScores(VeteranAssessment veteranAssessment) {
+        vassSrv.recordAllReportableScores(veteranAssessment);
+
+    }
 }
