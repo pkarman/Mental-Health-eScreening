@@ -45,48 +45,59 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     @Override
     @Transactional
     public void recordAllReportableScores(VeteranAssessment veteranAssessment) {
-        final Collection<AssessmentVariable> allFormulas = avSrv.findAllFormulas();
-
         for (Survey s : veteranAssessment.getSurveys()) {
-            final Collection<AssessmentVariable> reportableFormulas = extractReportableFormulasOnly(s, allFormulas);
-            if (reportableFormulas != null) {
-                final Iterable<AssessmentVariableDto> reportableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), reportableFormulas);
+            // find reportable Assessment Variables for each Survey in this Veteran Assessment. Most of these Assessment Variables will be Formulas,
+            // and also most of the Formulas would be Aggregate Formulas
+            final Collection<AssessmentVariable> reportableAvs = getReportableAvsForSurvey(s);
+
+            // in case a survey does not have any Assessment Variable as reportable
+            if (reportableAvs != null) {
+                // use assessment variables and veteran Assessment Id
+                final Iterable<AssessmentVariableDto> reportableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), reportableAvs);
                 for (AssessmentVariableDto avDto : reportableAvDtos) {
-                    vassRepos.update(createVASS(s, avDto, veteranAssessment));
+                    VeteranAssessmentSurveyScore vass = tryCreateVASS(s, avDto, veteranAssessment);
+                    if (vass != null) {
+                        vassRepos.update(vass);
+                    }
                 }
             }
         }
-
     }
 
-    private VeteranAssessmentSurveyScore createVASS(Survey s, AssessmentVariableDto avDto, VeteranAssessment veteranAssessment) {
-        VeteranAssessmentSurveyScore vass = new VeteranAssessmentSurveyScore();
-        vass.setClinic(veteranAssessment.getClinic());
-        vass.setDateCompleted(LocalDate.now().toDate());
-
-        //get the string as an integer, round it to get best mathematical number
-        int roundedScore = (int) Math.round(Double.parseDouble(avDto.getDisplayText()));
-        vass.setScore(roundedScore);
-
-        vass.setSurvey(s);
-        vass.setVeteran(veteranAssessment.getVeteran());
-        vass.setVeteranAssessment(veteranAssessment);
-        return vass;
-    }
-
-    private Collection<AssessmentVariable> extractReportableFormulasOnly(Survey s, Collection<AssessmentVariable> allFormulas) {
-        String reportableFormalasNames = reportableFormulasMap.get(s.getName());
-        if (reportableFormalasNames == null) {
+    private Collection<AssessmentVariable> getReportableAvsForSurvey(Survey s) {
+        List<String> avDisplayNames = getDisplayNamesForSurvey(s);
+        if (avDisplayNames == null) {
             return null;
         }
-        final List<String> reportableFormulasAsList = Lists.newArrayList(Splitter.on(',').omitEmptyStrings().trimResults().split(reportableFormalasNames));
-        Predicate<AssessmentVariable> predicate = new Predicate<AssessmentVariable>() {
-            @Override
-            public boolean apply(AssessmentVariable input) {
-                return reportableFormulasAsList.contains(input.getDisplayName());
-            }
-        };
-        Collection<AssessmentVariable> result = Collections2.filter(allFormulas, predicate);
-        return result;
+        final Collection<AssessmentVariable> byDisplayNames = avSrv.findByDisplayNames(avDisplayNames);
+        return byDisplayNames;
+    }
+
+    private List<String> getDisplayNamesForSurvey(Survey s) {
+        String avDisplayNames = reportableFormulasMap.get(s.getName());
+        if (avDisplayNames == null) {
+            return null;
+        }
+        final List<String> avDisplayNamesAsList = Lists.newArrayList(Splitter.on(',').omitEmptyStrings().trimResults().split(avDisplayNames));
+        return avDisplayNamesAsList;
+    }
+
+    private VeteranAssessmentSurveyScore tryCreateVASS(Survey s, AssessmentVariableDto avDto, VeteranAssessment veteranAssessment) {
+        String scoreAsStr = avDto.getDisplayText();
+        if (scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
+            VeteranAssessmentSurveyScore vass = new VeteranAssessmentSurveyScore();
+            vass.setClinic(veteranAssessment.getClinic());
+            vass.setDateCompleted(LocalDate.now().toDate());
+
+            //get the string as an integer, round it to get best mathematical number
+            int roundedScore = (int) Math.round(Double.parseDouble(scoreAsStr));
+            vass.setScore(roundedScore);
+
+            vass.setSurvey(s);
+            vass.setVeteran(veteranAssessment.getVeteran());
+            vass.setVeteranAssessment(veteranAssessment);
+            return vass;
+        }
+        return null;
     }
 }
