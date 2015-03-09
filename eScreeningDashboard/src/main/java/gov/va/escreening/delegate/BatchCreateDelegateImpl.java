@@ -42,14 +42,15 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 
 	@Autowired
 	private VeteranService veteranService;
-	
+
 	@Autowired
 	private VeteranRepository veteranRepo;
-	
+
 	@Autowired
 	private CreateAssessmentDelegate createAssessmentDelegate;
-	
-	private static Logger logger = LoggerFactory.getLogger(BatchCreateDelegateImpl.class);
+
+	private static Logger logger = LoggerFactory
+			.getLogger(BatchCreateDelegateImpl.class);
 
 	@Override
 	public List<VistaClinicAppointment> searchVeteranByAppointments(
@@ -70,40 +71,40 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	@Override
 	public List<VistaClinicAppointment> searchVeteranByAppointments(
 			EscreenUser user, String clinicIen, Date start, Date end) {
-		
-		try
-		{
-		List<VistaClinicAppointment> appList = vistaRepo.getAppointmentsForClinic(user.getVistaDivision(),
-				user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
-				clinicIen, start, end);
-		
-		Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
-		
-		//Now, go through the veterans and only return the closest appointment to the startDate???
-		for(VistaClinicAppointment app : appList)
-		{	
-			String vetIen = app.getVeteranIen();
-			if(appMap.containsKey(vetIen))
-			{
-				Date appTime = app.getAppointmentDate();
-				Date current = Calendar.getInstance().getTime();
-				if(appTime.after(current))
-				{
-					if(appTime.before(appMap.get(vetIen).getAppointmentDate()))
-					{
-						appMap.put(vetIen, app);
+
+		try {
+			// need to set end to the end of the day here.
+			Calendar c = Calendar.getInstance();
+			c.setTime(end);
+			c.add(Calendar.HOUR, 24);
+			
+			List<VistaClinicAppointment> appList = vistaRepo
+					.getAppointmentsForClinic(user.getVistaDivision(),
+							user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
+							clinicIen, start, c.getTime());
+
+			Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
+
+			// Now, go through the veterans and only return the closest
+			// appointment to the startDate???
+			for (VistaClinicAppointment app : appList) {
+				String vetIen = app.getVeteranIen();
+				if (appMap.containsKey(vetIen)) {
+					Date appTime = app.getAppointmentDate();
+					Date current = Calendar.getInstance().getTime();
+					if (appTime.after(current)) {
+						if (appTime.before(appMap.get(vetIen)
+								.getAppointmentDate())) {
+							appMap.put(vetIen, app);
+						}
 					}
+				} else {
+					appMap.put(vetIen, app);
 				}
 			}
-			else
-			{
-				appMap.put(vetIen, app);
-			}
-		}
-		
-		return new ArrayList<VistaClinicAppointment>(appMap.values());
-		}catch(Exception ex)
-		{
+
+			return new ArrayList<VistaClinicAppointment>(appMap.values());
+		} catch (Exception ex) {
 			logger.error("Error getting veterans by appointments", ex);
 			return new ArrayList<VistaClinicAppointment>();
 		}
@@ -111,6 +112,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 
 	/**
 	 * Import a list of veterans
+	 * 
 	 * @param iens
 	 * @param escreenUser
 	 * @return
@@ -135,45 +137,40 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	}
 
 	@Override
-	public List<VeteranWithClinicalReminderFlag> getVeteranDetails(String[] veteranIens, EscreenUser user,
+	public List<VeteranWithClinicalReminderFlag> getVeteranDetails(
+			String[] veteranIens, EscreenUser user,
 			List<VistaClinicAppointment> appList) {
 		// TODO Auto-generated method stub
 		List<String> vetInDB = new ArrayList<String>();
 		List<String> vetToImport = new ArrayList<String>();
 		List<Veteran> vetList = veteranRepo.getVeteranByIens(veteranIens);
-		
-		for(Veteran v : vetList)
-		{
+
+		for (Veteran v : vetList) {
 			vetInDB.add(v.getVeteranIen());
 		}
-		
-		for(String s: veteranIens)
-		{
-			if(!vetInDB.contains(s))
-			{
+
+		for (String s : veteranIens) {
+			if (!vetInDB.contains(s)) {
 				vetToImport.add(s);
 			}
 		}
-		
+
 		List<VeteranDto> imported = importVeterans(vetToImport, user);
-		
-		List<VeteranWithClinicalReminderFlag> result = new ArrayList<VeteranWithClinicalReminderFlag>(imported.size());
-		for(Veteran v:vetList)
-		{
-			result.add(new VeteranWithClinicalReminderFlag(VeteranServiceImpl.convertVeteranToVeteranDto(v)));
+
+		List<VeteranWithClinicalReminderFlag> result = new ArrayList<VeteranWithClinicalReminderFlag>(
+				imported.size());
+		for (Veteran v : vetList) {
+			result.add(new VeteranWithClinicalReminderFlag(VeteranServiceImpl
+					.convertVeteranToVeteranDto(v)));
 		}
-		
-		for(VeteranDto dto : imported)
-		{
+
+		for (VeteranDto dto : imported) {
 			result.add(new VeteranWithClinicalReminderFlag(dto));
 		}
-		
-		for(VeteranWithClinicalReminderFlag v : result)
-		{
-			for(VistaClinicAppointment appt : appList)
-			{
-				if(appt.getVeteranIen().equals(v.getVeteranIen()))
-				{
+
+		for (VeteranWithClinicalReminderFlag v : result) {
+			for (VistaClinicAppointment appt : appList) {
+				if (appt.getVeteranIen().equals(v.getVeteranIen())) {
 					v.setApptDate(appt.getApptDate());
 					v.setApptTime(appt.getApptTime());
 					break;
@@ -184,30 +181,45 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	}
 
 	@Override
-	public List<BatchBatteryCreateResult> batchCreate(List<VeteranWithClinicalReminderFlag> vets, int programId, int clinicId, 
-			int clinicianId, int noteTitleId, int batteryId, Map<Integer, Set<Integer>> surveyMap, List<Integer> selectedSurvey,
-			EscreenUser escreenUser)
-	{
-		List<BatchBatteryCreateResult> resultList = new ArrayList<BatchBatteryCreateResult>(vets.size());
-		for(VeteranWithClinicalReminderFlag vet : vets)
-		{
+	public List<BatchBatteryCreateResult> batchCreate(
+			List<VeteranWithClinicalReminderFlag> vets, int programId,
+			int clinicId, int clinicianId, int noteTitleId, int batteryId,
+			Map<Integer, Set<Integer>> surveyMap, List<Integer> selectedSurvey,
+			EscreenUser escreenUser) {
+		List<BatchBatteryCreateResult> resultList = new ArrayList<BatchBatteryCreateResult>(
+				vets.size());
+		for (VeteranWithClinicalReminderFlag vet : vets) {
 			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
-			if(surveyList == null)
-			{
+			if (surveyList == null) {
 				surveyList = new HashSet<Integer>();
 			}
-			surveyList.addAll(selectedSurvey);
-			// Add
-			createAssessmentDelegate.createVeteranAssessment(escreenUser, vet.getVeteranId(), programId, clinicId, 
-					clinicianId, noteTitleId, batteryId, new ArrayList<Integer>(surveyList));
-
+			if (selectedSurvey != null && !selectedSurvey.isEmpty()) {
+				surveyList.addAll(selectedSurvey);
+			}
 			BatchBatteryCreateResult result = new BatchBatteryCreateResult();
 			result.setVet(vet);
-			result.setSucceed(true);
+			if (surveyList.isEmpty()) {
+				result.setSucceed(false);
+				result.setErrorMsg("No survey selected for the battery");
+			}
+			// Add
+			try {
+				createAssessmentDelegate.createVeteranAssessment(escreenUser,
+						vet.getVeteranId(), programId, clinicId, clinicianId,
+						noteTitleId, batteryId, new ArrayList<Integer>(
+								surveyList));
+				result.setSucceed(true);
+			} catch (Exception ex) {
+				logger.error("Error creating assessment for veteran Id= "
+						+ vet.getVeteranId());
+				result.setErrorMsg("Error occurred: " + ex.getMessage());
+				result.setSucceed(false);
+			}
+
 			resultList.add(result);
 		}
-			
+
 		return resultList;
-		
+
 	}
 }
