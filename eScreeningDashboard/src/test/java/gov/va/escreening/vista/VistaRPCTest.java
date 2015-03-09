@@ -184,7 +184,7 @@ public class VistaRPCTest {
 		logger.warn("Delete Progress Note - IEN: " + progressNoteIEN);
 		VistaLinkConnection connection = getVistaLinkDuzConnection("500", "10000000056");
 		RpcRequest request = createRpcRequest("OR CPRS GUI CHART", connection, true);
-		List requestParams = new ArrayList();
+		List<Long> requestParams = new ArrayList<>();
 		requestParams.add(progressNoteIEN); // IEN of progress note. Required
 
 		request.setRpcName("TIU DELETE RECORD");

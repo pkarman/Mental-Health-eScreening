@@ -1,5 +1,9 @@
 package gov.va.escreening.dto;
 
+import org.springframework.beans.BeanUtils;
+
+import gov.va.escreening.entity.MeasureAnswer;
+
 
 public class MeasureAnswerDTO {
 	
@@ -13,6 +17,10 @@ public class MeasureAnswerDTO {
     private String mhaValue;
     private Integer displayOrder;
     private String vistaText;
+    
+    public MeasureAnswerDTO(MeasureAnswer ma){
+    	BeanUtils.copyProperties(ma, this);
+    }
     
 	public Integer getMeasureAnswerId() {
 		return measureAnswerId;
@@ -74,7 +82,4 @@ public class MeasureAnswerDTO {
 	public void setVistaText(String vistaText) {
 		this.vistaText = vistaText;
 	}
-	
-	
-
 }

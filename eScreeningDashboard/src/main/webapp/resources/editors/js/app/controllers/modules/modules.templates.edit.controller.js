@@ -21,14 +21,13 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     else if($scope.relatedObj.type === "battery") {
     	queryObj = {batteryId: $scope.relatedObj.id};
     }
-    
-    $scope.assessmentVariables = AssessmentVariableService.query(queryObj)
+													AssessmentVariableService.query(queryObj)
         .then(function(assessmentVariables) {
             assessmentVariables.forEach(function(variable){
                     $scope.variableHash[variable.id] = variable;
                 });
-                
-                return assessmentVariables;
+
+															$scope.assessmentVariables = assessmentVariables;
             });
 
     $scope.save = function () {
@@ -37,8 +36,11 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
         $scope.template.saveFor($scope.relatedObj).then(function (response) {
             $scope.done(true).then(function(){
                 MessageFactory.set('success', 'All template changes have been saved.');
-            })
-        });
+            });
+        }, function(response) {
+				MessageFactory.error('An error occurred trying to save the template.');
+			}
+		);
     };
 
     $scope.done = function (wasSaved) {
@@ -259,8 +261,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		            return $scope.template;
 	            }
 			},
-			controller: ['$scope', '$modalInstance', 'eventBus', 'template', 'textAngularManager', 
-			             function($scope, $modalInstance, eventBus, template, textAngularManager) {
+			controller: ['$scope', '$modalInstance', 'eventBus', 'template',
+			             function($scope, $modalInstance, eventBus, template) {
 
                 $scope.templateName = template.name;
 
@@ -275,7 +277,9 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				// Copy the selected or new block so that potential changes in modal don't update object in page
 				$scope.block = (selectedBlock && !isAdding) ? selectedBlock : TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig, selectedBlock);
 				$scope.isAdding = angular.isUndefined(isAdding) ? false : isAdding;
-				
+
+				AssessmentVariableService.parentBlock = $scope.block.getParent();
+
 				$scope.block.setTextContent(TemplateBlockService);
 
 				// Dismiss modal
@@ -302,7 +306,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 			                if (!selectedBlock) template.blocks.push($scope.block);
 			                //TODO: If we have domain objects for each block type then we can move this "addBlock" logic into each of them.
-			                else if (selectedBlock.type == 'if') {
+			                else if (selectedBlock.type == 'if' || selectedBlock.type === 'table') {
 				                if ($scope.block.type == 'if') {
 					                insertAfterText(selectedBlock);
 				                }

@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Survey;
+import gov.va.escreening.exception.EntityNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +38,7 @@ public interface AssessmentVariableService {
 
     Collection<AssessmentVariable> findAllFormulas();
 
-    void filterBySurvey(Survey survey, AvBuilder avModelBldr,
+	void filterBySurvey(Survey survey, AvBuilder<?> avModelBldr,
                         Collection<Measure> smList, Collection<AssessmentVariable> avList,
                         boolean filterMeasures, boolean includeFormulaTokens);
 
@@ -45,7 +46,23 @@ public interface AssessmentVariableService {
 
     boolean compareMeasureAnswer(AssessmentVariable av, Measure m);
 
-    List<Map<String, String>> askFormulasFor(Integer moduleId);
+	/**
+	 * Retrieves all assessment variables associated with the given measure and its child measures if applicable. Does not include answer AVs.
+	 * @param measureId 
+	 * @return Map from AV ID to the AV object
+	 */
+	Map<Integer, AssessmentVariable> getAssessmentVarsForMeasure(Integer measureId);
+	
+	/**
+	 * @param measureAnswerId measure answer to pull AV for. This method gives back a single 
+	 * AV which is because the relationship should be one-to-one. This will be updated soon so 
+	 * for now this will return only one.
+	 * @return the AV associated with the given answer
+	 * @throws EntityNotFoundException if no AV is found for the given answer
+	 */
+	AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId);
+	
+	List<Map<String, String>> askFormulasFor(Integer moduleId);
 
-    String getPlainText(String htmlText);
+	String getPlainText(String htmlText);
 }

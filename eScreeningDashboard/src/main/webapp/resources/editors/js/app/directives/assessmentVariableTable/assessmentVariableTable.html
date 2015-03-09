@@ -3,38 +3,238 @@
 	      type="text/css"
 	      href="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.css">
 
-	<div class="row">
-		<div class="col-md-6">
-			<label class="sr-only">Select Assessment Variable Type</label>
-			<select class="form-control" data-ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes">
-			<option value=""> -- Choose Type --</option>
-		</select>
+	<div ng-if="toggles.list">
+		<div class="row">
+			<div class="col-md-6">
+				<label class="sr-only">Select Assessment Variable Type</label>
+				<select class="form-control" ng-model="searchObj.type" ng-options="assessmentVariableType for assessmentVariableType in assessmentVariableTypes" tabindex="4">
+					<option value="">-- Choose Type --</option>
+				</select>
+			</div>
+			<div class="col-md-6">
+				<label class="sr-only">Assessment Variable Search</label>
+				<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search" tabindex="5">
+			</div>
 		</div>
-		<div class="col-md-6">
-			<label class="sr-only">Assessment Variable Search</label>
-			<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search">
-		</div>
-	</div>
-	<br>
+		<br>
 
-	<div class="row">
+		<div class="row">
 
-		<div class="col-md-12">
+			<div class="col-md-12">
 
-			<table ng-table="tableParams" class="table table-hover">
-				<tr ng-repeat="av in $data | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
-					<td data-title="'Variable Name'" class="col-md-4">{{av.name}}</td>
-					<td data-title="'Name'" filter="{ 'displayName': 'text' }" class="col-md-4">{{av.displayName}}</td>
-					<td data-title="'Type'" class="col-md-2">{{av.type}}</td>
-					<td data-title="'Insert'" class="col-md-2">
+				<table ng-table="tableParams" class="table table-hover">
+					<tr ng-repeat="av in $data track by $index | filter:avSearch" ng-class-odd="'odd'" ng-class-even="'even'">
+						<td data-title="'Variable Name'" class="col-md-4">{{av.name}}</td>
+						<td data-title="'Name'" filter="{ 'displayName': 'text' }" class="col-md-4">{{av.displayName}}</td>
+						<td data-title="'Type'" class="col-md-2">{{av.type}}</td>
+						<td data-title="'Insert'" class="col-md-2">
 	                <span title="Select" class="cursor-pointer pull-right btn btn-link" ng-click="select($event, av);">
-	                    <i class="fa fa-arrow-circle-right" title="Select"></i> Select
+	                    <span on-enter="select($event, av)" tabindex="5"><i class="fa fa-arrow-circle-right" title="Select"></i> Select</span>
 	                </span>
-					</td>
-				</tr>
-			</table>
+						</td>
+					</tr>
+				</table>
 
+			</div>
+
+		</div>
+	</div>
+
+	<div ng-switch on="transformationName" class="animate-switch-container container-fluid" ng-if="toggles.transformations">
+
+		<div ng-switch-when="appointment" class="animate-switch" class="col-sm-12">
+			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
+			<form>
+				<h5>Transformation Type</h5>
+				<p>Delimiter</p>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputPrefix">Prefix</label>
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]" tabindex="6">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputLastPrefix">Last Prefix</label>
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params[1]">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputSuffix">Suffix</label>
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params[2]">
+						</div>
+					</div>
+					<div class="col-md-6"><br>
+						<div class="checkbox">
+							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params[3]"> <label for="suf_check_01"> Suffix After Last Entry</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="inputDefaultText">Default Text</label>
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params[4]">
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="multi-select" class="animate-switch" class="col-sm-12">
+			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
+			<form>
+				<h5>Transformation Type</h5>
+				<p>Delimiter</p>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputPrefix">Prefix</label>
+							<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[0]" tabindex="6">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputLastPrefix">Last Prefix</label>
+							<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params[1]">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="inputSuffix">Suffix</label>
+							<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params[2]">
+						</div>
+					</div>
+					<div class="col-md-6"><br>
+						<div class="checkbox">
+							<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params[3]"> <label for="suf_check_01"> Suffix After Last Entry</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="inputDefaultText">Default Text</label>
+					<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params[4]">
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="freetext" class="animate-switch" class="col-sm-12">
+			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
+			<form>
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type</label>
+					<select id="selectTransformationType"
+							class="form-control"
+							tabindex="6"
+							ng-model="transformationType"
+							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
+						<option value="">No Transformation</option>
+					</select>
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-switch-when="single-matrix" class="animate-switch" class="col-sm-12">
+			<matrix-transformation assessment-variable="assessmentVariable" apply-transformations="applyTransformations(this)" dismiss="dismiss()"></matrix-transformation>
+		</div>
+
+		<div ng-switch-when="multi-matrix" class="animate-switch" class="col-sm-12">
+			<matrix-transformation assessment-variable="assessmentVariable" apply-transformations="applyTransformations(this)" dismiss="dismiss()"></matrix-transformation>
+		</div>
+
+		<div ng-switch-when="table" class="animate-switch" class="col-sm-12">
+			<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
+			<form name="tableForm">
+				<div class="form-group">
+					<label for="selectTransformationType">Transformation Type</label>
+					<select id="selectTransformationType"
+							class="form-control"
+							tabindex="6"
+							ng-model="transformationType"
+							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
+						<option value="">{{ (block) ? 'No Transformation' : '-- Select Transformation --' }}</option>
+					</select>
+				</div>
+
+				<div ng-if="transformationType.name === 'delimitTableField'">
+
+					<div class="form-group">
+						<label for="selectChildQuestion">Select Child Question</label>
+						<select id="selectChildQuestion"
+								class="form-control"
+								ng-options="question.id as question.text for question in childQuestions"
+								ng-model="assessmentVariable.transformations[0].params[0]"
+								required>
+							<option value="">-- Select Child Question --</option>
+						</select>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="inputPrefix">Prefix</label>
+								<input type="text" id="inputPrefix" class="form-control" placeholder="Enter Prefix" ng-model="assessmentVariable.transformations[0].params[1]">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="inputLastPrefix">Last Prefix</label>
+								<input type="text" id="inputLastPrefix" class="form-control" placeholder="Enter Last Prefix" ng-model="assessmentVariable.transformations[0].params[2]">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="inputSuffix">Suffix</label>
+								<input type="text" id="inputSuffix" class="form-control" placeholder="Enter Suffix" ng-model="assessmentVariable.transformations[0].params[3]">
+							</div>
+						</div>
+						<div class="col-md-6"><br>
+							<div class="checkbox">
+								<input type="checkbox" id="suf_check_01" ng-checked="assessmentVariable.transformations[0].params[4]"> <label for="suf_check_01"> Suffix After Last Entry</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputDefaultText">Default Text</label>
+						<input type="text" id="inputDefaultText" class="form-control" placeholder="Enter Default Text" ng-model="assessmentVariable.transformations[0].params[5]">
+					</div>
+
+				</div>
+
+				<div class="text-right">
+					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);" ng-disabled="!block && !transformationType">Insert</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+				</div>
+			</form>
 		</div>
 
 	</div>
+
 </div>

@@ -218,7 +218,9 @@ public class SurveyMeasureResponse implements Serializable {
 	@Override
 	public String toString() {
 		return "gov.va.escreening.entity.SurveyMeasureResponse[ surveyMeasureResponseId="
-				+ surveyMeasureResponseId + " ]";
+				+ surveyMeasureResponseId + ", answerId=" 
+				+ (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null) 
+				+ ", row=" + tabularRow + " ]";
 	}
 
 }

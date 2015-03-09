@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by pouncilt on 4/10/14.
  */
-public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest implements VistaLinkRequest {
+public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest<String> implements VistaLinkRequest<VistaServiceCategoryEnum> {
 	private static final Logger logger = LoggerFactory.getLogger(ORWPCE_GETSVC_VistaLinkRequest.class);
 	private VistaLinkConnection connection = null;
 	private RpcRequest request = null;

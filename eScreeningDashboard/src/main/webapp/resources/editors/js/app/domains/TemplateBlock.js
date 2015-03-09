@@ -56,11 +56,15 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
         this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
+		if (jsonConfig.table) {
+			this.table = jsonConfig.table;
+		}
+
         if(Object.isArray(jsonConfig.contents)){
             jsonConfig.contents.forEach(function(blockData){
                 var contentObj = angular.copy(blockData);
                 if(contentObj.type == "var"){
-                    contentObj.content = new EScreeningDashboardApp.models.TemplateVariableContent(contentObj.content);
+                    contentObj.content = new EScreeningDashboardApp.models.AssessmentVariable(contentObj.content);
                 }
                 self.contents.push(contentObj);   
             });
@@ -82,6 +86,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = '';
         this.children = [];
         this.contents = [];
+
+		if (this.type === 'table') {
+			this.table = { type : 'var' };
+		}
     }
 
     function swapNbspForSpaces(text){
@@ -156,13 +164,20 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				}
 			}
 		}
-
-		if (block.type !== 'text' && block.type !== 'else') {
+		else if(block.type == 'table'){
+			if(angular.isDefined(block.table) 
+				&& angular.isDefined(block.table.content)){
+				
+				block.name = angular.isDefined(block.table.content.name) ?  block.table.content.name : "table_" + block.table.content.id;
+				block.summary = block.table.content.displayName;
+			} 
+		}
+		else if (block.type !== 'else') {
 		    var rightContentSummary = "";
 		    var rightContentName = "";
 		    
 		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
-		        var rightContent = block.right.content
+		        var rightContent = block.right.content;
 		        if(angular.isArray(block.measureAnswers)){
 		            block.measureAnswers.some(function(answer){
 		                if(answer.measureAnswerId === rightContent){
