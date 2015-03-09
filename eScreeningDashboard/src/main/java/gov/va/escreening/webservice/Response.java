@@ -18,9 +18,11 @@ public class Response <T> {
         this.payload = payload;
     }
 
-    public Response(ErrorResponse errorResponse){
-        this.status = new ResponseStatus(ResponseStatus.Request.Failed);
-        this.errorResponse = errorResponse;
+    //this is a temp solution that should be replaced by using a constructor. This was used to ease the transition to using the errorResponse field to hold errors
+    public static Response<ErrorResponse> createError(ErrorResponse errorResponse){
+        Response<ErrorResponse> response = new Response<ErrorResponse>(new ResponseStatus(ResponseStatus.Request.Failed), errorResponse);
+        response.errorResponse = errorResponse;
+        return response;
     }
     
     public ResponseStatus getStatus() {
