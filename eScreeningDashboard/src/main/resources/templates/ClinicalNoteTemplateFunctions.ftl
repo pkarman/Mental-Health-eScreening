@@ -939,8 +939,8 @@ Returns true if the value given has a value. Currently only supports string valu
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
     <#if measureType == 2 >
-    	<#if (var.answerId)??>
-    		<#if (var.answerId = right) >
+    	<#if var.children?? && (var.children?size > 0) && (var.children[0].answerId)??>
+    		<#if (var.children[0].answerId = right) >
     			<#return true>
     		</#if>
     	</#if>
