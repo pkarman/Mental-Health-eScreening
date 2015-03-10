@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by pouncilt on 5/5/14.
  */
-public class ORWPCE_SAVE_VistaLinkRequest extends VistaLinkBaseRequest implements VistaLinkRequest {
+public class ORWPCE_SAVE_VistaLinkRequest extends VistaLinkBaseRequest<String> implements VistaLinkRequest<Boolean> {
     private static final Logger logger = LoggerFactory.getLogger(ORWPCE_SAVE_VistaLinkRequest.class);
     private VistaLinkConnection connection = null;
     private RpcRequest request = null;

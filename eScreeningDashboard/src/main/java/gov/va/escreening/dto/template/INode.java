@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
-import java.util.List;
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,13 +15,24 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonSubTypes({ @Type(value = TemplateTextDTO.class, name = "text"), 
 			@Type(value = TemplateIfBlockDTO.class, name = "if"),
 			@Type(value = TemplateElseIfBlockDTO.class, name = "elseif"),
-			@Type(value = TemplateElseBlockDTO.class, name = "else")
+			@Type(value = TemplateElseBlockDTO.class, name = "else"),
+			@Type(value = TemplateTableBlockDTO.class, name = "table")
 			})
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface INode {
 	
-	public String toFreeMarkerFormat(Set<Integer> ids);
+	/**
+	 * Appends the FreeMarker translation of this block to the given StringBuilder and return the result
+	 * @param sb this is being appended to
+	 * @param ids during translation each block is responsible for added assessment variable IDs for variables they contain and need for rendering 
+	 * @return a StringBuilder which contains the content passed in (via sb) along with this block's content.  
+	 * <b>Please Note:</b> The returned StringBuilder does not have to be the same one passed in.  So callers should use the 
+	 * returned result (functional style) instead of reusing the passed in StringBuilder (shared mutable state-style). 
+	 * Implementing it this way allows for efficient translation into freemarker *and* allows for simple testing.
+	 * @param assessmentVariableService the assessment variable service which can be used to find child AVs
+	 */
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> AvIds, AssessmentVariableService assessmentVariableService);
 	
 
 }

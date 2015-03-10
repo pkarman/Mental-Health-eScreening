@@ -23,12 +23,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.*;
+
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class,
 		UnsupportedOperationException.class, CouldNotResolveVariableValueException.class, UnsupportedOperationException.class, Exception.class})
 public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswerAssessmentVariableResolver {
 
-    @Autowired
-    private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+	//Please add to the constructor and do not use field based @Autowired
+    private final SurveyMeasureResponseRepository surveyMeasureResponseRepository;
 
     //TODO refactor this to use the enum instead.
     public static final int CALCULATION_TYPE_NUMBER = 1;
@@ -37,7 +39,12 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     public static final int CALCULATION_TYPE_USER_ENTERED_BOOLEAN = 4;
 
     private static final Logger logger = LoggerFactory.getLogger(MeasureAnswerAssessmentVariableResolverImpl.class);
-
+    
+    @Autowired
+    public MeasureAnswerAssessmentVariableResolverImpl(SurveyMeasureResponseRepository smrr){
+    	this.surveyMeasureResponseRepository = checkNotNull(smrr);
+    }    
+    
     /*	new AssessmentVariable(70, "var70", "string", "answer_270", "ACCOUNTANT", "ACCOUNTANT", null, null));  */
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
@@ -53,47 +60,22 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
             throw new CouldNotResolveVariableException(String.format("There was not a MeasureAnswer reponse for MeasureAnswerId: %s, assessmentId: %s",
                     measureAnswer.getMeasureAnswerId(), veteranAssessmentId));
 
-        Integer id = assessmentVariable.getAssessmentVariableId();
-        String variableName = String.format("var%s", id);
-        String type = getVariableTypeString(measureAnswer.getAnswerType());
-        String displayName = String.format("answer_%s", measureAnswer.getMeasureAnswerId());
-        String value = getValue(response, veteranAssessmentId);
-        String displayText = getDisplayText(type, measureAnswer, response, veteranAssessmentId);
-        String overrideText = getOverrideText(response, measureAnswerHash);
-        String otherText = getOtherText(response);
-        Integer column = getColumn(measureAnswer);
-        Integer row = response.getTabularRow();
-        String calcValue = getMeasureAnswerCalculationValue(measureAnswer);
-        String otherValue = response.getOtherValue();
-
-        AssessmentVariableDto variableDto =
-                new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
-        variableDto.setAnswerId(measureAnswer.getMeasureAnswerId());
-        return variableDto;
+		return resolveAssessmentVariable(assessmentVariable, response, measureAnswerHash);
     }
 
     @Override
-    public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable parentAssessmentVariable,
-                                                           SurveyMeasureResponse response, Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash) {
+	public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable measureAnswerAssessmentVariable,
+			SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash) {
 
-        Integer id = getAnswerAssessmentVariableId(parentAssessmentVariable, response, measureAnswerHash);
-        String variableName = String.format("var%s", id);
-        String type = getVariableTypeString(response.getMeasureAnswer().getAnswerType());
-        String displayName = String.format("answer_%s", response.getMeasureAnswer().getMeasureAnswerId());
-
-        String value = getValue(response, veteranAssessmentId);
-        String displayText = getDisplayText(type, response.getMeasureAnswer(), response, veteranAssessmentId);
-        String overrideText = getOverrideText(response, measureAnswerHash);
-        String otherText = getOtherText(response);
-        Integer column = getColumn(response.getMeasureAnswer());
-        Integer row = response.getTabularRow();
-        String calcValue = response.getMeasureAnswer().getCalculationValue();
-        String otherValue = response.getOtherValue();
-        AssessmentVariableDto variableDto =
-                new AssessmentVariableDto(id, variableName, type, displayName, value, displayText, overrideText, otherText, calcValue, column, row, otherValue);
-
-        variableDto.setAnswerId(response.getMeasureAnswer().getMeasureAnswerId());
-
+		AssessmentVariableDto variableDto = new AssessmentVariableDto(measureAnswerAssessmentVariable);
+		//TODO: This is wrong (will fix this soon):
+		variableDto.setVariableId(getAnswerAssessmentVariableId(measureAnswerAssessmentVariable, response, measureAnswerHash));
+		
+		variableDto.setResponse(response);
+		
+		//TODO: remove the use of override text
+		variableDto.setOverrideText(getOverrideText(response, measureAnswerHash));
+		
         return variableDto;
     }
 
@@ -184,12 +166,6 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         return getMeasureAnswerCalculationValue(measureAnswer);
     }
 
-    private Integer getColumn(MeasureAnswer measureAnswer) {
-        if (measureAnswer.getDisplayOrder() != null)
-            return measureAnswer.getDisplayOrder();
-        return AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN;
-    }
-
     private String getMeasureAnswerCalculationValue(MeasureAnswer measureAnswer) {
         if (measureAnswer.getCalculationValue() != null && !measureAnswer.getCalculationValue().isEmpty()) {
             return measureAnswer.getCalculationValue();
@@ -210,19 +186,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         return parentAssessmentVariable.getAssessmentVariableId();
     }
 
-    //possible types are string, none, and other
-    private String getVariableTypeString(String type) {
-        if (type == null)
-            return "string";
-        if (type.toLowerCase().equals("none"))
-            return "none";
-        if (type.toLowerCase().equals("other"))
-            return "other";
-
-        //otherwise its a string
-        return "string";
-    }
-
+	//TODO: This should be removed
     private String getOverrideText(SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash) {
 
         //check to see if the answer id is in the hash
@@ -235,41 +199,6 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         }
 
         //Check to see if the measure answer has an override value
-        return null;
-    }
-
-    private String getDisplayText(String answerType, MeasureAnswer measureAnswer, SurveyMeasureResponse response, Integer veteranAssessmentId) {
-
-        int measureTypeId = measureAnswer.getMeasure().getMeasureType().getMeasureTypeId();
-        if (measureTypeId == MeasureAssessmentVariableResolverImpl.MEASURE_TYPE_ID_FREETEXT) {
-            return getValue(response, veteranAssessmentId);
-        }
-
-        //The constraint has been removed which would return null here if the answer is of type none. Template functions do not assume
-        //this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
-        //delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
-        //show the text of the None answer so null should not be returned.
-        return measureAnswer.getAnswerText();
-    }
-
-    private String getValue(SurveyMeasureResponse response, Integer veteranAssessmentId) {
-        if (response.getBooleanValue() != null)
-            return response.getBooleanValue().toString().toLowerCase();
-        if (response.getNumberValue() != null)
-            return response.getNumberValue().toString();
-        if (response.getTextValue() != null)
-            return response.getTextValue();
-
-        throw new CouldNotResolveVariableException(
-                String.format("A value was not set for surveymeasureresponseid: %s, assessmentid %s",
-                        response.getSurveyMeasureResponseId(), veteranAssessmentId));
-    }
-
-    private String getOtherText(SurveyMeasureResponse response) {
-        if (response.getOtherValue() != null)
-            return response.getOtherValue();
-
-        //otherwise just return null;
         return null;
     }
 

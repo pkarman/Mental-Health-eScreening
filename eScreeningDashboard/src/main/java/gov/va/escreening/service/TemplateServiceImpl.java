@@ -1,51 +1,48 @@
 package gov.va.escreening.service;
 
-import freemarker.core.TemplateElement;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
-import gov.va.escreening.dto.MeasureAnswerDTO;
-import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;
+import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
-import gov.va.escreening.repository.MeasureAnswerRepository;
-import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
 import gov.va.escreening.repository.VariableTemplateRepository;
-import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -67,16 +64,11 @@ public class TemplateServiceImpl implements TemplateService {
 	private BatteryRepository batteryRepository;
 
 	@Autowired
-	private TemplateProcessorService templateProcessorService;
-	
-	@Autowired
 	private AssessmentVariableRepository avRepository;
 	
 	@Autowired
-	private MeasureAnswerRepository measureAnswerRepository;
+	AssessmentVariableService assessmentVariableService;
 	
-	@Autowired
-	private MeasureRepository measureRepository;
 
 	@SuppressWarnings("serial")
 	private static List<TemplateType> surveyTemplates = new ArrayList<TemplateType>() {
@@ -390,123 +382,6 @@ public class TemplateServiceImpl implements TemplateService {
 		}*/
 		return dto;
 	}
-
-	private Properties parseMetaData() {
-		String[] data = metaStr.replace("<#--", "").replace("-->", "").trim()
-				.split(",");
-
-		Properties p = new Properties();
-		for (int i = 0; i < data.length; i++) {
-			String dat[] = data[i].split("=");
-			p.put(dat[0], dat[1]);
-		}
-
-		return p;
-
-	}
-
-	private String metaStr = null;
-
-	private INode nodeIterate(TemplateElement node, List<Long> templateVariables) {
-
-		INode nodeDTO = null;
-
-	/*	String type = node.getClass().getSimpleName();
-
-		String content = node.getCanonicalForm();
-
-		if (!node.isLeaf()) {
-			try {
-				// nodeDTO.setContent(content.substring(0,
-				// content.indexOf(((TemplateElement)node.getChildNodes().get(0)).getCanonicalForm())));
-
-				if (type.equals("IfBlock")) {
-					nodeDTO = new TemplateIfBlockDTO();
-				} else if (type.equals("ConditionalBlock")) {
-
-					// nodeDTO.setContent(content.substring(0, content
-					// .indexOf(((TemplateElement) node.getChildAt(0))
-					// .getCanonicalForm())));
-
-					if (content.equals("<#else>")) {
-						nodeDTO = new TemplateBaseBlockDTO();
-						nodeDTO.setType("elseBlock");
-					} else if (content.startsWith("<#if")) {
-						nodeDTO = new TemplateConditionBlockDTO();
-						nodeDTO.setType("ifBlock");
-						
-						String formula = content.substring(0, content
-								 .indexOf(((TemplateElement) node.getChildAt(0))
-								 .getCanonicalForm())).replace("<#if ", "").trim();
-						formula = formula.substring(0, formula.length()-1);
-						
-						// parse the content here
-						
-						parseFormula(formula, (TemplateConditionBlockDTO)nodeDTO);
-						
-						
-						
-					} else {
-						nodeDTO = new TemplateConditionBlockDTO();
-						nodeDTO.setType("elseIfBlock");
-						// parse the content here
-					}
-				} else {
-				}
-				// nodeDTO.setContent(content);
-				// if (metaStr != null) {
-				// Properties p = parseMetaData();
-				// nodeDTO.setTitle(p.getProperty("TITLE"));
-				// nodeDTO.setSection(p.getProperty("SECTION"));
-				// metaStr = null;
-				// }
-
-			
-
-			for (int i = 0; i < node.getChildCount(); i++) {
-				TemplateElement childTemplateElement = (TemplateElement) node
-						.getChildAt(i);
-				INode n = nodeIterate(childTemplateElement,
-				 templateVariables);
-				if (n != null)
-				{
-					if (((TemplateBaseBlockDTO)nodeDTO).getChildren()==null)
-					{
-						((TemplateBaseBlockDTO)nodeDTO).setChildren(new ArrayList<INode>());
-					}
-				 ((TemplateBaseBlockDTO)nodeDTO).getChildren().add(n);
-				}
-			}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			if (type.equals("Comment")) {
-				metaStr = content;
-				return null;
-			}
-
-			if (type.equals("TextBlock")) {
-				nodeDTO = new TemplateTextDTO();
-				nodeDTO.setType(type);
-				((TemplateTextDTO) nodeDTO).setContent(content);
-
-				if (metaStr != null) {
-					Properties p = parseMetaData();
-					((TemplateTextDTO) nodeDTO)
-							.setTitle(p.getProperty("TITLE"));
-					((TemplateTextDTO) nodeDTO).setSection(p
-							.getProperty("SECTION"));
-					metaStr = null;
-				}
-
-			}
-		}*/
-
-		return nodeDTO;
-	}
-	
-	
  
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -524,15 +399,14 @@ public class TemplateServiceImpl implements TemplateService {
 	
 
 	private String generateFreeMarkerTemplateFile(List<INode> blocks, Set<Integer>ids) {
-		StringBuffer file = new StringBuffer();
+		StringBuilder file = new StringBuilder();
 		file.append("<#include \"clinicalnotefunctions\">\n");
 		
 		file.append("<#-- generated file. Do not change -->\n");
 
 		file.append("${MODULE_START}\n");
-		for(INode block : blocks)
-		{
-			file.append(block.toFreeMarkerFormat(ids));
+		for(INode block : blocks){
+			file = block.appendFreeMarkerFormat(file, ids, assessmentVariableService);
 		}
 		file.append("\n${MODULE_END}\n");
 		
@@ -548,10 +422,10 @@ public class TemplateServiceImpl implements TemplateService {
 		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
 		template.setTemplateType(templateType);
 		
-		template.setDateCreated(new Date());
+		
 		template.setIsGraphical(templateFile.getIsGraphical());
 		
-		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
+		if (templateFile.getBlocks() == null || templateFile.getBlocks().isEmpty())
 		{
 			template.setJsonFile(null);
 		}
@@ -563,46 +437,15 @@ public class TemplateServiceImpl implements TemplateService {
 			{
 				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
 			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
+			catch(IOException e) {
+				logger.error("Error setting block data", e);
 				template.setJsonFile(null);
 			}
 			
 			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
 			
-			
-			//get current variable template entries for this template
-			Map<Integer, VariableTemplate> vtMap = new HashMap<>();
-			for(VariableTemplate vt : template.getVariableTemplateList()){
-				vtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
-			}
-			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));
-			
-			//clear out list of variable template entries
-			if (template.getVariableTemplateList()==null){
-				template.setVariableTemplateList(new ArrayList<VariableTemplate>());
-			}
-			else{
-				template.getVariableTemplateList().clear();
-			}
-			
-			if (!assessmentVariableIds.isEmpty()){
-				
-				for(Integer id : assessmentVariableIds){
-					VariableTemplate vt;
-					if(vtMap.containsKey(id)){
-						vt = vtMap.get(id);
-					}
-					else{
-						vt = new VariableTemplate();
-						vt.setAssessmentVariableId(avRepository.findOne(id));
-						vt.setTemplateId(template);
-					}
-					template.getVariableTemplateList().add(vt);
-				}
-			}
+			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));			
+			setVariableTemplates(template, assessmentVariableIds);
 		}
 		
 		if (template.getTemplateFile()==null)
@@ -614,7 +457,15 @@ public class TemplateServiceImpl implements TemplateService {
 		
 	}
 	
-	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ){
+	/**
+	 * 
+	 * @param templateTypeId
+	 * @param templateFile
+	 * @param templates
+	 * @return
+	 * @throws IllegalSystemStateException if a measure was found which does not have an associated assessment variable
+	 */
+	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ) throws IllegalSystemStateException{
 		
 		Template template = new Template();
 		
@@ -647,22 +498,8 @@ public class TemplateServiceImpl implements TemplateService {
 			Set<Integer> ids = new HashSet<Integer>();
 			
 			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
-			
-			if (ids.size()>0)
-			{
-				for(Integer id : ids){
-					VariableTemplate vt = new VariableTemplate();
-					vt.setDateCreated(new Date());
-					vt.setAssessmentVariableId(avRepository.findOne(id));
-					vt.setTemplateId(template);
-					if (template.getVariableTemplateList()==null)
-					{
-						template.setVariableTemplateList(new ArrayList<VariableTemplate>());
-					}
-					template.getVariableTemplateList().add(vt);
-				}
-			}
-		 }	
+			setVariableTemplates(template, ids);
+		 }
 		
 		if (template.getTemplateFile()==null)
 		{
@@ -685,7 +522,81 @@ public class TemplateServiceImpl implements TemplateService {
 		return template.getTemplateId();
 		
 	}
+
+	/**
+	 * 
+	 * Adds VariableTemplate objects for the given set of assessment variable IDs
+	 * @param template
+	 * @param ids
+	 */
+	private void setVariableTemplates(Template template, Set<Integer> ids) {
+		//clear out list of variable template entries
+		
+		//map from AV ID to VariableTemplate (previously saved)
+		Map<Integer, VariableTemplate> currentVtMap = Collections.emptyMap();
+		
+		if (template.getVariableTemplateList()==null){
+			template.setVariableTemplateList(new ArrayList<VariableTemplate>());
+		}
+		else{
+			currentVtMap = Maps.newHashMapWithExpectedSize(template.getVariableTemplateList().size()); 
+			for(VariableTemplate vt : template.getVariableTemplateList()){
+				currentVtMap.put(vt.getAssessmentVariableId().getAssessmentVariableId(), vt);
+			}
+			template.getVariableTemplateList().clear();
+		}
+		
+		Set<Integer> addedAvIds = new HashSet<>();
+		
+		for(Integer id : ids){
+			AssessmentVariable av = currentVtMap.containsKey(id) ? currentVtMap.get(id).getAssessmentVariableId() : avRepository.findOne(id);
+			addVariableTemplate(template, av, currentVtMap, addedAvIds);
+			
+			//Add measure specific VariableTemplates
+			if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
+    			Measure measure = av.getMeasure();
+    			addAnswerVariableTemplates(template, measure, currentVtMap, addedAvIds);
+    			
+    			//check for child questions to add
+				if(measure.isParent() && measure.getChildren() != null){
+					for(Measure child : measure.getChildren()){
+						AssessmentVariable childAv = child.getAssessmentVariable();
+						addVariableTemplate(template, childAv, currentVtMap, addedAvIds);
+						addAnswerVariableTemplates(template, child, currentVtMap, addedAvIds);
+					}
+				}
+			}
+		}
+	}
 	
+	/**
+	 * Adds a variableTemplate to the given template if it has not bee added already. Uses previously saved VT if there is one
+	 * @param template
+	 * @param vt
+	 * @param addedAvIds
+	 */
+	private void addVariableTemplate(Template template, AssessmentVariable av, Map<Integer, VariableTemplate> currentVtMap, Set<Integer>addedAvIds){
+	    
+	    Integer avId = av.getAssessmentVariableId();
+	    if(!addedAvIds.contains(avId)){
+	        VariableTemplate vt;
+            if(currentVtMap.containsKey(avId)){
+                vt = currentVtMap.get(avId);
+            }
+            else{
+                vt = new VariableTemplate(av, template);
+            }
+	        
+            template.getVariableTemplateList().add(vt);
+            addedAvIds.add(avId);
+        }
+	}
+	
+	private void addAnswerVariableTemplates(Template template, Measure measure, Map<Integer, VariableTemplate> currentVtMap, Set<Integer>addedAvIds){
+		for(MeasureAnswer ma : measure.getMeasureAnswerList()){
+		    addVariableTemplate(template, ma.getAssessmentVariable(), currentVtMap, addedAvIds);
+		}
+	}
 
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -697,50 +608,5 @@ public class TemplateServiceImpl implements TemplateService {
 		batteryRepository.update(battery);
 		
 		return templateId;
-	}
-
-	@Override
-	public List<MeasureAnswerDTO> getMeasureAnswerValues(Integer measureId) {
-		List<MeasureAnswer> answers = measureAnswerRepository.getAnswersForMeasure(measureId);
-		
-		List<MeasureAnswerDTO> answerDTOs = new ArrayList<MeasureAnswerDTO> ();
-		if (answers!=null && answers.size() >0){
-			for (MeasureAnswer a : answers )
-			{
-				MeasureAnswerDTO aDTO = new MeasureAnswerDTO();
-				BeanUtils.copyProperties(a, aDTO);
-				answerDTOs.add(aDTO);
-			}
-		}
-		
-		return answerDTOs;
-	}
-
-	@Override
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	public List<MeasureValidationSimpleDTO> getMeasureValidations(
-			Integer measureId) {
-		gov.va.escreening.entity.Measure measure = measureRepository.findOne(measureId);
-		
-		List<MeasureValidationSimpleDTO> results = new ArrayList<MeasureValidationSimpleDTO>();
-		
-		if (measure!=null && measure.getMeasureValidationList()!=null && measure.getMeasureValidationList().size()>0){
-			for(MeasureValidation mv : measure.getMeasureValidationList()){
-				MeasureValidationSimpleDTO sDTO = new MeasureValidationSimpleDTO();
-				
-				sDTO.setValidateId(mv.getValidation().getValidationId());
-				if (mv.getBooleanValue()!=null){
-					sDTO.setValue(mv.getBooleanValue()+"");
-				}else if (mv.getNumberValue()!=null){
-					sDTO.setValue(mv.getNumberValue()+"");
-				}
-				else{
-					sDTO.setValue(mv.getTextValue());
-				}
-				
-				results.add(sDTO);
-			}
-		}
-		return results;
 	}
 }

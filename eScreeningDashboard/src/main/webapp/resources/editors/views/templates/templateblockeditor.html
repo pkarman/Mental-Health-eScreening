@@ -4,6 +4,7 @@
 			<div class="form-group">
 				<label class="control-label">Block Type
 					<select class="form-control input-block-level"
+							tabindex="2"
 					        ng-model="block.type"
 					        ng-disabled="!enableTypes"
 					        ng-options="blockType.value as blockType.name for blockType in blockTypes">
@@ -17,18 +18,26 @@
 			<div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
 				<div class="row">
 					<div class="col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-if="block.type !== 'table'">
 							<label class="sr-only">Select Variable</label>
 							<input type="hidden"
 							       ng-model="block.left.content"
 							       ng-change="updateLogicalOptions(block)"
 							       update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
+						</div>
+						<div class="form-group" ng-if="block.type === 'table'">
+							<label class="sr-only">Select Variable</label>
+							<input type="hidden"
+									ng-model="block.table.content"
+									update-hidden>
+							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.table.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group"
-						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}">
+						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}"
+							 ng-if="block.type !== 'table'">
 							<select name="blockOperator"
 							        class="form-control"
 							        ng-model="block.operator"
@@ -109,12 +118,12 @@
 				<button title="AND"
 				        class="btn btn-default"
 				        ng-click="addAndConditionBlock(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else'">AND
+				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">AND
 				</button>
 				<button title="OR"
 				        class="btn btn-default"
 				        ng-click="addOrConditionBlock(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else'"
+				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'"
 				        ng-disable="templateBlockEditorForm.$invalid">OR
 				</button>
 				<!--button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button-->
