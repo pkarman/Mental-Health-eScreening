@@ -1,136 +1,34 @@
-$(document).ready(function() {        
-	/* JH | To use in HTML 
-		var vaid 	= "${veteranAssessmentInfo.veteranAssessmentId}";
-		var vid 	= "${veteranAssessmentInfo.veteranId}";
-		if(typeof vaid === 'undefined' || vaid == ''){  
-			vaid = getParameterByName('vaid');
-		};
-		if(typeof vid === 'undefined' || vid == ''){
-			vid = getParameterByName('vid');
-		};			
-		graphContainer(vaid, vid);
-	*/
-});
+function graphGenerator(dataStructure, dataDataset){
+	var graphWrapper 	= $(".graphWrapper");
+	var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 
-/* get Query String Parameter By Name */
-function getParameterByName(name) {
-	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-		results = regex.exec(location.search);
-	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+	$(graphWrapper).html('<i class="text-center"></i> Loading...');	
+	$(graphWrapper).html(dataStructure);
 
-// Cache all classes and IDs  
-var graphContainer = function(vaid, vid){
-        var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
-        $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
+	// graphId = Math.floor((Math.random() * 10) + 1);
+	graphId = 1; // Static for reports testing
 
- 	    var modal_url = 'assessmentSummary/assessments/' + vaid + '/veteranSummary' ;
- 	    $.ajax({
-		  	type : 'get',
-		  	contentType: 'application/json',
-		   	url : modal_url,
-	   		success : function(r){  
-	   		    $(modal_contents).html(r);
-	            $(".graphicBody").each(function(graphId){
-	            	
-	                //TODO: mayb we should add a "loading..." icon while we get data from server
-	                
-	            	var $this = $(this);
-	                var graphObj  = $.parseJSON($this.html());
-					
-	                $this.html(""); //clear the graph area
-	        		var stackGraphParams = processIntervals(graphObj);
-	        		var timeSeriesParams = processIntervals(graphObj);
-	                
-					
-	                var parentDiv = $this.parents(".moduleTemplate");
-	                parentDiv.addClass("graphicBlock");
-	                var titleContainer = parentDiv.children(".moduleTemplateTitle");
-	                var graphContainer = parentDiv.children(".graphSection");
-	                var descriptionContainer = parentDiv.children(".moduleTemplateText");
-	            	  
-	        		// Update title block to contain the scoring
-	        		titleContainer.wrap("<div class='scoreBlock text-center'>");
-	        		titleContainer.parent().append("<div><h4>" + stackGraphParams.score + "</h4><h5>" + stackGraphParams.scoresInterval + "</h5></div>");
-	        		
-	        		//Start adding to the graphic block with the graph's title 
-	        		graphContainer.prepend("<div class='graphHeader'>" + graphObj.title + "</div>");
-	        		
-	        		//Add d3 graph
-	                var graphContainerId = "graph_" + graphId;
-	                var graphSelector = "#" + graphContainerId;
-	                graphContainer.children(".graphicBody").prop("id", graphContainerId)
-	                
-	                //get time series for the variable
-	                // Call timeSeries JSON
-					$.ajax({
-						type : 'get',
-						url : 'assessmentSummary/assessmentvarseries/' + vid + '/' + graphObj.varId + '/' + graphObj.numberOfMonths,
-						success : function(points){  
-							
-							//append correct graph type given the number of historical results for the variable
-							if(hasMoreThanOne(points)){
-								appendTimeSeries(graphSelector, timeSeriesParams, points);
-							}
-							else{
-								appendStackGraph(graphSelector, stackGraphParams);
-							}
-			                
-							//Add footer if we were given one
-							if(graphObj.footer != null && graphObj.footer != ""){
-								graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
-							}									
-						},
-				  		error: handleError
-					});
-	            });
-	            
-			},
-          	error: handleError
- 	    });
- 	    
- 	   function handleError(xhr, exception, errorThrown) {
-           data = "[" + xhr.responseText + "]";
-           data = $.parseJSON(data);
-     
-           var userMessage       = [];
-           var developerMessage  = [];
-           for (var i = 0; i < data.length; ++i) {                    
-             for (var j = 0; j < data[i].errorMessages.length; j++) {
-               errorMessages = data[i].errorMessages[j];
-               userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
-             }
-             if(data[i].developerMessage.length > 0){
-               result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
-               result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
-               result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
-               developerMessage.push(result);
-             }
-           }
-           var panelTemplate = userMessage;
-               panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
-               panelTemplate = panelTemplate + developerMessage;
-               panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
-           
-           $(modal_contents).show().html(panelTemplate);
- 	   }
- 	   
- 	  function hasMoreThanOne(obj) {
- 		    
- 		    if (Object.keys) { 
- 		        return Object.keys(obj).length > 1;
- 		    }
+	var stackGraphParams = processIntervals(dataStructure);
+	var timeSeriesParams = processIntervals(dataStructure);
+	var parentDiv = graphWrapper.parents(".moduleTemplate");
+	graphWrapper.addClass("graphicBlock");
+	var graphContainer = parentDiv.children(".graphSection");
 
- 		    var c = 0;
- 		    for (field in obj) {
- 		        if(c > 1){ return true; }
- 		        c++;
- 		    }
+	//Add d3 graph
+	var graphContainerId 	= "graph_" + graphId;
+	var graphSelector 		= "#" + graphContainerId;
+	graphContainer.children(".graphicBody").prop("id", graphContainerId)
+	
+	//get time series for the variable
+	// Call timeSeries JSON
 
- 		    return false;
- 		}
-       
+	//append correct graph type given the number of historical results for the variable
+	if(hasMoreThanOne(dataDataset)){
+		appendTimeSeries(graphSelector, timeSeriesParams, dataDataset);
+	}else{
+		appendStackGraph(graphSelector, stackGraphParams);
+	}
+		
 	/**
 	 * Initializes basic graph parameter using given graph parameters.
 	 * Uses fields: 
@@ -143,6 +41,7 @@ var graphContainer = function(vaid, vid){
 	 *	 scoresInterval - name of the interval where the score is found
 	 *	 graphStart - the minimum value of any score (start of first interval)
 	 */
+	
 	function processIntervals(graphParams){
 		graphParams.legends = [];
 		graphParams.dataset = [];
@@ -180,20 +79,16 @@ var graphContainer = function(vaid, vid){
 		}
 		return graphParams;
 	}
-	
-	
+
     //TODO:
 	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
 	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
 	  // 2. the y axis label should not be given 
 	  // 3. the score is not showing up in the graph
-       
-    var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 	
 	function appendStackGraph(parentSelector, graphParams){
-
 		var ticks = graphParams.ticks;
-		
+
         //Set d3 graph attributes
 	    var margins = {
 		          top: 46,
@@ -363,16 +258,14 @@ var graphContainer = function(vaid, vid){
 	}
 
    
-	function appendTimeSeries(parentSelector, graphParams, points){
-		
+	function appendTimeSeries(parentSelector, graphParams, dataDataset){
     	$(parentSelector).addClass("timeSeries");
 
-		var ticks = [];
 		var maxValue;
-		
-		var series   = graphParams.legends;
-		
-		$.each(points, function(date, valueStr){
+		var ticks 	= [];
+		var series  = graphParams.legends;
+
+		$.each(dataDataset, function(date, valueStr){
 			//TODO: Add check if can't be parsed
 			var value = parseFloat(valueStr);
 			if(maxValue == null || maxValue < value){
@@ -386,11 +279,10 @@ var graphContainer = function(vaid, vid){
 		});
 		
 		ticks.reverse(); // reverse the order on the ticks 
-		//var maxValue = d3.max(ticks , function(d) { return +d.value;} );
 		
 		// Vars
-		var w = 450,
-			h = 300,
+		var containerWidth = 450,
+			containerHeight = 300,
 			margin = {
 				top: 20,
 				bottom: 60,
@@ -400,26 +292,21 @@ var graphContainer = function(vaid, vid){
 			xRangeStart = 25,		// Move the x axis to right
 			yStartPoint = 0; 		// Start Point for y axis
 			
-					
-		// var colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65']; // TODO - May need to swap with this list 
 		colors.reverse();
 		
-		// In progress
-		//var graphparams.intervals = {"2015-01-23T02:31:09.000+0000":"14.0"};
-			
 		// Static Vars
 		var legendTitle = "My Score"; 
 		
-		var xLegendTextPosition = w - 115,
-			xLegendRectPosition = w - 130;
+		var xLegendTextPosition = containerWidth - 115,
+			xLegendRectPosition = containerWidth - 130;
 	
-		var width = w - margin.left - margin.right,
-			height = h - margin.top - margin.bottom;
+		var width = containerWidth - margin.left - margin.right,
+			height = containerHeight - margin.top - margin.bottom;
 	
 		var svg = d3.select(parentSelector).append("svg")
 			.attr("id", "chart")
-			.attr("width", w)
-			.attr("height", h);
+			.attr("width", containerWidth)
+			.attr("height", containerHeight);
 	
 		var chart = svg.append("g")
 			.classed("display", true)
@@ -548,8 +435,8 @@ var graphContainer = function(vaid, vid){
 			// Add Legend Started Here 
 			var legend = this.append("g")
 				.attr("class", "legend")
-				.attr("height", h)
-				.attr("width", w)
+				.attr("height", containerHeight)
+				.attr("width", containerWidth)
 				.attr('transform', 'translate(-20, 10)');
 	
 			legend.selectAll('rect')
@@ -598,8 +485,7 @@ var graphContainer = function(vaid, vid){
 				.attr("y", -2)
 				.attr("width", 100)
 				.text(legendTitle);
-	
-	
+		
 			// Bar Legend Start Here
 			// Create X Scale for bar graph
 			var xScale = d3.scale.ordinal()
@@ -636,8 +522,7 @@ var graphContainer = function(vaid, vid){
 						return height - yScale(+maxValue) + 0 ;
 					}
 				});
-	
-	
+
 			// Text Wrapper
 			function wrap(text, width) {
 				text.each(function () {
@@ -667,6 +552,7 @@ var graphContainer = function(vaid, vid){
 	
 		} // End of plot function
 	
+	
 		// Call Plot
 		plot.call(chart, {
 			data: {
@@ -678,9 +564,33 @@ var graphContainer = function(vaid, vid){
 				y: yAxis
 			}
 		});
-		// Reverse bars	
-		//$('.bars > rect').each(function () {
-		//	$(this).prependTo(this.parentNode);
-		//});
 	}
-}
+	 	   
+	function hasMoreThanOne(obj) {
+			if (Object.keys) { 
+				return Object.keys(obj).length > 1;
+			}
+			var c = 0;
+			for (field in obj) {
+				if(c > 1){ return true; }
+				c++;
+			}
+			return false;
+	}
+}			
+	// Root Function to generate SVG obj
+	var svgObj  = function(){
+		// graphSVG created for Khalid
+		var graphSVG = $(".graphWrapper").html();
+		return graphSVG;
+	}
+
+$(document).ready(function() {
+	 // Example Dataset for Structure JSON and Data JSON
+	 var dataStructure 	= {'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12};
+	 var dataDataset 	= {'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5};
+	 // Call graphGenerator
+	 graphGenerator(dataStructure, dataDataset);
+	 // HTML Placeholder container to be added in JSP page  
+	 // <div class="graphWrapper" id="graph_1"></div>
+});
