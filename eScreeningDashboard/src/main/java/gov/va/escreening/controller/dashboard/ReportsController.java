@@ -1,22 +1,17 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.collect.Maps;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
-import gov.va.escreening.domain.VeteranDto;
-import gov.va.escreening.dto.ReportTypeDTO;
-import gov.va.escreening.dto.dashboard.AssessmentAuditLogReport;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
-import gov.va.escreening.entity.Veteran;
-import gov.va.escreening.form.AssessmentLoginFormBean;
-import gov.va.escreening.form.ReportSearchFormBean;
+import gov.va.escreening.form.IndivStatsFormBean;
 import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.ReportTypeService;
 import gov.va.escreening.service.SurveyService;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
 import org.slf4j.Logger;
@@ -24,17 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.script.ScriptEngineManager;
-import javax.validation.Valid;
+import javax.ws.rs.PathParam;
 import java.io.File;
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -70,7 +59,7 @@ public class ReportsController {
                 return new File(uri.getPath());
             } catch (URISyntaxException e) {
                 System.out.println(fileName);
-                logger.error("Fail to load image file for jaspereport "+fileName);
+                logger.error("Fail to load image file for jaspereport " + fileName);
                 return null;
             }
         }
@@ -87,15 +76,10 @@ public class ReportsController {
         return "reports/index";
     }
 
-    @RequestMapping(value = "/reports/averageScoresForPatientsByClinic", method = RequestMethod.GET)
-    public String getAverageScoresForPatientsByClinic(Model model) {
-        return "reports/averageScoresForPatientsByClinic";
+    @RequestMapping(value = "/reports/individualStatisticsReports", method = RequestMethod.GET)
+    public ModelAndView getIindividualStatisticReports() {
+        return new ModelAndView("reports/individualStatisticsReports", "indivStatsForm", new IndivStatsFormBean());
     }
-
-//    @RequestMapping(value = "/listresports", method = RequestMethod.GET)
-//    public List<ReportTypeDTO> getAllReportTypes() {
-//        return reportTypeService.getAllReportTypes();
-//    }
 
     @RequestMapping(value = "/reports/listSurveys", method = RequestMethod.GET)
     @ResponseBody
@@ -111,14 +95,14 @@ public class ReportsController {
 
 
     @RequestMapping(value = "/reports/individualStatisticsGraph", method = RequestMethod.GET)
-    public ModelAndView generateIndividuleStatisticsGraphReport(){
+    public ModelAndView generateIndividuleStatisticsGraphReport() {
 
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
 
 
         parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
-        parameterMap.put("lastNameSSN","Veteran1123, 1234");
+        parameterMap.put("lastNameSSN", "Veteran1123, 1234");
 
         List<ModuleGraphReportDTO> resultList = new ArrayList<>();
 
@@ -132,10 +116,10 @@ public class ReportsController {
 
         List<ScoreHistoryDTO> history = new ArrayList<>();
 
-        for(int i=0; i<15; i++) {
+        for (int i = 0; i < 15; i++) {
             ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
-            scoreHistoryDTO.setClinicName(" Test Clinic "+i);
-            scoreHistoryDTO.setScreeningDate("01/"+i+"/2015");
+            scoreHistoryDTO.setClinicName(" Test Clinic " + i);
+            scoreHistoryDTO.setScreeningDate("01/" + i + "/2015");
             history.add(scoreHistoryDTO);
         }
 
@@ -154,10 +138,10 @@ public class ReportsController {
 
         history = new ArrayList<>();
 
-        for(int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
-            scoreHistoryDTO.setClinicName(" Test Clinic "+i);
-            scoreHistoryDTO.setScreeningDate("02/"+i+"/2015");
+            scoreHistoryDTO.setClinicName(" Test Clinic " + i);
+            scoreHistoryDTO.setScreeningDate("02/" + i + "/2015");
             history.add(scoreHistoryDTO);
         }
 
@@ -173,6 +157,20 @@ public class ReportsController {
 
         System.out.println("aaaaaaacccsaa");
         return new ModelAndView("individualStatisticsGraphReport", parameterMap);
+    }
+
+    @RequestMapping(value = "/reports/generateSVG/{moduleId}/{svgId}", method = RequestMethod.PUT, consumes = "application/json")
+    public ModelAndView generateSVG(@PathVariable("moduleId") Integer moduleId, @PathVariable("svgId") Integer svgId, @RequestBody Map data) {
+        String dataStructure="{'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12}";
+        String dataSet="{'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5}";
+
+        Map<String, String> payload= Maps.newHashMap();
+        payload.put("dataStructure", dataStructure);
+        payload.put("dataSet", dataSet);
+        payload.put("moduleName", "PHQ-9");
+        payload.put("svgOutFileName", String.valueOf(svgId));
+
+        return new ModelAndView("svgGenUtil", payload);
     }
 
     @RequestMapping(value = "/reports/individualStatistics", method = RequestMethod.GET)
@@ -227,15 +225,14 @@ public class ReportsController {
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
 
-        parameterMap.put("lastNameSSN","Veteran1123, 1234");
+        parameterMap.put("lastNameSSN", "Veteran1123, 1234");
         parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
         parameterMap.put("datasource", dataSource);
 
         parameterMap.put("cast", resultList);
 
 
-
-        parameterMap.put("reportTitle","PHQ-9");
+        parameterMap.put("reportTitle", "PHQ-9");
         parameterMap.put("reportScore", "20");
         parameterMap.put("scoreMeaning", "Moderate Severe");
 
@@ -245,9 +242,8 @@ public class ReportsController {
                 "10/10/2014  | LI 2N MHAC URGENT CLINIC");
 
 
-
-       return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
-       //return new ModelAndView("GraphChart", parameterMap);
+        return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
+        //return new ModelAndView("GraphChart", parameterMap);
     }
 
 

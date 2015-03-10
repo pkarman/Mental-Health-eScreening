@@ -68,7 +68,7 @@
 			</thead>
 			<tr>
 				<td class="text-left">Individual Statistic Reports</td>
-				<td class="text-right"><a href="reports/individualStatistics" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+				<td class="text-right"><a href="reports/individualStatisticsReports" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			
 			<tr>
