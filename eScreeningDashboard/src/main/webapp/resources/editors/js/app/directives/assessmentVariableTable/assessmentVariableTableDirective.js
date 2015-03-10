@@ -170,7 +170,13 @@
 
 								// Convert delimitedMatrixQuestions rowAvIdToOutputMap array into a list
 								if (scope.assessmentVariable.transformations[0].name === 'delimitedMatrixQuestions') {
-									scope.assessmentVariable.transformations[0].params[0].join(',');
+									var newParam = {};
+									
+									//translate the array of object into one object with all keys (
+									scope.assessmentVariable.transformations[0].params[0].map(
+											function(pair){ angular.extend(newParam, pair);});
+									
+									scope.assessmentVariable.transformations[0].params[0] = newParam;
 								}
 
 								// Convert params into strings for freeMarker
