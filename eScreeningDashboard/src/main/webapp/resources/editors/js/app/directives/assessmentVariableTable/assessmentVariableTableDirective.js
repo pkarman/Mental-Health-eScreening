@@ -119,7 +119,8 @@
 						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6)
 							|| scope.transformationName === 'single-select'
 							|| (scope.block && scope.block.type === 'table')
-							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select')) {
+							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select'
+							|| scope.assessmentVariable.type === 'Formula')) {
 							scope.show = false;
 							scope.$emit('assessmentVariableSelected');
 
