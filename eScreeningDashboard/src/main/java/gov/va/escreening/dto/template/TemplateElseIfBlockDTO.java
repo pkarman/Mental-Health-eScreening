@@ -1,6 +1,7 @@
 package gov.va.escreening.dto.template;
 
-import java.util.List;
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,37 +10,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 
+	@JsonProperty("type")
+	private String nodeType(){return "elseif";}
+	
 	@Override
-	public String toFreeMarkerFormat(Set<Integer>ids) {
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService) {
 
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("\n<#elseif ")
-				.append("(")
-				.append(FormulaUtil.createFormula(getOperator(), getLeft(),
-						getRight(), ids)).append(")");
+		sb.append("\n<#elseif ( ")
+			.append(FormulaUtil.createFormula(getOperator(), getLeft(),
+						getRight(), avIds)).append(")");
 
 		if (getConditions() != null && getConditions().size() > 0) {
 			for (TemplateFollowingConditionBlock tfcb : getConditions()) {
-				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
+				sb.append(tfcb.toFreeMarkerFormatFormula(avIds));
 			}
 		}
 		sb.append(" >\n");
 
-		if (getChildren()!=null)
-		{
-			for(INode child : getChildren())
-			{
-				sb.append(child.toFreeMarkerFormat(ids));
-			}
-		}
-		
-		return sb.toString();
+		return addChildren(sb, avIds, assessmentVariableService);
 	}
-	
-	@JsonProperty("type")
-	private String nodeType(){return "elseif";}
-	
-	
-
 }

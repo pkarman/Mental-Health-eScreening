@@ -112,7 +112,7 @@ public class AssessmentEngineController {
 		
 		session.setAttribute("start_time", System.currentTimeMillis());
 
-		logger.debug("processData()::assessmentResponse \n{}", assessmentResponse);
+		//logger.debug("processData()::assessmentResponse \n{}", assessmentResponse);
 
 		return assessmentResponse;
 	}

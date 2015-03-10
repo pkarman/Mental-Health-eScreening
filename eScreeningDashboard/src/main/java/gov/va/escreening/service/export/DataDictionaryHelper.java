@@ -256,6 +256,8 @@ class MultiSelectResolver extends Resolver {
 }
 
 class SelectOneResolver extends Resolver {
+	Joiner nonNumericJoiner = Joiner.on(", ").skipNulls();
+	
 	protected SelectOneResolver(DataDictionaryHelper ddr) {
 		super(ddr);
 	}
@@ -271,14 +273,23 @@ class SelectOneResolver extends Resolver {
 		
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
         if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
-			int min = Integer.MAX_VALUE;
-			int max = Integer.MIN_VALUE;
-			for (MeasureAnswer ma : maList) {
-				int val = Integer.parseInt(ma.getCalculationValue());
-				min = Math.min(min, val);
-				max = Math.max(max, val);
-			}
-			return String.format("%s-%s,999", min, max);
+        	try{
+				int min = Integer.MAX_VALUE;
+				int max = Integer.MIN_VALUE;
+				for (MeasureAnswer ma : maList) {
+					int val = Integer.parseInt(ma.getCalculationValue());
+					min = Math.min(min, val);
+					max = Math.max(max, val);
+				}
+				return String.format("%s-%s,999", min, max);
+        	}
+        	catch(NumberFormatException bfe){
+        		List<String> nonNumberValues = new ArrayList<>(maList.size());
+        		for (MeasureAnswer ma : maList) {
+        			nonNumberValues.add(ma.getCalculationValue());
+        		}
+        		return nonNumericJoiner.join(nonNumberValues);
+        	}
 		}
 		return "undefined";
 	}

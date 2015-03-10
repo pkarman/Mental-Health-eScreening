@@ -33,13 +33,13 @@ var Editors = angular.module('Editors', [
 
 Editors.value('Answer', EScreeningDashboardApp.models.Answer);
 Editors.value('ClinicalReminder', EScreeningDashboardApp.models.ClinicalReminder);
+Editors.value('AssessmentVariable', EScreeningDashboardApp.models.AssessmentVariable);
 Editors.value('MessageHandler', new BytePushers.models.MessageHandler());
 Editors.value('Question', EScreeningDashboardApp.models.Question);
 Editors.value('Template', new EScreeningDashboardApp.models.Template());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
 Editors.value('Survey', EScreeningDashboardApp.models.Survey);
 Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
-Editors.value('TemplateVariableContent', new EScreeningDashboardApp.models.TemplateVariableContent());
 
 Editors.config(function (RestangularProvider, $provide) {
 
@@ -189,15 +189,13 @@ Editors.config(function (RestangularProvider, $provide) {
 
                             $scope.assessmentVariable = {};
 
-                            $scope.$watch('assessmentVariable.id', function (newValue, oldValue) {
-
-                                if (newValue !== oldValue && $scope.assessmentVariable && $scope.assessmentVariable.id) {
-                                    var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
+						$scope.$on('assessmentVariableSelected', function() {
+							if ($scope.assessmentVariable && $scope.assessmentVariable.id) {
+								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
 
                                     $modalInstance.close(embed);
-                                }
-
-                            }, true);
+							}
+						});
 
                             $scope.cancel = function () {
                                 $modalInstance.close("");
