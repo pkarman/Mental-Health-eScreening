@@ -166,8 +166,15 @@
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 
 							if (newScope.transformationType.params) {
+
+								// Convert delimitedMatrixQuestions rowAvIdToOutputMap array into a list
+								if (scope.assessmentVariable.transformations[0].name === 'delimitedMatrixQuestions') {
+									scope.assessmentVariable.transformations[0].params[0].join(',');
+								}
+
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
+
 									return JSON.stringify(param);
 								});
 							}
