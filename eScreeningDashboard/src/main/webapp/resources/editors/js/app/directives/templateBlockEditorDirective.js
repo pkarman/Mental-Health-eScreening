@@ -234,8 +234,7 @@
 
 		            } else if (av.measureId && av.measureTypeId) {
 		                // Assessment variable is a question
-
-			            if (av.measureTypeId == 1) {
+			            if (av.measureTypeId == 1 && (av.transformations[0] && av.transformations[0].name !== 'yearsFromDate')) {
 
 				            // Get the validations for freetext
 				            MeasureService.one(av.measureId).getList('validations').then(function (validations) {
