@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, ngTableParams, $filter) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter) {
 
 	        return {
 	            restrict: 'EA',
@@ -116,7 +116,11 @@
 							}
 						}
 
-						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
+						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6)
+							|| scope.transformationName === 'single-select'
+							|| (scope.block && scope.block.type === 'table')
+							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select'
+							|| scope.assessmentVariable.type === 'Formula')) {
 							scope.show = false;
 							scope.$emit('assessmentVariableSelected');
 
@@ -156,7 +160,6 @@
 						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
-						scope.$emit('assessmentVariableSelected');
 
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
@@ -164,8 +167,21 @@
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 
 							if (newScope.transformationType.params) {
+
+								// Convert delimitedMatrixQuestions rowAvIdToOutputMap array into a list
+								if (scope.assessmentVariable.transformations[0].name === 'delimitedMatrixQuestions') {
+									var newParam = {};
+									
+									//translate the array of object into one object with all keys (
+									scope.assessmentVariable.transformations[0].params[0].map(
+											function(pair){ angular.extend(newParam, pair);});
+									
+									scope.assessmentVariable.transformations[0].params[0] = newParam;
+								}
+
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
+									if(angular.isString(param) || angular.isNumber(param)){ return param; }
 									return JSON.stringify(param);
 								});
 							}
@@ -176,6 +192,10 @@
 								scope.assessmentVariable.transforamtions = [];
 							}
 						}
+
+						TemplateBlockService.getVariableHash()[scope.assessmentVariable.id] = scope.assessmentVariable;
+
+						scope.$emit('assessmentVariableSelected');
 					};
 
 					scope.dismiss = function dismiss() {

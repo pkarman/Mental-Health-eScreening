@@ -69,7 +69,14 @@ public abstract class TemplateBaseContent {
 							s.append(",").append(param.toLowerCase());
 						}
 						else{
-							s.append(",\"").append(param).append("\"");
+						    
+						    try{//if the param is a number don't put quotes around it
+				                Double.parseDouble(param);
+				                s.append(",").append(param);
+				            }
+						    catch(Exception e){
+						        s.append(",\"").append(param).append("\"");
+						    }
 						}
 					}
 				}

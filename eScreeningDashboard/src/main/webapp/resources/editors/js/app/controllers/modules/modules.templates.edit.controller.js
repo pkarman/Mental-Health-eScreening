@@ -8,7 +8,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     $scope.template = template;
     $scope.hasChanged = false;
     $scope.assessmentVariables = [];
-    $scope.variableHash = {};
+    $scope.variableHash = TemplateBlockService.getVariableHash();
     $scope.debug = false;
     $scope.logId=0;
     $scope.alerts = MessageFactory.get();
