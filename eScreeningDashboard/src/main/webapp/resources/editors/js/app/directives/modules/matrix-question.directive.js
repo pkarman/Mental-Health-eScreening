@@ -63,7 +63,8 @@
 							scope.answers.push({
 								text: answer.text,
 								exportName: (prototypeQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(prototypeQuestions[0].variableName + '_', '') : answer.exportName,
-								calculationValue: answer.calculationValue
+								calculationValue: answer.calculationValue,
+								mhaValue: answer.mhaValue || ''
 							});
 						});
 
