@@ -116,7 +116,10 @@
 							}
 						}
 
-						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6) || scope.transformationName === 'single-select' || (scope.block && scope.block.type === 'table')) {
+						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6)
+							|| scope.transformationName === 'single-select'
+							|| (scope.block && scope.block.type === 'table')
+							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select')) {
 							scope.show = false;
 							scope.$emit('assessmentVariableSelected');
 
