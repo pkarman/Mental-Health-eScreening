@@ -68,10 +68,10 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
                         .addSelectMultiAV(1, null)
-                            .addAnswer(null, "first", null, null, true, null)
-                            .addAnswer(null, "second", null, null, false, null)
-                            .addAnswer(null, "third", null, null, true, null)
-                            .addAnswer(null, "fourth", null, null, true, null)));
+                            .addAnswer("first", true, null)
+                            .addAnswer("second", false, null)
+                            .addAnswer("third", true, null)
+                            .addAnswer("fourth", true, null)));
     }
 
     @Test
@@ -82,10 +82,10 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
                         .addSelectMultiAV(1, null)
-                            .addAnswer(null, "first", null, null, true, null)
-                            .addAnswer(null, "second", null, null, false, null)
-                            .addAnswer(null, "third", "other", null, true, otherResponse)
-                            .addAnswer(null, "fourth", null, null, true, null)));
+                            .addAnswer("first", true, null)
+                            .addAnswer("second", false, null)
+                            .addAnswer("third", true, otherResponse)
+                            .addAnswer("fourth", true, null)));
     }
 
     @Test
@@ -95,10 +95,10 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
                         .addSelectMultiAV(1, null)
-                            .addAnswer(null, "first", null, null, null, null)
-                            .addAnswer(null, "second", null, null, null, null)
-                            .addAnswer(null, "third", null, null, null, null)
-                            .addAnswer(null, "fourth", null, null, null, null)));
+                            .addAnswer("first", null, null)
+                            .addAnswer("second", null, null)
+                            .addAnswer("third", null, null)
+                            .addAnswer("fourth", null, null)));
     }
 
     @Test
@@ -108,10 +108,10 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
                         .addSelectMultiAV(1, null)
-                            .addAnswer(null, "first", null, null, false, null)
-                            .addAnswer(null, "second", null, null, false, null)
-                            .addAnswer(null, "third", null, null, true, null)
-                            .addAnswer(null, "fourth", null, null, false, null)));
+                            .addAnswer("first", false, null)
+                            .addAnswer("second", false, null)
+                            .addAnswer("third", true, null)
+                            .addAnswer("fourth", false, null)));
     }
 
     @Test
@@ -120,8 +120,8 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                 render("${delimit(var1,\"*\",\"**\",\"-\",false,\"defaultVaLL\")}",
                         avBuilder
                         .addSelectMultiAV(1, null)
-                            .addAnswer(null, "first", null, null, true, null)
-                            .addAnswer(null, "second", null, null, true, null)));
+                            .addAnswer("first", true, null)
+                            .addAnswer("second",true, null)));
     }
 
     /**    TESTS for yearsFromDate transformation  **/
@@ -179,13 +179,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix() throws Exception{
         List<Integer> columnAvList = avBuilder
                 .addSelectOneMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, ImmutableList.of(true, false, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, false, true), null)
-                    .getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
+                    .getColumnAnswerIds(0, 1); //we select the first two columns as columns we want the veteran to select
 
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -199,13 +199,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrixTestSkippingOfUnselectedAnswers() throws Exception{
         List<Integer> columnAvList = avBuilder
                 .addSelectOneMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, false, true), null)
-                    .getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
+                    .getColumnAnswerIds(0, 1); //we select the first two columns as columns we want the veteran to select
 
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -217,20 +217,19 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix() throws Exception{
-        List<Integer> columnAvList = avBuilder
+        List<Integer> columnAnswerIdList = avBuilder
                 .addSelectMultiMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, ImmutableList.of(true, false, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, true), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
-                    .getColumnAvs(0, 1); //we select the first two columns as columns we want the veteran to select
-
+                    .getColumnAnswerIds(0, 1); //we select the first two columns as columns we want the veteran to select
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"111\":\"first question\",\"222\":\"second question\"},[");
-        templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
+        templateText.append(Joiner.on(",").skipNulls().join(columnAnswerIdList)).append("])}");
 
         assertEquals("first question, and second question", render(templateText.toString(), avBuilder));
     }
@@ -239,13 +238,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix_SingleValueOutputCase() throws Exception{
         List<Integer> columnAvList = avBuilder
                 .addSelectOneMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
-                    .getColumnAvs(1); //we select the second column as the one we want the veteran to select
+                    .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -259,14 +258,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_SingleValueOutputCase() throws Exception{
         List<Integer> columnAvList = avBuilder
                 .addSelectMultiMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                     .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
-                    .getColumnAvs(1); //we select the second column as the one we want the veteran to select
-
+                    .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
@@ -281,9 +279,9 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
                 .addSelectOneMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithAvId(111, "q1")
+                    .addChildWithAvId(222, "q2")
+                    .addChildWithAvId(333, "q3")
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
@@ -302,9 +300,9 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
                 .addSelectMultiMatrixAV(123, "test matrix question")
-                    .addChildQuestion(111, "q1")
-                    .addChildQuestion(222, "q2")
-                    .addChildQuestion(333, "q3")
+                    .addChildWithAvId(111, "q1")
+                    .addChildWithAvId(222, "q2")
+                    .addChildWithAvId(333, "q3")
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
@@ -327,24 +325,24 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                         avBuilder
                         .addTableQuestionAv(1, null, false, null)
                             .addChildFreeText(null, "free text question", Lists.newArrayList("first", null, null))
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(true, false, false), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, true), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, false, false), null)
-                                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, false, false), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.newArrayList(true, false, false), null)
+                                .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, true), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, Lists.newArrayList(false, false, false), null)
+                                .addChildSelectAnswer(null, Lists.newArrayList(false, false, false), null)));
 
         assertEquals("4", 
                 render("${numberOfEntries(var1)}",
                         avBuilder
                         .addTableQuestionAv(1, null, false, null)
                             .addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(true, false, false), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, true), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, false, false), null)
-                                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, false, false), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.newArrayList(true, false, false), null)
+                                .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, true), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, Lists.newArrayList(false, false, false), null)
+                                .addChildSelectAnswer(null, Lists.newArrayList(false, false, false), null)));
     }
 
     @Test
@@ -355,12 +353,12 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                         avBuilder
                         .addTableQuestionAv(1, null, false, null)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
     }
 
     /** TESTS for delimitTableField translation for table questions  **/
@@ -370,21 +368,21 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         TableQuestionAvBuilder tableBuilder = avBuilder
                 .addTableQuestionAv(1, null, false, null)
                     .addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
-                    .addChildSelectOne(null, "select one question")
-                        .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
-                        .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
-                        .addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
+                    .addChildSelectOneAv(null, "select one question")
+                        .addChildSelectAnswer("answer 1", Lists.newArrayList(false, false, true), null)
+                        .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, false), null)
+                        .addChildSelectAnswer("answer 3", Lists.newArrayList(true, false, false), null);
 
-        //grab the select one's AV which we will be delimiting
-        Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+        //grab the select one's measure ID which we will be delimiting
+        Integer childMeasureId = tableBuilder.getCurrentChildBuilder().getMeasure().getMeasureId();
 
-        tableBuilder.addChildSelectMulti(null, "select multi question")
-        .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
-        .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+        tableBuilder.addChildSelectMultiAv(null, "select multi question")
+        .addChildSelectAnswer(null, Lists.newArrayList(true, true, true), null)
+        .addChildSelectAnswer(null, Lists.newArrayList(false, true, false), null);
 
 
         assertEquals("answer 3, answer 2, and answer 1", 
-                render("${delimitTableField(var1," + childAvId + ")}",
+                render("${delimitTableField(var1," + childMeasureId + ")}",
                         avBuilder));
     }
 
@@ -393,29 +391,29 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         TableQuestionAvBuilder tableBuilder = avBuilder
                 .addTableQuestionAv(1, null, false, null)
                     .addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
-                    .addChildSelectOne(null, "select one question")
-                        .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
-                        .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
-                        .addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
+                    .addChildSelectOneAv(null, "select one question")
+                        .addChildSelectAnswer("answer 1", Lists.newArrayList(false, false, true), null)
+                        .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, false), null)
+                        .addChildSelectAnswer("answer 3", Lists.newArrayList(true, false, false), null);
 
         //grab the select one's AV which we will be delimiting
-        Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
+        Integer childMeasureId = tableBuilder.getCurrentChildBuilder().getMeasure().getMeasureId();
 
         tableBuilder
-            .addChildSelectMulti(null, "select multi question")
-                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
-                .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+            .addChildSelectMultiAv(null, "select multi question")
+                .addChildSelectAnswer(null, Lists.newArrayList(true, true, true), null)
+                .addChildSelectAnswer(null, Lists.newArrayList(false, true, false), null);
 
         assertEquals("*answer 3}*answer 2}**answer 1}", 
-                render("${delimitTableField(var1," + childAvId + ", \"*\", \"**\", \"}\", true, \"my default!\")}",
+                render("${delimitTableField(var1," + childMeasureId + ", \"*\", \"**\", \"}\", true, \"my default!\")}",
                         avBuilder));
 
         assertEquals("*answer 3}*answer 2}**answer 1", 
-                render("${delimitTableField(var1," + childAvId + ", \"*\", \"**\", \"}\", false, \"my default!\")}",
+                render("${delimitTableField(var1," + childMeasureId + ", \"*\", \"**\", \"}\", false, \"my default!\")}",
                         avBuilder));
 
         assertEquals("*answer 3}*answer 2}@answer 1", 
-                render("${delimitTableField(var1," + childAvId + ", \"*\", \"@\", \"}\", false, \"my default!\")}",
+                render("${delimitTableField(var1," + childMeasureId + ", \"*\", \"@\", \"}\", false, \"my default!\")}",
                         avBuilder));
     }
 
@@ -425,17 +423,17 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         TableQuestionAvBuilder tableBuilder = avBuilder
                 .addTableQuestionAv(1, null, false, null)
                     .addChildFreeText(null, "free text question", Lists.newArrayList("first", "second", "third", "fourth"))
-                    .addChildSelectOne(null, "select one question")
-                        .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                        .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                        .addChildSelectAnswer(null, "answer 3", null, null, null, null);
+                    .addChildSelectOneAv(null, "select one question")
+                        .addChildSelectAnswer("answer 1", null, null)
+                        .addChildSelectAnswer("answer 2", null, null)
+                        .addChildSelectAnswer("answer 3", null, null);
 
         //grab the select one's AV which we will be delimiting
         Integer childAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
 
-        tableBuilder.addChildSelectMulti(null, "select multi question")
-        .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(true, true, true), null)
-        .addChildSelectAnswer(null, null, null, null, Lists.newArrayList(false, true, false), null);
+        tableBuilder.addChildSelectMultiAv(null, "select multi question")
+        .addChildSelectAnswer(null, Lists.newArrayList(true, true, true), null)
+        .addChildSelectAnswer(null, Lists.newArrayList(false, true, false), null);
 
         assertEquals("my default!", 
                 render("${delimitTableField(var1," + childAvId + ", \"*\", \"@\", \"}\", false, \"my default!\")}",
@@ -455,18 +453,18 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         Integer freeTextChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
 
         tableBuilder
-            .addChildSelectOne(null, "select one question")
-                .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(false, false, true), null)
-                .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, false), null)
-                .addChildSelectAnswer(null, "answer 3", null, null, Lists.newArrayList(true, false, false), null);
+            .addChildSelectOneAv(null, "select one question")
+                .addChildSelectAnswer("answer 1", Lists.newArrayList(false, false, true), null)
+                .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, false), null)
+                .addChildSelectAnswer("answer 3", Lists.newArrayList(true, false, false), null);
 
         Integer selectOneChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
 
 
         tableBuilder
-            .addChildSelectMulti(null, "select multi question")
-                .addChildSelectAnswer(null, "answer 1", null, null, Lists.newArrayList(true, true, false), null)
-                .addChildSelectAnswer(null, "answer 2", null, null, Lists.newArrayList(false, true, true), null);
+            .addChildSelectMultiAv(null, "select multi question")
+                .addChildSelectAnswer("answer 1", Lists.newArrayList(true, true, false), null)
+                .addChildSelectAnswer("answer 2", Lists.newArrayList(false, true, true), null);
 
         Integer selectMultiChildAvId = tableBuilder.getCurrentChildBuilder().getMeasure().getAssessmentVariable().getAssessmentVariableId();
 
