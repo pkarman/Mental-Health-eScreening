@@ -47,6 +47,22 @@ angular.module('Editors')
 	                },
 	                controller: 'entryController'
 	            })
+
+				/** -------- RULES WORKFLOW -------- **/
+
+				.state('rules',{
+					url:'/rules',
+					templateUrl:'resources/editors/views/rules/rules.html',
+					controller: 'RulesController'
+				})
+
+				.state('rules.detail',{
+					url:'/rules/:id',
+					templateUrl:'resources/editors/views/rules/rules.detail.html',
+					controller: 'RulesDetailController'
+				})
+
+				/** -------- END RULES WORKFLOW -------- **/
 	
 	            /** -------- SECTIONS WORKFLOW -------- **/
 	            

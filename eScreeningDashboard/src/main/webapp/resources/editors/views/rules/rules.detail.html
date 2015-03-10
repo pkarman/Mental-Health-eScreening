@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+
+		<h1>Manage Rule</h1>
+
+		<!-- Alerts and Messages -->
+		<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+
+	    <form name="ruleDetailsForm">
+	    </form>
+
+		<div class="form-group pull-right">
+		    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+		    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
+		</div>
+
+    </div>
+</div>
