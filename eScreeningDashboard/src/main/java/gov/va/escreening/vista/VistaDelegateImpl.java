@@ -40,6 +40,7 @@ import gov.va.escreening.vista.dto.VistaProgressNote;
 import gov.va.escreening.vista.dto.VistaServiceCategoryEnum;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
@@ -176,10 +177,12 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 		if(assessAppt == null) return null;
 		
 		long date = assessAppt.getAppointmentDate().getTime();
-		
-		//TODO: modify the getVeteraAppointments to take start and end dates. Only select the same date as this appointment.
+		Calendar c = Calendar.getInstance();
+		c.setTime(assessAppt.getAppointmentDate());
+		c.add(Calendar.HOUR, 24);
+		c.set(Calendar.HOUR, 0); //Set the end date to midnight next day.
 		List<VistaVeteranAppointment> apptList = vistaRepo.getVeteranAppointments(user.getVistaDivision(), 
-				user.getVistaVpid(), user.getVistaDuz(), "", vetIen);
+				user.getVistaVpid(), user.getVistaDuz(), assessAppt.getAppointmentDate(), c.getTime(), vetIen);
 		
 		VistaVeteranAppointment picked = null;
 		for(VistaVeteranAppointment appt : apptList)

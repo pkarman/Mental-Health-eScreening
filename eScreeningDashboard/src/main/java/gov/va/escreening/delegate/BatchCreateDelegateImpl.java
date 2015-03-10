@@ -216,9 +216,9 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 				SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 				Date d = format.parse(dateTime);
 			
-				boolean succeed = vetAssessSvc.createAssessmentWithAppointment(escreenUser.getUserId(),
+				boolean succeed = vetAssessSvc.createAssessmentWithAppointment(
 						vet.getVeteranId(), programId, clinicId, clinicianId,
-						noteTitleId, batteryId, new ArrayList<Integer>(
+						escreenUser.getUserId(), noteTitleId, batteryId, new ArrayList<Integer>(
 								surveyList), d);
 				result.setSucceed(succeed);
 			

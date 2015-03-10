@@ -350,6 +350,14 @@ public class BatchCreateController {
 						escreenUser);
 
 		model.addAttribute("veterans", results);
+		for(BatchBatteryCreateResult r : results)
+		{
+			if(!r.getSucceed())
+			{
+				model.addAttribute("hasErrors", true);
+				break;
+			}
+		}
 		RedirectView view = new RedirectView("batchComplete");
 		view.setExposeModelAttributes(false);
 		return new ModelAndView(view, model.asMap());
