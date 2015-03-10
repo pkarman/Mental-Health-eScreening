@@ -165,6 +165,7 @@
 							if (newScope.transformationType.params) {
 								// Convert params into strings for freeMarker
 								scope.assessmentVariable.transformations[0].params = _.map(newScope.transformationType.params, function(param) {
+									if(angular.isString(param) || angular.isNumber(param)){ return param; }
 									return JSON.stringify(param);
 								});
 							}
