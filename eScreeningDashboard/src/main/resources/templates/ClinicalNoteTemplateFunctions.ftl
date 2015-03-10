@@ -458,13 +458,13 @@ boolean indicates if the suffix should be appended at the end of the list -->
 
 <#-- 
 This transformation takes a table question and allows for the selection of a single child question (i.e. field) 
-childAVId is the child question's AV ID that we should output values for (the field)
+childQuestionId is the child question's ID that we should output values for (the field)
 Other parameters are the same as the delimit function below
 -->
-<#function delimitTableField table=DEFAULT_VALUE childAvId=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE>
+<#function delimitTableField table=DEFAULT_VALUE childQuestionId=DEFAULT_VALUE prefix='' lastPrefix='and ' suffix=', ' includeSuffixAtEnd=false defaultValue=DEFAULT_VALUE>
 	
 	<#-- test to see if no table exists OR no child exists and then return DEFAULT_VALUE -->
-	<#if (childAvId?is_string && childAvId == DEFAULT_VALUE) || table==DEFAULT_VALUE || !(table.children??) || table.children?size == 0 >
+	<#if (childQuestionId?is_string && childQuestionId == DEFAULT_VALUE) || table==DEFAULT_VALUE || !(table.children??) || table.children?size == 0 >
     	<#return defaultValue>
  	</#if>
  	
@@ -474,7 +474,7 @@ Other parameters are the same as the delimit function below
 	<#if !(wasAnswerNone(table))>
 		<#list table.children as question>
 		    <#-- check to see if the given child question is the one to output -->
-			<#if question.variableId?? && question.variableId == childAvId && question.children?? && (question.children?size > 0) >
+			<#if question.measureId?? && question.measureId == childQuestionId && question.children?? && (question.children?size > 0) >
 				<#assign response = getResponse(question, question.measureTypeId) >
 				<#if response?has_content >
 					<#-- append append response to list -->
@@ -532,35 +532,35 @@ correct assessment variable object.
 </#function>
 
 <#-- This transformation’s goal is to produce a list of text, one per question having at least one required column selected by the veteran
-rowAvIdToOutputMap is a map from row AV ID to the text we should output if at least one column was selected by the veteran for the given question
-columnVarIdMap is a set of column AV IDs which we are testing to see if the veteran gave one of the responses
+rowMeasureIdToOutputMap is a map from row measure ID to the text we should output if at least one column was selected by the veteran for the given question
+columnAnswerIdList is a set of column answer IDs which we are testing to see if the veteran gave one of the responses
 -->
-<#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowAvIdToOutputMap=[] columnVarIdList=[] >
+<#function delimitedMatrixQuestions matrix=DEFAULT_VALUE rowMeasureIdToOutputMap=[] columnAnswerIdList=[] >
 	<#-- test to see if no matrix exists and then return default values -->
-	<#if matrix == DEFAULT_VALUE || !(rowAvIdToOutputMap?has_content) || !(columnVarIdList?has_content) >
+	<#if matrix == DEFAULT_VALUE || !(rowMeasureIdToOutputMap?has_content) || !(columnAnswerIdList?has_content) >
 		<#return DEFAULT_VALUE>
 	</#if>
 	
 	<#assign valList = []>
 	<#assign columnSet = {}>
-	<#list columnVarIdList as columnVarId>
-		<#assign columnSet = columnSet + {columnVarId?string : true} >
+	<#list columnAnswerIdList as columnAnswerId>
+		<#assign columnSet = columnSet + {columnAnswerId?string : true} >
 	</#list>
 
 	<#-- loop over each of the matrix question's child question assessment variables -->
 	<#list matrix.children as question>
 		<#-- check current child question to see if its question's AV ID is found in rowVarIds -->
 		
-		<#if (question.variableId??) && (rowAvIdToOutputMap[question.variableId?string]?has_content) && (question.children??) && (question.children?size > 0) >
-		
+		<#if (question.measureId??) && (rowMeasureIdToOutputMap[question.measureId?string]?has_content) && (question.children??) && (question.children?size > 0) >
+
 			<#assign responses = getSelectedResponses(question)>
 			
-			<#-- check question's response(s) to see one if one of them is in columnVarIds -->
+			<#-- check question's response(s) to see one if one of them is in columnAnswerIds -->
 			<#list responses as response>
 			
-				<#if (response.variableId??) && (columnSet[response.variableId?string]?has_content) >
-					<#-- append the text found in rowAvIdToOutputMap for the current child question -->
-                    <#assign newOutput = rowAvIdToOutputMap[question.variableId?string]>
+				<#if (response.answerId??) && (columnSet[response.answerId?string]?has_content) >
+					<#-- append the text found in rowMeasureIdToOutputMap for the current child question -->
+                    <#assign newOutput = rowMeasureIdToOutputMap[question.measureId?string]>
 					<#assign valList = valList + [newOutput]>
 				</#if>
 			</#list>
@@ -939,8 +939,8 @@ Returns true if the value given has a value. Currently only supports string valu
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
     <#if measureType == 2 >
-    	<#if (var.answerId)??>
-    		<#if (var.answerId = right) >
+    	<#if var.children?? && (var.children?size > 0) && (var.children[0].answerId)??>
+    		<#if (var.children[0].answerId = right) >
     			<#return true>
     		</#if>
     	</#if>

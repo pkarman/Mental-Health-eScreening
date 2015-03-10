@@ -1,17 +1,12 @@
 package gov.va.escreening.variableresolver;
 
-import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +32,16 @@ public class AssessmentVariableDto {
 	private String otherValue;
 	private String displayName;
 	private Integer measureTypeId;
-	
-	private Integer answerId;
+	private Integer measureId;
+	public Integer getMeasureId() {
+        return measureId;
+    }
+
+    public void setMeasureId(Integer measureId) {
+        this.measureId = measureId;
+    }
+
+    private Integer answerId;
 	
 	public Integer getAnswerId() {
 		return answerId;
@@ -143,6 +146,7 @@ public class AssessmentVariableDto {
 		else if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE
 				&& av.getMeasure() != null && av.getMeasure().getMeasureType() != null ){
 			measureTypeId = av.getMeasure().getMeasureType().getMeasureTypeId();
+			measureId = av.getMeasure().getMeasureId();
 		}
 	}
 
@@ -379,7 +383,11 @@ public class AssessmentVariableDto {
 				+ value + ", displayText=" + displayText + ", overrideText="
 				+ overrideText + ", otherText=" + otherText + ", column="
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
-				+ ", otherValue=" + otherValue + ", children=" + children 
-				+ ", measureTypeId=" + measureTypeId + "]";
+				+ ", otherValue=" + otherValue 
+				+ ", answerId=" + answerId
+				+ ", measureId=" + measureId
+				+ ", measureTypeId=" + measureTypeId
+				+ ", children=" + children 
+				+ "]";
 	}
 }

@@ -129,6 +129,6 @@ public abstract class RestController {
     
     private Response<ErrorResponse> errorResponse(ErrorResponse er){
     	logger.error(er.getLogMessage());
-		return new Response<>(er);
+		return Response.createError(er);
     }
 }

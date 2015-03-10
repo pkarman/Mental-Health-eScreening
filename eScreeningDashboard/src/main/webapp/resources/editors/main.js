@@ -190,7 +190,7 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						$scope.$on('assessmentVariableSelected', function() {
 							if ($scope.assessmentVariable && $scope.assessmentVariable.id) {
-								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.name);
+								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable.id, $scope.assessmentVariable.getName());
 							    
 								$modalInstance.close(embed);
 							}

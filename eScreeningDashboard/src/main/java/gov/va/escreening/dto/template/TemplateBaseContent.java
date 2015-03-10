@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.exception.EscreeningDataValidationException;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,7 +22,7 @@ import static gov.va.escreening.constants.AssessmentConstants.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
 	
-	public static String translate(String operand, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
+	public static String translate(String operator, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
 	{
 		
 		
@@ -66,7 +69,14 @@ public abstract class TemplateBaseContent {
 							s.append(",").append(param.toLowerCase());
 						}
 						else{
-							s.append(",\"").append(param).append("\"");
+						    
+						    try{//if the param is a number don't put quotes around it
+				                Double.parseDouble(param);
+				                s.append(",").append(param);
+				            }
+						    catch(Exception e){
+						        s.append(",\"").append(param).append("\"");
+						    }
 						}
 					}
 				}
@@ -74,8 +84,9 @@ public abstract class TemplateBaseContent {
 				translatedVar = s.append(")").toString();
 			}
 		}
+		String beforeOperator = translatedVar;
 		
-		if (operand == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
+		if (operator == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
 		{//Don't pull value out if transformations were applied
 			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
 			{
@@ -91,9 +102,9 @@ public abstract class TemplateBaseContent {
 				translatedVar =  "getCustomValue("+inStr+")";
 			}
 		}
-		else if ("eq".equals(operand) || "neq".equals(operand) || 
-				"lt".equals(operand) || "gt".equals(operand) || "lte".equals(operand) 
-				|| "gte".equals(operand))
+		else if ("eq".equals(operator) || "neq".equals(operator) || 
+				"lt".equals(operator) || "gt".equals(operator) || "lte".equals(operator) 
+				|| "gte".equals(operator))
 		{
 			if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))			
 			{
@@ -122,7 +133,7 @@ public abstract class TemplateBaseContent {
 				translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
 			}
 		}
-		else if ("answered".equals(operand))
+		else if ("answered".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_FREE_TEXT, 
@@ -133,7 +144,7 @@ public abstract class TemplateBaseContent {
 				translatedVar= "wasAnswered("+inStr+")";
 			}
 		}
-		else if ("nanswered".equals(operand))
+		else if ("nanswered".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_FREE_TEXT,
@@ -144,7 +155,7 @@ public abstract class TemplateBaseContent {
 				translatedVar= "wasntAnswered("+inStr+")";
 			}
 		}
-		else if ("result".equals(operand))
+		else if ("result".equals(operator))
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
@@ -163,7 +174,7 @@ public abstract class TemplateBaseContent {
 			}
 			
 		}
-		else if ("nresult".equals(operand))
+		else if ("nresult".equals(operator))
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
@@ -180,7 +191,7 @@ public abstract class TemplateBaseContent {
 				translatedVar= "matrixHasNoResult("+inStr+")";
 			}
 		}
-		else if ("response".equals(operand))
+		else if ("response".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_SELECT_ONE, 
@@ -189,7 +200,7 @@ public abstract class TemplateBaseContent {
 				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
-		else if ("nresponse".equals(operand))
+		else if ("nresponse".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_SELECT_ONE, 
@@ -198,7 +209,7 @@ public abstract class TemplateBaseContent {
 				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
-		else if ("none".equals(operand))
+		else if ("none".equals(operator))
 		{
 			if (left.measureTypeIn( 
 					MEASURE_TYPE_SELECT_ONE,
@@ -209,7 +220,7 @@ public abstract class TemplateBaseContent {
 			}
 			 
 		}
-		else if ("nnone".equals(operand))
+		else if ("nnone".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_SELECT_ONE, 
@@ -219,6 +230,13 @@ public abstract class TemplateBaseContent {
 				translatedVar= "wasntAnswerNone("+inStr+")";
 			}
 			 
+		}
+		
+		if(translatedVar == beforeOperator && operator != null && !operator.isEmpty()){
+		    ErrorBuilder.throwing(EscreeningDataValidationException.class)
+		        .toAdmin("Operator: '" + operator + "' is unsupported for variable (with ID: " + left.getId() + ") of type: " + left.getTypeId())
+		        .toUser("An unsupported template operation was used.  Please call support")
+		        .throwIt();
 		}
 		
 		return translatedVar;

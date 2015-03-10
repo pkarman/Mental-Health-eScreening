@@ -4,6 +4,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
         var variableSeed = 0;
         var parseContentReg = /<img[^>]+id="(var\d+)_\d+"[^>]+>/;
         var replaceVarReg = /var/;
+		var variableHash = {};
         
         function newAVElement(id, name){
             var idValue = "var" + id + '_' + variableSeed++;
@@ -60,7 +61,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                 return new EScreeningDashboardApp.models.TemplateBlock(jsonConfig, parent);
             },
             
-            parseIntoContents: function(textContent, variableHash){
+            parseIntoContents: function(textContent){
                 var contents = [];
                 
                 if(angular.isString(textContent)){
@@ -68,10 +69,11 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
 
                     fragments.forEach(function(frag){
                         var content = null;
-                        if(frag.indexOf("var") == 0){
+                        if(frag.indexOf("var") === 0){
                             var avId = parseInt(frag.replace(replaceVarReg, ""));
                             if(!isNaN(avId)){
                                 var avObject = variableHash[avId];
+								// TODO: Add logic here for tables
                                 if(avObject){
                                     content = {
                                         type: "var",
@@ -80,7 +82,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                                 }
                             }
                         }
-                        if(content == null){
+                        if(content === null){
                             content = {
                                 type : "text",
                                 content: frag
@@ -131,7 +133,11 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                     return removeDuplicateBlockContent(target, container);
                 }
                 return false;
-            }
+            },
+
+			getVariableHash: function() {
+				return variableHash;
+			}
             
-        }
+        };
     });
