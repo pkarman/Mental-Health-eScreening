@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, ngTableParams, $filter) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter) {
 
 	        return {
 	            restrict: 'EA',
@@ -156,7 +156,6 @@
 						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
-						scope.$emit('assessmentVariableSelected');
 
 						// Apply select transformation to AV
 						if (newScope.transformationType) {
@@ -176,6 +175,10 @@
 								scope.assessmentVariable.transforamtions = [];
 							}
 						}
+
+						TemplateBlockService.getVariableHash()[scope.assessmentVariable.id] = scope.assessmentVariable;
+
+						scope.$emit('assessmentVariableSelected');
 					};
 
 					scope.dismiss = function dismiss() {
