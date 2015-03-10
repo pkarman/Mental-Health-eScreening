@@ -14,6 +14,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -252,4 +253,8 @@ public interface VeteranAssessmentService {
      * @return
      */
     List<String> getHealthFactorReport(int veteranAssessmentId);
+
+	public abstract boolean createAssessmentWithAppointment(Integer veteranId,
+			Integer programId, Integer clinicId, Integer clinicianId, Integer createdByUserId, Integer selectedNoteTitleId,
+			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate);
 }

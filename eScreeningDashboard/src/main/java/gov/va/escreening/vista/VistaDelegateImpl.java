@@ -7,6 +7,7 @@ import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
+import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
@@ -14,6 +15,7 @@ import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentAuditLog;
 import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.EscreenUser;
@@ -87,6 +89,9 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 	
 	@Autowired
 	private VistaRepository vistaRepo;
+	
+	@Autowired
+	private AssessmentAppointmentRepository assessmentApptRepo;
 
 	@Autowired
 	public void setVeteranAssessmentService(
@@ -126,7 +131,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 			VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, locationIEN, inpatientStatus);
 			Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
 			String visitDate = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
-			String visitStr = findVisitStr(escreenUser, patientIEN.toString(), veteranAssessment.getClinic().getName(), visitDateTime);
+			String visitStr = findVisitStr(escreenUser, patientIEN.toString(), veteranAssessment);
 			String visitString = visitStr != null?visitStr:(locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
 
 			// Get Mental Health Assessments
@@ -165,22 +170,28 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 		}
 	}
 	
-	private String findVisitStr(EscreenUser user, String vetIen, String clinicName, Date visitDate)
+	private String findVisitStr(EscreenUser user, String vetIen, VeteranAssessment assessment)
 	{
-		long date = visitDate.getTime();
+		AssessmentAppointment assessAppt = assessmentApptRepo.findByAssessmentId(assessment.getVeteranAssessmentId());
+		if(assessAppt == null) return null;
+		
+		long date = assessAppt.getAppointmentDate().getTime();
+		
+		//TODO: modify the getVeteraAppointments to take start and end dates. Only select the same date as this appointment.
 		List<VistaVeteranAppointment> apptList = vistaRepo.getVeteranAppointments(user.getVistaDivision(), 
 				user.getVistaVpid(), user.getVistaDuz(), "", vetIen);
 		
 		VistaVeteranAppointment picked = null;
 		for(VistaVeteranAppointment appt : apptList)
 		{
-			if(appt.getClinicName()!=null && appt.getClinicName().equals(clinicName))
+			if(appt.getClinicName()!=null && appt.getClinicName().equals(assessment.getClinic().getName()))
 			{
 				if(picked == null)
 				{
 					picked = appt;
 				}
-				else if (Math.abs(picked.getAppointmentDate().getTime() - date) > Math.abs(appt.getAppointmentDate().getTime()-date))
+				else if (Math.abs(picked.getAppointmentDate().getTime() - date) 
+						> Math.abs(appt.getAppointmentDate().getTime()-date))
 				{
 					picked = appt;
 				}

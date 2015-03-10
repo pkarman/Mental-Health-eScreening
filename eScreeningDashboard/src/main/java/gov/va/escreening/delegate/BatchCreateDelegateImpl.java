@@ -3,11 +3,14 @@ package gov.va.escreening.delegate;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
+import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.Veteran;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.VeteranService;
 import gov.va.escreening.service.VeteranServiceImpl;
 import gov.va.escreening.vista.dto.VistaClinicAppointment;
@@ -23,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.hibernate.validator.util.privilegedactions.GetClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +48,12 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 	@Autowired
 	private VeteranRepository veteranRepo;
 
+//	@Autowired
+//	private CreateAssessmentDelegate createAssessmentDelegate;
+//	
 	@Autowired
-	private CreateAssessmentDelegate createAssessmentDelegate;
-
+	private VeteranAssessmentService vetAssessSvc;
+	
 	private static Logger logger = LoggerFactory
 			.getLogger(BatchCreateDelegateImpl.class);
 
@@ -204,14 +209,23 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			}
 			// Add
 			try {
-				createAssessmentDelegate.createVeteranAssessment(escreenUser,
+				String apptDate = vet.getApptDate();
+				String apptTime = vet.getApptTime();
+				
+				String dateTime = apptDate + " " + apptTime;
+				SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+				Date d = format.parse(dateTime);
+			
+				boolean succeed = vetAssessSvc.createAssessmentWithAppointment(escreenUser.getUserId(),
 						vet.getVeteranId(), programId, clinicId, clinicianId,
 						noteTitleId, batteryId, new ArrayList<Integer>(
-								surveyList));
-				result.setSucceed(true);
+								surveyList), d);
+				result.setSucceed(succeed);
+			
+			
 			} catch (Exception ex) {
 				logger.error("Error creating assessment for veteran Id= "
-						+ vet.getVeteranId());
+						+ vet.getVeteranId(), ex);
 				result.setErrorMsg("Error occurred: " + ex.getMessage());
 				result.setSucceed(false);
 			}

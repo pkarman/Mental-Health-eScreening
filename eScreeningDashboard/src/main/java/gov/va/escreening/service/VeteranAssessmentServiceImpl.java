@@ -12,6 +12,7 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.ClinicalNote;
 import gov.va.escreening.entity.Consult;
@@ -30,6 +31,7 @@ import gov.va.escreening.entity.VeteranAssessmentNote;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.AssessmentStatusRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ClinicRepository;
@@ -51,8 +53,10 @@ import gov.va.escreening.validation.DateValidationHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +113,10 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private AssessmentAppointmentRepository assessmentApptRepo;
+
 
 	@Resource(name = "esVeteranAssessmentDashboardAlertRepository")
 	VeteranAssessmentDashboardAlertRepository vadar;
@@ -580,6 +588,27 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
 		return veteranAssessment.getVeteranAssessmentId();
+	}
+	
+	@Override
+	public boolean createAssessmentWithAppointment(Integer veteranId, Integer programId,
+			Integer clinicId, Integer clinicianId, Integer createdByUserId,
+			Integer selectedNoteTitleId, Integer selectedBatteryId,
+			List<Integer> surveyIdList, Date date)
+	{
+		Integer vetAssessmentId = create(veteranId, programId, clinicId, clinicianId,
+				createdByUserId, selectedNoteTitleId, selectedBatteryId, surveyIdList);
+		if(vetAssessmentId !=null)
+		{
+			AssessmentAppointment aa = new AssessmentAppointment();
+			aa.setAppointmentDate(date);
+			aa.setVetAssessmentId(vetAssessmentId);
+			aa.setDateCreated(Calendar.getInstance().getTime());
+			assessmentApptRepo.create(aa);
+			assessmentApptRepo.commit();
+			return true;
+		}
+		return false;
 	}
 
 	@Override

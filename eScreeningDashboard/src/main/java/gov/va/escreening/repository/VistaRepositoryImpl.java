@@ -254,6 +254,8 @@ public class VistaRepositoryImpl implements VistaRepository {
 
 		return resultList;
 	}
+	
+	
 
 	@Override
 	public List<VistaVeteranClinicalReminder> getVeteranClinicalReminders(
