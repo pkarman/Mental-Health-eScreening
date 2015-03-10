@@ -32,7 +32,16 @@ public class AssessmentVariableDto {
 	private String otherValue;
 	private String displayName;
 	private Integer measureTypeId;
-	private Integer answerId;
+	private Integer measureId;
+	public Integer getMeasureId() {
+        return measureId;
+    }
+
+    public void setMeasureId(Integer measureId) {
+        this.measureId = measureId;
+    }
+
+    private Integer answerId;
 	
 	public Integer getAnswerId() {
 		return answerId;
@@ -137,6 +146,7 @@ public class AssessmentVariableDto {
 		else if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE
 				&& av.getMeasure() != null && av.getMeasure().getMeasureType() != null ){
 			measureTypeId = av.getMeasure().getMeasureType().getMeasureTypeId();
+			measureId = av.getMeasure().getMeasureId();
 		}
 	}
 
@@ -375,6 +385,7 @@ public class AssessmentVariableDto {
 				+ column + ", row=" + row + ", calculationValue=" + calculationValue 
 				+ ", otherValue=" + otherValue 
 				+ ", answerId=" + answerId
+				+ ", measureId=" + measureId
 				+ ", measureTypeId=" + measureTypeId
 				+ ", children=" + children 
 				+ "]";
