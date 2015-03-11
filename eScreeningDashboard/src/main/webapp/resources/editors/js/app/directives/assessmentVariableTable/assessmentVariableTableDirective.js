@@ -193,7 +193,7 @@
 							}
 						}
 
-						TemplateBlockService.getVariableHash()[scope.assessmentVariable.id] = scope.assessmentVariable;
+						TemplateBlockService.addVariableToHash(scope.assessmentVariable);
 
 						scope.$emit('assessmentVariableSelected');
 					};

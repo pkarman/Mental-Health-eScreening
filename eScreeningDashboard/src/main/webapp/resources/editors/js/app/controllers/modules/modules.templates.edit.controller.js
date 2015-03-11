@@ -8,11 +8,11 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     $scope.template = template;
     $scope.hasChanged = false;
     $scope.assessmentVariables = [];
-    $scope.variableHash = TemplateBlockService.getVariableHash();
     $scope.debug = false;
     $scope.logId=0;
     $scope.alerts = MessageFactory.get();
     $scope.relatedObj = relatedObj;
+    TemplateBlockService.resetVariableHash(template);
 
     var queryObj;
     if ($scope.relatedObj.type === "module") {
@@ -21,14 +21,16 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     else if($scope.relatedObj.type === "battery") {
     	queryObj = {batteryId: $scope.relatedObj.id};
     }
-													AssessmentVariableService.query(queryObj)
-        .then(function(assessmentVariables) {
-            assessmentVariables.forEach(function(variable){
-                    $scope.variableHash[variable.id] = variable;
-                });
-
-															$scope.assessmentVariables = assessmentVariables;
-            });
+    AssessmentVariableService.query(queryObj)
+    	.then(function(assessmentVariables) {
+	    	assessmentVariables.forEach(function(variable){
+	    		TemplateBlockService.addVariableToHash(variable);
+	    	});
+	
+	    	$scope.assessmentVariables = assessmentVariables;
+    });
+    
+    
 
     $scope.save = function () {
         console.log("Save clicked");
@@ -299,8 +301,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
                 	
 	                if (form.$valid) {
 
-		                $scope.block.transformTextContent(TemplateBlockService, $scope.variableHash);
-		                $scope.block.autoGenerateFields($scope.variableHash);
+		                $scope.block.transformTextContent(TemplateBlockService);
+		                $scope.block.autoGenerateFields();
 
 		                if (isAdding) {
 
@@ -318,7 +320,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
 				                else {
-					                log.error("Unsupported type to insert");
+					                console.error("Unsupported type to insert");
 				                }
 			                }
 			                else if (selectedBlock.type == 'elseif') {
@@ -338,7 +340,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
 				                else {
-					                log.error("Unsupported type to insert");
+					                console.error("Unsupported type to insert");
 				                }
 			                }
 			                else if (selectedBlock.type == 'else') {
@@ -350,7 +352,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
 				                else {
-					                log.error("Unsupported type to insert");
+					                console.error("Unsupported type to insert");
 				                }
 			                }
 			                else if (selectedBlock.type == 'text') {
@@ -379,7 +381,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					                insertAfterTextAndElseIf(selectedBlock.getParent());
 				                }
 				                else {
-					                log.error("Unsupported type to insert");
+					                console.error("Unsupported type to insert");
 				                }
 			                }
 		                }
