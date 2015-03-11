@@ -135,6 +135,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 			String visitStr = findVisitStr(escreenUser, patientIEN.toString(), veteranAssessment);
 			String visitString = visitStr != null?visitStr:(locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
 
+			logger.info("Set visit String "+visitString);
 			// Get Mental Health Assessments
 			saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient);
 
@@ -204,7 +205,12 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 		
 		if(picked != null)
 		{
-			return picked.getVisitStr();
+			String visitString = picked.getVisitStr();
+			String[] part = visitString.split(";");
+			if(part.length == 3)
+			{
+				return String.format("%s;%s;%s", part[2], part[1], part[0]);
+			}
 		}
 		return null;
 	}
