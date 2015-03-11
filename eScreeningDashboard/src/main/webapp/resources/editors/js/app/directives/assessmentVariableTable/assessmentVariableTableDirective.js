@@ -162,7 +162,7 @@
 						scope.toggles.transformations = false;
 
 						// Apply select transformation to AV
-						if (newScope.transformationType) {
+						if (newScope.transformationType || scope.transformationName == 'mulit-select' || scope.transformationName === 'assessment') {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 
