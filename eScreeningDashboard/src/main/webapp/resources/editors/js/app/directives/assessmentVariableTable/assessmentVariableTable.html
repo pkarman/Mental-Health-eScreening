@@ -48,6 +48,8 @@
 				<h5>Transformation Type</h5>
 				<p>Delimiter</p>
 
+				<input type="hidden" ng-model="transformationType" value="delimiter">
+
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
@@ -84,7 +86,7 @@
 
 				<div class="text-right">
 					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
-					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()" ng-if="block">Cancel</button>
 				</div>
 			</form>
 		</div>
@@ -94,6 +96,7 @@
 			<form>
 				<h5>Transformation Type</h5>
 				<p>Delimiter</p>
+				<input type="hidden" ng-model="transformationType" value="delimiter">
 
 				<div class="row">
 					<div class="col-md-6">
@@ -131,7 +134,7 @@
 
 				<div class="text-right">
 					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
-					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()" ng-if="block">Cancel</button>
 				</div>
 			</form>
 		</div>
@@ -152,7 +155,7 @@
 
 				<div class="text-right">
 					<button type="button" class="btn btn-primary" ng-click="applyTransformations(this);">Insert</button>
-					<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+					<button type="button" class="btn btn-default" ng-click="dismiss()" ng-if="block">Cancel</button>
 				</div>
 			</form>
 		</div>

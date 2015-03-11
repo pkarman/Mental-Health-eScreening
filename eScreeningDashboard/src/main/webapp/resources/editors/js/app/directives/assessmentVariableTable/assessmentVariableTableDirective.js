@@ -185,12 +185,13 @@
 									return JSON.stringify(param);
 								});
 							}
+
 							// Remove displayName property which is not to be persisted
 							delete scope.assessmentVariable.transformations[0].displayName;
-						} else {
-							if (scope.assessmentVariable.getMeasureTypeName() === 'table') {
-								scope.assessmentVariable.transforamtions = [];
-							}
+
+						} else if (scope.assessmentVariable.getMeasureTypeName() === 'table' || scope.assessmentVariable.measureTypeId === 1) {
+							// Reset transformations to empty array
+							scope.assessmentVariable.transformations = [];
 						}
 
 						TemplateBlockService.getVariableHash()[scope.assessmentVariable.id] = scope.assessmentVariable;
