@@ -102,7 +102,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			return null;
 		} else {
 			for (VeteranAssessment assessment : veteranAssessments) {
-				if(programId != null || assessment.getProgram().getProgramId().equals(programId))
+				if(programId == null || assessment.getProgram().getProgramId().equals(programId))
 				{
 					if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
 						return assessment;
