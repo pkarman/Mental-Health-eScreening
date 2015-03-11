@@ -36,6 +36,7 @@ import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 import gov.va.escreening.vista.extractor.VistaRecord;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -540,7 +541,7 @@ public class VistaServiceImpl implements VistaService {
         {
             clinicalReminderRepo.commit();
         }
-        refreshHealthFactors(division, vpid, duz, appProxyName);
+      
         refreshMHAIens(division, vpid, duz, appProxyName);
 
         return refreshCount;
@@ -627,8 +628,15 @@ public class VistaServiceImpl implements VistaService {
             crToHFMap.get(crIen).put(hf.getName(), hf);
         }
 
-        for (String crIen : crToHFMap.keySet())
+        List<ClinicalReminder> clinicalReminders = clinicalReminderRepo.findAll();
+
+        for(ClinicalReminder cr : clinicalReminders)
         {
+        	String crIen = cr.getVistaIen();
+        	if(crIen == null || crIen.isEmpty())
+        	{
+        		continue;
+        	}
             List<DialogComponent> componentList = vistaRepository.getClinicalReminderDialogs(division, vpid, duz,
                     appProxyName, crIen);
             Map<String, String> hfIenMap = new HashMap<String, String>();
@@ -648,22 +656,33 @@ public class VistaServiceImpl implements VistaService {
             }
 
             Map<String, HealthFactor> healthFactorMap = crToHFMap.get(crIen);
-
-            for (Entry<String, HealthFactor> entry : healthFactorMap.entrySet())
+            
+            for(Map.Entry<String, String> entry : hfIenMap.entrySet())
             {
-                String name = entry.getKey();
-                HealthFactor hf = entry.getValue();
-                if (hfIenMap.containsKey(name))
-                {
-                    if (hf.getVistaIen() == null || !hf.getVistaIen().equals(hfIenMap.get(name)))
+            	String name = entry.getKey();
+            	String ien = entry.getValue();
+            	if(healthFactorMap!=null && healthFactorMap.containsKey(entry.getKey()))
+            	{
+            		HealthFactor hf = healthFactorMap.get(name);
+            		if (hf.getVistaIen() == null || !hf.getVistaIen().equals(ien))
                     {
                         hf.setVistaIen(hfIenMap.get(name));
                         healthFactorRepo.update(hf);
                         logger.info("Updated vistaIen for HealthFactor " + hf.getName() + " to " + hfIenMap.get(name));
                         numRecord++;
-
                     }
-                }
+            	}
+            	else
+            	{
+            		HealthFactor newHf = new HealthFactor();
+            		newHf.setClinicalReminder(cr);
+            		newHf.setDateCreated(Calendar.getInstance().getTime());
+            		newHf.setName(name);
+            		newHf.setVistaIen(ien);
+            		newHf.setIsHistorical(false);
+            		healthFactorRepo.create(newHf);
+            		numRecord++;
+            	}
             }
         }
         if (numRecord > 0)
