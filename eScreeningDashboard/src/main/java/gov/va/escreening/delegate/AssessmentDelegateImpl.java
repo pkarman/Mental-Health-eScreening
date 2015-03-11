@@ -94,7 +94,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
-	public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId) {
+	public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId, Integer programId) {
 
 		List<VeteranAssessment> veteranAssessments = veteranAssessmentService.getAvailableAssessmentsForVeteran(veteranId);
 
@@ -102,8 +102,11 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			return null;
 		} else {
 			for (VeteranAssessment assessment : veteranAssessments) {
-				if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
-					return assessment;
+				if(programId != null || assessment.getProgram().getProgramId().equals(programId))
+				{
+					if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
+						return assessment;
+				}
 			}
 			return null;
 		}
