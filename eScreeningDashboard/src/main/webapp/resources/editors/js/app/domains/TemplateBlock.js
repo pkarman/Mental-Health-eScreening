@@ -115,7 +115,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	function transformTextContent(TemplateBlockService, variableHash){
 
 		if(this.type == "text"){
-		    this.content = swapNbspForSpaces(this.content);
+		    //this.content = swapNbspForSpaces(this.content);
 			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
 			delete(this.content);
 		}
