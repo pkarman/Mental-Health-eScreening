@@ -315,7 +315,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				                else if ($scope.block.type == 'elseif' || $scope.block.type == 'else') {
 					                insertAfterTextAndElseIf(selectedBlock);
 				                }
-				                else if ($scope.block.type == 'text') {
+				                else if ($scope.block.type == 'text' || $scope.block.type == 'table') {
 					                //put it at top
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
@@ -335,7 +335,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					                //insert into parent IF after text and else if
 					                insertAfterTextAndElseIf(selectedBlock.getParent());
 				                }
-				                else if ($scope.block.type == 'text') {
+				                else if ($scope.block.type == 'text' || $scope.block.type == 'table') {
 					                //add it to top of elseif's children
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
@@ -347,7 +347,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				                if ($scope.block.type == 'if') {
 					                insertAfterText(selectedBlock);
 				                }
-				                else if ($scope.block.type == 'text') {
+				                else if ($scope.block.type == 'text' || $scope.block.type == 'table') {
 					                //add it to top of elseif's children
 					                selectedBlock.children.splice(0, 0, $scope.block);
 				                }
@@ -356,7 +356,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				                }
 			                }
 			                else if (selectedBlock.type == 'text') {
-				                if ($scope.block.type == 'if' || $scope.block.type == 'text') {
+				                if ($scope.block.type == 'if' || $scope.block.type == 'text' || $scope.block.type == 'table') {
 					                if (selectedBlock.getParent()) {
 						                //if we have a parent place the if after the text in that parent
 						                selectedBlock.getParent().children.splice(selectedBlock.index() + 1, 0, $scope.block);
