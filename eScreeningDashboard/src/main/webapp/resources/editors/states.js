@@ -53,7 +53,12 @@ angular.module('Editors')
 				.state('rules',{
 					url:'/rules',
 					templateUrl:'resources/editors/views/rules/rules.html',
-					controller: 'RulesController'
+					controller: 'RulesController',
+					resolve: {
+						rules: ['RuleService', function(RuleService) {
+							return RuleService.getList();
+						}]
+					}
 				})
 
 				.state('rules.detail',{

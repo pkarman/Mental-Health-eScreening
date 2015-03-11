@@ -139,6 +139,7 @@
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/RuleService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
