@@ -331,10 +331,7 @@
       	</div>
       </div>
     </div>           
-  </form:form>  
-          
-         <!-- ### Modal Section Start Here ### -->
-         
+
          <!-- Modal Save to VistA -->
          <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
            <div class="modal-dialog">
@@ -353,6 +350,12 @@
              </div>
            </div>
          </div>
+
+
+  </form:form>  
+          
+         <!-- ### Modal Section Start Here ### -->
+         
 
   
     <!-- row -->
