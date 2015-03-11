@@ -34,7 +34,7 @@
 					</div>
 					<div class="form-group">
 						<label for="TextInput">Output Text</label>
-						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-required="question.checked" ng-keyup="updateTransformation()">
+						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-required="question.checked" ng-keyup="updateTransformation()" ng-trim="false">
 					</div>
 				</li>
 			</ul>
