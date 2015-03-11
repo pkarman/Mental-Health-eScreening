@@ -13,6 +13,7 @@ import gov.va.escreening.entity.Program;
 import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.BatteryService;
 import gov.va.escreening.service.BatterySurveyService;
 import gov.va.escreening.service.ClinicService;
@@ -524,7 +525,8 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 			Integer veteranId, Integer selectedProgramId,
 			Integer selectedClinicId, Integer selectedClinicianId,
 			Integer selectedNoteTitleId, Integer selectedBatteryId,
-			List<Integer> selectedSurveyIdList) {
+			List<Integer> selectedSurveyIdList) throws AssessmentAlreadyExistException
+	{
 
 		return veteranAssessmentService.create(veteranId, selectedProgramId,
 				selectedClinicId, selectedClinicianId, escreenUser.getUserId(),
