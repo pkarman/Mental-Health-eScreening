@@ -188,13 +188,12 @@ Editors.config(function(RestangularProvider, $provide) {
 
 						$scope.assessmentVariable = {};
 
-						$scope.$on('assessmentVariableSelected', function() {
-							if ($scope.assessmentVariable && $scope.assessmentVariable.id) {
-								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable);
-							    
-                                $modalInstance.close(embed);
-							}
-						});
+							$scope.$on('assessmentVariableSelected', function(event, insertedVariable) {
+								if (insertedVariable) {
+									var embed = TemplateBlockService.createAVElement(insertedVariable);
+									$modalInstance.close(embed);
+								}
+							});
 
 						$scope.cancel = function() {
 						    $modalInstance.close("");

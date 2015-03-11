@@ -96,7 +96,7 @@
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
 						// Do not apply transformations to parent table blocks
-						// NOTE: Blocks are not passsed in when directive is called from textAngular
+						// NOTE: Blocks are not passed in when directive is called from textAngular
 						if (!scope.block || scope.block.type !== 'table') {
 							if (scope.assessmentVariable.transformations.length === 0) {
 								AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function (transformations) {
@@ -122,7 +122,7 @@
 							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select'
 							|| scope.assessmentVariable.type === 'Formula')) {
 							scope.show = false;
-							scope.$emit('assessmentVariableSelected');
+							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
@@ -144,7 +144,7 @@
 									scope.toggles.transformations = true;
 								} else {
 									scope.show = false;
-									scope.$emit('assessmentVariableSelected');
+									scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 								}
 							});
 						} else {
@@ -162,7 +162,7 @@
 						scope.toggles.transformations = false;
 
 						// Apply select transformation to AV
-						if (newScope.transformationType) {
+						if (newScope.transformationType || scope.transformationName == 'mulit-select' || scope.transformationName === 'assessment') {
 							scope.assessmentVariable.transformations = [newScope.transformationType];
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 
@@ -196,7 +196,7 @@
 
 						TemplateBlockService.addVariableToHash(scope.assessmentVariable);
 
-						scope.$emit('assessmentVariableSelected');
+						scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 					};
 
 					scope.dismiss = function dismiss() {
