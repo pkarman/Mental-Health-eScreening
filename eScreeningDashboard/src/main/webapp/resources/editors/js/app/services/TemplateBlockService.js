@@ -2,23 +2,27 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
     .factory('TemplateBlockService', function(){
         "use strict";
         var variableSeed = 0;
-        var parseContentReg = /<img[^>]+id="(var\d+)_\d+"[^>]+>/;
-        var replaceVarReg = /var/;
-		var variableHash = {};
+        var variablePrefix = "%var%";
+        var parseContentReg = new RegExp("<img[^>]+ta-insert-variable=\"(" + variablePrefix + "[^\"]+)\"[^>]+>", "g");
+        var replaceVarReg = new RegExp(variablePrefix, "g");
+        var variableHash = {};
         
-        function newAVElement(id, name){
-            var idValue = "var" + id + '_' + variableSeed++;
+        function newAVElement(variable){
+        	var name = variable.getName();
+        	var hashCode = variablePrefix + hashVariable(variable);
+            var idValue = hashCode + '_' + variableSeed++;
+            
             return '<img ' +
               'class="ta-insert-variable text-info" ' +
               'id="'+ idValue + '" ' +
               'src="" ' +
-              'ta-insert-variable="' + id + '" ' +
+              'ta-insert-variable="' + hashCode + '" ' +
               'alt="' + name + '" ' +
               'title="' + name + '" ' +
               'contenteditable="false" ' +
-              '/>';  
+              '/>';
         }
-        
+
         function removeDuplicateBlockContent(target, container){
             var varChildren = target.find(".ta-insert-variable");
             if (varChildren.size() > 0){
@@ -31,14 +35,14 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
             }
             else if(target.prop("tagName") === 'IMG'
                  && target.hasClass('ta-insert-variable') 
-                 && Object.isDefined(target.attr("src")) 
+                 && angular.isDefined(target.attr("src")) 
                  && target.attr("src") != "" 
-                 && Object.isDefined(target.attr("id"))){
+                 && angular.isDefined(target.attr("id"))){
                     
                     console.log("Checking for duplicate after drag");
                     var changed = false;
                     container
-                     .find("[id="+ target.attr("id") + "]")
+                     .find("[id='"+ target.attr("id") + "']")
                      .each(function(){
                         if($(this).attr("src") != ""){
                             $(this).attr("src", "");
@@ -53,6 +57,30 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
              }
         }
         
+        /**
+         * Calculates a unique hash code for the give variable and its transformations
+         */
+        function hashVariable(variable) {
+        	if(!variable || angular.isUndefined(variable.id)){
+        		throw "Null variable cannot be hashed";
+        	}
+        	var stringRep  = "" + variable.id; 
+        	if(variable.transformations){
+        		variable.transformations.forEach(function(transformation){
+        			stringRep += transformation.name;
+        			if(transformation.params){
+        				transformation.params.forEach(function(param){stringRep += param; });
+        			}
+        		});
+        	}
+        	//encode string into base-64 encoded ASCII string 
+        	return window.btoa(unescape(encodeURIComponent(stringRep)));
+		}
+        
+		function getVariableFromHash(hashCode){
+			return variableHash[hashCode];
+		}
+        
         return {
             /**
              * This is the preferred way of creating instances of TemplateBlock
@@ -65,21 +93,19 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                 var contents = [];
                 
                 if(angular.isString(textContent)){
-                    var fragments = textContent.split(parseContentReg);
+                	var fragments = textContent.split(parseContentReg);
 
                     fragments.forEach(function(frag){
                         var content = null;
-                        if(frag.indexOf("var") === 0){
-                            var avId = parseInt(frag.replace(replaceVarReg, ""));
-                            if(!isNaN(avId)){
-                                var avObject = variableHash[avId];
-								// TODO: Add logic here for tables
-                                if(avObject){
-                                    content = {
-                                        type: "var",
-                                        content : avObject
-                                    };
-                                }
+                        if(frag.indexOf(variablePrefix) === 0){
+                        	var varHash = frag.replace(replaceVarReg, "");
+                        	var avObject = getVariableFromHash(varHash);
+							
+                            if(angular.isDefined(avObject)){
+                                content = {
+                                    type: "var",
+                                    content : avObject
+                                };
                             }
                         }
                         if(content === null){
@@ -110,7 +136,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                             joinedString += textElement.content;
                         }
                         else if(textElement.type === "var"){
-                            joinedString += newAVElement(textElement.content.id, textElement.content.getName());
+                            joinedString += newAVElement(textElement.content);
                         }
                     }); 
                 }
@@ -134,9 +160,28 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                 }
                 return false;
             },
-
-			getVariableHash: function() {
-				return variableHash;
+			
+            /**
+             * Adds the given variable to the service's variable registry and returns a unique ID for the given variable
+             */
+            addVariableToHash: function(variable){
+            	//create hashcode and set variable for that entry
+            	var hashCode = hashVariable(variable);
+            	variableHash[hashCode] = variable;
+            	return hashCode;
+            },
+			
+            /**
+             * Initializes the a variable hash to have all variable found in the template
+             */
+			resetVariableHash: function(template){ 
+				var self = this;
+				variableHash = {}; 
+				if(template && template.blocks){
+					template.blocks.forEach(function(block){
+						block.getVariables().forEach(self.addVariableToHash);
+					});
+				}
 			}
             
         };
