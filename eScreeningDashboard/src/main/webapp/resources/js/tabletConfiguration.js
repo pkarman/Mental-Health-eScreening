@@ -31,8 +31,6 @@ $(document).ready(function() {
 	var tabletProgramBlock = "#tabletProgramBlock";
 	//var tabletProgramLSText = localStorage.getItem("tabletProgramLSText");
 	
-
-	
 	// Update Program
 	$(updateBtn).click(function() {    
 		var selectText 	= $('#programId :selected').text(),
@@ -49,8 +47,12 @@ $(document).ready(function() {
 			
 			// Show Success Message
 			message = "#successMsg";
+			$(".successMsg").attr('aria-hidden', 'false');
+			$(".errorMsg").attr('aria-hidden', 'true');
 		}else{
 			message = "#errorMsg";
+			$(".successMsg").attr('aria-hidden', 'true');
+			$(".errorMsg").attr('aria-hidden', 'false');
 		}
 		// Hide all messages then show the correct one
 		$("#successMsg").addClass("hide");
@@ -58,13 +60,10 @@ $(document).ready(function() {
 		$(message).removeClass("hide");
 	});
 	
-	// Cancel
+	// Cancel Button
 	$(cancelBtn).click(function() {    
 		window.location.href = "assessmentLogin";
 	});
-
-
-	
   
 	// Check browser support
 	if (typeof(Storage) != "undefined") {
@@ -76,4 +75,5 @@ $(document).ready(function() {
 	} else {
 		$(tabletProgramBlock).text("Sorry, your browser does not support Web Storage...");
 	}   
+
 });

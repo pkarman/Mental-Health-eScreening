@@ -79,6 +79,7 @@
 		if (typeof(Storage) != "undefined") {
 			$(tabletProgramBlock).html(localStorage.getItem("tabletProgramLSText"));
 		} else {
+			
 			$(tabletProgramBlock).html( "Sorry, your browser does not support Web Storage..." );
 		}
 	});
