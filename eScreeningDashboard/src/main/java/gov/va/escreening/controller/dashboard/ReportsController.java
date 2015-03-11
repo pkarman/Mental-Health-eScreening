@@ -59,7 +59,7 @@ public class ReportsController {
                 return new File(uri.getPath());
             } catch (URISyntaxException e) {
                 System.out.println(fileName);
-                logger.error("Fail to load image file for jaspereport " + fileName);
+                logger.error("Fail to load image file for jasper report " + fileName);
                 return null;
             }
         }
@@ -73,28 +73,28 @@ public class ReportsController {
      */
     @RequestMapping(value = "/reports", method = RequestMethod.GET)
     public String setUpPageListView(Model model) {
-        return "reports/index";
+        return "reports";
     }
 
-    @RequestMapping(value = "/reports/individualStatisticsReports", method = RequestMethod.GET)
+    @RequestMapping(value = "/individualStatisticsReports", method = RequestMethod.GET)
     public ModelAndView getIindividualStatisticReports() {
-        return new ModelAndView("reports/individualStatisticsReports", "indivStatsForm", new IndivStatsFormBean());
+        return new ModelAndView("individualStatisticsReports", "indivStatsForm", new IndivStatsFormBean());
     }
 
-    @RequestMapping(value = "/reports/listSurveys", method = RequestMethod.GET)
+    @RequestMapping(value = "/listSurveys", method = RequestMethod.GET)
     @ResponseBody
     public List<SurveyDto> getAllSurveys() {
         return surveyService.getSurveyList();
     }
 
-    @RequestMapping(value = "/reports/listClinics", method = RequestMethod.GET)
+    @RequestMapping(value = "/listClinics", method = RequestMethod.GET)
     @ResponseBody
     public List<ClinicDto> getAllClinics() {
         return clinicService.getClinicDtoList();
     }
 
 
-    @RequestMapping(value = "/reports/individualStatisticsGraph", method = RequestMethod.GET)
+    @RequestMapping(value = "/individualStatisticsGraph", method = RequestMethod.GET)
     public ModelAndView generateIndividuleStatisticsGraphReport() {
 
 
@@ -159,7 +159,7 @@ public class ReportsController {
         return new ModelAndView("individualStatisticsGraphReport", parameterMap);
     }
 
-    @RequestMapping(value = "/reports/generateSVG/{moduleId}/{svgId}", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/generateSVG/{moduleId}/{svgId}", method = RequestMethod.PUT, consumes = "application/json")
     public ModelAndView generateSVG(@PathVariable("moduleId") Integer moduleId, @PathVariable("svgId") Integer svgId, @RequestBody Map data) {
         String dataStructure="{'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12}";
         String dataSet="{'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5}";
@@ -170,10 +170,23 @@ public class ReportsController {
         payload.put("moduleName", "PHQ-9");
         payload.put("svgOutFileName", String.valueOf(svgId));
 
-        return new ModelAndView("svgGenUtil", payload);
+        return new ModelAndView("chartCaller", payload);
     }
 
-    @RequestMapping(value = "/reports/individualStatistics", method = RequestMethod.GET)
+    @RequestMapping(value = "/generateSVG1", method = RequestMethod.GET)
+    public ModelAndView generateSVG() {
+//        String dataStructure="{'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12}";
+//        String dataSet="{'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5}";
+
+        Map<String, String> payload= Maps.newHashMap();
+//        payload.put("dataStructure", dataStructure);
+//        payload.put("dataSet", dataSet);
+        payload.put("moduleName", "PHQ-9");
+
+        return new ModelAndView("chartCaller", payload);
+    }
+
+    @RequestMapping(value = "/individualStatistics", method = RequestMethod.GET)
     public ModelAndView generateIndividuleStatisticsReport() {
         logger.debug("Generating the individual statistics reports numeric only.");
         //logger.debug("Generating the individual statistics reports ssn:" + reportSearchForm.getLastFourSsn());
@@ -245,6 +258,4 @@ public class ReportsController {
         return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
         //return new ModelAndView("GraphChart", parameterMap);
     }
-
-
 }

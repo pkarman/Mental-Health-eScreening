@@ -8,20 +8,20 @@
 <head>
   <title>Reports</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
+
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
 	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
 	<script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-		
+
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
 	<link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
-	
+
 	<link href="<c:url value="/resources/css/jquery.dataTables.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
-	
+
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
@@ -68,12 +68,12 @@
 			</thead>
 			<tr>
 				<td class="text-left">Individual Statistic Reports</td>
-				<td class="text-right"><a href="reports/individualStatisticsReports" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+				<td class="text-right"><a href="individualStatisticsReports" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-			
+
 			<tr>
 				<td class="text-left">Average Scores for Patients by Clinic Report</td>
-				<td class="text-right"><a href="reports/averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 		</table>
 	</div>
