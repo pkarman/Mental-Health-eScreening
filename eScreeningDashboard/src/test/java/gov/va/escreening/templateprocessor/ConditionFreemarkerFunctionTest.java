@@ -36,9 +36,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, null, null)
                             .addColumn(null, null, null, null, null)
                             .addColumn(null, null, null, null, null)));
@@ -52,9 +52,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)));
@@ -68,9 +68,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)));
@@ -83,9 +83,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)));
@@ -106,9 +106,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, null, null)
                             .addColumn(null, null, null, null, null)
                             .addColumn(null, null, null, null, null)));
@@ -121,9 +121,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)));
@@ -136,9 +136,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)));
@@ -151,9 +151,9 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
                         .addSelectOneMatrixAV(123, "test matrix question")
-                            .addChildQuestion(111, "q1")
-                            .addChildQuestion(222, "q2")
-                            .addChildQuestion(333, "q3")
+                            .addChildWithAvId(111, "q1")
+                            .addChildWithAvId(222, "q2")
+                            .addChildWithAvId(333, "q3")
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
                             .addColumn(null, null, null, ImmutableList.of(false, false, false), null)));
@@ -213,12 +213,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
     }
 
     @Test
@@ -229,12 +229,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, ImmutableList.of(false, true, false), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer("answer 2", ImmutableList.of(false, true, false), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
 
         //test freetext
         assertEquals("true", 
@@ -242,24 +242,24 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", Lists.newArrayList(null, "first", null))
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
         //test select multi
         assertEquals("true", 
                 render("${wasAnswered(var1)?c}",
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, false, false), null)
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, true, false), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, ImmutableList.of(false, false, false), null)
+                                .addChildSelectAnswer(null, ImmutableList.of(false, true, false), null)));
     }
 
     @Test
@@ -270,12 +270,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, ImmutableList.of(false, false, false), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer("answer 2", ImmutableList.of(false, false, false), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
 
         //check select multi
         assertEquals("false", 
@@ -283,12 +283,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, false, false), null)
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, false, false), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, ImmutableList.of(false, false, false), null)
+                                .addChildSelectAnswer(null, ImmutableList.of(false, false, false), null)));
     }
 
     @Test
@@ -299,12 +299,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer("answer 2", Lists.<Boolean>newArrayList(null, null, null), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
     }		
 
     @Test
@@ -315,12 +315,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
     }
 
     @Test
@@ -331,12 +331,12 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, ImmutableList.of(false, true, false), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer("answer 2", ImmutableList.of(false, true, false), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
 
         //test freetext
         assertEquals("false", 
@@ -344,24 +344,24 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", Lists.newArrayList(null, "first", null))
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, null, null)
-                                .addChildSelectAnswer(null, null, null, null, null, null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, null, null)
+                                .addChildSelectAnswer(null, null, null)));
         //test select multi
         assertEquals("false", 
                 render("${wasntAnswered(var1)?c}",
                         avBuilder
                         .addTableQuestionAv(1, null, true, true)
                             .addChildFreeText(null, "free text question", null)
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, null, null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, null, null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, false, false), null)
-                                .addChildSelectAnswer(null, null, null, null, ImmutableList.of(false, true, false), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", null, null)
+                                .addChildSelectAnswer("answer 2", null, null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, ImmutableList.of(false, false, false), null)
+                                .addChildSelectAnswer(null, ImmutableList.of(false, true, false), null)));
     }		
 
     @Test
@@ -372,11 +372,11 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
                             .addChildFreeText(null, "free text question", Lists.<String>newArrayList(null, null, null))
-                            .addChildSelectOne(null, "select one question")
-                                .addChildSelectAnswer(null, "answer 1", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, "answer 2", null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                            .addChildSelectMulti(null, "select multi question")
-                                .addChildSelectAnswer(null, null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
-                                .addChildSelectAnswer(null, null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)));
+                            .addChildSelectOneAv(null, "select one question")
+                                .addChildSelectAnswer("answer 1", Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer("answer 2", Lists.<Boolean>newArrayList(null, null, null), null)
+                            .addChildSelectMultiAv(null, "select multi question")
+                                .addChildSelectAnswer(null, Lists.<Boolean>newArrayList(null, null, null), null)
+                                .addChildSelectAnswer(null, Lists.<Boolean>newArrayList(null, null, null), null)));
     }
 }
