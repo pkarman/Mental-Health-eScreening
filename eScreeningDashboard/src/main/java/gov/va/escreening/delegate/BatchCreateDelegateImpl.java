@@ -88,6 +88,11 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 							user.getVistaVpid(), user.getVistaDuz(), "ESCREEN",
 							clinicIen, start, c.getTime());
 
+			if(appList == null || appList.isEmpty())
+			{
+				return new ArrayList<VistaClinicAppointment>();
+			}
+			
 			Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
 
 			// Now, go through the veterans and only return the closest
