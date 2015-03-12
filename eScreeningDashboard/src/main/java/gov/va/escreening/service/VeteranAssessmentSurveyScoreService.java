@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.entity.VeteranAssessment;
 
 /**
@@ -11,4 +12,7 @@ public interface VeteranAssessmentSurveyScoreService {
      * @param veteranAssessment
      */
     void recordAllReportableScores(VeteranAssessment veteranAssessment);
+
+
+    TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer veteranId, String fromDate, String toDate);
 }

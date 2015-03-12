@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
+import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
@@ -15,7 +16,9 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.ReportTypeService;
 import gov.va.escreening.service.SurveyService;
+import gov.va.escreening.service.VeteranAssessmentSurveyScoreService;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
 import org.joda.time.LocalDate;
@@ -42,8 +45,11 @@ public class ReportsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
 
-    @Autowired
-    private ReportTypeService reportTypeService;
+    private static final String LASTNAME = "lastName";
+    private static final String FROMDATE = "fromDate";
+    private static final String SSN_LAST_FOUR="ssnLastFour";
+    private static final String SURVEY_ID_LIST="surveysList";
+    private static final String TODATE="toDate";
 
     @Autowired
     private AssessmentDelegate assessmentDelegate;
@@ -53,6 +59,9 @@ public class ReportsController {
 
     @Autowired
     private ClinicService clinicService;
+
+    @Autowired
+    private VeteranAssessmentSurveyScoreService scoreService;
 
     private FileResolver fileResolver = new FileResolver() {
 
@@ -254,29 +263,64 @@ public class ReportsController {
                                                        @RequestBody HashMap<String, Object> requestData,
                                                        BindingResult result, ModelMap model,
                                                        @CurrentUser EscreenUser escreenUser) {
+
         logger.debug("Generating the individual statistics reports numeric only.");
-        //logger.debug("Generating the individual statistics reports ssn:" + reportSearchForm.getLastFourSsn());
 
-        // search veteran
+        String lastName = (String)requestData.get(LASTNAME);
+        String last4SSN = (String)requestData.get(SSN_LAST_FOUR);
+        String fromDate = (String)requestData.get(FROMDATE);
+        String toDate = (String)requestData.get(TODATE);
 
-        // Create a user object for searching.
-       /* VeteranDto veteran = new VeteranDto();
-        veteran.setLastName(reportSearchForm.getLastName());
-        veteran.setSsnLastFour(reportSearchForm.getLastFourSsn());
+        logger.debug(" lastName :"+lastName);
+        logger.debug(" last4SSN :"+ last4SSN);
+        logger.debug( " From :"+fromDate+ " TO: "+toDate);
+
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("lastNameSSN", lastName+", "+last4SSN);
+        parameterMap.put("fromToDate", "From "+fromDate+" to "+toDate);
+
+        VeteranDto veteran = new VeteranDto();
+        veteran.setLastName(lastName);
+        veteran.setSsnLastFour(last4SSN);
 
         List<VeteranDto> veterans = assessmentDelegate.findVeterans(veteran);
 
-        if (veterans == null || veterans.size() < 0) {
-            // no veteran found.
-            //modelAndView.addAttribute("reportsErrorMessage", "Could not find veterans matching the search criteria");
+        JRDataSource dataSource = null;
+
+        if (veterans == null || veterans.isEmpty()){
+            dataSource = new JREmptyDataSource();
+        }
+        else {
 
 
+            List<TableReportDTO> resultList = new ArrayList<>();
+
+
+            for (Object strSurveyId : (ArrayList) requestData.get(SURVEY_ID_LIST)) {
+
+                Integer surveyId = (Integer)strSurveyId;
+
+                TableReportDTO tableReportDTO = scoreService.getSurveyDataForIndividualStatisticsReport(surveyId, veterans.get(0).getVeteranId(), fromDate, toDate);
+                if (tableReportDTO != null){
+                    resultList.add(tableReportDTO);
+                }
+            }
+
+            if (resultList.isEmpty()) {
+                dataSource = new JREmptyDataSource();
+            }
+            else{
+                dataSource = new JRBeanCollectionDataSource(resultList);
+            }
         }
 
-        // generate reports
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
-        List<AssessmentAuditLogReport> auditLogReportList = reportService.getAssessmentAuditLogByVeteran(assessmentId);
-*/
+
+
+/*
+
 
         List<TableReportDTO> resultList = new ArrayList<>();
 
@@ -300,13 +344,6 @@ public class ReportsController {
 
         resultList.add(tb);
 
-        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
-
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-
-        parameterMap.put("lastNameSSN", "Veteran1123, 1234");
-        parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
-        parameterMap.put("datasource", dataSource);
 
         parameterMap.put("cast", resultList);
 
@@ -315,12 +352,11 @@ public class ReportsController {
         parameterMap.put("reportScore", "20");
         parameterMap.put("scoreMeaning", "Moderate Severe");
 
-        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         parameterMap.put("history", "02/01/2015  | LI SOC WK OEF ESCREENING\n" +
                 "01/14/2015  | LI PRIM CARE HAGARICH\n" +
                 "10/10/2014  | LI 2N MHAC URGENT CLINIC");
 
-
+*/
         return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
     }
 }

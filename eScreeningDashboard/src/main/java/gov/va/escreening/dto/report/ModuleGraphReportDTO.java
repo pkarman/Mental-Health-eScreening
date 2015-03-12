@@ -20,6 +20,8 @@ public class ModuleGraphReportDTO implements Serializable{
 
     private List<ScoreHistoryDTO> scoreHistory;
 
+    private ImageInputDTO imageInput;
+
     public String getModuleName() {
         return moduleName;
     }
@@ -74,5 +76,13 @@ public class ModuleGraphReportDTO implements Serializable{
 
     public void setInmageInputStream(InputStream inmageInputStream) {
         this.inmageInputStream = inmageInputStream;
+    }
+
+    public ImageInputDTO getImageInput() {
+        return imageInput;
+    }
+
+    public void setImageInput(ImageInputDTO imageInput) {
+        this.imageInput = imageInput;
     }
 }
