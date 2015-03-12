@@ -103,11 +103,11 @@ module.factory('surveysListService', function ($http) {
                 //headers: {'Content-Type': 'application/x-www-form-urlencoded'}  // set the headers so angular passing info as form data (not request payload)
             });
         },
-        requestGraphicReport: function (svgData, chartableData) {
+        requestGraphicReport: function (svgData, chartableData, reportRequestData) {
             return $http({
                 method: "POST",
                 url: "individualStatisticsGraphic",
-                data: {svgData: svgData, chartableData: chartableData.data}
+                data: {svgData: svgData, chartableData: chartableData.data, userReqData:reportRequestData}
                 //headers: {'Content-Type': 'application/x-www-form-urlencoded'}  // set the headers so angular passing info as form data (not request payload)
             });
         }
@@ -150,7 +150,7 @@ module.controller('reportsController', function ($scope, $http, $window, surveys
                 surveysListService.requestChartableData(reportRequestData).then(function (chartableData) {
                     // produce d3 graphs as svg objects
                     var svgData = generateGraphs(chartableData);
-                    surveysListService.requestGraphicReport(svgData, chartableData);
+                    surveysListService.requestGraphicReport(svgData, chartableData, reportRequestData);
                 });
 
             } else {
