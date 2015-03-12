@@ -1,7 +1,5 @@
 package gov.va.escreening.delegate;
 
-import gov.va.escreening.dto.AlertDto;
-import gov.va.escreening.dto.EventDto;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
@@ -11,7 +9,7 @@ import gov.va.escreening.dto.editors.SurveySectionInfo;
 
 import java.util.List;
 
-public interface EditorsViewDelegate {
+public interface EditorsDelegate {
 
     BatteryInfo createBattery(BatteryInfo batteryInfo);
     BatteryInfo getBattery(int batteryId);
@@ -42,12 +40,4 @@ public interface EditorsViewDelegate {
     SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
 
     void deleteSurveyPage(Integer surveyId, Integer pageId);
-    
-    /**
-     * @param type optional type ID to only retrieve events of the given type
-     * @return list of events defined on the system
-     */
-    List<EventDto> getEvents(Integer type);
-    
-    
 }

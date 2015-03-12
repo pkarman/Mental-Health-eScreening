@@ -54,5 +54,7 @@ public class RuleRepositoryImpl extends AbstractHibernateRepository<Rule> implem
         
         return q.getResultList();
      
-    }    
+    }
+    
+    
 }

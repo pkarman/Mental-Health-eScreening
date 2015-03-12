@@ -49,7 +49,7 @@
 	<!-- Delegates -->
 	<bean id="assessmentDelegate" class="gov.va.escreening.delegate.AssessmentDelegateImpl" />
 	<bean id="createAssessmentDelegate" class="gov.va.escreening.delegate.CreateAssessmentDelegateImpl" />
-	<bean id="editorDelegate" class="gov.va.escreening.delegate.EditorsViewDelegateImpl" />
+	<bean id="editorDelegate" class="gov.va.escreening.delegate.EditorsDelegateImpl" />
 	<!-- bean id="vistaDelegate" class="gov.va.escreening.delegate.VistaDelegateImpl"/ -->
 
 	<context:property-placeholder location="classpath:app-settings.properties"

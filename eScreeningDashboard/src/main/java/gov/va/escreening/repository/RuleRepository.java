@@ -14,8 +14,8 @@ public interface RuleRepository extends RepositoryInterface<Rule> {
      * @return List of any Rules that depend on at least one of the given responses.  If not rules 
      * depend on the given responses then an empty List is returned (i.e. never null).
      */
-    List<Rule> getRulesForResponses(Collection<SurveyMeasureResponse> responses);
+    public List<Rule> getRulesForResponses(Collection<SurveyMeasureResponse> responses);
 
-    public abstract List<Rule> getRuleForAssessment(int veteranAssessmentID);
+    public List<Rule> getRuleForAssessment(int veteranAssessmentID);
     
 }

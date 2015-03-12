@@ -3,6 +3,8 @@ package gov.va.escreening.service;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.dto.EventDto;
+import gov.va.escreening.dto.RuleDto;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
@@ -17,6 +19,8 @@ import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 import gov.va.escreening.repository.ConsultRepository;
 import gov.va.escreening.repository.DashboardAlertRepository;
@@ -48,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -473,17 +478,162 @@ public class RuleServiceImpl implements RuleService {
 	public List<EventDto> getAllEvents(){
 	    return toEventDtos(eventRepository.findAll());
 	}
-	
-	/**
-	 * translates a list of event enties to a list of event dtos
-	 * @param dbEvents
-	 * @return
-	 */
-	private List<EventDto> toEventDtos(List<Event> dbEvents){
-	    List<EventDto> eventDtos = Lists.newArrayListWithExpectedSize(dbEvents.size());
+
+    @Override
+    public List<RuleDto> getRules() {
+        return toRuleDtos(ruleRepository.findAll());
+    }
+
+    @Override
+    public RuleDto getRule(Integer ruleId) {
+        return new RuleDto(getDbRule(ruleId)); 
+    }
+    
+    @Override
+    public RuleDto createRule(RuleDto ruleDto) {
+        Rule dbRule = updateRuleEntity(ruleDto, new Rule());
+        ruleRepository.create(dbRule);
+        return new RuleDto(dbRule);
+    }
+    
+    @Override
+    public RuleDto updateRule(Integer ruleId, RuleDto ruleDto) {
+        Rule dbRule = updateRuleEntity(ruleDto, getDbRule(ruleId));
+        ruleRepository.update(dbRule);
+        return new RuleDto(dbRule);
+    }
+    
+    private Rule updateRuleEntity(RuleDto src, Rule dst){
+        dst.setName(src.getName());
+        
+        //TODO: set json in dbRule
+        
+        //TODO: translate rule into Spring EL and update expression
+        
+        return dst;
+    }
+
+    @Override
+    public void deleteRule(Integer ruleId) {
+        ruleRepository.delete(getDbRule(ruleId));
+    }
+
+    @Override
+    public List<EventDto> getRuleEvents(Integer ruleId) {
+        Rule dbRule = getDbRule(ruleId);
+        if(dbRule.getEvents() == null || dbRule.getEvents().isEmpty()){
+            return Collections.emptyList();
+        }
+        
+        List<EventDto> events = Lists.newArrayListWithExpectedSize(dbRule.getEvents().size());
+        for(Event dbEvent : dbRule.getEvents()){
+            events.add(new EventDto(dbEvent));
+        }
+        return events;
+    }
+
+    @Override
+    public EventDto addEventToRule(Integer ruleId, EventDto event) {
+        Rule dbRule = getDbRule(ruleId);
+        Event dbEvent = getDbEvent(event.getId());
+        
+        if(dbRule.getEvents() == null){
+            dbRule.setEvents(ImmutableSet.of(dbEvent));
+        }
+        else{
+            dbRule.getEvents().add(dbEvent);
+        }
+        
+        ruleRepository.update(dbRule);
+        return event;
+    }
+
+    @Override
+    public EventDto getRuleEvent(Integer ruleId, Integer eventId) {
+        Event dbEvent = getRuleEvent(getDbRule(ruleId), eventId);
+        return new EventDto(dbEvent);
+    }
+
+    @Override
+    public void deleteRuleEvent(Integer ruleId, Integer eventId) {
+        Rule dbRule = getDbRule(ruleId);
+        Event dbEvent = getRuleEvent(dbRule, eventId);
+        
+        dbRule.getEvents().remove(dbEvent);
+        ruleRepository.update(dbRule);
+    }
+    
+    private Event getRuleEvent(Rule dbRule, Integer eventId){
+        Event dbEvent = getDbEvent(eventId);
+        if(!dbRule.getEvents().contains(dbEvent)){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toAdmin("Rule (with ID: " + dbRule.getRuleId() + ") does not contain event (with ID: " + eventId + ")")
+            .toUser("An invalid event request was made. Please call support.")
+            .throwIt();
+        }
+        return dbEvent;
+    }
+    
+    private Event getDbEvent(Integer eventId){
+        if(eventId == null){
+            ErrorBuilder.throwing(EscreeningDataValidationException.class)
+            .toAdmin("Event ID is a required field")
+            .toUser("An invalid event request was made. Please call support.")
+            .throwIt();
+        }
+        
+        Event dbEvent = eventRepository.findOne(eventId);
+        if(dbEvent == null){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toAdmin("There is no event on the system with ID: " + eventId)
+            .toUser("An invalid event was requested. Please call support.")
+            .throwIt();
+        }
+        return dbEvent;        
+    }
+    
+    private Rule getDbRule(Integer ruleId){
+        if(ruleId == null){
+            ErrorBuilder.throwing(EscreeningDataValidationException.class)
+            .toAdmin("Rule ID is a required field")
+            .toUser("An invalid rule request was made. Please call support.")
+            .throwIt();
+        }
+        
+        Rule dbRule = ruleRepository.findOne(ruleId);
+        if(dbRule == null){
+            ErrorBuilder.throwing(EntityNotFoundException.class)
+            .toAdmin("There is no rule on the system with ID: " + ruleId)
+            .toUser("An invalid rule was requested. Please call support.")
+            .throwIt();
+        }
+        return dbRule;
+    }
+
+    
+    /**
+     * Translates a list of event entities to a list of event dtos
+     * @param dbEvents
+     * @return
+     */
+    private List<EventDto> toEventDtos(List<Event> dbEvents){
+        List<EventDto> eventDtos = Lists.newArrayListWithExpectedSize(dbEvents.size());
         for(Event dbEvent : dbEvents){
             eventDtos.add(new EventDto(dbEvent));
         }
         return eventDtos;
-	}
+    }
+    
+    /**
+     * Translates a list of rule entities to a list of rule dtos
+     * @param dbEvents
+     * @return
+     */
+    private List<RuleDto> toRuleDtos(List<Rule> dbRules){
+        List<RuleDto> ruleDtos = Lists.newArrayListWithExpectedSize(dbRules.size());
+        for(Rule dbRule : dbRules){
+            ruleDtos.add(new RuleDto(dbRule));
+        }
+        return ruleDtos;
+    }
 }

@@ -1,7 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
 
-import gov.va.escreening.delegate.EditorsViewDelegate;
+import gov.va.escreening.delegate.EditorsDelegate;
 import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -40,7 +40,7 @@ public class EditorRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(EditorRestController.class);
 
-    private EditorsViewDelegate editorsViewDelegate;
+    private EditorsDelegate editorsViewDelegate;
     @Autowired
     private MeasureRepository measureRepo;
     
@@ -48,7 +48,7 @@ public class EditorRestController {
     private ClinicalReminderService clinicalReminderSvc;
 
     @Autowired
-    public void setEditorsViewDelegate(EditorsViewDelegate editorsViewDelegate) {
+    public void setEditorsViewDelegate(EditorsDelegate editorsViewDelegate) {
         this.editorsViewDelegate = editorsViewDelegate;
     }
 
