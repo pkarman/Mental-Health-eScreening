@@ -1,35 +1,40 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
-import gov.va.escreening.form.IndivStatsFormBean;
+import gov.va.escreening.security.CurrentUser;
+import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.ReportTypeService;
 import gov.va.escreening.service.SurveyService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.ws.rs.PathParam;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -78,7 +83,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/individualStatisticsReports", method = RequestMethod.GET)
     public ModelAndView getIindividualStatisticReports() {
-        return new ModelAndView("individualStatisticsReports", "indivStatsForm", new IndivStatsFormBean());
+        return new ModelAndView("individualStatisticsReports");
     }
 
     @RequestMapping(value = "/listSurveys", method = RequestMethod.GET)
@@ -94,8 +99,19 @@ public class ReportsController {
     }
 
 
-    @RequestMapping(value = "/individualStatisticsGraph", method = RequestMethod.GET)
-    public ModelAndView generateIndividuleStatisticsGraphReport() {
+    /**
+     * REST endpoint will receive an list of svg objects plus any other data required to render a graphical report
+     * This will simply prepare the required data + svg objects for the target Jasper report and forward
+     *
+     * @param request
+     * @param requestData
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/individualStatisticsGraphic", method = RequestMethod.POST)
+    public ModelAndView genIndividualStatisticsGraphic(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser) {
 
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
@@ -159,35 +175,85 @@ public class ReportsController {
         return new ModelAndView("individualStatisticsGraphReport", parameterMap);
     }
 
-    @RequestMapping(value = "/generateSVG/{moduleId}/{svgId}", method = RequestMethod.PUT, consumes = "application/json")
-    public ModelAndView generateSVG(@PathVariable("moduleId") Integer moduleId, @PathVariable("svgId") Integer svgId, @RequestBody Map data) {
-        String dataStructure="{'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12}";
-        String dataSet="{'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5}";
+    /**
+     * REST enpoint point will receive search data (data entered bu the user in IndivStatsFormBean for numeric data report.
+     * This should seek ehelp from service to grab the data form back end and forward it to the target JasperReport
+     *
+     * @param request
+     * @param requestData
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/requestChartableData", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map<String, Object>> requestChartableData(HttpServletRequest request,
+                                                          @RequestBody Map<String, Object> requestData,
+                                                          @CurrentUser EscreenUser escreenUser) {
 
-        Map<String, String> payload= Maps.newHashMap();
-        payload.put("dataStructure", dataStructure);
-        payload.put("dataSet", dataSet);
-        payload.put("moduleName", "PHQ-9");
-        payload.put("svgOutFileName", String.valueOf(svgId));
+        List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
-        return new ModelAndView("chartCaller", payload);
+        //todo Kai to replace this test loop with the real code
+        for (int i = 0; i < 2; i++) {
+            chartableDataList.add(createTstChartableData(requestData));
+        }
+        return chartableDataList;
     }
 
-    @RequestMapping(value = "/generateSVG1", method = RequestMethod.GET)
-    public ModelAndView generateSVG() {
-//        String dataStructure="{'ticks': [ 0, 1, 5, 10, 15, 20, 27 ], 'score': 16, 'footer': '', 'varId': 1599, 'title': 'My Depression Score',  'intervals': {'None': 0, 'Moderately Severe': 15, 'Mild': 5, 'Severe': 20,  'Moderate': 10, 'Minimal': 1},  'maxXPoint': 27, 'numberOfMonths': 12}";
-//        String dataSet="{'03/06/2015 08:59:38': 16, '01/23/2015 12:51:17': 27, '09/23/2014 12:36:48': 5}";
+    public Map<String, Object> createTstChartableData(Map<String, Object> requestData) {
+        Map<String, Object> chartableDataMap = Maps.newHashMap();
 
-        Map<String, String> payload= Maps.newHashMap();
-//        payload.put("dataStructure", dataStructure);
-//        payload.put("dataSet", dataSet);
-        payload.put("moduleName", "PHQ-9");
+        //first create the data
+        String dataInJsonFormat = "{\"03/06/2015 08:59:38\": 16,\"01/23/2015 12:51:17\": 27,\"09/23/2014 12:36:48\": 5}";
+        Gson gson = new GsonBuilder().create();
+        Map dataSet = gson.fromJson(dataInJsonFormat, Map.class);
 
-        return new ModelAndView("chartCaller", payload);
+        String dataFormatInJsonFormat = "{\n" +
+                "  \"ticks\": [\n" +
+                "    0, \n" +
+                "    1, \n" +
+                "    5, \n" +
+                "    10, \n" +
+                "    15, \n" +
+                "    20, \n" +
+                "    27\n" +
+                "  ], \n" +
+                "  \"score\": 16, \n" +
+                "  \"footer\": \"\", \n" +
+                "  \"varId\": 1599, \n" +
+                "  \"title\": \"My Depression Score\", \n" +
+                "  \"intervals\": {\n" +
+                "    \"None\": 0, \n" +
+                "    \"Moderately Severe\": 15, \n" +
+                "    \"Mild\": 5, \n" +
+                "    \"Severe\": 20, \n" +
+                "    \"Moderate\": 10, \n" +
+                "    \"Minimal\": 1\n" +
+                "  }, \n" +
+                "  \"maxXPoint\": 27, \n" +
+                "  \"numberOfMonths\": 12\n" +
+                "}";
+        Map dataFormat = gson.fromJson(dataFormatInJsonFormat, Map.class);
+
+        chartableDataMap.put("dataSet", dataSet);
+        chartableDataMap.put("dataFormat", dataFormat);
+
+        return chartableDataMap;
     }
 
-    @RequestMapping(value = "/individualStatistics", method = RequestMethod.GET)
-    public ModelAndView generateIndividuleStatisticsReport() {
+    /**
+     * REST enpoint point will receive search data (data entered bu the user in IndivStatsFormBean for numeric data report.
+     * This should seek ehelp from service to grab the data form back end and forward it to the target JasperReport
+     *
+     * @param request
+     * @param requestData
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
+    public ModelAndView genIndividualStatisticsNumeric(HttpServletRequest request,
+                                                       @RequestBody HashMap<String, Object> requestData,
+                                                       BindingResult result, ModelMap model,
+                                                       @CurrentUser EscreenUser escreenUser) {
         logger.debug("Generating the individual statistics reports numeric only.");
         //logger.debug("Generating the individual statistics reports ssn:" + reportSearchForm.getLastFourSsn());
 
@@ -256,6 +322,5 @@ public class ReportsController {
 
 
         return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
-        //return new ModelAndView("GraphChart", parameterMap);
     }
 }
