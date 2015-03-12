@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
+import gov.va.escreening.dto.EventDto;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
@@ -47,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
@@ -462,4 +464,26 @@ public class RuleServiceImpl implements RuleService {
 		return false;
 	}
 
+	@Override
+	public List<EventDto> getEventsByType(int type){
+	    return toEventDtos(eventRepository.getEventByType(type));
+	}
+	
+	@Override
+	public List<EventDto> getAllEvents(){
+	    return toEventDtos(eventRepository.findAll());
+	}
+	
+	/**
+	 * translates a list of event enties to a list of event dtos
+	 * @param dbEvents
+	 * @return
+	 */
+	private List<EventDto> toEventDtos(List<Event> dbEvents){
+	    List<EventDto> eventDtos = Lists.newArrayListWithExpectedSize(dbEvents.size());
+        for(Event dbEvent : dbEvents){
+            eventDtos.add(new EventDto(dbEvent));
+        }
+        return eventDtos;
+	}
 }

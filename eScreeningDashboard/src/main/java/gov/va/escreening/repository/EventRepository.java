@@ -14,4 +14,11 @@ public interface EventRepository extends RepositoryInterface<Event> {
      * @return
      */
     public List<Event> getEventByTypeFilteredByObjectIds(int eventType, Collection<Integer> objectIds);
+
+    /**
+     * Gets all events of a given type
+     * @param eventTypeId
+     * @return
+     */
+    List<Event> getEventByType(int eventTypeId);
 }

@@ -38,4 +38,14 @@ public class EventRepositoryImpl extends AbstractHibernateRepository<Event>
             .setParameter("objectIds", objectIds)
             .getResultList();
     }
+    
+    @Override
+    public List<Event> getEventByType(int eventTypeId){        
+        String sql = "SELECT e FROM Event e WHERE e.eventType.eventTypeId = :eventTypeId";
+        
+        return entityManager
+            .createQuery(sql, Event.class)
+            .setParameter("eventTypeId", eventTypeId)
+            .getResultList();
+    }
 }

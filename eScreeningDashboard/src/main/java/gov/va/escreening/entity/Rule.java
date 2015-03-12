@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +47,8 @@ public class Rule implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL)
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
         name="rule_event",
         joinColumns={ @JoinColumn(name="rule_id", referencedColumnName="rule_id") },
@@ -54,7 +56,7 @@ public class Rule implements Serializable {
     )
     private Set<Event> events;
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
         name="rule_assessment_variable",
         joinColumns={ @JoinColumn(name="rule_id", referencedColumnName="rule_id") },

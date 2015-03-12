@@ -401,11 +401,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 				if (veteranAssessment.getDashboardAlerts() != null && veteranAssessment.getDashboardAlerts().size() > 0) {
 					for (DashboardAlert dashboardAlert : veteranAssessment.getDashboardAlerts()) {
-						AlertDto alertDto = new AlertDto();
-						alertDto.setAlertId(dashboardAlert.getDashboardAlertId());
-						alertDto.setAlertName(dashboardAlert.getName());
-
-						assessmentSearchResult.getAlerts().add(alertDto);
+						assessmentSearchResult.getAlerts().add(new AlertDto(dashboardAlert));
 					}
 				}
 

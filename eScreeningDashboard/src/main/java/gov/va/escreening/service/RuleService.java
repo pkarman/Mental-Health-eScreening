@@ -1,10 +1,12 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.dto.EventDto;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,4 +43,11 @@ public interface RuleService {
 			Rule r,
 			Map<Integer, Pair<gov.va.escreening.entity.Measure, gov.va.escreening.dto.ae.Measure>> responseMap);
     
+	/**
+	 * Get all events of the give type
+	 * @param type 
+	 */
+	public List<EventDto> getEventsByType(int type);
+	
+	public List<EventDto> getAllEvents();
 }

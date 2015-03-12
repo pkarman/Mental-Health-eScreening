@@ -1,5 +1,7 @@
 package gov.va.escreening.dto;
 
+import gov.va.escreening.entity.DashboardAlert;
+
 import java.io.Serializable;
 
 public class AlertDto implements Serializable {
@@ -25,13 +27,17 @@ public class AlertDto implements Serializable {
         this.alertName = alertName;
     }
 
-    public AlertDto() {
-        // default constructor.
+    /**
+     * Constructor using entity. Please prefer this method.
+     * @param dbAlert
+     */
+    public AlertDto(DashboardAlert dbAlert) {
+        this.alertId = dbAlert.getDashboardAlertId();
+        this.alertName = dbAlert.getName();
     }
-
+    
     public AlertDto(Integer alertId, String alertName) {
         this.alertId = alertId;
         this.alertName = alertName;
     }
-
 }

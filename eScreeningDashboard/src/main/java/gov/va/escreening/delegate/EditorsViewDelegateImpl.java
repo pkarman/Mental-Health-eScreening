@@ -1,63 +1,48 @@
 package gov.va.escreening.delegate;
 
-import gov.va.escreening.dto.SearchDTO;
-import gov.va.escreening.dto.SearchType;
+import static com.google.common.base.Preconditions.checkNotNull;
+import gov.va.escreening.dto.EventDto;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.BatteryInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
-import gov.va.escreening.entity.BatterySurvey;
 import gov.va.escreening.service.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import gov.va.escreening.transformer.EditorsBatteryViewTransformer;
+import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
 
 public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(EditorsViewDelegateImpl.class);
 
-    private BatterySurveyService batterySurveyService;
-    private BatteryService batteryService;
-
-    private SurveyService surveyService;
-
-    private SurveySectionService surveySectionService;
-
-    @Resource(type=MeasureService.class)
-    private MeasureService measureService;
-
+    
+    private final BatteryService batteryService;
+    private final SurveyService surveyService;
+    private final SurveySectionService surveySectionService;
+    private final MeasureService measureService;
+    private final RuleService ruleService;
 
     @Autowired
-    public void setBatterySurveyService(BatterySurveyService batterySurveyService) {
-        this.batterySurveyService = batterySurveyService;
-    }
-    @Autowired
-    public void setBatteryService(BatteryService batteryService) {
-        this.batteryService = batteryService;
-    }
-    @Autowired
-    public void setSurveySectionServiceService(SurveySectionService surveySectionService) {
-        this.surveySectionService = surveySectionService;
-    }
-    @Autowired
-    public void setSurveyService(SurveyService surveyService) {
-        this.surveyService = surveyService;
-    }
-
-
-    public EditorsViewDelegateImpl() {
-
+    EditorsViewDelegateImpl(
+            BatterySurveyService batterySurveyService,
+            BatteryService batteryService,
+            SurveySectionService surveySectionService,
+            SurveyService surveyService,
+            MeasureService measureService,
+            RuleService ruleService){
+        this.batteryService = checkNotNull(batteryService);
+        this.surveySectionService = checkNotNull(surveySectionService);
+        this.surveyService = checkNotNull(surveyService);
+        this.measureService = checkNotNull(measureService);
+        this.ruleService = checkNotNull(ruleService);
     }
 
     @Override
@@ -143,8 +128,7 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
 		surveyService.createSurveyPage(surveyId, surveyPage);
 	}
 	@Override
-	public void updateSurveyPages(Integer surveyId,
-			List<SurveyPageInfo> surveyPageInfo) {
+	public void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo){
 		surveyService.updateSurveyPages(surveyId, surveyPageInfo);
 	}
 	@Override
@@ -170,6 +154,14 @@ public  class EditorsViewDelegateImpl implements EditorsViewDelegate {
     @Override
     public void deleteSurveyPage(Integer surveyId, Integer pageId) {
         surveyService.removeSurveyPage(surveyId, pageId);
+    }
+    
+    @Override
+    public List<EventDto> getEvents(@Nullable Integer type){
+        if(type != null){
+            return ruleService.getEventsByType(type);
+        }
+        return ruleService.getAllEvents();
     }
 }
 

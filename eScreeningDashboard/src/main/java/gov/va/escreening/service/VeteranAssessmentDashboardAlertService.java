@@ -24,4 +24,6 @@ public interface VeteranAssessmentDashboardAlertService {
 
 	List<NearingCompletionAlertItem> findNearingCompletionAssessmentsByProgram(
 			int veteranAssessmentId);
+	
+	List<AlertDto> findAlerts();
 }
