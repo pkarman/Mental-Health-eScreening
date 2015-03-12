@@ -6,7 +6,7 @@ import gov.va.med.vistalink.rpc.RpcRequest;
 /**
  * Created by pouncilt on 4/16/14.
  */
-public class TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext<T extends VistaLinkRequestParameters> extends VistaLinkRequestBaseContext {
+public class TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext<T extends VistaLinkRequestParameters> extends VistaLinkRequestBaseContext<T> {
     public TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext(RpcRequest request, VistaLinkConnection connection, T requestParameters) {
         super(request, connection, requestParameters);
     }
