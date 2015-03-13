@@ -1,4 +1,4 @@
-module = angular.module('reportsApp', ["checklist-model"]);
+module = angular.module('reportsModule', ["checklist-model"]);
 
 /* Validation */
 module.directive('showErrors', function ($timeout, showErrorsConfig) {

@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
 </head>
-<body ng-app="reportsApp" ng-controller="indivStatsCtrl">
+<body ng-app="reportsModule" ng-controller="indivStatsCtrl">
 <a href="#skip" class="offscreen">Skip to main content</a>
 <div id="outerPageDiv">
     <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -177,6 +177,6 @@
 
 <script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/reports/individualStatistics.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
 </body>
 </html>
