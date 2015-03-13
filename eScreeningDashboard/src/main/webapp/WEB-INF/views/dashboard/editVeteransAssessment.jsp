@@ -273,7 +273,7 @@
 										<c:if test="${isReadOnly}">
 											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary" />
 										</c:if>
-		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
+		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="button" class="btn btn-default" />
 									</div>
 								</div>
 								</div>

@@ -38,13 +38,49 @@ $(document).ready(function() {
 		// Select/Deselect all vetIensCheckbox
 		var selectAll = "#selectAll";
 		var vetIensCheckbox = ".vetIensCheckbox";
+
+		var vetIensCheckboxChecked  = ".vetIensCheckbox:checked";
+		var createAssessmentButton  = ".createAssessmentButton";
+		var vetIensCheckbox 		= ".vetIensCheckbox";
+		var selectAllChecked  = '#selectAll:checked';
+
+
 		
+		// selectAll on click
 		$(selectAll).click (function () {
 			 var checkedStatus = this.checked;
 			$(vetIensCheckbox).each(function () {
 				$(this).prop('checked', checkedStatus);
 			 });
 		});
+
+		// selectAll on change
+		$(selectAll).change(function() {
+			if($(this).is(":checked")) {
+				$(createAssessmentButton).removeAttr('disabled');
+			}else{
+				$(createAssessmentButton).attr('disabled','disabled');
+			}
+		});
+	
+	// vetIensCheckbox checkbox on change
+	$(vetIensCheckbox).change(function() {
+		if($(vetIensCheckboxChecked).length >= 1) {
+			$(createAssessmentButton).removeAttr('disabled');
+		}else if($(vetIensCheckboxChecked).length <= 0) {
+			$(createAssessmentButton).attr('disabled','disabled');
+		}
+		if($(vetIensCheckboxChecked).length < $(vetIensCheckbox).length){
+			$('#selectAll').prop('checked', false)
+		}else if ($(vetIensCheckboxChecked).length == $(vetIensCheckbox).length){
+			$('#selectAll').prop('checked', true);
+		}
+	});
+
+
+	// Add Ladda preloader
+	Ladda.bind( '.createAssessmentButton', 20000 );
+
 
 	/* Disabled for testing purpose
 	$("#startDate").on("change focusout input", function() {
