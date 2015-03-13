@@ -202,7 +202,27 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
                         console.error(' requestNumericReporterror:', status, data);
                     });
             } else {
-                //todo implement a mix of above two options for reportTypeBoth
+                ReportsService.requestChartableData(indivStatFormData)
+                    .success(function (chartableData) {
+                        // produce d3 graphs as svg objects
+                        var svgData = ReportsService.generateSvgObjects(chartableData);
+
+                        var data = {
+                            svgData: svgData,
+                            chartableData: chartableData,
+                            userReqData: indivStatFormData
+                        };
+
+                        ReportsService.requestGraphicReport(data, "individualStatisticsGraphicAndNumber")
+                            .success(function (serverResponse) {
+                                ReportsService.savePdfData(serverResponse, 'IndividualStatisticsGraphicAndNumberReport.pdf');
+                            }).error(function (data, status) {
+                                console.error('requestGraphicReport error', status, data);
+                            });
+
+                    }).error(function (data, status) {
+                        console.error('requestChartableData error', status, data);
+                    });
             }
             $scope.reset();
         }
