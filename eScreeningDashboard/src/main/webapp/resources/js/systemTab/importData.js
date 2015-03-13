@@ -45,6 +45,9 @@ $(document).ready(function() {
 		case "case_note":
 			current_url = 'importData/noteTitles/refresh';
 			break;
+		case "case_health":
+			current_url = 'importData/hf/refresh';
+			break;
 		default:		
 	}   
 
