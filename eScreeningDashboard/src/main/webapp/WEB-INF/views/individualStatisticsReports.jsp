@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
 </head>
-<body ng-app="reportsFormApp" ng-controller="reportsController">
+<body ng-app="reportsApp" ng-controller="indivStatsCtrl">
 <a href="#skip" class="offscreen">Skip to main content</a>
 <div id="outerPageDiv">
     <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -60,7 +60,7 @@
 
 	<div class="clear-fix"></div>
 
-	<div id="mainContent">
+	<div id="indivStatsReportsForm">
 		<div class="border-radius-main-form gray-lighter">
 			<form name="reportForm" novalidate>
 				<div class="row">
@@ -168,9 +168,6 @@
 	</div>
 </div>
 
-<form action="individualStatisticsNumeric" method="POST">
-    <input type="submit" value="Submit"/></td>
-</form>
 <div class="graphWrapper hide" id="graph_1"></div>
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>

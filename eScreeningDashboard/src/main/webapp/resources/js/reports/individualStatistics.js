@@ -1,4 +1,4 @@
-module = angular.module('reportsFormApp', ["checklist-model"]);
+module = angular.module('reportsApp', ["checklist-model"]);
 
 /* Validation */
 module.directive('showErrors', function ($timeout, showErrorsConfig) {
@@ -76,87 +76,130 @@ module.provider('showErrorsConfig', function () {
 });
 
 
-module.factory('surveysListService', function ($http) {
+module.factory('ReportsService', function ($http) {
+    var invokePost = function (restURL, data, responseType) {
+        return $http({
+            method: "POST",
+            url: restURL,
+            data: data,
+            responseType: responseType
+        });
+    };
+
+    var getSurveysList = function () {
+        return $http({
+            method: "GET",
+            url: "listSurveys",
+            responseType: "json"
+        });
+    };
+    var requestChartableData = function (indivStatFormData) {
+        return invokePost("requestChartableData", indivStatFormData, 'json');
+    };
+    var requestNumericReport = function (indivStatFormData, restURL) {
+        return invokePost(restURL, indivStatFormData, 'arraybuffer');
+    };
+    var requestGraphicReport = function (data, restURL) {
+        return invokePost(restURL, data, 'arraybuffer');
+    };
+    var savePdfData = function (pdfData, pdfDataFileName) {
+        var file = new Blob([pdfData], {
+            type: 'application/pdf'
+        });
+        //trick to download store a file having its URL
+        var fileURL = URL.createObjectURL(file);
+        var a = document.createElement('a');
+        a.href = fileURL;
+        a.target = '_blank';
+        a.download = pdfDataFileName;
+        document.body.appendChild(a);
+        a.click();
+    };
+    var generateSvgObjects = function (chartableData) {
+        var svgObjects = [];
+        _.each(chartableData, function (dataMap) {
+            var df = dataMap.dataFormat;
+            var ds = dataMap.dataSet;
+
+            // function to use d3.js which create a svg object by manipulating the DOM
+            graphGenerator(df, ds); // library function in chart.js
+            var svgData = svgObj(); // library function in chart.js
+            svgObjects.push(svgData);
+        });
+        return svgObjects;
+    };
+
     return {
-        getSurveysList: function () {
-            return $http({
-                method: "GET",
-                url: "listSurveys",
-                responseType: "json"
-            }).then(function (result) {
-                return result.data;
-            });
-        },
-        requestChartableData: function (reportRequestData) {
-            return $http({
-                method: "POST",
-                url: "requestChartableData",
-                data: reportRequestData,
-                responseType: "json"
-            });
-        },
-        requestNumericReport: function (reportRequestData) {
-            return $http({
-                method: "POST",
-                url: "individualStatisticsNumeric",
-                data: reportRequestData
-                //headers: {'Content-Type': 'application/x-www-form-urlencoded'}  // set the headers so angular passing info as form data (not request payload)
-            });
-        },
-        requestGraphicReport: function (svgData, chartableData, reportRequestData) {
-            return $http({
-                method: "POST",
-                url: "individualStatisticsGraphic",
-                data: {svgData: svgData, chartableData: chartableData.data, userReqData:reportRequestData}
-                //headers: {'Content-Type': 'application/x-www-form-urlencoded'}  // set the headers so angular passing info as form data (not request payload)
-            });
-        }
+        getSurveysList: getSurveysList,
+        requestChartableData: requestChartableData,
+        requestNumericReport: requestNumericReport,
+        requestGraphicReport: requestGraphicReport,
+        savePdfData: savePdfData,
+        generateSvgObjects: generateSvgObjects
     };
 });
 
-module.controller('reportsController', function ($scope, $http, $window, surveysListService) {
+
+module.controller('indivStatsCtrl', function ($scope, $http, $window, ReportsService) {
     // place holder for selected surveys
     $scope.report = {surveysList: []};
     // Load Surveys List Service
-    surveysListService.getSurveysList().then(function (data) {
-        $scope.surveysList = data;
-    });
-
-    var generateGraphs = function (chartableData) {
-        var svgObjects = [];
-        _.each(chartableData.data, function (dataMap) {
-            var df = dataMap.dataFormat;
-            var ds = dataMap.dataSet;
-            graphGenerator(df, ds);
-            svgObjects.push(svgObj());
+    ReportsService.getSurveysList()
+        .success(function (data) {
+            $scope.surveysList = data;
+        }).error(function (data, status) {
+            console.error('getSurveysList error', status, data);
         });
-
-        return svgObjects;
-    }
 
     $scope.save = function () {
         $scope.$broadcast('show-errors-check-validity');
 
         if ($scope.reportForm.$valid) {
-            // collect data to send to server as a request data
-            var reportRequestData = {
+            // create a model to represent user requested data on html form
+            var indivStatFormData = {
                 lastName: $scope.report.lastName,
                 ssnLastFour: $scope.report.ssnLastFour,
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 surveysList: $scope.report.surveysList
-            }
-            if ($scope.report.reportType === 'reportTypeGraph') {
-                surveysListService.requestChartableData(reportRequestData).then(function (chartableData) {
-                    // produce d3 graphs as svg objects
-                    var svgData = generateGraphs(chartableData);
-                    surveysListService.requestGraphicReport(svgData, chartableData, reportRequestData);
-                });
+            };
 
+            if ($scope.report.reportType === 'reportTypeGraph') {
+                // graph report has two steps.
+                // 1>   indivStatFormData and collect the response, which is good enough to produce a numeric report
+                // 2>   use the data which is good enough to produce numeric data and call it chartableData. We call it chartableData as we pass this data
+                //      to generate svg Objects
+                // 3>   use the svgObjects + chartableData + indivStatFormData and ask for pdf report
+                ReportsService.requestChartableData(indivStatFormData)
+                    .success(function (chartableData) {
+                        // produce d3 graphs as svg objects
+                        var svgData = ReportsService.generateSvgObjects(chartableData);
+
+                        var data = {
+                            svgData: svgData,
+                            chartableData: chartableData,
+                            userReqData: indivStatFormData
+                        };
+
+                        ReportsService.requestGraphicReport(data, "individualStatisticsGraphic")
+                            .success(function (serverResponse) {
+                                ReportsService.savePdfData(serverResponse, 'IndividualStatisticsWithGraphsOnlyReport.pdf');
+                            }).error(function (data, status) {
+                                console.error('requestGraphicReport error', status, data);
+                            });
+
+                    }).error(function (data, status) {
+                        console.error('requestChartableData error', status, data);
+                    });
+            } else if ($scope.report.reportType === 'reportTypeNumeric') {
+                ReportsService.requestNumericReport(indivStatFormData, 'individualStatisticsNumeric')
+                    .success(function (serverResponse) {
+                        ReportsService.savePdfData(serverResponse, 'IndividualStatisticsWithNumericOnlyReport.pdf');
+                    }).error(function (data, status) {
+                        console.error(' requestNumericReporterror:', status, data);
+                    });
             } else {
-                surveysListService.requestNumericReport(reportRequestData).then(function (data) {
-                    console.log(data);
-                });
+                //todo implement a mix of above two options for reportTypeBoth
             }
             $scope.reset();
         }
@@ -176,7 +219,8 @@ module.controller('reportsController', function ($scope, $http, $window, surveys
             $scope.report.surveysList = [];
         }
     }
-});
+})
+;
 
 /* JQuery */
 $(document).ready(function () {
