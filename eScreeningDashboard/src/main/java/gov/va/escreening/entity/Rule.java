@@ -1,5 +1,9 @@
 package gov.va.escreening.entity;
 
+import gov.va.escreening.dto.template.TemplateIfBlockDTO;
+import gov.va.escreening.service.TemplateServiceImpl;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,6 +26,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  *
  * @author jjinn, Robin Carnow
@@ -32,6 +41,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Rule.findAll", query = "SELECT r FROM Rule r")})
 public class Rule implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(Rule.class);
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -43,6 +54,8 @@ public class Rule implements Serializable {
     @Basic(optional = false)
     @Column(name = "expression")
     private String expression;
+    @Column(name="condition_json")
+    private String condition;
     @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
@@ -101,6 +114,36 @@ public class Rule implements Serializable {
     public void setExpression(String expression) {
         this.expression = expression;
     }
+    
+    public String getCondition() {
+        return condition;
+    }
+    
+    /**
+     * This is for hibernate. Please use other method.
+     * @param json raw json string to save
+     */
+    public void setCondition(String json) {
+        this.condition = json;
+    }
+    
+    /**
+     * Sets the jsonFile field using the given condition
+     * @param condition
+     */
+    public void setCondition(TemplateIfBlockDTO condition){
+        if(condition != null){
+            // save raw json file to the database
+            ObjectMapper om = new ObjectMapper();
+            try{
+                this.condition = om.writeValueAsString(condition);
+            }
+            catch(IOException e) {
+                logger.error("Error setting condition data", e);
+                this.condition = null;
+            }
+        }
+    }
 
     public Date getDateCreated() {
         return dateCreated;
@@ -125,7 +168,7 @@ public class Rule implements Serializable {
     public void setAssessmentVariables(Set<AssessmentVariable> assessmentVariables) {
         this.assessmentVariables = assessmentVariables;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,6 +195,5 @@ public class Rule implements Serializable {
                 + ", expression='" + expression 
                 + "', events: " + Arrays.toString(events.toArray())  
                 +"]";
-    }
-    
+    }    
 }

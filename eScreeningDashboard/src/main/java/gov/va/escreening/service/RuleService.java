@@ -59,7 +59,7 @@ public interface RuleService {
 	public List<EventDto> getAllEvents();
     
     /**
-     * @return get all rules on the system
+     * @return get all rules on the system <b>without the condition field set</b>
      */
     List<RuleDto> getRules();
     

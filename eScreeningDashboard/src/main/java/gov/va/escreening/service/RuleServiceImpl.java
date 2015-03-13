@@ -481,7 +481,7 @@ public class RuleServiceImpl implements RuleService {
 
     @Override
     public List<RuleDto> getRules() {
-        return toRuleDtos(ruleRepository.findAll());
+        return ruleRepository.findAllLight();
     }
 
     @Override
@@ -493,7 +493,8 @@ public class RuleServiceImpl implements RuleService {
     public RuleDto createRule(RuleDto ruleDto) {
         Rule dbRule = updateRuleEntity(ruleDto, new Rule());
         ruleRepository.create(dbRule);
-        return new RuleDto(dbRule);
+        ruleDto.setId(dbRule.getRuleId());
+        return ruleDto;
     }
     
     @Override
@@ -506,9 +507,10 @@ public class RuleServiceImpl implements RuleService {
     private Rule updateRuleEntity(RuleDto src, Rule dst){
         dst.setName(src.getName());
         
-        //TODO: set json in dbRule
+        //set json in dbRule
+        dst.setCondition(src.getCondition());
         
-        //TODO: translate rule into Spring EL and update expression
+        //TODO: translate condition into Spring EL and update expression
         dst.setExpression("Test placeholder for translated Spring EL");
         
         return dst;
@@ -623,18 +625,5 @@ public class RuleServiceImpl implements RuleService {
             eventDtos.add(new EventDto(dbEvent));
         }
         return eventDtos;
-    }
-    
-    /**
-     * Translates a list of rule entities to a list of rule dtos
-     * @param dbEvents
-     * @return
-     */
-    private List<RuleDto> toRuleDtos(List<Rule> dbRules){
-        List<RuleDto> ruleDtos = Lists.newArrayListWithExpectedSize(dbRules.size());
-        for(Rule dbRule : dbRules){
-            ruleDtos.add(new RuleDto(dbRule));
-        }
-        return ruleDtos;
     }
 }
