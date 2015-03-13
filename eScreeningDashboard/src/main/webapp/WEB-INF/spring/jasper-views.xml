@@ -58,4 +58,9 @@
           p:url="classpath:/reports/individualStatisticsGraphReport.jrxml"
           p:reportDataKey="datasource"/>
 
+    <bean id="individualStatisticsGraphNumberReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/individualStatisticsGraphNumberReport.jrxml"
+          p:reportDataKey="datasource"/>
+
 </beans>

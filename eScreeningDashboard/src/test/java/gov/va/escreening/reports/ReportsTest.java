@@ -29,11 +29,11 @@ public class ReportsTest {
     @Resource(type = ReportsController.class)
     ReportsController rc;
 
-    @Test
+  //  @Test
     public void createTstChartableData() {
-        Map<String, Object> chartableData=rc.createTstChartableData(null);
-        Gson gson = new GsonBuilder().create();
-        String jsonDataSet = gson.toJson(chartableData.get("dataSet"));
-        String jsonDataFormat = gson.toJson(chartableData.get("dataFormat"));
+       // Map<String, Object> chartableData=rc.createTstChartableData(null);
+      //  Gson gson = new GsonBuilder().create();
+      //  String jsonDataSet = gson.toJson(chartableData.get("dataSet"));
+      //  String jsonDataFormat = gson.toJson(chartableData.get("dataFormat"));
     }
 }

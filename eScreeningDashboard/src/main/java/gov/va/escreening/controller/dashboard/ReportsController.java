@@ -11,12 +11,10 @@ import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
+import gov.va.escreening.entity.SurveyScoreInterval;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.ClinicService;
-import gov.va.escreening.service.ReportTypeService;
-import gov.va.escreening.service.SurveyService;
-import gov.va.escreening.service.VeteranAssessmentSurveyScoreService;
+import gov.va.escreening.service.*;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -63,6 +61,9 @@ public class ReportsController {
     @Autowired
     private VeteranAssessmentSurveyScoreService scoreService;
 
+    @Autowired
+    private SurveyScoreIntervalService intervalService;
+
     private FileResolver fileResolver = new FileResolver() {
 
         @Override
@@ -107,7 +108,13 @@ public class ReportsController {
         return clinicService.getClinicDtoList();
     }
 
-
+    @RequestMapping(value = "/individualStatisticsGraphicAndNumber", method = RequestMethod.POST)
+    public ModelAndView genIndividualStatisticsGraphicAndNumber(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser) {
+        return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
+                "individualStatisticsGraphNumberReport");
+    }
     /**
      * REST endpoint will receive an list of svg objects plus any other data required to render a graphical report
      * This will simply prepare the required data + svg objects for the target Jasper report and forward
@@ -122,66 +129,62 @@ public class ReportsController {
                                                        @RequestBody Map<String, Object> requestData,
                                                        @CurrentUser EscreenUser escreenUser) {
 
+        return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
+                 "individualStatisticsGraphReport");
+
+    }
+
+    private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser,
+                                                        String viewName){
+
+       ArrayList<String> svgObject = (ArrayList<String>)requestData.get("svgData");
+       LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>)requestData.get("userReqData");
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
 
+        String lastName = (String)userReqData.get(LASTNAME);
+        String last4SSN = (String)userReqData.get(SSN_LAST_FOUR);
+        String fromDate = (String)userReqData.get(FROMDATE);
+        String toDate = (String)userReqData.get(TODATE);
+        ArrayList surveyIds = (ArrayList)userReqData.get(SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From 02/01/2014 to 01/05/2015");
-        parameterMap.put("lastNameSSN", "Veteran1123, 1234");
+        parameterMap.put("fromToDate", "From "+fromDate+" to "+toDate);
+        parameterMap.put("lastNameSSN", lastName+", "+last4SSN);
+
+        VeteranDto veteran = new VeteranDto();
+        veteran.setLastName(lastName);
+        veteran.setSsnLastFour(last4SSN);
+
+        List<VeteranDto> veterans = assessmentDelegate.findVeterans(veteran);
+
+        Integer veteranId = -1;
+
+        if (veterans!=null && !veterans.isEmpty()){
+           veteranId =  veterans.get(0).getVeteranId();
+        }
 
         List<ModuleGraphReportDTO> resultList = new ArrayList<>();
 
-        ModuleGraphReportDTO moduleGraphReportDTO = new ModuleGraphReportDTO();
+        for(int i=0; i< surveyIds.size(); i++){
+            Integer surveyId = (Integer)surveyIds.get(i);
+            ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, veteranId, fromDate, toDate);
+            if (moduleGraphReportDTO.getHasData()) {
+                moduleGraphReportDTO.setImageInput(
+                        "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n" +
+                                svgObject.get(i));
 
-        moduleGraphReportDTO.setScore("20");
-        moduleGraphReportDTO.setModuleName("PHQ-9");
-        moduleGraphReportDTO.setScoreMeaning("Severe");
-        moduleGraphReportDTO.setScoreName("Last Depression Score");
-        moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
+                moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
+            }
+            resultList.add(moduleGraphReportDTO);
 
-        List<ScoreHistoryDTO> history = new ArrayList<>();
-
-        for (int i = 0; i < 15; i++) {
-            ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
-            scoreHistoryDTO.setClinicName(" Test Clinic " + i);
-            scoreHistoryDTO.setScreeningDate("01/" + i + "/2015");
-            history.add(scoreHistoryDTO);
         }
-
-
-        moduleGraphReportDTO.setScoreHistory(history);
-
-        resultList.add(moduleGraphReportDTO);
-
-        moduleGraphReportDTO = new ModuleGraphReportDTO();
-
-        moduleGraphReportDTO.setScore("24");
-        moduleGraphReportDTO.setModuleName("PCL-C");
-        moduleGraphReportDTO.setScoreMeaning("Moderate");
-        moduleGraphReportDTO.setScoreName("Last Depression Score");
-        moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
-
-        history = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            ScoreHistoryDTO scoreHistoryDTO = new ScoreHistoryDTO();
-            scoreHistoryDTO.setClinicName(" Test Clinic " + i);
-            scoreHistoryDTO.setScreeningDate("02/" + i + "/2015");
-            history.add(scoreHistoryDTO);
-        }
-
-        moduleGraphReportDTO.setScoreHistory(history);
-
-        resultList.add(moduleGraphReportDTO);
-
 
         JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
-        System.out.println("aaaaaaacccsaa");
-        return new ModelAndView("individualStatisticsGraphReport", parameterMap);
+        return new ModelAndView(viewName, parameterMap);
     }
 
     /**
@@ -201,46 +204,48 @@ public class ReportsController {
 
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
-        //todo Kai to replace this test loop with the real code
-        for (int i = 0; i < 2; i++) {
-            chartableDataList.add(createTstChartableData(requestData));
+        logger.debug("Generating the individual statistics reports numeric only.");
+
+        String lastName = (String)requestData.get(LASTNAME);
+        String last4SSN = (String)requestData.get(SSN_LAST_FOUR);
+        String fromDate = (String)requestData.get(FROMDATE);
+        String toDate = (String)requestData.get(TODATE);
+
+        VeteranDto veteran = new VeteranDto();
+        veteran.setLastName(lastName);
+        veteran.setSsnLastFour(last4SSN);
+
+        List<VeteranDto> veterans = assessmentDelegate.findVeterans(veteran);
+
+        if (veterans==null || veterans.isEmpty()){
+            return chartableDataList;
         }
+
+        Integer veteranId = veterans.get(0).getVeteranId();
+
+        for (Object strSurveyId : (ArrayList) requestData.get(SURVEY_ID_LIST)) {
+
+            Integer surveyId = (Integer) strSurveyId;
+
+            chartableDataList.add(createChartableData(surveyId, veteranId, fromDate, toDate));
+        }
+
         return chartableDataList;
     }
 
-    public Map<String, Object> createTstChartableData(Map<String, Object> requestData) {
+    public Map<String, Object> createChartableData(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
         //first create the data
-        String dataInJsonFormat = "{\"03/06/2015 08:59:38\": 16,\"01/23/2015 12:51:17\": 27,\"09/23/2014 12:36:48\": 5}";
+        String dataInJsonFormat = scoreService.getSurveyDataJsonForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
+
         Gson gson = new GsonBuilder().create();
         Map dataSet = gson.fromJson(dataInJsonFormat, Map.class);
 
-        String dataFormatInJsonFormat = "{\n" +
-                "  \"ticks\": [\n" +
-                "    0, \n" +
-                "    1, \n" +
-                "    5, \n" +
-                "    10, \n" +
-                "    15, \n" +
-                "    20, \n" +
-                "    27\n" +
-                "  ], \n" +
-                "  \"score\": 16, \n" +
-                "  \"footer\": \"\", \n" +
-                "  \"varId\": 1599, \n" +
-                "  \"title\": \"My Depression Score\", \n" +
-                "  \"intervals\": {\n" +
-                "    \"None\": 0, \n" +
-                "    \"Moderately Severe\": 15, \n" +
-                "    \"Mild\": 5, \n" +
-                "    \"Severe\": 20, \n" +
-                "    \"Moderate\": 10, \n" +
-                "    \"Minimal\": 1\n" +
-                "  }, \n" +
-                "  \"maxXPoint\": 27, \n" +
-                "  \"numberOfMonths\": 12\n" +
-                "}";
+        String dataFormatInJsonFormat =
+                intervalService.generateMetadataJson(surveyId);
+
         Map dataFormat = gson.fromJson(dataFormatInJsonFormat, Map.class);
 
         chartableDataMap.put("dataSet", dataSet);
@@ -316,46 +321,6 @@ public class ReportsController {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
-
-
-/*
-
-
-        List<TableReportDTO> resultList = new ArrayList<>();
-
-        TableReportDTO tb = new TableReportDTO();
-        tb.setModuleName("PHQ-9");
-        tb.setScreeningModuleName("Depression");
-        tb.setScore("15 - Moderate\n" +
-                "20 - Moderate Severe\n" +
-                "27 - Severe");
-        tb.setHistoryByClinic("02/01/2015  | LI SOC WK OEF ESCREENING\n" +
-                "01/14/2015  | LI PRIM CARE HAGARICH\n" +
-                "10/10/2014  | LI 2N MHAC URGENT CLINIC");
-        resultList.add(tb);
-
-        tb = new TableReportDTO();
-
-        tb.setModuleName("PCL-C");
-        tb.setScreeningModuleName("Post-traumatic Stress Disorder");
-        tb.setScore("43 - Negative");
-        tb.setHistoryByClinic("10/10/2014  |  LI SOC WK OEF ESCREENING");
-
-        resultList.add(tb);
-
-
-        parameterMap.put("cast", resultList);
-
-
-        parameterMap.put("reportTitle", "PHQ-9");
-        parameterMap.put("reportScore", "20");
-        parameterMap.put("scoreMeaning", "Moderate Severe");
-
-        parameterMap.put("history", "02/01/2015  | LI SOC WK OEF ESCREENING\n" +
-                "01/14/2015  | LI PRIM CARE HAGARICH\n" +
-                "10/10/2014  | LI 2N MHAC URGENT CLINIC");
-
-*/
         return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
     }
 }

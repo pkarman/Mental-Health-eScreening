@@ -14,13 +14,13 @@ public class ModuleGraphReportDTO implements Serializable{
     private String score;
     private String scoreMeaning;
 
-    private InputStream inmageInputStream;
+    private String imageInput;
 
     private String scoreHistoryTitle;
 
     private List<ScoreHistoryDTO> scoreHistory;
 
-    private ImageInputDTO imageInput;
+    private Boolean hasData = true;
 
     public String getModuleName() {
         return moduleName;
@@ -70,19 +70,20 @@ public class ModuleGraphReportDTO implements Serializable{
         this.scoreHistory = scoreHistory;
     }
 
-    public InputStream getInmageInputStream() {
-        return inmageInputStream;
-    }
 
-    public void setInmageInputStream(InputStream inmageInputStream) {
-        this.inmageInputStream = inmageInputStream;
-    }
-
-    public ImageInputDTO getImageInput() {
+    public String getImageInput() {
         return imageInput;
     }
 
-    public void setImageInput(ImageInputDTO imageInput) {
+    public void setImageInput(String imageInput) {
         this.imageInput = imageInput;
+    }
+
+    public Boolean getHasData() {
+        return hasData;
+    }
+
+    public void setHasData(Boolean hasData) {
+        this.hasData = hasData;
     }
 }
