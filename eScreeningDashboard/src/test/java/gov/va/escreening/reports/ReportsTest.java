@@ -29,7 +29,7 @@ public class ReportsTest {
     @Resource(type = ReportsController.class)
     ReportsController rc;
 
-  //  @Test
+  @Test
     public void createTstChartableData() {
        // Map<String, Object> chartableData=rc.createTstChartableData(null);
       //  Gson gson = new GsonBuilder().create();

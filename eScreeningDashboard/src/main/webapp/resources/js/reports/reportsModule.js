@@ -117,7 +117,10 @@ module.factory('ReportsService', ['$http', function ($http) {
     };
     var generateSvgObjects = function (chartableData) {
         var svgObjects = [];
-        _.each(chartableData, function (dataMap) {
+        var verifiedData = _.filter(chartableData, function (data) {
+            return data.dataFormat != undefined && data.dataFormat != null && data.dataSet != undefined && data.dataSet != null;
+        })
+        _.each(verifiedData, function (dataMap) {
             var df = dataMap.dataFormat;
             var ds = dataMap.dataSet;
 
