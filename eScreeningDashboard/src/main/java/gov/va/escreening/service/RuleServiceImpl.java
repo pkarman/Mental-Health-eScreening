@@ -509,6 +509,7 @@ public class RuleServiceImpl implements RuleService {
         //TODO: set json in dbRule
         
         //TODO: translate rule into Spring EL and update expression
+        dst.setExpression("Test placeholder for translated Spring EL");
         
         return dst;
     }

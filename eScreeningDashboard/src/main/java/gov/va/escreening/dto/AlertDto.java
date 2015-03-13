@@ -40,4 +40,10 @@ public class AlertDto implements Serializable {
         this.alertId = alertId;
         this.alertName = alertName;
     }
+    
+    /**
+     * Needed for json decoding. please use the other constructor 
+     */ 
+    @SuppressWarnings("unused")
+    private AlertDto(){}
 }

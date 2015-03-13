@@ -37,4 +37,10 @@ public class RuleDto {
     public void setExpression(String expression) {
         this.expression = expression;
     }
+    
+    /**
+     * Needed for json decoding. please use the other constructor 
+     */
+    @SuppressWarnings("unused")
+    private RuleDto(){}
 }

@@ -26,4 +26,10 @@ public class EventDto {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Needed for json decoding. please use the other constructor 
+     */
+    @SuppressWarnings("unused")
+    private EventDto(){}
 }
