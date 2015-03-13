@@ -1,7 +1,7 @@
 module = angular.module('reportsModule', ["checklist-model"]);
 
 /* Validation */
-module.directive('showErrors', function ($timeout, showErrorsConfig) {
+module.directive('showErrors', ['$timeout', 'showErrorsConfig', function ($timeout, showErrorsConfig) {
         var getShowSuccess, linkFn;
         getShowSuccess = function (options) {
             var showSuccess;
@@ -61,7 +61,7 @@ module.directive('showErrors', function ($timeout, showErrorsConfig) {
                 return linkFn;
             }
         };
-    }
+    }]
 );
 
 module.provider('showErrorsConfig', function () {
@@ -76,7 +76,7 @@ module.provider('showErrorsConfig', function () {
 });
 
 
-module.factory('ReportsService', function ($http) {
+module.factory('ReportsService', ['$http', function ($http) {
     var invokePost = function (restURL, data, responseType) {
         return $http({
             method: "POST",
@@ -137,10 +137,10 @@ module.factory('ReportsService', function ($http) {
         savePdfData: savePdfData,
         generateSvgObjects: generateSvgObjects
     };
-});
+}]);
 
 
-module.controller('indivStatsCtrl', function ($scope, $http, $window, ReportsService) {
+module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
     // place holder for selected surveys
     $scope.report = {surveysList: []};
     // Load Surveys List Service
@@ -219,8 +219,7 @@ module.controller('indivStatsCtrl', function ($scope, $http, $window, ReportsSer
             $scope.report.surveysList = [];
         }
     }
-})
-;
+}]);
 
 /* JQuery */
 $(document).ready(function () {
