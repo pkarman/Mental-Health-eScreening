@@ -633,7 +633,8 @@ public class VistaServiceImpl implements VistaService {
         for(ClinicalReminder cr : clinicalReminders)
         {
         	String crIen = cr.getVistaIen();
-        	if(crIen == null || crIen.isEmpty())
+        	if(crIen == null || crIen.isEmpty() || cr.getClinicalReminderSurveyList()==null 
+        			|| cr.getClinicalReminderSurveyList().isEmpty())
         	{
         		continue;
         	}
