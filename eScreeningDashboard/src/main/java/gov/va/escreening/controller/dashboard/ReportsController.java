@@ -260,8 +260,7 @@ public class ReportsController {
      */
     @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsNumeric(HttpServletRequest request,
-                                                       @RequestBody HashMap<String, Object> requestData,
-                                                       BindingResult result, ModelMap model,
+                                                       @RequestBody Map<String, Object> requestData,
                                                        @CurrentUser EscreenUser escreenUser) {
 
         logger.debug("Generating the individual statistics reports numeric only.");
