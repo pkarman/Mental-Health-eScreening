@@ -1,6 +1,6 @@
 package gov.va.escreening.repository;
 
-import gov.va.escreening.dto.RuleDto;
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
@@ -58,8 +58,7 @@ public class RuleRepositoryImpl extends AbstractHibernateRepository<Rule> implem
 
     @Override
     public List<RuleDto> findAllLight() {
-        return entityManager.createQuery("SELECT NEW gov.va.escreening.dto.RuleDto(r.ruleId, r.name) FROM Rule r", RuleDto.class).getResultList();
+        return entityManager.createQuery("SELECT NEW " + RuleDto.class.getCanonicalName() + "(r.ruleId, r.name) FROM Rule r", RuleDto.class).getResultList();
     }
-    
     
 }

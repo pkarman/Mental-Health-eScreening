@@ -1,4 +1,4 @@
-package gov.va.escreening.dto;
+package gov.va.escreening.dto.rule;
 
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.template.TemplateIfBlockDTO;

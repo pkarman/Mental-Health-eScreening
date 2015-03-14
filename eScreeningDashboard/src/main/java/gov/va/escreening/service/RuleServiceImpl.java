@@ -2,9 +2,10 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
-import gov.va.escreening.dto.EventDto;
-import gov.va.escreening.dto.RuleDto;
 import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.dto.rule.EventDto;
+import gov.va.escreening.dto.rule.RuleDto;
+import gov.va.escreening.dto.template.TemplateIfBlockDTO;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
@@ -22,6 +23,7 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.expressionevaluator.FormulaDto;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.ConsultRepository;
 import gov.va.escreening.repository.DashboardAlertRepository;
 import gov.va.escreening.repository.EventRepository;
@@ -30,12 +32,17 @@ import gov.va.escreening.repository.RuleRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.variableresolver.*;
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import gov.va.escreening.variableresolver.AssessmentVariableDtoFactory;
+import gov.va.escreening.variableresolver.FormulaAssessmentVariableResolver;
+import gov.va.escreening.variableresolver.NullValueHandler;
+import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Optional;
@@ -84,6 +92,8 @@ public class RuleServiceImpl implements RuleService {
 	private VariableResolverService variableResolverService;
 	@Autowired
 	private AssessmentVariableDtoFactory assessmentVariableFactory;
+	@Autowired
+	private AssessmentVariableRepository avRepository;
 	@Autowired
 	private EventRepository eventRepository;
 	@Autowired
@@ -470,26 +480,31 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<EventDto> getEventsByType(int type){
 	    return toEventDtos(eventRepository.getEventByType(type));
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<EventDto> getAllEvents(){
 	    return toEventDtos(eventRepository.findAll());
 	}
 
     @Override
+    @Transactional(readOnly = true)
     public List<RuleDto> getRules() {
         return ruleRepository.findAllLight();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RuleDto getRule(Integer ruleId) {
         return new RuleDto(getDbRule(ruleId)); 
     }
     
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public RuleDto createRule(RuleDto ruleDto) {
         Rule dbRule = updateRuleEntity(ruleDto, new Rule());
         ruleRepository.create(dbRule);
@@ -498,6 +513,7 @@ public class RuleServiceImpl implements RuleService {
     }
     
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public RuleDto updateRule(Integer ruleId, RuleDto ruleDto) {
         Rule dbRule = updateRuleEntity(ruleDto, getDbRule(ruleId));
         ruleRepository.update(dbRule);
@@ -507,21 +523,56 @@ public class RuleServiceImpl implements RuleService {
     private Rule updateRuleEntity(RuleDto src, Rule dst){
         dst.setName(src.getName());
         
+        TemplateIfBlockDTO condition = src.getCondition();
         //set json in dbRule
-        dst.setCondition(src.getCondition());
+        dst.setCondition(condition);
         
-        //TODO: translate condition into Spring EL and update expression
-        dst.setExpression("Test placeholder for translated Spring EL");
+        // translate condition into Spring EL and update expression
+        Set<Integer> avIds = new HashSet<>();
+        dst.setExpression(condition.translateToSpringEl(new StringBuilder(), avIds).toString());
+        
+        //update AVs associated with this rule
+        setRuleAssessmentVariables(dst, avIds);
         
         return dst;
     }
 
+    private void setRuleAssessmentVariables(Rule rule, Set<Integer> avIds) {
+
+        Set<Integer> keepers = new HashSet<>();
+        if (rule.getAssessmentVariables() == null){
+            rule.setAssessmentVariables(Sets.<AssessmentVariable>newHashSetWithExpectedSize(avIds.size()));
+        }
+        else{
+            //remove the AVs that are not present in updated rule
+            Iterator<AssessmentVariable> avIter = rule.getAssessmentVariables().iterator();
+            while(avIter.hasNext()){
+                AssessmentVariable av = avIter.next();
+                if(!avIds.contains(av.getAssessmentVariableId())){
+                   avIter.remove(); 
+                }
+                else{
+                    keepers.add(av.getAssessmentVariableId());
+                }
+            }
+        }
+        
+        //add any AVs that are missing from the rule
+        for(Integer avId : avIds){
+            if(!keepers.contains(avId)){
+                rule.getAssessmentVariables().add(avRepository.findOne(avId));
+            }
+        }
+    }
+
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void deleteRule(Integer ruleId) {
         ruleRepository.delete(getDbRule(ruleId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventDto> getRuleEvents(Integer ruleId) {
         Rule dbRule = getDbRule(ruleId);
         if(dbRule.getEvents() == null || dbRule.getEvents().isEmpty()){
@@ -536,12 +587,13 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public EventDto addEventToRule(Integer ruleId, EventDto event) {
         Rule dbRule = getDbRule(ruleId);
         Event dbEvent = getDbEvent(event.getId());
         
         if(dbRule.getEvents() == null){
-            dbRule.setEvents(ImmutableSet.of(dbEvent));
+            dbRule.setEvents(ImmutableSet.of(dbEvent)); 
         }
         else{
             dbRule.getEvents().add(dbEvent);
@@ -552,12 +604,14 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EventDto getRuleEvent(Integer ruleId, Integer eventId) {
         Event dbEvent = getRuleEvent(getDbRule(ruleId), eventId);
         return new EventDto(dbEvent);
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void deleteRuleEvent(Integer ruleId, Integer eventId) {
         Rule dbRule = getDbRule(ruleId);
         Event dbEvent = getRuleEvent(dbRule, eventId);

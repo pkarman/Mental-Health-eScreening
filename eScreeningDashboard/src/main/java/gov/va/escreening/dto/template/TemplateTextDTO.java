@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 			{
 				// variable content
 				sb.append("${")
-					.append(TemplateVariableContent.translate(null, content, null, ids))
+					.append(BlockUtil.toFreeMarker(content, ids))
 					.append("}");
 			}
 		}

@@ -1,6 +1,6 @@
 package gov.va.escreening.repository;
 
-import gov.va.escreening.dto.RuleDto;
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 

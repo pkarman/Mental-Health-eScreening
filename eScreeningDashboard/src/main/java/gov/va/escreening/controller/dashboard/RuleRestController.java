@@ -2,8 +2,8 @@ package gov.va.escreening.controller.dashboard;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.controller.RestController;
-import gov.va.escreening.dto.EventDto;
-import gov.va.escreening.dto.RuleDto;
+import gov.va.escreening.dto.rule.EventDto;
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.service.RuleService;
 import gov.va.escreening.webservice.Response;
 
