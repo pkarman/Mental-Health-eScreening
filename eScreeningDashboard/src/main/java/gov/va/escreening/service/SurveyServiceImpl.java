@@ -60,6 +60,9 @@ public class SurveyServiceImpl implements SurveyService {
     private ClinicalReminderSurveyRepository clinicalReminderSurveyRepo;
     
     @Autowired
+    private ClinicalReminderRepository clinicalReminderRepo;
+    
+    @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
     }
@@ -189,14 +192,16 @@ public class SurveyServiceImpl implements SurveyService {
         
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
         SurveySection newSurveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
+        SurveySection oldSurveySection = survey.getSurveySection();
             
-        boolean isNewSection = !survey.getSurveySection().getSurveySectionId().equals(newSurveySection.getSurveySectionId());
-            
+        boolean updateOldSurveySectionOrdering = false;
+        boolean isNewSection = !oldSurveySection.getSurveySectionId().equals(newSurveySection.getSurveySectionId());
         if(isNewSection && surveyInfo.getDisplayOrderForSection() == null){
             //the module's section has changed and no order was set so set it the the next larger index
             surveyInfo.setDisplayOrderForSection(newSurveySection.getSurveyList().size()+1);
+            updateOldSurveySectionOrdering = true;
         }
-            
+        
         // copy any changed properties from incoming surveyInfo to the data for database 'survey'
         copyProperties(surveyInfo, survey);
 
@@ -204,6 +209,10 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(newSurveySection);
 
         surveyRepository.update(survey);
+        
+        if(updateOldSurveySectionOrdering){
+            reorderSurveySection(oldSurveySection, survey);
+        }
         
         Integer clinicalReminderId = surveyInfo.getClinicalReminderId();
         clinicalReminderSurveyRepo.removeSurveyMapping(surveyInfo.getSurveyId());
@@ -213,6 +222,17 @@ public class SurveyServiceImpl implements SurveyService {
          clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());;
         }
         return surveyInfo;
+    }
+    
+    private void reorderSurveySection(SurveySection surveySection, Survey removedSurvey){
+        int index = 1;
+        for(Survey survey : surveySection.getSurveyList()){
+            if(!survey.equals(removedSurvey)){
+                survey.setDisplayOrderForSection(index++);
+            }
+        }
+        
+        surveySectionRepository.update(surveySection);
     }
 
     @Override
@@ -364,6 +384,9 @@ public class SurveyServiceImpl implements SurveyService {
         if(surveyInfo.getClinicalReminderId() != null && surveyInfo.getClinicalReminderId() > 0)
         {
         	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
+        	ClinicalReminder reminder = clinicalReminderRepo.findOne(surveyInfo.getClinicalReminderId());
+        	cr.setClinicalReminder(reminder);
+        	cr.setSurvey(survey);
         	clinicalReminderSurveyRepo.create(cr);
         	
         }

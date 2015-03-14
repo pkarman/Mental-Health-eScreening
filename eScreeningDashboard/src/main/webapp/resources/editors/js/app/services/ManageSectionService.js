@@ -40,7 +40,7 @@ angular.module('EscreeningDashboardApp.services.managesection', ['restangular'])
                 _.each(updateSections, function (ss) {
                     p.push(service.update(ss)
                         .then(function (modifiedData) {
-                            $log.debug('details of section updated => ' + JSON.stringify(modifiedData));
+                            //$log.debug('details of section updated => ' + JSON.stringify(modifiedData));
                             $log.debug('update success:\'' + ss.name + '\' updated successfully');
                         }));
                 });
