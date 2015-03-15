@@ -257,4 +257,20 @@ public class MeasureAnswer implements Serializable {
         return "gov.va.escreening.entity.MeasureAnswer[ measureAnswerId=" + measureAnswerId + " ]";
     }
 
+    /**
+     * method to try to pick some text to identify this answer
+     * use the export name as #1 source of identifying, else try to match this identification with the Question variable name
+     * else use this answer's answer text (this will be the case if this is an answer to a table question)
+     * @return
+     */
+    public String getIdentifyingText() {
+        String maIdentifyingText = getExportName();
+        if (maIdentifyingText == null) {
+            maIdentifyingText = getMeasure().getVariableName();
+        }
+        if (maIdentifyingText == null) {
+            maIdentifyingText = getAnswerText();
+        }
+        return maIdentifyingText;
+    }
 }
