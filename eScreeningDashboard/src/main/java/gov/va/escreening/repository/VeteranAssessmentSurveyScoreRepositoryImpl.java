@@ -102,14 +102,14 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     public List<VeteranAssessmentSurveyScore> getDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
                                                                 String fromDate, String toDate) {
 
-        String hql = "select vassr from VeteranAssessmentSurveyScore vassr " +
-                " where vassr.dateCompleted >= :fromDate " +
-                " and vassr.dateCompeted <= :toDate " +
-                " and vassr.clinic.id in ( :clinicIds ) " +
-                " and vassr.survey.id in ( :surveyIds ) " +
-                " order by vassr.clinic.id, vassr.survey.id, vassr.dateCompleted asc ";
+        String sql = "select clinic_id, survey, date(date_completed), count(*), avg(survey_score) " +
+                " from veteran_assessment_survey_score " +
+                " where clinic_id in (:clinicIds) and survey_id in (:surveyIds) " +
+                " and date_completed >= :fromDate and data_completed <= :toDate " +
+                " group by clinic_id, survey_id, date(date_completed) " +
+                " order by cl ";
 
-        TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
+        Query query = entityManager.createNativeQuery(sql);
 
         query.setParameter("clinicIds", clinicIds);
         query.setParameter("surveyIds", surveyIds);

@@ -21,4 +21,6 @@ public interface VeteranAssessmentSurveyScoreService {
     TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer veteranId, String fromDate, String toDate);
 
     ModuleGraphReportDTO getGraphReportDTOForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate);
+
+
 }

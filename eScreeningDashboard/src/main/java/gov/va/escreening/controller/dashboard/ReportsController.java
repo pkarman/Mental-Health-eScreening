@@ -2,6 +2,8 @@ package gov.va.escreening.controller.dashboard;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
@@ -10,10 +12,7 @@ import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.ClinicService;
-import gov.va.escreening.service.SurveyScoreIntervalService;
-import gov.va.escreening.service.SurveyService;
-import gov.va.escreening.service.VeteranAssessmentSurveyScoreService;
+import gov.va.escreening.service.*;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -171,6 +170,7 @@ public class ReportsController {
         ArrayList idList = (ArrayList) requestData.get(CLINIC_ID_LIST);
 
 
+        
         return null;
     }
 

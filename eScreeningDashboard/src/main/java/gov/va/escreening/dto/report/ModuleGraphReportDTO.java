@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class ModuleGraphReportDTO implements Serializable{
 
+    private String veteranCount;
     private String moduleName;
     private String scoreName;
     private String score;
@@ -85,5 +86,13 @@ public class ModuleGraphReportDTO implements Serializable{
 
     public void setHasData(Boolean hasData) {
         this.hasData = hasData;
+    }
+
+    public String getVeteranCount() {
+        return veteranCount;
+    }
+
+    public void setVeteranCount(String veteranCount) {
+        this.veteranCount = veteranCount;
     }
 }
