@@ -1,5 +1,7 @@
 package gov.va.escreening.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import gov.va.escreening.entity.SurveyScoreInterval;
 import gov.va.escreening.repository.SurveyScoreIntervalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kliu on 3/6/15.
@@ -38,20 +41,20 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Transactional(readOnly = true)
     @Override
-    public String generateMetadataJson(Integer surveyId) {
+    public Map<String, Object> generateMetadata(Integer surveyId) {
 
         List<SurveyScoreInterval> intervals = intervalRepository.getIntervalsBySurvey(surveyId);
-
         if (intervals == null || intervals.isEmpty()) {
             return null;
         }
 
         String max = "-1";
-
         String min = "100000";
 
-        StringBuffer tick = new StringBuffer();
-        StringBuffer sbInterval = new StringBuffer();
+        Map<String, Object> metaDataMap = createTemplateMetaData();
+        List<String> ticks = Lists.newArrayList();
+        Map<String, Object> intervalsMap = Maps.newHashMap();
+
 
         for (SurveyScoreInterval interval : intervals) {
 
@@ -63,36 +66,24 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
                     max = interval.getMax();
                 }
 
-                if (tick.length()==0){
-                    tick.append(interval.getMin());
-                }
-                else {
-                    tick.append("," + interval.getMin());
-                }
-
-                if (sbInterval.length() == 0){
-                    sbInterval.append("\""+interval.getMeaning()+"\":"+interval.getMin());
-                }
-                else {
-                    sbInterval.append(",\""+interval.getMeaning()+"\":"+interval.getMin());
-                }
+                ticks.add(interval.getMin());
+                intervalsMap.put(interval.getMeaning(), interval.getMin());
             }
-
-
         }
 
-        return String.format(intervalTemplate, tick.toString(), sbInterval.toString(), max);
-
-
+        metaDataMap.put("ticks", ticks);
+        metaDataMap.put("intervals", intervalsMap);
+        metaDataMap.put("maxXPoint", max);
+        return metaDataMap;
     }
 
-    public static final String intervalTemplate = "{ ticks: [%s], \"score\": 16, \n" +
-            "  \"footer\": \"\", \n" +
-            "  \"varId\": 1599, \n" +
-            "  \"title\": \"My Score\", \n" +
-            "  \"intervals\": {%s}, \n" +
-            "  \"maxXPoint\": %s, \n" +
-            "  \"numberOfMonths\": 12\n" +
-            "}";
-
+    private Map<String, Object> createTemplateMetaData() {
+        Map<String, Object> metaDataMap = Maps.newHashMap();
+        metaDataMap.put("score", 16);
+        metaDataMap.put("footer", "");
+        metaDataMap.put("varId", 1599);
+        metaDataMap.put("title", "My Score");
+        metaDataMap.put("numberOfMonths", 12);
+        return metaDataMap;
+    }
 }

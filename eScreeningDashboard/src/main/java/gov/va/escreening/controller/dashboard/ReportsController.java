@@ -2,8 +2,6 @@ package gov.va.escreening.controller.dashboard;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
@@ -12,7 +10,10 @@ import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.*;
+import gov.va.escreening.service.ClinicService;
+import gov.va.escreening.service.SurveyScoreIntervalService;
+import gov.va.escreening.service.SurveyService;
+import gov.va.escreening.service.VeteranAssessmentSurveyScoreService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -22,7 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +43,10 @@ public class ReportsController {
 
     private static final String LASTNAME = "lastName";
     private static final String FROMDATE = "fromDate";
-    private static final String SSN_LAST_FOUR="ssnLastFour";
-    private static final String SURVEY_ID_LIST="surveysList";
-    private static final String TODATE="toDate";
-    private static final String DISPLAY_OPTION="displayOption";
+    private static final String SSN_LAST_FOUR = "ssnLastFour";
+    private static final String SURVEY_ID_LIST = "surveysList";
+    private static final String TODATE = "toDate";
+    private static final String DISPLAY_OPTION = "displayOption";
     private static final String CLINIC_ID_LIST = "clicnicsList";
 
     @Autowired
@@ -88,7 +92,6 @@ public class ReportsController {
     }
 
 
-
     @RequestMapping(value = "/listSurveys", method = RequestMethod.GET)
     @ResponseBody
     public List<SurveyDto> getAllSurveys() {
@@ -111,7 +114,7 @@ public class ReportsController {
     public ModelAndView genIndividualStatisticsGraphicAndNumber(HttpServletRequest request,
                                                                 @RequestBody Map<String, Object> requestData,
                                                                 @CurrentUser EscreenUser escreenUser) {
-        return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
+        return getIndividualStaticsGraphicPDF(requestData, escreenUser,
                 "individualStatisticsGraphNumberReport");
     }
 
@@ -129,7 +132,7 @@ public class ReportsController {
                                                        @RequestBody Map<String, Object> requestData,
                                                        @CurrentUser EscreenUser escreenUser) {
 
-        return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
+        return getIndividualStaticsGraphicPDF(requestData, escreenUser,
                 "individualStatisticsGraphReport");
 
     }
@@ -142,52 +145,51 @@ public class ReportsController {
 
     @RequestMapping(value = "/avgScoresVetByClinicGraphicNumeric", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicGraphicNumeric(HttpServletRequest request,
-                                                       @RequestBody Map<String, Object> requestData,
-                                                       @CurrentUser EscreenUser escreenUser){
+                                                              @RequestBody Map<String, Object> requestData,
+                                                              @CurrentUser EscreenUser escreenUser) {
         return genIndividualStatisticsGraphic(request, requestData, escreenUser);
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicGraphic", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicGraphic(HttpServletRequest request,
                                                        @RequestBody Map<String, Object> requestData,
-                                                       @CurrentUser EscreenUser escreenUser){
+                                                       @CurrentUser EscreenUser escreenUser) {
         return genIndividualStatisticsGraphic(request, requestData, escreenUser);
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicNumeric(HttpServletRequest request,
                                                        @RequestBody HashMap<String, Object> requestData,
-                                                       @CurrentUser EscreenUser escreenUser){
+                                                       @CurrentUser EscreenUser escreenUser) {
         logger.debug("getting avgScoresVetByClinicNumeric");
 
         String displayOption = (String) requestData.get(DISPLAY_OPTION);
-        if ("individualData".equals(displayOption)){
+        if ("individualData".equals(displayOption)) {
 
         }
 
-        ArrayList idList = (ArrayList)requestData.get(CLINIC_ID_LIST);
+        ArrayList idList = (ArrayList) requestData.get(CLINIC_ID_LIST);
 
 
-        
         return null;
     }
 
     private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser,
-                                                        String viewName){
+                                                        String viewName) {
 
-       ArrayList<String> svgObject = (ArrayList<String>)requestData.get("svgData");
-       LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>)requestData.get("userReqData");
+        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
+        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
 
-        String lastName = (String)userReqData.get(LASTNAME);
-        String last4SSN = (String)userReqData.get(SSN_LAST_FOUR);
-        String fromDate = (String)userReqData.get(FROMDATE);
-        String toDate = (String)userReqData.get(TODATE);
-        ArrayList surveyIds = (ArrayList)userReqData.get(SURVEY_ID_LIST);
+        String lastName = (String) userReqData.get(LASTNAME);
+        String last4SSN = (String) userReqData.get(SSN_LAST_FOUR);
+        String fromDate = (String) userReqData.get(FROMDATE);
+        String toDate = (String) userReqData.get(TODATE);
+        ArrayList surveyIds = (ArrayList) userReqData.get(SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From "+fromDate+" to "+toDate);
-        parameterMap.put("lastNameSSN", lastName+", "+last4SSN);
+        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
 
         VeteranDto veteran = new VeteranDto();
         veteran.setLastName(lastName);
@@ -197,14 +199,14 @@ public class ReportsController {
 
         Integer veteranId = -1;
 
-        if (veterans!=null && !veterans.isEmpty()){
-           veteranId =  veterans.get(0).getVeteranId();
+        if (veterans != null && !veterans.isEmpty()) {
+            veteranId = veterans.get(0).getVeteranId();
         }
 
         List<ModuleGraphReportDTO> resultList = new ArrayList<>();
 
-        for(int i=0; i< surveyIds.size(); i++){
-            Integer surveyId = (Integer)surveyIds.get(i);
+        for (int i = 0; i < surveyIds.size(); i++) {
+            Integer surveyId = (Integer) surveyIds.get(i);
             ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, veteranId, fromDate, toDate);
             if (moduleGraphReportDTO.getHasData()) {
                 moduleGraphReportDTO.setImageInput(
@@ -244,10 +246,10 @@ public class ReportsController {
 
         logger.debug("Generating the individual statistics reports numeric only.");
 
-        String lastName = (String)requestData.get(LASTNAME);
-        String last4SSN = (String)requestData.get(SSN_LAST_FOUR);
-        String fromDate = (String)requestData.get(FROMDATE);
-        String toDate = (String)requestData.get(TODATE);
+        String lastName = (String) requestData.get(LASTNAME);
+        String last4SSN = (String) requestData.get(SSN_LAST_FOUR);
+        String fromDate = (String) requestData.get(FROMDATE);
+        String toDate = (String) requestData.get(TODATE);
 
         VeteranDto veteran = new VeteranDto();
         veteran.setLastName(lastName);
@@ -255,7 +257,7 @@ public class ReportsController {
 
         List<VeteranDto> veterans = assessmentDelegate.findVeterans(veteran);
 
-        if (veterans==null || veterans.isEmpty()){
+        if (veterans == null || veterans.isEmpty()) {
             return chartableDataList;
         }
 
@@ -275,19 +277,8 @@ public class ReportsController {
 
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
-        //first create the data
-        String dataInJsonFormat = scoreService.getSurveyDataJsonForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
-
-        Gson gson = new GsonBuilder().create();
-        Map dataSet = gson.fromJson(dataInJsonFormat, Map.class);
-
-        String dataFormatInJsonFormat =
-                intervalService.generateMetadataJson(surveyId);
-
-        Map dataFormat = gson.fromJson(dataFormatInJsonFormat, Map.class);
-
-        chartableDataMap.put("dataSet", dataSet);
-        chartableDataMap.put("dataFormat", dataFormat);
+        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate));
+        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
 
         return chartableDataMap;
     }
@@ -308,18 +299,18 @@ public class ReportsController {
 
         logger.debug("Generating the individual statistics reports numeric only.");
 
-        String lastName = (String)requestData.get(LASTNAME);
-        String last4SSN = (String)requestData.get(SSN_LAST_FOUR);
-        String fromDate = (String)requestData.get(FROMDATE);
-        String toDate = (String)requestData.get(TODATE);
+        String lastName = (String) requestData.get(LASTNAME);
+        String last4SSN = (String) requestData.get(SSN_LAST_FOUR);
+        String fromDate = (String) requestData.get(FROMDATE);
+        String toDate = (String) requestData.get(TODATE);
 
-        logger.debug(" lastName :"+lastName);
-        logger.debug(" last4SSN :"+ last4SSN);
-        logger.debug( " From :"+fromDate+ " TO: "+toDate);
+        logger.debug(" lastName :" + lastName);
+        logger.debug(" last4SSN :" + last4SSN);
+        logger.debug(" From :" + fromDate + " TO: " + toDate);
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("lastNameSSN", lastName+", "+last4SSN);
-        parameterMap.put("fromToDate", "From "+fromDate+" to "+toDate);
+        parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
+        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
 
         VeteranDto veteran = new VeteranDto();
         veteran.setLastName(lastName);
@@ -329,10 +320,9 @@ public class ReportsController {
 
         JRDataSource dataSource = null;
 
-        if (veterans == null || veterans.isEmpty()){
+        if (veterans == null || veterans.isEmpty()) {
             dataSource = new JREmptyDataSource();
-        }
-        else {
+        } else {
 
 
             List<TableReportDTO> resultList = new ArrayList<>();
@@ -340,18 +330,17 @@ public class ReportsController {
 
             for (Object strSurveyId : (ArrayList) requestData.get(SURVEY_ID_LIST)) {
 
-                Integer surveyId = (Integer)strSurveyId;
+                Integer surveyId = (Integer) strSurveyId;
 
                 TableReportDTO tableReportDTO = scoreService.getSurveyDataForIndividualStatisticsReport(surveyId, veterans.get(0).getVeteranId(), fromDate, toDate);
-                if (tableReportDTO != null){
+                if (tableReportDTO != null) {
                     resultList.add(tableReportDTO);
                 }
             }
 
             if (resultList.isEmpty()) {
                 dataSource = new JREmptyDataSource();
-            }
-            else{
+            } else {
                 dataSource = new JRBeanCollectionDataSource(resultList);
             }
         }

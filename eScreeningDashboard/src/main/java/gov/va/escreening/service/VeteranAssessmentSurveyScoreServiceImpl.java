@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.dto.report.ScoreHistoryDTO;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by munnoo on 3/6/15.
+ * Created by krizvi.ctr on 3/6/15.
  */
 @Service("veteranAssessmentSurveyScoreService")
 public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmentSurveyScoreService {
@@ -78,24 +79,16 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public String getSurveyDataJsonForIndividualStatisticsGraph(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
+    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
         List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, veteranId, fromDate, toDate);
 
-        StringBuffer datalist = new StringBuffer();
-        if (scores!=null && !scores.isEmpty()){
-            for(VeteranAssessmentSurveyScore score : scores){
-                if (datalist.length()==0) {
-                    datalist.append("\""+simpleDateFormat.format(score.getDateCompleted())+"\"" + " : " + score.getScore());
-                }
-                else{
-                    datalist.append(", \""+simpleDateFormat.format(score.getDateCompleted())+"\" : "+score.getScore());
-                }
+        Map<String, Object> data = Maps.newLinkedHashMap();
+        if (scores != null && !scores.isEmpty()) {
+            for (VeteranAssessmentSurveyScore score : scores) {
+                data.put(LocalDate.fromDateFields(score.getDateCompleted()).toString("MM/dd/yyy"), score.getScore());
             }
         }
-        return "{"+datalist.toString()+"}";
+        return data;
 
     }
 
@@ -148,22 +141,21 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-        if (scores!=null && !scores.isEmpty()){
+        if (scores != null && !scores.isEmpty()) {
             result.setScore(Integer.toString(scores.get(0).getScore()));
             result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, scores.get(0).getScore()));
             result.setScoreName("Last Score");
 
             List<ScoreHistoryDTO> history = new ArrayList<>();
-            for(VeteranAssessmentSurveyScore score : scores){
+            for (VeteranAssessmentSurveyScore score : scores) {
                 ScoreHistoryDTO h = new ScoreHistoryDTO();
                 history.add(h);
                 h.setClinicName(score.getClinic().getName());
-                h.setSecondLine(score.getScore()+" - "+intervalService.getScoreMeaning(surveyId, score.getScore()));
+                h.setSecondLine(score.getScore() + " - " + intervalService.getScoreMeaning(surveyId, score.getScore()));
                 h.setScreeningDate(simpleDateFormat.format(score.getDateCompleted()));
             }
             result.setScoreHistory(history);
-        }
-        else{
+        } else {
             result.setHasData(false);
         }
 

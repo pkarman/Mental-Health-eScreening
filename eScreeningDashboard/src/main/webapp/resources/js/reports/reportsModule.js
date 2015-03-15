@@ -171,7 +171,8 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
                 ssnLastFour: $scope.report.ssnLastFour,
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
-                surveysList: $scope.report.surveysList
+                surveysList: $scope.report.surveysList,
+                reportType:'indivStats'
             };
 
             if ($scope.report.reportType === 'reportTypeGraph') {
@@ -278,7 +279,8 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
                 toDate: $scope.report.toDate,
                 displayOption:$scope.report.displayOption,
                 surveysList: $scope.report.surveysList,
-                clinicsList: $scope.report.clinicsList
+                clinicsList: $scope.report.clinicsList,
+                reportType:'avgScoresForPatientsByClinic'
             };
 
             if ($scope.report.reportType === 'reportTypeGraph') {
