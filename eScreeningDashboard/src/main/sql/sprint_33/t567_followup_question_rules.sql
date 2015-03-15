@@ -60,3 +60,14 @@ INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (761
 /* Link rule to ShowQuestion events */
 INSERT INTO rule_event (rule_id, event_id) VALUES(7610, 7610);
 
+INSERT INTO rule (rule_id, name, expression) VALUES (7611, 'Med Non VA', '[10967]==1');
+
+/* Associate rules to the assessment variables they contain in their expressions */
+INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id) VALUES (7611, 10967);
+
+/* Create ShowQuestion events (type_id=4) */
+INSERT INTO event (event_id, event_type_id, name, related_object_id) VALUES (7611, 4, 'Show - which meds:?', 627);
+
+/* Link rule to ShowQuestion events */
+INSERT INTO rule_event (rule_id, event_id) VALUES(7611, 7611);
+
