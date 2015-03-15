@@ -93,6 +93,13 @@ module.factory('ReportsService', ['$http', function ($http) {
             responseType: "json"
         });
     };
+    var getClinicsList = function () {
+        return $http({
+            method: "GET",
+            url: "listClinics",
+            responseType: "json"
+        });
+    };
     var requestChartableData = function (indivStatFormData) {
         return invokePost("requestChartableData", indivStatFormData, 'json');
     };
@@ -134,6 +141,7 @@ module.factory('ReportsService', ['$http', function ($http) {
 
     return {
         getSurveysList: getSurveysList,
+        getClinicsList: getClinicsList,
         requestChartableData: requestChartableData,
         requestNumericReport: requestNumericReport,
         requestGraphicReport: requestGraphicReport,
@@ -141,7 +149,6 @@ module.factory('ReportsService', ['$http', function ($http) {
         generateSvgObjects: generateSvgObjects
     };
 }]);
-
 
 module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
     // place holder for selected surveys
@@ -240,6 +247,102 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
             });
         } else {
             $scope.report.surveysList = [];
+        }
+    }
+}]);
+
+module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected surveys
+    $scope.report = {surveysList: [], clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getSurveysList()
+        .success(function (data) {
+            $scope.surveysList = data;
+        }).error(function (data, status) {
+            console.error('getSurveysList error', status, data);
+        });
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var avgScoresFormData = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                displayOption:$scope.report.displayOption,
+                surveysList: $scope.report.surveysList,
+                clinicsList: $scope.report.clinicsList
+            };
+
+            if ($scope.report.reportType === 'reportTypeGraph') {
+                // graph report has two steps.
+                // 1>   avgScoresFormData and collect the response, which is good enough to produce a numeric report
+                // 2>   use the data which is good enough to produce numeric data and call it chartableData. We call it chartableData as we pass this data
+                //      to generate svg Objects
+                // 3>   use the svgObjects + chartableData + avgScoresFormData and ask for pdf report
+                ReportsService.requestChartableData(avgScoresFormData)
+                    .success(function (chartableData) {
+                        // produce d3 graphs as svg objects
+                        var svgData = ReportsService.generateSvgObjects(chartableData);
+
+                        var data = {
+                            svgData: svgData,
+                            chartableData: chartableData,
+                            userReqData: avgScoresFormData
+                        };
+
+                        ReportsService.requestGraphicReport(data, "avgScoresVetByClinicGraphic")
+                            .success(function (serverResponse) {
+                                ReportsService.savePdfData(serverResponse, 'AvgScoresWithGraphsOnlyReport.pdf');
+                            }).error(function (data, status) {
+                                console.error('requestGraphicReport error', status, data);
+                            });
+
+                    }).error(function (data, status) {
+                        console.error('requestChartableData error', status, data);
+                    });
+            } else if ($scope.report.reportType === 'reportTypeNumeric') {
+                ReportsService.requestNumericReport(avgScoresFormData, 'avgScoresVetByClinicNumeric')
+                    .success(function (serverResponse) {
+                        ReportsService.savePdfData(serverResponse, 'AvgScoresVetByClinicWithNumericOnlyReport.pdf');
+                    }).error(function (data, status) {
+                        console.error(' requestNumericReporterror:', status, data);
+                    });
+            } else {
+                //todo implement a mix of above two options for reportTypeBoth
+            }
+            $scope.reset();
+        }
+    };
+
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        $scope.report = {};
+    }
+
+    $scope.selectAllSurvey = function () {
+        if ($scope.report.selectAllSurvey) {
+            $scope.report.surveysList = $scope.surveysList.map(function (item) {
+                return item.surveyId;
+            });
+        } else {
+            $scope.report.surveysList = [];
+        }
+    }
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
         }
     }
 }]);

@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +30,18 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         setClazz(VeteranAssessmentSurveyScore.class);
     }
 
+    private Date getDateFromString(String str){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        try {
+            return simpleDateFormat.parse(str);
+        }
+        catch(ParseException e){
+            return null;
+        }
+
+    }
+
     @Override
     public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
@@ -41,33 +55,30 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
         query.setParameter("veteranId", veteranId);
-        try {
-            query.setParameter("fromDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(fromDate + " 00:00:00"));
-            query.setParameter("toDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(toDate + " 23:59:59"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
         return query.getResultList();
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
+    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(List<Integer> clinicIds, List<Integer> surveyId,
                                                                           String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr " +
                 " where vassr.dateCompleted >= :fromDate " +
                 " and vassr.dateCompeted <= :toDate " +
                 " and vassr.clinic.id in ( :clinicIds ) " +
-                " and vassr.survey.id in ( :surveyIds ) " +
-                " order by vassr.veteran.id, vassr.survey.id, vassr.dateCompleted asc ";
+                " and vassr.survey.id = :surveyId  " +
+                " order by vassr.veteran.id, vassr.dateCompleted asc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
 
         query.setParameter("clinicIds", clinicIds);
-        query.setParameter("surveyIds", surveyIds);
-        query.setParameter("fromDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(fromDate + " 00:00:00"));
-        query.setParameter("toDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(toDate + " 23:59:59"));
+        query.setParameter("surveyId", surveyId);
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
 
         String q = " select avg(score), date(score.date_completed), score, v." +

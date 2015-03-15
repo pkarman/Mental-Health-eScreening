@@ -15,4 +15,5 @@ public interface VeteranAssessmentSurveyScoreRepository extends RepositoryInterf
                                                                           String fromDate, String toDate);
     public List<VeteranAssessmentSurveyScore> getDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
                                                                 String fromDate, String toDate);
+
 }

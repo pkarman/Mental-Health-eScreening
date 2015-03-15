@@ -9,9 +9,7 @@ import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
-import gov.va.escreening.dto.report.ScoreHistoryDTO;
 import gov.va.escreening.dto.report.TableReportDTO;
-import gov.va.escreening.entity.SurveyScoreInterval;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.*;
@@ -19,15 +17,11 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -48,6 +42,8 @@ public class ReportsController {
     private static final String SSN_LAST_FOUR="ssnLastFour";
     private static final String SURVEY_ID_LIST="surveysList";
     private static final String TODATE="toDate";
+    private static final String DISPLAY_OPTION="displayOption";
+    private static final String CLINIC_ID_LIST = "clicnicsList";
 
     @Autowired
     private AssessmentDelegate assessmentDelegate;
@@ -91,10 +87,7 @@ public class ReportsController {
         return "reports";
     }
 
-    @RequestMapping(value = "/individualStatisticsReports", method = RequestMethod.GET)
-    public ModelAndView getIindividualStatisticReports() {
-        return new ModelAndView("individualStatisticsReports");
-    }
+
 
     @RequestMapping(value = "/listSurveys", method = RequestMethod.GET)
     @ResponseBody
@@ -108,13 +101,20 @@ public class ReportsController {
         return clinicService.getClinicDtoList();
     }
 
+    // ticket 601 related
+    @RequestMapping(value = "/individualStatisticsReports", method = RequestMethod.GET)
+    public ModelAndView getIindividualStatisticReports() {
+        return new ModelAndView("individualStatisticsReports");
+    }
+
     @RequestMapping(value = "/individualStatisticsGraphicAndNumber", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsGraphicAndNumber(HttpServletRequest request,
-                                                       @RequestBody Map<String, Object> requestData,
-                                                       @CurrentUser EscreenUser escreenUser) {
+                                                                @RequestBody Map<String, Object> requestData,
+                                                                @CurrentUser EscreenUser escreenUser) {
         return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
                 "individualStatisticsGraphNumberReport");
     }
+
     /**
      * REST endpoint will receive an list of svg objects plus any other data required to render a graphical report
      * This will simply prepare the required data + svg objects for the target Jasper report and forward
@@ -130,8 +130,46 @@ public class ReportsController {
                                                        @CurrentUser EscreenUser escreenUser) {
 
         return getIndividualStaticsGraphicPDF(requestData,  escreenUser,
-                 "individualStatisticsGraphReport");
+                "individualStatisticsGraphReport");
 
+    }
+
+    // ticket 600 related
+    @RequestMapping(value = "/averageScoresForPatientsByClinic", method = RequestMethod.GET)
+    public ModelAndView getAverageScoresForPatientsByClinic() {
+        return new ModelAndView("averageScoresForPatientsByClinic");
+    }
+
+    @RequestMapping(value = "/avgScoresVetByClinicGraphicNumeric", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicGraphicNumeric(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser){
+        return genIndividualStatisticsGraphic(request, requestData, escreenUser);
+    }
+
+    @RequestMapping(value = "/avgScoresVetByClinicGraphic", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicGraphic(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser){
+        return genIndividualStatisticsGraphic(request, requestData, escreenUser);
+    }
+
+    @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicNumeric(HttpServletRequest request,
+                                                       @RequestBody HashMap<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser){
+        logger.debug("getting avgScoresVetByClinicNumeric");
+
+        String displayOption = (String) requestData.get(DISPLAY_OPTION);
+        if ("individualData".equals(displayOption)){
+
+        }
+
+        ArrayList idList = (ArrayList)requestData.get(CLINIC_ID_LIST);
+
+
+        
+        return null;
     }
 
     private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser,
