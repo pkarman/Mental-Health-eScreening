@@ -81,7 +81,7 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/Event.js"></script>
-
+    <script type="text/javascript" src="resources/editors/js/app/domains/Rule.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionUIObjectWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionWrapper.js"></script>

@@ -9,16 +9,14 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 (function () {
 	'use strict';
 
-	var Rule = function(obj) {
+	function Rule(obj) {
 		this.id = obj.id || null;
 		this.name = obj.name || null;
 		this.expression = obj.expression || null;
-	};
+	}
 
-	Rule.prototype = {
-		getName: function getName() {
-			return this.name;
-		}
+	Rule.prototype.getName = function getName() {
+		return this.name;
 	};
 
 	EScreeningDashboardApp.models.Rule = Rule;

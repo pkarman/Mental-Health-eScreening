@@ -9,7 +9,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 (function () {
 	'use strict';
 
-	var AssessmentVariable = function(obj) {
+	function AssessmentVariable(obj) {
 		this.id = obj.id || null;
 		this.typeId = obj.typeId || null;
 		this.answerId = obj.answerId || null;
@@ -24,119 +24,116 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 		if (obj.typeId) {
 			this.setType();
 		}
+	}
+
+	AssessmentVariable.prototype.getName = function getName() {
+		return this.name ?  this.name : this.displayName ? this.displayName: 'var' + this.id;
 	};
 
-	AssessmentVariable.prototype = {
+	AssessmentVariable.prototype.getMeasureTypeName = function getMeasureTypeName() {
+		var type;
 
-		getName: function getName() {
-			return this.name ?  this.name : this.displayName ? this.displayName: 'var' + this.id;
-		},
+		switch (this.measureTypeId) {
+			case 1:
+				type = 'freetext';
+				break;
+			case 2:
+				type = 'single-select';
+				break;
+			case 3:
+				type = 'multi-select';
+				break;
+			case 4:
+				type = 'table';
+				break;
+			case 6:
+				type = 'single-matrix';
+				break;
+			case 7:
+				type = 'multi-matrix';
+		}
 
-		getMeasureTypeName: function getMeasureTypeName() {
-			var type;
+		return type;
+	};
 
-			switch (this.measureTypeId) {
-				case 1:
-					type = 'freetext';
-					break;
-				case 2:
-					type = 'single-select';
-					break;
-				case 3:
-					type = 'multi-select';
-					break;
-				case 4:
-					type = 'table';
-					break;
-				case 6:
-					type = 'single-matrix';
-					break;
-				case 7:
-					type = 'multi-matrix';
+	AssessmentVariable.prototype.setType = function setType() {
+
+		var types = {
+			1: 'Question',
+			2: 'Answer',
+			3: 'Custom',
+			4: 'Formula'
+		};
+
+		this.type = types[this.typeId] || 'Other';
+	};
+
+	AssessmentVariable.prototype.setTransformations = function setTransformations(arr) {
+
+		var av = this;
+
+		// NOTE: displayName property must be removed before persisting
+		var transformations = {
+			delimit: {
+				name: 'delimit',
+				displayName: 'Delimit',
+				params: [',', 'and', '', true, '']
+			},
+			yearsFromDate: {
+				name: 'yearsFromDate',
+				displayName: 'Years from Date'
+			},
+			delimitedMatrixQuestions: {
+				name: 'delimitedMatrixQuestions',
+				displayName: 'Delimited Matrix Questions',
+				params: []
+			},
+			numberOfEntries: {
+				name: 'numberOfEntries',
+				displayName: 'Number of Entries'
+			},
+			delimitTableField:	{
+				name: 'delimitTableField',
+				displayName: 'Delimited Table Field',
+				params: ['0', ',', 'and', '', true, '']
 			}
+		};
 
-			return type;
-		},
+		// If appointment (id 6 is reserved for appointment AV), add delimit
+		if (av.id === 6) {
+			av.transformations = [transformations.delimit];
+		}
 
-		setType: function setType() {
-
-			var types = {
-				1: 'Question',
-				2: 'Answer',
-				3: 'Custom',
-				4: 'Formula'
-			};
-
-			this.type = types[this.typeId] || 'Other';
-		},
-
-		setTransformations: function setTransformations(arr) {
-
-			var av = this;
-
-			// NOTE: displayName property must be removed before persisting
-			var transformations = {
-				delimit: {
-					name: 'delimit',
-					displayName: 'Delimit',
-					params: [',', 'and', '', true, '']
-				},
-				yearsFromDate: {
-					name: 'yearsFromDate',
-					displayName: 'Years from Date'
-				},
-				delimitedMatrixQuestions: {
-					name: 'delimitedMatrixQuestions',
-					displayName: 'Delimited Matrix Questions',
-					params: []
-				},
-				numberOfEntries: {
-					name: 'numberOfEntries',
-					displayName: 'Number of Entries'
-				},
-				delimitTableField:	{
-					name: 'delimitTableField',
-					displayName: 'Delimited Table Field',
-					params: ['0', ',', 'and', '', true, '']
+		// Freetext with date
+		if (av.measureTypeId === 1) {
+			_.each(arr, function(validation) {
+				if (validation.value === 'date') {
+					av.transformations = [transformations.yearsFromDate];
 				}
-			};
+			});
+		}
 
-			// If appointment (id 6 is reserved for appointment AV), add delimit
-			if (av.id === 6) {
-				av.transformations = [transformations.delimit];
-			}
+		// If select multi, add delimit (for other answer types pull the veteran text)
+		if (av.measureTypeId === 3) {
+			av.transformations = [transformations.delimit];
+			// Get the answer list for multi or single select questions
+			_.each(arr, function(answer) {
+				if (answer.answerType === 'Other') {
+					// Pull veteran text
+					// TODO confirm this is correct with Robin
+					av.transformations[0].defaultValue = answer.answerText;
+				}
+			});
+		}
 
-			// Freetext with date
-			if (av.measureTypeId === 1) {
-				_.each(arr, function(validation) {
-					if (validation.value === 'date') {
-						av.transformations = [transformations.yearsFromDate];
-					}
-				});
-			}
+		// If table, add delimitTableField and numberOfEntries
+		if (av.measureTypeId === 4) {
+			av.transformations = [transformations.delimitTableField, transformations.numberOfEntries];
+		}
 
-			// If select multi, add delimit (for other answer types pull the veteran text)
-			if (av.measureTypeId === 3) {
-				av.transformations = [transformations.delimit];
-				// Get the answer list for multi or single select questions
-				_.each(arr, function(answer) {
-					if (answer.answerType === 'Other') {
-						// Pull veteran text
-						// TODO confirm this is correct with Robin
-						av.transformations[0].defaultValue = answer.answerText;
-					}
-				});
-			}
-
-			// If table, add delimitTableField and numberOfEntries
-			if (av.measureTypeId === 4) {
-				av.transformations = [transformations.delimitTableField, transformations.numberOfEntries];
-			}
-
-			// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
-			if (av.measureTypeId === 6 || av.measureTypeId === 7) {
-				av.transformations = [transformations.delimitedMatrixQuestions];
-			}
+		// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
+		if (av.measureTypeId === 6 || av.measureTypeId === 7) {
+			av.transformations = [transformations.delimitedMatrixQuestions];
 		}
 	};
 
