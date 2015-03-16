@@ -11,7 +11,7 @@
 					assessmentVariables: '=',
 					showValidationMessages: '='
 				},
-				templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
+				templateUrl: 'resources/editors/components/conditions/condition.html',
 				link: function(scope, element, attrs, formController) {
 
 					/* Temporarily disabled until further notice: 11/03/14

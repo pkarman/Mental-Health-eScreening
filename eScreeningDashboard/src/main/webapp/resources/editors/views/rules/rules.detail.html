@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
 
-		<h1>Manage Rule</h1>
+		<h1>{{rule.id ? 'Edit' : 'Add'}} {{rule.name}} Rule</h1>
 
 		<!-- Alerts and Messages -->
 		<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
@@ -13,27 +13,30 @@
 					    <label for="ruleName">Rule Name *</label>
 					    <input name="inputTitle" id="ruleName" type="text" class="form-control"
 							    ng-model="rule.name"
-							    placeholder="Enter Rule Title" requried>
+							    placeholder="Enter Rule Name" requried>
 				    </div>
 			    </div>
 		    </div>
 
 		    <div class="row">
-			    <div class="col-md-12 border-radius-main-form gray-lighter">
-				    <h3>Expression</h3>
+			    <div class="col-md-12">
+				    <div class="border-radius-main-form gray-lighter">
+					    <h3>Expression</h3>
 
+					    <div class="row">
+						    <condition assessment-variables="[]"></condition>
+					    </div>
 
-				    <h3>Events</h3>
-				    <div class="form-group">
-					    <label for="formulaEditor">Consults</label>
+					    <h3>Events</h3>
 
-					    <div>
+					    <div class="form-group">
+						    <label for="consults">Consults</label>
 						    <ui-select
-								    multiple tagging="tagFormula"
-								    ng-model="formulaTemplate.selectedTokens"
+								    multiple
+								    ng-model="rule.consults"
 								    theme="bootstrap"
 								    ng-disabled="disable"
-								    title="Click to select or start typing to continue with consult..." id="formulaEditor">
+								    title="Click to select or start typing to continue with consult..." id="consults">
 
 							    <ui-select-match
 									    placeholder="Select or enter consult....">
@@ -41,25 +44,102 @@
 							    </ui-select-match>
 
 							    <ui-select-choices
-									    repeat="var in variables | tokensfilter:{name:$select.search, displayName: $select.search} | orderBy:'-typeId'"
-									    refresh="refreshVariables()"
+									    repeat="consult in consults | filter: {name: $select.search}"
 									    refresh-delay="1000">
 								    <medium>
-									    [{{var.type}}] [ {{var.name}} ] [{{var.displayName || 'No Description provided'}}]
+									    {{consult.name}}
 								    </medium>
 							    </ui-select-choices>
 						    </ui-select>
 					    </div>
-					    <!--<p>Selected: {{formulaTemplate.selectedTokens|json}}</p>-->
+
+					    <div class="form-group">
+						    <label for="health-factors">Health Factors</label>
+						    <ui-select
+								    multiple
+								    ng-model="rule.healthFactors"
+								    theme="bootstrap"
+								    ng-disabled="disable"
+								    title="Click to select or start typing to continue with health factors..." id="health-factors">
+
+							    <ui-select-match
+									    placeholder="Select or enter health factor....">
+								    {{$item.name}}
+							    </ui-select-match>
+
+							    <ui-select-choices
+									    repeat="healthFactor in healthFactors | filter: {name: $select.search}"
+									    refresh-delay="1000">
+								    <medium>
+									    {{healthFactor.name}}
+								    </medium>
+							    </ui-select-choices>
+						    </ui-select>
+					    </div>
+
+					    <div class="form-group">
+						    <label for="alerts">Dashboard Alerts</label>
+						    <ui-select
+								    multiple
+								    ng-model="rule.dashboardAlerts"
+								    theme="bootstrap"
+								    ng-disabled="disable"
+								    title="Click to select or start typing to continue with dashboard alerts..." id="alerts">
+
+							    <ui-select-match
+									    placeholder="Select or enter dashboard alerts....">
+								    {{$item.name}}
+							    </ui-select-match>
+
+							    <ui-select-choices
+									    repeat="alert in dashboardAlerts | filter: {name: $select.search}"
+									    refresh-delay="1000">
+								    <medium>
+									    {{alert.name}}
+								    </medium>
+							    </ui-select-choices>
+						    </ui-select>
+					    </div>
+
+					    <div class="form-group">
+						    <label for="questions">Show Follow-up Questions</label>
+						    <ui-select
+								    multiple
+								    ng-model="rule.questions"
+								    theme="bootstrap"
+								    ng-disabled="disable"
+								    title="Click to select or start typing to continue with follow-up questions..." id="questions">
+
+							    <ui-select-match
+									    placeholder="Select or enter follow-up questions....">
+								    {{$item.name}}
+							    </ui-select-match>
+
+							    <ui-select-choices
+									    repeat="question in questions | filter: {name: $select.search}"
+									    refresh-delay="1000">
+								    <medium>
+									    {{question.name}}
+								    </medium>
+							    </ui-select-choices>
+						    </ui-select>
+					    </div>
+
+				    </div>
+			    </div>
+		    </div>
+
+		    <div class="row">
+			    <div class="col-md-12">
+				    <div class="form-group">
+					    <div class="text-right">
+						    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+						    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
+					    </div>
 				    </div>
 			    </div>
 		    </div>
 	    </form>
-
-		<div class="form-group pull-right">
-		    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
-		    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
-		</div>
 
     </div>
 </div>

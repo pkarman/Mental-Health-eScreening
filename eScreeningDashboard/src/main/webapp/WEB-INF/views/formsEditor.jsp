@@ -200,7 +200,7 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/components/conditions/condition.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/modules/matrix-transformation.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>

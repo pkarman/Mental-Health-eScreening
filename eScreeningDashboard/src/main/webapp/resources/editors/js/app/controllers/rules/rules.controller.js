@@ -1,17 +1,15 @@
 (function () {
 	'use strict';
 
-	Editors.controller('RulesController', ['$scope', '$state', '$filter', 'ngTableParams', 'rules', 'events', 'MessageFactory', function ($scope, $state, $filter, ngTableParams, rules, events, MessageFactory) {
+	Editors.controller('RulesController', ['$scope', '$state', '$filter', 'ngTableParams', 'rules', 'MessageFactory', function ($scope, $state, $filter, ngTableParams, rules, MessageFactory) {
 
 		$scope.rules = rules;
-		console.log(rules);
-		console.log(events);
 
 		$scope.tableParams = new ngTableParams({
 			page: 1, // show first page
 			count: 10, // count per page
 			filter: {
-				name: '' // initial filter
+				name: ''
 			},
 			sorting: {
 				name: 'asc'
