@@ -646,5 +646,20 @@ public class ReportsController {
 
     }
 
+    @RequestMapping(value = "/clinicStatisticReportsPartVDemographicsReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartVDemographicsReport() {
+        return new ModelAndView("clinicStatisticReportsPartVDemographicsReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIVAverageTimePerModuleReport() {
+        return new ModelAndView("clinicStatisticReportsPartIVAverageTimePerModuleReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPart1eScreeningBatteriesReport() {
+        return new ModelAndView("clinicStatisticReportsPart1eScreeningBatteriesReport");
+    }
+
 
 }
