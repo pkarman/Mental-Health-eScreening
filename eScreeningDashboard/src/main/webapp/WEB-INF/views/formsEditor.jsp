@@ -80,6 +80,8 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
 
+    <script type="text/javascript" src="resources/editors/js/app/domains/Event.js"></script>
+
 
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionUIObjectWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionWrapper.js"></script>
@@ -139,6 +141,7 @@
     <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/EventService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/RuleService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
