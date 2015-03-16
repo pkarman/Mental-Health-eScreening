@@ -29,7 +29,9 @@ public interface VeteranAssessmentSurveyScoreService {
 
     Map<String, Object> getSurveyDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate);
     
-    List<VeteranModuleGraphReportDTO> getSurveyDataForVetClinicReport(Integer clinicId, List<Integer> surveyIds, String fromDate, String toDate);
+    ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyIds, String fromDate, String toDate);
 
     ModuleGraphReportDTO getGraphDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate, boolean containsCount);
+
+     ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate);
 }

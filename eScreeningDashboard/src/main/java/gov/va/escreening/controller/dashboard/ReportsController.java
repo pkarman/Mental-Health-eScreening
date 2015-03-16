@@ -67,6 +67,9 @@ public class ReportsController {
     @Autowired
     private SurveyScoreIntervalService intervalService;
 
+    @Autowired
+    private VeteranService veteranService;
+
     private FileResolver fileResolver = new FileResolver() {
 
         @Override
@@ -159,15 +162,78 @@ public class ReportsController {
 
         // ticket 600 entry point graph chart
 
-        if ("groupData".equals(requestData.get(DISPLAY_OPTION)){
+        if ("groupData".equals(requestData.get(DISPLAY_OPTION))){
             //Group Chart
             return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
         }
         else{
             // individual chart
-            return getAvgScoresVetByClinicGraphic(requestData, escreenUser);
+            return getAvgScoresVetByClinicGraphReport(requestData, escreenUser);
+
         }
 
+
+
+    }
+
+    // for avg individual
+    private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object>requestData, EscreenUser escreenUser){
+
+        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
+        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+
+
+        String fromDate = (String) userReqData.get(FROMDATE);
+        String toDate = (String) userReqData.get(TODATE);
+        ArrayList cClinicList = (ArrayList) userReqData.get(CLINIC_ID_LIST);
+        ArrayList sSurveyList = (ArrayList) userReqData.get(SURVEY_ID_LIST);
+
+        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+
+        List<ClinicVeteranDTO> resultList = new ArrayList<>();
+
+        int index = 0;
+
+        for(Object c : cClinicList){
+            Integer clinicId = (Integer)c;
+
+            ClinicVeteranDTO cvDTO = new ClinicVeteranDTO();
+
+            cvDTO.setClinicName(clinicService.getClinicNameById(clinicId));
+            cvDTO.setVeteranModuleGraphReportDTOs(new ArrayList<VeteranModuleGraphReportDTO>());
+            resultList.add(cvDTO);
+
+            List<Integer> veterans = clinicService.getAllVeteranIds(clinicId);
+
+            for(Integer vId : veterans){
+
+                VeteranModuleGraphReportDTO veteranModuleGraphReportDTO = new VeteranModuleGraphReportDTO();
+                veteranModuleGraphReportDTO.setModuleGraphs(new ArrayList<ModuleGraphReportDTO>());
+                cvDTO.getVeteranModuleGraphReportDTOs().add(veteranModuleGraphReportDTO);
+
+                VeteranDto vDto = veteranService.getByVeteranId(vId);
+
+                veteranModuleGraphReportDTO.setLastNameAndSSN(vDto.getLastName()+", "+vDto.getSsnLastFour());
+
+                for(Object o : sSurveyList){
+                    ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, (Integer)o, vId, fromDate, toDate);
+                    moduleGraphReportDTO.setImageInput(SVG_HEADER+svgObject.get(index++));
+                    veteranModuleGraphReportDTO.getModuleGraphs().add(moduleGraphReportDTO);
+
+
+                }
+            }
+
+        }
+
+        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        return new ModelAndView("avgVetClinicGraphReport", parameterMap);
 
 
     }
@@ -181,6 +247,7 @@ public class ReportsController {
 
         return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true);
     }
+
 
 
 

@@ -193,6 +193,11 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
+    public ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyIds, String fromDate, String toDate) {
+        return null;
+    }
+
+    @Override
     public ModuleGraphReportDTO getGraphDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate, boolean containsCount){
         List<ScoreDateDTO> scores = vassRepos.getDataForClicnic(clinicId, surveyId, fromDate, toDate);
 
@@ -243,98 +248,45 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
      * for veteran clinc graphs
      *
      * @param clinicId
-     * @param surveyIds
+     * @param surveyId
+     * @param veteranId
      * @param fromDate
      * @param toDate
      * @return
      */
     @Override
-    public List<VeteranModuleGraphReportDTO> getSurveyDataForVetClinicReport(Integer clinicId, List<Integer> surveyIds, String fromDate, String toDate) {
+    public ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
-        List<VeteranModuleGraphReportDTO> resultList = new ArrayList<>();
+        ModuleGraphReportDTO result = new ModuleGraphReportDTO();
 
+        Survey s = surveyRepository.findOne(surveyId);
 
-
-        List<VeteranAssessmentSurveyScore> queryResult = vassRepos.getIndividualDataForClicnic(clinicId, surveyIds, fromDate, toDate);
-
-        if (queryResult.size() > 0){
-            int veteranId = -1;
-            int surveyId = -1;
-            int index = 0;
-            int totalScore = 0;
-            int totalCount = 0;
-            VeteranModuleGraphReportDTO veteranModuleGraphReportDTO = null;
-            ModuleGraphReportDTO moduleGraphReportDTO = null;
-            ModuleGraphReportDTO last = null;
-
-            while(index < queryResult.size()){
-                VeteranAssessmentSurveyScore score = queryResult.get(index);
-                if (score.getVeteran().getVeteranId()!= veteranId){
-                    veteranId = score.getVeteran().getVeteranId();
-                    veteranModuleGraphReportDTO = new VeteranModuleGraphReportDTO();
-                    veteranModuleGraphReportDTO.setLastNameAndSSN(score.getVeteran().getLastName()+", "+score.getVeteran().getSsnLastFour());
-                    resultList.add(veteranModuleGraphReportDTO);
-
-                    // fill the average score
-                    if (totalScore != 0){
-                        last = veteranModuleGraphReportDTO.getModuleGraphs().get(veteranModuleGraphReportDTO.getModuleGraphs().size()-1);
-                        double avgScore = totalScore*1.0d/totalCount;
-                        last.setScore(df.format(avgScore));
-                        totalCount = 0;
-                        totalScore = 0;
-                    }
-                    moduleGraphReportDTO = null;
-
-                }
-
-                if (moduleGraphReportDTO == null || score.getSurvey().getSurveyId()!=surveyId){
-                    moduleGraphReportDTO = new ModuleGraphReportDTO();
-
-                    // fill the average score
-                    if (totalScore != 0){
-                        last = veteranModuleGraphReportDTO.getModuleGraphs().get(veteranModuleGraphReportDTO.getModuleGraphs().size()-1);
-                        double avgScore = totalScore*1.0d/totalCount;
-                        last.setScore(df.format(avgScore));
-                        totalCount = 0;
-                        totalScore = 0;
-                    }
-
-                    if (veteranModuleGraphReportDTO.getModuleGraphs() == null){
-                        veteranModuleGraphReportDTO.setModuleGraphs(new ArrayList<ModuleGraphReportDTO>());
+        result.setModuleName(s.getName());
+        result.setScoreName("Average Score");
 
 
-                    }
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, veteranId, fromDate, toDate);
 
-                    veteranModuleGraphReportDTO.getModuleGraphs().add(moduleGraphReportDTO);
-                    moduleGraphReportDTO.setScoreHistory(new ArrayList<ScoreHistoryDTO>());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-                }
-                last = veteranModuleGraphReportDTO.getModuleGraphs().get(veteranModuleGraphReportDTO.getModuleGraphs().size()-1);
-                last.setModuleName(score.getSurvey().getName());
+        if (scores != null && !scores.isEmpty()) {
+            result.setScore(Integer.toString(scores.get(0).getScore()));
+            result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, scores.get(0).getScore()));
 
-
-                List<ScoreHistoryDTO> history = last.getScoreHistory();
-
+            List<ScoreHistoryDTO> history = new ArrayList<>();
+            for (VeteranAssessmentSurveyScore score : scores) {
                 ScoreHistoryDTO h = new ScoreHistoryDTO();
                 history.add(h);
                 h.setClinicName(score.getClinic().getName());
                 h.setSecondLine(score.getScore() + " - " + intervalService.getScoreMeaning(surveyId, score.getScore()));
                 h.setScreeningDate(simpleDateFormat.format(score.getDateCompleted()));
-
-                // add
-                last.setHasData(true);
-
-                totalCount ++;
-                totalScore += Integer.parseInt(last.getScore());
-
-
-                index ++;
             }
-
+            result.setScoreHistory(history);
+        } else {
+            result.setHasData(false);
         }
 
-
-        return resultList;
+        return result;
     }
 
     private Collection<AssessmentVariable> getReportableAvsForSurvey(Survey s) {
