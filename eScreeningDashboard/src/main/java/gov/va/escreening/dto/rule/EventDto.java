@@ -1,4 +1,4 @@
-package gov.va.escreening.dto;
+package gov.va.escreening.dto.rule;
 
 import gov.va.escreening.entity.Event;
 
@@ -26,4 +26,10 @@ public class EventDto {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Needed for json decoding. please use the other constructor 
+     */
+    @SuppressWarnings("unused")
+    private EventDto(){}
 }

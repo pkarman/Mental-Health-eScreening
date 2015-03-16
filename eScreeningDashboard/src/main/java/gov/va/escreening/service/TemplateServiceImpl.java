@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -333,7 +332,7 @@ public class TemplateServiceImpl implements TemplateService {
 					dto.setBlocks(Arrays.asList( om.readValue(t.getJsonFile(), INode[].class)));
 				}catch(IOException e)
 				{
-					e.printStackTrace();
+					logger.error("Error reading json file field as template blocks. Template ID: " + t.getTemplateId(), e);
 					return null;
 				}
 			}else{

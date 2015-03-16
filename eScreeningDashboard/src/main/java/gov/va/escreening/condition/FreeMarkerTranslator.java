@@ -1,0 +1,242 @@
+package gov.va.escreening.condition;
+
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_FREE_TEXT;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_TABLE;
+import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
+import gov.va.escreening.dto.template.TemplateBaseContent;
+import gov.va.escreening.dto.template.TemplateTextContent;
+import gov.va.escreening.dto.template.TemplateVariableContent;
+import gov.va.escreening.dto.template.VariableTransformationDTO;
+import gov.va.escreening.exception.EscreeningDataValidationException;
+
+import java.util.Set;
+
+public class FreeMarkerTranslator implements BlockTranslator {
+
+    @Override
+    public String translateCondition(String operator, TemplateBaseContent inLeft,
+            TemplateBaseContent right, Set<Integer> avIds) {
+        
+        if (inLeft instanceof TemplateTextContent){
+            try {
+                Double.parseDouble(((TemplateTextContent)inLeft).getContent());
+                return ((TemplateTextContent)inLeft).getContent();
+            }
+            catch(Exception e)
+            {}
+            return "\""+((TemplateTextContent)inLeft).getContent()+"\"";
+        }
+        
+        TemplateVariableContent leftContent = (TemplateVariableContent) inLeft;
+        
+        TemplateAssessmentVariableDTO left = leftContent.getContent();
+        
+        String inStr = "var" + left.getId();
+        
+        avIds.add(left.getId());
+        
+        String translatedVar = inStr;
+        
+        // we are going to apply transformation of variable.
+        if (left.getTransformations() != null && !left.getTransformations().isEmpty()) {
+            for (VariableTransformationDTO transformation : left.getTransformations()) {
+                StringBuilder s = new StringBuilder(transformation.getName());
+                s.append("(").append(translatedVar);
+
+                if (transformation.getParams() != null) {
+                    for (String param : transformation.getParams()){
+                        String trimmed = param.trim();
+                        //check to see if we need to quote the parameter value
+                        if((trimmed.startsWith("[") && trimmed.endsWith("]"))
+                            || (trimmed.startsWith("{") && trimmed.endsWith("}"))){
+                            //we don't quote when it is an array or map
+                            s.append(",").append(param);
+                        }
+                        //this is done separately from the above statement because we must lower case booleans
+                        else if(trimmed.equalsIgnoreCase("true") 
+                              || trimmed.equalsIgnoreCase("false")){
+                            s.append(",").append(param.toLowerCase());
+                        }
+                        else{
+                            
+                            try{//if the param is a number don't put quotes around it
+                                Double.parseDouble(param);
+                                s.append(",").append(param);
+                            }
+                            catch(Exception e){
+                                s.append(",\"").append(param).append("\"");
+                            }
+                        }
+                    }
+                }
+                //replace translatedVar with transformed variable
+                translatedVar = s.append(")").toString();
+            }
+        }
+        String beforeOperator = translatedVar;
+        
+        if (operator == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
+        {//Don't pull value out if transformations were applied
+            if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
+            {
+                translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+                
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
+            {
+                translatedVar =  "getFormulaValue("+inStr+")";
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
+            {
+                translatedVar =  "getCustomValue("+inStr+")";
+            }
+        }
+        else if ("eq".equals(operator) || "neq".equals(operator) || 
+                "lt".equals(operator) || "gt".equals(operator) || "lte".equals(operator) 
+                || "gte".equals(operator))
+        {
+            if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))         
+            {
+                if (right instanceof TemplateTextContent)
+                {
+                    try
+                    {
+                        Double.parseDouble(((TemplateTextContent)right).getContent());
+                        translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+                    }
+                    catch(Exception e)
+                    {
+                        // right is not a number;
+                        translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+                    }
+                }
+                else
+                    translatedVar =  "getResponse("+inStr+")";
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
+            {
+                translatedVar =  "asNumber(getCustomValue("+inStr+"))?string != \"notset\" && asNumber(getCustomValue("+inStr+"))";
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
+            {
+                translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
+            }
+        }
+        else if ("answered".equals(operator))
+        {
+            if (left.measureTypeIn(
+                    MEASURE_TYPE_FREE_TEXT, 
+                    MEASURE_TYPE_SELECT_ONE, 
+                    MEASURE_TYPE_SELECT_MULTI, 
+                    MEASURE_TYPE_TABLE))
+            {
+                translatedVar= "wasAnswered("+inStr+")";
+            }
+        }
+        else if ("nanswered".equals(operator))
+        {
+            if (left.measureTypeIn(
+                    MEASURE_TYPE_FREE_TEXT,
+                    MEASURE_TYPE_SELECT_ONE, 
+                    MEASURE_TYPE_SELECT_MULTI, 
+                    MEASURE_TYPE_TABLE))
+            {
+                translatedVar= "wasntAnswered("+inStr+")";
+            }
+        }
+        else if ("result".equals(operator))
+        {
+            if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
+            {
+                translatedVar= "formulaHasResult("+inStr+")";
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
+            {
+                translatedVar= "customHasResult("+inStr+")";
+            }
+            else if (left.typeIn(
+                    ASSESSMENT_VARIABLE_TYPE_MEASURE, 
+                    MEASURE_TYPE_SELECT_ONE_MATRIX, 
+                    MEASURE_TYPE_SELECT_MULTI_MATRIX))
+            {
+                translatedVar= "matrixHasResult("+inStr+")";
+            }
+            
+        }
+        else if ("nresult".equals(operator))
+        {
+            if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
+            {
+                translatedVar= "formulaHasNoResult("+inStr+")";
+            }
+            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
+            {
+                translatedVar= "customHasNoResult("+inStr+")";
+            }
+            else if (left.measureTypeIn(
+                    MEASURE_TYPE_SELECT_ONE_MATRIX, 
+                    MEASURE_TYPE_SELECT_MULTI_MATRIX))
+            {
+                translatedVar= "matrixHasNoResult("+inStr+")";
+            }
+        }
+        else if ("response".equals(operator))
+        {
+            if (left.measureTypeIn(
+                    MEASURE_TYPE_SELECT_ONE, 
+                    MEASURE_TYPE_SELECT_MULTI))
+            {
+                translatedVar= "responseIs("+inStr+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
+            }
+        }
+        else if ("nresponse".equals(operator))
+        {
+            if (left.measureTypeIn(
+                    MEASURE_TYPE_SELECT_ONE, 
+                    MEASURE_TYPE_SELECT_MULTI))
+            {
+                translatedVar= "responseIsnt("+inStr+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
+            }
+        }
+        else if ("none".equals(operator))
+        {
+            if (left.measureTypeIn( 
+                    MEASURE_TYPE_SELECT_ONE,
+                    MEASURE_TYPE_SELECT_MULTI,
+                    MEASURE_TYPE_TABLE))
+            {
+                translatedVar= "wasAnswerNone("+inStr+")";
+            }
+             
+        }
+        else if ("nnone".equals(operator))
+        {
+            if (left.measureTypeIn(
+                    MEASURE_TYPE_SELECT_ONE, 
+                    MEASURE_TYPE_SELECT_MULTI,
+                    MEASURE_TYPE_TABLE))
+            {
+                translatedVar= "wasntAnswerNone("+inStr+")";
+            }
+             
+        }
+        
+        if(translatedVar == beforeOperator && operator != null && !operator.isEmpty()){
+            ErrorBuilder.throwing(EscreeningDataValidationException.class)
+                .toAdmin("Operator: '" + operator + "' is unsupported for variable (with ID: " + left.getId() + ") of type: " + left.getTypeId())
+                .toUser("An unsupported template operation was used.  Please call support")
+                .throwIt();
+        }
+        
+        return translatedVar;
+    }
+
+}

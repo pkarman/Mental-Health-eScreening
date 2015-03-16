@@ -1,36 +1,28 @@
 package gov.va.escreening.controller.dashboard;
 
+import java.util.List;
+
+import gov.va.escreening.controller.RestController;
 import gov.va.escreening.delegate.EditorsDelegate;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
-import gov.va.escreening.dto.ae.Measure;
-import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.*;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.security.CurrentUser;
-import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import gov.va.escreening.webservice.Response;
-import gov.va.escreening.webservice.ResponseStatus;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-public class ManageSectionRestController {
+public class ManageSectionRestController extends RestController{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,27 +34,29 @@ public class ManageSectionRestController {
 
     @RequestMapping(value = "/services/sections", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List getSections(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSections");
-
-        return editorsViewDelegate.getSections();
+    public Response<List<SurveySectionInfo>> getSections(HttpServletRequest request) {        
+        logRequest(logger, request);
+        return successResponse(editorsViewDelegate.getSections());
     }
 
     @RequestMapping(value = "/services/sections/{sectionId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public SurveySectionInfo getSection(
+    public Response<SurveySectionInfo> getSection(
             @PathVariable("sectionId") Integer sectionId,
-            @CurrentUser EscreenUser escreenUser) {
-
-        return editorsViewDelegate.getSection(sectionId);
+            HttpServletRequest request) {
+        
+        logRequest(logger, request);
+        return successResponse(editorsViewDelegate.getSection(sectionId));
     }
 
     @RequestMapping(value = "/services/sections", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public SurveySectionInfo addSection(
+    public Response<SurveySectionInfo> addSection(
             @RequestBody SurveySectionInfo surveySectionInfo,
-            @CurrentUser EscreenUser escreenUser) {
+            HttpServletRequest request) {
 
+        logRequest(logger, request);
+        
         ErrorResponse errorResponse = new ErrorResponse();
 
         if (surveySectionInfo != null) {
@@ -89,17 +83,19 @@ public class ManageSectionRestController {
             errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Object", "Cannot be null.");
         }
 
-        return surveySectionInfo;
+        return successResponse(surveySectionInfo);
     }
 
     @RequestMapping(value = "/services/sections/{sectionId}", method = {RequestMethod.PUT}, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public SurveySectionInfo updateSection(
+	public Response<SurveySectionInfo> updateSection(
 			@PathVariable("sectionId") Integer sectionId,
 			@RequestBody SurveySectionInfo surveySectionInfo,
-			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("updateSection");
-		ErrorResponse errorResponse = new ErrorResponse();
+			HttpServletRequest request) {
+        
+        logRequest(logger, request);
+		
+        ErrorResponse errorResponse = new ErrorResponse();
         SurveySectionInfo updatedSurveySectionInfo = null;
         if(sectionId != null) {
             // Data validation.
@@ -120,15 +116,16 @@ public class ManageSectionRestController {
             updatedSurveySectionInfo = editorsViewDelegate.updateSection(surveySectionInfo);
         }
 
-        return updatedSurveySectionInfo;
+        return successResponse(updatedSurveySectionInfo);
 	}
 
 	@RequestMapping(value = "/services/sections/{sectionId}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public int deleteSection(
+	public Response<Integer> deleteSection(
 			@PathVariable("sectionId") Integer sectionId,
-			@CurrentUser EscreenUser escreenUser) {
+			HttpServletRequest request) {
+	    logRequest(logger, request);
 		editorsViewDelegate.deleteSection(sectionId);
-        return sectionId;
+        return successResponse(sectionId);
 	}
 }

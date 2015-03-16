@@ -672,7 +672,7 @@
 							</configuration>
 					</execution>
 					<execution>
-						<id>apply-ticket-related-data</id>
+						<id>apply-sprint-34-data</id>
 							<phase>process-test-resources</phase>
 							<goals>
 								<goal>execute</goal>
@@ -680,7 +680,7 @@
 							<configuration>
 								<orderFile>ascending</orderFile>
 								<fileset>
-									<basedir>src/main/sql/ticketRelatedChanges</basedir>
+									<basedir>src/main/sql/sprint_34</basedir>
 								</fileset>
 							</configuration>
 					</execution>

@@ -1,7 +1,7 @@
 package gov.va.escreening.service;
 
-import gov.va.escreening.dto.EventDto;
-import gov.va.escreening.dto.RuleDto;
+import gov.va.escreening.dto.rule.EventDto;
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -59,7 +59,7 @@ public interface RuleService {
 	public List<EventDto> getAllEvents();
     
     /**
-     * @return get all rules on the system
+     * @return get all rules on the system <b>without the condition field set</b>
      */
     List<RuleDto> getRules();
     

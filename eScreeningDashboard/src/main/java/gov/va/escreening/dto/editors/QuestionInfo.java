@@ -177,23 +177,15 @@ public class QuestionInfo implements MeasureBaseProperties {
     }
 
     @Override
-    public Boolean getIsMha() {
-        return isMha();
+    public Boolean getMha() {
+        return this.mha;
     }
 
     @Override
-    public void setIsMha(Boolean isMha) {
-        setMha(isMha);
+    public void setMha(Boolean isMha) {
+        this.mha = isMha;
     }
-
-    public Boolean isMha() {
-        return mha;
-    }
-
-    public void setMha(Boolean mha) {
-        this.mha = mha;
-    }
-
+    
     public List<ValidationInfo> getValidations() {
         return validations;
     }

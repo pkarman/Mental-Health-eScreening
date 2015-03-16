@@ -1,5 +1,6 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
@@ -18,4 +19,8 @@ public interface RuleRepository extends RepositoryInterface<Rule> {
 
     public List<Rule> getRuleForAssessment(int veteranAssessmentID);
     
+    /**
+     * @return all rules of the system but only ID and name are set
+     */
+    public List<RuleDto> findAllLight();
 }

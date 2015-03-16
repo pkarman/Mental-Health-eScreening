@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.Set;
@@ -15,18 +16,19 @@ public class TemplateElseIfBlockDTO extends TemplateIfBlockDTO {
 	
 	@Override
 	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer>avIds, AssessmentVariableService assessmentVariableService) {
-
-		sb.append("\n<#elseif ( ")
-			.append(FormulaUtil.createFormula(getOperator(), getLeft(),
+	    StringBuilder result = sb;
+	    
+		result.append("\n<#elseif ( ")
+			.append(BlockUtil.conditionToFreeMarker(getOperator(), getLeft(),
 						getRight(), avIds)).append(")");
 
 		if (getConditions() != null && getConditions().size() > 0) {
 			for (TemplateFollowingConditionBlock tfcb : getConditions()) {
-				sb.append(tfcb.toFreeMarkerFormatFormula(avIds));
+			    result = tfcb.toFreeMarker(result, avIds);
 			}
 		}
-		sb.append(" >\n");
+		result.append(" >\n");
 
-		return addChildren(sb, avIds, assessmentVariableService);
+		return addChildren(result, avIds, assessmentVariableService);
 	}
 }
