@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GraphChart" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a536e1f4-be9e-4479-af40-d3ca9f43da2e">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="48"/>
+	<field name="lastNameAndSSN" class="java.lang.String"/>
+	<field name="moduleGraphs" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="211" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6">
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{lastNameAndSSN}]]></textFieldExpression>
+			</textField>
+<subreport>
+                                <reportElement x="0" y="40" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+                                <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{moduleGraphs})]]></dataSourceExpression>
+                                <subreportExpression><![CDATA["/reports/GraphModule.jasper"]]></subreportExpression>
+                        </subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

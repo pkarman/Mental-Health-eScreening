@@ -159,8 +159,15 @@ public class ReportsController {
 
         // ticket 600 entry point graph chart
 
-        //Group Chart
-        return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+        if ("groupData".equals(requestData.get(DISPLAY_OPTION)){
+            //Group Chart
+            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+        }
+        else{
+            // individual chart
+            return getAvgScoresVetByClinicGraphic(requestData, escreenUser);
+        }
+
 
 
     }
@@ -390,11 +397,15 @@ public class ReportsController {
 
             Integer clinicId = (Integer) oClinicId;
 
-            for (Object oSurveyId : sList) {
+            List<Integer> veterans = clinicService.getAllVeteranIds(clinicId);
 
-                Integer surveyId = (Integer) oSurveyId;
+            for(Integer vId : veterans) {
+                for (Object oSurveyId : sList) {
 
-                chartableDataList.add(createChartableDataFor601Clinic(clinicId, surveyId, fromDate, toDate));
+                    Integer surveyId = (Integer) oSurveyId;
+
+                    chartableDataList.add(createChartableDataForIndividualStats(clinicId, surveyId, vId, fromDate, toDate));
+                }
             }
         }
         return chartableDataList;
@@ -533,6 +544,16 @@ public class ReportsController {
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
         chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate));
+        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+
+        return chartableDataMap;
+    }
+
+    private Map<String, Object> createChartableDataForIndividualStats(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+
+        Map<String, Object> chartableDataMap = Maps.newHashMap();
+
+        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate));
         chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
 
         return chartableDataMap;

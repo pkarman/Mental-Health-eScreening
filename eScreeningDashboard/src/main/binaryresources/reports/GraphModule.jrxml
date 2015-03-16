@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GraphChart" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a536e1f4-be9e-4479-af40-d3ca9f43da2e">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="112"/>
+	<property name="ireport.y" value="80"/>
 	<field name="moduleName" class="java.lang.String"/>
 	<field name="score" class="java.lang.String"/>
 	<field name="scoreHistoryTitle" class="java.lang.String"/>
@@ -72,7 +72,9 @@
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
+				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6">
+					<printWhenExpression><![CDATA[$F{veteranCount}==null || $F{veteranCount}.isEmpty()]]></printWhenExpression>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{veteranCount}]]></textFieldExpression>
 			</textField>
 		</band>

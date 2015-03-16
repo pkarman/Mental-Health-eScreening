@@ -83,4 +83,9 @@ public class ClinicServiceImpl implements ClinicService {
         }
         return null;
     }
+
+    @Override
+    public List<Integer> getAllVeteranIds(Integer clinicId) {
+        return clinicRepository.getAllVeteranIds(clinicId);
+    }
 }

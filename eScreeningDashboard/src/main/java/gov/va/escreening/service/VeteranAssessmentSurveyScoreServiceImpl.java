@@ -96,6 +96,20 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
+    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, veteranId, fromDate, toDate);
+
+        Map<String, Object> data = Maps.newLinkedHashMap();
+        if (scores != null && !scores.isEmpty()) {
+            for (VeteranAssessmentSurveyScore score : scores) {
+                data.put(LocalDate.fromDateFields(score.getDateCompleted()).toString("MM/dd/yyy"), score.getScore());
+            }
+        }
+        return data;
+
+    }
+
+    @Override
     public TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
         Survey survey = surveyRepository.findOne(surveyId);

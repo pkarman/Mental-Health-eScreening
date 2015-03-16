@@ -36,4 +36,6 @@ public interface ClinicService {
     Integer create(String name, String vistaIen);
 
     public String getClinicNameById(Integer clinicId);
+
+    List<Integer> getAllVeteranIds(Integer clinicId);
 }

@@ -19,6 +19,8 @@ public interface VeteranAssessmentSurveyScoreService {
     void recordAllReportableScores(VeteranAssessment veteranAssessment);
 
     Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer veteranId, String fromDate, String toDate);
+    
+    Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate);
 
     TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer veteranId, String fromDate, String toDate);
 

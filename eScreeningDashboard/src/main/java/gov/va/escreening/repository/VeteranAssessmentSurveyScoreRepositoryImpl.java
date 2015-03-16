@@ -70,6 +70,27 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         return query.getResultList();
     }
 
+    @Override
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+
+        String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
+                " where vassr.dateCompleted >= :fromDate " +
+                " and vassr.dateCompleted <= :toDate " +
+                " and vassr.survey.id = :surveyId  " +
+                " and vassr.veteran.id = :veteranId " +
+                " and vassr.clinic.id = :clinicId "+
+                " order by vassr.dateCompleted desc ";
+
+        TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
+        query.setParameter("surveyId", surveyId);
+        query.setParameter("veteranId", veteranId);
+        query.setParameter("clinicId", clinicId);
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
+
+        return query.getResultList();
+    }
+
     /**
      * Query for 600 Individual data for clinic
      *
