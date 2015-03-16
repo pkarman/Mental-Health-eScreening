@@ -57,6 +57,9 @@ angular.module('Editors')
 					resolve: {
 						rules: ['RuleService', function(RuleService) {
 							return RuleService.getList();
+						}],
+						events: ['EventService', function(EventService) {
+							return EventService.getList();
 						}]
 					}
 				})
@@ -474,29 +477,29 @@ angular.module('Editors')
                                 $scope.viewTemplateSelect = function(){
                                     $scope.tsCollapsed = $scope.teCollapsed = false;
                                     $scope.stCollapsed = true;
-                                }
+                                };
 
                                 $scope.viewTS = function(){
                                     $scope.teCollapsed = $scope.stCollapsed = false;
                                     $scope.tsCollapsed = true;
-                                }
+                                };
 
                                 $scope.deleteClick = function(){
                                     alert('Will trigger Delete functionality.')
-                                }
+                                };
 
                                 $scope.addFormula = function(){
                                     alert('Add Formula - Will trigger Formulas Flow');
-                                }
+                                };
 
                                 $scope.addVariable = function(){
                                     alert('Add Variable - Will trigger Variables Flow');
-                                }
+                                };
 
                                 $scope.viewTE = function(){
                                     $scope.tsCollapsed = $scope.stCollapsed = false;
                                     $scope.teCollapsed = true;
-                                }
+                                };
 
                                 $scope.dismiss = function(){
                                     if ($scope.tsCollapsed){
@@ -509,314 +512,15 @@ angular.module('Editors')
                                 $scope.save = function(){
                                     item.update().then(function(){
                                         $scope.$close(true);
-                                    })
+                                    });
                                 };
                             }]
                         }).result.then(function(result){
                             if (result){
                                 return $state.transitionTo('modules.detail');
                             }
-                        })
-                    }
-                })
-            .state('modules.detail.expressioneditor',{
-                url:'/modules.detail.expressioneditor',
-                onEnter: function($stateParams, $state, $modal) {
-                    $modal.open({
-                        templateUrl: 'resources/editors/views/formulas/formulas.html',
-                        windowClass:'modal modal-huge modal-content',
-                        controller: ['$scope', function($scope) {
-                            $scope.qoCollapsed = false;
-                            $scope.aoCollapsed = false;
-                            $scope.csCollapsed = false;
-                            $scope.fCollapsed = false;
-                            $scope.fsCollapsed = false;
-                            $scope.moCollapsed = true;
-
-                            $scope.viewQOperator = function(){
-                                $scope.aoCollapsed = $scope.csCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                $scope.qoCollapsed = true;
-                            }
-
-                            $scope.viewAOperator = function(){
-                                $scope.qoCollapsed = $scope.csCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                $scope.aoCollapsed = true;
-                            }
-
-                            $scope.viewCOperator = function(){
-                                $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                $scope.csCollapsed = true
-                            }
-
-                            $scope.viewFOperator = function(){
-                                $scope.qoCollapsed = $scope.aoCollapsed = $scope.csCollapsed = $scope.fsCollapsed = $scope.moCollapsed = false;
-                                $scope.fCollapsed = true;
-                            }
-
-                            $scope.viewSEditor = function(){
-                                $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.csCollapsed = $scope.moCollapsed = false;
-                                $scope.fsCollapsed = true;
-                            }
-
-                            $scope.viewMO = function(){
-                                $scope.qoCollapsed = $scope.aoCollapsed = $scope.fCollapsed = $scope.fsCollapsed = $scope.fsCollapsed = false;
-                                $scope.moCollapsed = true;
-                            }
-
-                            $scope.dismiss = function() {
-                                if (!$scope.moCollapsed){
-                                    $scope.viewMO();
-                                }
-                                else
-                                    $scope.$close(true);
-                            };
-                            $scope.save = function() {
-                                item.update().then(function() {
-                                    $scope.$close(true);
-                                });
-                            };
-                        }]
-                    }).result.then(function(result) {
-                            if (result) {
-                                return $state.transitionTo("modules.detail");
-                            }
                         });
-                }
-            })
-
-                .state('modules.detail.createvariable',{
-                    abstract:true,
-                    url:'/modules.detail.createvariable',
-
-                    template:'<div class="col-md-12 well" style="min-height:300px;">' +
-                        '<h4>Create Variable</h4>'+
-                        '<div class="form-inline form-group pull-right">' +
-                        '<label for="selType"  class="col-sm-2 form-label">Type</label>'+
-                        '<select id="selType" ng-model="qType" ng-options="q.name for q in qTypes" name="selType" class="col-sm-2-offset col-sm-6 form-control"></select>'+
-                        '</div>'+
-                        '<div class="row">' +
-                        '<div style="min-height:220px;" ui-view></div>' +
-                        '</div>'+
-                        '</div>',
-                    controller: ['$rootScope','$scope','$state',
-                        function($rootScope,$scope,$state) {
-                        $scope.dismiss = function() {
-                            $scope.$close(true);
-                        };
-                        $scope.save = function() {
-                            item.update().then(function() {
-                                $scope.$close(true);
-                            });
-                        };
-
-                        $scope.qTypes = [
-                            {name:"Question", value:1},
-                            {name:"Answer", value:2},
-                            {name:"Custom", value:3},
-                            {name:"Formula", value:4}];
-
-                        $scope.qType = $scope.qTypes[0];
-
-                        $scope.$watch( 'qType', function( qType ) {
-                            var url = 'modules.detail.createvariable.questionvariable';
-                            switch(qType.name){
-                                case 'Question':
-                                    url = 'modules.detail.createvariable.questionvariable';
-                                    break;
-                                case 'Answer':
-                                    url = 'modules.detail.createvariable.answervariable';
-                                    break;
-                                case 'Custom':
-                                    url = 'modules.detail.createvariable.customvariable';
-                                    break;
-                                case 'Formula':
-                                    url = 'modules.detail.createvariable.formulavariable';
-                                    break;
-                            }
-                            $state.go(url);
-                        });
-
-                        $scope.goToAddEdit = function(){
-                            $state.go('modules.detail');
-                        }
-                    }]
-                })
-
-                .state('modules.detail.createvariable.questionvariable',{
-                    url:'',
-                    template:'<div class="row">' +
-                                '<div class="col-sm-10 well">' +
-                                    '<h4>Question Variable</h4>'+
-                                    '<div class="form-inline form group pull-right">' +
-                                        '<button class="btn btn-primary" ng-click="goToModulesEdit">Done</button>'+
-                                    '</div>'+
-                                '</div>'+
-                             '</div>',
-                    controller:['$rootScope','$scope','$state',
-                    function($rootScope, $scope, $state){
-                        $scope.goToModulesEdit = function(){
-                            $state.go('modules.detail');
-                        }
-                    }]
-                })
-
-                .state('modules.detail.createvariable.customvariable',{
-                    url:'/modules.detail.createvariable.customvariable',
-                    template:'<div class="row">' +
-                                '<div class="col-sm-10 well">' +
-                                    '<h4>Custom Variable</h4>'+
-                                    '<div class="form-inline form group pull-right">' +
-                                        '<button class="btn btn-primary" ng-click="goToModulesEdit">Done</button>'+
-                                    '</div>'+
-                                 '</div>'+
-                              '</div>',
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope, $scope, $state) {
-                            $scope.goToModulesEdit = function () {
-                                $state.go('modules.detail');
-                            }
-                        }]
-                })
-
-                .state('modules.detail.createvariable.answervariable',{
-                    url:'/modules.detail.createvariable.answervariable',
-                    template:'<div class="row">' +
-                                '<div class="col-sm-10 well">' +
-                                    '<h4>Answer Variable</h4>'+
-                                    '<div class="form-inline form group pull-right">' +
-                                        '<button class="btn btn-primary" ng-click="goToModulesEdit">Done</button>'+
-                                    '</div>'+
-                                '</div>'+
-                             '</div>',
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope, $scope, $state) {
-                            $scope.goToModulesEdit = function () {
-                                $state.go('modules.detail');
-                            }
-                        }]
-                })
-
-                .state('modules.detail.createvariable.formulavariable',{
-                    url:'/moudles-editor.addedit.createvariable.formulavariable',
-                    template:'<div class="row">' +
-                                '<div class="col-sm-10 well">' +
-                                    '<h4>Formula Variable</h4>'+
-                                    '<div class="form-inline form group pull-right">' +
-                                        '<button class="btn btn-primary" ng-click="goToModulesEdit">Done</button>'+
-                                    '</div>'+
-                                '</div>'+
-                            '</div>',
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope, $scope, $state) {
-                            $scope.goToModulesEdit = function () {
-                                $state.go('modules.detail');
-                            }
-                        }]
-                })
-
-                /////////////////////////
-                // Rules/Events Views //
-                ////////////////////////
-                .state('modules.detail.rulesandevents',{
-                    url:'/modules.detail.rulesandevents',
-                    onEnter: function($stateParams, $state, $modal) {
-                        $modal.open({
-                            templateUrl: 'resources/editors/views/rulesevents/rulesevents.html',
-                            windowClass:'modal modal-huge modal-content',
-                            controller: ['$rootScope','$scope','$state', function ($rootScope,$scope,$state) {
-                                $scope.rsCollapsed = true;
-                                $scope.hfCollapsed = false;
-                                $scope.scCollapsed = false;
-                                $scope.srCollapsed = false;
-
-                                $scope.viewSEditor = function(){
-                                    $scope.hfCollapsed = $scope.scCollapsed = $scope.srCollapsed = false;
-                                    $scope.rsCollapsed = true;
-                                }
-
-                                $scope.viewHFSelect = function(){
-                                    $scope.rsCollapsed = $scope.scCollapsed = $scope.srCollapsed = false;
-                                    $scope.hfCollapsed = true;
-
-                                }
-
-                                $scope.viewSCSelect = function(){
-                                    $scope.rsCollapsed = $scope.hfCollapsed = $scope.srCollapsed = false;
-                                    $scope.scCollapsed = true;
-                                }
-
-                                $scope.viewSRSelect = function(){
-                                    $scope.rsCollapsed = $scope.hfCollapsed = $scope.scCollapsed = false;
-                                    $scope.srCollapsed = true;
-                                }
-
-                                $scope.dismiss = function () {
-                                    if ($scope.hfCollapsed || $scope.scCollapsed || $scope.srCollapsed)
-                                    {
-                                        $scope.hfCollapsed = $scope.scCollapsed = $scope.srCollapsed = false;
-                                        $scope.rsCollapsed = true;
-                                    }
-                                    else
-                                        $scope.$close(true);
-                                };
-                                $scope.save = function () {
-                                    item.update().then(function () {
-                                        $scope.$close(true);
-                                    });
-                                };
-
-                            }]
-                        }).result.then(function (result) {
-                                if (result) {
-                                    return $state.transitionTo("modules.detail");
-                                }
-                            });
                     }
-                })
-
-                .state('modules.detail.statementeditor',{
-                        url:'/modules.detail.rules.statementeditor',
-                        template:'<div class="well"><h4>Rules/Events Statement Editor View</h4></div>',
-                        controller:['$rootScope','$scope','$state',
-                        function($rootScope,$scope,$state){
-
-                        }]
-                    })
-
-                .state('modules.detail.select',{
-                    url:'/modules.detail.rules.select',
-                    template:'<div class="well"><h4>Rules/Events Select Item View</h4></div>',
-                    controller:['$rootScope','$scope','$state',
-                        function($rootScope,$scope,$state){
-
-                    }]
-                })
-
-                .state('modules.detail.healthfactor',{
-                    url:'modules.detail.healthfactor',
-                    template:'<div class="well"><h4>Rules/Events Select Health Factor</h4></div>',
-                    controller:['$rootScope','$scope','$state',
-                    function($rootScope,$scope,$state){
-
-                    }]
-                })
-
-                .state('modules.detail.selectconsult',{
-                    url:'/modules.detail.selectconsult',
-                    template:'<div class="well"><h4>Rules/Events Select Consult</h4></div>',
-                    controller:['$rootScope','$scope','$state',
-                    function($rootScope,$scope,$state){
-
-                    }]
-                })
-
-                .state('modules.detail.ruletriggeredalert',{
-                    url:'/modules.detail.ruletriggeredalert',
-                    template:'<div class="well"><h4>Rules/Events Select Rule-Triggered Alert</h4></div>',
-                    controller:['$rootScope','$scope','$state',
-                    function($rootScope,$scope,$state){
-
-                    }]
-            });
+                });
 
 }]);

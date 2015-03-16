@@ -1,9 +1,11 @@
 (function () {
 	'use strict';
 
-	Editors.controller('RulesController', ['$scope', '$state', '$filter', 'ngTableParams', 'rules', 'MessageFactory', function ($scope, $state, $filter, ngTableParams, rules, MessageFactory) {
+	Editors.controller('RulesController', ['$scope', '$state', '$filter', 'ngTableParams', 'rules', 'events', 'MessageFactory', function ($scope, $state, $filter, ngTableParams, rules, events, MessageFactory) {
 
 		$scope.rules = rules;
+		console.log(rules);
+		console.log(events);
 
 		$scope.tableParams = new ngTableParams({
 			page: 1, // show first page
