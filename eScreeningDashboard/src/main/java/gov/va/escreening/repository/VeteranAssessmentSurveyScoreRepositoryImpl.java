@@ -1,7 +1,6 @@
 package gov.va.escreening.repository;
 
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.Veteran;
+import gov.va.escreening.dto.report.ScoreDateDTO;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -42,6 +41,15 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
     }
 
+    /**
+     * Query for 601
+     *
+     * @param surveyId
+     * @param veteranId
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
     @Override
     public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
@@ -62,60 +70,114 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         return query.getResultList();
     }
 
+    /**
+     * Query for 600 Individual data for clinic
+     *
+     * @param clinicIds
+     * @param surveyIds
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
     @Override
-    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(List<Integer> clinicIds, List<Integer> surveyId,
+    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(Integer clinicId, List<Integer> surveyIds,
                                                                           String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr " +
                 " where vassr.dateCompleted >= :fromDate " +
-                " and vassr.dateCompeted <= :toDate " +
-                " and vassr.clinic.id in ( :clinicIds ) " +
-                " and vassr.survey.id = :surveyId  " +
-                " order by vassr.veteran.id, vassr.dateCompleted asc ";
+                " and vassr.dateCompleted <= :toDate " +
+                " and vassr.clinic.id = :clinicId  " +
+                " and vassr.survey.id = (:surveyIds)  " +
+                " order by vassr.clinic.id, vassr.veteran.id, vassr.survey.id,  vassr.dateCompleted asc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
 
-        query.setParameter("clinicIds", clinicIds);
+        query.setParameter("clinicId", clinicId);
+        query.setParameter("surveyIds", surveyIds);
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
+
+        return query.getResultList();
+    }
+
+    @Override
+    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate){
+        String sql = "select count(distinct(veteran_id)) "+
+                " from veteran_assessment_survey_score s " +
+                " where clinic_id = :clinicId and survey_id = :surveyId " +
+                " and date_completed >= :fromDate and date_completed <= :toDate ";
+
+        Query query = entityManager.createNativeQuery(sql);
+
+        query.setParameter("clinicId", clinicId);
         query.setParameter("surveyId", surveyId);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
+        List<Object> result =  query.getResultList();
 
-        String q = " select avg(score), date(score.date_completed), score, v." +
-                "                from veteran_assessment_survey_score score\n" +
-                "        inner join veteran v on v.veteran_id = score.veteran_id\n" +
-                "        inner join clinic c on c.clinic_id = score.clinic_id\n" +
-                "        inner join survey s on s.survey_id = score.survey_id\n" +
-                "        where v.veteran_id in (11)\n" +
-                "        and score.survey_id in (22)\n" +
-                "        and score.date_completed > 'aa'\n" +
-                "        and score.date_completed < 'bb'\n" +
-                "        group by survey_id, date(score.date_completed)";
-
-        Query quer = entityManager.createNativeQuery(q);
-
-
-        return quer.getResultList();
+        return ((Number)result.get(0)).intValue();
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
+    public List<ScoreDateDTO> getDataForClicnic(Integer clinicId, Integer surveyId,
                                                                 String fromDate, String toDate) {
 
-        String sql = "select clinic_id, survey, date(date_completed), count(*), avg(survey_score) " +
-                " from veteran_assessment_survey_score " +
-                " where clinic_id in (:clinicIds) and survey_id in (:surveyIds) " +
-                " and date_completed >= :fromDate and data_completed <= :toDate " +
-                " group by clinic_id, survey_id, date(date_completed) " +
-                " order by cl ";
+        String sql = "select c.name, survey_id, date(date_completed), count(*), avg(survey_score) " +
+                " from veteran_assessment_survey_score s " +
+                " inner join clinic c on s.clinic_id = c.clinic_id " +
+                " where c.clinic_id = :clinicId and survey_id = :surveyId " +
+                " and date_completed >= :fromDate and date_completed <= :toDate " +
+                " group by c.name, survey_id, date(date_completed) " +
+                " order by c.name, survey_id, date(date_completed) ";
 
         Query query = entityManager.createNativeQuery(sql);
 
-        query.setParameter("clinicIds", clinicIds);
-        query.setParameter("surveyIds", surveyIds);
-        query.setParameter("fromDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(fromDate + " 00:00:00"));
-        query.setParameter("toDate", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(toDate + " 23:59:59"));
+        query.setParameter("clinicId", clinicId);
+        query.setParameter("surveyId", surveyId);
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
-        return query.getResultList();
+        List<Object[]> result =  query.getResultList();
+
+        List<ScoreDateDTO> scores = new ArrayList<>(result.size());
+
+        for(Object [] objects : result){
+            ScoreDateDTO scoreDateDTO = new ScoreDateDTO();
+            scoreDateDTO.setClinicName((String)objects[0]);
+            scoreDateDTO.setSurveyId((Integer)objects[1]);
+            scoreDateDTO.setDateCompleted((Date)objects[2]);
+            scoreDateDTO.setCount(((Number)objects[3]).intValue());
+            scoreDateDTO.setScore(((Number)objects[4]).floatValue());
+
+            scores.add(scoreDateDTO);
+        }
+
+        return scores;
+    }
+
+
+
+    @Override
+    public List getAverageForClicnic(Integer clinicId, Integer surveyId,
+                                  String fromDate, String toDate) {
+
+        String sql = "select clinic_id, survey_id, avg(survey_score) " +
+                " from veteran_assessment_survey_score " +
+                " where clinic_id = :clinicId and survey_id = :surveyId " +
+                " and date_completed >= :fromDate and date_completed <= :toDate " +
+                " group by clinic_id, survey_id " +
+                " order by clinic_id, survey_id  ";
+
+        Query query = entityManager.createNativeQuery(sql);
+
+        query.setParameter("clinicId", clinicId);
+        query.setParameter("surveyId", surveyId);
+        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
+        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
+
+        List result =  query.getResultList();
+
+        return result;
     }
 }

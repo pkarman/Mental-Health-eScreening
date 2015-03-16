@@ -74,4 +74,13 @@ public class ClinicServiceImpl implements ClinicService {
 
         return clinic.getClinicId();
     }
+
+    @Override
+    public String getClinicNameById(Integer clinicId) {
+        Clinic c = clinicRepository.findOne(clinicId);
+        if (c!=null){
+            return c.getName();
+        }
+        return null;
+    }
 }

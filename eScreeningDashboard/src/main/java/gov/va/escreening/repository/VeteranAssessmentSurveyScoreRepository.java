@@ -11,9 +11,13 @@ import java.util.List;
 public interface VeteranAssessmentSurveyScoreRepository extends RepositoryInterface<VeteranAssessmentSurveyScore> {
     public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate);
 
-    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
+    public List<VeteranAssessmentSurveyScore> getIndividualDataForClicnic(Integer clinicIds, List<Integer> surveyIds,
                                                                           String fromDate, String toDate);
-    public List<VeteranAssessmentSurveyScore> getDataForClicnic(List<Integer> clinicIds, List<Integer> surveyIds,
-                                                                String fromDate, String toDate);
+    public List getDataForClicnic(Integer clinicId, Integer surveyId,
+                             String fromDate, String toDate);
+
+    public List getAverageForClicnic(Integer clinicId, Integer surveyId,
+                                            String fromDate, String toDate);
+    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate);
 
 }

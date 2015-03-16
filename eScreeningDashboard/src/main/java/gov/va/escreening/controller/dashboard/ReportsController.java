@@ -8,8 +8,8 @@ import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
-import gov.va.escreening.dto.report.ModuleGraphReportDTO;
-import gov.va.escreening.dto.report.TableReportDTO;
+import gov.va.escreening.dto.report.*;
+import gov.va.escreening.entity.ReportType;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.*;
@@ -46,7 +46,11 @@ public class ReportsController {
     private static final String SURVEY_ID_LIST = "surveysList";
     private static final String TODATE = "toDate";
     private static final String DISPLAY_OPTION = "displayOption";
-    private static final String CLINIC_ID_LIST = "clicnicsList";
+    private static final String CLINIC_ID_LIST = "clinicsList";
+    private static final String REPORT_TYPE = "reportType";
+
+    private static final String SVG_HEADER = "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n";
+
 
     @Autowired
     private AssessmentDelegate assessmentDelegate;
@@ -136,7 +140,6 @@ public class ReportsController {
 
     }
 
-    // ticket 600 related
     @RequestMapping(value = "/averageScoresForPatientsByClinic", method = RequestMethod.GET)
     public ModelAndView getAverageScoresForPatientsByClinic() {
         return new ModelAndView("averageScoresForPatientsByClinic");
@@ -153,7 +156,128 @@ public class ReportsController {
     public ModelAndView genAvgScoresVetByClinicGraphic(HttpServletRequest request,
                                                        @RequestBody Map<String, Object> requestData,
                                                        @CurrentUser EscreenUser escreenUser) {
-        return genIndividualStatisticsGraphic(request, requestData, escreenUser);
+
+        // ticket 600 entry point graph chart
+
+        //Group Chart
+        return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+
+
+    }
+
+    @RequestMapping(value = "/avgScoresVetByClinicGraphicNumber", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicGraphicNumber(HttpServletRequest request,
+                                                       @RequestBody Map<String, Object> requestData,
+                                                       @CurrentUser EscreenUser escreenUser) {
+
+        // ticket 600 entry point after getting graph and numeric report
+
+        return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true);
+    }
+
+
+
+    // FOR GROUP
+    private ModelAndView getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount){
+
+
+        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
+        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+
+
+        String fromDate = (String) userReqData.get(FROMDATE);
+        String toDate = (String) userReqData.get(TODATE);
+        ArrayList cClinicList = (ArrayList) userReqData.get(CLINIC_ID_LIST);
+        ArrayList sSurveyList = (ArrayList) userReqData.get(SURVEY_ID_LIST);
+
+        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+
+        List<Integer> surveyIds = new ArrayList<>(sSurveyList.size());
+
+        for (Object s : sSurveyList) {
+            surveyIds.add((Integer) s);
+        }
+
+        List<ClinicDTO> resultList = new ArrayList<>();
+
+        int index = 0;
+
+        for (Object c : cClinicList) {
+
+            Integer clinicId = (Integer) c;
+
+            ClinicDTO dto = new ClinicDTO();
+            resultList.add(dto);
+            dto.setClinicName(clinicService.getClinicNameById(clinicId));
+
+            dto.setGraphReport(new ArrayList<ModuleGraphReportDTO>());
+
+            for(Object s : sSurveyList) {
+                dto.getGraphReport().add(scoreService.getGraphDataForClinicStatisticsGraph(clinicId, (Integer)s, fromDate, toDate, includeCount));
+
+                for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
+                    moduleGraphReportDTO.setImageInput(SVG_HEADER + svgObject.get(index++));
+                }
+            }
+
+        }
+
+        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        return new ModelAndView("avgClinicGraphReport", parameterMap);
+    }
+
+    private ModelAndView getAvgScoresVetByClinicGraphicOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
+
+        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
+        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+
+        String fromDate = (String) userReqData.get(FROMDATE);
+        String toDate = (String) userReqData.get(TODATE);
+        ArrayList cClinicList = (ArrayList) userReqData.get(CLINIC_ID_LIST);
+        ArrayList sSurveyList = (ArrayList) userReqData.get(SURVEY_ID_LIST);
+
+        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+
+        List<Integer> surveyIds = new ArrayList<>(sSurveyList.size());
+
+        for (Object s : sSurveyList) {
+            surveyIds.add((Integer) s);
+        }
+
+        List<ClinicVeteranDTO> resultList = new ArrayList<>();
+
+        int index = 0;
+
+        for (Object c : cClinicList) {
+
+            Integer clinicId = (Integer) c;
+
+            ClinicVeteranDTO dto = new ClinicVeteranDTO();
+            dto.setClinicName(clinicService.getClinicNameById(clinicId));
+
+            //dto.setVeteranModuleGraphReportDTOs(scoreService.getGraphDataForClinicStatisticsGraph(clinicId, surveyIds, fromDate, toDate));
+
+            for (VeteranModuleGraphReportDTO veteranModuleGraphReportDTO : dto.getVeteranModuleGraphReportDTOs()) {
+                for (ModuleGraphReportDTO moduleGraphReportDTO : veteranModuleGraphReportDTO.getModuleGraphs()) {
+                    moduleGraphReportDTO.setImageInput(SVG_HEADER + svgObject.get(index++));
+                }
+            }
+        }
+
+        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        return new ModelAndView("avgClinicGraphReport", parameterMap);
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
@@ -170,7 +294,6 @@ public class ReportsController {
         ArrayList idList = (ArrayList) requestData.get(CLINIC_ID_LIST);
 
 
-        
         return null;
     }
 
@@ -242,9 +365,72 @@ public class ReportsController {
                                                           @RequestBody Map<String, Object> requestData,
                                                           @CurrentUser EscreenUser escreenUser) {
 
+        if ("avgScoresForPatientsByClinic".equals(requestData.get(REPORT_TYPE))) {
+            if ("groupData".equals(requestData.get(DISPLAY_OPTION))) {
+                return createChartableDataFor601Clinic(requestData);
+            } else {
+                return createChartableDataFor601VeteranClinic(requestData);
+            }
+        }
+
+        return createChartableDataForIndividualStats(requestData);
+    }
+
+    private List<Map<String, Object>> createChartableDataFor601VeteranClinic(Map<String, Object> requestData) {
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
-        logger.debug("Generating the individual statistics reports numeric only.");
+        logger.debug("Generating the veteran clinic graph data ");
+
+        String fromDate = (String) requestData.get(FROMDATE);
+        String toDate = (String) requestData.get(TODATE);
+        List cList = (ArrayList) requestData.get(CLINIC_ID_LIST);
+        List sList = (ArrayList) requestData.get(SURVEY_ID_LIST);
+
+        for (Object oClinicId : cList) {
+
+            Integer clinicId = (Integer) oClinicId;
+
+            for (Object oSurveyId : sList) {
+
+                Integer surveyId = (Integer) oSurveyId;
+
+                chartableDataList.add(createChartableDataFor601Clinic(clinicId, surveyId, fromDate, toDate));
+            }
+        }
+        return chartableDataList;
+
+    }
+
+    private List<Map<String, Object>> createChartableDataFor601Clinic(Map<String, Object> requestData) {
+
+        List<Map<String, Object>> chartableDataList = Lists.newArrayList();
+
+        logger.debug("Generating the clinic graph data ");
+
+        String fromDate = (String) requestData.get(FROMDATE);
+        String toDate = (String) requestData.get(TODATE);
+        List cList = (ArrayList) requestData.get(CLINIC_ID_LIST);
+        List sList = (ArrayList) requestData.get(SURVEY_ID_LIST);
+
+        for (Object oClinicId : cList) {
+
+            Integer clinicId = (Integer) oClinicId;
+
+            for (Object oSurveyId : sList) {
+
+                Integer surveyId = (Integer) oSurveyId;
+
+                chartableDataList.add(createChartableDataFor601Clinic(clinicId, surveyId, fromDate, toDate));
+            }
+        }
+        return chartableDataList;
+    }
+
+    private List<Map<String, Object>> createChartableDataForIndividualStats(Map<String, Object> requestData) {
+
+        List<Map<String, Object>> chartableDataList = Lists.newArrayList();
+
+        logger.debug("Generating the individual statistics reports");
 
         String lastName = (String) requestData.get(LASTNAME);
         String last4SSN = (String) requestData.get(SSN_LAST_FOUR);
@@ -267,21 +453,12 @@ public class ReportsController {
 
             Integer surveyId = (Integer) strSurveyId;
 
-            chartableDataList.add(createChartableData(surveyId, veteranId, fromDate, toDate));
+            chartableDataList.add(createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate));
         }
 
         return chartableDataList;
     }
 
-    public Map<String, Object> createChartableData(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
-
-        Map<String, Object> chartableDataMap = Maps.newHashMap();
-
-        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate));
-        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
-
-        return chartableDataMap;
-    }
 
     /**
      * REST enpoint point will receive search data (data entered bu the user in IndivStatsFormBean for numeric data report.
@@ -350,4 +527,36 @@ public class ReportsController {
 
         return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", parameterMap);
     }
+
+    private Map<String, Object> createChartableDataForIndividualStats(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+
+        Map<String, Object> chartableDataMap = Maps.newHashMap();
+
+        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate));
+        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+
+        return chartableDataMap;
+    }
+
+    private Map<String, Object> createChartableDataFor601VeteranClinic(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+        Map<String, Object> chartableDataMap = Maps.newHashMap();
+
+        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+
+        return chartableDataMap;
+
+    }
+
+    private Map<String, Object> createChartableDataFor601Clinic(Integer clinicId, Integer surveyId, String fromDate, String toDate) {
+
+        Map<String, Object> chartableDataMap = Maps.newHashMap();
+
+        chartableDataMap.put("dataSet", scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate));
+        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+
+        return chartableDataMap;
+
+    }
+
+
 }

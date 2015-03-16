@@ -9,7 +9,7 @@ import java.util.List;
 public class ClinicDTO implements Serializable {
 
     private String clinicName;
-    private List<ModuleGraphReportDTO> graphReportDTO;
+    private List<ModuleGraphReportDTO> graphReport;
 
     public String getClinicName() {
         return clinicName;
@@ -19,11 +19,11 @@ public class ClinicDTO implements Serializable {
         this.clinicName = clinicName;
     }
 
-    public List<ModuleGraphReportDTO> getGraphReportDTO() {
-        return graphReportDTO;
+    public List<ModuleGraphReportDTO> getGraphReport() {
+        return graphReport;
     }
 
-    public void setGraphReportDTO(List<ModuleGraphReportDTO> graphReportDTO) {
-        this.graphReportDTO = graphReportDTO;
+    public void setGraphReport(List<ModuleGraphReportDTO> graphReport) {
+        this.graphReport = graphReport;
     }
 }
