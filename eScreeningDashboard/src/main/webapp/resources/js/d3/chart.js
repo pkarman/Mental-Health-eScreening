@@ -239,21 +239,21 @@ function graphGenerator(dataStructure, dataDataset) {
         // legend Text & Box
         textWidth = 15;
         series.forEach(function (s, i) {
-            text = svg.append('text')
+            g 	= svg.append('g');
+			text = g.append('text')
                 .attr('fill', 'black')
                 .attr('width', 100)
                 .attr('x', textWidth)
                 .attr('y', 100)
                 .attr('font-size', '10')
                 .text(s);
-            box = svg.append('g')
-                .append('rect')
+            box = g.append('rect')
                 .attr('fill', colors[i])
                 .attr('width', 10)
                 .attr('height', 10)
                 .attr('x', textWidth - 15)
                 .attr('y', 90);
-            textWidth += parseFloat(text.node().getComputedTextLength()) + 30;
+            textWidth += parseFloat(g.node().getBoundingClientRect().width) + 10;
             console.log("Parse 8----");
             console.log(text.node().getComputedTextLength());
         });
