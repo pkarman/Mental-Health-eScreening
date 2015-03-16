@@ -6,7 +6,54 @@
 		<!-- Alerts and Messages -->
 		<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
-	    <form name="ruleDetailsForm">
+	    <form name="ruleDetailsForm" novalidate>
+		    <div class="row">
+			    <div class="col-md-12">
+				    <div class="form-group border-radius-main-form gray-lighter">
+					    <label for="ruleName">Rule Name *</label>
+					    <input name="inputTitle" id="ruleName" type="text" class="form-control"
+							    ng-model="rule.name"
+							    placeholder="Enter Rule Title" requried>
+				    </div>
+			    </div>
+		    </div>
+
+		    <div class="row">
+			    <div class="col-md-12 border-radius-main-form gray-lighter">
+				    <h3>Expression</h3>
+
+
+				    <h3>Events</h3>
+				    <div class="form-group">
+					    <label for="formulaEditor">Consults</label>
+
+					    <div>
+						    <ui-select
+								    multiple tagging="tagFormula"
+								    ng-model="formulaTemplate.selectedTokens"
+								    theme="bootstrap"
+								    ng-disabled="disable"
+								    title="Click to select or start typing to continue with consult..." id="formulaEditor">
+
+							    <ui-select-match
+									    placeholder="Select or enter consult....">
+								    {{$item.name}}
+							    </ui-select-match>
+
+							    <ui-select-choices
+									    repeat="var in variables | tokensfilter:{name:$select.search, displayName: $select.search} | orderBy:'-typeId'"
+									    refresh="refreshVariables()"
+									    refresh-delay="1000">
+								    <medium>
+									    [{{var.type}}] [ {{var.name}} ] [{{var.displayName || 'No Description provided'}}]
+								    </medium>
+							    </ui-select-choices>
+						    </ui-select>
+					    </div>
+					    <!--<p>Selected: {{formulaTemplate.selectedTokens|json}}</p>-->
+				    </div>
+			    </div>
+		    </div>
 	    </form>
 
 		<div class="form-group pull-right">
