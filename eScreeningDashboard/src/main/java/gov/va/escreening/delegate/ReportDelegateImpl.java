@@ -171,17 +171,28 @@ public class ReportDelegateImpl implements ReportDelegate {
             Integer clinicId = (Integer) c;
 
             ClinicDTO dto = new ClinicDTO();
-            resultList.add(dto);
+
             dto.setClinicName(clinicService.getClinicNameById(clinicId));
 
             dto.setGraphReport(new ArrayList<ModuleGraphReportDTO>());
 
+            boolean hasData = false;
             for (Object s : sSurveyList) {
-                dto.getGraphReport().add(scoreService.getGraphDataForClinicStatisticsGraph(clinicId, (Integer) s, fromDate, toDate, includeCount));
+                ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphDataForClinicStatisticsGraph(clinicId, (Integer) s, fromDate, toDate, includeCount);
+
+                if (moduleGraphReportDTO != null) {
+                    dto.getGraphReport().add(moduleGraphReportDTO);
+                    hasData = true;
+                }
+            }
+
+            if (hasData) {
 
                 for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
                     moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
                 }
+
+                resultList.add(dto);
             }
 
         }
@@ -270,11 +281,13 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<ModuleGraphReportDTO> resultList = new ArrayList<>();
 
+        int index=0;
+
         for (int i = 0; i < surveyIds.size(); i++) {
             Integer surveyId = (Integer) surveyIds.get(i);
             ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, veteranId, fromDate, toDate);
             if (moduleGraphReportDTO.getHasData()) {
-                moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER+svgObject.get(i));
+                moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER+svgObject.get(index++));
 
                 moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
             }
@@ -362,7 +375,11 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             Integer surveyId = (Integer) strSurveyId;
 
-            chartableDataList.add(createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate));
+            Map<String, Object> r = createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate);
+
+            if (r!=null) {
+                chartableDataList.add(r);
+            }
         }
 
         return chartableDataList;
@@ -439,6 +456,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
+
+        if (surveyDataForIndividualStatisticsGraph==null){
+            return null;
+        }
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
         metaData.put("score", surveyDataForIndividualStatisticsGraph.values().iterator().next());

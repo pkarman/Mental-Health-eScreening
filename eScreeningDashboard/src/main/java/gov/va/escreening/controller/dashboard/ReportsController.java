@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class ReportsController {
     public ModelAndView genAvgScoresVetByClinicGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
         // ticket 600 entry point graph chart
-        if ("groupData".equals(requestData.get(ReportsUtil.DISPLAY_OPTION))) {
+        if ("groupData".equals(((LinkedHashMap<String, Object>)requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group Chart
             return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
         } else {
