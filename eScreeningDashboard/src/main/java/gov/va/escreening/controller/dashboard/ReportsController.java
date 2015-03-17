@@ -58,14 +58,6 @@ public class ReportsController {
         return getIndividualStaticsGraphicPDF(requestData, escreenUser, "individualStatisticsGraphNumberReport");
     }
 
-    /**
-     * REST endpoint will receive an list of svg objects plus any other data required to render a graphical report
-     * This will simply prepare the required data + svg objects for the target Jasper report and forward
-     *
-     * @param requestData
-     * @param escreenUser
-     * @return
-     */
     @RequestMapping(value = "/individualStatisticsGraphic", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
@@ -73,14 +65,15 @@ public class ReportsController {
 
     }
 
+    @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
+    public ModelAndView genIndividualStatisticsNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", rd.genIndividualStatisticsNumeric(requestData, escreenUser));
+    }
+
+    // ticket 600 related
     @RequestMapping(value = "/averageScoresForPatientsByClinic", method = RequestMethod.GET)
     public ModelAndView getAverageScoresForPatientsByClinic() {
         return new ModelAndView("averageScoresForPatientsByClinic");
-    }
-
-    @RequestMapping(value = "/avgScoresVetByClinicGraphicNumeric", method = RequestMethod.POST)
-    public ModelAndView genAvgScoresVetByClinicGraphicNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return genIndividualStatisticsGraphic(requestData, escreenUser);
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicGraphic", method = RequestMethod.POST)
@@ -96,12 +89,6 @@ public class ReportsController {
         }
     }
 
-    // for avg individual
-    private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
-
-        return new ModelAndView("avgVetClinicGraphReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
-    }
-
     @RequestMapping(value = "/avgScoresVetByClinicGraphicNumber", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicGraphicNumber(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
@@ -109,15 +96,20 @@ public class ReportsController {
         return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true);
     }
 
+    @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));
+    }
+
+    // for avg individual
+    private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
+
+        return new ModelAndView("avgVetClinicGraphReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
+    }
 
     // FOR GROUP
     private ModelAndView getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
         return new ModelAndView("avgClinicGraphReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, includeCount));
-    }
-
-    @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
-    public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));
     }
 
     private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser, String viewName) {
@@ -147,13 +139,8 @@ public class ReportsController {
         return rd.createChartableDataFor601Clinic(requestData);
     }
 
+
     private List<Map<String, Object>> createChartableDataForIndividualStats(Map<String, Object> requestData) {
         return rd.createChartableDataForIndividualStats(requestData);
-    }
-
-
-    @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
-    public ModelAndView genIndividualStatisticsNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", rd.genIndividualStatisticsNumeric(requestData, escreenUser));
     }
 }
