@@ -96,9 +96,11 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             cvDTO.setClinicName(clinicService.getClinicNameById(clinicId));
             cvDTO.setVeteranModuleGraphReportDTOs(new ArrayList<VeteranModuleGraphReportDTO>());
-            resultList.add(cvDTO);
+
 
             List<Integer> veterans = clinicService.getAllVeteranIds(clinicId);
+
+            boolean hasData = false;
 
             for (Integer vId : veterans) {
 
@@ -112,11 +114,18 @@ public class ReportDelegateImpl implements ReportDelegate {
 
                 for (Object o : sSurveyList) {
                     ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, (Integer) o, vId, fromDate, toDate);
-                    moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                    if (moduleGraphReportDTO.getHasData()) {
+                        moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                        moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
+                        hasData = true;
+                    }
                     veteranModuleGraphReportDTO.getModuleGraphs().add(moduleGraphReportDTO);
 
 
                 }
+            }
+            if (hasData) {
+                resultList.add(cvDTO);
             }
 
         }
