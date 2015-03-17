@@ -149,6 +149,13 @@
 						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
+							
+							
+							
+							
+							
+							
+							<!-- TODO: Program Evaluator Role only 602 / 603 -->				
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
@@ -156,6 +163,11 @@
 								</div>
 							</div>
 							<hr class="hr_margin_5">
+							
+							
+							
+							
+							
 							<div class="vertical_scoll_list_b module_list">
 								 <ul ng-repeat="clinic in clinicsList">
 									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>

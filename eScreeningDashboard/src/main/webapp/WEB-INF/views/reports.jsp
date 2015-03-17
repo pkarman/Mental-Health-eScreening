@@ -70,31 +70,30 @@
 				<td class="text-left">Individual Statistic Reports</td>
 				<td class="text-right"><a href="individualStatisticsReports" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-
 			<tr>
-				<td class="text-left">Average Scores for Patients by Clinic Report</td>
+				<td class="text-left">Average Scores for Veterans by Clinic Report</td>
 				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 
+			<tr>
+				<td class="text-left">Clinic Statistic Reports: eScreening Batteries Report</td>
+				<td class="text-right"><a href="clinicStatisticReportsPart1eScreeningBatteriesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part 1: eScreening Batteries Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+			</tr>
 			<tr>
 				<td class="text-left">Clinic Statistic Reports Part V: Demographics Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartVDemographicsReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part V: Demographics Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			<tr>
-				<td class="text-left">Clinic Statistic Reports PartIV: Average Time Per Module Report</td>
+				<td class="text-left">Clinic Statistic Reports: Average Time Per Module Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartIVAverageTimePerModuleReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
-			</tr>
-			<tr>
-				<td class="text-left">Clinic Statistic Reports Part 1: eScreening Batteries Report</td>
-				<td class="text-right"><a href="clinicStatisticReportsPart1eScreeningBatteriesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part 1: eScreening Batteries Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 		</table>
 	</div>
 </div>
 
-<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
+	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
 
 </body>
 </html>

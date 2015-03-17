@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports</title>
+  <title>Reports | Clinic Statistic Reports: Average Time Per Module Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -55,7 +55,7 @@
 
 <div class="container left-right-shadow">
 	<div class="row">
-		<div class="col-md-12"><h1>Average Scores for Veterans by Clinic</h1></div>
+		<div class="col-md-12"><h1>Average Time Per Module Report</h1></div>
 	</div>
 	
 	<div class="clear-fix"></div>
@@ -64,6 +64,39 @@
 		<div class="border-radius-main-form gray-lighter">		
 			<form name="reportForm" novalidate>
 				<div class="row">
+
+					<div class="col-md-3">
+						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
+						<div class="clearfix"></div>
+						<div class="border-radius-main-form gray-lighter">
+							
+							
+							
+							
+							
+							<!-- Program Evaluator Role only 602 / 603
+							<div>
+								<div class="checkbox">
+									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
+									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics</label>
+								</div>
+							</div>
+							<hr class="hr_margin_5">
+							-->
+							
+							
+							
+							
+
+							
+							<div class="vertical_scoll_list_b module_list">
+								 <ul ng-repeat="clinic in clinicsList">
+									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>
+								 </ul>
+							</div>
+						</div>
+					</div>
+										
 					<div class="col-md-6">
 						<div class="row">
 							<div class="col-md-6">
@@ -90,79 +123,11 @@
 									<p class="help-block" ng-if="reportForm.fromDate.$error.required">The To Date is required</p>									
 								</div>
 							</div>
-						</div>
-						
-						<div class="row">
-							<div class="col-md-6">
-								<div><strong>Report Type</strong></div>
-
-								<div class="form-group" ng-init="report.reportType='reportTypeBoth'">
-									<div class="radio">
-										<input type="radio" id="reportTypeBoth" name="reportType" ng-model="report.reportType"  value="reportTypeBoth"/>
-										<label class="labelAlign" for="reportTypeBoth">Graph and Numeric</label>
-									</div>
-									<div class="radio">
-									<input type="radio" id="reportTypeGraph" name="reportType" ng-model="report.reportType" value="reportTypeGraph"/>
-										<label class="labelAlign" for="reportTypeGraph">Graph</label>
-									</div>
-									<div class="radio">
-										<input type="radio" id="reportTypeNumeric" name="reportType" ng-model="report.reportType" value="reportTypeNumeric"/>
-										<label class="labelAlign" for="reportTypeNumeric">Numeric</label>
-									</div>
-								</div>										
-							</div>
-							<div class="col-md-6">
-								<div><strong>Display Option</strong></div>
-								<div class="form-group" ng-init="report.displayOption='individualData'">
-									<div class="radio">
-										<input type="radio" id="individualData" name="displayOption" ng-model="report.displayOption"  value="individualData" />
-										<label class="labelAlign" for="individualData">Individual Data</label>
-									</div>
-									<div class="radio">										
-										<input type="radio" id="groupData" name="displayOption" ng-model="report.displayOption"  value="groupData"/>
-										<label class="labelAlign" for="groupData">Group Data</label>							
-									</div>
-
-								</div>										
-							</div>
-						</div>
-																
-					</div>
-					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select Modules</strong></div>
-						<div class="clearfix"></div>
-						<div class="border-radius-main-form gray-lighter">
-							<div class="checkbox">
-								<input type="checkbox" id="selectAllSurvey" class="selectAllSurvey" name="selectAllSurvey"  ng-change="selectAllSurvey()" ng-model="report.selectAllSurvey" data-cbgroup="checkbox_group_survey" />
-								<label class="labelAlign" for="selectAllSurvey" data-cbgroup="checkbox_group_survey">Select All Modules</label>
-							</div>
-							<hr class="hr_margin_5">
-							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="survey in surveysList">
-									<li><div class="checkbox"><input type="checkbox" id="survey_{{survey.surveyId}}" checklist-model="report.surveysList" checklist-value="survey.surveyId" name="survey{{survey.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{survey.surveyId}}">{{survey.name}}</label></div></li>
-								 </ul>
-							</div>
-						</div>
+						</div>								
 					</div>
 					
-					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
-						<div class="clearfix"></div>
-						<div class="border-radius-main-form gray-lighter">
-							<div>
-								<div class="checkbox">
-									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
-									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics</label>
-								</div>
-							</div>
-							<hr class="hr_margin_5">
-							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="clinic in clinicsList">
-									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>
-								 </ul>
-							</div>
-						</div>
-					</div>
+					
+
 				</div>
 				<hr />
 				<div class="row">
