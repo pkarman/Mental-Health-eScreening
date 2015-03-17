@@ -3,11 +3,13 @@ package gov.va.escreening.service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import gov.va.escreening.entity.SurveyScoreInterval;
+import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveyScoreIntervalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,9 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Autowired
     private SurveyScoreIntervalRepository intervalRepository;
+
+    @Resource(type= SurveyRepository.class)
+    SurveyRepository sr;
 
     @Transactional(readOnly = true)
     @Override
@@ -51,9 +56,9 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         String max = "-1";
         String min = "100000";
 
-        Map<String, Object> metaDataMap = createTemplateMetaData();
-        List<String> ticks = Lists.newArrayList();
-        Map<String, Object> intervalsMap = Maps.newHashMap();
+        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId);
+        List<Integer> ticks = Lists.newArrayList();
+        Map<String, Object> intervalsMap = Maps.newLinkedHashMap();
 
 
         for (SurveyScoreInterval interval : intervals) {
@@ -66,24 +71,22 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
                     max = interval.getMax();
                 }
 
-                ticks.add(interval.getMin());
-                intervalsMap.put(interval.getMeaning(), interval.getMin());
+                ticks.add(Integer.valueOf(interval.getMin()));
+                intervalsMap.put(interval.getMeaning(), Integer.valueOf(interval.getMin()));
             }
         }
 
         metaDataMap.put("ticks", ticks);
         metaDataMap.put("intervals", intervalsMap);
-        metaDataMap.put("maxXPoint", max);
+        metaDataMap.put("maxXPoint", Integer.valueOf(max));
         return metaDataMap;
     }
 
-    private Map<String, Object> createTemplateMetaData() {
+    private Map<String, Object> createTemplateMetaData(int surveyId) {
         Map<String, Object> metaDataMap = Maps.newHashMap();
-        metaDataMap.put("score", 16);
-        metaDataMap.put("footer", "");
-        metaDataMap.put("varId", 1599);
-        metaDataMap.put("title", "My Score");
-        metaDataMap.put("numberOfMonths", 12);
+        metaDataMap.put("footer", ""); //todo what to do here?
+        metaDataMap.put("title", sr.findOne(surveyId).getName());
+        metaDataMap.put("numberOfMonths", 12); //todo find a logic to assign the right number here
         return metaDataMap;
     }
 }
