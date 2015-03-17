@@ -208,7 +208,7 @@
 					<div class="box-padding-10">
 						<div class="otherSystemConfigurationBlock">
 							<ul class="sectionList">
-								<s:url var="manageDashboardAlerts" value="/dashboard/alertListView" htmlEscape="true"></s:url>
+								<s:url var="manageDashboardAlerts" value="/dashboard/alertTypes/alertListView" htmlEscape="true"></s:url>
 								<li><a href="${manageDashboardAlerts}"><span class="glyphicon glyphicon glyphicon-th-large" aria-hidden="true"></span> Manage Dashboard Alerts</a></li>
 							</ul>
 						</div>
