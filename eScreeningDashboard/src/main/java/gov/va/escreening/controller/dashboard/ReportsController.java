@@ -114,10 +114,6 @@ public class ReportsController {
         return new ModelAndView("avgClinicGraphReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, includeCount));
     }
 
-    private ModelAndView getAvgScoresVetByClinicGraphicOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
-        return new ModelAndView("avgClinicGraphReport", rd.getAvgScoresVetByClinicGraphicOrNumeric(requestData, escreenUser));
-    }
-
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
         return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));

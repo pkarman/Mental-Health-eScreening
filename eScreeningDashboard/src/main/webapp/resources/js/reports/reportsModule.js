@@ -125,7 +125,7 @@ module.factory('ReportsService', ['$http', function ($http) {
     var generateSvgObjects = function (chartableData) {
         var svgObjects = [];
         var verifiedData = _.filter(chartableData, function (data) {
-            return data.dataFormat != undefined && data.dataFormat != null && data.dataSet != undefined && data.dataSet != null;
+            return data.dataFormat != undefined && data.dataFormat != null && !_.isEmpty(data.dataFormat) && data.dataSet != undefined && data.dataSet != null && !_.isEmpty(data.dataSet);
         })
         _.each(verifiedData, function (dataMap) {
             var df = dataMap.dataFormat;
@@ -172,7 +172,7 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 surveysList: $scope.report.surveysList,
-                reportType:'indivStats'
+                reportType: 'indivStats'
             };
 
             if ($scope.report.reportType === 'reportTypeGraph') {
@@ -196,7 +196,7 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
                             .success(function (serverResponse) {
                                 ReportsService.savePdfData(serverResponse, 'IndividualStatisticsWithGraphsOnlyReport.pdf');
                             }).error(function (data, status) {
-                                console.error('requestGraphicReport error', status, data);
+                                console.error('individualStatisticsGraphic error', status, data);
                             });
 
                     }).error(function (data, status) {
@@ -225,7 +225,7 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
                             .success(function (serverResponse) {
                                 ReportsService.savePdfData(serverResponse, 'IndividualStatisticsGraphicAndNumberReport.pdf');
                             }).error(function (data, status) {
-                                console.error('requestGraphicReport error', status, data);
+                                console.error('individualStatisticsGraphicAndNumber error', status, data);
                             });
 
                     }).error(function (data, status) {
@@ -277,10 +277,10 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
             var avgScoresFormData = {
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
-                displayOption:$scope.report.displayOption,
+                displayOption: $scope.report.displayOption,
                 surveysList: $scope.report.surveysList,
                 clinicsList: $scope.report.clinicsList,
-                reportType:'avgScoresForPatientsByClinic'
+                reportType: 'avgScoresForPatientsByClinic'
             };
 
             if ($scope.report.reportType === 'reportTypeGraph') {
@@ -304,7 +304,7 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
                             .success(function (serverResponse) {
                                 ReportsService.savePdfData(serverResponse, 'AvgScoresWithGraphsOnlyReport.pdf');
                             }).error(function (data, status) {
-                                console.error('requestGraphicReport error', status, data);
+                                console.error('avgScoresVetByClinicGraphic error', status, data);
                             });
 
                     }).error(function (data, status) {
@@ -318,7 +318,27 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
                         console.error(' requestNumericReporterror:', status, data);
                     });
             } else {
-                //todo implement a mix of above two options for reportTypeBoth
+                ReportsService.requestChartableData(avgScoresFormData)
+                    .success(function (chartableData) {
+                        // produce d3 graphs as svg objects
+                        var svgData = ReportsService.generateSvgObjects(chartableData);
+
+                        var data = {
+                            svgData: svgData,
+                            chartableData: chartableData,
+                            userReqData: avgScoresFormData
+                        };
+
+                        ReportsService.requestGraphicReport(data, "avgScoresVetByClinicGraphicNumber")
+                            .success(function (serverResponse) {
+                                ReportsService.savePdfData(serverResponse, 'AvgScoresVetByClinicGraphicNumberReport.pdf');
+                            }).error(function (data, status) {
+                                console.error('avgScoresVetByClinicGraphicNumber error', status, data);
+                            });
+
+                    }).error(function (data, status) {
+                        console.error('requestChartableData error', status, data);
+                    });
             }
             $scope.reset();
         }
