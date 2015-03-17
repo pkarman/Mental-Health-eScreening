@@ -85,9 +85,10 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             for (VeteranAssessmentSurveyScore score : scores) {
                 data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
+            return data;
         }
-        return data;
 
+        return null;
     }
 
     @Override
@@ -231,9 +232,10 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             result.setHasData(true);
 
             result.setVeteranCount(" Number of Veterans, N="+vassRepos.getVeteranCountForClinic(clinicId, surveyId, fromDate, toDate));
+            return result;
         }
 
-        return result;
+        return null;
     }
 
     /**

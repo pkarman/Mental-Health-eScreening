@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,14 +58,6 @@ public class ReportsController {
         return getIndividualStaticsGraphicPDF(requestData, escreenUser, "individualStatisticsGraphNumberReport");
     }
 
-    /**
-     * REST endpoint will receive an list of svg objects plus any other data required to render a graphical report
-     * This will simply prepare the required data + svg objects for the target Jasper report and forward
-     *
-     * @param requestData
-     * @param escreenUser
-     * @return
-     */
     @RequestMapping(value = "/individualStatisticsGraphic", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
@@ -72,33 +65,28 @@ public class ReportsController {
 
     }
 
+    @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
+    public ModelAndView genIndividualStatisticsNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", rd.genIndividualStatisticsNumeric(requestData, escreenUser));
+    }
+
+    // ticket 600 related
     @RequestMapping(value = "/averageScoresForPatientsByClinic", method = RequestMethod.GET)
     public ModelAndView getAverageScoresForPatientsByClinic() {
         return new ModelAndView("averageScoresForPatientsByClinic");
-    }
-
-    @RequestMapping(value = "/avgScoresVetByClinicGraphicNumeric", method = RequestMethod.POST)
-    public ModelAndView genAvgScoresVetByClinicGraphicNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return genIndividualStatisticsGraphic(requestData, escreenUser);
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicGraphic", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
         // ticket 600 entry point graph chart
-        if ("groupData".equals(requestData.get(ReportsUtil.DISPLAY_OPTION))) {
+        if ("groupData".equals(((LinkedHashMap<String, Object>)requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group Chart
             return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
         } else {
             // individual chart
             return getAvgScoresVetByClinicGraphReport(requestData, escreenUser);
         }
-    }
-
-    // for avg individual
-    private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
-
-        return new ModelAndView("avgVetClinicGraphReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicGraphicNumber", method = RequestMethod.POST)
@@ -108,15 +96,38 @@ public class ReportsController {
         return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true);
     }
 
+    @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
+    public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));
+    }
+
+    // ticket 597
+    @RequestMapping(value = "/clinicStatisticReportsPartVDemographicsReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartVDemographicsReport() {
+        return new ModelAndView("clinicStatisticReportsPartVDemographicsReport");
+    }
+
+    // ticket 596
+    @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIVAverageTimePerModuleReport() {
+        return new ModelAndView("clinicStatisticReportsPartIVAverageTimePerModuleReport");
+    }
+
+    // ticket 593
+    @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPart1eScreeningBatteriesReport() {
+        return new ModelAndView("clinicStatisticReportsPart1eScreeningBatteriesReport");
+    }
+
+    // for avg individual
+    private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
+
+        return new ModelAndView("avgVetClinicGraphReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
+    }
 
     // FOR GROUP
     private ModelAndView getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
         return new ModelAndView("avgClinicGraphReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, includeCount));
-    }
-
-    @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
-    public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));
     }
 
     private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser, String viewName) {
@@ -146,29 +157,8 @@ public class ReportsController {
         return rd.createChartableDataFor601Clinic(requestData);
     }
 
+
     private List<Map<String, Object>> createChartableDataForIndividualStats(Map<String, Object> requestData) {
         return rd.createChartableDataForIndividualStats(requestData);
     }
-
-
-    @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
-    public ModelAndView genIndividualStatisticsNumeric(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("IndividualStatisticsReportsNumericOnlyReport", rd.genIndividualStatisticsNumeric(requestData, escreenUser));
-    }
-
-    @RequestMapping(value = "/clinicStatisticReportsPartVDemographicsReport", method = RequestMethod.GET)
-    public ModelAndView getClinicStatisticReportsPartVDemographicsReport() {
-        return new ModelAndView("clinicStatisticReportsPartVDemographicsReport");
-    }
-
-    @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.GET)
-    public ModelAndView getClinicStatisticReportsPartIVAverageTimePerModuleReport() {
-        return new ModelAndView("clinicStatisticReportsPartIVAverageTimePerModuleReport");
-    }
-
-    @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.GET)
-    public ModelAndView getClinicStatisticReportsPart1eScreeningBatteriesReport() {
-        return new ModelAndView("clinicStatisticReportsPart1eScreeningBatteriesReport");
-    }
-
 }

@@ -164,9 +164,9 @@ module.factory('ReportsService', ['$http', function ($http) {
     };
 
     var runNumericReport = function (formData, numericRestEndPoint) {
-        return ReportsService.requestNumericReport(formData, numericRestEndPoint)
+        return requestNumericReport(formData, numericRestEndPoint)
             .success(function (serverResponse) {
-                ReportsService.savePdfData(serverResponse, numericRestEndPoint + '.pdf');
+                savePdfData(serverResponse, numericRestEndPoint + '.pdf');
             }).error(function (data, status) {
                 console.error(numericRestEndPoint + '. requestNumericReport error:', status, data);
             });

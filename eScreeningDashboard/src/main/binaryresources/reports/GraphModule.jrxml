@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GraphChart" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a536e1f4-be9e-4479-af40-d3ca9f43da2e">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="144"/>
+	<property name="ireport.x" value="31"/>
+	<property name="ireport.y" value="188"/>
 	<field name="moduleName" class="java.lang.String"/>
 	<field name="score" class="java.lang.String"/>
 	<field name="scoreHistoryTitle" class="java.lang.String"/>
@@ -14,58 +14,20 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<pageHeader>
-		<band height="35" splitType="Stretch"/>
-	</pageHeader>
 	<detail>
 		<band height="211" splitType="Stretch">
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="51" width="80" height="153" uuid="ab3343ad-4841-401f-a315-811dbf0b39dc"/>
-				<box>
-					<topPen lineWidth="5.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid"/>
-				</box>
-				<textField>
-					<reportElement x="0" y="68" width="80" height="20" uuid="5c60bc7f-5b24-4742-9c52-f83ca3c2081e"/>
-					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="0" y="98" width="80" height="20" uuid="b9923226-90e9-4393-8abf-7a0c28968a31"/>
-					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="0" y="33" width="80" height="20" uuid="7a8323cd-f47b-4142-917f-8fac7ae8fa82"/>
-					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
-				</textField>
-			</frame>
-			<frame>
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="80" y="51" width="292" height="153" uuid="51e1bc29-7a54-43cc-9591-6daf02e114bc"/>
-				<box>
-					<topPen lineWidth="5.0" lineStyle="Solid"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid"/>
-				</box>
-				<image scaleImage="FillFrame" hAlign="Center" vAlign="Top">
-					<reportElement x="0" y="39" width="280" height="66" uuid="ed0357a5-18ad-41d1-9701-b92f470502da"/>
-					<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstance($F{imageInput}.getBytes())]]></imageExpression>
-				</image>
-			</frame>
-			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="372" y="51" width="200" height="153" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
+				<reportElement x="0" y="51" width="572" height="153" uuid="42a13049-9f70-45bc-b42f-962f5715b404">
+					<printWhenExpression><![CDATA[$F{score}==null || $F{score}.length()==0]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="5.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
-				<textField>
-					<reportElement x="0" y="13" width="200" height="20" uuid="ff7bf8d7-3768-4ce7-8284-6b204c625bea"/>
-					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
-				</textField>
-				<subreport>
-					<reportElement x="0" y="50" width="200" height="103" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
-					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
-					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber2.jasper"]]></subreportExpression>
-				</subreport>
+				<staticText>
+					<reportElement x="188" y="83" width="100" height="20" uuid="8f0bae24-7153-44f6-89af-d3075e8a54a5"/>
+					<text><![CDATA[Has No Data]]></text>
+				</staticText>
 			</frame>
 			<textField>
 				<reportElement x="0" y="31" width="117" height="20" uuid="8e445afb-e3d9-4b5f-a009-deed3ca3dfcb"/>
@@ -77,15 +39,65 @@
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{veteranCount}]]></textFieldExpression>
 			</textField>
+			<elementGroup>
+				<frame>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="51" width="80" height="153" uuid="ab3343ad-4841-401f-a315-811dbf0b39dc">
+						<printWhenExpression><![CDATA[$F{score}!=null]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<topPen lineWidth="5.0" lineStyle="Solid"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textField>
+						<reportElement x="0" y="68" width="80" height="20" uuid="5c60bc7f-5b24-4742-9c52-f83ca3c2081e"/>
+						<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="98" width="80" height="20" uuid="b9923226-90e9-4393-8abf-7a0c28968a31"/>
+						<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="33" width="80" height="20" uuid="7a8323cd-f47b-4142-917f-8fac7ae8fa82"/>
+						<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<frame>
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="80" y="51" width="292" height="153" uuid="51e1bc29-7a54-43cc-9591-6daf02e114bc">
+						<printWhenExpression><![CDATA[$F{score}!=null]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<topPen lineWidth="5.0" lineStyle="Solid"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<image scaleImage="FillFrame" hAlign="Center" vAlign="Top">
+						<reportElement x="0" y="39" width="280" height="66" uuid="ed0357a5-18ad-41d1-9701-b92f470502da"/>
+						<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstance($F{imageInput}.getBytes())]]></imageExpression>
+					</image>
+					<frame>
+						<reportElement x="173" y="32" width="100" height="20" uuid="8e62f1ab-3a7a-4f25-9ab2-c27e868bc659"/>
+					</frame>
+				</frame>
+				<frame>
+					<reportElement stretchType="RelativeToTallestObject" x="372" y="51" width="200" height="153" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825">
+						<printWhenExpression><![CDATA[$F{score}!=null]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<topPen lineWidth="5.0" lineStyle="Solid"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textField>
+						<reportElement x="0" y="13" width="200" height="20" uuid="ff7bf8d7-3768-4ce7-8284-6b204c625bea"/>
+						<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
+					</textField>
+					<subreport>
+						<reportElement stretchType="RelativeToBandHeight" x="0" y="50" width="200" height="103" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
+						<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber2.jasper"]]></subreportExpression>
+					</subreport>
+				</frame>
+			</elementGroup>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>
