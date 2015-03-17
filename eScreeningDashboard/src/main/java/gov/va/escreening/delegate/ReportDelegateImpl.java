@@ -431,8 +431,13 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
-        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate));
-        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+        final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
+
+        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
+        metaData.put("score", surveyDataForIndividualStatisticsGraph.values().iterator().next());
+
+        chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
+        chartableDataMap.put("dataFormat", metaData);
 
         return chartableDataMap;
     }
