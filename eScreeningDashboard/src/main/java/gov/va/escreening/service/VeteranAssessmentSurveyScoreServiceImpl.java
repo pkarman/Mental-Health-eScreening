@@ -1,32 +1,26 @@
 package gov.va.escreening.service;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import gov.va.escreening.dto.report.*;
+import gov.va.escreening.dto.report.ModuleGraphReportDTO;
+import gov.va.escreening.dto.report.ScoreDateDTO;
+import gov.va.escreening.dto.report.ScoreHistoryDTO;
+import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyScoreRepository;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
-import gov.va.escreening.variableresolver.VariableResolverServiceImpl;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by krizvi.ctr on 3/6/15.
@@ -58,6 +52,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     private DecimalFormat df = new DecimalFormat("###.##");
+    private static SimpleDateFormat dateFormatter=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     @Override
     @Transactional
@@ -88,7 +83,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
             for (VeteranAssessmentSurveyScore score : scores) {
-                data.put(LocalDate.fromDateFields(score.getDateCompleted()).toString("MM/dd/yyy"), score.getScore());
+                data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
         }
         return data;
@@ -102,7 +97,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
             for (VeteranAssessmentSurveyScore score : scores) {
-                data.put(LocalDate.fromDateFields(score.getDateCompleted()).toString("MM/dd/yyy"), score.getScore());
+                data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
         }
         return data;
@@ -156,8 +151,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
         List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, veteranId, fromDate, toDate);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
         if (scores != null && !scores.isEmpty()) {
             result.setScore(Integer.toString(scores.get(0).getScore()));
             result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, scores.get(0).getScore()));
@@ -186,7 +179,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
             for (ScoreDateDTO score : scores) {
-                data.put(LocalDate.fromDateFields(score.getDateCompleted()).toString("MM/dd/yyy"), score.getScore());
+                data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
         }
         return data;
@@ -312,7 +305,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         if (scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
             VeteranAssessmentSurveyScore vass = new VeteranAssessmentSurveyScore();
             vass.setClinic(veteranAssessment.getClinic());
-            vass.setDateCompleted(LocalDate.now().toDate());
+            vass.setDateCompleted(new Date());
 
             //get the string as an integer, round it to get best mathematical number
             int roundedScore = (int) Math.round(Double.parseDouble(scoreAsStr));
