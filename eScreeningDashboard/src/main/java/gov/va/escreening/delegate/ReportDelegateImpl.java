@@ -51,6 +51,9 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(type = VeteranService.class)
     private VeteranService veteranService;
 
+    @Resource(name = "reportableFormulasMap")
+    Map<String, String> reportableFormulasMap;
+
     private FileResolver fileResolver = new FileResolver() {
 
         @Override
@@ -127,7 +130,11 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Override
     public List<SurveyDto> getSurveyList() {
-        return surveyService.getSurveyList();
+
+        List<String> surveyNames = new ArrayList<>();
+        surveyNames.addAll(reportableFormulasMap.keySet());
+
+        return surveyService.getSurveyListByNames(surveyNames);
     }
 
     @Override
