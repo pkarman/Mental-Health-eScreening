@@ -8,8 +8,8 @@ $("div.content ul li a")
              $(this).removeClass('mouseover');
              alert("mouse out");
          });
-
-        $.getJSON("allowedTabs", function(data) {
+		
+        $.getJSON("dashboard/allowedTabs", function(data) {
     		  var tabToShow;
     		  $.each(data, function(key, val) {
 

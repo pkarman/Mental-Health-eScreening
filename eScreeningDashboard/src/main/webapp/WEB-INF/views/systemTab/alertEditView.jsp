@@ -50,7 +50,20 @@
     <div class="col-md-12"> <a name="skip"> </a >
       <h1>Alert Edit</h1>
       <div>
-
+		<form>
+			<div class="border-radius-main-form gray-lighter">
+				<div class="form-group">
+					<label for="exampleInputEmail1">Alert Name *</label>
+					<input type="text" class="form-control" id="alertName" placeholder="Enter Alert Name">
+					<div class="">Max 100 characters</div>
+				</div>
+			</div><br>
+			
+			<div class="form-group pull-right">
+				<button type="submit" class="btn btn-primary" id="save">Save</button>
+				<button type="button" class="btn btn-default" id="cancel">Cancel</button>
+			</div>
+		</form>
       </div>
     </div>
   </div>

@@ -20,7 +20,7 @@
   <link href="<c:url value="/resources/css/partialpage/menu-partial.css" />" rel="stylesheet" type="text/css" />
   <link href="<c:url value="/resources/css/veteranSearch.css" />" rel="stylesheet" type="text/css" />
   <link href="<c:url value="/resources/css/formButtons.css" />" rel="stylesheet" type="text/css" />
-  
+
   <!-- Bootstrap -->
   <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
   <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
@@ -30,7 +30,7 @@
   <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
 
 </head>
-<body>
+<body ng-app="alertViewApp">
 <a href="#skip" class="offscreen">Skip to main content</a>
 <div id="outerPageDiv">
   <%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -50,35 +50,57 @@
 <div class="mainDiv"> </div>
 <div class="container left-right-shadow">
   <div class="row">
+  
     <div class="col-md-4 pull-right">
-      <s:url var="addAlertUrl" value="/dashboard/alertTypes/alertEditView" htmlEscape="true"></s:url>
-      <a href="${addAlertUrl}" class="btn btn-primary btn-md form-control h1_button"><span class="glyphicon glyphicon-plus"></span> Add New Alert</a> </div>
+      <s:url var="addAlertUrl" value="/dashboard/alertEditView" htmlEscape="true"></s:url>
+      <a href="${addAlertUrl}" class="btn btn-primary btn-md h1_button pull-right"><span class="glyphicon glyphicon-plus"></span> Add New Alert</a> </div>
     <div class="col-md-8 pull-left"><a name="skip" > </a >
       <h1>Manage Alert</h1>
     </div>
   </div>
   <div class="clear-fix"></div>
+  
+
+	<div  ng-controller="alertsController"  class="bottomContent" id="mainContent" >
+		<table id="alertsTable" name="alertsTable" report-table="overrideOptions" fn-data-callback="getDataForSearch" class="table table-striped  table-hover" summary="Alert List View">
+		  <thead>
+			<tr>
+			  <th scope="col" class="col-md-10">Name</th>
+			  <th scope="col" class="col-md-2 text-right">Action</th>
+			</tr>
+		  </thead>
+		  <tbody>
+		  </tbody>
+		</table>
+	</div>
+				  
+		  
+	<!-- 			  
   <div>
     <table class="table table-striped table-hover" summary="Alert List View">
       <thead>
         <tr>
-          <th class="ui-state-default ">Name</th>
-          <th class="col-md-1 ui-state-default text-right">Action</th>
+          <th class="ui-state-default">Name</th>
+          <th class="col-md-2 ui-state-default text-right">Action</th>
         </tr>
       </thead>
         <tr>
           <td></td>
           <td class="text-right">
-            <a href="#" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a>
-			<a href="#" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon-remove-circle red-color"></span> Delete </a>
+            <a href="#" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a><a href="#" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>
 			</td>
         </tr>
     </table>
   </div>
+  -->
+  
+  
 </div>
  
-<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </body>
+
+<script type="text/javascript" src="<c:url value="/resources/js/angular/angular.min.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/systemTab/alertListView.js?v=1" />"></script>
 </html>
