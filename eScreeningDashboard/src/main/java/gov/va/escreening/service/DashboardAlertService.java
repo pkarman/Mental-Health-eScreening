@@ -12,4 +12,6 @@ public interface DashboardAlertService
 	
 	public void deleteAlertType(int id);
 
+	public DropDownObject getAlertType(int id);
+
 }

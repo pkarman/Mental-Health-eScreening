@@ -68,4 +68,10 @@ public class DashboardAlertServiceImpl implements DashboardAlertService
 		alertRepo.deleteById(id);
 	}
 
+	@Override
+	public DropDownObject getAlertType(int id) {
+		DashboardAlert a = alertRepo.findOne(id);
+		return new DropDownObject(a.getDashboardAlertId().toString(), a.getName());
+	}
+
 }
