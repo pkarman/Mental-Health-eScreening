@@ -29,7 +29,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
 </head>
-<body ng-app="reportsModule" ng-controller="avgScoresForPatientsByClinicCtrl">
+<body ng-app="reportsModule" ng-controller="avgTimePerModuleCtrl">
 <a href="#skip" class="offscreen">Skip to main content</a>
 <div id="outerPageDiv">
 	<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>

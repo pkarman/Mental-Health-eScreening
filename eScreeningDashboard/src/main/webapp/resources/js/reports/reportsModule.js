@@ -201,25 +201,25 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
 
         if ($scope.reportForm.$valid) {
             // create a model to represent user requested data on html form
-            var indivStatFormData = {
+            var formData = {
                 lastName: $scope.report.lastName,
                 ssnLastFour: $scope.report.ssnLastFour,
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 surveysList: $scope.report.surveysList,
-                reportType: 'indivStats'
+                reportType: 'indivStatsForm'
             };
 
             if ($scope.report.reportType === 'reportTypeGraph') {
-                ReportsService.runGraphReport(indivStatFormData, 'individualStatisticsGraphic').then(function () {
+                ReportsService.runGraphReport(formData, 'individualStatisticsGraphic').then(function () {
                     console.log('individualStatisticsGraphic report generated successfully');
                 });
             } else if ($scope.report.reportType === 'reportTypeNumeric') {
-                ReportsService.runNumericReport(indivStatFormData, 'individualStatisticsNumeric').then(function () {
+                ReportsService.runNumericReport(formData, 'individualStatisticsNumeric').then(function () {
                     console.log('individualStatisticsNumeric report generated successfully');
                 });
             } else {
-                ReportsService.runGraphReport(indivStatFormData, 'individualStatisticsGraphicAndNumber').then(function () {
+                ReportsService.runGraphReport(formData, 'individualStatisticsGraphicAndNumber').then(function () {
                     console.log('individualStatisticsGraphicAndNumber report generated successfully');
                 });
             }
@@ -265,7 +265,7 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
 
         if ($scope.reportForm.$valid) {
             // create a model to represent user requested data on html form
-            var avgScoresFormData = {
+            var formData = {
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 displayOption: $scope.report.displayOption,
@@ -276,15 +276,15 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
 
 
             if ($scope.report.reportType === 'reportTypeGraph') {
-                ReportsService.runGraphReport(avgScoresFormData, 'avgScoresVetByClinicGraphic').then(function () {
+                ReportsService.runGraphReport(formData, 'avgScoresVetByClinicGraphic').then(function () {
                     console.log('avgScoresVetByClinicGraphic report generated successfully');
                 });
             } else if ($scope.report.reportType === 'reportTypeNumeric') {
-                ReportsService.runNumericReport(avgScoresFormData, 'avgScoresVetByClinicNumeric').then(function () {
+                ReportsService.runNumericReport(formData, 'avgScoresVetByClinicNumeric').then(function () {
                     console.log('avgScoresVetByClinicNumeric report generated successfully');
                 });
             } else {
-                ReportsService.runGraphReport(avgScoresFormData, 'avgScoresVetByClinicGraphicNumber').then(function () {
+                ReportsService.runGraphReport(formData, 'avgScoresVetByClinicGraphicNumber').then(function () {
                     console.log('avgScoresVetByClinicGraphicNumber report generated successfully');
                 });
             }
@@ -332,7 +332,7 @@ module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService
 
         if ($scope.reportForm.$valid) {
             // create a model to represent user requested data on html form
-            var escreeningBatteriesForm = {
+            var formData = {
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 numberOfeScreeningBatteries: $scope.report.numberOfeScreeningBatteries,
@@ -345,8 +345,74 @@ module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService
                 clinicsList: $scope.report.clinicsList,
                 reportType: 'escreeningBatteriesForm'
             };
-            ReportsService.runNumericReport(escreeningBatteriesForm, 'clinicStatisticReportsPart1eScreeningBatteriesReport').then(function () {
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPart1eScreeningBatteriesReport').then(function () {
                 console.log('clinicStatisticReportsPart1eScreeningBatteriesReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
+    }
+}]);
+
+module.controller('demographicsReportCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var formData = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'demographicsReportForm'
+            };
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartVDemographicsReport').then(function () {
+                console.log('clinicStatisticReportsPartVDemographicsReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
+    }
+}]);
+
+module.controller('avgTimePerModuleCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var avgTimePerModuleForm = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'avgTimePerModuleForm'
+            };
+            ReportsService.runNumericReport(avgTimePerModuleForm, 'clinicStatisticReportsPartIVAverageTimePerModuleReport').then(function () {
+                console.log('clinicStatisticReportsPartIVAverageTimePerModuleReport report generated successfully');
             });
         }
         $scope.reset();
