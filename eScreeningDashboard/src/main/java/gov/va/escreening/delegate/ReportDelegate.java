@@ -24,9 +24,9 @@ public interface ReportDelegate {
 
     Map<String, Object> getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    List<Map<String, Object>> createChartableDataFor601VeteranClinic(Map<String, Object> requestData);
+    List<Map<String, Object>> createIndivChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData);
 
-    List<Map<String, Object>> createChartableDataFor601Clinic(Map<String, Object> requestData);
+    List<Map<String, Object>> createGrpChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData);
 
     List<Map<String, Object>> createChartableDataForIndividualStats(Map<String, Object> requestData);
 

@@ -16,7 +16,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -312,7 +311,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public List<Map<String, Object>> createChartableDataFor601VeteranClinic(Map<String, Object> requestData) {
+    public List<Map<String, Object>> createIndivChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
         List cList = (ArrayList) requestData.get(ReportsUtil.CLINIC_ID_LIST);
@@ -325,15 +324,18 @@ public class ReportDelegateImpl implements ReportDelegate {
             for (Integer vId : veterans) {
                 for (Object oSurveyId : sList) {
                     Integer surveyId = (Integer) oSurveyId;
-                    chartableDataList.add(createChartableDataForIndividualStats(clinicId, surveyId, vId, fromDate, toDate));
+                    final Map<String, Object> chartableDataForIndividualStats = createChartableDataForIndivAvgScoresForPatientsByClinic(clinicId, surveyId, vId, fromDate, toDate);
+                    if (!chartableDataForIndividualStats.isEmpty()) {
+                        chartableDataList.add(chartableDataForIndividualStats);
                 }
             }
+        }
         }
         return chartableDataList;
     }
 
     @Override
-    public List<Map<String, Object>> createChartableDataFor601Clinic(Map<String, Object> requestData) {
+    public List<Map<String, Object>> createGrpChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
         logger.debug("Generating the clinic graph data ");
@@ -350,9 +352,11 @@ public class ReportDelegateImpl implements ReportDelegate {
             for (Object oSurveyId : sList) {
 
                 Integer surveyId = (Integer) oSurveyId;
-
-                chartableDataList.add(createChartableDataFor601Clinic(clinicId, surveyId, fromDate, toDate));
+                final Map<String, Object> chartableDataForClinic = createChartableDataForGrpAvgScoresForPatientsByClinic(clinicId, surveyId, fromDate, toDate);
+                if (!chartableDataForClinic.isEmpty()) {
+                    chartableDataList.add(chartableDataForClinic);
             }
+        }
         }
         return chartableDataList;
     }
@@ -384,10 +388,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             Integer surveyId = (Integer) strSurveyId;
 
-            Map<String, Object> r = createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate);
-
-            if (r != null) {
-                chartableDataList.add(r);
+            final Map<String, Object> chartableDataForIndividualStats = createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate);
+            if (!chartableDataForIndividualStats.isEmpty()) {
+                chartableDataList.add(chartableDataForIndividualStats);
             }
         }
 
@@ -573,12 +576,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
 
-        if (surveyDataForIndividualStatisticsGraph == null) {
-            return null;
-        }
-
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", surveyDataForIndividualStatisticsGraph.values().iterator().next());
+        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty()?surveyDataForIndividualStatisticsGraph.values().iterator().next():0);
 
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
@@ -586,31 +585,31 @@ public class ReportDelegateImpl implements ReportDelegate {
         return chartableDataMap;
     }
 
-    private Map<String, Object> createChartableDataForIndividualStats(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    private Map<String, Object> createChartableDataForIndivAvgScoresForPatientsByClinic(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
-        chartableDataMap.put("dataSet", scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate));
-        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+        final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate);
+
+        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
+        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty()?surveyDataForIndividualStatisticsGraph.values().iterator().next():0);
+        chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
+        chartableDataMap.put("dataFormat", metaData);
 
         return chartableDataMap;
     }
 
-    private Map<String, Object> createChartableDataFor601VeteranClinic(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
-        Map<String, Object> chartableDataMap = Maps.newHashMap();
-
-        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
-
-        return chartableDataMap;
-
-    }
-
-    private Map<String, Object> createChartableDataFor601Clinic(Integer clinicId, Integer surveyId, String fromDate, String toDate) {
+    private Map<String, Object> createChartableDataForGrpAvgScoresForPatientsByClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate) {
 
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
-        chartableDataMap.put("dataSet", scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate));
-        chartableDataMap.put("dataFormat", intervalService.generateMetadata(surveyId));
+        final Map<String, Object> surveyDataForClinicStatisticsGraph = scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate);
+
+        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
+        metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty()?surveyDataForClinicStatisticsGraph.values().iterator().next():0);
+
+        chartableDataMap.put("dataSet", surveyDataForClinicStatisticsGraph);
+        chartableDataMap.put("dataFormat", metaData);
 
         return chartableDataMap;
 

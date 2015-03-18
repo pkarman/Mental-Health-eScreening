@@ -88,7 +88,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             return data;
         }
 
-        return null;
+        return data;
     }
 
     @Override
