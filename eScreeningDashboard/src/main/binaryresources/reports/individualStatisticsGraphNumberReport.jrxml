@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphNumberReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="137"/>
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="44"/>
+	<property name="ireport.y" value="14"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<field name="moduleName" class="java.lang.String"/>
@@ -17,7 +17,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="180" splitType="Stretch">
+		<band height="163" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
 				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
@@ -29,17 +29,19 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
+					<font fontName="Arial" size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Individual Statistics Report]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="16" y="143" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<reportElement x="11" y="134" width="200" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -74,7 +76,7 @@
 				</staticText>
 			</frame>
 			<textField>
-				<reportElement x="10" y="10" width="150" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
+				<reportElement x="10" y="3" width="201" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
 				<textElement verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -104,7 +106,7 @@
 				</textField>
 				<textField>
 					<reportElement x="0" y="68" width="118" height="37" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
-					<textElement textAlignment="Center">
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font size="20" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
@@ -120,7 +122,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<image scaleImage="FillFrame" hAlign="Center" vAlign="Top">
-					<reportElement x="0" y="39" width="280" height="66" uuid="ed0357a5-18ad-41d1-9701-b92f470502da"/>
+					<reportElement x="6" y="0" width="269" height="178" uuid="ed0357a5-18ad-41d1-9701-b92f470502da"/>
 					<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstance($F{imageInput}.getBytes())]]></imageExpression>
 				</image>
 			</frame>
@@ -135,7 +137,7 @@
 				<textField>
 					<reportElement x="0" y="19" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
 					<textElement textAlignment="Center">
-						<font size="12"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
 				</textField>
