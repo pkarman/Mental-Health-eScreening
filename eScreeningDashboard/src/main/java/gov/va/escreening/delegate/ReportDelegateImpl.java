@@ -290,13 +290,13 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<ModuleGraphReportDTO> resultList = new ArrayList<>();
 
-        int index=0;
+        int index = 0;
 
         for (int i = 0; i < surveyIds.size(); i++) {
             Integer surveyId = (Integer) surveyIds.get(i);
             ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, veteranId, fromDate, toDate);
             if (moduleGraphReportDTO.getHasData()) {
-                moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER+svgObject.get(index++));
+                moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
 
                 moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
             }
@@ -386,7 +386,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             Map<String, Object> r = createChartableDataForIndividualStats(surveyId, veteranId, fromDate, toDate);
 
-            if (r!=null) {
+            if (r != null) {
                 chartableDataList.add(r);
             }
         }
@@ -460,13 +460,31 @@ public class ReportDelegateImpl implements ReportDelegate {
         return parameterMap;
     }
 
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPartVDemographicsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
     private Map<String, Object> createChartableDataForIndividualStats(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
         Map<String, Object> chartableDataMap = Maps.newHashMap();
 
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
 
-        if (surveyDataForIndividualStatisticsGraph==null){
+        if (surveyDataForIndividualStatisticsGraph == null) {
             return null;
         }
 

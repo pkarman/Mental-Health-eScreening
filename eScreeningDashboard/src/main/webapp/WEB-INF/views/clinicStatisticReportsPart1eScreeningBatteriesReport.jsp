@@ -29,7 +29,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
 </head>
-<body ng-app="reportsModule" ng-controller="avgScoresForPatientsByClinicCtrl">
+<body ng-app="reportsModule" ng-controller="eScreeningBatteriesCtrl">
 <a href="#skip" class="offscreen">Skip to main content</a>
 <div id="outerPageDiv">
 	<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp"%>
@@ -132,35 +132,35 @@
 								<ul class="ulclear">
 									<li>
 										<div class="checkbox">
-											<label for="numberOfeScreeningBatteries">Number of eScreening batteries completed</label><input type="checkbox" id="numberOfeScreeningBatteries"> 
+											<label for="numberOfeScreeningBatteries">Number of eScreening batteries completed</label><input type="checkbox" id="numberOfeScreeningBatteries" ng-model="report.numberOfeScreeningBatteries">
 										</div>
 										<ul>
-											<li><div class="checkbox"><label for="eachDay">Each day</label><input type="checkbox" id="eachDay"> </div></li>
-											<li><div class="checkbox"><label for="timeOfDayWeek">Time of day and day of week</label><input type="checkbox" id="timeOfDayWeek"></div></li>
+											<li><div class="checkbox"><label for="eachDay">Each day</label><input type="checkbox" id="eachDay" ng-model="report.eachDay"> </div></li>
+											<li><div class="checkbox"><label for="timeOfDayWeek">Time of day and day of week</label><input type="checkbox" id="timeOfDayWeek" ng-model="report.timeOfDayWeek"></div></li>
 										</ul>
 										
 									</li>
 									<li>
 										<div class="checkbox">
-											<label for="numberOfUniqueVeteran">Number of unique Veterans</label><input type="checkbox" id="numberOfUniqueVeteran"> 
+											<label for="numberOfUniqueVeteran">Number of unique Veterans</label><input type="checkbox" id="numberOfUniqueVeteran" ng-model="report.numberOfUniqueVeteran">
 										</div>										
 									</li>
 
 									<li>
 										<div class="checkbox">
-											<label for="numberOfAssessmentsPerClinician">Number of assessments per clinician in each clinic</label><input type="checkbox" id="numberOfAssessmentsPerClinician"> 
+											<label for="numberOfAssessmentsPerClinician">Number of assessments per clinician in each clinic</label><input type="checkbox" id="numberOfAssessmentsPerClinician" ng-model="report.numberOfAssessmentsPerClinician">
 										</div>										
 									</li>
 
 									<li>
 										<div class="checkbox">
-											<label for="averageTimePerAssessment">Average time per assessment</label><input type="checkbox" id="averageTimePerAssessment"> 
+											<label for="averageTimePerAssessment">Average time per assessment</label><input type="checkbox" id="averageTimePerAssessment" ng-model="report.averageTimePerAssessment">
 										</div>										
 									</li>
 
 									<li>
 										<div class="checkbox">
-											<label for="numberAndPercentVeteransWithMultiple">Number and percent of veterans with multiple eScreening batteries</label><input type="checkbox" id="numberAndPercentVeteransWithMultiple"> 
+											<label for="numberAndPercentVeteransWithMultiple">Number and percent of veterans with multiple eScreening batteries</label><input type="checkbox" id="numberAndPercentVeteransWithMultiple" ng-model="report.numberAndPercentVeteransWithMultiple">
 										</div>										
 									</li>
 									
@@ -187,14 +187,9 @@
 	
 </div>
 
-<div class="graphWrapper hide" id="graph_1"></div>
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
-<script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
-<script src="<c:url value="/resources/js/d3/chart.js" />"></script>
-
-<script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script></body>
 </html>

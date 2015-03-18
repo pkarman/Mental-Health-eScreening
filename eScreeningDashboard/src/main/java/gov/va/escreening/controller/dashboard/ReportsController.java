@@ -60,9 +60,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/individualStatisticsGraphic", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-
         return getIndividualStaticsGraphicPDF(requestData, escreenUser, "individualStatisticsGraphReport");
-
     }
 
     @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
@@ -107,17 +105,34 @@ public class ReportsController {
         return new ModelAndView("clinicStatisticReportsPartVDemographicsReport");
     }
 
+    @RequestMapping(value = "/clinicStatisticReportsPartVDemographicsReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartVDemographicsReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartVDemographicsReport(requestData, escreenUser));
+    }
+
     // ticket 596
     @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.GET)
     public ModelAndView getClinicStatisticReportsPartIVAverageTimePerModuleReport() {
         return new ModelAndView("clinicStatisticReportsPartIVAverageTimePerModuleReport");
     }
 
+    @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartIVAverageTimePerModuleReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartIVAverageTimePerModuleReport(requestData, escreenUser));
+    }
+
+
     // ticket 593
     @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.GET)
     public ModelAndView getClinicStatisticReportsPart1eScreeningBatteriesReport() {
         return new ModelAndView("clinicStatisticReportsPart1eScreeningBatteriesReport");
     }
+
+    @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPart1eScreeningBatteriesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPart1eScreeningBatteriesReport(requestData, escreenUser));
+    }
+
 
     // for avg individual
     private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {

@@ -100,11 +100,11 @@ module.factory('ReportsService', ['$http', function ($http) {
             responseType: "json"
         });
     };
-    var requestChartableData = function (indivStatFormData) {
-        return invokePost("requestChartableData", indivStatFormData, 'json');
+    var requestChartableData = function (formData) {
+        return invokePost("requestChartableData", formData, 'json');
     };
-    var requestNumericReport = function (indivStatFormData, restURL) {
-        return invokePost(restURL, indivStatFormData, 'arraybuffer');
+    var requestNumericReport = function (formData, restURL) {
+        return invokePost(restURL, formData, 'arraybuffer');
     };
     var requestGraphicReport = function (data, restURL) {
         return invokePost(restURL, data, 'arraybuffer');
@@ -229,7 +229,7 @@ module.controller('indivStatsCtrl', ['$scope', '$http', 'ReportsService', functi
 
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
-        $scope.report = {};
+        //$scope.report = {};
     }
 
     $scope.selectAllSurvey = function () {
@@ -294,7 +294,7 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
 
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
-        $scope.report = {};
+        //$scope.report = {};
     }
 
     $scope.selectAllSurvey = function () {
@@ -314,6 +314,46 @@ module.controller('avgScoresForPatientsByClinicCtrl', ['$scope', '$http', 'Repor
         } else {
             $scope.report.clinicsList = [];
         }
+    }
+}]);
+
+module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var escreeningBatteriesForm = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                numberOfeScreeningBatteries: $scope.report.numberOfeScreeningBatteries,
+                eachDay: $scope.report.eachDay,
+                timeOfDayWeek: $scope.report.timeOfDayWeek,
+                numberOfUniqueVeteran: $scope.report.numberOfUniqueVeteran,
+                numberOfAssessmentsPerClinician: $scope.report.numberOfAssessmentsPerClinician,
+                averageTimePerAssessment: $scope.report.averageTimePerAssessment,
+                numberAndPercentVeteransWithMultiple: $scope.report.numberAndPercentVeteransWithMultiple,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'escreeningBatteriesForm'
+            };
+            ReportsService.runNumericReport(escreeningBatteriesForm, 'clinicStatisticReportsPart1eScreeningBatteriesReport').then(function () {
+                console.log('clinicStatisticReportsPart1eScreeningBatteriesReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
     }
 }]);
 
