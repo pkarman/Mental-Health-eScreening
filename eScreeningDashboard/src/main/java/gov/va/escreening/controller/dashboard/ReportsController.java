@@ -130,7 +130,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPart1eScreeningBatteriesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPart1eScreeningBatteriesReport(requestData, escreenUser));
+        return new ModelAndView("batteriesReport", rd.genClinicStatisticReportsPart1eScreeningBatteriesReport(requestData, escreenUser));
     }
 
 

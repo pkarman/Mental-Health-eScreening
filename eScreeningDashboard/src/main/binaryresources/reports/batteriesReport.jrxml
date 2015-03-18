@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="batteriesReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="191"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="clinicNames" class="java.lang.String"/>
+	<parameter name="checkAll" class="java.util.Collection"/>
+	<parameter name="showCheckAll" class="java.lang.Boolean"/>
+	<parameter name="byDay" class="java.util.Collection"/>
+	<parameter name="showByDay" class="java.lang.Boolean"/>
+	<parameter name="byTime" class="java.util.Collection"/>
+	<parameter name="showByTime" class="java.lang.Boolean"/>
+	<parameter name="grandTotal" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="151" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Demographics Report]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="386" y="78" width="181" height="26" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VistA Clinics]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="10" y="133" width="562" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="154" splitType="Stretch">
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="12" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
+					<printWhenExpression><![CDATA[$P{showByDay}.booleanValue()]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="total">
+					<subreportParameterExpression><![CDATA[$P{grandTotal}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{byDay})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["/reports/batteriesReport-byDay.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="12" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
+					<printWhenExpression><![CDATA[$P{showByTime}.booleanValue()]]></printWhenExpression>
+				</reportElement>
+				<subreportParameter name="total">
+					<subreportParameterExpression><![CDATA[$P{grandTotal}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{byTime})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["/reports/batteries-byTime.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="54" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
+					<printWhenExpression><![CDATA[$P{showCheckAll}.booleanValue()]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{checkAll})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["/reports/batteriesReport-checkAll.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

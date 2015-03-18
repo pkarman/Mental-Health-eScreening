@@ -466,6 +466,34 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
+        parameterMap.put("fromToDate"," from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames","MAMMOGRAM");
+
+        parameterMap.put("datasource", new JREmptyDataSource());
+
+        parameterMap.put("showCheckAll", true);
+        parameterMap.put("showByDay", false);
+        parameterMap.put("showByTime", false);
+        parameterMap.put("grandTotal", "100");
+
+        parameterMap.put("byDay", new ArrayList());
+        parameterMap.put("byTime", new ArrayList());
+
+        List<KeyValueDTO> ks = new ArrayList<>();
+
+        KeyValueDTO keyValueDTO = new KeyValueDTO();
+        keyValueDTO.setKey("First");
+        keyValueDTO.setValue("100");
+
+        ks.add(keyValueDTO);
+
+        keyValueDTO = new KeyValueDTO();
+        keyValueDTO.setValue(" 12");
+        keyValueDTO.setKey("number of abc");
+        ks.add(keyValueDTO);
+
+        parameterMap.put("checkAll", ks);
+
         return parameterMap;
     }
 
@@ -502,7 +530,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dtos.add(surveyTimeDTO);
 
         dataSource = new JRBeanCollectionDataSource(dtos);
-
+        dataSource = new JREmptyDataSource();
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
