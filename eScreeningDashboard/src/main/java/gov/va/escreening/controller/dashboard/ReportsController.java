@@ -107,7 +107,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPartVDemographicsReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPartVDemographicsReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPartVDemographicsReport(requestData, escreenUser));
+        return new ModelAndView("demographicsReport", rd.genClinicStatisticReportsPartVDemographicsReport(requestData, escreenUser));
     }
 
     // ticket 596
