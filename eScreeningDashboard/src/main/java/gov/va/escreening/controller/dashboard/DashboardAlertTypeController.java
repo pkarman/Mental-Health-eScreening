@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/dashboard/alertTypes")
+@RequestMapping(value = "/dashboard")
 public class DashboardAlertTypeController extends RestController
 {
 	
@@ -34,7 +34,7 @@ public class DashboardAlertTypeController extends RestController
 		return "systemTab/alertEditView";
 	}
 
-	@RequestMapping(value="/", method = RequestMethod.GET)
+	@RequestMapping(value="/alertTypes", method = RequestMethod.GET)
 	@ResponseBody
 	public Response<List<DropDownObject>> getAlertTypes()
 	{
@@ -42,7 +42,7 @@ public class DashboardAlertTypeController extends RestController
 		
 	}
 	
-	@RequestMapping(value="/delete", method = RequestMethod.POST)
+	@RequestMapping(value="/alertTypes/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> delete(@RequestParam int id)
 	{
@@ -50,7 +50,7 @@ public class DashboardAlertTypeController extends RestController
 		return successResponse(true);
 	}
 	
-	@RequestMapping(value="/update", method = RequestMethod.POST)
+	@RequestMapping(value="/alertTypes/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<String> update(@RequestParam(required=false) Integer id, 
 			@RequestParam String name)

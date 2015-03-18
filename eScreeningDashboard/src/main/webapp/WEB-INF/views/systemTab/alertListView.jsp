@@ -53,7 +53,11 @@
   
     <div class="col-md-4 pull-right">
       <s:url var="addAlertUrl" value="/dashboard/alertEditView" htmlEscape="true"></s:url>
+<<<<<<< HEAD
       <a href="${addAlertUrl}" class="btn btn-primary btn-md h1_button pull-right"><span class="glyphicon glyphicon-plus"></span> Add New Alert</a> </div>
+=======
+      <a href="${addAlertUrl}" class="btn btn-primary btn-md form-control h1_button"><span class="glyphicon glyphicon-plus"></span> Add New Alert</a> </div>
+>>>>>>> 3a8f62a3d706f45019367bce5c546e295a69a609
     <div class="col-md-8 pull-left"><a name="skip" > </a >
       <h1>Manage Alert</h1>
     </div>
