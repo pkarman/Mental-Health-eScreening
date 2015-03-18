@@ -118,7 +118,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPartIVAverageTimePerModuleReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPartIVAverageTimePerModuleReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPartIVAverageTimePerModuleReport(requestData, escreenUser));
+        return new ModelAndView("averageTimePerModuleReport", rd.genClinicStatisticReportsPartIVAverageTimePerModuleReport(requestData, escreenUser));
     }
 
 

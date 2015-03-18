@@ -4,3 +4,5 @@ eScreeningDashboard/src/main/webapp/resources/editors/js/app/domains/TemplateVar
 eScreeningDashboard/src/main/binaryresources/image/summary.svg
 
 eScreeningDashboard/src/main/binaryresources/reports/individualStatisticsGraph.jrxml.backup
+
+*.swp
