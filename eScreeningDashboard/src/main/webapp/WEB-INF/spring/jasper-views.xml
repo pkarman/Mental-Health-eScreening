@@ -80,4 +80,12 @@
           p:url="classpath:/reports/demographicsReport.jrxml"
           p:reportDataKey="datasource"/>
 
+    <!-- ticket 597 -->
+    <bean id="averageTimePerModuleReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/averageTimePerModuleReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+
+
 </beans>

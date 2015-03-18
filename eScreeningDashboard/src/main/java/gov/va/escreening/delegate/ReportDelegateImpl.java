@@ -469,6 +469,41 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public Map<String, Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
+
+        parameterMap.put("fromToDate"," from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames","MAMMOGRAM");
+
+        JRDataSource dataSource = null;
+
+        List<SurveyTimeDTO> dtos = new ArrayList<>();
+
+        SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
+
+        surveyTimeDTO.setModuleName("AUDIT-C");
+        surveyTimeDTO.setModuleTime("20");
+        dtos.add(surveyTimeDTO);
+
+        surveyTimeDTO = new SurveyTimeDTO();
+        surveyTimeDTO.setModuleName("AUDIT-C2");
+        surveyTimeDTO.setModuleTime("23");
+        dtos.add(surveyTimeDTO);
+
+        surveyTimeDTO = new SurveyTimeDTO();
+        surveyTimeDTO.setModuleName("Goals");
+        surveyTimeDTO.setModuleTime("24");
+        dtos.add(surveyTimeDTO);
+
+        surveyTimeDTO = new SurveyTimeDTO();
+        surveyTimeDTO.setModuleName("Exposure");
+        surveyTimeDTO.setModuleTime("27");
+        dtos.add(surveyTimeDTO);
+
+        dataSource = new JRBeanCollectionDataSource(dtos);
+
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
         return parameterMap;
     }
 
