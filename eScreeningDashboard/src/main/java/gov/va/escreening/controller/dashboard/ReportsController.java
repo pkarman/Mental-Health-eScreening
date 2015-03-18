@@ -122,21 +122,21 @@ public class ReportsController {
 
         if ("avgScoresForPatientsByClinic".equals(requestData.get(ReportsUtil.REPORT_TYPE))) {
             if ("groupData".equals(requestData.get(ReportsUtil.DISPLAY_OPTION))) {
-                return createChartableDataFor601Clinic(requestData);
+                return createGrpChartableDataForAvgScoresForPatientsByClinic(requestData);
             } else {
-                return createChartableDataFor601VeteranClinic(requestData);
+                return createIndivChartableDataForAvgScoresForPatientsByClinic(requestData);
             }
         }
 
         return createChartableDataForIndividualStats(requestData);
     }
 
-    private List<Map<String, Object>> createChartableDataFor601VeteranClinic(Map<String, Object> requestData) {
-        return rd.createChartableDataFor601VeteranClinic(requestData);
+    private List<Map<String, Object>> createIndivChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
+        return rd.createIndivChartableDataForAvgScoresForPatientsByClinic(requestData);
     }
 
-    private List<Map<String, Object>> createChartableDataFor601Clinic(Map<String, Object> requestData) {
-        return rd.createChartableDataFor601Clinic(requestData);
+    private List<Map<String, Object>> createGrpChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
+        return rd.createGrpChartableDataForAvgScoresForPatientsByClinic(requestData);
     }
 
 
