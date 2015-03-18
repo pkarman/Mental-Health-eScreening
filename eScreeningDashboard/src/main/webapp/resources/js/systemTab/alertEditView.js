@@ -14,10 +14,13 @@ $(document).ready(function() {
 		var data_aid = $(this).attr("data-aid");
 		var data_name = $("#alertName").val();
 		alert("Saving" + data_name);
+		data = "{stateId:'" + data_aid + "', stateName:'"+ data_name +"'}";
+		
 		$.ajax({
 			url: "alertTypes/update",
 			type: "POST",
-			data: "id=" + data_aid + "&name=" + data_name,
+			dataType: "json",
+			data: JSON.stringify(data),
 			success: function(){
 				window.location.href = "alertListView?msg=s";
 				$("#successMsg").removeClass("hide");

@@ -93,11 +93,13 @@ $(document).ready(function() {
 	});
 
 
+		
 	$(this).on('click', '.confirmDelete', function() {
+		data = "{stateId:"+data_aid + "}";
 		$.ajax({
 			url: "alertTypes/delete",
 			type: "POST",
-			data: data_aid,
+			data: JSON.stringify(data),
 			success: function(){
             	alert("success");
         	}
