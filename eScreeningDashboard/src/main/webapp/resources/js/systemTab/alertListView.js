@@ -1,37 +1,10 @@
-/*var app = angular.module('alertViewApp', []);
-
-app.factory('programListService', function($http) {
-	return {
-		getProgramList : function() {
-			return $http({
-				method : "GET",
-				url : "dashboard/programList",
-				responseType : "json"
-			}).then(function(result) {
-				console.log("result.data" + result);
-				return result.data;
-			});
-		}
-	};
-});
-
-app.controller("tabletConfigurationController", function($scope, $element, $http, $window, programListService) {
-	$scope.tabletConfigurationFormBean = {};
-	$scope.tabletConfigurationFormBean.programId = "";
-
-	programListService.getProgramList().then(function(data) {
-		$scope.programList = data;
-	});
-});
-*/
-
 var app = angular.module('alertViewApp', []);
 app.directive('reportTable', function() {
 	return function(scope, element, attrs) {
         var options = {};
         options = {
 	    	"bProcessing": true,
-	    	"bServerSide": true,
+	    	"bServerSide": false,
 	    	"bStateSave": true,
  			"fnStateSave": function (oSettings, oData) {
 				// set local storage for paging
@@ -48,15 +21,15 @@ app.directive('reportTable', function() {
 	
 	    	"sPaginationType": "full_numbers",
 	    	"sServerMethod": "GET",
-	    	"sAjaxSource": "http://localhost:8080/escreeningdashboard/dashboard/alertTypes/",
-			"sAjaxDataProp": "status.payload",
+	    	"sAjaxSource": "alertTypes/",
+			"sAjaxDataProp": "payload",
 	    	"fnServerData": scope.$eval(attrs.fnDataCallback)
         };
 
         var aoColumns = {};
         aoColumns = [
 			{ "mData": "stateName",  "sClass": "col-md-10"},
-			{ "mData": "stateId" , "sClass": "text-right col-md-2", "bSortable" : false , "mRender": function(data, type, row) { return '<a href="alertEditView?aid='+row.stateId+'" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a> &nbsp; &nbsp; <a href="alertEditView?aid='+row.stateId+'" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>'; }}];
+			{ "mData": "stateId" , "sClass": "text-right col-md-2", "bSortable" : false , "mRender": function(data, type, row) { return '<a href="alertEditView?aid='+row.stateId+'" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a> &nbsp; &nbsp; <a href="#" class="btn btn-default btn-xs cursor-pointer deleteModal"  data-toggle="modal" data-target="#deleteModal" data-aid='+row.stateId+'><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>'; }}];
 		console.log("aoColumns");
 		console.log(aoColumns);
         options["aoColumns"] = aoColumns;
@@ -109,5 +82,40 @@ app.controller("alertsController", function($scope, $element, $http, $window) {
 
 $(document).ready(function() {
 	// Tab
-	tabsLoad("systemConfiguration");		
+	tabsLoad("systemConfiguration");
+
+	
+	// Delete Alert
+	var data_aid;
+	$(this).on('click', '.deleteModal', function() {
+		data_aid 				= $(this).attr("data-aid");
+		$(".confirmDelete").attr("data-aid", data_aid );
+	});
+
+
+	$(this).on('click', '.confirmDelete', function() {
+		$.ajax({
+			url: "alertTypes/delete",
+			type: "POST",
+			data: data_aid,
+			success: function(){
+            	alert("success");
+        	}
+		})
+	});
+
+
+	// Query String
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	
+	var msg = getParameterByName('msg');
+	
+	if(msg == "s"){
+		$("#successMsg").removeClass("hide");
+	}
 });

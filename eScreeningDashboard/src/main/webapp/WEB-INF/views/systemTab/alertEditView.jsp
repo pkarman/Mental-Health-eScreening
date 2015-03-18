@@ -49,18 +49,25 @@
   <div class="row">
     <div class="col-md-12"> <a name="skip"> </a >
       <h1>Alert Edit</h1>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-success hide" role="alert" id="successMsg">Alert Saved Successfully.</div>
+			</div>
+		</div>
+					  
       <div>
 		<form>
 			<div class="border-radius-main-form gray-lighter">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Alert Name *</label>
 					<input type="text" class="form-control" id="alertName" placeholder="Enter Alert Name">
-					<div class="">Max 100 characters</div>
+					<p class="help-block">Max 100 characters</p>
 				</div>
 			</div><br>
 			
 			<div class="form-group pull-right">
-				<button type="submit" class="btn btn-primary" id="save">Save</button>
+				<button type="button" class="btn btn-primary" id="save" data-aid="7">Save</button>
 				<button type="button" class="btn btn-default" id="cancel">Cancel</button>
 			</div>
 		</form>
