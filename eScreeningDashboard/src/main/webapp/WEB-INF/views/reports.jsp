@@ -74,30 +74,44 @@
 				<td class="text-left">Average Scores for Veterans by Clinic Report</td>
 				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
+
 			<tr>
-				<td class="text-left">Clinic Statistic Reports: eScreening Batteries Report</td>
+				<td class="text-left bg_color_subheader"><h4>Clinic Statistic Reports</h4></td>
+				<td class="text-righ bg_color_subheader"></td>
+			</tr>
+
+
+			<tr>
+				<td class="text-left">Most Common Types of Alerts and Percentages Report</td>
+				<td class="text-right"><a href="clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+			</tr>
+
+
+			<tr>
+				<td class="text-left">Positive Screens Report</td>
+				<td class="text-right"><a href="clinicStatisticReportsPartVIPositiveScreensReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+			</tr>
+
+
+			<tr>
+				<td class="text-left">List Of Top 20 Most Skipped Questions Report</td>
+				<td class="text-right"><a href="clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+			</tr>
+			
+			<tr>
+				<td class="text-left">eScreening Batteries Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPart1eScreeningBatteriesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part 1: eScreening Batteries Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			<tr>
-				<td class="text-left">Clinic Statistic Reports Part V: Demographics Report</td>
+				<td class="text-left">Demographics Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartVDemographicsReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports Part V: Demographics Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			<tr>
-				<td class="text-left">Clinic Statistic Reports: Average Time Per Module Report</td>
+				<td class="text-left">Average Time Per Module Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartIVAverageTimePerModuleReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-			<tr>
-				<td class="text-left">Clinic Statistic Reports Part VI: Positive Screens Report</td>
-				<td class="text-right"><a href="clinicStatisticReportsPartVIPositiveScreensReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
-			</tr>
-			<tr>
-				<td class="text-left">Clinic Statistic Reports Part II: Most Common Types of Alerts and Percentages Report</td>
-				<td class="text-right"><a href="clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
-			</tr>
-			<tr>
-				<td class="text-left">Clinic Statistic Reports Part III: List Of Top 20 Most Skipped Questions Report</td>
-				<td class="text-right"><a href="clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
-			</tr>
+
+
 		</table>
 	</div>
 </div>

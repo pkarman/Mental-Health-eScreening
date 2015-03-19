@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports | eScreening Batteries Report</title>
+  <title>Reports | Clinic Statistic Reports: eScreening Batteries Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -74,7 +74,7 @@
 							
 							
 							
-							
+							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by  Clinic" />
 							<!-- TODO: Program Evaluator Role only 602 / 603
 							<div>
 								<div class="checkbox">
@@ -90,9 +90,11 @@
 							
 							
 							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="clinic in clinicsList">
-									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>
-								 </ul>
+								  <table  id="clinics-list-table">
+										<tr ng-repeat="clinic in clinicsList">
+										  <td><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></td>
+										</tr>
+								  </table>
 							</div>
 						</div>
 					</div>
