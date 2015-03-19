@@ -13,13 +13,13 @@ $(document).ready(function() {
 	$(this).on('click', '#save', function() {
 		var data_aid = $(this).attr("data-aid");
 		var data_name = $("#alertName").val();
-		alert("Saving" + data_name);
-		data = "{stateId:'" + data_aid + "', stateName:'"+ data_name +"'}";
+		data = {"stateId": data_aid, "stateName" : data_name };
 		
 		$.ajax({
 			url: "alertTypes/update",
 			type: "POST",
 			dataType: "json",
+			contentType: "application/json",
 			data: JSON.stringify(data),
 			success: function(){
 				window.location.href = "alertListView?msg=s";
@@ -29,6 +29,5 @@ $(document).ready(function() {
 				$("#errorMsg").removeClass("hide");
  		    }
 		})
-	});
-		
+	});		
 });

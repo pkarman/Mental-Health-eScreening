@@ -28,7 +28,7 @@ app.directive('reportTable', function() {
 
         var aoColumns = {};
         aoColumns = [
-			{ "mData": "stateName",  "sClass": "col-md-10"},
+			{ "mData": "stateName",  "sClass": "col-md-10 text-left"},
 			{ "mData": "stateId" , "sClass": "text-right col-md-2", "bSortable" : false , "mRender": function(data, type, row) { return '<a href="alertEditView?aid='+row.stateId+'" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a> &nbsp; &nbsp; <a href="#" class="btn btn-default btn-xs cursor-pointer deleteModal"  data-toggle="modal" data-target="#deleteModal" data-aid='+row.stateId+'><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>'; }}];
 		console.log("aoColumns");
 		console.log(aoColumns);
@@ -83,29 +83,27 @@ app.controller("alertsController", function($scope, $element, $http, $window) {
 $(document).ready(function() {
 	// Tab
 	tabsLoad("systemConfiguration");
-
-	
+		
 	// Delete Alert
 	var data_aid;
 	$(this).on('click', '.deleteModal', function() {
-		data_aid 				= $(this).attr("data-aid");
+		data_aid  = $(this).attr("data-aid");
 		$(".confirmDelete").attr("data-aid", data_aid );
 	});
 
-
-		
 	$(this).on('click', '.confirmDelete', function() {
-		data = "{stateId:"+data_aid + "}";
+		data = { "stateId": data_aid };
 		$.ajax({
 			url: "alertTypes/delete",
 			type: "POST",
+			dataType: "json",
+			contentType: "application/json",
 			data: JSON.stringify(data),
 			success: function(){
             	alert("success");
         	}
 		})
 	});
-
 
 	// Query String
 	function getParameterByName(name) {
