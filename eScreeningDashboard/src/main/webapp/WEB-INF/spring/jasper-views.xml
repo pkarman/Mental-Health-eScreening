@@ -74,4 +74,10 @@
           p:url="classpath:/reports/avgVetClinicGraphReport.jrxml"
           p:reportDataKey="datasource"/>
 
+    <!-- ticket 600 numeric report -->
+    <bean id="avgClinicNumericReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/avgClinicNumericReport.jrxml"
+          p:reportDataKey="datasource"/>
+
 </beans>

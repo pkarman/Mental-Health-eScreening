@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="601ModuleNumericSubReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="592" leftMargin="3" rightMargin="0" topMargin="10" bottomMargin="10" uuid="36c6d903-ecad-4ae0-a5c0-fdefb61b7786">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/Users/kliu/work/eScreeningDashboard/src/main/binaryresources/reports/"]]></defaultValueExpression>
+	</parameter>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="scoreName" class="java.lang.String"/>
+	<field name="score" class="java.lang.String"/>
+	<field name="scoreMeaning" class="java.lang.String"/>
+	<field name="scoreHistory" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="131" splitType="Stretch">
+			<elementGroup>
+				<frame>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="20" width="95" height="110" uuid="90684b29-98aa-4d63-b66b-371b0d108b5f"/>
+					<box>
+						<topPen lineWidth="1.5"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textField isStretchWithOverflow="true">
+						<reportElement x="0" y="12" width="95" height="28" uuid="2708d91a-ece4-4ebf-b8f7-632da8fda8b6"/>
+						<textElement textAlignment="Center">
+							<font isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="40" width="95" height="29" uuid="42830d65-1a15-4701-b7ed-d10dc98e764c"/>
+						<textElement textAlignment="Center">
+							<font size="14" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="69" width="95" height="20" uuid="12076b5d-5226-4d3a-b964-67c145c228d0"/>
+						<textElement textAlignment="Center"/>
+						<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<frame>
+					<reportElement x="95" y="20" width="480" height="110" uuid="18b70819-c52c-43c9-810e-731bb00518d9"/>
+					<box>
+						<topPen lineWidth="1.5"/>
+						<bottomPen lineWidth="0.75"/>
+					</box>
+					<subreport>
+						<reportElement x="0" y="0" width="480" height="110" uuid="567e574c-4292-4222-9aaf-ae4e27153ed5"/>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
+						<subreportExpression><![CDATA["/reports/601ScoreHistorySubReport.jasper"]]></subreportExpression>
+					</subreport>
+				</frame>
+			</elementGroup>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="237" height="20" uuid="6d3b9a2e-4d00-459d-b657-bc67c3bc4214"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -196,8 +196,10 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             if (hasData) {
 
-                for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
-                    moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                if (svgObject!=null && svgObject.size() > 0) {
+                    for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
+                        moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                    }
                 }
 
                 resultList.add(dto);
