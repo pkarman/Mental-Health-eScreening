@@ -114,7 +114,10 @@ public class ReportDelegateImpl implements ReportDelegate {
                 for (Object o : sSurveyList) {
                     ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, (Integer) o, vId, fromDate, toDate);
                     if (moduleGraphReportDTO.getHasData()) {
-                        moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+
+                        if (svgObject!=null && svgObject.size()>0) {
+                            moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                        }
                         moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
                         hasData = true;
                     }
@@ -196,8 +199,10 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             if (hasData) {
 
-                for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
-                    moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                if (svgObject!=null && svgObject.size() > 0) {
+                    for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
+                        moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                    }
                 }
 
                 resultList.add(dto);

@@ -138,18 +138,21 @@
 
 					</div>
 					<div class="col-md-6">
-						<div class="checkbox_group_label"><strong>Select Modules</strong></div>
+						<label for="battery-list-table-filter">Select Modules</label></strong>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
+							<input type="text" class="form-control" id="battery-list-table-filter" data-action="filter" data-filters="#battery-list-table" placeholder="Filter by Modules" />	
 							<div class="checkbox">
 								<input type="checkbox" id="selectAllSurvey" class="selectAllSurvey" name="selectAllSurvey"  ng-change="selectAllSurvey()" ng-model="report.selectAllSurvey" data-cbgroup="checkbox_group_survey" />
 								<label class="labelAlign" for="selectAllSurvey" data-cbgroup="checkbox_group_survey">Select All Modules</label>
 							</div>
 							<hr class="hr_margin_5">
 							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="survey in surveysList">
-									<li><div class="checkbox"><input type="checkbox" id="survey_{{survey.surveyId}}" checklist-model="report.surveysList" checklist-value="survey.surveyId" name="survey{{survey.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{survey.surveyId}}">{{survey.name}}</label></div></li>
-								 </ul>
+								  <table  id="battery-list-table">
+										<tr ng-repeat="survey in surveysList">
+										  <td><div class="checkbox"><input type="checkbox" id="survey_{{survey.surveyId}}" checklist-model="report.surveysList" checklist-value="survey.surveyId" name="survey{{survey.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{survey.surveyId}}">{{survey.name}}</label></div></td>
+										</tr>
+								  </table>
 							</div>
 						</div>
 					</div>
@@ -163,6 +166,20 @@
 						</div>
 					</div>
 				</div>
+				
+				
+				
+
+
+
+
+                 
+
+			  
+			  
+			
+			
+							
 			</form>
 			</div>
 	</div>
@@ -178,5 +195,6 @@
 <script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
+
 </body>
 </html>
