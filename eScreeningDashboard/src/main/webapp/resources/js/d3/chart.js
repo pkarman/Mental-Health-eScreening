@@ -239,25 +239,34 @@ function graphGenerator(dataStructure, dataDataset){
 		      .attr('y', 100);
 		
 		   // legend Text & Box
-		  textWidth = 15;
+		  textWidth = 8;
+		  gWidth = 15;
 		   series.forEach(function(s, i) {
-			   g 	= svg.append('g');
+			   g 	= svg.append('g')
+			   			.attr('width', 100)
+						.attr('x', gWidth)
+						 .attr('transform', 'translate(' + gWidth + ',-15)')
+						gWidth += 60  + 10;
+						
 			   text = g.append('text')
 		          .attr('fill', 'black')
 				  .attr('width', 100)
-		          .attr('x', textWidth)
+		          .attr('x', 30)
 		          .attr('y', 100)
 		          .attr('font-size', '10')
 				  .attr('font-family', 'Arial')
-		          .text(s);
+				  .attr("dy", 0)
+				  .text(s)
+				  .call(wrap, 60);
 
 			   box = g.append('rect')
 		          .attr('fill', colors[i])
 		          .attr('width', 10)
 		          .attr('height', 10)
-		          .attr('x', textWidth - 15)
+		          .attr('x', -15)
 		          .attr('y', 90);
-		      	  textWidth += parseFloat(g.node().getBoundingClientRect().width)  + 10 ;
+		      	  textWidth += 60  + 10 ;
+				  
               console.log("Parse 8----");
 			  console.log(g.node().getBoundingClientRect().width);
               console.log(text.node().getComputedTextLength());
@@ -268,9 +277,6 @@ function graphGenerator(dataStructure, dataDataset){
 		      .each(function() {
 		          $(this).prependTo(this.parentNode);
 		  });
-
-
-		
 	}
 
    
@@ -500,14 +506,13 @@ function graphGenerator(dataStructure, dataDataset){
 				.attr("x", xLegendTextPosition)
 				.attr("y", function (d, i) {
 				return i * 35 + 9;
-			})
+				})
 				.attr("dy", 0)
 				.text(function (d, i) {
-					
 					var text = graphParams.legends[i];
 					return text;
 				})
-			.call(wrap, 100);
+				.call(wrap, 100);
 	
 			legend.append("circle")
 				.classed("point", true)
@@ -564,30 +569,7 @@ function graphGenerator(dataStructure, dataDataset){
 					}
 				});
 
-			// Text Wrapper
-			function wrap(text, width) {
-				text.each(function () {
-					var text = d3.select(this),
-						words = text.text().split(/\s+/).reverse(),
-						word,
-						line = [],
-						lineNumber = 0,
-						lineHeight = 1.1, // ems
-						y = text.attr("y"),
-						dy = parseFloat(text.attr("dy")),
-						tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-					while (word = words.pop()) {
-						line.push(word);
-						tspan.text(line.join(" "));
-						if (tspan.node().getComputedTextLength() > width) {
-							line.pop();
-							tspan.text(line.join(" "));
-							line = [word];
-							tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-						}
-					}
-				});
-			}
+
 	
 		colors.reverse(); // reset colors order
 	
@@ -607,6 +589,35 @@ function graphGenerator(dataStructure, dataDataset){
 		});
 	}
 	 	   
+
+
+	// Text Wrapper
+	function wrap(text, width) {
+		console.log("wrap text");
+		console.log(text);
+		text.each(function () {
+			var text = d3.select(this),
+				words = text.text().split(/\s+/).reverse(),
+				word,
+				line = [],
+				lineNumber = 0,
+				lineHeight = 1.1, // ems
+				y = text.attr("y"),
+				dy = parseFloat(text.attr("dy")),
+				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+			while (word = words.pop()) {
+				line.push(word);
+				tspan.text(line.join(" "));
+				if (tspan.node().getComputedTextLength() > width) {
+					line.pop();
+					tspan.text(line.join(" "));
+					line = [word];
+					tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+				}
+			}
+		});
+	}
+				
 	function hasMoreThanOne(obj) {
 			if (Object.keys) { 
 				return Object.keys(obj).length > 1;
@@ -617,16 +628,14 @@ function graphGenerator(dataStructure, dataDataset){
 				c++;
 			}
 			return false;
-	}	
-}			
-// Root Function to generate SVG obj
-var svgObj  = function(){
-	// graphSVG created for Khalid
-	var graphSVG = $(".graphWrapper").html();
-	return graphSVG;
-}
-
-
+			}	
+	}			
+	// Root Function to generate SVG obj
+	var svgObj  = function(){
+		// graphSVG created for Khalid
+		var graphSVG = $(".graphWrapper").html();
+		return graphSVG;
+	}
 
 $(document).ready(function() {
 //	 // Example Dataset for Structure JSON and Data JSON
