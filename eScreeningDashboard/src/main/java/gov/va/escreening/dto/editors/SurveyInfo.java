@@ -20,13 +20,10 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private Integer surveyId;
     private String name;
-    private String vistaTitle;
     private String description;
     private Integer version;
     private boolean hasMha;
     private String mhaTestName;
-    private String mhaResultGroupIen;
-    private Boolean clinicalReminder;
     private Integer displayOrderForSection=1;
 	private Date dateCreated;
     private Boolean isIncludedInBattery;
@@ -92,14 +89,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
         this.mhaTestName = mhaTestName;
     }
 
-    public String getMhaResultGroupIen() {
-        return mhaResultGroupIen;
-    }
-
-    public void setMhaResultGroupIen(String mhaResultGroupIen) {
-        this.mhaResultGroupIen = mhaResultGroupIen;
-    }
-
     @JsonSerialize(using=JsonDateSerializer.class)
     @JsonProperty("createdDate")
     public Date getDateCreated() {
@@ -111,21 +100,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     }
 
     @Override
-    public String getVistaTitle() {
-        return vistaTitle;
-    }
-
-    @Override
-    public void setVistaTitle(String vistaTitle) {
-        this.vistaTitle = vistaTitle;
-    }
-
-    @Override
-    public Boolean isClinicalReminder() {
-        return this.clinicalReminder;
-    }
-
-    @Override
     public void setDisplayOrderForSection(Integer displayOrder) {
         this.displayOrderForSection=displayOrder;
     }
@@ -133,10 +107,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     @Override
     public Integer getDisplayOrderForSection() {
         return this.displayOrderForSection;
-    }
-
-    public void setClinicalReminder(boolean clinicalReminder) {
-        this.clinicalReminder = clinicalReminder;
     }
 
     public Boolean getIsIncludedInBattery() {
@@ -171,9 +141,10 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     @Override
     public String toString() {
         return "SurveyItem [surveyId=" + surveyId + ", name=" + name + ", description=" + description + ", version="
-                + version + ", isMha=" + hasMha + ", mhaTestName=" + mhaTestName
-                + ", mhaResultGroupIen=" + mhaResultGroupIen + ", dateCreated=" + dateCreated
-                + ", isIncludedInBattery=" + isIncludedInBattery + /*", surveySectionItem=" + surveySectionItem
-                + ", surveyStatusItem=" + surveyStatusItem + */"]";
+                + version + ", isMha=" + hasMha 
+                + ", mhaTestName=" + mhaTestName
+                + ", dateCreated=" + dateCreated
+                + ", isIncludedInBattery=" + isIncludedInBattery
+                + "]";
     }
 }

@@ -1,5 +1,8 @@
 package gov.va.escreening.entity;
 
+import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.exception.IllegalSystemStateException;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -202,6 +205,23 @@ public class MeasureAnswer implements Serializable {
     public void setAssessmentVariableList(List<AssessmentVariable> assessmentVariableList) {
         this.assessmentVariableList = assessmentVariableList;
     }
+    
+    /**
+     * This is a method to move our code base from a one to many between measure and assessment variables to a one to one (as it should be)
+     * @return
+     * @throws IllegalSystemStateException is there is no AV for this measure.
+     */
+	public AssessmentVariable getAssessmentVariable() {
+		List<AssessmentVariable> avList = getAssessmentVariableList();
+		if(avList == null || avList.isEmpty()){
+			ErrorBuilder.throwing(IllegalSystemStateException.class)
+				.toAdmin("Each measure answer should have an assessment variable assigned to it but the measure answer with the following ID doesn't: " + getMeasureAnswerId())
+				.toUser("A system issue has been detected. Please contact support")
+				.throwIt();
+		}
+		
+		return avList.get(0);
+	}
 
     public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
         return surveyMeasureResponseList;
@@ -237,4 +257,20 @@ public class MeasureAnswer implements Serializable {
         return "gov.va.escreening.entity.MeasureAnswer[ measureAnswerId=" + measureAnswerId + " ]";
     }
 
+    /**
+     * method to try to pick some text to identify this answer
+     * use the export name as #1 source of identifying, else try to match this identification with the Question variable name
+     * else use this answer's answer text (this will be the case if this is an answer to a table question)
+     * @return
+     */
+    public String getIdentifyingText() {
+        String maIdentifyingText = getExportName();
+        if (maIdentifyingText == null) {
+            maIdentifyingText = getMeasure().getVariableName();
+        }
+        if (maIdentifyingText == null) {
+            maIdentifyingText = getAnswerText();
+        }
+        return maIdentifyingText;
+    }
 }

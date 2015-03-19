@@ -302,7 +302,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
     private Map<Integer,MeasureAnswer> copyFromDTO(Measure m, gov.va.escreening.dto.ae.Measure measureDto) {
         m.setIsRequired(measureDto.getIsRequired());
         m.setIsPatientProtectedInfo(measureDto.getIsPPI());
-        m.setIsMha(measureDto.getIsMha());
+        m.setIsMha(measureDto.getMha());
         m.setMeasureText(measureDto.getMeasureText());
         m.setVistaText(measureDto.getVistaText());
         m.setVariableName(measureDto.getVariableName());
@@ -398,6 +398,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             ma.setAnswerType(answerDto.getAnswerType());
             ma.setCalculationValue(answerDto.getCalculationValue());
             ma.setDisplayOrder(answerDto.getDisplayOrder());
+            ma.setMhaValue(answerDto.getMhaValue());
             ma.setMeasure(m);
         }
         return ma;

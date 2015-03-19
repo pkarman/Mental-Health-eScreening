@@ -34,6 +34,7 @@
 		                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
 				                ng-model="survey.surveySection"
 				                ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
+				                ng-change="survey.displayOrderForSection=''"
 				                required>
 			                <option value=""> -- Choose Section --</option>
 		                </select>
@@ -62,7 +63,7 @@
 	            </div>
 	        </div>
             <div class="row">
-                <div ng-if="survey.clinicalReminderId" class="col-sm-3">
+                <div ng-if="survey.clinicalReminderId" class="col-sm-2">
                     <div class="form-group">
 	                    <label class="checkbox">
 		                    <input type="checkbox"
@@ -70,7 +71,7 @@
 	                    </label>
                     </div>
                 </div>
-                <div ng-if="survey.mha" class="col-sm-5">
+                <div ng-if="survey.mha" class="col-sm-6">
                     <div class="form-group">
 	                    <label for="mhaTestName">MHA Test Name *</label>
 	                    <input name="mhaTestName" id="mhaTestName" type="text" class="form-control"

@@ -17,9 +17,11 @@ public class OtherOptionAnswerProcessor extends AnswerProcessor {
         //set other as text of response if found
         if(submission.getAnswerType() == Answer.Type.OTHER) {
             Answer answer = submission.getUserAnswer(submission.getAnswerId(), rowId);
-            //only take first 1000 chars
-            String otherResponse = StringUtils.left( answer.getOtherAnswerResponse(), 1000);
-            submission.getSurveyMeasureResponse().setOtherValue(otherResponse);
+            if(answer != null){
+                //only take first 1000 chars
+                String otherResponse = StringUtils.left( answer.getOtherAnswerResponse(), 1000);
+                submission.getSurveyMeasureResponse().setOtherValue(otherResponse);
+            }
         }
         
         processNext(submission, rowId);

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by pouncilt on 4/10/14.
  */
-public class TIU_GET_PN_TITLES_VistaLinkRequest extends VistaLinkBaseRequest implements VistaLinkRequest {
+public class TIU_GET_PN_TITLES_VistaLinkRequest extends VistaLinkBaseRequest<String> implements VistaLinkRequest<VistaNoteTitle[]> {
 	private static final Logger logger = LoggerFactory.getLogger(TIU_GET_PN_TITLES_VistaLinkRequest.class);
 	private VistaLinkConnection connection = null;
 	private RpcRequest request = null;

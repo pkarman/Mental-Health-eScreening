@@ -172,7 +172,7 @@ angular.module('Editors')
                                         TemplateService.get($stateParams.templateId).then(function (template) {
                                             deferred.resolve(template);
                                         }, function(response) {
-                                            MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
+                                            MessageFactory.set('danger', response.data.error.errorMessages[0].description || response.data.error.errorMessages[0].developerMessage || "There was an error", true, false);
                                         });
                                     }
                                     else{
@@ -293,7 +293,7 @@ angular.module('Editors')
 
             .state('modules.detail.question.simple', {
                 url:'/simple/:questionId',
-                template:'<simple-question question="question"></simple-question>',
+                template:'<simple-question question="question" survey="survey"></simple-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Simple'
                 }
@@ -301,7 +301,7 @@ angular.module('Editors')
 
             .state('modules.detail.question.matrix', {
                 url:'/matrix/:questionId',
-                template:'<matrix-question question="question"></simple-matrix>',
+                template:'<matrix-question question="question" survey="survey"></matrix-question>',
                 data: {
                     displayName: 'Modules-Editor: Add/Edit - Questions, Type: Matrix'
                 }
@@ -393,10 +393,9 @@ angular.module('Editors')
                                         console.log("Getting template from server with ID: " + $stateParams.templateId);
                                         
                                         TemplateService.get($stateParams.templateId).then(function (template) {
-                                    console.log(template);
                                             deferred.resolve(template);
                                 }, function(response) {
-                                    MessageFactory.set('danger', response.data.errorMessages[0].description || "There was an error", true, true);
+                                    MessageFactory.set('danger', response.data.error.errorMessages[0].description || response.data.error.errorMessages[0].developerMessage || "There was an error", true, false);
                                         });
                                     }
                                     else{

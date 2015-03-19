@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by pouncilt on 5/30/14.
  */
-public class ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest extends VistaLinkBaseRequest implements VistaLinkRequest {
+public class ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest extends VistaLinkBaseRequest<String> implements VistaLinkRequest<Boolean> {
     private static final Logger logger = LoggerFactory.getLogger(ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest.class);
     private VistaLinkConnection connection = null;
     private RpcRequest request = null;

@@ -307,11 +307,18 @@
 			<version>${org.springframework-version}</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.0.3-beta</version>
 		</dependency>
 
 		<!-- JDBC -->
@@ -327,6 +334,7 @@
 			<artifactId>guava</artifactId>
 			<version>12.0</version>
 		</dependency>
+		
 		<!-- Freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
@@ -663,32 +671,6 @@
 							</configuration>
 					</execution>
 					<execution>
-						<id>apply-sprint-33-data</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>execute</goal>
-							</goals>
-							<configuration>
-								<orderFile>ascending</orderFile>
-								<fileset>
-									<basedir>src/main/sql/sprint_33</basedir>
-								</fileset>
-							</configuration>
-					</execution>
-					<execution>
-						<id>apply-ticket-related-data</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>execute</goal>
-							</goals>
-							<configuration>
-								<orderFile>ascending</orderFile>
-								<fileset>
-									<basedir>src/main/sql/ticketRelatedChanges</basedir>
-								</fileset>
-							</configuration>
-					</execution>
-					<execution>
 						<id>apply-sprint-32-ticket-809-data</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -699,6 +681,19 @@
 						 	<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/main/sql/sprint_32_809</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-33-ticket-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_33</basedir>
 							</fileset>
 						</configuration>
 					</execution>

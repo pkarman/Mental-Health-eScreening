@@ -2,7 +2,6 @@ package gov.va.escreening.service.export;
 
 import com.google.common.collect.*;
 import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
@@ -21,7 +20,6 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
 @Component("dataDictionaryHelper")
@@ -142,6 +140,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 						}
 
 abstract class Resolver {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 	protected final DataDictionaryHelper ddh;
 
 	protected Resolver(DataDictionaryHelper ddh) {
@@ -189,7 +188,7 @@ abstract class Resolver {
 		String quesType = index == 0 ? m.getMeasureType().getName() : "";
 		String quesDesc = ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText());
 		boolean addMore = ma != null;
-		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getExportName()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getIdentifyingText()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
 		String valsRange = addMore ? getValuesRange(m, ma, other) : "";
 		String valsDesc = addMore ? getValuesDescription(m, ma, other) : "";
 		String dataVal = addMore ? getValidationDescription(m, mvMap, other) : "";
@@ -256,6 +255,8 @@ class MultiSelectResolver extends Resolver {
 }
 
 class SelectOneResolver extends Resolver {
+	Joiner nonNumericJoiner = Joiner.on(", ").skipNulls();
+	
 	protected SelectOneResolver(DataDictionaryHelper ddr) {
 		super(ddr);
 	}
@@ -271,14 +272,23 @@ class SelectOneResolver extends Resolver {
 		
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
         if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
-			int min = Integer.MAX_VALUE;
-			int max = Integer.MIN_VALUE;
-			for (MeasureAnswer ma : maList) {
-				int val = Integer.parseInt(ma.getCalculationValue());
-				min = Math.min(min, val);
-				max = Math.max(max, val);
-			}
-			return String.format("%s-%s,999", min, max);
+        	try{
+				int min = Integer.MAX_VALUE;
+				int max = Integer.MIN_VALUE;
+				for (MeasureAnswer ma : maList) {
+					int val = Integer.parseInt(ma.getCalculationValue());
+					min = Math.min(min, val);
+					max = Math.max(max, val);
+				}
+				return String.format("%s-%s,999", min, max);
+        	}
+        	catch(NumberFormatException bfe){
+        		List<String> nonNumberValues = new ArrayList<>(maList.size());
+        		for (MeasureAnswer ma : maList) {
+        			nonNumberValues.add(ma.getCalculationValue());
+        		}
+        		return nonNumericJoiner.join(nonNumberValues);
+        	}
 		}
 		return "undefined";
 	}
@@ -386,7 +396,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
 			Table<String, String, String> t, String salt) {
 	    String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
-		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getExportName());
+		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getIdentifyingText());
 		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "", false);
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
