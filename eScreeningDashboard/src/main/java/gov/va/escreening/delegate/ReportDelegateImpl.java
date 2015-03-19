@@ -13,6 +13,7 @@ import gov.va.escreening.util.ReportsUtil;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -535,7 +536,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dtos.add(surveyTimeDTO);
 
         dataSource = new JRBeanCollectionDataSource(dtos);
-        dataSource = new JREmptyDataSource();
+        //dataSource = new JREmptyDataSource();
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
@@ -547,95 +548,139 @@ public class ReportDelegateImpl implements ReportDelegate {
     public Map<String, Object> genClinicStatisticReportsPartVDemographicsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
 
-        parameterMap.put("fromToDate"," from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames","MAMMOGRAM");
-        parameterMap.put("female_percentage","1%");
-        parameterMap.put("female_count","1/100");
-        parameterMap.put("male_percentage","2%");
-        parameterMap.put("male_count","2/100");
-        parameterMap.put("hispanic_percentage","3%");
-        parameterMap.put("hispanic_count","3/100");
-        parameterMap.put("non_hispanic_percentage","4%");
-        parameterMap.put("non_hispanic_count","4/100");
-        parameterMap.put("missingethnicity_percentage","5%");
-        parameterMap.put("missingethnicity_count","5/100");
-        parameterMap.put("white_percentage","6%");
-        parameterMap.put("white_count","6/100");
-        parameterMap.put("black_percentage","7%");
-        parameterMap.put("black_count","7/100");
-        parameterMap.put("indian_percentage","8%");
-        parameterMap.put("indian_count","8/100");
-        parameterMap.put("hawaiian_percentage","9%");
-        parameterMap.put("hawaiian_count","9/100");
-        parameterMap.put("asian_percentage","10%");
-        parameterMap.put("asian_count","10/100");
-        parameterMap.put("norace_percentage","11%");
-        parameterMap.put("norace_count","11/100");
-        parameterMap.put("otherrace_percentage","12%");
-        parameterMap.put("otherrace_count","12/100");
-        parameterMap.put("highschool_percentage","13%");
-        parameterMap.put("highschool_count","13/100");
-        parameterMap.put("ged_percentage","14%");
-        parameterMap.put("ged_count","14/100");
-        parameterMap.put("highschooldip_percentage","15%");
-        parameterMap.put("highschooldip_count","15/100");
-        parameterMap.put("ged_percentage","16%");
-        parameterMap.put("ged_count","16/100");
-        parameterMap.put("highschooldip_percentage","17%");
-        parameterMap.put("highschooldip_count","17/100");
-        parameterMap.put("somecollege_percentage","18%");
-        parameterMap.put("somecollege_count","18/100");
-        parameterMap.put("associate_percentage","19%");
-        parameterMap.put("associate_count","19/100");
-        parameterMap.put("college_percentage","20%");
-        parameterMap.put("college_count","20/100");
-        parameterMap.put("master_percentage","21%");
-        parameterMap.put("master_count","21/100");
-        parameterMap.put("dr_percentage","22%");
-        parameterMap.put("dr_count","22/100");
-        parameterMap.put("missingedu_percentage","23%");
-        parameterMap.put("missingedu_count","23/100");
-        parameterMap.put("fulltime_percentage","24%");
-        parameterMap.put("fulltime_count","24/100");
-        parameterMap.put("parttime_percentage","25%");
-        parameterMap.put("parttime_count","25/200");
-        parameterMap.put("seasonal_percentage","26%");
-        parameterMap.put("seasonal_count","26/100");
-        parameterMap.put("daylabor_percentage","27%");
-        parameterMap.put("daylabor_count","27/100");
-        parameterMap.put("unemployed_percentage","28%");
-        parameterMap.put("unemployed_count","28/100");
-        parameterMap.put("missingemp_percentage","29%");
-        parameterMap.put("missingemp_count","29/100");
-        parameterMap.put("army_percentage","30%");
-        parameterMap.put("army_count","30/100");
-        parameterMap.put("airforce_percentage","31%");
-        parameterMap.put("airforce_count","31/100");
-        parameterMap.put("coast_percentage","32%");
-        parameterMap.put("coast_count","32/100");
-        parameterMap.put("marines_percentage","33%");
-        parameterMap.put("marines_count","33/100");
-        parameterMap.put("nationalguard_percentage","34%");
-        parameterMap.put("nationalguard_count","34/100");
-        parameterMap.put("navy_percentage","35%");
-        parameterMap.put("navy_count","35/100");
-        parameterMap.put("missingmilitary_percentage","36%");
-        parameterMap.put("missingmilitary_count","36/100");
-        parameterMap.put("tobacco_never_percentage","37%");
-        parameterMap.put("tobacco_never_count","37/100");
-        parameterMap.put("tobacco_no_percentage","38%");
-        parameterMap.put("tobacco_no_count","38/100");
-        parameterMap.put("tobacco_yes_percentage","39%");
-        parameterMap.put("tobacco_miss_percentage","39/100");
-        parameterMap.put("tobacco_yes_count","40%");
-        parameterMap.put("tobacco_miss_count","40/100");
-        parameterMap.put("numberofdeployments","Mean number of deployments = 2.5 and minimum Value = 6 and Maximum Value = 10");
-        parameterMap.put("age","Mean Age 3.3 years Minimum Value = 60 and Maximum value = 80");
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
+        attachGender(parameterMap, requestData);
+        attachEthnicity(parameterMap, requestData);
+        attachAge(parameterMap, requestData);
+        attachEducation(parameterMap, requestData);
+        attachEmploymentStatus(parameterMap, requestData);
+        attachMilitaryBranch(parameterMap, requestData);
+        attachTobaccoUsage(parameterMap, requestData);
+        attachDeployments(parameterMap, requestData);
 
         parameterMap.put("datasource", new JREmptyDataSource());
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
         return parameterMap;
+    }
+
+    private void attachDates(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+    }
+
+    private void attachClinics(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        StringBuilder sb=new StringBuilder();
+        for (Integer clicnicId:(List<Integer>)requestData.get(ReportsUtil.CLINIC_ID_LIST)){
+            sb.append(clinicService.getClinicNameById(clicnicId)).append(", ");
+        }
+        dataCollection.put("clinicNames", sb.toString());
+    }
+
+    private void attachDeployments(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("numberofdeployments", "Mean number of deployments = 2.5 and minimum Value = 6 and Maximum Value = 10");
+    }
+
+    private void attachTobaccoUsage(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("tobacco_never_percentage", "37%");
+        dataCollection.put("tobacco_never_count", "37/100");
+        dataCollection.put("tobacco_no_percentage", "38%");
+        dataCollection.put("tobacco_no_count", "38/100");
+        dataCollection.put("tobacco_yes_percentage", "39%");
+        dataCollection.put("tobacco_miss_percentage", "39/100");
+        dataCollection.put("tobacco_yes_count", "40%");
+        dataCollection.put("tobacco_miss_count", "40/100");
+    }
+
+    private void attachMilitaryBranch(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("army_percentage", "30%");
+        dataCollection.put("army_count", "30/100");
+        dataCollection.put("airforce_percentage", "31%");
+        dataCollection.put("airforce_count", "31/100");
+        dataCollection.put("coast_percentage", "32%");
+        dataCollection.put("coast_count", "32/100");
+        dataCollection.put("marines_percentage", "33%");
+        dataCollection.put("marines_count", "33/100");
+        dataCollection.put("nationalguard_percentage", "34%");
+        dataCollection.put("nationalguard_count", "34/100");
+        dataCollection.put("navy_percentage", "35%");
+        dataCollection.put("navy_count", "35/100");
+        dataCollection.put("missingmilitary_percentage", "36%");
+        dataCollection.put("missingmilitary_count", "36/100");
+    }
+
+    private void attachEmploymentStatus(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("fulltime_percentage", "24%");
+        dataCollection.put("fulltime_count", "24/100");
+        dataCollection.put("parttime_percentage", "25%");
+        dataCollection.put("parttime_count", "25/200");
+        dataCollection.put("seasonal_percentage", "26%");
+        dataCollection.put("seasonal_count", "26/100");
+        dataCollection.put("daylabor_percentage", "27%");
+        dataCollection.put("daylabor_count", "27/100");
+        dataCollection.put("unemployed_percentage", "28%");
+        dataCollection.put("unemployed_count", "28/100");
+        dataCollection.put("missingemp_percentage", "29%");
+        dataCollection.put("missingemp_count", "29/100");
+    }
+
+    private void attachEducation(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("highschool_percentage", "13%");
+        dataCollection.put("highschool_count", "13/100");
+        dataCollection.put("ged_percentage", "14%");
+        dataCollection.put("ged_count", "14/100");
+        dataCollection.put("highschooldip_percentage", "15%");
+        dataCollection.put("highschooldip_count", "15/100");
+        dataCollection.put("ged_percentage", "16%");
+        dataCollection.put("ged_count", "16/100");
+        dataCollection.put("highschooldip_percentage", "17%");
+        dataCollection.put("highschooldip_count", "17/100");
+        dataCollection.put("somecollege_percentage", "18%");
+        dataCollection.put("somecollege_count", "18/100");
+        dataCollection.put("associate_percentage", "19%");
+        dataCollection.put("associate_count", "19/100");
+        dataCollection.put("college_percentage", "20%");
+        dataCollection.put("college_count", "20/100");
+        dataCollection.put("master_percentage", "21%");
+        dataCollection.put("master_count", "21/100");
+        dataCollection.put("dr_percentage", "22%");
+        dataCollection.put("dr_count", "22/100");
+        dataCollection.put("missingedu_percentage", "23%");
+        dataCollection.put("missingedu_count", "23/100");
+    }
+
+    private void attachAge(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("age", "Mean Age 3.3 years Minimum Value = 60 and Maximum value = 80");
+    }
+
+    private void attachEthnicity(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("hispanic_percentage", "3%");
+        dataCollection.put("hispanic_count", "3/100");
+        dataCollection.put("non_hispanic_percentage", "4%");
+        dataCollection.put("non_hispanic_count", "4/100");
+        dataCollection.put("missingethnicity_percentage", "5%");
+        dataCollection.put("missingethnicity_count", "5/100");
+        dataCollection.put("white_percentage", "6%");
+        dataCollection.put("white_count", "6/100");
+        dataCollection.put("black_percentage", "7%");
+        dataCollection.put("black_count", "7/100");
+        dataCollection.put("indian_percentage", "8%");
+        dataCollection.put("indian_count", "8/100");
+        dataCollection.put("hawaiian_percentage", "9%");
+        dataCollection.put("hawaiian_count", "9/100");
+        dataCollection.put("asian_percentage", "10%");
+        dataCollection.put("asian_count", "10/100");
+        dataCollection.put("norace_percentage", "11%");
+        dataCollection.put("norace_count", "11/100");
+        dataCollection.put("otherrace_percentage", "12%");
+        dataCollection.put("otherrace_count", "12/100");
+    }
+
+    private void attachGender(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+        dataCollection.put("female_percentage", "1%");
+        dataCollection.put("female_count", "1/100");
+        dataCollection.put("male_percentage", "2%");
+        dataCollection.put("male_count", "2/100");
     }
 
     private Map<String, Object> createChartableDataForIndividualStats(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
