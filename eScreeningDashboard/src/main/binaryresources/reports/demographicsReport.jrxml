@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="116"/>
-	<property name="ireport.y" value="914"/>
+	<property name="ireport.zoom" value="1.5000000000000024"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="752"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -233,7 +233,7 @@
 					<textFieldExpression><![CDATA[$P{female_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="396" y="5" width="39" height="15" uuid="8073d678-647a-402a-9d0d-947b80ef7261"/>
+					<reportElement x="396" y="5" width="40" height="15" uuid="8073d678-647a-402a-9d0d-947b80ef7261"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -241,6 +241,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -252,6 +253,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{female_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -270,7 +272,7 @@
 				<text><![CDATA[  Ethinicity/Race]]></text>
 			</staticText>
 			<frame>
-				<reportElement x="122" y="64" width="450" height="180" uuid="9fb54242-c865-4c28-96c2-f2c82b6fe9e5"/>
+				<reportElement x="121" y="64" width="451" height="180" uuid="9fb54242-c865-4c28-96c2-f2c82b6fe9e5"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -317,6 +319,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{hispanic_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -352,6 +355,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{non_hispanic_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -386,6 +390,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -438,6 +443,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{white_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -473,6 +479,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{black_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -496,6 +503,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{indian_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -531,6 +539,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{hawaiian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -554,6 +563,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{asian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -601,6 +611,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{norace_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -612,6 +623,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$P{otherrace_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -627,7 +639,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ Race]]></text>
+				<text><![CDATA[  Race]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="259" width="121" height="142" backcolor="#CCCCCC" uuid="a263cd83-781b-4b00-8046-4bbd5517b137"/>
@@ -641,7 +653,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ Education]]></text>
+				<text><![CDATA[  Education]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="498" width="121" height="115" backcolor="#CCCCCC" uuid="26653884-fb01-402c-8bea-3a8391bdb9a9"/>
@@ -655,7 +667,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ Branch of Military]]></text>
+				<text><![CDATA[  Branch of Military]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="628" width="121" height="75" uuid="8373fd1f-1ac7-4514-9fcb-cad2a2d1da03"/>
@@ -669,7 +681,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ Tobacco Use Status]]></text>
+				<text><![CDATA[  Tobacco Use Status]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="401" width="121" height="96" uuid="0189c151-3628-422d-b35c-8668e0a18bd0"/>
@@ -683,7 +695,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ Employment Status]]></text>
+				<text><![CDATA[  Employment Status]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="613" width="121" height="15" uuid="6b9ebae4-aba3-43d1-8cc1-a954518358cb"/>
@@ -694,10 +706,13 @@
 					<bottomPen lineWidth="0.75"/>
 					<rightPen lineWidth="0.75"/>
 				</box>
-				<text><![CDATA[ Num of Deployments]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Num of Deployments]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="132" y="199" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
+				<reportElement x="133" y="199" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -719,7 +734,7 @@
 				<textFieldExpression><![CDATA[$P{otherrace_percentage}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="122" y="259" width="450" height="142" uuid="b2a7fb21-f319-4927-8756-414658881631"/>
+				<reportElement x="121" y="259" width="451" height="142" uuid="b2a7fb21-f319-4927-8756-414658881631"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -784,7 +799,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{ged_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -796,7 +811,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{highschool_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -976,7 +991,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -988,7 +1003,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{associate_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1000,7 +1015,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{master_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1012,7 +1027,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{missingedu_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1024,7 +1039,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{somecollege_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1036,7 +1051,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{college_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1048,7 +1063,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{dr_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -1067,7 +1082,7 @@
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="122" y="401" width="450" height="96" uuid="a9a786cb-6194-45b4-a0ae-3afe5d2342d4"/>
+				<reportElement x="121" y="401" width="451" height="96" uuid="a9a786cb-6194-45b4-a0ae-3afe5d2342d4"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1132,7 +1147,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{parttime_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1144,7 +1159,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{fulltime_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1252,7 +1267,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{seasonal_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1264,7 +1279,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{unemployed_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1276,7 +1291,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{daylabor_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1288,12 +1303,12 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{missingemp_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement x="122" y="498" width="450" height="115" uuid="3c71a2c8-c6a0-484f-b717-00127674fff7"/>
+				<reportElement x="121" y="498" width="451" height="115" uuid="3c71a2c8-c6a0-484f-b717-00127674fff7"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1358,7 +1373,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{airforce_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1370,7 +1385,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{army_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1478,7 +1493,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{coast_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1490,7 +1505,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{nationalguard_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1502,7 +1517,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{marines_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1514,7 +1529,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{navy_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1550,7 +1565,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{missingmilitary_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -1569,7 +1584,7 @@
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="122" y="628" width="450" height="75" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>
+				<reportElement x="121" y="628" width="451" height="75" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1634,7 +1649,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{tobacco_no_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1646,7 +1661,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{tobacco_never_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1706,7 +1721,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{tobacco_yes_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1718,7 +1733,7 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{tobacco_miss_count}]]></textFieldExpression>
 				</textField>
 			</frame>
