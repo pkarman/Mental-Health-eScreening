@@ -44,7 +44,7 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
                         results = cachedHashResults[queryParams];
                     }
                 } else {
-                    throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
+                    results = service.getList();
                 }
 
                 return results;

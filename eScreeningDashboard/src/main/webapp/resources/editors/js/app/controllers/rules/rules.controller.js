@@ -31,7 +31,7 @@
 		/* ---- Button Actions ---- */
 		$scope.editRule = function (rule) {
 			$scope.rule = rule;
-			$state.go('rules.detail', {surveyId: rule.id});
+			$state.go('rules.detail', {id: rule.id});
 		};
 
 		$scope.deleteRule = function deleteRule(index) {

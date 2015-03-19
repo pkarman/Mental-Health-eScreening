@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('RulesDetailController', ['$scope', 'rule', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', function($scope, rule, consults, healthFactors, dashboardAlerts, questions, MessageFactory){
+    angular.module('Editors').controller('RulesDetailController', ['$scope', 'rule', 'assessmentVariables', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', function($scope, rule, assessmentVariables, consults, healthFactors, dashboardAlerts, questions, MessageFactory){
 
         $scope.rule = rule;
 		$scope.consults = consults;

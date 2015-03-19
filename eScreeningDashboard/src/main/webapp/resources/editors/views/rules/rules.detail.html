@@ -21,125 +21,129 @@
 		    <div class="row">
 			    <div class="col-md-12">
 				    <div class="border-radius-main-form gray-lighter">
-					    <h3>Expression</h3>
 
-					    <div class="row">
-						    <condition assessment-variables="[]"></condition>
+					    <h3>Expression</h3>
+					    <div class="row border-radius-block-type bg-gray-light">
+						    <condition assessment-variables="assessmentVariables"></condition>
 					    </div>
 
 					    <h3>Events</h3>
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="consults">Consults</label>
+							    <ui-select
+									    multiple
+									    ng-model="rule.consults"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    title="Click to select or start typing to continue with consult..." id="consults">
 
-					    <div class="form-group">
-						    <label for="consults">Consults</label>
-						    <ui-select
-								    multiple
-								    ng-model="rule.consults"
-								    theme="bootstrap"
-								    ng-disabled="disable"
-								    title="Click to select or start typing to continue with consult..." id="consults">
+								    <ui-select-match
+										    placeholder="Select or enter consult....">
+									    {{$item.name}}
+								    </ui-select-match>
 
-							    <ui-select-match
-									    placeholder="Select or enter consult....">
-								    {{$item.name}}
-							    </ui-select-match>
-
-							    <ui-select-choices
-									    repeat="consult in consults | filter: {name: $select.search}"
-									    refresh-delay="1000">
-								    <medium>
-									    {{consult.name}}
-								    </medium>
-							    </ui-select-choices>
-						    </ui-select>
+								    <ui-select-choices
+										    repeat="consult in consults | filter: {name: $select.search}"
+										    refresh-delay="1000">
+									    <medium>
+										    {{consult.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
 					    </div>
 
-					    <div class="form-group">
-						    <label for="health-factors">Health Factors</label>
-						    <ui-select
-								    multiple
-								    ng-model="rule.healthFactors"
-								    theme="bootstrap"
-								    ng-disabled="disable"
-								    title="Click to select or start typing to continue with health factors..." id="health-factors">
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="health-factors">Health Factors</label>
+							    <ui-select
+									    multiple
+									    ng-model="rule.healthFactors"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    title="Click to select or start typing to continue with health factors..." id="health-factors">
 
-							    <ui-select-match
-									    placeholder="Select or enter health factor....">
-								    {{$item.name}}
-							    </ui-select-match>
+								    <ui-select-match
+										    placeholder="Select or enter health factor....">
+									    {{$item.name}}
+								    </ui-select-match>
 
-							    <ui-select-choices
-									    repeat="healthFactor in healthFactors | filter: {name: $select.search}"
-									    refresh-delay="1000">
-								    <medium>
-									    {{healthFactor.name}}
-								    </medium>
-							    </ui-select-choices>
-						    </ui-select>
+								    <ui-select-choices
+										    repeat="healthFactor in healthFactors | filter: {name: $select.search}"
+										    refresh-delay="1000">
+									    <medium>
+										    {{healthFactor.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
 					    </div>
 
-					    <div class="form-group">
-						    <label for="alerts">Dashboard Alerts</label>
-						    <ui-select
-								    multiple
-								    ng-model="rule.dashboardAlerts"
-								    theme="bootstrap"
-								    ng-disabled="disable"
-								    title="Click to select or start typing to continue with dashboard alerts..." id="alerts">
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="alerts">Dashboard Alerts</label>
+							    <ui-select
+									    multiple
+									    ng-model="rule.dashboardAlerts"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    title="Click to select or start typing to continue with dashboard alerts..." id="alerts">
 
-							    <ui-select-match
-									    placeholder="Select or enter dashboard alerts....">
-								    {{$item.name}}
-							    </ui-select-match>
+								    <ui-select-match
+										    placeholder="Select or enter dashboard alerts....">
+									    {{$item.name}}
+								    </ui-select-match>
 
-							    <ui-select-choices
-									    repeat="alert in dashboardAlerts | filter: {name: $select.search}"
-									    refresh-delay="1000">
-								    <medium>
-									    {{alert.name}}
-								    </medium>
-							    </ui-select-choices>
-						    </ui-select>
+								    <ui-select-choices
+										    repeat="alert in dashboardAlerts | filter: {name: $select.search}"
+										    refresh-delay="1000">
+									    <medium>
+										    {{alert.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
 					    </div>
 
-					    <div class="form-group">
-						    <label for="questions">Show Follow-up Questions</label>
-						    <ui-select
-								    multiple
-								    ng-model="rule.questions"
-								    theme="bootstrap"
-								    ng-disabled="disable"
-								    title="Click to select or start typing to continue with follow-up questions..." id="questions">
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="questions">Show Follow-up Questions</label>
+							    <ui-select
+									    multiple
+									    ng-model="rule.questions"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    title="Click to select or start typing to continue with follow-up questions..." id="questions">
 
-							    <ui-select-match
-									    placeholder="Select or enter follow-up questions....">
-								    {{$item.name}}
-							    </ui-select-match>
+								    <ui-select-match
+										    placeholder="Select or enter follow-up questions....">
+									    {{$item.name}}
+								    </ui-select-match>
 
-							    <ui-select-choices
-									    repeat="question in questions | filter: {name: $select.search}"
-									    refresh-delay="1000">
-								    <medium>
-									    {{question.name}}
-								    </medium>
-							    </ui-select-choices>
-						    </ui-select>
+								    <ui-select-choices
+										    repeat="question in questions | filter: {name: $select.search}"
+										    refresh-delay="1000">
+									    <medium>
+										    {{question.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
 					    </div>
 
-				    </div>
-			    </div>
-		    </div>
-
-		    <div class="row">
-			    <div class="col-md-12">
-				    <div class="form-group">
-					    <div class="text-right">
-						    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
-						    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
-					    </div>
 				    </div>
 			    </div>
 		    </div>
 	    </form>
-
     </div>
+
+	<div class="col-md-12">
+		<div class="form-group">
+			<div class="text-right">
+				<button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+				<button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>

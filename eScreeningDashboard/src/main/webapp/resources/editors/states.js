@@ -66,9 +66,12 @@ angular.module('Editors')
 					templateUrl:'resources/editors/views/rules/rules.detail.html',
 					controller: 'RulesDetailController',
 					resolve: {
-						rule: function($stateParams, rules, RuleService) {
+						rule: ['$stateParams', 'rules', 'RuleService', function($stateParams, rules, RuleService) {
 							return ($stateParams.id) ? rules.get($stateParams.id) : RuleService.one();
-						},
+						}],
+						assessmentVariables: ['AssessmentVariableService', function(AssessmentVariableService) {
+							return [];
+						}],
 						consults: ['EventService', function(EventService) {
 							return EventService.getList({type: 1});
 						}],
@@ -99,28 +102,28 @@ angular.module('Editors')
 	             /** -------- BATTERY WORKFLOW -------- **/
 
 	            .state('batteries',{
-	                abstract:true,
-	                url:'/batteries',
-	                template:'<div class="row">' +
+	                abstract: true,
+	                url: '/batteries',
+	                template: '<div class="row">' +
                             '   <div class="col-md-12" ui-view></div>'+
 	                           '</div>',
-	                resolve:{
-                    batteries:function($q, MessageFactory, BatteryService){
-	                		var deferred = $q.defer();
-	                		console.log('VIEW STATE Battery:: Resolve Batteries');
-	                		BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
-	                			deferred.resolve(existingBatteries);
-	                		},function(responseError){
+	                resolve: {
+						batteries: function($q, $rootScope, MessageFactory, BatteryService){
+								var deferred = $q.defer();
+								console.log('VIEW STATE Battery:: Resolve Batteries');
+								BatteryService.query(BatteryService.setQueryBatterySearchCriteria()).then(function(existingBatteries){
+									deferred.resolve(existingBatteries);
+								},function(responseError){
 
-                            MessageFactory.set('danger', responseError.getMessage(), true, true);
-	                			console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
-	                			deferred.reject(responseError.getMessage());
-	                		});
-	                		return deferred.promise;
-	                	},
-                    sections: ['ManageSectionService',  function(ManageSectionService) {
-                        return ManageSectionService.getList();
-                    }]
+								MessageFactory.set('danger', responseError.getMessage(), true, true);
+									console.log('Batteries Query Error:: ' + JSON.stringify($rootScope.errors));
+									deferred.reject(responseError.getMessage());
+								});
+								return deferred.promise;
+							},
+						sections: ['ManageSectionService',  function(ManageSectionService) {
+							return ManageSectionService.getList();
+						}]
 	                },
 
 
@@ -499,7 +502,7 @@ angular.module('Editors')
                                 };
 
                                 $scope.deleteClick = function(){
-                                    alert('Will trigger Delete functionality.')
+                                    alert('Will trigger Delete functionality.');
                                 };
 
                                 $scope.addFormula = function(){
@@ -523,7 +526,7 @@ angular.module('Editors')
                                     else
                                         $scope.$close(true);
                                 };
-                                $scope.save = function(){
+                                $scope.save = function(item){
                                     item.update().then(function(){
                                         $scope.$close(true);
                                     });
