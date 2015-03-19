@@ -13,6 +13,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 		this.id = obj.id || null;
 		this.name = obj.name || null;
 		this.expression = obj.expression || null;
+		this.condition = obj.condition || null;
 	}
 
 	Rule.prototype.getName = function getName() {

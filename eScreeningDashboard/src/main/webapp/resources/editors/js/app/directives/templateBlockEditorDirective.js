@@ -164,7 +164,7 @@
                 
                 scope.$watch('block.type', function(newValue, oldValue) {
                     if(newValue !== null && newValue !== oldValue){
-                        scope.block.reset();
+                        if (_.isFunction(scope.block.reset)) scope.block.reset();
                     }
                 });
 

@@ -24,7 +24,11 @@
 
 					    <h3>Expression</h3>
 					    <div class="row border-radius-block-type bg-gray-light">
-						    <condition assessment-variables="assessmentVariables"></condition>
+						    <template-block-editor
+								    assessment-variables="assessmentVariables"
+								    block="rule.condition"
+								    show-validation-messages="false"
+								    enable-types-dropdown="true"></template-block-editor>
 					    </div>
 
 					    <h3>Events</h3>
@@ -33,9 +37,11 @@
 							    <label for="consults">Consults</label>
 							    <ui-select
 									    multiple
-									    ng-model="rule.consults"
+									    ng-model="selectedEvents.consults"
 									    theme="bootstrap"
 									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
 									    title="Click to select or start typing to continue with consult..." id="consults">
 
 								    <ui-select-match
@@ -44,7 +50,7 @@
 								    </ui-select-match>
 
 								    <ui-select-choices
-										    repeat="consult in consults | filter: {name: $select.search}"
+										    repeat="consult in consults | filter: {name: $select.search} track by consult.id"
 										    refresh-delay="1000">
 									    <medium>
 										    {{consult.name}}
@@ -59,9 +65,11 @@
 							    <label for="health-factors">Health Factors</label>
 							    <ui-select
 									    multiple
-									    ng-model="rule.healthFactors"
+									    ng-model="selectedEvents.healthFactors"
 									    theme="bootstrap"
 									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
 									    title="Click to select or start typing to continue with health factors..." id="health-factors">
 
 								    <ui-select-match
@@ -70,7 +78,7 @@
 								    </ui-select-match>
 
 								    <ui-select-choices
-										    repeat="healthFactor in healthFactors | filter: {name: $select.search}"
+										    repeat="healthFactor in healthFactors | filter: {name: $select.search} track by healthFactor.id"
 										    refresh-delay="1000">
 									    <medium>
 										    {{healthFactor.name}}
@@ -85,9 +93,11 @@
 							    <label for="alerts">Dashboard Alerts</label>
 							    <ui-select
 									    multiple
-									    ng-model="rule.dashboardAlerts"
+									    ng-model="selectedEvents.dashboardAlerts"
 									    theme="bootstrap"
 									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
 									    title="Click to select or start typing to continue with dashboard alerts..." id="alerts">
 
 								    <ui-select-match
@@ -96,7 +106,7 @@
 								    </ui-select-match>
 
 								    <ui-select-choices
-										    repeat="alert in dashboardAlerts | filter: {name: $select.search}"
+										    repeat="alert in dashboardAlerts | filter: {name: $select.search} track by alert.id"
 										    refresh-delay="1000">
 									    <medium>
 										    {{alert.name}}
@@ -111,9 +121,11 @@
 							    <label for="questions">Show Follow-up Questions</label>
 							    <ui-select
 									    multiple
-									    ng-model="rule.questions"
+									    ng-model="selectedEvents.questions"
 									    theme="bootstrap"
 									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
 									    title="Click to select or start typing to continue with follow-up questions..." id="questions">
 
 								    <ui-select-match
@@ -122,7 +134,7 @@
 								    </ui-select-match>
 
 								    <ui-select-choices
-										    repeat="question in questions | filter: {name: $select.search}"
+										    repeat="question in questions | filter: {name: $select.search} track by question.id"
 										    refresh-delay="1000">
 									    <medium>
 										    {{question.name}}
@@ -136,14 +148,12 @@
 			    </div>
 		    </div>
 	    </form>
-    </div>
 
-	<div class="col-md-12">
-		<div class="form-group">
-			<div class="text-right">
-				<button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
-				<button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
-			</div>
-		</div>
-	</div>
+	    <div class="form-group">
+		    <div class="text-right">
+			    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+			    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
+		    </div>
+	    </div>
+    </div>
 </div>

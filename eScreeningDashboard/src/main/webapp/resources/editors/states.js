@@ -70,7 +70,7 @@ angular.module('Editors')
 							return ($stateParams.id) ? rules.get($stateParams.id) : RuleService.one();
 						}],
 						assessmentVariables: ['AssessmentVariableService', function(AssessmentVariableService) {
-							return [];
+							return AssessmentVariableService.query({surveyId: 1});
 						}],
 						consults: ['EventService', function(EventService) {
 							return EventService.getList({type: 1});

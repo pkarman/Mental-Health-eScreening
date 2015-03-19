@@ -42,6 +42,7 @@ Editors.value('Survey', EScreeningDashboardApp.models.Survey);
 Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
 Editors.value('Rule', EScreeningDashboardApp.models.Rule);
 Editors.value('Event', EScreeningDashboardApp.models.Event);
+Editors.value('TemplateLeftVariable', EScreeningDashboardApp.models.TemplateLeftVariable);
 
 Editors.config(function (RestangularProvider, $provide) {
 

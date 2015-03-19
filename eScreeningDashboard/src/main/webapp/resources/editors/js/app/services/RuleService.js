@@ -4,7 +4,7 @@
 	angular.module('Editors').factory('RuleService', ['Restangular', 'Rule', function (Restangular, Rule){
 
 		Restangular.extendModel('rules', function(model) {
-			return new Rule(model);
+			return angular.extend(model, new Rule(model));
 		});
 
 		return Restangular.service('rules');

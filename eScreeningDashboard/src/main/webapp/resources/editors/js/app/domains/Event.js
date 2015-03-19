@@ -12,6 +12,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	var Event = function(obj) {
 		this.id = obj.id || null;
 		this.name = obj.name || null;
+		this.type = obj.type || null;
 	};
 
 	Event.prototype = {
