@@ -65,7 +65,7 @@
 			<form name="reportForm" novalidate>
 				<div class="row">
 
-					<div class="col-md-3">
+					<div class="col-md-6">
 						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
