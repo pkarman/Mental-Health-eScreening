@@ -14,16 +14,6 @@ var EScreeningDashboardApp = EScreeningDashboardApp || {};
  */
 EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
 
-/**
- * Constructor method for the TemplateVariableContent class.  The properties of this class can be initialized with
- * the jsonConfig.
- * @class
- * @classdesc   This class is a domain model class; which means it has both behavior and state
- *              information about the user.
- * @param {String}  jsonConfig  Represents the JSON representation of an TemplateVariableContent object.
- * @constructor
- * @author Tonté Pouncil
- */
 EScreeningDashboardApp.models.TemplateVariableContent = function (jsonConfig) {
     this.id;
     this.typeId;

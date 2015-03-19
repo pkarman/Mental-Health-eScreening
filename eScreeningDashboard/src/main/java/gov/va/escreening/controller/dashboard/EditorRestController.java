@@ -5,7 +5,6 @@ import gov.va.escreening.delegate.EditorsViewDelegate;
 import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
-import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.*;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
@@ -140,42 +139,7 @@ public class EditorRestController {
         return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyPage);
     }
 
-    /*
-      ============= /services/questions/{questionId} =============
-     */
-    @RequestMapping(value = "/services/questions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
-    public Response<Map<String, QuestionInfo>>  addQuestion(@RequestBody QuestionInfo question,
-                                @CurrentUser EscreenUser escreenUser) {
-
-        throw new IllegalStateException("Rest Service not implemented yet");
-    }
-
-    @RequestMapping(value = "/services/questions/{questionId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    @ResponseBody
-    public Response<Map<String, QuestionInfo>> updateQuestion(
-            @PathVariable("questionId") Integer questionId,
-            @RequestBody QuestionInfo question,
-            @CurrentUser EscreenUser escreenUser) {
-
-        QuestionInfo updatedQuestionInfo = EditorsQuestionViewTransformer.transformQuestion(measureRepo.updateMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(question)));
-
-        Map<String, QuestionInfo> questionMap = new HashMap<>();
-        questionMap.put("question", updatedQuestionInfo);
-
-        return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), questionMap);
-    }
-
-    @RequestMapping(value = "/services/questions/{questionId}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Response<QuestionInfo>  getQuestion(@PathVariable("questionId") Integer questionId,
-                                @CurrentUser EscreenUser escreenUser) {
-        // Call service class here instead of hard coding it.
-        Measure measure = editorsViewDelegate.findMeasure(questionId);
-        QuestionInfo question = EditorsQuestionViewTransformer.transformQuestion(measure);
-        return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), question);
-    }
-
+    
     /*
       ============= /services/surveys/{surveyId}/questions =============
      */

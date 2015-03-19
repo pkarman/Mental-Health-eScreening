@@ -27,7 +27,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
-import org.springframework.util.FileSystemUtils;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -61,7 +60,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
     private void buildUpdate(AssessmentVariable av, StringBuffer sb) {
         MeasureAnswer ma = av.getMeasureAnswer();
 
-        String name = ma != null ? ma.getExportName() : null;
+        String name = ma != null ? ma.getIdentifyingText() : null;
         String descr = ma != null ? ma.getAnswerText() : null;
 
         if (name == null && descr == null && av.getMeasure() != null) {

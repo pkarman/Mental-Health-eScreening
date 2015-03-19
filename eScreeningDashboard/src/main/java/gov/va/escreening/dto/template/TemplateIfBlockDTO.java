@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
+	
+	@JsonProperty("type")
+	private String nodeType(){return "if";}
 	
 	private String operator;
 	private TemplateBaseContent left;
@@ -50,16 +55,8 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 	}
 
 	@Override
-	public String toFreeMarkerFormat(Set<Integer> ids)
-	{
-		StringBuffer sb = new StringBuffer();
-		
-		if (this.getName()!=null)
-			sb.append("<#-- NAME:"+this.getName()+"-->\n");
-		if (this.getSection()!=null)
-			sb.append("<#-- SECTION:"+getSection()+" -->\n");
-		if (this.getSummary()!=null)
-			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
+		addHeader(sb);
 		
 		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right, ids)).append(")");
 		
@@ -71,20 +68,7 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 			}
 		}
 		sb.append(" >\n");
-		if (getChildren()!=null)
-		{
-			for(INode child : getChildren())
-			{
-				sb.append(child.toFreeMarkerFormat(ids));
-			}
-		}
-		sb.append("\n</#if>\n");
 		
-		return sb.toString();
+		return addChildren(sb, ids, assessmentVariableService).append("\n</#if>\n");
 	}
-	
-	@JsonProperty("type")
-	private String nodeType(){return "if";}
-	
-	
 }

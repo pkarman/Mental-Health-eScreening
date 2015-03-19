@@ -325,41 +325,40 @@
                 <input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default btn-default-black" />
               </div>
             </div>
-          </div>
+          </div> 
           
-         
-          
-          <!-- Modal Save to VistA -->
-          <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title" id="save_to_vista_modal_label">Save to VistA</h4>
-                </div>
-                <div class="modal-body">
-                  <div class="alert alert-warning">Are you sure you want to Save Data to VistA?</div>
-                </div>
-                <div class="modal-footer">
-                  <input id="saveToVistaButton" name="saveToVistaButton" value="Save" type="submit" class="btn btn-primary" />
-                  <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_close">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <br />
-        </div>
+      	</div>
       </div>
-    </div>
-    <!-- row -->
-  </form:form>
-</div>
-  </div>
-         <!-- ### Modal Section Start Here ### -->
-          
-          
+    </div>           
 
+         <!-- Modal Save to VistA -->
+         <div class="modal fade" id="save_to_vista_modal" tabindex="-1" role="dialog" aria-labelledby="save_to_vista_modal_label" aria-hidden="true">
+           <div class="modal-dialog">
+             <div class="modal-content">
+               <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h4 class="modal-title" id="save_to_vista_modal_label">Save to VistA</h4>
+               </div>
+               <div class="modal-body">
+                 <div class="alert alert-warning">Are you sure you want to Save Data to VistA?</div>
+               </div>
+               <div class="modal-footer">
+                 <input id="saveToVistaButton" name="saveToVistaButton" value="Save" type="submit" class="btn btn-primary" />
+                 <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_close">Close</button>
+               </div>
+             </div>
+           </div>
+         </div>
+
+
+  </form:form>  
+          
+         <!-- ### Modal Section Start Here ### -->
+         
+
+  
+    <!-- row -->
 
           <!-- Modal Veteran Summary  -->
           <div class="custom_modal veteran_summary_modal" >
