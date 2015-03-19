@@ -32,17 +32,17 @@ public interface ReportDelegate {
 
     Map<String, Object> genIndividualStatisticsNumeric(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String, Object> genAvgScoresVetByClinicNumeric(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String, Object> genAvgScoresVetByClinicNumeric(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPartVDemographicsReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPartVDemographicsReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String,Object> genClinicStatisticReportsPartVIPositiveScreensReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+    Map<String,Object> genClinicStatisticReportsPartVIPositiveScreensReport(Map<String, Object> requestData, EscreenUser escreenUser);
 }

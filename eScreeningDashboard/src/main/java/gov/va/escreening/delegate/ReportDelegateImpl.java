@@ -72,20 +72,20 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Override
     public Map<String, Object> getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
-        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
-        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+        List<String> svgObject = (List<String>) requestData.get("svgData");
+        Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
         Map<String, Object> parameterMap = Maps.newHashMap();
 
 
         String fromDate = (String) userReqData.get(ReportsUtil.FROMDATE);
         String toDate = (String) userReqData.get(ReportsUtil.TODATE);
-        ArrayList cClinicList = (ArrayList) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
-        ArrayList sSurveyList = (ArrayList) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
+        List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
+        List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        attachDates(parameterMap, requestData);
 
-        List<ClinicVeteranDTO> resultList = new ArrayList<>();
+        List<ClinicVeteranDTO> resultList = Lists.newArrayList();
 
         int index = 0;
 
@@ -143,7 +143,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public List<SurveyDto> getSurveyList() {
 
-        List<String> surveyNames = new ArrayList<>();
+        List<String> surveyNames = Lists.newArrayList();
         surveyNames.addAll(reportableFormulasMap.keySet());
 
         return surveyService.getSurveyListByNames(surveyNames);
@@ -156,25 +156,25 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Override
     public Map<String, Object> getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
-        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
-        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+        List<String> svgObject = (List<String>) requestData.get("svgData");
+        Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
         Map<String, Object> parameterMap = Maps.newHashMap();
 
         String fromDate = (String) userReqData.get(ReportsUtil.FROMDATE);
         String toDate = (String) userReqData.get(ReportsUtil.TODATE);
-        ArrayList cClinicList = (ArrayList) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
-        ArrayList sSurveyList = (ArrayList) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
+        List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
+        List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        attachDates(parameterMap, requestData);
 
-        List<Integer> surveyIds = new ArrayList<>(sSurveyList.size());
+        List<Integer> surveyIds = Lists.newArrayList();
 
         for (Object s : sSurveyList) {
             surveyIds.add((Integer) s);
         }
 
-        List<ClinicDTO> resultList = new ArrayList<>();
+        List<ClinicDTO> resultList = Lists.newArrayList();
 
         int index = 0;
 
@@ -220,25 +220,25 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Override
     public Map<String, Object> getAvgScoresVetByClinicGraphicOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser) {
-        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
-        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+        List<String> svgObject = (List<String>) requestData.get("svgData");
+        Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
         Map<String, Object> parameterMap = Maps.newHashMap();
 
         String fromDate = (String) userReqData.get(ReportsUtil.FROMDATE);
         String toDate = (String) userReqData.get(ReportsUtil.TODATE);
-        ArrayList cClinicList = (ArrayList) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
-        ArrayList sSurveyList = (ArrayList) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
+        List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
+        List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        attachDates(parameterMap, requestData);
 
-        List<Integer> surveyIds = new ArrayList<>(sSurveyList.size());
+        List<Integer> surveyIds = Lists.newArrayList();
 
         for (Object s : sSurveyList) {
             surveyIds.add((Integer) s);
         }
 
-        List<ClinicVeteranDTO> resultList = new ArrayList<>();
+        List<ClinicVeteranDTO> resultList = Lists.newArrayList();
 
         int index = 0;
 
@@ -267,8 +267,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Override
     public Map<String, Object> getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser) {
-        ArrayList<String> svgObject = (ArrayList<String>) requestData.get("svgData");
-        LinkedHashMap<String, Object> userReqData = (LinkedHashMap<String, Object>) requestData.get("userReqData");
+        List<String> svgObject = (List<String>) requestData.get("svgData");
+        Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
         Map<String, Object> parameterMap = Maps.newHashMap();
 
@@ -276,9 +276,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         String last4SSN = (String) userReqData.get(ReportsUtil.SSN_LAST_FOUR);
         String fromDate = (String) userReqData.get(ReportsUtil.FROMDATE);
         String toDate = (String) userReqData.get(ReportsUtil.TODATE);
-        ArrayList surveyIds = (ArrayList) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
+        List surveyIds = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        attachDates(parameterMap, requestData);
         parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
 
         VeteranDto veteran = new VeteranDto();
@@ -293,7 +293,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             veteranId = veterans.get(0).getVeteranId();
         }
 
-        List<ModuleGraphReportDTO> resultList = new ArrayList<>();
+        List<ModuleGraphReportDTO> resultList = Lists.newArrayList();
 
         int index = 0;
 
@@ -320,8 +320,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<Map<String, Object>> createIndivChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
-        List cList = (ArrayList) requestData.get(ReportsUtil.CLINIC_ID_LIST);
-        List sList = (ArrayList) requestData.get(ReportsUtil.SURVEY_ID_LIST);
+        List cList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        List sList = (List) requestData.get(ReportsUtil.SURVEY_ID_LIST);
 
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
         for (Object oClinicId : cList) {
@@ -348,8 +348,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
-        List cList = (ArrayList) requestData.get(ReportsUtil.CLINIC_ID_LIST);
-        List sList = (ArrayList) requestData.get(ReportsUtil.SURVEY_ID_LIST);
+        List cList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        List sList = (List) requestData.get(ReportsUtil.SURVEY_ID_LIST);
 
         for (Object oClinicId : cList) {
 
@@ -390,7 +390,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         Integer veteranId = veterans.get(0).getVeteranId();
 
-        for (Object strSurveyId : (ArrayList) requestData.get(ReportsUtil.SURVEY_ID_LIST)) {
+        for (Object strSurveyId : (List) requestData.get(ReportsUtil.SURVEY_ID_LIST)) {
 
             Integer surveyId = (Integer) strSurveyId;
 
@@ -417,7 +417,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         Map<String, Object> parameterMap = Maps.newHashMap();
         parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
-        parameterMap.put("fromToDate", "From " + fromDate + " to " + toDate);
+        attachDates(parameterMap, requestData);
 
         VeteranDto veteran = new VeteranDto();
         veteran.setLastName(lastName);
@@ -432,10 +432,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         } else {
 
 
-            List<TableReportDTO> resultList = new ArrayList<>();
+            List<TableReportDTO> resultList = Lists.newArrayList();
 
 
-            for (Object strSurveyId : (ArrayList) requestData.get(ReportsUtil.SURVEY_ID_LIST)) {
+            for (Object strSurveyId : (List) requestData.get(ReportsUtil.SURVEY_ID_LIST)) {
 
                 Integer surveyId = (Integer) strSurveyId;
 
@@ -458,22 +458,22 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genAvgScoresVetByClinicNumeric(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genAvgScoresVetByClinicNumeric(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
         String displayOption = (String) requestData.get(ReportsUtil.DISPLAY_OPTION);
         if ("individualData".equals(displayOption)) {
 
         }
 
-        ArrayList idList = (ArrayList) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        List idList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
         return parameterMap;
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
-        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames", "MAMMOGRAM");
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
 
         parameterMap.put("datasource", new JREmptyDataSource());
 
@@ -482,10 +482,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("showByTime", false);
         parameterMap.put("grandTotal", "100");
 
-        parameterMap.put("byDay", new ArrayList());
-        parameterMap.put("byTime", new ArrayList());
+        parameterMap.put("byDay", Lists.newArrayList());
+        parameterMap.put("byTime", Lists.newArrayList());
 
-        List<KeyValueDTO> ks = new ArrayList<>();
+        List<KeyValueDTO> ks = Lists.newArrayList();
 
         KeyValueDTO keyValueDTO = new KeyValueDTO();
         keyValueDTO.setKey("First");
@@ -504,15 +504,15 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
 
-        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames", "MAMMOGRAM");
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
 
         JRDataSource dataSource = null;
 
-        List<SurveyTimeDTO> dtos = new ArrayList<>();
+        List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
         SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
 
@@ -545,7 +545,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartVDemographicsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartVDemographicsReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
 
         attachDates(parameterMap, requestData);
@@ -566,14 +566,13 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
-        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames", "MAMMOGRAM");
-
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
         JRDataSource dataSource = null;
 
-        List<Report595DTO> dtos = new ArrayList<>();
+        List<Report595DTO> dtos = Lists.newArrayList();
 
         Report595DTO dto = new Report595DTO();
         // todo fill out data here.
@@ -589,14 +588,14 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
         parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
         parameterMap.put("clinicNames", "MAMMOGRAM");
 
         JRDataSource dataSource = null;
 
-        List<Report594DTO> dtos = new ArrayList<>();
+        List<Report594DTO> dtos = Lists.newArrayList();
 
         Report594DTO dto = new Report594DTO();
         //TODO: fill out dto here
@@ -605,36 +604,44 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataSource = new JRBeanCollectionDataSource(dtos);
 
 
-
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;
     }
 
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
-        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames", "MAMMOGRAM");
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
 
         JRDataSource dataSource = null;
 
-        List<Report599DTO> dtos = new ArrayList<>();
+        List<Report599DTO> dtos = Lists.newArrayList();
 
         Report599DTO dto = new Report599DTO();
-        //TODO: fill out dto here
-        dtos.add(dto);
+        dto.setMissingCount("12");
+        dto.setMissingPercent("34%");
+        dto.setModuleName("MyDummyModule");
+        dto.setNegativeCount("34");
+        dto.setNegativePercent("28%");
+        dto.setPositiveCount("27");
+        dto.setPositivePercent("56%");
 
+        dtos.add(dto);
+        dataSource = new JRBeanCollectionDataSource(dtos);
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;
     }
 
-    private void attachDates(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
-        dataCollection.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+    private void attachDates(Map<String, Object> dataCollection, Map<String, Object> requestData) {
+        String fromDate = requestData.get(ReportsUtil.FROMDATE).toString();
+        String toDate = requestData.get(ReportsUtil.TODATE).toString();
+        dataCollection.put("fromToDate", String.format("from %s -- %s", fromDate, toDate));
     }
 
-    private void attachClinics(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachClinics(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         StringBuilder sb = new StringBuilder();
         for (Integer clicnicId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
             sb.append(clinicService.getClinicNameById(clicnicId)).append(", ");
@@ -642,11 +649,11 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("clinicNames", sb.toString());
     }
 
-    private void attachDeployments(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachDeployments(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("numberofdeployments", "Mean number of deployments = 2.5 and minimum Value = 6 and Maximum Value = 10");
     }
 
-    private void attachTobaccoUsage(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachTobaccoUsage(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("tobacco_never_percentage", "37%");
         dataCollection.put("tobacco_never_count", "37/100");
         dataCollection.put("tobacco_no_percentage", "38%");
@@ -657,7 +664,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("tobacco_miss_count", "40/100");
     }
 
-    private void attachMilitaryBranch(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachMilitaryBranch(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("army_percentage", "30%");
         dataCollection.put("army_count", "30/100");
         dataCollection.put("airforce_percentage", "31%");
@@ -674,7 +681,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("missingmilitary_count", "36/100");
     }
 
-    private void attachEmploymentStatus(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachEmploymentStatus(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("fulltime_percentage", "24%");
         dataCollection.put("fulltime_count", "24/100");
         dataCollection.put("parttime_percentage", "25%");
@@ -689,7 +696,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("missingemp_count", "29/100");
     }
 
-    private void attachEducation(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachEducation(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("highschool_percentage", "13%");
         dataCollection.put("highschool_count", "13/100");
         dataCollection.put("ged_percentage", "14%");
@@ -714,11 +721,11 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("missingedu_count", "23/100");
     }
 
-    private void attachAge(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachAge(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("age", "Mean Age 3.3 years Minimum Value = 60 and Maximum value = 80");
     }
 
-    private void attachEthnicity(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachEthnicity(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("hispanic_percentage", "3%");
         dataCollection.put("hispanic_count", "3/100");
         dataCollection.put("non_hispanic_percentage", "4%");
@@ -741,7 +748,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         dataCollection.put("otherrace_count", "12/100");
     }
 
-    private void attachGender(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
+    private void attachGender(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         dataCollection.put("female_percentage", "1%");
         dataCollection.put("female_count", "1/100");
         dataCollection.put("male_percentage", "2%");

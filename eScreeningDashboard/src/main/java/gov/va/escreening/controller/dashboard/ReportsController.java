@@ -158,7 +158,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(requestData, escreenUser));
+        return new ModelAndView("mostSkippedQuestionsReport", rd.genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(requestData, escreenUser));
     }
 
     // ticket 594
@@ -169,7 +169,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(requestData, escreenUser));
+        return new ModelAndView("mostCommonTypesOfAlertsPercentagesReport", rd.genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(requestData, escreenUser));
     }
 
     // ticket 599
@@ -180,7 +180,7 @@ public class ReportsController {
 
     @RequestMapping(value = "/clinicStatisticReportsPartVIPositiveScreensReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPartVIPositiveScreensReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genClinicStatisticReportsPartVIPositiveScreensReport(requestData, escreenUser));
+        return new ModelAndView("positiveScreensReport", rd.genClinicStatisticReportsPartVIPositiveScreensReport(requestData, escreenUser));
     }
 
 

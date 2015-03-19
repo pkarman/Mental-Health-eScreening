@@ -93,19 +93,19 @@
           p:reportDataKey="datasource"/>
 
     <!-- ticket 595 -->
-    <bean id="595"
+    <bean id="mostSkippedQuestionsReport"
           class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
           p:url="classpath:/reports/595.jrxml"
           p:reportDataKey="datasource"/>
 
     <!-- ticket 594 -->
-    <bean id="594"
+    <bean id="mostCommonTypesOfAlertsPercentagesReport"
           class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
           p:url="classpath:/reports/594.jrxml"
           p:reportDataKey="datasource"/>
 
     <!-- ticket 599 -->
-    <bean id="594"
+    <bean id="positiveScreensReport"
           class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
           p:url="classpath:/reports/599.jrxml"
           p:reportDataKey="datasource"/>
