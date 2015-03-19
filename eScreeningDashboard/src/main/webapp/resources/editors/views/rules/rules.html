@@ -1,19 +1,26 @@
 <div style="min-height:400px;">
     <div class="ui-view-container container-fluid">
         <div style="min-height:650px;" ui-view>
-            <h1>Rule Selection</h1>
+
+	        <button ui-sref="rules.detail" class="btn btn-primary pull-right" type="button">Create Rule</button>
+
+            <h1>Manage Rules</h1>
 
             <div class="row clearfix">
                 <div class="col-md-12 column">
                     <!--- ngTable Begin --->
                     <table ng-table="tableParams"
-                            show-filter="false"
+                            show-filter="true"
                             class="table table-hover"
                             summary="Rule Selection Table">
                         <tr ng-repeat="rule in $data" ng-class-odd="'odd'" ng-class-even="'even'">
-                            <td data-title="'Name'" sortable="'name'">
+                            <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }">
                                 {{rule.name}}
                             </td>
+
+	                        <td data-title="'Expression'" sortable="'expression'">
+		                        {{rule.expression}}
+	                        </td>
 
                             <td data-title="Actions" class="col-md-2">
                                 <div class="pull-right">
