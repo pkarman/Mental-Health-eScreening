@@ -48,11 +48,12 @@
 <div class="container left-right-shadow">
   <div class="row">
     <div class="col-md-12"> <a name="skip"> </a >
-      <h1>Alert Edit</h1>
+      <h1 id=hTitle>Alert Edit</h1>
 
 		<div class="row">
 			<div class="col-md-12">
 				<div class="alert alert-success hide" role="alert" id="successMsg">Alert Saved Successfully.</div>
+				<div class="alert alert-danger hide" role="alert" id="errorMsg">Alert Name is required</div>
 			</div>
 		</div>
 					  
@@ -61,7 +62,7 @@
 			<div class="border-radius-main-form gray-lighter">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Alert Name *</label>
-					<input type="text" class="form-control" id="alertName" placeholder="Enter Alert Name">
+					<input type="text" class="form-control" id="alertName" placeholder="Enter Alert Name" maxlength="100">
 					<p class="help-block">Max 100 characters</p>
 				</div>
 			</div><br>
