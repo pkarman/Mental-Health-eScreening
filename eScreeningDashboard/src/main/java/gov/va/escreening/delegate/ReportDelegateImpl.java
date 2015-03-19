@@ -116,7 +116,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                     ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, (Integer) o, vId, fromDate, toDate);
                     if (moduleGraphReportDTO.getHasData()) {
 
-                        if (svgObject!=null && svgObject.size()>0) {
+                        if (svgObject != null && svgObject.size() > 0) {
                             moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
                         }
                         moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
@@ -200,7 +200,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             if (hasData) {
 
-                if (svgObject!=null && svgObject.size() > 0) {
+                if (svgObject != null && svgObject.size() > 0) {
                     for (ModuleGraphReportDTO moduleGraphReportDTO : dto.getGraphReport()) {
                         moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
                     }
@@ -333,9 +333,9 @@ public class ReportDelegateImpl implements ReportDelegate {
                     final Map<String, Object> chartableDataForIndividualStats = createChartableDataForIndivAvgScoresForPatientsByClinic(clinicId, surveyId, vId, fromDate, toDate);
                     if (!chartableDataForIndividualStats.isEmpty()) {
                         chartableDataList.add(chartableDataForIndividualStats);
+                    }
                 }
             }
-        }
         }
         return chartableDataList;
     }
@@ -361,8 +361,8 @@ public class ReportDelegateImpl implements ReportDelegate {
                 final Map<String, Object> chartableDataForClinic = createChartableDataForGrpAvgScoresForPatientsByClinic(clinicId, surveyId, fromDate, toDate);
                 if (!chartableDataForClinic.isEmpty()) {
                     chartableDataList.add(chartableDataForClinic);
+                }
             }
-        }
         }
         return chartableDataList;
     }
@@ -472,8 +472,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
-        parameterMap.put("fromToDate"," from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames","MAMMOGRAM");
+        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames", "MAMMOGRAM");
 
         parameterMap.put("datasource", new JREmptyDataSource());
 
@@ -507,8 +507,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     public Map<String, Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
 
-        parameterMap.put("fromToDate"," from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames","MAMMOGRAM");
+        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames", "MAMMOGRAM");
 
         JRDataSource dataSource = null;
 
@@ -565,13 +565,31 @@ public class ReportDelegateImpl implements ReportDelegate {
         return parameterMap;
     }
 
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
+    @Override
+    public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+        Map<String, Object> parameterMap = Maps.newHashMap();
+        return parameterMap;
+    }
+
     private void attachDates(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
         dataCollection.put("fromToDate", " from 2/1/2015 to 2/3/2015");
     }
 
     private void attachClinics(Map<String, Object> dataCollection, HashMap<String, Object> requestData) {
-        StringBuilder sb=new StringBuilder();
-        for (Integer clicnicId:(List<Integer>)requestData.get(ReportsUtil.CLINIC_ID_LIST)){
+        StringBuilder sb = new StringBuilder();
+        for (Integer clicnicId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
             sb.append(clinicService.getClinicNameById(clicnicId)).append(", ");
         }
         dataCollection.put("clinicNames", sb.toString());
@@ -690,7 +708,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty()?surveyDataForIndividualStatisticsGraph.values().iterator().next():0);
+        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
 
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
@@ -705,7 +723,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty()?surveyDataForIndividualStatisticsGraph.values().iterator().next():0);
+        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
 
@@ -719,7 +737,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForClinicStatisticsGraph = scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty()?surveyDataForClinicStatisticsGraph.values().iterator().next():0);
+        metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty() ? surveyDataForClinicStatisticsGraph.values().iterator().next() : 0);
 
         chartableDataMap.put("dataSet", surveyDataForClinicStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);

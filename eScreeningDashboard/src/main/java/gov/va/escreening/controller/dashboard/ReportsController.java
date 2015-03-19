@@ -150,6 +150,39 @@ public class ReportsController {
         return new ModelAndView("batteriesReport", rd.genClinicStatisticReportsPart1eScreeningBatteriesReport(requestData, escreenUser));
     }
 
+    // ticket 595
+    @RequestMapping(value = "/clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport() {
+        return new ModelAndView("clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(requestData, escreenUser));
+    }
+
+    // ticket 594
+    @RequestMapping(value = "/clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport() {
+        return new ModelAndView("clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(requestData, escreenUser));
+    }
+
+    // ticket 599
+    @RequestMapping(value = "/clinicStatisticReportsPartVIPositiveScreensReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartVIPositiveScreensReport() {
+        return new ModelAndView("clinicStatisticReportsPartVIPositiveScreensReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartVIPositiveScreensReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartVIPositiveScreensReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartVIPositiveScreensReport(requestData, escreenUser));
+    }
+
 
     // 601 numeric report
     private ModelAndView getAveScoresByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {

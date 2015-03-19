@@ -39,4 +39,10 @@ public interface ReportDelegate {
     Map<String,Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
 
     Map<String,Object> genClinicStatisticReportsPartVDemographicsReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+
+    Map<String,Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+
+    Map<String,Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
+
+    Map<String,Object> genClinicStatisticReportsPartVIPositiveScreensReport(HashMap<String, Object> requestData, EscreenUser escreenUser);
 }
