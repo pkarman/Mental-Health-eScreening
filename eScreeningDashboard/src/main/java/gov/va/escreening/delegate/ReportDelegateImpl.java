@@ -568,18 +568,65 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public Map<String, Object> genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
+        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames", "MAMMOGRAM");
+
+        JRDataSource dataSource = null;
+
+        List<Report595DTO> dtos = new ArrayList<>();
+
+        Report595DTO dto = new Report595DTO();
+        // todo fill out data here.
+
+        dtos.add(dto);
+
+        dataSource = new JRBeanCollectionDataSource(dtos);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
         return parameterMap;
     }
 
     @Override
     public Map<String, Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
+        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames", "MAMMOGRAM");
+
+        JRDataSource dataSource = null;
+
+        List<Report594DTO> dtos = new ArrayList<>();
+
+        Report594DTO dto = new Report594DTO();
+        //TODO: fill out dto here
+        dtos.add(dto);
+
+        dataSource = new JRBeanCollectionDataSource(dtos);
+
+
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;
     }
 
     @Override
     public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
+        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
+        parameterMap.put("clinicNames", "MAMMOGRAM");
+
+        JRDataSource dataSource = null;
+
+        List<Report599DTO> dtos = new ArrayList<>();
+
+        Report599DTO dto = new Report599DTO();
+        //TODO: fill out dto here
+        dtos.add(dto);
+
+        parameterMap.put("datasource", dataSource);
+        parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;
     }
 
