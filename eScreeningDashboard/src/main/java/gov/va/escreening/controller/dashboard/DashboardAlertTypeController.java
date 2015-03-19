@@ -49,13 +49,11 @@ public class DashboardAlertTypeController extends RestController {
 	@RequestMapping(value = "/alertTypes/update", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
 	public Response<String> update(@RequestBody DropDownObject req) {
-		System.out.println("I'm here");
 		try {
 			Integer id = null;
 			if (req.getStateId() != null && !req.getStateId().isEmpty()) {
 				try {
 					id = Integer.parseInt(req.getStateId());
-					System.out.println("ID >>" + id);
 				} catch (Exception ex) {
 
 				}
