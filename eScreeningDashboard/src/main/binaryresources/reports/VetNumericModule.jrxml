@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VetNumericModule" language="groovy" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="10" uuid="a536e1f4-be9e-4479-af40-d3ca9f43da2e">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="lastNameAndSSN" class="java.lang.String"/>
+	<field name="moduleGraphs" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="179" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
+				<textFieldExpression><![CDATA[$F{lastNameAndSSN}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="40" width="572" height="138" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{moduleGraphs})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["/reports/601ModuleNumericSubReport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

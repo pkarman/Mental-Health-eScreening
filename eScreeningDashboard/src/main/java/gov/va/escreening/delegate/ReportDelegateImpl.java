@@ -114,7 +114,10 @@ public class ReportDelegateImpl implements ReportDelegate {
                 for (Object o : sSurveyList) {
                     ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, (Integer) o, vId, fromDate, toDate);
                     if (moduleGraphReportDTO.getHasData()) {
-                        moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+
+                        if (svgObject!=null && svgObject.size()>0) {
+                            moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgObject.get(index++));
+                        }
                         moduleGraphReportDTO.setScoreHistoryTitle("Score History by VistA Clinic");
                         hasData = true;
                     }

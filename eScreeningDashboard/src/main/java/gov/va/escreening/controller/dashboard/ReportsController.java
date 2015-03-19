@@ -98,6 +98,15 @@ public class ReportsController {
 
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+
+        LinkedHashMap<String, Object> userData = new LinkedHashMap<>();
+
+        for(String key : requestData.keySet()){
+            userData.put(key, requestData.get(key));
+        }
+
+        requestData.put("userReqData", userData);
+
         if ("groupData".equals((requestData).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group report
             return getAveScoresByClinicNumericReport(requestData, escreenUser);
@@ -111,19 +120,12 @@ public class ReportsController {
     // 601 numeric report
     private ModelAndView getAveScoresByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser){
 
-        LinkedHashMap<String, Object> userData = new LinkedHashMap<>();
-
-        for(String key : requestData.keySet()){
-            userData.put(key, requestData.get(key));
-        }
-
-        requestData.put("userReqData", userData);
         return new ModelAndView("avgClinicNumericReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true));
     }
 
     private ModelAndView getAvgScoresVetByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser){
 
-        return new ModelAndView("", null);
+        return new ModelAndView("avgVetClinicNumericReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
     }
 
 
