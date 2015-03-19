@@ -405,14 +405,110 @@ module.controller('avgTimePerModuleCtrl', ['$scope', '$http', 'ReportsService', 
 
         if ($scope.reportForm.$valid) {
             // create a model to represent user requested data on html form
-            var avgTimePerModuleForm = {
+            var formData = {
                 fromDate: $scope.report.fromDate,
                 toDate: $scope.report.toDate,
                 clinicsList: $scope.report.clinicsList,
                 reportType: 'avgTimePerModuleForm'
             };
-            ReportsService.runNumericReport(avgTimePerModuleForm, 'clinicStatisticReportsPartIVAverageTimePerModuleReport').then(function () {
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIVAverageTimePerModuleReport').then(function () {
                 console.log('clinicStatisticReportsPartIVAverageTimePerModuleReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
+    }
+}]);
+module.controller('mostSkippedQuestionsCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var formData = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'mostSkippedQuestionsCtrl'
+            };
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport').then(function () {
+                console.log('clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
+    }
+}]);
+module.controller('mostCommonTypesOfAlertsPercentagesCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var formData = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'mostCommonTypesOfAlertsPercentagesForm'
+            };
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport').then(function () {
+                console.log('clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport report generated successfully');
+            });
+        }
+        $scope.reset();
+    }
+    $scope.reset = function () {
+        $scope.$broadcast('show-errors-reset');
+        //$scope.report = {};
+    }
+}]);
+module.controller('positiveScreensCtrl', ['$scope', '$http', 'ReportsService', function ($scope, $http, ReportsService) {
+    // place holder for selected clinics
+    $scope.report = {clinicsList: []};
+    // Load Surveys List Service
+    ReportsService.getClinicsList()
+        .success(function (data) {
+            $scope.clinicsList = data;
+        }).error(function (data, status) {
+            console.error('getClinicsList error', status, data);
+        });
+    $scope.save = function () {
+        $scope.$broadcast('show-errors-check-validity');
+
+        if ($scope.reportForm.$valid) {
+            // create a model to represent user requested data on html form
+            var formData = {
+                fromDate: $scope.report.fromDate,
+                toDate: $scope.report.toDate,
+                clinicsList: $scope.report.clinicsList,
+                reportType: 'positiveScreensForm'
+            };
+            ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartVIPositiveScreensReport').then(function () {
+                console.log('clinicStatisticReportsPartVIPositiveScreensReport report generated successfully');
             });
         }
         $scope.reset();

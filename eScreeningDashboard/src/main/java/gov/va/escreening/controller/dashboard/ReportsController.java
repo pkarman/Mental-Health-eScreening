@@ -60,7 +60,9 @@ public class ReportsController {
 
     @RequestMapping(value = "/individualStatisticsGraphic", method = RequestMethod.POST)
     public ModelAndView genIndividualStatisticsGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+
         return getIndividualStaticsGraphicPDF(requestData, escreenUser, "individualStatisticsGraphReport");
+
     }
 
     @RequestMapping(value = "/individualStatisticsNumeric", method = RequestMethod.POST)
@@ -78,7 +80,7 @@ public class ReportsController {
     public ModelAndView genAvgScoresVetByClinicGraphic(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
         // ticket 600 entry point graph chart
-        if ("groupData".equals(((LinkedHashMap<String, Object>)requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
+        if ("groupData".equals(((LinkedHashMap<String, Object>) requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group Chart
             return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
         } else {
@@ -96,7 +98,22 @@ public class ReportsController {
 
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicNumeric(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
-        return new ModelAndView("", rd.genAvgScoresVetByClinicNumeric(requestData, escreenUser));
+
+        LinkedHashMap<String, Object> userData = new LinkedHashMap<>();
+
+        for (String key : requestData.keySet()) {
+            userData.put(key, requestData.get(key));
+        }
+
+        requestData.put("userReqData", userData);
+
+        if ("groupData".equals((requestData).get(ReportsUtil.DISPLAY_OPTION))) {
+            //Group report
+            return getAveScoresByClinicNumericReport(requestData, escreenUser);
+        } else {
+            // individual report
+            return getAvgScoresVetByClinicNumericReport(requestData, escreenUser);
+        }
     }
 
     // ticket 597
@@ -131,6 +148,51 @@ public class ReportsController {
     @RequestMapping(value = "/clinicStatisticReportsPart1eScreeningBatteriesReport", method = RequestMethod.POST)
     public ModelAndView genClinicStatisticReportsPart1eScreeningBatteriesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
         return new ModelAndView("batteriesReport", rd.genClinicStatisticReportsPart1eScreeningBatteriesReport(requestData, escreenUser));
+    }
+
+    // ticket 595
+    @RequestMapping(value = "/clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport() {
+        return new ModelAndView("clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartIIIList20MostSkippedQuestionsReport(requestData, escreenUser));
+    }
+
+    // ticket 594
+    @RequestMapping(value = "/clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport() {
+        return new ModelAndView("clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(requestData, escreenUser));
+    }
+
+    // ticket 599
+    @RequestMapping(value = "/clinicStatisticReportsPartVIPositiveScreensReport", method = RequestMethod.GET)
+    public ModelAndView getClinicStatisticReportsPartVIPositiveScreensReport() {
+        return new ModelAndView("clinicStatisticReportsPartVIPositiveScreensReport");
+    }
+
+    @RequestMapping(value = "/clinicStatisticReportsPartVIPositiveScreensReport", method = RequestMethod.POST)
+    public ModelAndView genClinicStatisticReportsPartVIPositiveScreensReport(@RequestBody HashMap<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
+        return new ModelAndView("", rd.genClinicStatisticReportsPartVIPositiveScreensReport(requestData, escreenUser));
+    }
+
+
+    // 601 numeric report
+    private ModelAndView getAveScoresByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+
+        return new ModelAndView("avgClinicNumericReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true));
+    }
+
+    private ModelAndView getAvgScoresVetByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
+
+        return new ModelAndView("avgVetClinicNumericReport", rd.getAvgScoresVetByClinicGraphReport(requestData, escreenUser));
     }
 
 
