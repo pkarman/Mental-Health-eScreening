@@ -193,5 +193,7 @@
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script></body>
+<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
+
+</body>
 </html>
