@@ -911,6 +911,12 @@ a.offscreen:focus, a.offscreen:active {
 	vertical-align:middle;
 	font-size:12px;
 }
+.item-label-success{
+	color: #3c763d;
+}  
+.item-label-error{
+	color: #a94442;
+}  
 
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {

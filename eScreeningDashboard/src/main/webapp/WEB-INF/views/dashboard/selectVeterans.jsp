@@ -199,28 +199,14 @@
 	</div>
 </div>
 
-<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-
-
-
-
-
+	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+	
+	<!-- Scripts -->
 	<script type="text/javascript" src="<c:url value="/resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap-select.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-
 	<script src="resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap.min.js"></script>
 	<script src="resources/js/lib/ladda-bootstrap/dist/spin.min.js"></script>
 	<script src="resources/js/lib/ladda-bootstrap/dist/ladda.min.js"></script>
-
-	<script>
-		
-		
-		$(document).ready(function() {
-
-				
-		});
-	</script>
-
 	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/selectVeterans.js?v=2" />"></script>
 </body>	
 </html>

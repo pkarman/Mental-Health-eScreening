@@ -1,7 +1,12 @@
 $(document).ready(function() {
     // Load current tab
     tabsLoad("createBattery");
+
+
+	// Add Ladda preloader
+	// Ladda.bind( '.createAssessmentButton', 20000 );
 	
+		
 	// Load Selected Program 
 	var $li = $('.battery_list').find('li');
 	
@@ -91,11 +96,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	
-	
-
-
-	
 	/*
 	$(".battery_list input").on("click", function(e) {
 			$(".module_list tr input").prop('checked', false);
@@ -182,11 +182,6 @@ $(document).ready(function() {
 		$(".program_1").addClass("hide2");	        
 	});
 	
-
-
-	
-		
-
 	$(".battery_list input").on("click", function(e) {
 		 clearAllCheckbox();
 		//$(".module_list tr input").prop('checked', false);
@@ -229,29 +224,19 @@ $(document).ready(function() {
 		for (i = 0; i < data.length; ++i) {   
 			check(data[i], i+1);
 		}
-
-
 			
-			
-			/*
-			if(reset_check == false){
-				for ( var i in module_values ) {
-					$("input:checkbox[value="+module_values[i]+"]").prop('checked', true);
-				}
-			}
-			*/
-			
+		/*
+		if(reset_check == false){for ( var i in module_values ) {$("input:checkbox[value="+module_values[i]+"]").prop('checked', true);}}*/
 
+		$(".module_list  ." + $(this).attr('class')).prop('checked', true);
+		$(".module_list tr").removeClass("highlight");
+		
+		var classes = $(this).attr('class').split(' ');
 
-			$(".module_list  ." + $(this).attr('class')).prop('checked', true);
-			$(".module_list tr").removeClass("highlight");
-			
-			var classes = $(this).attr('class').split(' ');
-
-			
-			for(var i=0; i<classes.length; i++){
-				  $(".module_list ."+classes[i]).closest("tr").addClass("highlight"); 
-			}
+		
+		for(var i=0; i< classes.length; i++){
+			 $(".module_list ."+classes[i]).closest("tr").addClass("highlight"); 
+		}
 			
 	});
 	
@@ -287,14 +272,15 @@ $(document).ready(function() {
 
 		$(checkbox).removeAttr('checked');
 		$(tr).removeClass("highlight");
+		$(checkbox).removeAttr('indeterminate');
+		$(checkbox).prop("indeterminate", false); 
+		
 		reset_check = true;
 	}
 	
 	$(selectedProgramId).on("change", function(e) {
 		loadSelectedProgram();
 	});
-	
-
 	
 	function loadSelectedProgram(){
 		var selectedProgramIdVal = $("#selectedProgramId").val();
@@ -310,6 +296,4 @@ $(document).ready(function() {
 		$(selectedClinicId).change(function() {
 		});
 	});
-			
-	
 });

@@ -135,7 +135,17 @@
 														<td class="text-right"><c:out value="${item.vet.apptDate}" /></td>
 														<td class="text-right"><c:out value="${item.vet.apptTime}" /></td>
 														<td class="text-center text-capitalize"><c:out value="${item.vet.dueClinicalReminders}" /></td>
-														<td class="text-center text-capitalize"><c:out value="${item.succeed}"/></td>
+														<td class="text-center text-capitalize <c:choose><c:when test="${item.succeed == 'true'}">item-label-success</c:when><c:otherwise>item-label-error</c:otherwise></c:choose>">
+														<c:choose>
+														<c:when test="${item.succeed == 'true'}">
+																Succeed
+															</c:when>
+															<c:otherwise>
+																Failed
+															</c:otherwise>
+														</c:choose>
+														
+														</td>
 														<td class="text-right">
 														<c:if test="${isCprsVerified}">
 															<c:if test="${not empty item.vet.veteranId}">

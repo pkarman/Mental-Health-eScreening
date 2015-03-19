@@ -18,9 +18,9 @@ $(document).ready(function() {
       format: 'mm/dd/yyyy',
 			autoclose: true,
 			startDate: 'd'
-		});
+	});
 
-		$(toAssessmentDateGroup).datepicker({
+	$(toAssessmentDateGroup).datepicker({
 			showOn : 'button',
       format: 'mm/dd/yyyy',
 			autoclose: true,
@@ -61,7 +61,7 @@ $(document).ready(function() {
 			}else{
 				$(createAssessmentButton).attr('disabled','disabled');
 			}
-		});
+	});
 	
 	// vetIensCheckbox checkbox on change
 	$(vetIensCheckbox).change(function() {

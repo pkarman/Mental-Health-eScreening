@@ -228,7 +228,8 @@
 											</c:forEach>										
 										</ul>
 											<hr />
-											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
+											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span>
+											<!-- <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span> -->
                       						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
 											<hr />					
 									</div>
@@ -268,12 +269,12 @@
 								<div class="row">
 									<div class="col-md-8 col-md-offset-4 text-right ">
 										<c:if test="${not isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" class="btn btn-primary ladda-button createAssessmentButton" data-style="expand-right" />
 										</c:if>
 										<c:if test="${isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary ladda-button createAssessmentButton" data-style="expand-right" />
 										</c:if>
-		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="button" class="btn btn-default" />
+		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="button" class="btn btn-default btn-default-black"  />
 									</div>
 								</div>
 								</div>
@@ -287,7 +288,11 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+
+	<!-- Scripts -->
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+	
+	<!-- Page Scripts -->
+	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </body>
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </html>
