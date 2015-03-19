@@ -146,14 +146,11 @@
 	
 </div>
 
-<div class="graphWrapper hide" id="graph_1"></div>
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
-<script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
-<script src="<c:url value="/resources/js/d3/chart.js" />"></script>
-
-<script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script></body>
+<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
+
+</body>
 </html>

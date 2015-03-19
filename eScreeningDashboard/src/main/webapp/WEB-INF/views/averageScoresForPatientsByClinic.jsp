@@ -200,5 +200,7 @@
 
 <script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script></body>
+<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
+
+</body>
 </html>
