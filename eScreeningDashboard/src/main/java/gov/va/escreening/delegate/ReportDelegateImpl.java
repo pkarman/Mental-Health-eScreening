@@ -18,6 +18,9 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -483,27 +486,30 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", new JREmptyDataSource());
 
+        final DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy");
+        final LocalDate fromDate = dtf.parseLocalDate(requestData.get(ReportsUtil.FROMDATE).toString());
+        final LocalDate toDate = dtf.parseLocalDate(requestData.get(ReportsUtil.TODATE).toString());
 
+        int totals = 0;
+        Map<LocalDate, Integer> dateTotalMap = Maps.newHashMap();
         if (requestData.get("eachDay") != null && ((Boolean) requestData.get("eachDay"))) {
             parameterMap.put("showByDay", true);
             List<Report593ByDayDTO> data = new ArrayList<>();
 
-            Report593ByDayDTO byDayDTO = new Report593ByDayDTO();
-            //TODO: populate the data here
-            byDayDTO.setDate("01/02/2015");
-            byDayDTO.setDayOfWeek("Tuesday");
-            byDayDTO.setTotal("15");
-            data.add(byDayDTO);
-
-            byDayDTO = new Report593ByDayDTO();
-            byDayDTO.setDate("01/03/2015");
-            byDayDTO.setDayOfWeek("Wednesday");
-            byDayDTO.setTotal("25");
-            data.add(byDayDTO);
-
+            LocalDate ld = fromDate;
+            while (!ld.equals(toDate)) {
+                Report593ByDayDTO byDayDTO = new Report593ByDayDTO();
+                byDayDTO.setDate(ld.toString("MM/dd/yyyy"));
+                byDayDTO.setDayOfWeek(ld.dayOfWeek().getAsText());
+                int t = (int) (Math.random() * 100);
+                dateTotalMap.put(ld, t);
+                totals += t;
+                byDayDTO.setTotal(String.valueOf(t));
+                data.add(byDayDTO);
+                ld = ld.plusDays(1);
+            }
             parameterMap.put("byDay", data);
-            parameterMap.put("grandTotal", "40");
-
+            parameterMap.put("grandTotal", "" + totals);
         } else {
             parameterMap.put("showByDay", false);
             parameterMap.put("byDay", Lists.newArrayList());
@@ -514,21 +520,30 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("showByTime", true);
             List<Report593ByTimeDTO> data = new ArrayList<>();
 
-            Report593ByTimeDTO byTimeDTO = new Report593ByTimeDTO();
-            //TODO: populate the data here
-            byTimeDTO.setDayOfWeek("Tuesday");
-            byTimeDTO.setTotal("20");
-            byTimeDTO.setDate("01/02/2015");
-            byTimeDTO.setEightToTen("1");
-            byTimeDTO.setFourToSix("2");
-            byTimeDTO.setSixToEight("3");
-            byTimeDTO.setTenToTwelve("0");
-            byTimeDTO.setTwelveToTwo("1");
-            byTimeDTO.setTwoToFour("3");
-            data.add(byTimeDTO);
-
+            LocalDate ld = fromDate;
+            while (!ld.equals(toDate)) {
+                Report593ByTimeDTO byTimeDTO = new Report593ByTimeDTO();
+                byTimeDTO.setDate(ld.toString("MM/dd/yyyy"));
+                byTimeDTO.setDayOfWeek(ld.dayOfWeek().getAsText());
+                int t = dateTotalMap.get(ld);
+                int e2t = Math.max(0, t / 6);
+                int f2s = Math.max(0, t / 5);
+                int s2e = Math.max(0, t / 4);
+                int t2t = Math.max(0, t / 7);
+                int tt2t = Math.max(0, t / 8);
+                int t2f = Math.max(0, t - (e2t + f2s + s2e + t2t + tt2t));
+                byTimeDTO.setTotal(String.valueOf(t));
+                byTimeDTO.setEightToTen(String.valueOf(e2t));
+                byTimeDTO.setFourToSix(String.valueOf(f2s));
+                byTimeDTO.setSixToEight(String.valueOf(s2e));
+                byTimeDTO.setTenToTwelve(String.valueOf(t2t));
+                byTimeDTO.setTwelveToTwo(String.valueOf(tt2t));
+                byTimeDTO.setTwoToFour(String.valueOf(t2f));
+                data.add(byTimeDTO);
+                ld = ld.plusDays(1);
+            }
             parameterMap.put("byTime", data);
-            parameterMap.put("grandTotal", "100");
+            parameterMap.put("grandTotal", "" + totals);
 
 
         } else {
