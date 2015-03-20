@@ -1,7 +1,10 @@
 package gov.va.escreening.delegate;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
 import gov.va.escreening.controller.dashboard.ReportsController;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
@@ -38,6 +41,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Resource(type = SurveyService.class)
     private SurveyService surveyService;
+
+    @Resource(type = AssessmentVariableService.class)
+    AssessmentVariableService avs;
 
     @Resource(type = ClinicService.class)
     private ClinicService clinicService;
@@ -514,26 +520,13 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
-        SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
-
-        surveyTimeDTO.setModuleName("AUDIT-C");
-        surveyTimeDTO.setModuleTime("20");
-        dtos.add(surveyTimeDTO);
-
-        surveyTimeDTO = new SurveyTimeDTO();
-        surveyTimeDTO.setModuleName("AUDIT-C2");
-        surveyTimeDTO.setModuleTime("23");
-        dtos.add(surveyTimeDTO);
-
-        surveyTimeDTO = new SurveyTimeDTO();
-        surveyTimeDTO.setModuleName("Goals");
-        surveyTimeDTO.setModuleTime("24");
-        dtos.add(surveyTimeDTO);
-
-        surveyTimeDTO = new SurveyTimeDTO();
-        surveyTimeDTO.setModuleName("Exposure");
-        surveyTimeDTO.setModuleTime("27");
-        dtos.add(surveyTimeDTO);
+        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
+        for (String clinicName : clinicNames) {
+            SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
+            surveyTimeDTO.setModuleName(clinicName);
+            surveyTimeDTO.setModuleTime(String.valueOf((int) (Math.random() * 100)));
+            dtos.add(surveyTimeDTO);
+        }
 
         dataSource = new JRBeanCollectionDataSource(dtos);
         //dataSource = new JREmptyDataSource();
@@ -574,10 +567,22 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Report595DTO> dtos = Lists.newArrayList();
 
-        Report595DTO dto = new Report595DTO();
-        // todo fill out data here.
+        int i = 1;
+        for (Integer surveyId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
+            final Table<String, String, Object> assessmentVarsForSurvey = avs.getAssessmentVarsForSurvey(surveyId, true, false);
+            final Collection<Map<String, Object>> avCollection = assessmentVarsForSurvey.rowMap().values();
 
-        dtos.add(dto);
+            for (Map<String, Object> av : avCollection) {
+                if (!Integer.valueOf(0).equals(av.get("measureId"))) {
+                    Report595DTO report595DTO = new Report595DTO();
+                    report595DTO.setOrder("" + i++);
+                    report595DTO.setPercentage(String.format("%5.2f%%", Math.random() * 100));
+                    report595DTO.setQuestions(av.get("displayName").toString());
+                    report595DTO.setVariableName(av.get("name").toString());
+                    dtos.add(report595DTO);
+                }
+            }
+        }
 
         dataSource = new JRBeanCollectionDataSource(dtos);
 
@@ -590,19 +595,24 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Override
     public Map<String, Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
-        parameterMap.put("fromToDate", " from 2/1/2015 to 2/3/2015");
-        parameterMap.put("clinicNames", "MAMMOGRAM");
+
+        attachDates(parameterMap, requestData);
+        attachClinics(parameterMap, requestData);
 
         JRDataSource dataSource = null;
 
         List<Report594DTO> dtos = Lists.newArrayList();
 
-        Report594DTO dto = new Report594DTO();
-        //TODO: fill out dto here
-        dtos.add(dto);
+        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
+        for (String clinicName : clinicNames) {
+            Report594DTO report594DTO = new Report594DTO();
+            report594DTO.setModuleName(clinicName);
+            report594DTO.setModuleCount(String.format("%s", (int) (Math.random() * 100)));
+            report594DTO.setModulePercent(String.format("%5.2f%%", Math.random() * 100));
+            dtos.add(report594DTO);
+        }
 
         dataSource = new JRBeanCollectionDataSource(dtos);
-
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
@@ -619,16 +629,19 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Report599DTO> dtos = Lists.newArrayList();
 
-        Report599DTO dto = new Report599DTO();
-        dto.setMissingCount("12");
-        dto.setMissingPercent("34%");
-        dto.setModuleName("MyDummyModule");
-        dto.setNegativeCount("34");
-        dto.setNegativePercent("28%");
-        dto.setPositiveCount("27");
-        dto.setPositivePercent("56%");
+        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
+        for (String clinicName : clinicNames) {
+            Report599DTO dto = new Report599DTO();
+            dto.setMissingCount(String.format("%s", (int) (Math.random() * 100)));
+            dto.setMissingPercent(String.format("%5.2f%%", Math.random() * 100));
+            dto.setModuleName(clinicName);
+            dto.setNegativeCount(String.format("%s", (int) (Math.random() * 100)));
+            dto.setNegativePercent(String.format("%5.2f%%", Math.random() * 100));
+            dto.setPositiveCount(String.format("%s", (int) (Math.random() * 100)));
+            dto.setPositivePercent(String.format("%5.2f%%", Math.random() * 100));
+            dtos.add(dto);
+        }
 
-        dtos.add(dto);
         dataSource = new JRBeanCollectionDataSource(dtos);
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
@@ -762,7 +775,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        if (metaData!=null) {
+        if (metaData != null) {
             metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
         }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
@@ -778,7 +791,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        if (metaData!=null) {
+        if (metaData != null) {
             metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
         }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
@@ -794,7 +807,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForClinicStatisticsGraph = scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        if (metaData!=null) {
+        if (metaData != null) {
             metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty() ? surveyDataForClinicStatisticsGraph.values().iterator().next() : 0);
         }
 
