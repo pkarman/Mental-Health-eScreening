@@ -919,6 +919,7 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 
+
 /* Reports */
 .vertical_scoll_list_b {
   overflow-y: scroll;
@@ -952,6 +953,26 @@ a.offscreen:focus, a.offscreen:active {
  
 .form-group.has-error .help-block {
   display: block;
+}
+
+/**/
+.change_program_block{
+	margin:0px 10px;
+}
+
+.change_program_block, .change_program_block a{
+}
+/*System Configuration Page */
+.otherSystemConfigurationBlock{
+	
+}
+.otherSystemConfigurationBlock ul, .otherSystemConfigurationBlock li{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+.otherSystemConfigurationBlock .sectionList{
+	font-weight:bold;
 }
 
 

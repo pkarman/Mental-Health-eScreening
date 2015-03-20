@@ -26,9 +26,10 @@ public interface AssessmentDelegate {
      * assessment status must be marked as 'Clean'
      * 
      * @param veteranId
+     * @param programId
      * @return
      */
-    VeteranAssessment getAvailableVeteranAssessment(Integer veteranId);
+    VeteranAssessment getAvailableVeteranAssessment(Integer veteranId, Integer programId);
 
     /**
      * Configures the session scoped AssessmentContext so the Veteran can take an on-line assessment.
