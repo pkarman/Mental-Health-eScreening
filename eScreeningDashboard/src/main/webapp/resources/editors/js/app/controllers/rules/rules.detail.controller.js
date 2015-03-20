@@ -1,9 +1,11 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('RulesDetailController', ['$scope', '$filter', 'rule', 'assessmentVariables', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', 'TemplateLeftVariable', function($scope, $filter, rule, assessmentVariables, consults, healthFactors, dashboardAlerts, questions, MessageFactory, TemplateLeftVariable) {
+    angular.module('Editors').controller('RulesDetailController', ['$scope', '$filter', 'rule', 'assessmentVariables', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', function($scope, $filter, rule, assessmentVariables, consults, healthFactors, dashboardAlerts, questions, MessageFactory) {
 
 		var removeQueue = [], addQueue = [];
+
+		console.log(rule);
 
         $scope.rule = rule;
 		$scope.consults = consults;
@@ -29,12 +31,11 @@
 			addQueue.push(event);
 		};
 
-		if (!rule.condition) {
-			rule.condition = new TemplateLeftVariable();
-		}
-
 		$scope.saveRule = function saveRule() {
 			$scope.rule.save().then(function(response) {
+
+				console.log(response);
+
 				_.each(removeQueue, function(id) {
 					rule.customDELETE('events/' + id);
 				});

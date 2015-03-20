@@ -104,7 +104,13 @@
 
 	            scope.showValidationMessages = false;
 
-                scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
+				console.log(scope.block.content);
+
+				if (_.isFunction(scope.block.getTypeOf) &&  scope.block.getTypeOf() === 'Rule') {
+					scope.block.type = blockTypes[0];
+				} else {
+					scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
+				}
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
