@@ -1,7 +1,9 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('RulesDetailController', ['$scope', '$filter', 'rule', 'assessmentVariables', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', 'TemplateLeftVariable', function($scope, $filter, rule, assessmentVariables, consults, healthFactors, dashboardAlerts, questions, MessageFactory, TemplateLeftVariable){
+    angular.module('Editors').controller('RulesDetailController', ['$scope', '$filter', 'rule', 'assessmentVariables', 'consults', 'healthFactors', 'dashboardAlerts', 'questions', 'MessageFactory', 'TemplateLeftVariable', function($scope, $filter, rule, assessmentVariables, consults, healthFactors, dashboardAlerts, questions, MessageFactory, TemplateLeftVariable) {
+
+		var removeQueue = [], addQueue = [];
 
         $scope.rule = rule;
 		$scope.consults = consults;
@@ -20,16 +22,29 @@
 		});
 
 		$scope.removeEvent = function removeEvent(event) {
-			rule.customDELETE('events/' + event.id);
+			removeQueue.push(event.id);
 		};
 
 		$scope.addEvent = function addEvent(event) {
-			rule.customPOST(event, 'events');
+			addQueue.push(event);
 		};
 
 		if (!rule.condition) {
 			rule.condition = new TemplateLeftVariable();
 		}
+
+		$scope.saveRule = function saveRule() {
+			$scope.rule.save().then(function(response) {
+				_.each(removeQueue, function(id) {
+					rule.customDELETE('events/' + id);
+				});
+
+				_.each(addQueue, function(event) {
+					rule.customPOST(event, 'events');
+				});
+			});
+
+		};
 
     }]);
 })();
