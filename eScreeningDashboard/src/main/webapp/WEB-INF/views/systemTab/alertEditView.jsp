@@ -77,8 +77,7 @@
   </div>
 </div>        
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-</body>
-
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/systemTab/alertEditView.js?v=1" />"></script>
+</body>
 </html>

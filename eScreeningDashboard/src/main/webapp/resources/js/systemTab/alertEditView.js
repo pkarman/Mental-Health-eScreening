@@ -4,9 +4,9 @@ $(document).ready(function() {
 	var aid = getParameterByName('aid');
 	
 	// Error Messages
-	var errorMessageAlertReq 	= "Alert name is required";
-	var errorMessageAlertExist 	= "Alert name already exist";
-	var errorMessageLoadingData = "Error Loading Data";
+	var errorMessageAlertReq 	= "Alert name is required.";
+	var errorMessageAlertExist 	= "Alert name already exists.";
+	var errorMessageLoadingData = "Error loading the data.";
 	
 	// Labels
 	var labelAddAlert 	= "Add Alert";

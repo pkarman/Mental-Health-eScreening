@@ -29,9 +29,7 @@ app.directive('reportTable', function() {
         var aoColumns = {};
         aoColumns = [
 			{ "mData": "stateName",  "sClass": "col-md-10 text-left"},
-			{ "mData": "stateId" , "sClass": "text-right col-md-2", "bSortable" : false , "mRender": function(data, type, row) { return '<a href="alertEditView?aid='+row.stateId+'" class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a> &nbsp; &nbsp; <a href="#" class="btn btn-default btn-xs cursor-pointer deleteModal"  data-toggle="modal" data-target="#deleteModal" data-aid='+row.stateId+'><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>'; }}];
-		console.log("aoColumns");
-		console.log(aoColumns);
+			{ "mData": "stateId" , "sClass": "text-right col-md-2", "bSortable" : false , "mRender": function(data, type, row) { return '<a href="alertEditView?aid='+row.stateId+'"  title="Edit '+row.stateName+' " class="btn btn-default btn-xs cursor-pointer"><span class="glyphicon glyphicon-chevron-right"></span> Edit </a> &nbsp; &nbsp; <a href="#" class="btn btn-default btn-xs cursor-pointer deleteModal"  data-toggle="modal" data-target="#deleteModal" data-aid='+row.stateId+' data-description='+row.stateName+' title="Delete '+row.stateName+' "><span class="glyphicon glyphicon-remove-circle red-color"></span> Delete </a>'; }}];
         options["aoColumns"] = aoColumns;
 
         // apply the plugin
@@ -88,6 +86,8 @@ $(document).ready(function() {
 	var data_aid;
 	$(this).on('click', '.deleteModal', function() {
 		data_aid  = $(this).attr("data-aid");
+		//stateName  = $(this).attr("data-description");
+		//$("#alertname").html(stateName);
 		$(".confirmDelete").attr("data-aid", data_aid );
 	});
 
