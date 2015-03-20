@@ -5,8 +5,6 @@
 
 		var removeQueue = [], addQueue = [];
 
-		console.log(rule);
-
         $scope.rule = rule;
 		$scope.consults = consults;
 		$scope.healthFactors = healthFactors;

@@ -34,10 +34,8 @@
 			$state.go('rules.detail', {id: rule.id});
 		};
 
-		$scope.deleteRule = function deleteRule(index) {
-			var rule = $scope.rules[index];
-			rule.markedForDeletion = true;
-			rule.save().then(function (response) {
+		$scope.deleteRule = function deleteRule(rule) {
+			rule.remove().then(function (response) {
 				MessageFactory.success('The selected rule has been marked for deletion.');
 			}, function (result) {
 				MessageFactory.error('There was an error deleting the selected rule.');
