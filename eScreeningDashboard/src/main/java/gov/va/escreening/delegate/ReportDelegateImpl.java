@@ -484,7 +484,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", new JREmptyDataSource());
 
 
-        if (requestData.get("eachDay")!=null && ((Boolean)requestData.get("eachDay"))){
+        if (requestData.get("eachDay") != null && ((Boolean) requestData.get("eachDay"))) {
             parameterMap.put("showByDay", true);
             List<Report593ByDayDTO> data = new ArrayList<>();
 
@@ -504,13 +504,13 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("byDay", data);
             parameterMap.put("grandTotal", "40");
 
-        }else{
+        } else {
             parameterMap.put("showByDay", false);
             parameterMap.put("byDay", Lists.newArrayList());
         }
 
 
-        if (requestData.get("timeOfDayWeek")!=null && ((Boolean)requestData.get("timeOfDayWeek"))){
+        if (requestData.get("timeOfDayWeek") != null && ((Boolean) requestData.get("timeOfDayWeek"))) {
             parameterMap.put("showByTime", true);
             List<Report593ByTimeDTO> data = new ArrayList<>();
 
@@ -531,7 +531,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("grandTotal", "100");
 
 
-        }else{
+        } else {
             parameterMap.put("showByTime", false);
             parameterMap.put("byTime", Lists.newArrayList());
         }
@@ -543,8 +543,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         boolean bCheckAll = false;
 
-        if (requestData.get("numberOfUniqueVeteran")!=null
-                &&(Boolean)requestData.get("numberOfUniqueVeteran")) {
+        if (requestData.get("numberOfUniqueVeteran") != null
+                && (Boolean) requestData.get("numberOfUniqueVeteran")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setKey("Number of Unique Patients");
             keyValueDTO.setValue("100");
@@ -552,8 +552,8 @@ public class ReportDelegateImpl implements ReportDelegate {
             bCheckAll = true;
         }
 
-        if (requestData.get("numberOfeScreeningBatteries")!=null
-                && (Boolean)requestData.get("numberOfeScreeningBatteries")) {
+        if (requestData.get("numberOfeScreeningBatteries") != null
+                && (Boolean) requestData.get("numberOfeScreeningBatteries")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue("12");
             keyValueDTO.setKey("Number of eScreening batteries completed");
@@ -561,8 +561,8 @@ public class ReportDelegateImpl implements ReportDelegate {
             bCheckAll = true;
         }
 
-        if (requestData.get("averageTimePerAssessment")!=null
-                && (Boolean)requestData.get("averageTimePerAssessment")) {
+        if (requestData.get("averageTimePerAssessment") != null
+                && (Boolean) requestData.get("averageTimePerAssessment")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue("13 min");
             keyValueDTO.setKey("Average time per assessment");
@@ -570,8 +570,8 @@ public class ReportDelegateImpl implements ReportDelegate {
             bCheckAll = true;
         }
 
-        if (requestData.get("numberOfAssessmentsPerClinician")!=null &&
-                (Boolean)requestData.get("numberOfAssessmentsPerClinician")) {
+        if (requestData.get("numberOfAssessmentsPerClinician") != null &&
+                (Boolean) requestData.get("numberOfAssessmentsPerClinician")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue("15");
             keyValueDTO.setKey("Number of assessments per clinician in each clinic");
@@ -579,8 +579,8 @@ public class ReportDelegateImpl implements ReportDelegate {
             bCheckAll = true;
         }
 
-        if (requestData.get("numberAndPercentVeteransWithMultiple")!=null
-                && (Boolean)requestData.get("numberAndPercentVeteransWithMultiple")) {
+        if (requestData.get("numberAndPercentVeteransWithMultiple") != null
+                && (Boolean) requestData.get("numberAndPercentVeteransWithMultiple")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue("16");
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
@@ -605,10 +605,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
-        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
-        for (String clinicName : clinicNames) {
+        for (SurveyDto survey : surveyService.getSurveyList()) {
             SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
-            surveyTimeDTO.setModuleName(clinicName);
+            surveyTimeDTO.setModuleName(survey.getName());
             surveyTimeDTO.setModuleTime(String.valueOf((int) (Math.random() * 100)));
             dtos.add(surveyTimeDTO);
         }
@@ -696,27 +695,15 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Report594DTO> dtos = Lists.newArrayList();
 
-        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
-
-        int total =  0;
-
-        for (String clinicName : clinicNames) {
+        for (SurveyDto survey : surveyService.getSurveyList()) {
             Report594DTO report594DTO = new Report594DTO();
-            report594DTO.setModuleName(clinicName);
-            int val = (int) (Math.random() * 100);
-            total += val;
-            report594DTO.setModuleCount(String.format("%s", val));
+            report594DTO.setModuleName(survey.getName());
+            int numerator = (int) (Math.random() * 100);
+            int denominator = numerator + 10;
+            report594DTO.setModuleCount(String.format("%s/%s", numerator, denominator));
             report594DTO.setModulePercent(String.format("%5.2f%%", Math.random() * 100));
             dtos.add(report594DTO);
         }
-
-        for(int i=0; i<dtos.size(); i++){
-
-            int val = Integer.parseInt(dtos.get(i).getModuleCount());
-            dtos.get(i).setModuleCount( val + "/"+total);
-            dtos.get(i).setModulePercent(String.format("%5.2f%%", val* 100d/total));
-        }
-
         dataSource = new JRBeanCollectionDataSource(dtos);
 
         parameterMap.put("datasource", dataSource);
@@ -724,8 +711,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         return parameterMap;
     }
 
+
     @Override
-    public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport(Map<String, Object> requestData, EscreenUser escreenUser) {
+    public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport
+            (Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
@@ -734,16 +723,23 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Report599DTO> dtos = Lists.newArrayList();
 
-        Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
-        for (String clinicName : clinicNames) {
+        for (SurveyDto survey : surveyService.getSurveyList()) {
+            int totalCnt = (int) (Math.random() * 1000);
+            int missing = (int) (Math.random() * 100);
+            int negative = (int) (Math.random() * 100);
+            int positive = totalCnt - missing - negative;
+
             Report599DTO dto = new Report599DTO();
-            dto.setMissingCount(String.format("%s", (int) (Math.random() * 100)));
-            dto.setMissingPercent(String.format("%5.2f%%", Math.random() * 100));
-            dto.setModuleName(clinicName);
-            dto.setNegativeCount(String.format("%s", (int) (Math.random() * 100)));
-            dto.setNegativePercent(String.format("%5.2f%%", Math.random() * 100));
-            dto.setPositiveCount(String.format("%s", (int) (Math.random() * 100)));
-            dto.setPositivePercent(String.format("%5.2f%%", Math.random() * 100));
+            dto.setModuleName(survey.getName());
+
+            dto.setMissingCount(String.format("%s/%s", missing, totalCnt));
+            dto.setMissingPercent(String.format("%5.2f%%", (float) missing / totalCnt * 100));
+
+            dto.setNegativeCount(String.format("%s/%s", negative, totalCnt));
+            dto.setNegativePercent(String.format("%5.2f%%", (float) negative / totalCnt * 100));
+
+            dto.setPositiveCount(String.format("%s/%s", positive, totalCnt));
+            dto.setPositivePercent(String.format("%5.2f%%", (float) positive / totalCnt * 100));
             dtos.add(dto);
         }
 
