@@ -60,9 +60,16 @@
         		<h1>Batch Complete</h1>
 				
 
-					<div class="alert alert-success">
-						 Battery Creation Successful for the Below Veterans.
-					</div>
+					 
+					<c:if test="${not hasErrors}">
+						<div class="alert alert-success">
+							 Battery Creation Successful for the Below Veterans. 
+						</div>
+					</c:if>
+
+					<c:if test="${hasErrors}">
+  						<div class="alert alert-danger"> Battery Creation Failed for the Below Veterans.</div>
+					</c:if>
 
 					<c:if test="${callResult.hasError}">
 					  <div class="alert alert-danger">
