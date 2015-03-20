@@ -483,7 +483,6 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", new JREmptyDataSource());
 
-        parameterMap.put("showCheckAll", (Boolean)requestData.get("numberOfeScreeningBatteries"));
 
         if (requestData.get("eachDay")!=null && ((Boolean)requestData.get("eachDay"))){
             parameterMap.put("showByDay", true);
@@ -500,6 +499,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("showByDay", false);
             parameterMap.put("byDay", Lists.newArrayList());
         }
+
 
         if (requestData.get("timeOfDayWeek")!=null && ((Boolean)requestData.get("timeOfDayWeek"))){
             parameterMap.put("showByTime", true);
@@ -523,13 +523,15 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         KeyValueDTO keyValueDTO;
 
-        //if ()
+        boolean bCheckAll = false;
+
         if (requestData.get("numberOfUniqueVeteran")!=null
                 &&(Boolean)requestData.get("numberOfUniqueVeteran")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setKey("Number of Unique Patients");
             keyValueDTO.setValue("100");
             ks.add(keyValueDTO);
+            bCheckAll = true;
         }
 
         if (requestData.get("numberOfeScreeningBatteries")!=null
@@ -538,6 +540,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setValue("12");
             keyValueDTO.setKey("Number of eScreening batteries completed");
             ks.add(keyValueDTO);
+            bCheckAll = true;
         }
 
         if (requestData.get("averageTimePerAssessment")!=null
@@ -546,6 +549,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setValue("13 min");
             keyValueDTO.setKey("Average time per assessment");
             ks.add(keyValueDTO);
+            bCheckAll = true;
         }
 
         if (requestData.get("numberOfAssessmentsPerClinician")!=null &&
@@ -554,6 +558,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setValue("15");
             keyValueDTO.setKey("Number of assessments per clinician in each clinic");
             ks.add(keyValueDTO);
+            bCheckAll = true;
         }
 
         if (requestData.get("numberAndPercentVeteransWithMultiple")!=null
@@ -562,9 +567,11 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setValue("16");
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
             ks.add(keyValueDTO);
+            bCheckAll = true;
         }
 
         parameterMap.put("checkAll", ks);
+        parameterMap.put("showCheckAll", bCheckAll);
 
         return parameterMap;
     }
