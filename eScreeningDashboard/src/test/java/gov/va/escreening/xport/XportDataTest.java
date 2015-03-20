@@ -6,6 +6,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
@@ -22,11 +23,13 @@ import gov.va.escreening.repository.MeasureAnswerRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import javax.annotation.Resource;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -54,7 +58,7 @@ import static org.junit.Assert.*;
 public class XportDataTest {
     private static final int OOO_BATTERY_ID = 4;
     private static final int TEST_USER_ID = 5;
-    private static final int TEST_VET_ID = 20;
+    private static final int TEST_VET_ID = 38;
     private static final String minimum = System.getProperty("ROOT_DIR_MINIMUM", "target/test-classes/exports/minimum");
     private static final String detail = System.getProperty("ROOT_DIR_DETAIL", "target/test-classes/exports/detail");
     private static final String empty = System.getProperty("ROOT_DIR_EMPTY", "target/test-classes/exports/empty");
@@ -62,30 +66,43 @@ public class XportDataTest {
     private static final List<String> identificationSurveyPpiExportNames = Arrays.asList("demo_lastname", "demo_firstname", "demo_midname", "demo_SSN");
     private static final List<String> basicDemoPpiExportNames = Arrays.asList("demo_DOB");
     public static int totalRuns = 1;
+
     FilenameFilter jsonFilter;
+
     @Resource(name = "exportDataService")
     ExportDataService exportDataService;
+
     @Resource(type = ExportLogRepository.class)
     ExportLogRepository exportLogRepository;
     Logger logger = Logger.getLogger(XportDataTest.class);
+
     @Resource(type = MeasureAnswerRepository.class)
     MeasureAnswerRepository measureAnswerRepo;
+
     @Resource(type = SurveyRepository.class)
     SurveyRepository surveyRepo;
+
     @Resource(name = "veteranAssessmentService")
     VeteranAssessmentService vas;
+
     @Resource(type = VeteranAssessmentRepository.class)
     VeteranAssessmentRepository var;
+
     @Resource(type = VeteranAssessmentSmrList.class)
     VeteranAssessmentSmrList smrLister;
+
     @Resource(type = ExportDataRestController.class)
     ExportDataRestController exportDataRestController;
-    @Resource(type = DataDictionaryService.class)
-    private DataDictionaryService dds;
+
+    @Resource(type = DDCache.class)
+    DDCache ddCache;
+
     @Resource(type = ExportLogRepository.class)
     private ExportLogRepository elr;
+
     @Resource(type = TemplateProcessorService.class)
     private TemplateProcessorService templateProcessorService;
+
     private Map<String, SmrBldr> smrBldrMap;
 
     private boolean compare(Map<String, String> testData,
@@ -159,21 +176,21 @@ public class XportDataTest {
         return sMap;
     }
 
-    private VeteranAssessment createTestAssessment(List<Integer> surveyIdList) {
+    private VeteranAssessment createTestAssessment(List<Integer> surveyIdList) throws AssessmentAlreadyExistException {
         Integer assessmentId = vas.create(TEST_VET_ID, OOO_BATTERY_ID, 17, TEST_USER_ID, TEST_USER_ID, 1, 5, surveyIdList);
-
+       
         VeteranAssessment assessment = var.findOne(assessmentId);
 
         return assessment;
     }
 
-    private Object[] createTestAssessment(String fileName, String root) throws UnsupportedEncodingException, IOException {
+    private Object[] createTestAssessment(String fileName, String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         AssesmentTestData atd = createAssesmentTestData(fileName, root);
         VeteranAssessment assessment = crTstAssFromTstData(atd);
         return new Object[]{atd, assessment};
     }
 
-    private Object[] createTestAssessment(String[] fileNames, String root) throws UnsupportedEncodingException, IOException {
+    private Object[] createTestAssessment(String[] fileNames, String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         AssesmentTestData atd = createAssessmentTestDataFromMultipleFiles(fileNames, root);
         VeteranAssessment assessment = crTstAssFromTstData(atd);
         return new Object[]{atd, assessment};
@@ -195,7 +212,7 @@ public class XportDataTest {
         return atd;
     }
 
-    private VeteranAssessment crTstAssFromTstData(AssesmentTestData atd) {
+    private VeteranAssessment crTstAssFromTstData(AssesmentTestData atd) throws AssessmentAlreadyExistException {
         Map<String, List<MeasureAnswer>> maMap = createMeasureAnswerMap();
         Map<String, Survey> surveyMap = createSurveyMap();
 
@@ -216,6 +233,7 @@ public class XportDataTest {
             }
             ts.smrMap = cleanSmrMap(ts.smrMap);
         }
+        assessment.setAssessmentStatus(new AssessmentStatus(3));
         assessment = var.update(assessment);
         return assessment;
     }
@@ -282,24 +300,24 @@ public class XportDataTest {
         return columnIsMandatory || columnIsIdScreen || columnIsBasicDemo;
     }
 
-    private boolean exportDataTesterIdentified(String jsonFileName, String root) throws UnsupportedEncodingException, IOException {
+    private boolean exportDataTesterIdentified(String jsonFileName, String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         Object[] testTuple = createTestAssessment(jsonFileName, root);
         return exportDataVerifierIdentified(testTuple);
     }
 
     private boolean exportDataTesterDeIdentified(String jsonFileName,
-                                                 String root) throws UnsupportedEncodingException, IOException {
+                                                 String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         Object[] testTuple = createTestAssessment(jsonFileName, root);
         return exportDataVerifierDeIdentified(testTuple);
     }
 
-    private boolean mixDataExportsIdentified(String jsonFileNames[], String root) throws UnsupportedEncodingException, IOException {
+    private boolean mixDataExportsIdentified(String jsonFileNames[], String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         Object[] testTuple = createTestAssessment(jsonFileNames, root);
         return exportDataVerifierIdentified(testTuple);
     }
 
     private boolean mixDataExportsDeIdentified(String jsonFileNames[],
-                                               String root) throws UnsupportedEncodingException, IOException {
+                                               String root) throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         Object[] testTuple = createTestAssessment(jsonFileNames, root);
         return exportDataVerifierDeIdentified(testTuple);
     }
@@ -345,7 +363,7 @@ public class XportDataTest {
     private boolean exportDataVerifierIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
         List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 1);
 
         return exportDataVerifierResult(atd, exportedData, false);
@@ -354,7 +372,7 @@ public class XportDataTest {
     private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
         List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 2);
 
         atd.removePPIInfoExportNames();
@@ -448,7 +466,7 @@ public class XportDataTest {
 
     // @Rollback(value = false)
     @Test
-    public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException {
+    public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
     }
 
@@ -548,7 +566,7 @@ public class XportDataTest {
     private AssessmentDataExport addExportLogOfVet18() {
         ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
         edfb.setExportedByUserId(1);
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
         return exportDataService.getAssessmentDataExport(dd, edfb);
     }
 
@@ -558,7 +576,7 @@ public class XportDataTest {
         eUser.setProgramIdList(new ArrayList(Arrays.asList(1, 2, 3, 4, 5)));
         ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
         edfb.setExportedByUserId(5);
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
         return exportDataService.getAssessmentDataExport(dd, edfb);
     }
 

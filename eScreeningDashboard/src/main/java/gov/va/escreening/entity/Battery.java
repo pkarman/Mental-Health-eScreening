@@ -29,10 +29,10 @@ public class Battery implements Serializable, BatteryBaseProperties {
 	@Column(name = "is_disabled")
 	private boolean isDisabled;
 
-	@JoinColumn(name = "program_id", referencedColumnName = "program_id")
-	@ManyToOne
-	@JoinTable(name = "program_battery", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "program_id", referencedColumnName = "program_id") })
-	private Program program;
+	//@JoinColumn(name = "program_id", referencedColumnName = "program_id")
+	@OneToMany(mappedBy="battery", cascade = CascadeType.ALL)
+	//@JoinTable(name = "program_battery", joinColumns = { @JoinColumn(name = "battery_id", referencedColumnName = "battery_id") }, inverseJoinColumns = { @JoinColumn(name = "program_id", referencedColumnName = "program_id") })
+	private Set<ProgramBattery> programList;
 
 	@Basic(optional = false)
 	@Column(name = "date_created")
@@ -156,13 +156,4 @@ public class Battery implements Serializable, BatteryBaseProperties {
 	public String toString() {
 		return "gov.va.escreening.entity.Battery[ batteryId=" + batteryId + ", name=" + name + " ]";
 	}
-
-	// public Program getProgram() {
-	// return program;
-	// }
-	//
-	// public void setProgram(Program program) {
-	// this.program = program;
-	// }
-
 }

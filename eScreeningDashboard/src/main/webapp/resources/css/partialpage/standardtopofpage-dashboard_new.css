@@ -250,10 +250,6 @@ footer {
   box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container {
-  background-color: #061a43;
-  margin-top: 6px;
-  padding: 10px 10px;
-  line-height: 24px;
 }
 .veteran_block, .staff_block {
   margin-bottom: 20px;
@@ -872,10 +868,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-.print{
-  margin:10px 0px;
-}
-
 .userErrorMessage{
   margin:10px 0;  
 }
@@ -886,38 +878,53 @@ a.offscreen:focus, a.offscreen:active {
   margin:10px 0;
 }
 
-/* editVeteransAssessment page */
-.editVeteransAssessment .fg-toolbar.ui-toolbar.ui-widget-header.ui-helper-clearfix.ui-corner-tl.ui-corner-tr{
-	line-height: 0px;
-	height: 0;
+/* Time Series */
+.timeSeries text{
+  font-size:11px;
 }
-.editVeteransAssessment .label{
-	display: inline-block;
-	margin-bottom: 5px;
-	font-weight: bold;
-	font-size: 14px;
-	color:#333;
-	padding:0px;
-	margin:0px;
+.timeSeries #chart{
+	border: 0px solid #CCC;
+}
+.timeSeries .bar{
+	fill: purple;
+	shape-rendering: crispEdges;
+}
+.timeSeries .bar-label{
+	fill: black;
+	text-anchor: middle;
+	font-size: 18px;
+}
+.timeSeries .axis path,
+.timeSeries .axis line{
+	fill: none;
+	stroke: #AAAAAA;
+	shape-rendering: crispEdges;
+}
+.timeSeries .gridline path,
+.timeSeries .gridline line{
+	fill: none;
+	stroke: #ccc;
+	shape-rendering: crispEdges;
+}
+.timeSeries .trendline{
+	fill: none;
+	stroke: #2d5277;
+	stroke-width: 2px;
 }
 
-.text-capitalize{
-	text-transform:capitalize;
+.timeSeries .point{
+  fill:rgba(45,82,119,.40);
+  stroke:#2d5277;
+  stroke-width: 2px;
 }
-.table thead tr:first-child th {
-	background-color: #30333E;
-	color: white;
-	border:1px solid #8F8F8F;
-	vertical-align:middle;
-	font-size:12px;
+/**/
+.change_program_block{
+	margin:0px 10px;
 }
-.item-label-success{
-	color: #3c763d;
-}  
-.item-label-error{
-	color: #a94442;
-}  
 
+.change_program_block, .change_program_block a{
+	font-weight:bold;
+}
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
@@ -944,15 +951,39 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 @media only print {
-.nonPrintableArea {
-  display: none;
-}
 .modal-header, .modal-content {
   border: none;
 }
 .modal {
   overflow: visible;
   position: absolute;
+  left: 0;
+  top: 0;
+  width: 1100px !important;
+  height: auto !important;
+  background-color: #454545;
+  visibility: visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  padding: 0px;
+  margin: 0px;
+}
+.container_main {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 auto;
+}
+.nonPrintableArea {
+  display: none;
+}
+.modal-header, .modal-content{
+  border:none;
+}
+
+
+.modal{
+  overflow:visible;
+  position:absolute;
   left: 0;
   top: 0;
   width: 1100px !important;

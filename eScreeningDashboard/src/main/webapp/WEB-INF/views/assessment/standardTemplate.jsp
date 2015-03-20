@@ -9,8 +9,12 @@
 <html lang="en">
 <!--<![endif]-->
 	<head>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    
 		<meta name="apple-mobile-web-app-capable" content="yes">
-    	<meta name="viewport" content="user-scalable=no,width=device-width" />
+    <!-- <meta name="viewport" content="user-scalable=no,width=device-width" /> -->
 		<title>Measures - Identification</title>
 
     <!-- FAVICON -->
@@ -36,6 +40,8 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/jquery/smoothness/jquery-ui.min.css">
 		<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/assessment_new.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common.css">
+        <link rel="stylesheet" type="text/css" href="resources/editors/vendors/textAngular/textAngular.css">
         
   		<script src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   		<script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>

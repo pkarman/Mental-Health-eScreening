@@ -2,6 +2,7 @@ package gov.va.escreening.controller.dashboard;
 
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
+import gov.va.escreening.controller.RestController;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.ErrorResponseException;
 import gov.va.escreening.exception.ErrorResponseRuntimeException;
@@ -15,6 +16,7 @@ import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-public class AssessmentSummaryRestController {
+public class AssessmentSummaryRestController extends RestController{
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentSummaryRestController.class);
 
@@ -137,20 +139,13 @@ public class AssessmentSummaryRestController {
         return progressNoteContent;
     }
     
-    @ExceptionHandler(FreemarkerRenderException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @RequestMapping(value = "/assessmentSummary/assessmentvarseries/{veteranId}/{assessmentVarId}/{numMonth}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ErrorResponse handleFreemarkerRenderException(FreemarkerRenderException iae) {
-        if (iae instanceof ErrorResponseRuntimeException){
-        	return ((FreemarkerRenderException)iae).getErrorResponse();
-        }
-        
-        ErrorResponse er = new ErrorResponse();
-
-        er.setDeveloperMessage(iae.getMessage());
-        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
-        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return er;
-    }
-
+    public Map<String, String> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
+    		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth) {
+    	logger.debug(String.format("Get time series for veteran %d, assessment variable ID %d.", veteranId, assessmentVarId));
+    	
+    	return veteranAssessmentService.getVeteranAssessmentVariableSeries(veteranId, assessmentVarId, numMonth);
+    	
+   }
 }

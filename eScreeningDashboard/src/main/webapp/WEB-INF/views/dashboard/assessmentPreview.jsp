@@ -5,7 +5,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
 <link href="resources/css/partialpage/assessmentPreview.css" rel="stylesheet" type="text/css">
 <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">

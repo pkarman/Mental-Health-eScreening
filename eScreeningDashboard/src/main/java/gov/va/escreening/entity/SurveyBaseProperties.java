@@ -18,13 +18,8 @@ public interface SurveyBaseProperties {
     void setMha(boolean mha);
     String getMhaTestName();
     void setMhaTestName(String mhaTestName);
-    String getMhaResultGroupIen();
-    void setMhaResultGroupIen(String mhaResultGroupIen);
     Date getDateCreated();
     void setDateCreated(Date dateCreated);
-    String getVistaTitle();
-    void setVistaTitle(String vistaTitle);
-    Boolean isClinicalReminder();
     void setDisplayOrderForSection(Integer displayOrder);
     Integer getDisplayOrderForSection();
 }

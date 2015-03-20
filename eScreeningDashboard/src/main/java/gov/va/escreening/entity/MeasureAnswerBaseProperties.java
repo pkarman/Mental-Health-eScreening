@@ -20,4 +20,11 @@ public interface MeasureAnswerBaseProperties {
     void setOtherAnswerResponse(String otherAnswerResponse);
     Integer getRowId();
     void setRowId(Integer rowId);
+    
+    public String getCalculationValue();
+    public void setCalculationValue(String calculationValue);
+    public Integer getDisplayOrder();
+    public void setDisplayOrder(Integer displayOrder);
+    public String getMhaValue();
+    public void setMhaValue(String mhaValue);
 }

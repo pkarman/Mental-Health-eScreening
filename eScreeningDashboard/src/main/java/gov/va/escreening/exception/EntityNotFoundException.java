@@ -11,8 +11,9 @@ import gov.va.escreening.dto.ae.ErrorResponse;
 public class EntityNotFoundException extends ErrorResponseRuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public EntityNotFoundException() {
-	}
+	//needed for AopUtils; DO NOT USE
+	@Deprecated
+	public EntityNotFoundException() {}
 
 	public EntityNotFoundException(ErrorResponse error) {
 		super(error);

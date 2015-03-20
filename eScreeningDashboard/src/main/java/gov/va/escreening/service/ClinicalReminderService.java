@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.entity.ClinicalReminder;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface ClinicalReminderService {
      * Retrieves all the Clinical Reminder as a read-only list.
      * @return
      */
-    List<ClinicalReminder> findAll();
+    List<ClinicalReminderDto> findAll();
 
     /**
      * Creates a new Clinical Reminder and returns its 'clinicalReminderId'.

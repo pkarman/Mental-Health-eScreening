@@ -33,14 +33,14 @@ EScreeningDashboardApp.models.SurveySection = function (jsonSurveySectionObject)
         surveys = (Object.isDefined(jsonSurveySectionObject) && Object.isDefined(jsonSurveySectionObject.surveys) && Object.isArray(jsonSurveySectionObject.surveys))? EScreeningDashboardApp.models.SurveysTransformer.transformJSONPayload({"surveys": jsonSurveySectionObject.surveys}) : [],
         markedForDeletion = (Object.isDefined(jsonSurveySectionObject) && Object.isBoolean(jsonSurveySectionObject.markedForDeletion))? jsonSurveySectionObject.markedForDeletion: false,
         visible = (Object.isDefined(jsonSurveySectionObject) && Object.isBoolean(jsonSurveySectionObject.visible))? jsonSurveySectionObject.visible: false;
-      
+
 
     this.surveyArrayHasIncreased = (Object.isDefined(jsonSurveySectionObject) && Object.isDefined(jsonSurveySectionObject.surveyArrayHasIncreased && Object.isBoolean(jsonSurveySectionObject.surveyArrayHasIncreased)))? jsonSurveySectionObject.surveyArrayHasIncreased :false;
-    
+
     // Adding for Delete-handling purposes - JBH (7/30/2014).
     //this.markedForDeletion = false;
     //this.visibility = true;
-    
+
     var generateJsonStringForSurveys = function () {
         var surveyJson = "[";
 
@@ -53,21 +53,21 @@ EScreeningDashboardApp.models.SurveySection = function (jsonSurveySectionObject)
 
         return surveyJson;
     };
-    
+
     var generateSurveyUIObjects = function(){
-    	var survs = [];
-    	if (surveys && surveys.length && surveys.length > 0){
-    		surveys.forEach(function(survey){
-    			survs.push(survey.toUIObject());
-    		});
-    	}else{
-    		survs = null;
-    	}
-    	return survs;
+        var survs = [];
+        if (surveys && surveys.length && surveys.length > 0){
+            surveys.forEach(function(survey){
+                survs.push(survey.toUIObject());
+            });
+        }else{
+            survs = null;
+        }
+        return survs;
     };
 
     this.getSelf = function(){
-    	return this;
+        return this;
     };
 
     this.getId = function(){
@@ -93,9 +93,9 @@ EScreeningDashboardApp.models.SurveySection = function (jsonSurveySectionObject)
     this.getSurveys = function() {
         return surveys;
     };
-    
+
     this.isMarkedForDeletion = function(){
-    	return markedForDeletion;
+        return markedForDeletion;
     };
 
     this.isVisible = function(){
@@ -129,15 +129,15 @@ EScreeningDashboardApp.models.SurveySection = function (jsonSurveySectionObject)
                 jsonMarkedForDeletion +
                 "\"createdDate\": " + jsonCreatedDate +
                 jsonSurveys +
-            "}";
+                "}";
 
         return json;
     };
-    
+
     this.toUIObject = function(){
-    	var surveySectionUIObject = JSON.parse(this.toJSON(null, true));
+        var surveySectionUIObject = JSON.parse(this.toJSON(null, true));
         surveySectionUIObject.createdDate = this.getCreatedDate();
-    	return surveySectionUIObject;
+        return surveySectionUIObject;
     };
 };
 EScreeningDashboardApp.models.SurveySection.toUIObjects = function(surveySections) {

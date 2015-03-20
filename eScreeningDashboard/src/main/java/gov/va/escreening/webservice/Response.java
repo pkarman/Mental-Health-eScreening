@@ -1,19 +1,14 @@
 package gov.va.escreening.webservice;
 
+import gov.va.escreening.dto.ae.ErrorResponse;
+
 /**
  * Created by pouncilt on 8/4/14.
  */
 public class Response <T> {
     private ResponseStatus status;
-    public void setStatus(ResponseStatus status) {
-		this.status = status;
-	}
-
-	public void setPayload(T payload) {
-		this.payload = payload;
-	}
-
-	private T payload;
+    private T payload;
+    private ErrorResponse errorResponse;
 
 
     public Response() {}
@@ -23,6 +18,13 @@ public class Response <T> {
         this.payload = payload;
     }
 
+    //this is a temp solution that should be replaced by using a constructor. This was used to ease the transition to using the errorResponse field to hold errors
+    public static Response<ErrorResponse> createError(ErrorResponse errorResponse){
+        Response<ErrorResponse> response = new Response<ErrorResponse>(new ResponseStatus(ResponseStatus.Request.Failed), errorResponse);
+        response.errorResponse = errorResponse;
+        return response;
+    }
+    
     public ResponseStatus getStatus() {
         return status;
     }
@@ -31,5 +33,7 @@ public class Response <T> {
         return payload;
     }
     
-    
+    public ErrorResponse getError(){
+    	return errorResponse;
+    }
 }

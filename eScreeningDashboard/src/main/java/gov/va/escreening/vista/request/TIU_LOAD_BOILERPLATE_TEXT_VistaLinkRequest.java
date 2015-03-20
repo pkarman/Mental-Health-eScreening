@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by pouncilt on 4/16/14.
  */
-public class TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest extends VistaLinkBaseRequest implements VistaLinkRequest {
+public class TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest extends VistaLinkBaseRequest<String> implements VistaLinkRequest<String[]> {
     private static final Logger logger = LoggerFactory.getLogger(TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest.class);
     private VistaLinkConnection connection = null;
     private RpcRequest request = null;
