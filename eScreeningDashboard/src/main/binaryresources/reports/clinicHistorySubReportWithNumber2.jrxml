@@ -10,23 +10,23 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="35" splitType="Stretch">
+		<band height="28" splitType="Stretch">
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="32" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="28" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
 				<box>
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="0" width="60" height="30" uuid="9c579dec-b631-423b-b546-28e41595aed0"/>
+					<reportElement x="0" y="0" width="60" height="28" uuid="9c579dec-b631-423b-b546-28e41595aed0"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="Arial" size="6"/>
+						<font fontName="Arial" size="5"/>
 						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{screeningDate}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="60" y="0" width="150" height="32" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
+				<reportElement stretchType="RelativeToTallestObject" x="60" y="0" width="150" height="28" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="1" y="0" width="149" height="14" uuid="05a35de8-587f-4d81-9971-bd8862683bd1"/>
 					<textElement verticalAlignment="Top">
@@ -36,7 +36,7 @@
 					<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="1" y="16" width="149" height="14" uuid="328c4a2b-bd40-40ff-a663-33ff0954490d"/>
+					<reportElement x="1" y="14" width="149" height="14" uuid="328c4a2b-bd40-40ff-a663-33ff0954490d"/>
 					<textElement verticalAlignment="Top">
 						<font fontName="Arial" size="5"/>
 						<paragraph leftIndent="2"/>

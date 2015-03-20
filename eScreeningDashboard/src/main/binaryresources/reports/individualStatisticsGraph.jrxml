@@ -48,7 +48,7 @@ Score]]></text>
 				<textField>
 					<reportElement x="5" y="59" width="65" height="50" uuid="05409781-077c-49b0-9a1b-bbcd34a11372"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="Arial" size="34" isBold="true"/>
+						<font fontName="Arial" size="40" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{reportScore}]]></textFieldExpression>
 				</textField>
@@ -77,7 +77,7 @@ Score]]></text>
 				<staticText>
 					<reportElement x="0" y="13" width="200" height="20" uuid="3e706558-030b-4236-88c3-01535014fcf9"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="12" isBold="true"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Score History by VistA Clinic]]></text>
 				</staticText>

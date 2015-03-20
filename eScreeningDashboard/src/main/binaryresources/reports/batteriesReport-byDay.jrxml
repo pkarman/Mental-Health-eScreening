@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="batteriesReport-byDay" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b2dc85f7-8705-419b-a86c-5c697e410665">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="2.1435888100000025"/>
+	<property name="ireport.x" value="86"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="grandTotal" class="java.lang.String"/>
 	<field name="date" class="java.lang.String"/>
@@ -10,7 +10,7 @@
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="19" y="41" width="142" height="20" backcolor="#CCCCCC" uuid="63826bc6-f252-4394-91ae-b8505bd9d508"/>
+				<reportElement mode="Opaque" x="0" y="41" width="148" height="20" backcolor="#CCCCCC" uuid="63826bc6-f252-4394-91ae-b8505bd9d508"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -24,7 +24,7 @@
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="161" y="41" width="256" height="20" backcolor="#CCCCCC" uuid="2d08fcbf-6d93-4c30-8f61-bf99af58d784"/>
+				<reportElement mode="Opaque" x="148" y="41" width="346" height="20" backcolor="#CCCCCC" uuid="2d08fcbf-6d93-4c30-8f61-bf99af58d784"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -38,7 +38,7 @@
 				<text><![CDATA[Day of Week]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="417" y="41" width="100" height="20" backcolor="#CCCCCC" uuid="525ea6b0-86d2-4d70-8a2b-a2b277d52575"/>
+				<reportElement mode="Opaque" x="494" y="41" width="100" height="20" backcolor="#CCCCCC" uuid="525ea6b0-86d2-4d70-8a2b-a2b277d52575"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -47,12 +47,12 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="false"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="19" y="19" width="498" height="22" backcolor="#999999" uuid="dfb1a1fa-2b0a-44fa-95d4-311738ff1789"/>
+				<reportElement mode="Opaque" x="0" y="19" width="594" height="22" backcolor="#999999" uuid="dfb1a1fa-2b0a-44fa-95d4-311738ff1789"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 					<paragraph leftIndent="10"/>
@@ -64,7 +64,7 @@
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement x="19" y="0" width="142" height="20" uuid="83348dd6-edb8-48ed-b98b-2f6246f49f65"/>
+				<reportElement x="0" y="0" width="148" height="20" uuid="83348dd6-edb8-48ed-b98b-2f6246f49f65"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -78,7 +78,7 @@
 				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="161" y="0" width="256" height="20" uuid="c7d90e50-3af6-494d-aac8-1752687a7238"/>
+				<reportElement x="148" y="0" width="346" height="20" uuid="c7d90e50-3af6-494d-aac8-1752687a7238"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -92,7 +92,7 @@
 				<textFieldExpression><![CDATA[$F{dayOfWeek}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="417" y="0" width="100" height="20" uuid="0a73970a-6d02-4eff-a1d8-ca3b5622f1a5"/>
+				<reportElement x="494" y="0" width="100" height="20" uuid="0a73970a-6d02-4eff-a1d8-ca3b5622f1a5"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -110,7 +110,7 @@
 	<columnFooter>
 		<band height="20">
 			<staticText>
-				<reportElement x="19" y="0" width="398" height="20" uuid="1fc5148c-29ee-497b-a297-66655aeaa98b"/>
+				<reportElement x="0" y="0" width="494" height="20" uuid="1fc5148c-29ee-497b-a297-66655aeaa98b"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -125,7 +125,7 @@
 				<text><![CDATA[Grand Total]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="417" y="0" width="100" height="20" uuid="64d3d130-a458-4a48-989d-5e1e3a42f694"/>
+				<reportElement x="494" y="0" width="100" height="20" uuid="64d3d130-a458-4a48-989d-5e1e3a42f694"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
