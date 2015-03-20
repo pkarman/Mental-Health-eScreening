@@ -520,16 +520,49 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<KeyValueDTO> ks = Lists.newArrayList();
 
-        KeyValueDTO keyValueDTO = new KeyValueDTO();
-        keyValueDTO.setKey("First");
-        keyValueDTO.setValue("100");
 
-        ks.add(keyValueDTO);
+        KeyValueDTO keyValueDTO;
 
-        keyValueDTO = new KeyValueDTO();
-        keyValueDTO.setValue(" 12");
-        keyValueDTO.setKey("number of abc");
-        ks.add(keyValueDTO);
+        //if ()
+        if (requestData.get("numberOfUniqueVeteran")!=null
+                &&(Boolean)requestData.get("numberOfUniqueVeteran")) {
+            keyValueDTO = new KeyValueDTO();
+            keyValueDTO.setKey("Number of Unique Patients");
+            keyValueDTO.setValue("100");
+            ks.add(keyValueDTO);
+        }
+
+        if (requestData.get("numberOfeScreeningBatteries")!=null
+                && (Boolean)requestData.get("numberOfeScreeningBatteries")) {
+            keyValueDTO = new KeyValueDTO();
+            keyValueDTO.setValue("12");
+            keyValueDTO.setKey("Number of eScreening batteries completed");
+            ks.add(keyValueDTO);
+        }
+
+        if (requestData.get("averageTimePerAssessment")!=null
+                && (Boolean)requestData.get("averageTimePerAssessment")) {
+            keyValueDTO = new KeyValueDTO();
+            keyValueDTO.setValue("13 min");
+            keyValueDTO.setKey("Average time per assessment");
+            ks.add(keyValueDTO);
+        }
+
+        if (requestData.get("numberOfAssessmentsPerClinician")!=null &&
+                (Boolean)requestData.get("numberOfAssessmentsPerClinician")) {
+            keyValueDTO = new KeyValueDTO();
+            keyValueDTO.setValue("15");
+            keyValueDTO.setKey("Number of assessments per clinician in each clinic");
+            ks.add(keyValueDTO);
+        }
+
+        if (requestData.get("numberAndPercentVeteransWithMultiple")!=null
+                && (Boolean)requestData.get("numberAndPercentVeteransWithMultiple")) {
+            keyValueDTO = new KeyValueDTO();
+            keyValueDTO.setValue("16");
+            keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
+            ks.add(keyValueDTO);
+        }
 
         parameterMap.put("checkAll", ks);
 
