@@ -42,11 +42,9 @@ public abstract class TemplateBaseContent {
 		
 		TemplateAssessmentVariableDTO left = leftContent.getContent();
 		
-		String inStr = "var" + left.getId();
+		String translatedVar = "var" + left.getId();
 		
 		ids.add(left.getId());
-		
-		String translatedVar = inStr;
 		
 		// we are going to apply transformation of variable.
 		if (left.getTransformations() != null && !left.getTransformations().isEmpty()) {
@@ -90,16 +88,16 @@ public abstract class TemplateBaseContent {
 		{//Don't pull value out if transformations were applied
 			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+				translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
 				
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar =  "getFormulaValue("+inStr+")";
+				translatedVar =  "getFormulaValue("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar =  "getCustomValue("+inStr+")";
+				translatedVar =  "getCustomValue("+translatedVar+")";
 			}
 		}
 		else if ("eq".equals(operator) || "neq".equals(operator) || 
@@ -113,24 +111,24 @@ public abstract class TemplateBaseContent {
 					try
 					{
 						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "asNumber("+translatedVar+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+translatedVar+", "+left.getMeasureTypeId()+")";
 					}
 					catch(Exception e)
 					{
 						// right is not a number;
-						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
 					}
 				}
 				else
-					translatedVar =  "getResponse("+inStr+")";
+					translatedVar =  "getResponse("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar =  "asNumber(getCustomValue("+inStr+"))?string != \"notset\" && asNumber(getCustomValue("+inStr+"))";
+				translatedVar =  "asNumber(getCustomValue("+translatedVar+"))?string != \"notset\" && asNumber(getCustomValue("+translatedVar+"))";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
+				translatedVar = "getFormulaValue("+translatedVar+")?string != \"notset\" && getFormulaValue("+translatedVar+")";
 			}
 		}
 		else if ("answered".equals(operator))
@@ -141,7 +139,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasAnswered("+inStr+")";
+				translatedVar= "wasAnswered("+translatedVar+")";
 			}
 		}
 		else if ("nanswered".equals(operator))
@@ -152,25 +150,25 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasntAnswered("+inStr+")";
+				translatedVar= "wasntAnswered("+translatedVar+")";
 			}
 		}
 		else if ("result".equals(operator))
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar= "formulaHasResult("+inStr+")";
+				translatedVar= "formulaHasResult("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar= "customHasResult("+inStr+")";
+				translatedVar= "customHasResult("+translatedVar+")";
 			}
 			else if (left.typeIn(
 					ASSESSMENT_VARIABLE_TYPE_MEASURE, 
 					MEASURE_TYPE_SELECT_ONE_MATRIX, 
 					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
-				translatedVar= "matrixHasResult("+inStr+")";
+				translatedVar= "matrixHasResult("+translatedVar+")";
 			}
 			
 		}
@@ -178,17 +176,17 @@ public abstract class TemplateBaseContent {
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar= "formulaHasNoResult("+inStr+")";
+				translatedVar= "formulaHasNoResult("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar= "customHasNoResult("+inStr+")";
+				translatedVar= "customHasNoResult("+translatedVar+")";
 			}
 			else if (left.measureTypeIn(
 					MEASURE_TYPE_SELECT_ONE_MATRIX, 
 					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
-				translatedVar= "matrixHasNoResult("+inStr+")";
+				translatedVar= "matrixHasNoResult("+translatedVar+")";
 			}
 		}
 		else if ("response".equals(operator))
@@ -197,7 +195,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIs("+translatedVar+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operator))
@@ -206,7 +204,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIsnt("+translatedVar+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("none".equals(operator))
@@ -216,7 +214,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI,
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasAnswerNone("+inStr+")";
+				translatedVar= "wasAnswerNone("+translatedVar+")";
 			}
 			 
 		}
@@ -227,7 +225,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI,
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasntAnswerNone("+inStr+")";
+				translatedVar= "wasntAnswerNone("+translatedVar+")";
 			}
 			 
 		}
