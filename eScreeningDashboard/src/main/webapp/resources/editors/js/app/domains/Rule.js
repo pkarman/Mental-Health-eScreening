@@ -10,7 +10,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	'use strict';
 
 	function Rule(obj, Condition) {
-		this.id = obj.id || '';
+		this.id = obj.id || null;
 		this.name = obj.name || '';
 		this.condition = obj.condition || {
 			type: 'if',
@@ -22,7 +22,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			left:{
 				type:'var',
 				content: {
-					// id: null,
+					id: null,
 					name: '',
 					displayName: '',
 					typeId: '',
