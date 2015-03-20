@@ -483,13 +483,40 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", new JREmptyDataSource());
 
-        parameterMap.put("showCheckAll", true);
-        parameterMap.put("showByDay", false);
-        parameterMap.put("showByTime", false);
-        parameterMap.put("grandTotal", "100");
+        parameterMap.put("showCheckAll", (Boolean)requestData.get("numberOfeScreeningBatteries"));
 
-        parameterMap.put("byDay", Lists.newArrayList());
-        parameterMap.put("byTime", Lists.newArrayList());
+        if (requestData.get("eachDay")!=null && ((Boolean)requestData.get("eachDay"))){
+            parameterMap.put("showByDay", true);
+            List<Report593ByDayDTO> data = new ArrayList<>();
+
+            Report593ByDayDTO byDayDTO = new Report593ByDayDTO();
+            //TODO: populate the data here
+            data.add(byDayDTO);
+
+            parameterMap.put("byDay", data);
+            parameterMap.put("grandTotal", "100");
+
+        }else{
+            parameterMap.put("showByDay", false);
+            parameterMap.put("byDay", Lists.newArrayList());
+        }
+
+        if (requestData.get("timeOfDayWeek")!=null && ((Boolean)requestData.get("timeOfDayWeek"))){
+            parameterMap.put("showByTime", true);
+            List<Report593ByTimeDTO> data = new ArrayList<>();
+
+            Report593ByTimeDTO byTimeDTO = new Report593ByTimeDTO();
+            //TODO: populate the data here
+            data.add(byTimeDTO);
+
+            parameterMap.put("byTime", data);
+            parameterMap.put("grandTotal", "100");
+
+
+        }else{
+            parameterMap.put("showByTime", false);
+            parameterMap.put("byTime", Lists.newArrayList());
+        }
 
         List<KeyValueDTO> ks = Lists.newArrayList();
 
