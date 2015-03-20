@@ -919,6 +919,7 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 
+
 /* Reports */
 .vertical_scoll_list_b {
   overflow-y: scroll;
@@ -954,15 +955,38 @@ a.offscreen:focus, a.offscreen:active {
   display: block;
 }
 
+
 .ulclear, .ulclear li{
 	margin:0px;
 	padding:0px;
 	list-style:none;
 }
 
+/* Programs */
+.change_program_block{
+	margin:0px 10px;
+}
+
+.change_program_block, .change_program_block a{
+}
+
+/*System Configuration Page */
+.otherSystemConfigurationBlock{
+	
+}
+.otherSystemConfigurationBlock ul, .otherSystemConfigurationBlock li{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+.otherSystemConfigurationBlock .sectionList{
+	font-weight:bold;
+}
+
 .bg_color_subheader{
 	background-color:#E0E0E0 !important;
 }
+
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
