@@ -1,7 +1,9 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
+
 import com.google.common.collect.*;
+
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -19,12 +21,11 @@ import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import gov.va.escreening.service.export.FormulaColumnsBldr;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -247,7 +248,26 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
     public Collection<AssessmentVariable> findAllFormulas() {
 		return avr.findAllFormulae();
 	}
+	
+	//TODO: all of these getAssessment* method need to be refactored to be more efficient
 
+	@Override
+    @Transactional(readOnly = true)
+	public Table<String, String, Object> getAssessmentAllVars(boolean ignoreAnswers, boolean includeFormulaTokens){
+	    Table<String, String, Object> assessments = TreeBasedTable.create();
+        
+        List<Survey> surveys = sr.findAll();
+        Collection<AssessmentVariable> avList = avr.findAll();
+        AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
+        
+        for(Survey survey : surveys){
+            List<Measure> measures = survey.createMeasureList();
+            //TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
+            filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+        }
+        return avModelBldr.getResult();
+	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	/**

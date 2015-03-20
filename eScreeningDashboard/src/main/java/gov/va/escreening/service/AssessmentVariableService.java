@@ -33,6 +33,15 @@ public interface AssessmentVariableService {
      */
     Table<String, String, Object> getAssessmentVarsForBattery(int batteryId);
 
+    /**
+     * return all {@link AssessmentVariable} as a table of name value pair
+     * <p/>
+     * {@link Table} Table<String, String, String> is defined as row, column name, and column value
+     *
+     * @return
+     */
+    Table<String, String, Object> getAssessmentAllVars(boolean ignoreAnswers, boolean includeFormulaTokens);
+    
 
     Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
