@@ -21,9 +21,9 @@ $(document).ready(function() {
 		}
 		
 		if  (valid){
-			var data_aid = $(this).attr("data-aid");
+			var data_aid = getParameterByName('aid');
 			var data_name = $("#alertName").val();
-			data = {"stateId": data_aid, "stateName" : data_name };
+			data = {"stateId": data_aid , "stateName" : data_name };
 			
 			$.ajax({
 				url: "alertTypes/update",
