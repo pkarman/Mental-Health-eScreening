@@ -48,6 +48,9 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 				case 4:
 					type = 'table';
 					break;
+				case 5:
+					type = 'read-only';
+					break;
 				case 6:
 					type = 'single-matrix';
 					break;
