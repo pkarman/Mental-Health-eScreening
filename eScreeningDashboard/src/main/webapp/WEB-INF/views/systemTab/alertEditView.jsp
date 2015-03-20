@@ -63,7 +63,7 @@
 				<div class="form-group">
 					<label for="exampleInputEmail1">Alert Name *</label>
 					<input type="text" class="form-control" id="alertName" placeholder="Enter Alert Name" maxlength="100">
-					<p class="help-block">Max 100 characters</p>
+					<p class="help-block">Maxlength 100 characters</p>
 				</div>
 			</div><br>
 			

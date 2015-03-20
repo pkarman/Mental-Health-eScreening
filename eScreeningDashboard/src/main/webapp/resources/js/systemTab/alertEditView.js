@@ -1,6 +1,12 @@
 $(document).ready(function() {
 	// Tab
 	tabsLoad("systemConfiguration");
+	
+	var data_aid = getParameterByName('aid');
+	
+	if( data_aid != "" ){
+		editValue(data_aid);
+	}
 
 	var cancelBtn = '#cancel';
 	
@@ -8,9 +14,22 @@ $(document).ready(function() {
 	$(cancelBtn).click(function() {    
 		window.location.href = "alertListView";
 	});
+
+    $('#alertName').keypress(function(e){
+      if(e.keyCode==13){
+      	save();
+	  }
+    });
+
 	
 	// Save Alert
 	$(this).on('click', '#save', function() {
+		save();
+	});		
+
+
+	function save(){
+	
 		var alertNameInput = "#alertName";
 		var valid = false;
 		if ( $(alertNameInput).val() ){
@@ -40,8 +59,8 @@ $(document).ready(function() {
 				}
 			})
 		}
-	});		
-
+			
+	}
 
 
 
@@ -53,13 +72,24 @@ $(document).ready(function() {
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
 	
-	var aid = getParameterByName('aid');
-	var hTitle = "#hTitle";
-	if(aid == "" || typeof aid === 'undefined'){
-		$(hTitle).html("Add Alert");
-	}else if(aid != ""){
-		$(hTitle).html("Edit Alert");
-	}else{
-		$(hTitle).html("Edit Alert");
+
+
+	
+	function editValue(id){
+		$.ajax({
+			url: "alertTypes/",
+			type: "GET",
+			success: function(data){
+				  var returnedData = $.grep(data.payload, function(element, index){
+				  return element.stateId == data_aid;
+				});
+				
+				$("#alertName").val(returnedData[0].stateName); 				 
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				$("#errorMsg").removeClass("hide");
+			}
+		})
 	}
+	
 });
