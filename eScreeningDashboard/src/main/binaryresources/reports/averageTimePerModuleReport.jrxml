@@ -48,7 +48,7 @@
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="132" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
 				<textElement>
 					<font size="12"/>
