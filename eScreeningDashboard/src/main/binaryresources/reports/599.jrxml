@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="594Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="34"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="noData" class="java.lang.Boolean"/>
@@ -29,7 +29,7 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Positive Screens Report]]></text>
 			</staticText>
@@ -47,14 +47,14 @@
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<reportElement x="0" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="10" y="133" width="562" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<reportElement x="0" y="133" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>

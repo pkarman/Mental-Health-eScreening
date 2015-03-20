@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphNumberReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.6105100000000043"/>
+	<property name="ireport.zoom" value="1.771561000000005"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="31"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
@@ -17,7 +17,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="163" splitType="Stretch">
+		<band height="133" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
 				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
@@ -27,28 +27,28 @@
 				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<reportElement mode="Opaque" x="0" y="78" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="18" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Individual Statistics Report]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<reportElement x="380" y="78" width="181" height="27" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="11" y="134" width="200" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<reportElement x="0" y="109" width="572" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="129" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
 				<graphicElement>
 					<pen lineWidth="3.0"/>
 				</graphicElement>
@@ -56,9 +56,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="256" splitType="Stretch">
+		<band height="216" splitType="Stretch">
 			<frame>
-				<reportElement x="0" y="42" width="572" height="178" uuid="b4934b12-0cdc-4350-850b-4ceafade03c6">
+				<reportElement x="0" y="28" width="572" height="178" uuid="b4934b12-0cdc-4350-850b-4ceafade03c6">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -66,7 +66,7 @@
 					<bottomPen lineWidth="2.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement x="145" y="68" width="196" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
+					<reportElement x="145" y="67" width="196" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
 						<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -76,14 +76,14 @@
 				</staticText>
 			</frame>
 			<textField>
-				<reportElement x="10" y="3" width="201" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
+				<reportElement x="0" y="1" width="572" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
 				<textElement verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="42" width="118" height="178" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="28" width="118" height="178" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -92,28 +92,30 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="19" width="118" height="31" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="38" width="118" height="32" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font size="12"/>
+						<font fontName="Arial" size="12"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="89" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<reportElement x="0" y="120" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="51" width="118" height="37" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
+					<reportElement x="0" y="70" width="118" height="50" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font size="20" isBold="false"/>
+						<font fontName="Arial" size="34" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="118" y="42" width="280" height="178" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c">
+				<reportElement stretchType="RelativeToTallestObject" x="118" y="28" width="280" height="178" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -127,7 +129,7 @@
 				</image>
 			</frame>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="398" y="42" width="174" height="178" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe">
+				<reportElement stretchType="RelativeToTallestObject" x="398" y="28" width="174" height="178" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -135,14 +137,14 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="19" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<reportElement x="0" y="7" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
 					<textElement textAlignment="Center">
-						<font size="12" isBold="true"/>
+						<font fontName="Arial" size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement x="10" y="50" width="154" height="128" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<reportElement x="7" y="30" width="160" height="147" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber2.jasper"]]></subreportExpression>
 				</subreport>

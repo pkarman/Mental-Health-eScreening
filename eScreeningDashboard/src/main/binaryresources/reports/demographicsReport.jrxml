@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.5000000000000024"/>
+	<property name="ireport.zoom" value="1.363636363636366"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="752"/>
+	<property name="ireport.y" value="40"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -99,7 +99,7 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Demographics Report]]></text>
 			</staticText>
@@ -117,16 +117,16 @@
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="10" y="133" width="562" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<reportElement x="0" y="133" width="572" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
 				<textElement>
-					<font size="12"/>
+					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
 			</textField>
@@ -144,7 +144,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Demographics]]></text>
 			</staticText>
@@ -158,7 +158,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Questions]]></text>
 			</staticText>
@@ -172,7 +172,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Gender]]></text>
 			</staticText>
@@ -194,7 +194,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Male]]></text>
 				</staticText>
 				<staticText>
@@ -206,7 +208,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Female]]></text>
 				</staticText>
 				<textField>
@@ -218,6 +222,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{male_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -229,7 +236,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{female_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -241,7 +250,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -253,7 +264,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{female_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -267,7 +280,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Ethinicity/Race]]></text>
 			</staticText>
@@ -289,7 +302,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Hispanic]]></text>
 				</staticText>
 				<textField>
@@ -301,12 +316,15 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="11" y="0" width="100" height="15" uuid="76fa9f14-66f5-4a1f-8a1f-d833bc283f06"/>
 					<textElement>
-						<font isBold="true"/>
+						<font fontName="Arial" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Ethnicity]]></text>
 				</staticText>
@@ -319,7 +337,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{hispanic_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -331,7 +351,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Non Hispanic]]></text>
 				</staticText>
 				<staticText>
@@ -343,7 +365,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
@@ -355,7 +379,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -367,7 +393,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -379,6 +407,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingethnicity_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -390,13 +421,15 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="11" y="60" width="100" height="15" uuid="98218c70-b7ea-426b-8087-ccad220c1fef"/>
 					<textElement>
-						<font isBold="true"/>
+						<font fontName="Arial" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Race]]></text>
 				</staticText>
@@ -409,6 +442,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{indian_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -420,6 +456,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
+					<textElement>
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{white_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -431,7 +470,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  White/Caucasian]]></text>
 				</staticText>
 				<textField>
@@ -443,7 +484,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{white_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -455,7 +498,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{black_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -467,7 +512,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Black/African American]]></text>
 				</staticText>
 				<textField>
@@ -479,7 +526,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{black_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -491,7 +540,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  American Indian or Alaskan Native]]></text>
 				</staticText>
 				<textField>
@@ -503,7 +554,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{indian_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -515,7 +568,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -527,7 +582,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Native hawaiian or pacific Islander]]></text>
 				</staticText>
 				<textField>
@@ -539,7 +596,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{hawaiian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -551,7 +610,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Asian (Filipino, Japanese, Korean, Chinese, Vietnamese, etc.)]]></text>
 				</staticText>
 				<textField>
@@ -563,7 +624,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{asian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -575,7 +638,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Decline To Answer]]></text>
 				</staticText>
 				<staticText>
@@ -587,7 +652,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Other]]></text>
 				</staticText>
 				<textField>
@@ -599,7 +666,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -611,7 +680,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -623,7 +694,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{otherrace_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -637,7 +710,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Race]]></text>
 			</staticText>
@@ -651,7 +724,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Education]]></text>
 			</staticText>
@@ -665,7 +738,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Branch of Military]]></text>
 			</staticText>
@@ -679,7 +752,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Tobacco Use Status]]></text>
 			</staticText>
@@ -693,7 +766,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Employment Status]]></text>
 			</staticText>
@@ -707,7 +780,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Num of Deployments]]></text>
 			</staticText>
@@ -720,6 +793,9 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{asian_percentage}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -731,6 +807,9 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{otherrace_percentage}]]></textFieldExpression>
 			</textField>
 			<frame>
@@ -751,7 +830,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{ged_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -763,7 +844,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  GED]]></text>
 				</staticText>
 				<staticText>
@@ -775,7 +858,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Some High School]]></text>
 				</staticText>
 				<textField>
@@ -787,7 +872,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{highschool_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -799,7 +886,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{ged_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -811,7 +900,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{highschool_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -823,7 +914,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  High School Diploma]]></text>
 				</staticText>
 				<staticText>
@@ -835,7 +928,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Some College]]></text>
 				</staticText>
 				<staticText>
@@ -847,7 +942,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Associate Degree]]></text>
 				</staticText>
 				<staticText>
@@ -859,7 +956,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  4-year College Degree]]></text>
 				</staticText>
 				<staticText>
@@ -871,7 +970,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Master's Degree]]></text>
 				</staticText>
 				<staticText>
@@ -883,7 +984,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Doctoral Degree (Ph.D., M.D., DDS, etc.)]]></text>
 				</staticText>
 				<staticText>
@@ -895,7 +998,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
@@ -907,7 +1012,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{highschooldip_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -919,7 +1026,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{associate_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -931,7 +1040,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{somecollege_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -943,7 +1054,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{college_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -955,7 +1068,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{dr_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -967,7 +1082,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{master_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -979,7 +1096,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingedu_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -991,7 +1110,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1003,7 +1124,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{associate_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1015,7 +1138,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{master_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1027,7 +1152,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingedu_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1039,7 +1166,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{somecollege_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1051,7 +1180,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{college_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1063,7 +1194,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{dr_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -1077,6 +1210,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement>
+					<font fontName="Arial"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
@@ -1099,7 +1233,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{parttime_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1111,7 +1247,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Part Time]]></text>
 				</staticText>
 				<staticText>
@@ -1123,7 +1261,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Full Time]]></text>
 				</staticText>
 				<textField>
@@ -1135,7 +1275,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{fulltime_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1147,7 +1289,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{parttime_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1159,7 +1303,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{fulltime_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1171,7 +1317,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Seasonal]]></text>
 				</staticText>
 				<staticText>
@@ -1183,7 +1331,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Day Labor]]></text>
 				</staticText>
 				<staticText>
@@ -1195,7 +1345,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Unemployed]]></text>
 				</staticText>
 				<staticText>
@@ -1207,7 +1359,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
@@ -1219,7 +1373,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{seasonal_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1231,7 +1387,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{unemployed_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1243,7 +1401,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{daylabor_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1255,7 +1415,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingemp_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1267,7 +1429,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{seasonal_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1279,7 +1443,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{unemployed_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1291,7 +1457,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{daylabor_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1303,7 +1471,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingemp_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -1325,7 +1495,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{airforce_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1337,7 +1509,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Air Force]]></text>
 				</staticText>
 				<staticText>
@@ -1349,7 +1523,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Army]]></text>
 				</staticText>
 				<textField>
@@ -1361,7 +1537,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{army_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1373,7 +1551,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{airforce_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1385,7 +1565,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{army_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1397,7 +1579,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Coast Guard]]></text>
 				</staticText>
 				<staticText>
@@ -1409,7 +1593,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Marines]]></text>
 				</staticText>
 				<staticText>
@@ -1421,7 +1607,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  National Guard]]></text>
 				</staticText>
 				<staticText>
@@ -1433,7 +1621,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Navy]]></text>
 				</staticText>
 				<textField>
@@ -1445,7 +1635,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{coast_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1457,7 +1649,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{nationalguard_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1469,7 +1663,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{marines_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1481,7 +1677,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{navy_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1493,7 +1691,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{coast_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1505,7 +1705,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{nationalguard_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1517,7 +1719,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{marines_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1529,7 +1733,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{navy_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1541,7 +1747,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
@@ -1553,7 +1761,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingmilitary_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1565,7 +1775,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{missingmilitary_count}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -1579,6 +1791,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement>
+					<font fontName="Arial"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
@@ -1601,7 +1814,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_no_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1613,7 +1828,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  No. I used tobacco in the past, but have quit.]]></text>
 				</staticText>
 				<staticText>
@@ -1625,7 +1842,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Never. I have never used tobacco on a regular basis]]></text>
 				</staticText>
 				<textField>
@@ -1637,7 +1856,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_never_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1649,7 +1870,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_no_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1661,7 +1884,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_never_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -1673,7 +1898,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Yes. I currently use tobacco on a regular basis.]]></text>
 				</staticText>
 				<staticText>
@@ -1685,7 +1912,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
@@ -1697,7 +1926,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_yes_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1709,7 +1940,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_miss_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1721,7 +1954,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_yes_count}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -1733,7 +1968,9 @@
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_miss_count}]]></textFieldExpression>
 				</textField>
 			</frame>

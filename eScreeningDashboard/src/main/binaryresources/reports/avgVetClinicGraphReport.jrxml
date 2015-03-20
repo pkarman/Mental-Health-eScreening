@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avgVetClinicGraphReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.6105100000000014"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
@@ -22,13 +22,15 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Average Scores for Veterans by Clinic]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement x="380" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<line>
@@ -42,14 +44,14 @@
 	<detail>
 		<band height="256" splitType="Stretch">
 			<textField>
-				<reportElement x="11" y="10" width="150" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
+				<reportElement x="0" y="5" width="572" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="40" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+				<reportElement x="0" y="31" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{veteranModuleGraphReportDTOs})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/VetGraphModule.jasper"]]></subreportExpression>
 			</subreport>
