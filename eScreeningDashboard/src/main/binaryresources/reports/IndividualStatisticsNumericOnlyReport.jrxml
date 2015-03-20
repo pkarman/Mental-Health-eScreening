@@ -25,7 +25,7 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Individual Statistics Report]]></text>
 			</staticText>
@@ -43,9 +43,9 @@
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="112" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<reportElement x="0" y="112" width="572" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
 			</textField>

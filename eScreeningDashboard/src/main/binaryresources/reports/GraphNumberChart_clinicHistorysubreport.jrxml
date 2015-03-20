@@ -18,7 +18,9 @@
 				</box>
 				<textField>
 					<reportElement x="0" y="0" width="60" height="37" uuid="9c579dec-b631-423b-b546-28e41595aed0"/>
-					<textElement verticalAlignment="Top"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{screeningDate}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -27,6 +29,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="0" y="0" width="150" height="20" uuid="05a35de8-587f-4d81-9971-bd8862683bd1"/>
 					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
 						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
@@ -34,6 +37,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="0" y="17" width="150" height="20" uuid="d97325e8-fd9e-410c-a5ac-62fdd8deedcb"/>
 					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
 						<paragraph leftIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{secondLine}]]></textFieldExpression>

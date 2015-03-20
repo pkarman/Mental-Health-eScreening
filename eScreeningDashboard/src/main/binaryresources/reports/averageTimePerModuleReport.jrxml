@@ -24,7 +24,7 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Average Time Per Module Report]]></text>
 			</staticText>
@@ -42,14 +42,14 @@
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<reportElement x="0" y="114" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="10" y="133" width="562" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<reportElement x="0" y="132" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsNumericOnlyReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.2100000000000002"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="80"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<field name="moduleName" class="java.lang.String"/>
@@ -25,19 +25,21 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Individual Statistics Report]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement x="380" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="16" y="143" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<reportElement x="0" y="143" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
 			</textField>
@@ -50,14 +52,10 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="32" splitType="Stretch">
-			
-		</band>
+		<band height="32" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
-			
-		</band>
+		<band height="20" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>

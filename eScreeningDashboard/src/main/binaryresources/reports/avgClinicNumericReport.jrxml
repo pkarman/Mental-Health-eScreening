@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avgClinicNumericReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="9"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<field name="clinicName" class="java.lang.String"/>
 	<field name="graphReport" class="java.util.Collection"/>
@@ -22,12 +22,12 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="92" width="572" height="38" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
 				<textElement verticalAlignment="Middle">
-					<font size="13" isBold="true"/>
+					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Average Scores for all Veterans by Clinic]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="366" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<reportElement x="380" y="92" width="181" height="38" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
@@ -42,9 +42,9 @@
 	<detail>
 		<band height="172" splitType="Stretch">
 			<textField>
-				<reportElement x="12" y="0" width="150" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
+				<reportElement x="0" y="0" width="572" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12"/>
+					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
 			</textField>

@@ -26,7 +26,7 @@
 			<staticText>
 				<reportElement style="Title" x="0" y="0" width="800" height="35" uuid="b7056800-3bc0-4caa-9309-8ebabd02b13b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="26" pdfFontName="Times-Roman"/>
+					<font fontName="Arial" size="26" pdfFontName="Times-Roman"/>
 				</textElement>
 				<text><![CDATA[Assessment Audit Report]]></text>
 			</staticText>
@@ -52,8 +52,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="13" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Event Id]]></text>
 			</staticText>
@@ -66,8 +66,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="13" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Updated By]]></text>
 			</staticText>
@@ -80,8 +80,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="13" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Assessment State]]></text>
 			</staticText>
@@ -94,8 +94,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="13" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Assessment Event]]></text>
 			</staticText>
@@ -108,8 +108,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="13" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Event Date]]></text>
 			</staticText>
@@ -129,7 +129,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{eventId}]]></textFieldExpression>
@@ -143,7 +144,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{updatedBy}]]></textFieldExpression>
@@ -157,7 +159,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{assessmentState}]]></textFieldExpression>
@@ -171,7 +174,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{assessmentEvent}]]></textFieldExpression>
@@ -185,7 +189,8 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{eventDate}]]></textFieldExpression>
@@ -202,6 +207,9 @@
 			</line>
 			<textField>
 				<reportElement x="770" y="26" width="30" height="20" uuid="30036f28-300e-4cc4-b82f-00075bf17312"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

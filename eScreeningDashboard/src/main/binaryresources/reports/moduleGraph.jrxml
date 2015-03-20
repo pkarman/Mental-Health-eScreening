@@ -17,9 +17,9 @@
 	<detail>
 		<band height="256" splitType="Stretch">
 			<textField>
-				<reportElement x="10" y="10" width="150" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
+				<reportElement x="0" y="10" width="572" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
 				<textElement verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>
@@ -31,22 +31,24 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="19" width="118" height="31" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
-					<textElement textAlignment="Center">
-						<font size="12"/>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="37" width="118" height="31" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" size="12"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="120" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<reportElement x="0" y="105" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="68" width="118" height="37" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
-					<textElement textAlignment="Center">
-						<font size="20" isBold="false"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" size="20" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
 				</textField>
@@ -66,14 +68,14 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="19" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<reportElement x="0" y="6" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
 					<textElement textAlignment="Center">
-						<font size="12"/>
+						<font fontName="Arial" size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement x="0" y="50" width="174" height="128" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<reportElement x="0" y="32" width="174" height="146" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber.jasper"]]></subreportExpression>
 				</subreport>

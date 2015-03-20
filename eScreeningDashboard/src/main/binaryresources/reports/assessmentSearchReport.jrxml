@@ -41,7 +41,7 @@
 			<staticText>
 				<reportElement style="Title" x="1" y="0" width="800" height="35" uuid="9f932304-12ba-458d-a93b-44d7c0f35328"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="26" pdfFontName="Times-Roman"/>
+					<font fontName="Arial" size="26" pdfFontName="Times-Roman"/>
 				</textElement>
 				<text><![CDATA[Assessment Report]]></text>
 			</staticText>
@@ -68,7 +68,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Assessment Id]]></text>
 			</staticText>
@@ -82,7 +82,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Location]]></text>
 			</staticText>
@@ -96,7 +96,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Clinician]]></text>
 			</staticText>
@@ -110,7 +110,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Created By]]></text>
 			</staticText>
@@ -124,7 +124,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Veteran]]></text>
 			</staticText>
@@ -138,7 +138,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Status]]></text>
 			</staticText>
@@ -152,7 +152,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Assessment Date]]></text>
 			</staticText>
@@ -166,7 +166,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="true"/>
+					<font fontName="Arial" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Veteran Id]]></text>
 			</staticText>
@@ -187,7 +187,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right">
-					<font size="12"/>
+					<font fontName="Arial" size="12"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{veteranId}]]></textFieldExpression>
@@ -202,6 +202,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
@@ -216,6 +217,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{veteranName}]]></textFieldExpression>
@@ -230,6 +232,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{assessmentStatusName}]]></textFieldExpression>
@@ -244,6 +247,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{assessmentDate}]]></textFieldExpression>
@@ -258,6 +262,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left">
+					<font fontName="Arial"/>
 					<paragraph leftIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clinicianName}]]></textFieldExpression>
@@ -272,6 +277,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Arial"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{veteranAssessmentId}]]></textFieldExpression>
@@ -288,6 +294,9 @@
 			</line>
 			<textField>
 				<reportElement x="771" y="26" width="30" height="20" uuid="ce4fcb9b-2bae-4769-b876-9096b39be217"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>

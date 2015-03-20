@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="batteries-byTime" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7d642c9a-3902-4a9b-819f-cfb4f53ec003">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="totalOfTotal" class="java.lang.String"/>
@@ -18,70 +18,70 @@
 			<staticText>
 				<reportElement mode="Opaque" x="10" y="41" width="100" height="20" backcolor="#CCCCCC" uuid="b1e74b32-d0dc-428e-b891-1d0c4dd95db6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="483" y="41" width="72" height="20" backcolor="#CCCCCC" uuid="6f893b4f-8ebf-4d1a-a33c-29d226e12346"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="446" y="41" width="37" height="20" backcolor="#CCCCCC" uuid="48ecf580-ad79-4476-8cc4-70d342591f84"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[4pm-6pm]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="393" y="41" width="53" height="20" backcolor="#CCCCCC" uuid="689f0009-9e54-49f4-a66f-9a9f4a30a174"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[2pm-4pm]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="110" y="41" width="100" height="20" backcolor="#CCCCCC" uuid="1cedd55b-b8c8-4786-8f49-ab6df7bf271b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Day Of Week]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="210" y="41" width="47" height="20" backcolor="#CCCCCC" uuid="5aa110ad-4a4f-45f5-9a66-e29ab70ddec6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[6am-8am]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="257" y="41" width="38" height="20" backcolor="#CCCCCC" uuid="5fa9b47f-ffee-47ad-a854-7707cd8481a3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[8am-10am]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="295" y="41" width="36" height="20" backcolor="#CCCCCC" uuid="27c361cf-5d94-403c-af4d-e31c015d2363"/>
-				<textElement>
-					<font isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[10am-12pm]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="331" y="41" width="62" height="20" backcolor="#CCCCCC" uuid="acfdfb95-4781-4a37-8b08-f268be64d16f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[12pm-2pm]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="10" y="21" width="545" height="20" backcolor="#999999" uuid="6af3be4f-e69d-4ed8-8967-1cfbac1757f6"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Number of eScreening batteries completed by Each day and Time of Day and day of week]]></text>
 			</staticText>
@@ -91,47 +91,65 @@
 		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement x="10" y="0" width="100" height="20" uuid="fe8ac810-6450-4e30-a0ac-5459458ce3e6"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="483" y="0" width="72" height="20" uuid="922bcfca-10ef-42a6-ab8e-f177258a3cb1"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="444" y="0" width="39" height="20" uuid="6b2086d8-cfb3-4b5e-b666-a7fd130bab90"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{fourToSix}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="393" y="0" width="53" height="20" uuid="4e9de8d3-dbdd-4aed-bca6-f6a155cf9d88"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{twoToFour}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="0" width="100" height="20" uuid="d784e759-0831-47f9-85c6-0372f45b9bc5"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{dayOfWeek}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="210" y="0" width="47" height="20" uuid="e98c4f9e-ba1b-4d97-b158-2bd7dad1b120"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{sixToEight}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="257" y="0" width="38" height="20" uuid="8ea7cb8c-15c7-48ba-926d-e3062257fe8a"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{eightToTen}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="295" y="0" width="36" height="20" uuid="d40aebc6-44c6-41ae-b5b9-d229f5edfcc2"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{tenToTwelve}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="331" y="0" width="62" height="20" uuid="6bce1df4-2b49-4100-a198-2bb0faf003ab"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{twelveToTwo}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -141,13 +159,16 @@
 			<staticText>
 				<reportElement x="10" y="0" width="473" height="20" uuid="6a320a8e-416a-4518-9bd7-62971fbe4325"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
 					<paragraph rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Grand Total]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="483" y="0" width="72" height="20" uuid="7ceba125-b8e0-40dd-bb03-f2c65e18c12c"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{totalOfTotal}]]></textFieldExpression>
 			</textField>
 		</band>
