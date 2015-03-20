@@ -567,7 +567,7 @@ columnAnswerIdList is a set of column answer IDs which we are testing to see if 
 		</#if>
 	</#list>
 	
-	<#return delimitList(valList) >
+	<#return delimitList(valList)>
 </#function>  
 
 
@@ -897,11 +897,15 @@ returns the negation of customHasResult
 </#function>
 
 <#--
-Returns true if the value given has a value. Currently only supports string values
+Returns true if the value given matrix has a value.
 -->
 <#function matrixHasResult matrix=DEFAULT_VALUE>
-	<#if matrix == DEFAULT_VALUE>
+	<#if matrix == DEFAULT_VALUE || !(matrix??) || !(matrix?has_content) || (matrix?string)=="">
 		<#return false>
+	</#if>
+	
+	<#if !(matrix?is_hash) && matrix?has_content >
+		<#return true>
 	</#if>
 	
 	<#assign responseList = []>
