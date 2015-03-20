@@ -11,14 +11,14 @@
 	<detail>
 		<band height="211" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
+				<reportElement x="0" y="0" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{lastNameAndSSN}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="40" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+				<reportElement x="0" y="21" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{moduleGraphs})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/GraphModule.jasper"]]></subreportExpression>
 			</subreport>

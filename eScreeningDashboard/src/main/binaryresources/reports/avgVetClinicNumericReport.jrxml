@@ -36,7 +36,7 @@
 			<line>
 				<reportElement x="0" y="129" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
 				<graphicElement>
-					<pen lineWidth="3.0"/>
+					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
 		</band>
