@@ -19,7 +19,7 @@
 				<textField isStretchWithOverflow="true" pattern="">
 					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="105" height="52" uuid="40ec9f26-afce-448b-a11c-b0cf90f3392f"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 						<paragraph leftIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{key}]]></textFieldExpression>
@@ -27,7 +27,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="105" y="0" width="80" height="52" uuid="ec436736-803d-41ee-8ff2-dc3c5da254cf"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" size="14" isBold="true" isItalic="false"/>
+						<font fontName="Arial" size="36" isBold="true" isItalic="false"/>
 						<paragraph rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
