@@ -7,21 +7,24 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.dto.ae.Answer;
+
 import gov.va.escreening.entity.AssessmentAppointment;
+
+import gov.va.escreening.dto.editors.SurveyPageInfo;
+
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
-import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.ProgramRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -81,6 +84,9 @@ public class RepositoryTest {
 	
 	@Resource
 	VeteranAssessmentRepository vetAssessmentRepo;
+
+	@Resource
+	ProgramRepository programRepo;
 
 	@Test
 	public void testgetSurveyPage() {
@@ -157,8 +163,9 @@ public class RepositoryTest {
 		Measure m = measureRepo.findOne(1);
 		assertEquals(1, m.getMeasureValidationList().size());
 
-		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
-
+		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m);
+		mdto.setDisplayOrder(1);
+		
 		List<gov.va.escreening.dto.ae.Validation> vdtoList = mdto.getValidations();
 
 		vdtoList.clear();
@@ -182,8 +189,9 @@ public class RepositoryTest {
 	public void testMeasureAnswer() {
 		Measure m = measureRepo.findOne(10);
 
-		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m, null, null);
-
+		gov.va.escreening.dto.ae.Measure mdto = new gov.va.escreening.dto.ae.Measure(m);
+		mdto.setDisplayOrder(1);
+		
 		Answer a = mdto.getAnswers().get(0);
 		a.setExportName("testExport");
 		a.setAnswerText("TEST ANSWER TEXT");
@@ -236,7 +244,7 @@ public class RepositoryTest {
     
     @Test
 	public void testSS() {
-		List a = ss.getSurveyPages(2);
+		List<SurveyPageInfo> a = ss.getSurveyPages(2,-1);
 		assertEquals(a.size(), 3);
 	}
     
@@ -251,5 +259,12 @@ public class RepositoryTest {
     	
     	AssessmentAppointment aa2 = assestApptRepo.findByAssessmentId(18);
     	assertNotNull(aa2);
+    }
+
+    @Test
+    public void testProgramByUser()
+    {
+    	assertEquals(5, programRepo.findProgramForUser(4).size());
+
     }
 }

@@ -6,7 +6,8 @@
 	        return {
 	            restrict: 'EA',
 	            scope: {
-	                assessmentVariable: '='
+	                assessmentVariable: '=',
+					block: '='
 	            },
 		        require: '^form',
 	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
@@ -27,7 +28,7 @@
 
 		            scope.openSelections = function(e) {
 			            // Stop bubbling
-			            e.stopPropagation();
+			            if (e) e.stopPropagation();
 
 			            scope.avMenu.show = true;
 		            };

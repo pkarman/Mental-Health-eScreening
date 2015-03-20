@@ -7,8 +7,9 @@
 <html>
 <head>
   <title>User List View</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>

@@ -26,8 +26,18 @@ public class AssessmentLoginFormBean implements Serializable {
     private String birthDate;
 
     private Boolean additionalFieldRequired;
+    
+    private Integer programId;
 
-    public String getLastFourSsn() {
+    public Integer getProgramId() {
+		return programId;
+	}
+
+	public void setProgramId(Integer programId) {
+		this.programId = programId;
+	}
+
+	public String getLastFourSsn() {
         return lastFourSsn;
     }
 

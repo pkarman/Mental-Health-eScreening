@@ -3,31 +3,28 @@
  */
 angular.module('EscreeningDashboardApp.services.managesection', ['restangular'])
     .factory('ManageSectionService', ['$log', 'Restangular', '$q', function ($log, Restangular, $q) {
-
         "use strict";
 
-        var restAngular = Restangular.withConfig(function (config) {
-            config.setBaseUrl('services');
-            config.setRequestSuffix('.json');
-        });
-
-        var proxy = restAngular.all('sections');
+        var proxy = Restangular.service('sections');
 
         // service to perform CRUD
         var service = {
-            create: function (ss) {
+            get: function get(sectionId) {
+                return proxy.one(sectionId).get();
+            },
+            create: function create(ss) {
                 return proxy.post(ss);
             },
-            getList: function () {
+            getList: function getList() {
                 return proxy.getList();
             },
-            update: function (ss) {
+            update: function update(ss) {
                 return ss.put();
             },
             delete: function (ss) {
                 return ss.remove();
             },
-            batchCreate: function (newSections) {
+            batchCreate: function batchCreate(newSections) {
                 var p = [];
                 _.each(newSections, function (ss) {
                     p.push(service.create(ss)
@@ -38,18 +35,18 @@ angular.module('EscreeningDashboardApp.services.managesection', ['restangular'])
                 });
                 return p;
             },
-            batchUpdate: function (updateSections) {
+            batchUpdate: function batchUpdate(updateSections) {
                 var p = [];
                 _.each(updateSections, function (ss) {
                     p.push(service.update(ss)
                         .then(function (modifiedData) {
-                            $log.debug('details of section updated => ' + JSON.stringify(modifiedData));
+                            //$log.debug('details of section updated => ' + JSON.stringify(modifiedData));
                             $log.debug('update success:\'' + ss.name + '\' updated successfully');
                         }));
                 });
                 return p;
             },
-            batchDelete: function (deleteSections) {
+            batchDelete: function batchDelete(deleteSections) {
                 var p = [];
                 _.each(deleteSections, function (ss) {
                     p.push(service.delete(ss)
@@ -60,7 +57,7 @@ angular.module('EscreeningDashboardApp.services.managesection', ['restangular'])
                 });
                 return p;
             },
-            applyCrud: function (dbData, toBeDel, succMsgCb, dangerMsgCb, refreshDataCb) {
+            applyCrud: function applyCrud(dbData, toBeDel, succMsgCb, dangerMsgCb, refreshDataCb) {
                 // split ssRows in two groups, to be added (new) and to be updated
                 // (already present in the db and user wishes to make some changes)
                 var groupBy = _.groupBy(dbData, function (ss) {

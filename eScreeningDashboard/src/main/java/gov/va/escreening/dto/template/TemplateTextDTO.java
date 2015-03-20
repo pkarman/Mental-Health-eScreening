@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.service.AssessmentVariableService;
+
 import java.util.List;
 import java.util.Set;
 
@@ -25,14 +27,9 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 		this.contents = contents;
 	}
 
-	public String toFreeMarkerFormat(Set<Integer>ids) {
-		StringBuffer sb = new StringBuffer();
-		if (this.getName()!=null)
-			sb.append("<#-- NAME:"+this.getName()+"-->\n");
-		if (this.getSection()!=null)
-			sb.append("<#-- SECTION:"+getSection()+" -->\n");
-		if (this.getSummary()!=null)
-			sb.append("<#-- SUMMARY:"+getSummary()+" -->\n");
+	@Override
+	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
+		addHeader(sb);
 
 		for (TemplateBaseContent content : contents) {
 			if(content instanceof TemplateTextContent)
@@ -41,12 +38,13 @@ public class TemplateTextDTO extends TemplateBaseBlockDTO {
 			}
 			else
 			{
-				// varirable content
-				sb.append("${"+((TemplateVariableContent)content).translate(null, content, null, ids)+"}");
+				// variable content
+				sb.append("${")
+					.append(TemplateVariableContent.translate(null, content, null, ids))
+					.append("}");
 			}
 		}
 
-		return sb.toString();
+		return sb;
 	}
-
 }

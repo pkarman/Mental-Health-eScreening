@@ -21,56 +21,40 @@ EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashb
  * @author Bryan Henderson
  */
 EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
-	var that = this,
-	id = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.id))? jsonBatteryObject.id : -1,
-	name = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.name))? jsonBatteryObject.name : null,
-	description = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.description))? jsonBatteryObject.description : null,
-	disabled = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.disabled) && Object.isBoolean(jsonBatteryObject.disabled)) ? jsonBatteryObject.disabled : false,
-    createdDate = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.createdDate))? (Object.isDate(jsonBatteryObject.createdDate)) ? jsonBatteryObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonBatteryObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null,
-    surveys = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.surveys)&& Object.isArray(jsonBatteryObject.surveys))? EScreeningDashboardApp.models.SurveysTransformer.transformJSONPayload({"surveys":jsonBatteryObject.surveys}) : [];
-
-    var generateJsonStringForSurveys = function () {
-        var surveyJson = "[";
-
-        surveys.forEach(function (survey) {
-            surveyJson += survey.toJSON() + ",";
-        });
-
-        if (surveys.length > 0){
-            surveyJson = surveyJson.slice(0, surveyJson.length-1);
-        }
-
-        surveyJson += "]";
-
-        return surveyJson;
-    };
+	this.id = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.id))? jsonBatteryObject.id : -1;
+	this.name = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.name))? jsonBatteryObject.name : null;
+	this.description = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.description))? jsonBatteryObject.description : null;
+	this.disabled = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.disabled) && Object.isBoolean(jsonBatteryObject.disabled)) ? jsonBatteryObject.disabled : false;
+    this.createdDate = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.createdDate))? (Object.isDate(jsonBatteryObject.createdDate)) ? jsonBatteryObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonBatteryObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
+    this.surveys = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.surveys)&& Object.isArray(jsonBatteryObject.surveys))? EScreeningDashboardApp.models.SurveysTransformer.transformJSONPayload({"surveys":jsonBatteryObject.surveys}) : [];
     
+    //please don't use these anymore. directly access the field you need
     this.getId = function(){
-    	return id;
+    	return this.id;
     };
     this.getName = function(){
-    	return name;
+    	return this.name;
     };
     this.getDescription = function(){
-    	return description;
+    	return this.description;
     };
     this.isDisabled = function(){
-    	return disabled;
+    	return this.disabled;
     };
     this.disabled = function(isDisabled){
-        disabled = isDisabled;
+        this.disabled = isDisabled;
     };
     this.getCreatedDate = function(){
-    	return createdDate;
+    	return this.createdDate;
     };
     this.getSurveys = function(){
-    	return surveys;
+    	return this.surveys;
     };
     this.retrieveSurveySections = function () {
         var surveySections = [],
             surveySectionIndex;
 
-        surveys.forEach(function (survey) {
+        this.surveys.forEach(function (survey) {
             surveySectionIndex = surveySections.indexOf(survey.getSurveySection());
             if(surveySectionIndex == -1){
                 surveySections.push(survey.getSurveySection());
@@ -102,38 +86,32 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
     	return angular.toJson(this.toUIObject()); 
     };
     
+    //please don't use this
 	this.toUIObject = function(serializeCollections){		
 		var uiObj= {
-			'id': (id != null && id > 0)? id : null,
-			'name': name,
-			'description': description,
-			'disabled': (Object.isDefined(disabled))? disabled: false,
-			'createdDate': (createdDate != null)? createdDate.toISOString().substring(0, createdDate.toISOString().length-1) : null
+			'id': (this.id != null && this.id > 0)? this.id : null,
+			'name': this.name,
+			'description': this.description,
+			'disabled': this.disabled ? this.disabled: false, //maps null to false
+			//TODO: PLEASE REMOVE THIS
+			'createdDate': (this.createdDate != null)? this.createdDate.toISOString().substring(0, this.createdDate.toISOString().length-1) : null
 		};
 		 
 		if( (!Object.isDefined(serializeCollections) || serializeCollections)){
-			uiObj.surveys = angular.isArray(surveys) ? surveys.map(function(survey){ return survey.toUIObject();}) : null; 
+			uiObj.surveys = this.surveys;
 		}
 		
 		return uiObj;
 	};
-
-    this.getSurveysAsSurveyUIObjects = function(){
-        var surveyUIObjects = [];
-
-        surveys.forEach(function(survey){
-            surveyUIObjects.push(survey.toUIObject());
-        });
-
-        return surveyUIObjects;
-    };
 };
+
+//targetSurveySections takes a list of unprotected (not domain with getters) object 
 EScreeningDashboardApp.models.Battery.findVisibleSurveys = function (targetSurveySections) {
     var visibleSurveys = [];
 
     targetSurveySections.forEach(function(surveySection) {
-        surveySection.getSurveys().forEach(function (survey) {
-            if(survey.isVisible()){
+    	surveySection.surveys.forEach(function (survey) {
+            if(survey.visible){
                 visibleSurveys.push(survey);
             }
         });

@@ -38,7 +38,7 @@ public class Measure implements Serializable, MeasureBaseProperties {
     private String vistaText;
     private String variableName;
     private Boolean isPPI;
-    private Boolean isMha;
+    private Boolean mha;
 
     public String getVistaText() {
         return vistaText;
@@ -64,12 +64,12 @@ public class Measure implements Serializable, MeasureBaseProperties {
         this.isPPI = isPPI;
     }
 
-    public Boolean getIsMha() {
-        return isMha;
+    public Boolean getMha() {
+        return mha;
     }
 
-    public void setIsMha(Boolean isMha) {
-        this.isMha = isMha;
+    public void setMha(Boolean mha) {
+        this.mha = mha;
     }
 
 	public Integer getMeasureId() {
@@ -161,9 +161,19 @@ public class Measure implements Serializable, MeasureBaseProperties {
 
     }
     
+    public Measure(gov.va.escreening.entity.Measure dbMeasure){
+    	this(dbMeasure, null, null);    	
+    }
+    
+    /**
+     * 
+     * @param dbMeasure the measure entity representing this measure
+     * @param surveyMeasureResponseMap the veteran responses for this question. 
+     * @param measureVisibilityMap map from a measure to a boolean indicating if that measure is visible
+     */
     public Measure(gov.va.escreening.entity.Measure dbMeasure, 
             @Nullable ListMultimap<Integer, SurveyMeasureResponse> surveyMeasureResponseMap, 
-            Map<Integer, Boolean> measureVisibilityMap){
+            @Nullable Map<Integer, Boolean> measureVisibilityMap){
         measureId = dbMeasure.getMeasureId();
         measureText = dbMeasure.getMeasureText();
         measureType = dbMeasure.getMeasureType() != null ? dbMeasure.getMeasureType().getName() : null;
@@ -172,7 +182,7 @@ public class Measure implements Serializable, MeasureBaseProperties {
         vistaText = dbMeasure.getVistaText();
         variableName = dbMeasure.getVariableName();
         isPPI = dbMeasure.getIsPatientProtectedInfo();
-        isMha = dbMeasure.getIsMha();
+        mha = dbMeasure.getIsMha();
         
         isVisible = measureVisibilityMap != null? measureVisibilityMap.get(dbMeasure.getMeasureId()):null;
         if(isVisible == null) //if only java had a default option in Map
@@ -208,15 +218,16 @@ public class Measure implements Serializable, MeasureBaseProperties {
             }
         }
         
-        //add answers
+        //add tableAnswers if this is a child question and it has not been initialized 
+        if(parentIsTable && tableAnswers == null){
+            tableAnswers = new ArrayList<List<Answer>>();
+        }
+   
+    	//add answers
         List<MeasureAnswer> dbAnswers = dbMeasure.getMeasureAnswerList();
         if(dbAnswers != null && !dbAnswers.isEmpty()){
             answers = new ArrayList<Answer>(dbAnswers.size());
             
-            if(parentIsTable && tableAnswers == null){
-                tableAnswers = new ArrayList<List<Answer>>();
-            }
-       
             for (MeasureAnswer measureAnswer : dbAnswers) {
                 List<SurveyMeasureResponse> answerResponses = surveyMeasureResponseMap == null ? null 
                         : surveyMeasureResponseMap.get(measureAnswer.getMeasureAnswerId());
@@ -252,16 +263,16 @@ public class Measure implements Serializable, MeasureBaseProperties {
             boolean addToTableAnswers){
         
         if(answerResponses == null || answerResponses.isEmpty()){
-            Answer answer = new Answer(measureAnswer, null);
-            if(addToTableAnswers){
-                addTableAnswer(0, answer);
-            }
-            else{
-                answers.add(answer);
-            }
+        	answers.add(new Answer(measureAnswer, null));
         }
-        else{
-            //for this answer add each row's response to tableAnswers
+        else{// we have responses
+            
+        	//If this is a table question, we need to add an empty answer to the answers list (used for the generation of new entries)
+        	if(addToTableAnswers){ 
+        		answers.add(new Answer(measureAnswer, null));
+        	}
+        	
+        	//If we have responses then add them to answers or to table answers
             for(int i = 0; i < answerResponses.size(); i++){
                 if(i >= answerResponses.size())
                     throw new IllegalArgumentException("Invalid measure answer submission.  Each cell in a row must be given");

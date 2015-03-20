@@ -13,11 +13,7 @@ import gov.va.escreening.serializer.JsonDateSerializer;
 
 @JsonRootName(value="surveySection")
 @JsonIgnoreProperties(ignoreUnknown = true)
-/*@JsonAutoDetect(
-        fieldVisibility= JsonAutoDetect.Visibility.ANY,
-        getterVisibility= JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility= JsonAutoDetect.Visibility.NONE
-)*/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SurveySectionInfo implements Serializable, SurveySectionBaseProperties {
 
 	private static final long serialVersionUID = 1L;

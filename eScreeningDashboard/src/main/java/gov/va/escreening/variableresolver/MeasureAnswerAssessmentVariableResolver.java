@@ -13,16 +13,21 @@ public interface MeasureAnswerAssessmentVariableResolver {
 	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, 
 			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
 	
-	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable parentAssessmentVariable, SurveyMeasureResponse response, 
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
+	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable measureAnswerAssessmentVariable, SurveyMeasureResponse response, 
+			Map<Integer, AssessmentVariable> measureAnswerHash);
 	
 	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, 
 			SurveyMeasureResponse response);
 	
-	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId);
+	String resolveCalculationValue(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, NullValueHandler smrNullHandler);
 
 	String resolveCalculationValue(AssessmentVariable answerVariable,
 			Pair<Measure, gov.va.escreening.dto.ae.Measure> answer);
 
-	String resolveCalculationValue(Measure left, Answer answerVal);
+	/**
+	 * @param answer
+	 * @param index if index is null then null is returned
+	 * @return
+	 */
+	String resolveCalculationValue(Pair<Measure, gov.va.escreening.dto.ae.Measure> answer, Integer index);
 }

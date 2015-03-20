@@ -1,7 +1,9 @@
 package gov.va.escreening.dto.editors;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SurveyStatusInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;

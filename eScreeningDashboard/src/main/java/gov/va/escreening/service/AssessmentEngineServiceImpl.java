@@ -48,7 +48,6 @@ import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -367,9 +366,15 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 
 		// Throw exception. This can happen if an invalid veteranAssessmentId or
 		// surveyPageId was passed.
+		if(currentSurveyPageId == null){
+			throw new IllegalArgumentException(String.format(
+					"Could not find a module page for Veteran assessment %s", veteranAssessmentId));
+		}
+		
 		throw new IllegalArgumentException(String.format(
-				"VeteranAssessment %s does not have SurveyPageId %s",
+				"Something is off: Veteran assessment is %s Survey page is %s",
 				veteranAssessmentId, currentSurveyPageId));
+	
 	}
 
 	/**

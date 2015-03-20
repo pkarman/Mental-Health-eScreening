@@ -1,5 +1,6 @@
 package gov.va.escreening.vista;
 
+import com.google.common.base.Strings;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
@@ -322,7 +323,17 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 		String mhaTestAnswers = mentalHealthAssessment.getMentalHealthTestAnswers();
 		Long mhaReminderDialogIEN = mentalHealthAssessment.getReminderDialogIEN();
 
-		// save mental health assessment test answers to VistA.
+        // if mhaTestAnswers is empty or null then return null from here
+        if (Strings.isNullOrEmpty(mhaTestAnswers)){
+            logger.warn(String.format("Mental health Assessment will not be sent to Vista. " +
+                    "Reason: 'MHA test answers' is left blank for 'Veteran assessment id' [%s], " +
+                    "'Patient ien' [%s], 'MHA test name' [%s], 'MHA reminder dialog ien' [%s]",
+                    veteranAssessment.getVeteranAssessmentId(), patientIEN, mhaTestName, mhaReminderDialogIEN));
+
+            return null;
+        }
+
+        // save mental health assessment test answers to VistA.
 		boolean savePassed = vistaLinkClient.saveMentalHealthAssessment(patientIEN, mhaTestName, mhaTestAnswers);
 
 		String staffCode = veteranAssessment.getClinician().getVistaDuz();

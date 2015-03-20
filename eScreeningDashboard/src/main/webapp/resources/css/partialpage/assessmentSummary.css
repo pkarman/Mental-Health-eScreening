@@ -108,6 +108,7 @@
 .templateHeader {
 }
 .templateFooter {
+	margin:20px 0;
 }
 .templateSectionTitle {
   font-weight: bold;
@@ -201,20 +202,22 @@
   width: 100% !important;
   border: none !important;
   border-top: 1px dashed #000000 !important;
+  display:table;
+  
 }
 
 /* Boxes Start Regular */
 /* 1. Score Box */
 #VeteranSummaryModal .graphicBlock .scoreBlock {
   border: none !important;
-  display: inline-table;
+  display: table-cell;
   width: 150px;
   border-right: 1px dashed #000 !important;
   padding-right: 5px;
 }
 /* 3. Template Text Box */
 #VeteranSummaryModal .graphicBlock .moduleTemplateText {
-  display: inline-table;
+  display:  table-cell;
   width: 300px;
   border-left: 1px dashed #000000 !important;
   padding-left: 10px;
@@ -222,7 +225,7 @@
 }
 /* 2. Template Text graphSection */
 #VeteranSummaryModal .graphicBlock .graphSection {
-  display: inline-table;
+  display:  table-cell;
   width: 450px;
   vertical-align: top;
 }

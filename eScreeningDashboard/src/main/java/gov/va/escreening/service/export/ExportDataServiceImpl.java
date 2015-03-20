@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
-    private static final Logger logger = LoggerFactory.getLogger(ExportDataServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource(type = AssessmentVariableRepository.class)
     private AssessmentVariableRepository avr;
@@ -228,7 +228,10 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         // find out if this is an other datatype
         boolean other = "true".equals(answerTypeOther.get(exportName));
-        return new DataExportCell(exportName, exportVal, other);
+        boolean formula = formulaeMap.get(exportName) != null;
+        // if other=true than the export name is of type other (o), or if formula=true than the export name is formula (f), else otherwise it is a regular data type (r)
+        char dataType = other ? 'o' : formula ? 'f' : 'r';
+        return new DataExportCell(exportName, exportVal, dataType);
     }
 
     private ExportLog createExportLogFromOptions(DataExportFilterOptions options) {
@@ -374,6 +377,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     public void takeAssessmentSnapShot(Integer exportedById) {
+        logger.warn(">>>>>>[takeAssessmentSnapShot]DD-CREATE");
+
         Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
 
         Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();
@@ -560,7 +565,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     private void setMissingCellsToZero(Collection<DataExportCell> cells) {
         for (DataExportCell cell : cells) {
-            if (!cell.isOther() && srh.miss().equals(cell.getCellValue())) {
+            if (cell.getDataType() == 'r' && srh.miss().equals(cell.getCellValue())) {
                 cell.setCellValue("0");
             }
         }

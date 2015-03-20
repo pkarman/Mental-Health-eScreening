@@ -1,0 +1,42 @@
+{
+  "name": "ui-select",
+  "version": "0.9.7",
+  "homepage": "https://github.com/angular-ui/ui-select",
+  "authors": [
+    "AngularUI"
+  ],
+  "description": "AngularJS ui-select",
+  "main": [
+    "dist/select.js",
+    "dist/select.css"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src",
+    "test",
+    "gulpfile.js",
+    "karma.conf.js",
+    "examples"
+  ],
+  "dependencies": {
+    "angular": ">=1.2.18"
+  },
+  "devDependencies": {
+    "jquery": "~1.11",
+    "angular-sanitize": ">=1.2.18",
+    "angular-mocks": ">=1.2.18"
+  },
+  "_release": "0.9.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.7",
+    "commit": "5f0a93d56fd704007214e3e45997592fe25c619f"
+  },
+  "_source": "git://github.com/angular-ui/ui-select.git",
+  "_target": "~0.9.7",
+  "_originalSource": "angular-ui-select",
+  "_direct": true
+}

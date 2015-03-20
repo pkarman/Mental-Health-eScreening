@@ -23,25 +23,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Optional;
 
+import static com.google.common.base.Preconditions.*;
+
 public class FormulaAssessmentVariableResolverImpl implements
 		FormulaAssessmentVariableResolver {
 
-	@Autowired
-	private CustomAssessmentVariableResolver customVariableResolver;
-	@Autowired
-	private ExpressionEvaluatorService expressionEvaluatorService;
-	@Autowired
-	private MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	@Autowired
-	private MeasureAssessmentVariableResolver measureVariableResolver;
+	//Please add to the constructor and do not use field based @Autowired	
+	private final ExpressionEvaluatorService expressionEvaluatorService;
+	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
+	private final MeasureAssessmentVariableResolver measureVariableResolver;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FormulaAssessmentVariableResolverImpl.class);
 
+	@Autowired
+	public FormulaAssessmentVariableResolverImpl(
+			ExpressionEvaluatorService ees,
+			MeasureAnswerAssessmentVariableResolver mavr,
+			MeasureAssessmentVariableResolver mvr){
+		
+		expressionEvaluatorService = checkNotNull(ees);
+		measureAnswerVariableResolver = checkNotNull(mavr);
+		measureVariableResolver = checkNotNull(mvr);
+	}
+	
 	@Override
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-			Map<Integer, AssessmentVariable> measureAnswerHash) {
+			Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler) {
 
 		List<AssessmentVariable> answerTypeList = new ArrayList<AssessmentVariable>();
 		List<AssessmentVariable> measureTypeList = new ArrayList<AssessmentVariable>();
@@ -69,8 +78,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 
 			for (AssessmentVariable answerVariable : answerTypeList) {
 				String value = measureAnswerVariableResolver
-						.resolveCalculationValue(answerVariable,
-								veteranAssessmentId);
+						.resolveCalculationValue(answerVariable, veteranAssessmentId, smrNullHandler);
 				rootFormula.getVariableValueMap().put(
 						answerVariable.getAssessmentVariableId(), value);
 			}
@@ -78,7 +86,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 			for (AssessmentVariable measureVariable : measureTypeList) {
 				String value = measureVariableResolver
 						.resolveCalculationValue(measureVariable,
-								veteranAssessmentId, measureAnswerHash);
+								veteranAssessmentId, measureAnswerHash, smrNullHandler);
 				rootFormula.getVariableValueMap().put(
 						measureVariable.getAssessmentVariableId(), value);
 			}
@@ -97,9 +105,8 @@ public class FormulaAssessmentVariableResolverImpl implements
 			String result = expressionEvaluatorService
 					.evaluateFormula(rootFormula);
 
-			variableDto = createAssessmentVariableDto(
-					assessmentVariable.getAssessmentVariableId(), result);
-			variableDto.setDisplayName(assessmentVariable.getDisplayName());
+			variableDto = new AssessmentVariableDto(assessmentVariable); 
+			variableDto.setResponse(result);
 		}
 		// warnings, these exceptions typically mean that a question was not
 		// answered
@@ -157,20 +164,6 @@ public class FormulaAssessmentVariableResolverImpl implements
 							assessmentVariable.getAssessmentVariableId(),
 							veteranAssessmentId, e.getMessage()));
 		}
-		return variableDto;
-	}
-
-	// new AssessmentVariable(10, "var10", "string", "formula_10", "25", "25",
-	// null, null)
-	private AssessmentVariableDto createAssessmentVariableDto(
-			int assessmentVariableId, String resolvedValue) {
-		Integer id = assessmentVariableId;
-		String key = String.format("var%s", id);
-		String type = "string";
-		String name = String.format("formula_%s", id);
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(id, key,
-				type, name, resolvedValue, resolvedValue, null, null,
-				AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
 		return variableDto;
 	}
 

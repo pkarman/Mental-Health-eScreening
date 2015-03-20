@@ -16,6 +16,7 @@ import gov.va.escreening.form.ExportDataFormBean;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jocchiuzzo
@@ -78,7 +79,7 @@ public interface VeteranAssessmentService {
     SearchResult<AssessmentSearchResult> searchVeteranAssessment(AssessmentReportFormBean assessmentReportFormBean,
             SearchAttributes searchAttributes);
 
-    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, SearchAttributes searchAttributes);
+    SearchResult<AssessmentSearchResult> searchVeteranAssessment(String programId, List<Integer> programIdList, SearchAttributes searchAttributes);
 
     /**
      * 
@@ -139,9 +140,10 @@ public interface VeteranAssessmentService {
      * @param selectedBatteryId
      * @param surveyIdList
      * @return
+     * @throws AssessmentAlreadyExistException 
      */
     Integer create(Integer veteranId, Integer programId, Integer clinicId, Integer clinicianId,
-            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList);
+            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList) throws AssessmentAlreadyExistException;
 
     /**
      * Updates an existing veteran assessment.
@@ -253,8 +255,31 @@ public interface VeteranAssessmentService {
      * @return
      */
     List<String> getHealthFactorReport(int veteranAssessmentId);
-
-	public abstract boolean createAssessmentWithAppointment(Integer veteranId,
+    
+    /**
+     * Returns the a map of assessment vairable values overtime
+     * @param veteranID
+     * @param assessmentVariableID
+     * @param numOfMonth
+     * @return
+     */
+    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    		int numOfMonth);
+    
+    /**
+     * Creates an assessment that is associated with an appointment.
+     * @param veteranId
+     * @param programId
+     * @param clinicId
+     * @param clinicianId
+     * @param createdByUserId
+     * @param selectedNoteTitleId
+     * @param selectedBatteryId
+     * @param surveyIdList
+     * @param apptDate
+     * @return
+     */
+    public abstract boolean createAssessmentWithAppointment(Integer veteranId,
 			Integer programId, Integer clinicId, Integer clinicianId, Integer createdByUserId, Integer selectedNoteTitleId,
-			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate);
+			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate) throws AssessmentAlreadyExistException;
 }
