@@ -63,7 +63,7 @@
 
 	<div class="row">
 		<div class="col-md-12">
-			<div class="alert alert-success hide" role="alert" id="successMsg">Alert Saved Successfully.</div>
+			<div class="alert alert-success hide" role="alert" id="successMsg">Alert saved successfully.</div>
 		</div>
 	</div>
 		
@@ -84,7 +84,6 @@
 	</div>
 </div>
 
-
 <!-- Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -96,7 +95,7 @@
             <div class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" role="alert">Are you sure you want to delete alert?</div>
+						<div class="alert alert-danger" role="alert">Are you sure you want to delete the alert?</div>
 					</div>
 				</div>
             </div>
@@ -108,12 +107,10 @@
     </div>
 </div>
 
-
- <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-</body>
-
+<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 <script type="text/javascript" src="<c:url value="/resources/js/angular/angular.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/systemTab/alertListView.js?v=1" />"></script>
+</body>
 </html>
