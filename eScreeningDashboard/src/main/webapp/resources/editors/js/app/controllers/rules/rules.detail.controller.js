@@ -43,6 +43,10 @@
 				_.each(addQueue, function(event) {
 					rule.customPOST(event, 'events');
 				});
+
+				MessageFactory.success('Rule successfully saved.');
+			}, function(response) {
+				MessageFactory.error('There was a problem saving the rule. Please try again.');
 			});
 
 		};
