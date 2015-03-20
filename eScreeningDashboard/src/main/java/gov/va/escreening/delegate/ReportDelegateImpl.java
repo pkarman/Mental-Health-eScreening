@@ -697,12 +697,24 @@ public class ReportDelegateImpl implements ReportDelegate {
         List<Report594DTO> dtos = Lists.newArrayList();
 
         Iterable<String> clinicNames = Splitter.on(",").trimResults().omitEmptyStrings().split(parameterMap.get("clinicNames").toString());
+
+        int total =  0;
+
         for (String clinicName : clinicNames) {
             Report594DTO report594DTO = new Report594DTO();
             report594DTO.setModuleName(clinicName);
-            report594DTO.setModuleCount(String.format("%s", (int) (Math.random() * 100)));
+            int val = (int) (Math.random() * 100);
+            total += val;
+            report594DTO.setModuleCount(String.format("%s", val));
             report594DTO.setModulePercent(String.format("%5.2f%%", Math.random() * 100));
             dtos.add(report594DTO);
+        }
+
+        for(int i=0; i<dtos.size(); i++){
+
+            int val = Integer.parseInt(dtos.get(i).getModuleCount());
+            dtos.get(i).setModuleCount( val + "/"+total);
+            dtos.get(i).setModulePercent(String.format("%5.2f%%", val* 100d/total));
         }
 
         dataSource = new JRBeanCollectionDataSource(dtos);
@@ -744,7 +756,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     private void attachDates(Map<String, Object> dataCollection, Map<String, Object> requestData) {
         String fromDate = requestData.get(ReportsUtil.FROMDATE).toString();
         String toDate = requestData.get(ReportsUtil.TODATE).toString();
-        dataCollection.put("fromToDate", String.format("from %s -- %s", fromDate, toDate));
+        dataCollection.put("fromToDate", String.format("From %s -- %s", fromDate, toDate));
     }
 
     private void attachClinics(Map<String, Object> dataCollection, Map<String, Object> requestData) {
