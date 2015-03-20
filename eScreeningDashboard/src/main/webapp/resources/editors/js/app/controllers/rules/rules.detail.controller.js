@@ -34,14 +34,14 @@
 		$scope.saveRule = function saveRule() {
 			$scope.rule.save().then(function(response) {
 
-				console.log(response);
+				$scope.rule.id = response.id;
 
 				_.each(removeQueue, function(id) {
-					rule.customDELETE('events/' + id);
+					$scope.rule.customDELETE('events/' + id);
 				});
 
 				_.each(addQueue, function(event) {
-					rule.customPOST(event, 'events');
+					$scope.rule.customPOST(event, 'events');
 				});
 
 				MessageFactory.success('Rule successfully saved.');

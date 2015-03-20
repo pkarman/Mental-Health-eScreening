@@ -32,8 +32,8 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 					transformations:[]
 				}
 			},
-			'right':{
-				'type': '',
+			'right': {
+				'type': 'text',
 				'content': ''
 			},
 			'conditions': []
