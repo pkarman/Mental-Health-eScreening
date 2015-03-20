@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="599Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="34"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="clinicNames" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean"/>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="positivePercent" class="java.lang.String"/>
+	<field name="negativePercent" class="java.lang.String"/>
+	<field name="missingPercent" class="java.lang.String"/>
+	<field name="positiveCount" class="java.lang.String"/>
+	<field name="negativeCount" class="java.lang.String"/>
+	<field name="missingCount" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="151" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Positive Screens Report]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="386" y="78" width="181" height="26" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="115" width="143" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VistA Clinics]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="133" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<frame>
+				<reportElement mode="Transparent" x="0" y="0" width="286" height="47" backcolor="#CCCCCC" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="98" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="99" y="0" width="60" height="13" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{positivePercent}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="99" y="33" width="55" height="13" backcolor="#CCCCCC" uuid="3e35ad77-eaa3-41aa-b929-c7998965f8c9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{positiveCount}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="162" y="0" width="55" height="13" uuid="e414bb0d-537a-4662-aeaa-9782425e3fd9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{negativePercent}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="223" y="0" width="55" height="13" uuid="e856542b-fb71-477d-8019-f68e5fefe321"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{missingPercent}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="162" y="34" width="55" height="13" backcolor="#CCCCCC" uuid="e600d866-4cb5-4f91-97e8-7875e214575a"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{negativeCount}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="223" y="33" width="55" height="13" backcolor="#CCCCCC" uuid="84a30349-6ff6-43d0-98b8-2dc4569b71dd"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{missingCount}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="99" y="16" width="55" height="13" backcolor="#CCCCCC" uuid="831879cf-ceb2-4634-9f1e-1abe7e109cc6"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Positive]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="162" y="16" width="55" height="13" backcolor="#CCCCCC" uuid="a8e6c506-f032-419d-8848-897495d34a53"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Negative]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="223" y="16" width="55" height="13" backcolor="#CCCCCC" uuid="7e32f4e1-90e0-4d2a-9874-02cecbe3959f"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Missing]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

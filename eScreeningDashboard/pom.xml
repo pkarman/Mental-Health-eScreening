@@ -45,8 +45,14 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.4.1.1</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-bridge</artifactId>
+            <version>1.7</version>
+        </dependency>
 
-		<!-- Spring -->
+
+        <!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -382,12 +388,18 @@
 	</dependencies>
 
 	<build>
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+            <resource>
+                <directory>src/main/binaryresources</directory>
+                <filtering>false</filtering>
+            </resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

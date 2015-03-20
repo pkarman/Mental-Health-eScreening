@@ -13,6 +13,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
 public interface AssessmentVariableService {
+    Collection<AssessmentVariable> findByDisplayNames(List<String> displayNames);
+
     /**
      * return all {@link AssessmentVariable} as a table of name value pair belonging to requested survey
      * <p/>

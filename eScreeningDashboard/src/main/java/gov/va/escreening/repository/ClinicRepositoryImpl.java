@@ -5,6 +5,7 @@ import gov.va.escreening.entity.Clinic;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -31,6 +32,20 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
         resultList = query.getResultList();
 
         return resultList;
+    }
+
+    @Override
+    public List<Integer> getAllVeteranIds(Integer clinicId) {
+        Query q = entityManager.createNativeQuery("select distinct veteran_id from veteran_assessment_survey_score where clinic_id = "+clinicId+" order by veteran_id asc");
+
+        List<Object> r = q.getResultList();
+
+        List<Integer> result = new ArrayList<Integer>();
+
+        for(Object o : r){
+            result.add((Integer)o);
+        }
+        return result;
     }
 
 }

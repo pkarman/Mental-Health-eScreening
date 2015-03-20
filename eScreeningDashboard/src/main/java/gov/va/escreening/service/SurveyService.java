@@ -76,4 +76,6 @@ public interface SurveyService {
     SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
 
     void removeSurveyPage(Integer surveyId, Integer pageId);
+
+    List<SurveyDto> getSurveyListByNames(List<String> surveyNames);
 }

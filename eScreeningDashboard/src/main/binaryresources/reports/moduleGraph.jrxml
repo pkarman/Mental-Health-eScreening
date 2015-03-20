@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsNumericOnlyReport" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="lastNameSSN" class="java.lang.String"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="score" class="java.lang.String"/>
+	<field name="scoreHistoryTitle" class="java.lang.String"/>
+	<field name="scoreMeaning" class="java.lang.String"/>
+	<field name="scoreName" class="java.lang.String"/>
+	<field name="scoreHistory" class="java.util.Collection"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="256" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="572" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="42" width="118" height="178" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField isStretchWithOverflow="true">
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="37" width="118" height="31" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" size="12"/>
+						<paragraph leftIndent="3" rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="105" width="118" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="68" width="118" height="37" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" size="20" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="118" y="42" width="280" height="178" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+			</frame>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="398" y="42" width="174" height="178" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe"/>
+				<box>
+					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField>
+					<reportElement x="0" y="6" width="174" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="0" y="32" width="174" height="146" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber.jasper"]]></subreportExpression>
+				</subreport>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

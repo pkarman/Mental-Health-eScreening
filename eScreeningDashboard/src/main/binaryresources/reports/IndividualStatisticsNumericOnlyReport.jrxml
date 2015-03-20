@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsNumericOnlyReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="1.331000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="lastNameSSN" class="java.lang.String"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="screeningModuleName" class="java.lang.String"/>
+	<field name="score" class="java.lang.String"/>
+	<field name="historyByClinic" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="184" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Individual Statistics Report]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="386" y="78" width="181" height="26" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="112" width="572" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="-48" width="70" height="32" backcolor="#999999" uuid="ba993855-0d83-426d-99a0-92aa5991f25d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<text><![CDATA[Module]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="70" y="-48" width="129" height="32" backcolor="#999999" uuid="dfb08f39-b803-4f1e-bb79-3370268fea8d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<text><![CDATA[Screening Module]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="199" y="-48" width="116" height="32" backcolor="#999999" uuid="7c6c7ba1-b501-4e2b-8cb6-1ea337df59f0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="3" rightIndent="3"/>
+				</textElement>
+				<text><![CDATA[Score]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="315" y="-48" width="257" height="32" backcolor="#999999" uuid="9e7b64f7-3fed-46c4-abb7-fc87a1010493"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Score history by Vista Clinic]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="-48" width="70" height="20" uuid="10d5ff1b-8d71-4d2a-baf5-b774d685b049"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="3" rightIndent="3" spacingBefore="2" spacingAfter="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="70" y="-48" width="129" height="20" uuid="84c937c1-16fd-452c-a249-291c32425581"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="3" rightIndent="3" spacingBefore="2" spacingAfter="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{screeningModuleName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="199" y="-48" width="116" height="20" uuid="0faf8ba2-3198-4de6-9e9b-c1b03add6d2d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="3" rightIndent="3" spacingBefore="2" spacingAfter="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="315" y="-48" width="257" height="20" uuid="a8987663-cad1-424a-8d11-d8c3a941d1fa"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="3" rightIndent="3" spacingBefore="2" spacingAfter="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{historyByClinic}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
