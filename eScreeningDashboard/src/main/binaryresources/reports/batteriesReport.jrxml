@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="batteriesReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.6500000000000004"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="195"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="checkAll" class="java.util.Collection"/>
@@ -62,29 +62,35 @@
 		</band>
 	</title>
 	<detail>
-		<band height="154" splitType="Stretch">
+		<band height="121" splitType="Stretch">
+			<printWhenExpression><![CDATA[$P{showByDay}]]></printWhenExpression>
 			<subreport>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="12" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
 					<printWhenExpression><![CDATA[$P{showByDay}.booleanValue()]]></printWhenExpression>
 				</reportElement>
-				<subreportParameter name="total">
+				<subreportParameter name="grandTotal">
 					<subreportParameterExpression><![CDATA[$P{grandTotal}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{byDay})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/batteriesReport-byDay.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="108">
 			<subreport>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="12" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
 					<printWhenExpression><![CDATA[$P{showByTime}.booleanValue()]]></printWhenExpression>
 				</reportElement>
-				<subreportParameter name="total">
+				<subreportParameter name="grandTotal">
 					<subreportParameterExpression><![CDATA[$P{grandTotal}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{byTime})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/batteries-byTime.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="103">
+			<printWhenExpression><![CDATA[$P{showCheckAll}]]></printWhenExpression>
 			<subreport>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="54" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="572" height="100" uuid="8fbe4dea-a751-44e7-9087-010cf9fb3697">
 					<printWhenExpression><![CDATA[$P{showCheckAll}.booleanValue()]]></printWhenExpression>
 				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{checkAll})]]></dataSourceExpression>

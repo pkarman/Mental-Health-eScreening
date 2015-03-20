@@ -490,10 +490,19 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             Report593ByDayDTO byDayDTO = new Report593ByDayDTO();
             //TODO: populate the data here
+            byDayDTO.setDate("01/02/2015");
+            byDayDTO.setDayOfWeek("Tuesday");
+            byDayDTO.setTotal("15");
+            data.add(byDayDTO);
+
+            byDayDTO = new Report593ByDayDTO();
+            byDayDTO.setDate("01/03/2015");
+            byDayDTO.setDayOfWeek("Wednesday");
+            byDayDTO.setTotal("25");
             data.add(byDayDTO);
 
             parameterMap.put("byDay", data);
-            parameterMap.put("grandTotal", "100");
+            parameterMap.put("grandTotal", "40");
 
         }else{
             parameterMap.put("showByDay", false);
@@ -507,6 +516,15 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             Report593ByTimeDTO byTimeDTO = new Report593ByTimeDTO();
             //TODO: populate the data here
+            byTimeDTO.setDayOfWeek("Tuesday");
+            byTimeDTO.setTotal("20");
+            byTimeDTO.setDate("01/02/2015");
+            byTimeDTO.setEightToTen("1");
+            byTimeDTO.setFourToSix("2");
+            byTimeDTO.setSixToEight("3");
+            byTimeDTO.setTenToTwelve("0");
+            byTimeDTO.setTwelveToTwo("1");
+            byTimeDTO.setTwoToFour("3");
             data.add(byTimeDTO);
 
             parameterMap.put("byTime", data);

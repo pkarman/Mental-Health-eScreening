@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="totalOfTotal" class="java.lang.String"/>
+	<parameter name="grandTotal" class="java.lang.String"/>
 	<field name="date" class="java.lang.String"/>
 	<field name="dayOfWeek" class="java.lang.String"/>
 	<field name="total" class="java.lang.String"/>
@@ -136,7 +136,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{totalOfTotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{grandTotal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
