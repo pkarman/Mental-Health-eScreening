@@ -9,7 +9,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 (function () {
 	'use strict';
 
-	function Rule(obj, Condition) {
+	function Rule(obj, AssessmentVariable) {
 		this.id = obj.id || null;
 		this.name = obj.name || '';
 		this.condition = obj.condition || {
@@ -19,9 +19,9 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			section: '',
 			children: [],
 			operator: '',
-			left:{
+			left: {
 				type:'var',
-				content: {
+				content: new AssessmentVariable({
 					id: null,
 					name: '',
 					displayName: '',
@@ -30,7 +30,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 					measureTypeId: '',
 					measureAnswerId: '',
 					transformations:[]
-				}
+				})
 			},
 			'right': {
 				'type': 'text',
@@ -42,6 +42,11 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 		this.condition.getTypeOf = function() {
 			return 'Rule';
 		};
+
+		// Initialize existing condition content (AV)
+		if (obj.condition && obj.condition.left && obj.condition.left.content) {
+			this.condition.left.content = new AssessmentVariable(obj.condition.left.content);
+		}
 	}
 
 	Rule.prototype.getName = function getName() {
