@@ -573,7 +573,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             final Collection<Map<String, Object>> avCollection = assessmentVarsForSurvey.rowMap().values();
 
             for (Map<String, Object> av : avCollection) {
-                if (!Integer.valueOf(0).equals(av.get("measureId"))) {
+                if (i <= 20 && !Integer.valueOf(0).equals(av.get("measureId"))) {
                     Report595DTO report595DTO = new Report595DTO();
                     report595DTO.setOrder("" + i++);
                     report595DTO.setPercentage(String.format("%5.2f%%", Math.random() * 100));
@@ -581,9 +581,17 @@ public class ReportDelegateImpl implements ReportDelegate {
                     report595DTO.setVariableName(av.get("name").toString());
                     dtos.add(report595DTO);
                 }
+                if (i > 20) {
+                    break;
+                }
             }
         }
-
+        Collections.sort(dtos, new Comparator<Report595DTO>() {
+            @Override
+            public int compare(Report595DTO o1, Report595DTO o2) {
+                return Float.valueOf(o2.getPercentage().replaceAll("%", "").trim()).compareTo(Float.valueOf(o1.getPercentage().replaceAll("%", "").trim()));
+            }
+        });
         dataSource = new JRBeanCollectionDataSource(dtos);
 
         parameterMap.put("datasource", dataSource);
