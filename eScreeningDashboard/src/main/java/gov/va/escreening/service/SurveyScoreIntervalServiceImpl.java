@@ -57,7 +57,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         String min = "100000";
 
         Map<String, Object> metaDataMap = createTemplateMetaData(surveyId);
-        List<Integer> ticks = Lists.newArrayList();
+        List<Float> ticks = Lists.newArrayList();
         Map<String, Object> intervalsMap = Maps.newLinkedHashMap();
 
 
@@ -71,14 +71,14 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
                     max = interval.getMax();
                 }
 
-                ticks.add(Integer.valueOf(interval.getMin()));
-                intervalsMap.put(interval.getMeaning(), Integer.valueOf(interval.getMin()));
+                ticks.add(Float.valueOf(interval.getMin()));
+                intervalsMap.put(interval.getMeaning(), Float.valueOf(interval.getMin()));
             }
         }
 
         metaDataMap.put("ticks", ticks);
         metaDataMap.put("intervals", intervalsMap);
-        metaDataMap.put("maxXPoint", Integer.valueOf(max));
+        metaDataMap.put("maxXPoint", Float.valueOf(max));
         return metaDataMap;
     }
 

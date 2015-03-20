@@ -85,7 +85,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             for (VeteranAssessmentSurveyScore score : scores) {
                 data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
-            return data;
         }
 
         return data;

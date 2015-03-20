@@ -83,7 +83,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
         List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        attachDates(parameterMap, requestData);
+        attachDates(parameterMap, userReqData);
 
         List<ClinicVeteranDTO> resultList = Lists.newArrayList();
 
@@ -166,7 +166,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
         List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        attachDates(parameterMap, requestData);
+        attachDates(parameterMap, userReqData);
 
         List<Integer> surveyIds = Lists.newArrayList();
 
@@ -230,7 +230,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         List cClinicList = (List) userReqData.get(ReportsUtil.CLINIC_ID_LIST);
         List sSurveyList = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        attachDates(parameterMap, requestData);
+        attachDates(parameterMap, userReqData);
 
         List<Integer> surveyIds = Lists.newArrayList();
 
@@ -278,7 +278,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         String toDate = (String) userReqData.get(ReportsUtil.TODATE);
         List surveyIds = (List) userReqData.get(ReportsUtil.SURVEY_ID_LIST);
 
-        attachDates(parameterMap, requestData);
+        attachDates(parameterMap, userReqData);
         parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
 
         VeteranDto veteran = new VeteranDto();
@@ -762,8 +762,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
-
+        if (metaData!=null) {
+            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
+        }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
 
@@ -777,7 +778,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, veteranId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
+        if (metaData!=null) {
+            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
+        }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
 
@@ -791,7 +794,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         final Map<String, Object> surveyDataForClinicStatisticsGraph = scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, fromDate, toDate);
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
-        metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty() ? surveyDataForClinicStatisticsGraph.values().iterator().next() : 0);
+        if (metaData!=null) {
+            metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty() ? surveyDataForClinicStatisticsGraph.values().iterator().next() : 0);
+        }
 
         chartableDataMap.put("dataSet", surveyDataForClinicStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
