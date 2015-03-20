@@ -149,9 +149,11 @@
 		    </div>
 	    </form>
 
+	    <br>
+
 	    <div class="form-group">
 		    <div class="text-right">
-			    <button class="btn btn-primary" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+			    <button class="btn btn-primary" ng-click="saveRule()" ng-disabled="!ruleDetailsForm.$valid">Save</button>
 			    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
 		    </div>
 	    </div>
