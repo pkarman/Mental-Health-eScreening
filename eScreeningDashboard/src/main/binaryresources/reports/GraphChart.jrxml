@@ -32,7 +32,7 @@
 			<frame>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="153" uuid="ab3343ad-4841-401f-a315-811dbf0b39dc"/>
 				<box>
-					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<topPen lineWidth="2.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
@@ -63,7 +63,7 @@ Score]]></text>
 			<frame>
 				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="80" y="0" width="292" height="153" uuid="51e1bc29-7a54-43cc-9591-6daf02e114bc"/>
 				<box>
-					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<topPen lineWidth="2.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
@@ -71,7 +71,7 @@ Score]]></text>
 			<frame>
 				<reportElement stretchType="RelativeToTallestObject" x="372" y="0" width="200" height="153" uuid="29cc5206-07cf-4902-b9ff-afa4ef015825"/>
 				<box>
-					<topPen lineWidth="5.0" lineStyle="Solid"/>
+					<topPen lineWidth="2.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
