@@ -10,25 +10,26 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	'use strict';
 
 	function Rule(obj, Condition) {
-		this.id = obj.id || null;
-		this.name = obj.name || null;
+		this.id = obj.id || '';
+		this.name = obj.name || '';
 		this.condition = obj.condition || {
-			'type': 'if',
-			'summary': '',
-			'name': '',
-			'section': '',
-			'children': [],
-			'operator': '',
-			'left':{
-				'type':'var',
-				'content': { 'id': null,
-					'name': '',
-					'displayName': '',
-					'typeId': null,
-					'measureId': null,
-					'measureTypeId': null,
-					'measureAnswerId': null,
-					'transformations':[]
+			type: 'if',
+			summary: '',
+			name: '',
+			section: '',
+			children: [],
+			operator: '',
+			left:{
+				type:'var',
+				content: {
+					// id: null,
+					name: '',
+					displayName: '',
+					typeId: '',
+					measureId: '',
+					measureTypeId: '',
+					measureAnswerId: '',
+					transformations:[]
 				}
 			},
 			'right':{
