@@ -12,6 +12,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.EditVeteranAssessmentFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.UserService;
 
 import java.util.ArrayList;
@@ -329,99 +330,10 @@ public class EditVeteranAssessmentController {
 				veteranId = veteranAssessment.getVeteran().getVeteranId();
 			}
 
-			model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-			model.addAttribute("isCreateMode", isCreateMode);
-			model.addAttribute("isReadOnly", isReadOnly);
-			model.addAttribute("dateCreated", dateCreated);
-			model.addAttribute("dateCompleted", dateCompleted);
-			model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
-
-			// Set these properties to be used during postback.
-			// editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
-			// editVeteranAssessmentFormBean.setVeteranId(veteranId);
-
-			// 2. Get veteran
-			VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
-			model.addAttribute("veteran", veteranDto);
-
-			// 4. Get all programs.
-			List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
-			model.addAttribute("programList", programList);
-
-			// 5. Get all battery list.
-			List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
-			model.addAttribute("batteryList", batteryList);
-
-			Map<String, String> programsMap = createProgramsMap(batteryList);
-			model.addAttribute("programsMap", programsMap);
-
-			// 6. Get all battery survey list.
-			List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
-			model.addAttribute("batterySurveyList", batterySurveyList);
-
-			// 7. Get all the modules (surveys) that can be assigned
-			List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
-
-			// 8. Populate survey list with list of batteries it is associated
-			// with to make it easier in view.
-			for (BatterySurveyDto batterySurvey : batterySurveyList) {
-
-				BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
-
-				for (SurveyDto survey : surveyList) {
-					if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
-						if (survey.getBatteryList() == null) {
-							survey.setBatteryList(new ArrayList<BatteryDto>());
-						}
-
-						survey.getBatteryList().add(batteryDto);
-						break;
-					}
-				}
-			}
-			model.addAttribute("surveyList", surveyList);
-
-			// 9. Get selected program
-			if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
-
-				// Get all clinic list since we have a program.
-				List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(editVeteranAssessmentFormBean.getSelectedProgramId());
-				model.addAttribute("clinicList", clinicList);
-
-				List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(editVeteranAssessmentFormBean.getSelectedProgramId());
-				model.addAttribute("noteTitleList", noteTitleList);
-
-				// Get all clinician list since we have a clinic.
-				List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(editVeteranAssessmentFormBean.getSelectedProgramId());
-				model.addAttribute("clinicianList", clinicianList);
-			}
-
-			// 14. Get the full name of the created by user.
-			if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
-				model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
-			}
-
-			// 15. If the veteran has already been mapped to a VistA record,
-			// then we can look up clinical reminders for
-			// the veteran. This will pre-select or auto assign modules
-			// (surveys).
-			if (escreenUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
-
-				Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(escreenUser, veteranDto.getVeteranIen());
-
-				// For each survey, pre-select it and also indicate reason in
-				// the note.
-				if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
-					for (int i = 0; i < surveyList.size(); ++i) {
-						Integer surveyId = surveyList.get(i).getSurveyId();
-
-						// Preselect it and populate note field.
-						if (autoAssignedSurveyMap.containsKey(surveyId)) {
-							surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
-						}
-					}
-				}
-			}
+			resetPage(model, editVeteranAssessmentFormBean, veteranId,
+					escreenUser, isCreateMode, isReadOnly,
+					veteranAssessmentStatus, dateCreated, dateCompleted,
+					veteranAssessment);
 
 			return "dashboard/editVeteranAssessment";
 		}
@@ -441,11 +353,125 @@ public class EditVeteranAssessmentController {
 			return "redirect:/dashboard/veteranDetail";
 		} else {
 			// Add
+			try
+			{
 			createAssessmentDelegate.createVeteranAssessment(escreenUser, editVeteranAssessmentFormBean.getVeteranId(), editVeteranAssessmentFormBean.getSelectedProgramId(), editVeteranAssessmentFormBean.getSelectedClinicId(), editVeteranAssessmentFormBean.getSelectedClinicianId(), editVeteranAssessmentFormBean.getSelectedNoteTitleId(), editVeteranAssessmentFormBean.getSelectedBatteryId(), editVeteranAssessmentFormBean.getSelectedSurveyIdList());
 
 			model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
 			model.addAttribute("ibc", true);
 			return "redirect:/dashboard/veteranDetail";
+			}
+			catch(AssessmentAlreadyExistException ex)
+			{
+				result.reject("dashboard.createBattery.alreadyExist", "The Veteran already has an assessment with this program");
+				
+				resetPage(model, editVeteranAssessmentFormBean, veteranId, escreenUser, true, false, 
+						StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase()),
+						null,null,null);
+				
+				return "dashboard/editVeteranAssessment";
+			}
+		}
+	}
+
+	public void resetPage(Model model,
+			EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+			Integer veteranId, EscreenUser escreenUser, boolean isCreateMode,
+			boolean isReadOnly, String veteranAssessmentStatus,
+			Date dateCreated, Date dateCompleted,
+			VeteranAssessment veteranAssessment) {
+		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+		model.addAttribute("isCreateMode", isCreateMode);
+		model.addAttribute("isReadOnly", isReadOnly);
+		model.addAttribute("dateCreated", dateCreated);
+		model.addAttribute("dateCompleted", dateCompleted);
+		model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
+
+		// Set these properties to be used during postback.
+		// editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
+		// editVeteranAssessmentFormBean.setVeteranId(veteranId);
+
+		// 2. Get veteran
+		VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
+		model.addAttribute("veteran", veteranDto);
+
+		// 4. Get all programs.
+		List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
+		model.addAttribute("programList", programList);
+
+		// 5. Get all battery list.
+		List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
+		model.addAttribute("batteryList", batteryList);
+
+		Map<String, String> programsMap = createProgramsMap(batteryList);
+		model.addAttribute("programsMap", programsMap);
+
+		// 6. Get all battery survey list.
+		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
+		model.addAttribute("batterySurveyList", batterySurveyList);
+
+		// 7. Get all the modules (surveys) that can be assigned
+		List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
+
+		// 8. Populate survey list with list of batteries it is associated
+		// with to make it easier in view.
+		for (BatterySurveyDto batterySurvey : batterySurveyList) {
+
+			BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
+
+			for (SurveyDto survey : surveyList) {
+				if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
+					if (survey.getBatteryList() == null) {
+						survey.setBatteryList(new ArrayList<BatteryDto>());
+					}
+
+					survey.getBatteryList().add(batteryDto);
+					break;
+				}
+			}
+		}
+		model.addAttribute("surveyList", surveyList);
+
+		// 9. Get selected program
+		if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
+
+			// Get all clinic list since we have a program.
+			List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(editVeteranAssessmentFormBean.getSelectedProgramId());
+			model.addAttribute("clinicList", clinicList);
+
+			List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(editVeteranAssessmentFormBean.getSelectedProgramId());
+			model.addAttribute("noteTitleList", noteTitleList);
+
+			// Get all clinician list since we have a clinic.
+			List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(editVeteranAssessmentFormBean.getSelectedProgramId());
+			model.addAttribute("clinicianList", clinicianList);
+		}
+
+		// 14. Get the full name of the created by user.
+		if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
+			model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
+		}
+
+		// 15. If the veteran has already been mapped to a VistA record,
+		// then we can look up clinical reminders for
+		// the veteran. This will pre-select or auto assign modules
+		// (surveys).
+		if (escreenUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
+
+			Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(escreenUser, veteranDto.getVeteranIen());
+
+			// For each survey, pre-select it and also indicate reason in
+			// the note.
+			if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
+				for (int i = 0; i < surveyList.size(); ++i) {
+					Integer surveyId = surveyList.get(i).getSurveyId();
+
+					// Preselect it and populate note field.
+					if (autoAssignedSurveyMap.containsKey(surveyId)) {
+						surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
+					}
+				}
+			}
 		}
 	}
 

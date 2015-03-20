@@ -99,7 +99,7 @@ public class AssessmentLoginController {
 		} else if (dbVeterans.size() == 1) {
 			// We have a database record. Set the context to the database record
 			VeteranDto contextVeteran = dbVeterans.get(0);
-			return completeVeteranLogin(contextVeteran);
+			return completeVeteranLogin(contextVeteran, assessmentLoginFormBean.getProgramId());
 		} else if (dbVeterans.size() > 1) {
 			// More than 1 veteran records found. See if we can filter it down to 1
 			if (!assessmentLoginFormBean.getAdditionalFieldRequired()) {
@@ -155,9 +155,9 @@ public class AssessmentLoginController {
 	 * @param veteran
 	 * @return
 	 */
-	private String completeVeteranLogin(VeteranDto veteran) {
+	private String completeVeteranLogin(VeteranDto veteran, Integer programId) {
 		// Check if there is a valid and current Assessment. If not, then redirect to 'Please see clerk' page.
-		VeteranAssessment veteranAssessment = assessmentDelegate.getAvailableVeteranAssessment(veteran.getVeteranId());
+		VeteranAssessment veteranAssessment = assessmentDelegate.getAvailableVeteranAssessment(veteran.getVeteranId(), programId);
 
 		// If an assessment hasn't been set up for this user, then redirect to error message.
 		if (veteranAssessment == null || veteranAssessment.getVeteranAssessmentId() == null) {
