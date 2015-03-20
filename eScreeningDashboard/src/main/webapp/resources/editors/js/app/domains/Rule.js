@@ -12,7 +12,6 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	function Rule(obj, Condition) {
 		this.id = obj.id || null;
 		this.name = obj.name || null;
-		this.expression = obj.expression || null;
 		this.condition = obj.condition || {
 			'type': 'if',
 			'summary': '',

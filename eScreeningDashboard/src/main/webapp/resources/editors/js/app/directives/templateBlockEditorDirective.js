@@ -104,8 +104,6 @@
 
 	            scope.showValidationMessages = false;
 
-				console.log(scope.block.content);
-
 				if (_.isFunction(scope.block.getTypeOf) &&  scope.block.getTypeOf() === 'Rule') {
 					scope.block.type = blockTypes[0];
 				} else {
