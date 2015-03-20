@@ -68,7 +68,7 @@
 			</div><br>
 			
 			<div class="form-group pull-right">
-				<button type="button" class="btn btn-primary" id="save" data-aid="7">Save</button>
+				<button type="button" class="btn btn-primary" id="save" data-aid="">Save</button>
 				<button type="button" class="btn btn-default" id="cancel">Cancel</button>
 			</div>
 		</form>

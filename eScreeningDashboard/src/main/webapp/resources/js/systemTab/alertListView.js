@@ -92,15 +92,13 @@ $(document).ready(function() {
 	});
 
 	$(this).on('click', '.confirmDelete', function() {
-		data = { "stateId": data_aid };
+		data = "id=" + data_aid ;
 		$.ajax({
 			url: "alertTypes/delete",
 			type: "POST",
-			dataType: "json",
-			contentType: "application/json",
-			data: JSON.stringify(data),
+			data: data,
 			success: function(){
-            	alert("success");
+				window.location.href = "alertListView";
         	}
 		})
 	});
