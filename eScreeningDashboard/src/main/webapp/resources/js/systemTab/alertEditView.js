@@ -1,11 +1,19 @@
 $(document).ready(function() {
 	// Tab
 	tabsLoad("systemConfiguration");
+	var aid = getParameterByName('aid');
 	
-	var data_aid = getParameterByName('aid');
+	// Error Messages
+	var errorMessageAlertReq 	= "Alert name is required";
+	var errorMessageAlertExist 	= "Alert name already exist";
+	var errorMessageLoadingData = "Error Loading Data";
 	
-	if( data_aid != "" ){
-		editValue(data_aid);
+	// Labels
+	var labelAddAlert 	= "Add Alert";
+	var labelEditAlert 	= "Edit Alert";
+	
+	if( aid != "" ){
+		editValue(aid);
 	}
 
 	var cancelBtn = '#cancel';
@@ -24,7 +32,7 @@ $(document).ready(function() {
 	
 	// Save Alert
 	$(this).on('click', '#save', function() {
-		save();
+		validateValue($("#alertName").val());
 	});		
 
 
@@ -37,12 +45,13 @@ $(document).ready(function() {
 		}else{
 			valid = false;
 			$("#errorMsg").removeClass("hide");
+			$("#errorMsg").html(errorMessageAlertReq);
 		}
 		
 		if  (valid){
-			var data_aid = getParameterByName('aid');
+			var aid = getParameterByName('aid');
 			var data_name = $("#alertName").val();
-			data = {"stateId": data_aid , "stateName" : data_name };
+			data = {"stateId": aid , "stateName" : data_name };
 			
 			$.ajax({
 				url: "alertTypes/update",
@@ -56,13 +65,12 @@ $(document).ready(function() {
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
 					$("#errorMsg").removeClass("hide");
+					$("#errorMsg").html(errorMessageAlertReq);
 				}
 			})
 		}
 			
 	}
-
-
 
 	// Query String
 	function getParameterByName(name) {
@@ -72,24 +80,62 @@ $(document).ready(function() {
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
 	
-
-
-	
+	// Edit Values
 	function editValue(id){
+		aid = id;
 		$.ajax({
 			url: "alertTypes/",
 			type: "GET",
 			success: function(data){
 				  var returnedData = $.grep(data.payload, function(element, index){
-				  return element.stateId == data_aid;
+				  return element.stateId == aid;
 				});
 				
 				$("#alertName").val(returnedData[0].stateName); 				 
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				$("#errorMsg").removeClass("hide");
+				$("#errorMsg").html(errorMessageAlertReq);
 			}
 		})
 	}
-	
+
+	// Validate Values
+	function validateValue(name){
+		stateName = name;
+		$.ajax({
+			url: "alertTypes/",
+			type: "GET",
+			success: function(data){
+				
+
+				var recordExist = false;
+				$.each(data.payload, function(i, v) {
+					if (v.stateName == stateName) {
+						recordExist =  true;
+					}
+				});
+				if(recordExist == false){
+					save();
+				}else{
+					$("#errorMsg").removeClass("hide");
+					$("#errorMsg").html(errorMessageAlertExist);
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				$("#errorMsg").removeClass("hide");
+				$("#errorMsg").html(errorMessageLoadingData);
+			}
+		})
+	}
+
+	// Page Title add / edit
+	var hTitle = "#hTitle";
+	if(aid == "" || typeof aid === 'undefined'){
+		$(hTitle).html(labelAddAlert);
+	}else if(aid != ""){
+		$(hTitle).html(labelEditAlert);
+	}else{
+		$(hTitle).html(labelEditAlert);
+	}
 });
