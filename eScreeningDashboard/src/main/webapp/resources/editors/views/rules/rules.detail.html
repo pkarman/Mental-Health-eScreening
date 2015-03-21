@@ -29,6 +29,20 @@
 							    enable-types-dropdown="true">
 					    </template-block-editor>
 
+					    <!-- TODO: Add child conditions here? -->
+					    <!--template-block-editor block="condition"
+							    assessment-variables="assessmentVariables"
+							    show-validation-messages="false"
+							    enable-types-dropdown="true" ng-repeat="condition in rule.condition.TODOProperty" style="margin-left: 15px">
+					    </template-block-editor-->
+
+					    <div class="row">
+						    <div class="col-md-12">
+							    <button class="btn btn-default" type="button" ng-click="addAndCondition()">Add AND Condition</button>
+							    <button class="btn btn-default" type="button" ng-click="addOrCondition()">Add OR Condition</button>
+						    </div>
+					    </div>
+
 					    <h3>Events</h3>
 					    <div class="border-radius-block-type bg-gray-light">
 						    <div class="form-group">

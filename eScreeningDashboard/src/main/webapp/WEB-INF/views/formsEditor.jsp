@@ -337,7 +337,7 @@
 
                          <div class="col-md-12">
                              <!-- Alerts and Messages -->
-                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)">{{message.msg}}</alert>
+                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)"><p ng-bind="message.msg"></p></alert>
                          </div>
 
             		    <div class="col-md-12" ui-view></div>

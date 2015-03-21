@@ -83,9 +83,20 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
 
-                /* Temporarily disabled until further notice: 11/03/14
-                 var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables"></template-block-editor>';
-                  */
+                var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables" show-validation-messages="false" enable-types-dropdown="false"></template-block-editor>';
+
+				scope.templateBlockEditorForm = formController;
+
+				scope.showValidationMessages = false;
+
+				scope.isRuleCondition = false;
+
+				if (_.isFunction(scope.block.getTypeOf) &&  scope.block.getTypeOf() === 'Rule') {
+					scope.block.type = 'if';
+					scope.isRuleCondition = true;
+				} else {
+					scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
+				}
 
                 /*
                  The compile function cannot handle directives that recursively use themselves
@@ -93,21 +104,11 @@
                  in an infinite loop and a stack overflow errors. This can be avoided by manually
                  using $compile in the postLink function to imperatively compile a directive's template
                  */
-				/* Temporarily disabled until further notice: 11/03/14
-                $compile(collectionTemplate)(scope, function (clonedTemplate, scope) {
-                    // Append the template and pass in the cloned scope
-                    element.append(clonedTemplate);
-                });
-                */
-
-	            scope.templateBlockEditorForm = formController;
-
-	            scope.showValidationMessages = false;
-
-				if (_.isFunction(scope.block.getTypeOf) &&  scope.block.getTypeOf() === 'Rule') {
-					scope.block.type = 'if';
-				} else {
-					scope.blockTypes = (scope.block) ? getBlockTypes(scope.block.getParent()) : blockTypes;
+				if (scope.isRuleCondition) {
+					$compile(collectionTemplate)(scope, function (clonedTemplate, scope) {
+						// Append the template and pass in the cloned scope
+						element.append(clonedTemplate);
+					});
 				}
 
                 // TODO Move to service to be shared elsewhere?
@@ -184,16 +185,23 @@
                 scope.addAndConditionBlock = function(selectedBlock, form) {
 	                scope.showValidationMessages = true;
 	                if (form.$valid) {
-		                selectedBlock.conditions = selectedBlock.conditions || [];
-		                selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+						if (scope.isRuleCondition) {
+							// TODO Add conditions somewhere other than selectedBlock.conditions
+						}
+						selectedBlock.conditions = selectedBlock.conditions || [];
+						selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+
 	                }
                 };
 
                 scope.addOrConditionBlock = function(selectedBlock, form) {
 	                scope.showValidationMessages = true;
 	                if (form.$valid) {
-		                selectedBlock.conditions = selectedBlock.conditions || [];
-		                selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+						if (scope.isRuleCondition) {
+							// TODO Add conditions somewhere other than selectedBlock.conditions
+						}
+						selectedBlock.conditions = selectedBlock.conditions || [];
+						selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
 	                }
                 };
 

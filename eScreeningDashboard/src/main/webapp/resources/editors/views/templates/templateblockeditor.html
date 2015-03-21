@@ -1,6 +1,6 @@
 <div class="border-radius-block-type bg-gray-light">
 	<div class="row">
-		<div class="col-md-2" ng-if="blockTypes">
+		<div class="col-md-2" ng-if="!isRuleCondition">
 			<div class="form-group">
 				<label class="control-label">Block Type
 					<select class="form-control input-block-level"
@@ -34,7 +34,7 @@
 							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.table.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-4" ng-show="block.left.content.id">
 						<div class="form-group"
 						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}"
 							 ng-if="block.type !== 'table'">
@@ -172,7 +172,7 @@
 								<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-4" ng-show="condition.left.content.id">
 							<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid &&
 conditionForm.conditionOperator.$dirty}">
 								<select class="form-control"
@@ -253,8 +253,8 @@ conditionForm.conditionOperator.$dirty}">
 			</div>
 			<div class="col-md-2">
 				<div class="pull-right blockLableMarginTop">
-					<!--button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition)">AND</button>
-					<button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition)">OR</button-->
+					<button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(block, conditionForm)" ng-if="isRuleCondition">AND</button>
+					<button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(block, conditionForm)" ng-if="isRuleCondition">OR</button>
 	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
 	                      ng-click="removeConditionBlock(block.conditions, condition)"></span>
 				</div>

@@ -29,6 +29,14 @@
 			addQueue.push(event);
 		};
 
+		$scope.addAndCondition = function addAndCondition() {
+			$scope.rule.condition.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+		};
+
+		$scope.addOrCondition = function addOrCondition() {
+			$scope.rule.condition.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+		};
+
 		$scope.saveRule = function saveRule() {
 			$scope.rule.save().then(function(response) {
 
