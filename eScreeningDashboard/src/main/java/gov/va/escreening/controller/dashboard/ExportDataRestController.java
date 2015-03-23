@@ -12,6 +12,7 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataFilterOptionsService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.service.export.ExportLogService;
@@ -51,8 +52,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @Autowired
     private VeteranAssessmentService veteranAssessmentService;
 
-    @Resource(name = "sessionMgr")
-    SessionMgr sessionMgr;
+    @Resource(type = DataDictionaryService.class)
+    DataDictionaryService dds;
 
     @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
     @ResponseBody
@@ -92,7 +93,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
         exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)sessionMgr.getDD(request);
+        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
         AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(dd, exportDataFormBean);
 
         if (dataExport != null) {
@@ -124,7 +125,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
     public ModelAndView generateDataDictionary(ModelAndView modelAndView,
                                                HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)sessionMgr.getDD(request);
+        Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
 
         modelAndView.setViewName("dataDictionaryExcelView");
         modelAndView.addObject("dataDictionary", dataDictionary);
