@@ -4,7 +4,7 @@
 		<h1>{{rule.id ? 'Edit' : 'Add'}} {{rule.name}} Rule</h1>
 
 		<!-- Alerts and Messages -->
-		<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+		<alert ng-repeat="alert in alerts track by $index" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
 	    <form name="ruleDetailsForm" novalidate>
 		    <div class="row">
@@ -25,16 +25,9 @@
 					    <h3>Expression</h3>
 					    <template-block-editor block="rule.condition"
 							    assessment-variables="assessmentVariables"
-							    show-validation-messages="false"
-							    enable-types-dropdown="true">
+							    show-validation-messages="showValidationMessages"
+							    enable-types-dropdown="enableTypeDropdown">
 					    </template-block-editor>
-
-					    <!-- TODO: Add child conditions here? -->
-					    <!--template-block-editor block="condition"
-							    assessment-variables="assessmentVariables"
-							    show-validation-messages="false"
-							    enable-types-dropdown="true" ng-repeat="condition in rule.condition.TODOProperty" style="margin-left: 15px">
-					    </template-block-editor-->
 
 					    <div class="row">
 						    <div class="col-md-12">

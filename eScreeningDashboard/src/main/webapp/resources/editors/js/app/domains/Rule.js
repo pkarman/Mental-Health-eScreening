@@ -49,8 +49,19 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 		}
 	}
 
-	Rule.prototype.getName = function getName() {
-		return this.name;
+	Rule.prototype.createCondition = function createCondition(connector) {
+		return {
+			connector: connector,
+			left: {
+				type: "var",
+				content: {}
+			},
+			right: {
+				type: "text",
+				content: ""
+			},
+			conditions: []
+		};
 	};
 
 	EScreeningDashboardApp.models.Rule = Rule;

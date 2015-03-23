@@ -1,8 +1,9 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('templateBlockEditor', ['$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 'AssessmentVariableManager',
-                                              function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService, AssessmentVariableManager) {
+    Editors.directive('templateBlockEditor', [
+		'$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 'AssessmentVariableManager', 'AssessmentVariable', 'Rule',
+		function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService, AssessmentVariableManager) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -83,15 +84,15 @@
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
 
-                var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.children | limitTo:2" assessment-variables="assessmentVariables" show-validation-messages="false" enable-types-dropdown="false"></template-block-editor>';
+				//var collectionTemplate = '<template-block-editor block="member" ng-repeat="member in block.condition.conditions | limitTo:2 track by $index" assessment-variables="assessmentVariables" show-validation-messages="showValidationMessages" enable-types-dropdown="enableTypeDropdown"></template-block-editor>';
 
 				scope.templateBlockEditorForm = formController;
-
 				scope.showValidationMessages = false;
-
 				scope.isRuleCondition = false;
+				scope.showValidationMessages = false;
+				scope.enableTypeDropdown = false;
 
-				if (_.isFunction(scope.block.getTypeOf) &&  scope.block.getTypeOf() === 'Rule') {
+				if (_.isFunction(scope.block.getTypeOf) && scope.block.getTypeOf() === 'Rule') {
 					scope.block.type = 'if';
 					scope.isRuleCondition = true;
 				} else {
@@ -103,13 +104,13 @@
                  in their own templates or compile functions. Compiling these directives results
                  in an infinite loop and a stack overflow errors. This can be avoided by manually
                  using $compile in the postLink function to imperatively compile a directive's template
-                 */
+
 				if (scope.isRuleCondition) {
 					$compile(collectionTemplate)(scope, function (clonedTemplate, scope) {
 						// Append the template and pass in the cloned scope
 						element.append(clonedTemplate);
 					});
-				}
+				}*/
 
                 // TODO Move to service to be shared elsewhere?
                 scope.operators = [
@@ -182,26 +183,21 @@
                     selectedBlock.children.push(TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
-                scope.addAndConditionBlock = function(selectedBlock, form) {
-	                scope.showValidationMessages = true;
+                scope.addAndConditionBlock = function(item, form) {
+					scope.showValidationMessages = true;
 	                if (form.$valid) {
-						if (scope.isRuleCondition) {
-							// TODO Add conditions somewhere other than selectedBlock.conditions
-						}
-						selectedBlock.conditions = selectedBlock.conditions || [];
-						selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
-
+						item.conditions = item.conditions || [];
+						console.log(item.conditions);
+						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
 	                }
+					//console.log(item.conditions);
                 };
 
-                scope.addOrConditionBlock = function(selectedBlock, form) {
+                scope.addOrConditionBlock = function(item, form) {
 	                scope.showValidationMessages = true;
 	                if (form.$valid) {
-						if (scope.isRuleCondition) {
-							// TODO Add conditions somewhere other than selectedBlock.conditions
-						}
-						selectedBlock.conditions = selectedBlock.conditions || [];
-						selectedBlock.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+						item.conditions = item.conditions || [];
+						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
 	                }
                 };
 

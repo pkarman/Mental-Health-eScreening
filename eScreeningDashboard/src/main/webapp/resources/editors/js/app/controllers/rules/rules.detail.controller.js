@@ -13,6 +13,8 @@
 		$scope.assessmentVariables = assessmentVariables;
 		$scope.selectedEvents = {};
 		$scope.alerts = MessageFactory.get();
+		$scope.showValidationMessages = false;
+		$scope.enableTypeDropdown = false;
 
 		rule.getList('events').then(function(events) {
 			$scope.selectedEvents.consults = $filter('filter')(events, {type: 1});
