@@ -49,7 +49,7 @@
 			<staticText>
 				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>

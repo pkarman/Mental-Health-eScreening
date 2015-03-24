@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="594Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="2.4157650000000026"/>
+	<property name="ireport.x" value="13"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
@@ -45,7 +45,7 @@
 			<staticText>
 				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
@@ -70,7 +70,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="0" width="201" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
+					<reportElement x="0" y="0" width="195" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial" size="10"/>
 						<paragraph leftIndent="5"/>
@@ -78,14 +78,20 @@
 					<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="201" y="0" width="85" height="30" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
+					<reportElement x="195" y="0" width="86" height="30" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial" size="14" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{modulePercent}]]></textFieldExpression>
 				</textField>
+				<rectangle radius="6">
+					<reportElement x="195" y="25" width="85" height="20" backcolor="#CCCCCC" uuid="40c929f6-7d35-4a9f-a63c-979e2a86927c"/>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
 				<textField>
-					<reportElement mode="Opaque" x="201" y="27" width="85" height="20" backcolor="#CCCCCC" uuid="3e35ad77-eaa3-41aa-b929-c7998965f8c9"/>
+					<reportElement mode="Opaque" x="200" y="28" width="74" height="15" backcolor="#CCCCCC" uuid="3e35ad77-eaa3-41aa-b929-c7998965f8c9"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial"/>
 					</textElement>

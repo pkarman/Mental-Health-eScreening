@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Individual Statistic Reports</title>
+    <title>Reports | Individual Statistic Reports</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -138,7 +138,7 @@
 
 					</div>
 					<div class="col-md-6">
-						<label for="battery-list-table-filter">Select Modules</label></strong>
+						<label for="battery-list-table-filter">Select Modules *</label></strong>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							<input type="text" class="form-control" id="battery-list-table-filter" data-action="filter" data-filters="#battery-list-table" placeholder="Filter by Modules" />	

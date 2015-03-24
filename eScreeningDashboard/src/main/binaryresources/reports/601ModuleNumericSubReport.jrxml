@@ -81,9 +81,9 @@
 				</frame>
 			</elementGroup>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="237" height="20" uuid="6d3b9a2e-4d00-459d-b657-bc67c3bc4214"/>
+				<reportElement x="0" y="0" width="575" height="20" uuid="6d3b9a2e-4d00-459d-b657-bc67c3bc4214"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="14" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>

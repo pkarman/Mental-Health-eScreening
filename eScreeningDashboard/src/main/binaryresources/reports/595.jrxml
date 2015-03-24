@@ -46,7 +46,7 @@
 			<staticText>
 				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
@@ -73,7 +73,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
-				<text><![CDATA[order]]></text>
+				<text><![CDATA[Order]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="51" y="5" width="100" height="20" backcolor="#CCCCCC" uuid="b64e4f7b-03fb-4ce0-ba46-e7e592c105f5"/>
@@ -87,7 +87,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
-				<text><![CDATA[variableName]]></text>
+				<text><![CDATA[Variable Name]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="151" y="5" width="358" height="20" backcolor="#CCCCCC" uuid="a30c3fed-465f-4f4a-8f4f-d213a428153d"/>
