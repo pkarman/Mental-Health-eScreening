@@ -99,4 +99,6 @@ public interface AssessmentDelegate {
 	public String getWelcomeMessage() throws IllegalSystemStateException;
 
     void recordAllReportableScores(VeteranAssessment veteranAssessment);
+
+    Integer getModuleId(Integer pageId);
 }

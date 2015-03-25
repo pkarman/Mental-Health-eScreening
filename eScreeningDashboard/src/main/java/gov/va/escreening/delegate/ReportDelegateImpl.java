@@ -51,6 +51,9 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(type = VeteranAssessmentSurveyScoreService.class)
     private VeteranAssessmentSurveyScoreService scoreService;
 
+    @Resource(type = VeteranAssessmentSurveyService.class)
+    private VeteranAssessmentSurveyService vasSrv;
+
     @Resource(type = SurveyScoreIntervalService.class)
     private SurveyScoreIntervalService intervalService;
 
@@ -601,15 +604,20 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
 
+        Map<Integer, Integer> surveyAvgTimeMap = vasSrv.calculateAvgTimePerSurvey(requestData);
+
         JRDataSource dataSource = null;
 
         List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
         for (SurveyDto survey : surveyService.getSurveyList()) {
-            SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
-            surveyTimeDTO.setModuleName(survey.getName());
-            surveyTimeDTO.setModuleTime(String.valueOf((int) (Math.random() * 100)));
-            dtos.add(surveyTimeDTO);
+            Integer surveyAvgTime = surveyAvgTimeMap.get(survey.getSurveyId());
+            if (surveyAvgTime != null) {
+                SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
+                surveyTimeDTO.setModuleName(survey.getName());
+                surveyTimeDTO.setModuleTime(String.valueOf(surveyAvgTime));
+                dtos.add(surveyTimeDTO);
+            }
         }
 
         dataSource = new JRBeanCollectionDataSource(dtos);

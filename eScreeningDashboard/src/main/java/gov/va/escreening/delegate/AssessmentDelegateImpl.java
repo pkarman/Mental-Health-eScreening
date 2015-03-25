@@ -22,12 +22,7 @@ import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.AssessmentResponse;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Measure;
-import gov.va.escreening.entity.AssessmentStatus;
-import gov.va.escreening.entity.Battery;
-import gov.va.escreening.entity.SurveySection;
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.entity.VeteranAssessmentAuditLog;
-import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
@@ -73,7 +68,10 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	private SurveyRepository surveyRepository;
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
-	
+
+    @Resource(type=SurveyPageRepository.class)
+    private SurveyPageRepository surveyPageRepository;
+
 	@Autowired
 	private BatteryRepository batteryRepo;
 
@@ -293,5 +291,11 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
     public void recordAllReportableScores(VeteranAssessment veteranAssessment) {
         vassSrv.recordAllReportableScores(veteranAssessment);
 
+    }
+
+    @Override
+    public Integer getModuleId(Integer pageId) {
+        SurveyPage surveyPage = surveyPageRepository.findOne(pageId);
+        return surveyPage.getSurvey().getSurveyId();
     }
 }

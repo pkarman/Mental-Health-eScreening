@@ -3,6 +3,7 @@ package gov.va.escreening.repository;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 
+import java.util.Date;
 import java.util.List;
 
 public interface VeteranAssessmentSurveyRepository extends RepositoryInterface<VeteranAssessmentSurvey> {
@@ -35,4 +36,6 @@ public interface VeteranAssessmentSurveyRepository extends RepositoryInterface<V
      * @return
      */
     List<VeteranAssessmentSurvey> findSurveyBySurveyAssessment(int veteranAssessmentId, int surveyId);
+
+    List<VeteranAssessmentSurvey> findByClinicAndDateRange(List<Integer> clinicIds, Date startDate, Date finishDate);
 }
