@@ -189,6 +189,7 @@ Editors.config(function(RestangularProvider, $provide) {
 						$scope.assessmentVariable = {};
 
 							$scope.$on('assessmentVariableSelected', function(event, insertedVariable) {
+								console.debug("emit happend");
 								if (insertedVariable) {
 									var embed = TemplateBlockService.createAVElement(insertedVariable);
 									$modalInstance.close(embed);
