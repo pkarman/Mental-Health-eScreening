@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="595Report" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="2.4157650000000035"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
@@ -62,7 +62,7 @@
 	<columnHeader>
 		<band height="25">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="5" width="50" height="20" backcolor="#CCCCCC" uuid="81a67b3b-140f-4a1e-b6cc-ca70ceab9d9f"/>
+				<reportElement mode="Opaque" x="0" y="5" width="51" height="20" backcolor="#CCCCCC" uuid="81a67b3b-140f-4a1e-b6cc-ca70ceab9d9f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -121,9 +121,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="24" splitType="Stretch">
 			<frame>
-				<reportElement x="0" y="0" width="572" height="20" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
+				<reportElement x="0" y="0" width="572" height="24" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -133,31 +133,62 @@
 				</box>
 				<elementGroup>
 					<textField>
-						<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="20" uuid="9a200064-2eb2-4ab1-944d-7de5973e32ab"/>
+						<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="24" uuid="9a200064-2eb2-4ab1-944d-7de5973e32ab"/>
+						<box>
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="1.0"/>
+							<leftPen lineWidth="1.0"/>
+							<bottomPen lineWidth="1.0"/>
+							<rightPen lineWidth="1.0"/>
+						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial"/>
+							<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{order}]]></textFieldExpression>
 					</textField>
 					<textField isStretchWithOverflow="true">
-						<reportElement stretchType="RelativeToTallestObject" x="51" y="0" width="100" height="20" uuid="f17e3844-d627-41fe-8f47-6684f658da59"/>
+						<reportElement stretchType="RelativeToTallestObject" x="51" y="0" width="100" height="24" uuid="f17e3844-d627-41fe-8f47-6684f658da59"/>
+						<box>
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="1.0"/>
+							<leftPen lineWidth="1.0"/>
+							<bottomPen lineWidth="1.0"/>
+							<rightPen lineWidth="1.0"/>
+						</box>
 						<textElement verticalAlignment="Middle">
 							<font fontName="Arial"/>
-							<paragraph leftIndent="2"/>
+							<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{variableName}]]></textFieldExpression>
 					</textField>
 					<textField isStretchWithOverflow="true">
-						<reportElement stretchType="RelativeToTallestObject" x="151" y="0" width="358" height="20" uuid="031a229e-c61e-4dca-bc28-5fc37bff5427"/>
+						<reportElement stretchType="RelativeToTallestObject" x="151" y="0" width="358" height="24" uuid="031a229e-c61e-4dca-bc28-5fc37bff5427"/>
+						<box>
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="1.0"/>
+							<leftPen lineWidth="1.0"/>
+							<bottomPen lineWidth="1.0"/>
+							<rightPen lineWidth="1.0"/>
+						</box>
 						<textElement textAlignment="Left" verticalAlignment="Middle">
 							<font fontName="Arial"/>
+							<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{questions}]]></textFieldExpression>
 					</textField>
 					<textField isBlankWhenNull="true">
-						<reportElement stretchType="RelativeToTallestObject" x="509" y="0" width="63" height="20" uuid="c754a10c-2968-43f2-afb0-c3eddef91358"/>
+						<reportElement stretchType="RelativeToTallestObject" x="509" y="0" width="63" height="24" uuid="c754a10c-2968-43f2-afb0-c3eddef91358"/>
+						<box>
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="1.0"/>
+							<leftPen lineWidth="1.0"/>
+							<bottomPen lineWidth="1.0"/>
+							<rightPen lineWidth="1.0"/>
+						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial"/>
+							<paragraph leftIndent="2" rightIndent="2" spacingBefore="2" spacingAfter="2"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{percentage}]]></textFieldExpression>
 					</textField>
