@@ -1,34 +1,32 @@
 package gov.va.escreening.service;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import gov.va.escreening.dto.VeteranAssessmentProgressDto;
 import gov.va.escreening.dto.ae.AssessmentRequest;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureType;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.SurveyPage;
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
-import gov.va.escreening.entity.VeteranAssessmentSurvey;
+import gov.va.escreening.entity.*;
+import gov.va.escreening.repository.SurveyAttemptRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import gov.va.escreening.util.ReportsUtil;
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 @Transactional
 @Service
@@ -43,6 +41,9 @@ public class VeteranAssessmentSurveyServiceImpl implements
 
 	@Autowired
 	private VeteranAssessmentRepository veteranAssessmentRepository;
+
+    @Resource(type= SurveyAttemptRepository.class)
+    SurveyAttemptRepository sar;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -143,25 +144,73 @@ public class VeteranAssessmentSurveyServiceImpl implements
 		veteranAssessmentSurvey.setTotalResponseCount(answered);
 		veteranAssessmentSurveyRepository.update(veteranAssessmentSurvey);
 
-		updateVeteranAssessmentProgress(va, req.getStartTime());
+		updateVeteranAssessmentProgress(va, req);
 	}
 
-	private void updateVeteranAssessmentProgress(VeteranAssessment va,
-			long startTime) {
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Integer, Integer> calculateAvgTimePerSurvey(Map<String, Object> requestData) {
+        List<Integer> clinics= (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        final DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy");
+        final LocalDate fromDate = dtf.parseLocalDate(requestData.get(ReportsUtil.FROMDATE).toString());
+        final LocalDate toDate = dtf.parseLocalDate(requestData.get(ReportsUtil.TODATE).toString());
+
+        List<VeteranAssessmentSurvey> vasLst=veteranAssessmentSurveyRepository.findByClinicAndDateRange(clinics, fromDate.toDate(), toDate.toDate());
+
+        // group these by surveys
+        Multimap<Survey, VeteranAssessmentSurvey> surveyMap= ArrayListMultimap.create();
+        for(VeteranAssessmentSurvey vas:vasLst){
+            surveyMap.put(vas.getSurvey(),vas);
+        }
+
+        // find average
+        Map<Integer, Integer> avgMap= Maps.newHashMap();
+        for(Survey s:surveyMap.keySet()){
+            avgMap.put(s.getSurveyId(),findAvgElapsedTime(surveyMap.get(s)));
+        }
+
+        return avgMap;
+    }
+
+    private Integer findAvgElapsedTime(Collection<VeteranAssessmentSurvey> veteranAssessmentSurveys) {
+        Period elapsedTimeInMinutesSum=Period.seconds(0);
+        int totalSurveyAttempts=0;
+        for (VeteranAssessmentSurvey vas:veteranAssessmentSurveys){
+            List<SurveyAttempt> surveyAttempts=vas.getSurveyAttemptList();
+            if (surveyAttempts!=null) {
+                totalSurveyAttempts+=surveyAttempts.size();
+                for(SurveyAttempt sa:surveyAttempts) {
+                    DateTime dtStart = new DateTime(sa.getStartDate().getTime());
+                    DateTime dtEnd = new DateTime(sa.getEndDate().getTime());
+                    Period period = new Period(dtStart, dtEnd);
+                    elapsedTimeInMinutesSum=period.plus(elapsedTimeInMinutesSum);
+                }
+            }
+        }
+
+        return totalSurveyAttempts==0?0:(int)(elapsedTimeInMinutesSum.getMinutes()/totalSurveyAttempts);
+    }
+
+    private void updateVeteranAssessmentProgress(VeteranAssessment va,
+			AssessmentRequest assessmentRequest) {
 		int total = 0;
 		int answered = 0;
 		for (VeteranAssessmentSurvey vas : va.getVeteranAssessmentSurveyList()) {
-			if (vas.getTotalQuestionCount() != null)
-				total += vas.getTotalQuestionCount();
+			if (vas.getTotalQuestionCount() != null) {
+                total += vas.getTotalQuestionCount();
+            }
+			if (vas.getTotalResponseCount() != null) {
+                answered += vas.getTotalResponseCount();
+            }
 
-			if (vas.getTotalResponseCount() != null)
-				answered += vas.getTotalResponseCount();
+            // add the timing it took to complete this survey
+            addSurveyAttempt(vas, assessmentRequest);
 		}
 
 		int percentCompleted = (int) ((float) answered / total * 100);
 		va.setPercentComplete(percentCompleted);
 
-		int durationCurrent = getAssessmentProgressDurationInminutes(startTime);
+		int durationCurrent = getAssessmentProgressDurationInminutes(assessmentRequest.getAssessmentStartTime());
 		Integer previousDuration = va.getDuration();
 		if (previousDuration == null) {
 			previousDuration = 0;
@@ -171,7 +220,19 @@ public class VeteranAssessmentSurveyServiceImpl implements
 		veteranAssessmentRepository.update(va);
 	}
 
-	private void updateVeteranAssessmentProgress(int veteranAssessmentId,
+    private void addSurveyAttempt(VeteranAssessmentSurvey vas, AssessmentRequest assessmentRequest) {
+        Long startTs = assessmentRequest.getModuleStartTime(vas.getSurvey().getSurveyId());
+        if (startTs!=null) {
+            SurveyAttempt sa = new SurveyAttempt();
+            sa.setVeteranAssessmentSurvey(vas);
+            sa.setStartDate(new Date(startTs));
+            sa.setEndDate(new Date());
+            sa.setDateCreated(new Date());
+            sar.update(sa);
+        }
+    }
+
+    private void updateVeteranAssessmentProgress(int veteranAssessmentId,
 			long startTime, int countOfTotalResponses, int countOfTotalQuestions) {
 
 		VeteranAssessment va = veteranAssessmentRepository

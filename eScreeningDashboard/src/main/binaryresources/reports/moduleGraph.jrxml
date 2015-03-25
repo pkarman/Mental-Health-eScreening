@@ -19,7 +19,7 @@
 			<textField>
 				<reportElement x="0" y="10" width="572" height="20" uuid="ca76eb7d-01eb-432d-9554-1de93297f1d0"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="14" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>

@@ -21,7 +21,7 @@
 			<textField>
 				<reportElement x="0" y="5" width="100" height="24" uuid="770e4e3c-eabd-4f00-8096-d78ba36710f4"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="14" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>

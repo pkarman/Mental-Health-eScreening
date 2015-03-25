@@ -66,7 +66,7 @@
 				<div class="row">
 
 					<div class="col-md-6">
-						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
+						<div class="checkbox_group_label"><strong>Select VistA Clinics *</strong></div>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							
@@ -103,7 +103,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group"   show-errors='{showSuccess: true}'>
-									<label class="labelAlign" for="fromDate">From Date</label>
+									<label class="labelAlign" for="fromDate">From Date *</label>
 								  <div class="input-group date" id="fromDateGroup">
 									<input type="text" id="fromDate" class="dateField form-control" 
 									 name="fromDate" ng-model="report.fromDate" maxlength="10" 
@@ -115,7 +115,7 @@
 							</div>
 							<div class="col-md-6">
 								<div class="form-group"  show-errors='{showSuccess: true}'>
-									  <label class="labelAlign" for="toDate">To Date</label>
+									  <label class="labelAlign" for="toDate">To Date *</label>
 									<div class="input-group date" id="toDateGroup">
 									  <input type="text" id="toDate" class="form-control"
 									   name="toDate" ng-model="report.toDate" maxlength="10" 

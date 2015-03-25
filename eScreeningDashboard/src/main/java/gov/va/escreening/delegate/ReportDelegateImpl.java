@@ -1,7 +1,5 @@
 package gov.va.escreening.delegate;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
@@ -16,7 +14,6 @@ import gov.va.escreening.util.ReportsUtil;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.FileResolver;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -54,11 +51,17 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(type = VeteranAssessmentSurveyScoreService.class)
     private VeteranAssessmentSurveyScoreService scoreService;
 
+    @Resource(type = VeteranAssessmentSurveyService.class)
+    private VeteranAssessmentSurveyService vasSrv;
+
     @Resource(type = SurveyScoreIntervalService.class)
     private SurveyScoreIntervalService intervalService;
 
     @Resource(type = VeteranService.class)
     private VeteranService veteranService;
+
+    @Resource(type = VeteranAssessmentService.class)
+    private VeteranAssessmentService veteranAssessmentService;
 
     @Resource(name = "reportableFormulasMap")
     Map<String, String> reportableFormulasMap;
@@ -490,60 +493,39 @@ public class ReportDelegateImpl implements ReportDelegate {
         final LocalDate fromDate = dtf.parseLocalDate(requestData.get(ReportsUtil.FROMDATE).toString());
         final LocalDate toDate = dtf.parseLocalDate(requestData.get(ReportsUtil.TODATE).toString());
 
+        List<Integer> clinicIds = (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        String strFromDate = (String)requestData.get(ReportsUtil.FROMDATE);
+        String strToDate = (String)requestData.get(ReportsUtil.TODATE);
+
         int totals = 0;
         Map<LocalDate, Integer> dateTotalMap = Maps.newHashMap();
         if (requestData.get("eachDay") != null && ((Boolean) requestData.get("eachDay"))) {
             parameterMap.put("showByDay", true);
-            List<Report593ByDayDTO> data = new ArrayList<>();
-
-            LocalDate ld = fromDate;
-            while (!ld.equals(toDate)) {
-                Report593ByDayDTO byDayDTO = new Report593ByDayDTO();
-                byDayDTO.setDate(ld.toString("MM/dd/yyyy"));
-                byDayDTO.setDayOfWeek(ld.dayOfWeek().getAsText());
-                int t = (int) (Math.random() * 100);
-                dateTotalMap.put(ld, t);
-                totals += t;
-                byDayDTO.setTotal(String.valueOf(t));
-                data.add(byDayDTO);
-                ld = ld.plusDays(1);
-            }
+            List<Report593ByDayDTO> data = veteranAssessmentService.getBatteriesByDay(strFromDate, strToDate, clinicIds);
             parameterMap.put("byDay", data);
+
+            for(Report593ByDayDTO dto : data){
+                totals += Integer.parseInt(dto.getTotal().trim());
+            }
+
             parameterMap.put("grandTotal", "" + totals);
         } else {
             parameterMap.put("showByDay", false);
             parameterMap.put("byDay", Lists.newArrayList());
         }
 
+        int total2 = 0;
 
         if (requestData.get("timeOfDayWeek") != null && ((Boolean) requestData.get("timeOfDayWeek"))) {
             parameterMap.put("showByTime", true);
-            List<Report593ByTimeDTO> data = new ArrayList<>();
+            List<Report593ByTimeDTO> data = veteranAssessmentService.getBatteriesByTime(strFromDate, strToDate, clinicIds);
 
-            LocalDate ld = fromDate;
-            while (!ld.equals(toDate)) {
-                Report593ByTimeDTO byTimeDTO = new Report593ByTimeDTO();
-                byTimeDTO.setDate(ld.toString("MM/dd/yyyy"));
-                byTimeDTO.setDayOfWeek(ld.dayOfWeek().getAsText());
-                int t = dateTotalMap.get(ld);
-                int e2t = Math.max(0, t / 6);
-                int f2s = Math.max(0, t / 5);
-                int s2e = Math.max(0, t / 4);
-                int t2t = Math.max(0, t / 7);
-                int tt2t = Math.max(0, t / 8);
-                int t2f = Math.max(0, t - (e2t + f2s + s2e + t2t + tt2t));
-                byTimeDTO.setTotal(String.valueOf(t));
-                byTimeDTO.setEightToTen(String.valueOf(e2t));
-                byTimeDTO.setFourToSix(String.valueOf(f2s));
-                byTimeDTO.setSixToEight(String.valueOf(s2e));
-                byTimeDTO.setTenToTwelve(String.valueOf(t2t));
-                byTimeDTO.setTwelveToTwo(String.valueOf(tt2t));
-                byTimeDTO.setTwoToFour(String.valueOf(t2f));
-                data.add(byTimeDTO);
-                ld = ld.plusDays(1);
+            for(Report593ByTimeDTO dto : data){
+                total2 += Integer.parseInt(dto.getTotal().trim());
             }
+
             parameterMap.put("byTime", data);
-            parameterMap.put("grandTotal", "" + totals);
+            parameterMap.put("grandTotal", "" + total2);
 
 
         } else {
@@ -558,11 +540,13 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         boolean bCheckAll = false;
 
+
         if (requestData.get("numberOfUniqueVeteran") != null
                 && (Boolean) requestData.get("numberOfUniqueVeteran")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setKey("Number of Unique Patients");
-            keyValueDTO.setValue("100");
+
+            keyValueDTO.setValue(veteranAssessmentService.getUniqueVeterns(clinicIds, strFromDate, strToDate));
             ks.add(keyValueDTO);
             bCheckAll = true;
         }
@@ -570,7 +554,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberOfeScreeningBatteries") != null
                 && (Boolean) requestData.get("numberOfeScreeningBatteries")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue("12");
+            keyValueDTO.setValue(
+                    veteranAssessmentService.getNumOfBatteries(clinicIds, strFromDate, strToDate)
+            );
             keyValueDTO.setKey("Number of eScreening batteries completed");
             ks.add(keyValueDTO);
             bCheckAll = true;
@@ -579,7 +565,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("averageTimePerAssessment") != null
                 && (Boolean) requestData.get("averageTimePerAssessment")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue("13 min");
+            keyValueDTO.setValue(
+                    veteranAssessmentService.getAverageTimePerAssessment(clinicIds, strFromDate, strToDate)+" min"
+            );
             keyValueDTO.setKey("Average time per assessment");
             ks.add(keyValueDTO);
             bCheckAll = true;
@@ -597,7 +585,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberAndPercentVeteransWithMultiple") != null
                 && (Boolean) requestData.get("numberAndPercentVeteransWithMultiple")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue("16");
+            keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate));
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
             ks.add(keyValueDTO);
             bCheckAll = true;
@@ -616,15 +604,20 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
 
+        Map<Integer, Integer> surveyAvgTimeMap = vasSrv.calculateAvgTimePerSurvey(requestData);
+
         JRDataSource dataSource = null;
 
         List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
         for (SurveyDto survey : surveyService.getSurveyList()) {
-            SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
-            surveyTimeDTO.setModuleName(survey.getName());
-            surveyTimeDTO.setModuleTime(String.valueOf((int) (Math.random() * 100)));
-            dtos.add(surveyTimeDTO);
+            Integer surveyAvgTime = surveyAvgTimeMap.get(survey.getSurveyId());
+            if (surveyAvgTime != null) {
+                SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
+                surveyTimeDTO.setModuleName(survey.getName());
+                surveyTimeDTO.setModuleTime(String.valueOf(surveyAvgTime));
+                dtos.add(surveyTimeDTO);
+            }
         }
 
         dataSource = new JRBeanCollectionDataSource(dtos);

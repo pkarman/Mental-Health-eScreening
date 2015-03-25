@@ -39,6 +39,13 @@
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="19" width="572" height="22" backcolor="#999999" uuid="dfb1a1fa-2b0a-44fa-95d4-311738ff1789"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 					<paragraph leftIndent="10"/>

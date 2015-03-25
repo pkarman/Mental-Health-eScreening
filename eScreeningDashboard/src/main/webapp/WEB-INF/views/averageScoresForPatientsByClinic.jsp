@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports</title>
+  <title>Reports | Average Scores for Veterans by Clinic</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -68,7 +68,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group"   show-errors='{showSuccess: true}'>
-									<label class="labelAlign" for="fromDate">From Date</label>
+									<label class="labelAlign" for="fromDate">From Date *</label>
 								  <div class="input-group date" id="fromDateGroup">
 									<input type="text" id="fromDate" class="dateField form-control" 
 									 name="fromDate" ng-model="report.fromDate" maxlength="10" 
@@ -80,7 +80,7 @@
 							</div>
 							<div class="col-md-6">
 								<div class="form-group"  show-errors='{showSuccess: true}'>
-									  <label class="labelAlign" for="toDate">To Date</label>
+									  <label class="labelAlign" for="toDate">To Date *</label>
 									<div class="input-group date" id="toDateGroup">
 									  <input type="text" id="toDate" class="form-control"
 									   name="toDate" ng-model="report.toDate" maxlength="10" 
@@ -129,7 +129,7 @@
 																
 					</div>
 					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select Modules</strong></div>
+						<div class="checkbox_group_label"><strong>Select Modules *</strong></div>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							<div class="checkbox">
@@ -146,7 +146,7 @@
 					</div>
 					
 					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select VistA Clinics</strong></div>
+						<div class="checkbox_group_label"><strong>Select VistA Clinics *</strong></div>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							
@@ -159,7 +159,7 @@
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
-									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics</label>
+									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics *</label>
 								</div>
 							</div>
 							<hr class="hr_margin_5">

@@ -27,7 +27,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
-				<text><![CDATA[date]]></text>
+				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="486" y="41" width="86" height="20" backcolor="#CCCCCC" uuid="6f893b4f-8ebf-4d1a-a33c-29d226e12346"/>
@@ -101,6 +101,13 @@
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="21" width="572" height="20" backcolor="#999999" uuid="6af3be4f-e69d-4ed8-8967-1cfbac1757f6"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
@@ -163,6 +170,7 @@
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
 			</textField>
@@ -177,6 +185,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
@@ -191,6 +200,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{eightToTen}]]></textFieldExpression>
 			</textField>
@@ -205,6 +215,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tenToTwelve}]]></textFieldExpression>
 			</textField>
@@ -219,6 +230,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fourToSix}]]></textFieldExpression>
 			</textField>
@@ -233,6 +245,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sixToEight}]]></textFieldExpression>
 			</textField>
@@ -247,6 +260,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{twoToFour}]]></textFieldExpression>
 			</textField>
@@ -261,6 +275,7 @@
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dayOfWeek}]]></textFieldExpression>
 			</textField>
@@ -275,6 +290,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{twelveToTwo}]]></textFieldExpression>
 			</textField>
@@ -283,7 +299,7 @@
 	<columnFooter>
 		<band height="24" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="486" height="20" uuid="6a320a8e-416a-4518-9bd7-62971fbe4325"/>
+				<reportElement mode="Opaque" x="0" y="0" width="486" height="20" backcolor="#CCCCCC" uuid="6a320a8e-416a-4518-9bd7-62971fbe4325"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -298,7 +314,7 @@
 				<text><![CDATA[Grand Total]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="486" y="0" width="86" height="20" uuid="7ceba125-b8e0-40dd-bb03-f2c65e18c12c"/>
+				<reportElement mode="Opaque" x="486" y="0" width="86" height="20" backcolor="#CCCCCC" uuid="7ceba125-b8e0-40dd-bb03-f2c65e18c12c"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -308,6 +324,7 @@
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{grandTotal}]]></textFieldExpression>
 			</textField>

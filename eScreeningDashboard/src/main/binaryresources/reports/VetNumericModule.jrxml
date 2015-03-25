@@ -13,7 +13,7 @@
 			<textField>
 				<reportElement x="0" y="11" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{lastNameAndSSN}]]></textFieldExpression>
 			</textField>

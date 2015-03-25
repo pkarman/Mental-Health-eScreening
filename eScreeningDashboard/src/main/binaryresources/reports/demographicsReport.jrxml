@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.363636363636366"/>
+	<property name="ireport.zoom" value="1.8150000000000117"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="40"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -133,7 +133,7 @@
 		</band>
 	</title>
 	<summary>
-		<band height="752" splitType="Stretch">
+		<band height="686" splitType="Stretch">
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="121" height="18" backcolor="#CCCCCC" uuid="c791534e-6443-4f05-ab33-2c0568038e12"/>
 				<box>
@@ -163,7 +163,7 @@
 				<text><![CDATA[  Questions]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="18" width="121" height="46" uuid="2cc439b1-d0de-4d47-871c-517c3a0ad6a2"/>
+				<reportElement x="0" y="18" width="121" height="40" uuid="2cc439b1-d0de-4d47-871c-517c3a0ad6a2"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -177,7 +177,7 @@
 				<text><![CDATA[  Gender]]></text>
 			</staticText>
 			<frame>
-				<reportElement x="121" y="18" width="451" height="46" uuid="4fc41660-6b61-44eb-84b0-e7c12c5c24e3"/>
+				<reportElement x="121" y="18" width="451" height="40" uuid="4fc41660-6b61-44eb-84b0-e7c12c5c24e3"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -224,6 +224,7 @@
 					</box>
 					<textElement>
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{male_percentage}]]></textFieldExpression>
 				</textField>
@@ -238,11 +239,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{female_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="396" y="5" width="40" height="15" uuid="8073d678-647a-402a-9d0d-947b80ef7261"/>
+					<reportElement x="396" y="5" width="46" height="15" uuid="8073d678-647a-402a-9d0d-947b80ef7261"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -252,11 +254,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="396" y="20" width="40" height="15" backcolor="#CCCCCC" uuid="cd68811d-c313-4e5f-92cf-15416fa38f33"/>
+					<reportElement mode="Opaque" x="396" y="20" width="46" height="15" backcolor="#CCCCCC" uuid="cd68811d-c313-4e5f-92cf-15416fa38f33"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -266,12 +269,13 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{female_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="64" width="121" height="180" backcolor="#CCCCCC" uuid="63aecd57-729b-464f-88cc-5a0f912f5a61"/>
+				<reportElement mode="Opaque" x="0" y="58" width="121" height="180" backcolor="#CCCCCC" uuid="63aecd57-729b-464f-88cc-5a0f912f5a61"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -285,7 +289,7 @@
 				<text><![CDATA[  Ethinicity/Race]]></text>
 			</staticText>
 			<frame>
-				<reportElement x="121" y="64" width="451" height="180" uuid="9fb54242-c865-4c28-96c2-f2c82b6fe9e5"/>
+				<reportElement x="121" y="58" width="451" height="180" uuid="9fb54242-c865-4c28-96c2-f2c82b6fe9e5"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -294,7 +298,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<staticText>
-					<reportElement x="56" y="15" width="339" height="15" uuid="bcb0e058-e31a-4171-8d0b-04d0e75924ee"/>
+					<reportElement x="56" y="13" width="339" height="15" uuid="bcb0e058-e31a-4171-8d0b-04d0e75924ee"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -308,7 +312,7 @@
 					<text><![CDATA[  Hispanic]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="11" y="15" width="45" height="15" uuid="ac5396c2-af39-44f6-93bd-b8dc8b6708f2"/>
+					<reportElement x="11" y="13" width="45" height="15" uuid="ac5396c2-af39-44f6-93bd-b8dc8b6708f2"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -318,18 +322,19 @@
 					</box>
 					<textElement>
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="11" y="0" width="100" height="15" uuid="76fa9f14-66f5-4a1f-8a1f-d833bc283f06"/>
+					<reportElement x="11" y="1" width="440" height="12" uuid="76fa9f14-66f5-4a1f-8a1f-d833bc283f06"/>
 					<textElement>
 						<font fontName="Arial" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Ethnicity]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="395" y="15" width="40" height="15" uuid="0a4ed352-2571-4325-a6e2-6f6972d43b06"/>
+					<reportElement x="395" y="13" width="46" height="15" uuid="0a4ed352-2571-4325-a6e2-6f6972d43b06"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -339,11 +344,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{hispanic_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="30" width="339" height="15" backcolor="#CCCCCC" uuid="a63df629-97db-4e50-a547-96ee0e0c78dd"/>
+					<reportElement mode="Opaque" x="56" y="28" width="339" height="15" backcolor="#CCCCCC" uuid="a63df629-97db-4e50-a547-96ee0e0c78dd"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -357,7 +363,7 @@
 					<text><![CDATA[  Non Hispanic]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="56" y="45" width="339" height="15" uuid="de31d6a9-baff-48a3-85e1-d2e1a946d4c2"/>
+					<reportElement x="56" y="42" width="339" height="15" uuid="de31d6a9-baff-48a3-85e1-d2e1a946d4c2"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -371,7 +377,7 @@
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="30" width="40" height="15" backcolor="#CCCCCC" uuid="083e81e6-5751-4994-aec7-c865af085530"/>
+					<reportElement mode="Opaque" x="395" y="28" width="46" height="15" backcolor="#CCCCCC" uuid="083e81e6-5751-4994-aec7-c865af085530"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -381,11 +387,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="30" width="45" height="15" backcolor="#CCCCCC" uuid="318d2072-ce5c-462e-bc99-64d597b6e706"/>
+					<reportElement mode="Opaque" x="11" y="28" width="45" height="15" backcolor="#CCCCCC" uuid="318d2072-ce5c-462e-bc99-64d597b6e706"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -395,11 +402,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="11" y="45" width="45" height="15" uuid="28990bf2-7602-4b7a-8a49-0dfb4496e033"/>
+					<reportElement x="11" y="43" width="45" height="15" uuid="28990bf2-7602-4b7a-8a49-0dfb4496e033"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -409,11 +417,12 @@
 					</box>
 					<textElement>
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingethnicity_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="395" y="45" width="40" height="15" uuid="6abbd9d0-e69b-47fa-9066-dca41af85d4c"/>
+					<reportElement x="395" y="43" width="46" height="15" uuid="6abbd9d0-e69b-47fa-9066-dca41af85d4c"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -423,18 +432,19 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="11" y="60" width="100" height="15" uuid="98218c70-b7ea-426b-8087-ccad220c1fef"/>
+					<reportElement x="11" y="58" width="100" height="13" uuid="98218c70-b7ea-426b-8087-ccad220c1fef"/>
 					<textElement>
 						<font fontName="Arial" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Race]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="11" y="105" width="45" height="15" uuid="073102ce-580e-43f7-9ddd-2c85d5aec409"/>
+					<reportElement x="11" y="101" width="45" height="15" uuid="073102ce-580e-43f7-9ddd-2c85d5aec409"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -444,11 +454,12 @@
 					</box>
 					<textElement>
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{indian_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="11" y="75" width="45" height="15" uuid="1910f327-42b9-44ae-88ad-2375d1c8edd3"/>
+					<reportElement x="11" y="71" width="45" height="15" uuid="1910f327-42b9-44ae-88ad-2375d1c8edd3"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -458,11 +469,12 @@
 					</box>
 					<textElement>
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{white_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="56" y="75" width="339" height="15" uuid="72c37033-b84f-4460-93a0-79edde1c91f4"/>
+					<reportElement x="56" y="70" width="339" height="15" uuid="72c37033-b84f-4460-93a0-79edde1c91f4"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -476,7 +488,7 @@
 					<text><![CDATA[  White/Caucasian]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="395" y="75" width="40" height="15" uuid="b68721a7-8b7b-4072-a406-7fd3ba3076ff"/>
+					<reportElement x="395" y="71" width="46" height="15" uuid="b68721a7-8b7b-4072-a406-7fd3ba3076ff"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -486,11 +498,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{white_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="90" width="45" height="15" backcolor="#CCCCCC" uuid="3d92e1e0-cc03-4cb9-bcda-4f420bb11564"/>
+					<reportElement mode="Opaque" x="11" y="85" width="45" height="15" backcolor="#CCCCCC" uuid="3d92e1e0-cc03-4cb9-bcda-4f420bb11564"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -500,11 +513,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{black_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="90" width="339" height="15" backcolor="#CCCCCC" uuid="15ef638e-b85e-4005-ae40-d0c154b9d0d2"/>
+					<reportElement mode="Opaque" x="56" y="86" width="339" height="15" backcolor="#CCCCCC" uuid="15ef638e-b85e-4005-ae40-d0c154b9d0d2"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -518,7 +532,7 @@
 					<text><![CDATA[  Black/African American]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="90" width="40" height="15" backcolor="#CCCCCC" uuid="a9ab0758-197c-49db-8d29-60222e118cc5"/>
+					<reportElement mode="Opaque" x="395" y="86" width="46" height="15" backcolor="#CCCCCC" uuid="a9ab0758-197c-49db-8d29-60222e118cc5"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -528,11 +542,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{black_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="56" y="105" width="339" height="15" uuid="ae8125ad-5d40-49ce-87f4-c57c08f835f0"/>
+					<reportElement x="56" y="101" width="339" height="15" uuid="ae8125ad-5d40-49ce-87f4-c57c08f835f0"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -546,7 +561,7 @@
 					<text><![CDATA[  American Indian or Alaskan Native]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="395" y="105" width="40" height="15" uuid="125d2d1a-51d4-4560-9548-d35047f1fb26"/>
+					<reportElement x="395" y="100" width="46" height="15" uuid="125d2d1a-51d4-4560-9548-d35047f1fb26"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -556,11 +571,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{indian_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="120" width="45" height="15" backcolor="#CCCCCC" uuid="9a3dc265-e9fb-4ff5-ac39-ca2c840dff53"/>
+					<reportElement mode="Opaque" x="11" y="116" width="45" height="15" backcolor="#CCCCCC" uuid="9a3dc265-e9fb-4ff5-ac39-ca2c840dff53"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -570,11 +586,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="120" width="339" height="15" backcolor="#CCCCCC" uuid="3fe03f6c-7ff1-4dd1-b78c-09fae30ed217"/>
+					<reportElement mode="Opaque" x="56" y="116" width="339" height="15" backcolor="#CCCCCC" uuid="3fe03f6c-7ff1-4dd1-b78c-09fae30ed217"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -588,7 +605,7 @@
 					<text><![CDATA[  Native hawaiian or pacific Islander]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="120" width="40" height="15" backcolor="#CCCCCC" uuid="f71561f0-7aed-4242-a800-ba5b9c642080"/>
+					<reportElement mode="Opaque" x="395" y="116" width="46" height="15" backcolor="#CCCCCC" uuid="f71561f0-7aed-4242-a800-ba5b9c642080"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -598,11 +615,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{hawaiian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="56" y="135" width="339" height="15" uuid="1a17fa66-22c9-41ab-93e5-94e4fc3cfbbb"/>
+					<reportElement x="56" y="131" width="339" height="15" uuid="1a17fa66-22c9-41ab-93e5-94e4fc3cfbbb"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -616,7 +634,7 @@
 					<text><![CDATA[  Asian (Filipino, Japanese, Korean, Chinese, Vietnamese, etc.)]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="395" y="135" width="40" height="15" uuid="03094174-016d-4937-b76c-9784c771468e"/>
+					<reportElement x="395" y="131" width="46" height="15" uuid="03094174-016d-4937-b76c-9784c771468e"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -626,11 +644,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{asian_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="150" width="339" height="15" backcolor="#CCCCCC" uuid="04e84ffb-b9e1-4ce5-bb3e-969a811a9187"/>
+					<reportElement mode="Opaque" x="56" y="146" width="339" height="15" backcolor="#CCCCCC" uuid="04e84ffb-b9e1-4ce5-bb3e-969a811a9187"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -644,7 +663,7 @@
 					<text><![CDATA[  Decline To Answer]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="56" y="165" width="339" height="15" uuid="92cccdc8-4aa2-47c4-98ea-97e260150bd0"/>
+					<reportElement x="56" y="161" width="339" height="15" uuid="92cccdc8-4aa2-47c4-98ea-97e260150bd0"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -658,7 +677,7 @@
 					<text><![CDATA[  Other]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="150" width="45" height="15" backcolor="#CCCCCC" uuid="00f3e780-1e12-4389-864e-ca7e8222e125"/>
+					<reportElement mode="Opaque" x="11" y="146" width="45" height="15" backcolor="#CCCCCC" uuid="00f3e780-1e12-4389-864e-ca7e8222e125"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -668,11 +687,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="150" width="40" height="15" backcolor="#CCCCCC" uuid="850e97e6-50b8-4a26-bbbb-17724f26dc01"/>
+					<reportElement mode="Opaque" x="395" y="146" width="46" height="15" backcolor="#CCCCCC" uuid="850e97e6-50b8-4a26-bbbb-17724f26dc01"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -682,11 +702,12 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="395" y="165" width="40" height="15" uuid="ef92dc5d-f2a6-46e5-bebd-ccaee581a435"/>
+					<reportElement x="395" y="160" width="46" height="15" uuid="ef92dc5d-f2a6-46e5-bebd-ccaee581a435"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -696,12 +717,13 @@
 					</box>
 					<textElement textAlignment="Right">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{otherrace_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<staticText>
-				<reportElement x="0" y="244" width="121" height="15" uuid="45abb781-ae3a-46a7-b897-6dfaf7a9f92e"/>
+				<reportElement x="0" y="238" width="121" height="15" uuid="45abb781-ae3a-46a7-b897-6dfaf7a9f92e"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -715,7 +737,7 @@
 				<text><![CDATA[  Race]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="259" width="121" height="142" backcolor="#CCCCCC" uuid="a263cd83-781b-4b00-8046-4bbd5517b137"/>
+				<reportElement mode="Opaque" x="0" y="253" width="121" height="142" backcolor="#CCCCCC" uuid="a263cd83-781b-4b00-8046-4bbd5517b137"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -729,7 +751,7 @@
 				<text><![CDATA[  Education]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="498" width="121" height="115" backcolor="#CCCCCC" uuid="26653884-fb01-402c-8bea-3a8391bdb9a9"/>
+				<reportElement mode="Opaque" x="0" y="491" width="121" height="112" backcolor="#CCCCCC" uuid="26653884-fb01-402c-8bea-3a8391bdb9a9"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -743,7 +765,7 @@
 				<text><![CDATA[  Branch of Military]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="628" width="121" height="75" uuid="8373fd1f-1ac7-4514-9fcb-cad2a2d1da03"/>
+				<reportElement x="0" y="618" width="121" height="68" uuid="8373fd1f-1ac7-4514-9fcb-cad2a2d1da03"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -757,7 +779,7 @@
 				<text><![CDATA[  Tobacco Use Status]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="401" width="121" height="96" uuid="0189c151-3628-422d-b35c-8668e0a18bd0"/>
+				<reportElement x="0" y="395" width="121" height="96" uuid="0189c151-3628-422d-b35c-8668e0a18bd0"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -771,7 +793,7 @@
 				<text><![CDATA[  Employment Status]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="613" width="121" height="15" uuid="6b9ebae4-aba3-43d1-8cc1-a954518358cb"/>
+				<reportElement x="0" y="603" width="121" height="15" uuid="6b9ebae4-aba3-43d1-8cc1-a954518358cb"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -785,7 +807,7 @@
 				<text><![CDATA[  Num of Deployments]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="133" y="199" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
+				<reportElement x="132" y="188" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -795,11 +817,12 @@
 				</box>
 				<textElement>
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{asian_percentage}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="133" y="229" width="45" height="15" uuid="343c2cc8-f938-4b02-95fd-2bdd9d347841"/>
+				<reportElement x="132" y="218" width="45" height="15" uuid="343c2cc8-f938-4b02-95fd-2bdd9d347841"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -809,11 +832,12 @@
 				</box>
 				<textElement>
 					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{otherrace_percentage}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="121" y="259" width="451" height="142" uuid="b2a7fb21-f319-4927-8756-414658881631"/>
+				<reportElement x="121" y="253" width="451" height="142" uuid="b2a7fb21-f319-4927-8756-414658881631"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -822,7 +846,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="19" width="45" height="15" backcolor="#CCCCCC" uuid="82ad1279-b4cf-43ed-9163-36b97c91a452"/>
+					<reportElement mode="Opaque" x="11" y="20" width="45" height="15" backcolor="#CCCCCC" uuid="82ad1279-b4cf-43ed-9163-36b97c91a452"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -832,11 +856,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{ged_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="389be84e-b5ec-4301-999c-0065a4f1bca0"/>
+					<reportElement mode="Opaque" x="56" y="20" width="339" height="15" backcolor="#CCCCCC" uuid="389be84e-b5ec-4301-999c-0065a4f1bca0"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -850,7 +875,7 @@
 					<text><![CDATA[  GED]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="4" width="339" height="15" backcolor="#CCCCCC" uuid="048e536e-a86f-4aeb-9e83-c8440dbd3fcb"/>
+					<reportElement mode="Transparent" x="56" y="5" width="339" height="15" backcolor="#CCCCCC" uuid="048e536e-a86f-4aeb-9e83-c8440dbd3fcb"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -864,7 +889,7 @@
 					<text><![CDATA[  Some High School]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Transparent" x="11" y="4" width="45" height="15" backcolor="#CCCCCC" uuid="55bdc50b-68f1-4913-842f-4e45eeae35e2"/>
+					<reportElement mode="Transparent" x="11" y="5" width="45" height="15" backcolor="#CCCCCC" uuid="55bdc50b-68f1-4913-842f-4e45eeae35e2"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -874,11 +899,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{highschool_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="19" width="40" height="15" backcolor="#CCCCCC" uuid="89abd4cd-969c-4a6b-b121-a18833cc7de9"/>
+					<reportElement mode="Opaque" x="395" y="20" width="46" height="15" backcolor="#CCCCCC" uuid="89abd4cd-969c-4a6b-b121-a18833cc7de9"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -888,11 +914,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{ged_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="4" width="40" height="15" backcolor="#CCCCCC" uuid="71f1d259-16bc-4427-aa91-3aeb6f385f36"/>
+					<reportElement mode="Transparent" x="395" y="5" width="46" height="15" backcolor="#CCCCCC" uuid="71f1d259-16bc-4427-aa91-3aeb6f385f36"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -902,11 +929,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{highschool_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="34" width="339" height="15" backcolor="#CCCCCC" uuid="dc11e923-7f20-4824-a5ee-29d32f4f7869"/>
+					<reportElement mode="Transparent" x="56" y="35" width="339" height="15" backcolor="#CCCCCC" uuid="dc11e923-7f20-4824-a5ee-29d32f4f7869"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -920,7 +948,7 @@
 					<text><![CDATA[  High School Diploma]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="253edcde-79c4-410e-8779-eab46de0fb9c"/>
+					<reportElement mode="Opaque" x="56" y="50" width="339" height="15" backcolor="#CCCCCC" uuid="253edcde-79c4-410e-8779-eab46de0fb9c"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -934,7 +962,7 @@
 					<text><![CDATA[  Some College]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="64" width="339" height="15" backcolor="#CCCCCC" uuid="2bfd20ad-49c3-42a0-a494-c150de89d237"/>
+					<reportElement mode="Transparent" x="56" y="65" width="339" height="15" backcolor="#CCCCCC" uuid="2bfd20ad-49c3-42a0-a494-c150de89d237"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -948,7 +976,7 @@
 					<text><![CDATA[  Associate Degree]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="79" width="339" height="15" backcolor="#CCCCCC" uuid="08cbbe8b-ef4b-4a04-ac2b-908c9cc2752f"/>
+					<reportElement mode="Opaque" x="56" y="80" width="339" height="15" backcolor="#CCCCCC" uuid="08cbbe8b-ef4b-4a04-ac2b-908c9cc2752f"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -962,7 +990,7 @@
 					<text><![CDATA[  4-year College Degree]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="94" width="339" height="15" backcolor="#CCCCCC" uuid="c52d4166-c9c0-40b3-8ca0-5c2d98151372"/>
+					<reportElement mode="Transparent" x="56" y="95" width="339" height="15" backcolor="#CCCCCC" uuid="c52d4166-c9c0-40b3-8ca0-5c2d98151372"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -976,7 +1004,7 @@
 					<text><![CDATA[  Master's Degree]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="109" width="339" height="15" backcolor="#CCCCCC" uuid="6e2650de-6163-4140-95a2-6c431e9300ba"/>
+					<reportElement mode="Opaque" x="56" y="110" width="339" height="15" backcolor="#CCCCCC" uuid="6e2650de-6163-4140-95a2-6c431e9300ba"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -990,7 +1018,7 @@
 					<text><![CDATA[  Doctoral Degree (Ph.D., M.D., DDS, etc.)]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="124" width="339" height="15" backcolor="#CCCCCC" uuid="8962c0aa-9b18-4af1-b398-dd67b0a52189"/>
+					<reportElement mode="Transparent" x="56" y="125" width="339" height="15" backcolor="#CCCCCC" uuid="8962c0aa-9b18-4af1-b398-dd67b0a52189"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1004,7 +1032,7 @@
 					<text><![CDATA[  Missing]]></text>
 				</staticText>
 				<textField>
-					<reportElement mode="Transparent" x="11" y="34" width="45" height="15" backcolor="#CCCCCC" uuid="3053dd10-1927-4369-a575-7141d2bc020a"/>
+					<reportElement mode="Transparent" x="11" y="35" width="45" height="15" backcolor="#CCCCCC" uuid="3053dd10-1927-4369-a575-7141d2bc020a"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1014,11 +1042,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{highschooldip_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="11" y="64" width="45" height="15" backcolor="#CCCCCC" uuid="f6ac280b-2699-49b6-a4a4-5ce7ee4c775f"/>
+					<reportElement mode="Transparent" x="11" y="65" width="45" height="15" backcolor="#CCCCCC" uuid="f6ac280b-2699-49b6-a4a4-5ce7ee4c775f"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1028,11 +1057,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{associate_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="e09d1cca-50ab-4b43-9851-66ef4a283d87"/>
+					<reportElement mode="Opaque" x="11" y="50" width="45" height="15" backcolor="#CCCCCC" uuid="e09d1cca-50ab-4b43-9851-66ef4a283d87"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1042,11 +1072,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{somecollege_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="79" width="45" height="15" backcolor="#CCCCCC" uuid="de3e1760-a28e-4267-855f-b863e6921845"/>
+					<reportElement mode="Opaque" x="11" y="80" width="45" height="15" backcolor="#CCCCCC" uuid="de3e1760-a28e-4267-855f-b863e6921845"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1056,11 +1087,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{college_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="109" width="45" height="15" backcolor="#CCCCCC" uuid="b88af5e9-d960-4c42-b0f5-86733722ec89"/>
+					<reportElement mode="Opaque" x="11" y="110" width="45" height="15" backcolor="#CCCCCC" uuid="b88af5e9-d960-4c42-b0f5-86733722ec89"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1070,11 +1102,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{dr_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="11" y="94" width="45" height="15" backcolor="#CCCCCC" uuid="316e4b4c-9841-44bd-be31-cc5d6969ebfd"/>
+					<reportElement mode="Transparent" x="11" y="95" width="45" height="15" backcolor="#CCCCCC" uuid="316e4b4c-9841-44bd-be31-cc5d6969ebfd"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1084,11 +1117,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{master_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="11" y="124" width="45" height="15" backcolor="#CCCCCC" uuid="f77e6f03-c0cf-4402-968a-3c628d5a2c40"/>
+					<reportElement mode="Transparent" x="11" y="125" width="45" height="15" backcolor="#CCCCCC" uuid="f77e6f03-c0cf-4402-968a-3c628d5a2c40"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1098,11 +1132,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingedu_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="34" width="40" height="15" backcolor="#CCCCCC" uuid="b31a131e-167c-4dc4-b8bd-2b6f2e5c2782"/>
+					<reportElement mode="Transparent" x="395" y="35" width="46" height="15" backcolor="#CCCCCC" uuid="b31a131e-167c-4dc4-b8bd-2b6f2e5c2782"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1112,11 +1147,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="64" width="40" height="15" backcolor="#CCCCCC" uuid="406320f6-4be5-4d6a-89b7-722dd7c048cd"/>
+					<reportElement mode="Transparent" x="395" y="65" width="46" height="15" backcolor="#CCCCCC" uuid="406320f6-4be5-4d6a-89b7-722dd7c048cd"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1126,11 +1162,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{associate_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="94" width="40" height="15" backcolor="#CCCCCC" uuid="a1114e2d-1c96-4d66-96a0-6bf70bce9126"/>
+					<reportElement mode="Transparent" x="395" y="95" width="46" height="15" backcolor="#CCCCCC" uuid="a1114e2d-1c96-4d66-96a0-6bf70bce9126"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1140,11 +1177,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{master_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="124" width="40" height="15" backcolor="#CCCCCC" uuid="217b7a47-4158-4e34-8972-7aac4d182ea3"/>
+					<reportElement mode="Transparent" x="395" y="125" width="46" height="15" backcolor="#CCCCCC" uuid="217b7a47-4158-4e34-8972-7aac4d182ea3"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1154,11 +1192,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingedu_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="49" width="40" height="15" backcolor="#CCCCCC" uuid="947022a6-0355-431c-b324-d11e9f40c240"/>
+					<reportElement mode="Opaque" x="395" y="50" width="46" height="15" backcolor="#CCCCCC" uuid="947022a6-0355-431c-b324-d11e9f40c240"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1168,11 +1207,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{somecollege_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="79" width="40" height="15" backcolor="#CCCCCC" uuid="cd32f4f4-4623-41a2-8b13-100b6d22c839"/>
+					<reportElement mode="Opaque" x="395" y="80" width="46" height="15" backcolor="#CCCCCC" uuid="cd32f4f4-4623-41a2-8b13-100b6d22c839"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1182,11 +1222,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{college_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="109" width="40" height="15" backcolor="#CCCCCC" uuid="473f90b7-46fc-42bf-a4e4-d018f863b960"/>
+					<reportElement mode="Opaque" x="395" y="109" width="46" height="15" backcolor="#CCCCCC" uuid="473f90b7-46fc-42bf-a4e4-d018f863b960"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1196,12 +1237,13 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{dr_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<textField>
-				<reportElement x="121" y="244" width="451" height="15" uuid="3f8e65f5-10bf-4da2-818f-95aa96294c8c"/>
+				<reportElement x="121" y="238" width="451" height="15" uuid="3f8e65f5-10bf-4da2-818f-95aa96294c8c"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -1216,7 +1258,7 @@
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="121" y="401" width="451" height="96" uuid="a9a786cb-6194-45b4-a0ae-3afe5d2342d4"/>
+				<reportElement x="121" y="395" width="451" height="96" uuid="a9a786cb-6194-45b4-a0ae-3afe5d2342d4"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1235,11 +1277,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{parttime_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="a4922ff5-66c7-4b39-930c-847943d2adc5"/>
+					<reportElement mode="Opaque" x="56" y="18" width="339" height="15" backcolor="#CCCCCC" uuid="a4922ff5-66c7-4b39-930c-847943d2adc5"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1277,11 +1320,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{fulltime_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="19" width="40" height="15" backcolor="#CCCCCC" uuid="24361eb7-0252-4553-89ae-0cbbdd598384"/>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="24361eb7-0252-4553-89ae-0cbbdd598384"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1291,11 +1335,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{parttime_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="4" width="40" height="15" backcolor="#CCCCCC" uuid="9658007f-61e8-4209-a59f-2c815ae2aed8"/>
+					<reportElement mode="Transparent" x="395" y="3" width="46" height="15" backcolor="#CCCCCC" uuid="9658007f-61e8-4209-a59f-2c815ae2aed8"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1305,6 +1350,7 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{fulltime_count}]]></textFieldExpression>
 				</textField>
@@ -1337,7 +1383,7 @@
 					<text><![CDATA[  Day Labor]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="64" width="339" height="15" backcolor="#CCCCCC" uuid="f2064765-e73c-431e-87b3-24faadde46fa"/>
+					<reportElement mode="Transparent" x="56" y="63" width="339" height="15" backcolor="#CCCCCC" uuid="f2064765-e73c-431e-87b3-24faadde46fa"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1375,6 +1421,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{seasonal_percentage}]]></textFieldExpression>
 				</textField>
@@ -1389,6 +1436,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{unemployed_percentage}]]></textFieldExpression>
 				</textField>
@@ -1403,11 +1451,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{daylabor_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="79" width="45" height="15" backcolor="#CCCCCC" uuid="a958d6bf-8b6b-4b11-843c-454b51ae1070"/>
+					<reportElement mode="Opaque" x="11" y="78" width="45" height="15" backcolor="#CCCCCC" uuid="a958d6bf-8b6b-4b11-843c-454b51ae1070"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1417,11 +1466,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingemp_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="34" width="40" height="15" backcolor="#CCCCCC" uuid="75113dea-f25e-4774-bd10-859705e3179d"/>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="75113dea-f25e-4774-bd10-859705e3179d"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1431,11 +1481,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{seasonal_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="64" width="40" height="15" backcolor="#CCCCCC" uuid="4198de45-ecfb-4445-9e8e-5f2bdedf225c"/>
+					<reportElement mode="Transparent" x="395" y="64" width="46" height="15" backcolor="#CCCCCC" uuid="4198de45-ecfb-4445-9e8e-5f2bdedf225c"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1445,11 +1496,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{unemployed_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="49" width="40" height="15" backcolor="#CCCCCC" uuid="f3e21d3d-60bc-4410-ac2c-8f85b8a1b5da"/>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="f3e21d3d-60bc-4410-ac2c-8f85b8a1b5da"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1459,11 +1511,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{daylabor_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="79" width="40" height="15" backcolor="#CCCCCC" uuid="25f74196-35d7-44b4-9b7d-6c82c312a1f8"/>
+					<reportElement mode="Opaque" x="395" y="78" width="46" height="15" backcolor="#CCCCCC" uuid="25f74196-35d7-44b4-9b7d-6c82c312a1f8"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1473,12 +1526,13 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingemp_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement x="121" y="498" width="451" height="115" uuid="3c71a2c8-c6a0-484f-b717-00127674fff7"/>
+				<reportElement x="121" y="491" width="451" height="112" uuid="3c71a2c8-c6a0-484f-b717-00127674fff7"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1497,6 +1551,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{airforce_percentage}]]></textFieldExpression>
 				</textField>
@@ -1539,11 +1594,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{army_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="19" width="40" height="15" backcolor="#CCCCCC" uuid="b49860ea-5bb9-4afe-904f-f1909a46dfe6"/>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="b49860ea-5bb9-4afe-904f-f1909a46dfe6"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1553,11 +1609,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{airforce_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="4" width="40" height="15" backcolor="#CCCCCC" uuid="09bae013-7617-4449-bcac-3ce85c2ed111"/>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="09bae013-7617-4449-bcac-3ce85c2ed111"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1567,6 +1624,7 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{army_count}]]></textFieldExpression>
 				</textField>
@@ -1637,6 +1695,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{coast_percentage}]]></textFieldExpression>
 				</textField>
@@ -1651,6 +1710,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{nationalguard_percentage}]]></textFieldExpression>
 				</textField>
@@ -1665,6 +1725,7 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{marines_percentage}]]></textFieldExpression>
 				</textField>
@@ -1679,11 +1740,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{navy_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="34" width="40" height="15" backcolor="#CCCCCC" uuid="3bef2e75-0537-4e31-af18-6ccac164796b"/>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="3bef2e75-0537-4e31-af18-6ccac164796b"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1693,11 +1755,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{coast_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="64" width="40" height="15" backcolor="#CCCCCC" uuid="4b128815-01c2-447c-b35a-670a7da1a390"/>
+					<reportElement mode="Transparent" x="395" y="64" width="46" height="15" backcolor="#CCCCCC" uuid="4b128815-01c2-447c-b35a-670a7da1a390"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1707,11 +1770,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{nationalguard_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="49" width="40" height="15" backcolor="#CCCCCC" uuid="f70ba39d-4ad4-4dce-a9e4-74df8b0b15d7"/>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="f70ba39d-4ad4-4dce-a9e4-74df8b0b15d7"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1721,11 +1785,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{marines_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="79" width="40" height="15" backcolor="#CCCCCC" uuid="54701994-ff70-434f-a8b6-6066bbcb8e78"/>
+					<reportElement mode="Opaque" x="395" y="79" width="46" height="15" backcolor="#CCCCCC" uuid="54701994-ff70-434f-a8b6-6066bbcb8e78"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1735,6 +1800,7 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{navy_count}]]></textFieldExpression>
 				</textField>
@@ -1763,11 +1829,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingmilitary_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="94" width="40" height="15" backcolor="#CCCCCC" uuid="34b08b6e-cbae-46bc-be96-b8ca3c94ae5e"/>
+					<reportElement mode="Transparent" x="395" y="94" width="46" height="15" backcolor="#CCCCCC" uuid="34b08b6e-cbae-46bc-be96-b8ca3c94ae5e"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1777,12 +1844,13 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingmilitary_count}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<textField>
-				<reportElement x="121" y="613" width="451" height="15" uuid="3a7e1ab3-a887-4fc4-b75f-9a2347a3e29b"/>
+				<reportElement x="121" y="603" width="451" height="15" uuid="3a7e1ab3-a887-4fc4-b75f-9a2347a3e29b"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -1797,7 +1865,7 @@
 				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="121" y="628" width="451" height="75" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>
+				<reportElement x="121" y="618" width="451" height="68" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -1816,11 +1884,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_no_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="2d8a4d56-a236-469d-b79f-06b3e0dd56c1"/>
+					<reportElement mode="Opaque" x="56" y="21" width="339" height="15" backcolor="#CCCCCC" uuid="2d8a4d56-a236-469d-b79f-06b3e0dd56c1"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1858,11 +1927,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_never_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="19" width="40" height="15" backcolor="#CCCCCC" uuid="b016135c-2908-4736-908a-62143fbb80b0"/>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="b016135c-2908-4736-908a-62143fbb80b0"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1872,11 +1942,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_no_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="4" width="40" height="15" backcolor="#CCCCCC" uuid="56942fae-3702-48a7-9776-a796c1b121be"/>
+					<reportElement mode="Transparent" x="395" y="5" width="46" height="15" backcolor="#CCCCCC" uuid="56942fae-3702-48a7-9776-a796c1b121be"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1886,6 +1957,7 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_never_count}]]></textFieldExpression>
 				</textField>
@@ -1904,7 +1976,7 @@
 					<text><![CDATA[  Yes. I currently use tobacco on a regular basis.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="f820ced0-f37c-4842-a086-d6103407ccbc"/>
+					<reportElement mode="Opaque" x="56" y="50" width="339" height="15" backcolor="#CCCCCC" uuid="f820ced0-f37c-4842-a086-d6103407ccbc"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1928,11 +2000,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_yes_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="ee2b666d-07cb-4e0d-8ad0-e58a5a93c7be"/>
+					<reportElement mode="Opaque" x="11" y="50" width="45" height="15" backcolor="#CCCCCC" uuid="ee2b666d-07cb-4e0d-8ad0-e58a5a93c7be"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1942,11 +2015,12 @@
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_miss_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="34" width="40" height="15" backcolor="#CCCCCC" uuid="2d945862-77c3-4b1d-b8c3-1eb902b49d10"/>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="2d945862-77c3-4b1d-b8c3-1eb902b49d10"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1956,11 +2030,12 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_yes_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="49" width="40" height="15" backcolor="#CCCCCC" uuid="fe126d32-646d-4bf6-ad89-926c40857bd1"/>
+					<reportElement mode="Opaque" x="395" y="50" width="46" height="15" backcolor="#CCCCCC" uuid="fe126d32-646d-4bf6-ad89-926c40857bd1"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1970,6 +2045,7 @@
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{tobacco_miss_count}]]></textFieldExpression>
 				</textField>

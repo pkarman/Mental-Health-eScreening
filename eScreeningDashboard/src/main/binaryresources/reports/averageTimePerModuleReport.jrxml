@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="averageTimePermoduleReport" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.8150000000000024"/>
+	<property name="ireport.zoom" value="2.657341500000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="Table Dataset 1" uuid="5fbd32eb-732d-4507-9783-129a5dc03a11"/>
@@ -44,14 +44,14 @@
 			<staticText>
 				<reportElement x="0" y="114" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VistA Clinics]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="132" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
 				<textElement>
-					<font size="12"/>
+					<font fontName="Arial" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
 			</textField>
@@ -69,22 +69,30 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textField>
-					<reportElement x="10" y="0" width="191" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
+					<reportElement x="10" y="0" width="188" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
 					<textElement verticalAlignment="Middle">
-						<font size="10"/>
+						<font fontName="Arial" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="201" y="0" width="85" height="30" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
+					<reportElement x="198" y="0" width="85" height="24" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="14" isBold="true"/>
+						<font fontName="Arial" size="14" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{moduleTime}]]></textFieldExpression>
 				</textField>
+				<rectangle radius="4">
+					<reportElement x="198" y="23" width="85" height="20" backcolor="#CCCCCC" uuid="153edc02-6723-45c2-85aa-e2295197fe93"/>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
 				<staticText>
-					<reportElement mode="Opaque" x="201" y="30" width="85" height="17" backcolor="#CCCCCC" uuid="fe1ef4d5-40d3-4c11-9437-4d0bf2ae15e4"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<reportElement mode="Transparent" x="211" y="25" width="58" height="17" backcolor="#000000" uuid="fe1ef4d5-40d3-4c11-9437-4d0bf2ae15e4"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
 					<text><![CDATA[mins]]></text>
 				</staticText>
 			</frame>
@@ -94,7 +102,9 @@
 		<band height="50">
 			<staticText>
 				<reportElement x="0" y="0" width="572" height="50" uuid="477e9c19-4582-4445-8ffb-925b75993d07"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<text><![CDATA[No results found.]]></text>
 			</staticText>
 		</band>

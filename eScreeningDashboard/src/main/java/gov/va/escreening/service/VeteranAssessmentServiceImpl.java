@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.domain.AssessmentStatusEnum;
@@ -11,64 +12,16 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
-import gov.va.escreening.entity.AssessmentStatus;
-import gov.va.escreening.entity.AssessmentVariable;
-import gov.va.escreening.entity.ClinicalNote;
-import gov.va.escreening.entity.Consult;
-import gov.va.escreening.entity.DashboardAlert;
-import gov.va.escreening.entity.Event;
-import gov.va.escreening.entity.HealthFactor;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.SurveyPage;
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.entity.VeteranAssessmentAuditLog;
-import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
-import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
-import gov.va.escreening.entity.VeteranAssessmentNote;
-import gov.va.escreening.entity.VeteranAssessmentSurvey;
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
-import gov.va.escreening.repository.AssessmentStatusRepository;
-import gov.va.escreening.repository.AssessmentVariableRepository;
-import gov.va.escreening.repository.BatteryRepository;
-import gov.va.escreening.repository.ClinicRepository;
-import gov.va.escreening.repository.ClinicalNoteRepository;
-import gov.va.escreening.repository.EventRepository;
-import gov.va.escreening.repository.NoteTitleRepository;
-import gov.va.escreening.repository.ProgramRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.UserRepository;
-import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
-import gov.va.escreening.repository.VeteranAssessmentDashboardAlertRepository;
-import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
-import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
-import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
-import gov.va.escreening.repository.VeteranRepository;
+import gov.va.escreening.repository.*;
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Transactional
 @Service("veteranAssessmentService")
@@ -1207,4 +1164,60 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		
 		return timeSeries;
 	}
+
+    @Override
+    public String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getVeteranCountFor593(strFromDate, strToDate, clinicIds);
+        if (i==null){
+            return "0";
+        }
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getAverageTimePerAssessment(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getAvgDurantionFor593(strFromDate, strToDate, clinicIds);
+
+        if (i==null){
+            return "0";
+        }
+
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getNumOfBatteries(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getBatteryCountFor593(strFromDate, strToDate, clinicIds);
+
+        if (i==null){
+            return "0";
+        }
+
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getVeteranWithMultiple(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer n = veteranAssessmentRepository.getVetWithMultipleBatteriesFor593(strFromDate, strToDate, clinicIds);
+        Integer m = veteranAssessmentRepository.getVeteranCountFor593(strFromDate, strToDate, clinicIds);
+
+        if (n==0){
+            return "0";
+        }
+        else{
+            return Integer.toString(n*100/m);
+        }
+    }
+
+    @Override
+    public List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.getBatteriesByDayFor593(strFromDate, strToDate, clinicIds);
+    }
+
+    @Override
+    public List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
+    }
+
+
 }

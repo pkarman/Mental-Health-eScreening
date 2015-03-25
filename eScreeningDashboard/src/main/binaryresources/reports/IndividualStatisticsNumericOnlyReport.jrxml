@@ -45,7 +45,7 @@
 			<textField>
 				<reportElement x="0" y="112" width="572" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lastNameSSN}]]></textFieldExpression>
 			</textField>
