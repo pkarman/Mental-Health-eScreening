@@ -46,7 +46,7 @@ public class DashboardHomeController {
         return "dashboardHome";
     }
 
-    @RequestMapping(value = "/dashboard/allowedTabs", method = RequestMethod.GET)
+    @RequestMapping(value = "/allowedTabs", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Boolean> getTabPermissions(HttpServletRequest request) {
         logger.debug("Request for tab permissions");

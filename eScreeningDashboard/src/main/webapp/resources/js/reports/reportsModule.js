@@ -510,8 +510,9 @@ module.controller('positiveScreensCtrl', ['$scope', '$http', 'ReportsService', f
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartVIPositiveScreensReport').then(function () {
                 console.log('clinicStatisticReportsPartVIPositiveScreensReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
+
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
