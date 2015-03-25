@@ -348,8 +348,8 @@ module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPart1eScreeningBatteriesReport').then(function () {
                 console.log('clinicStatisticReportsPart1eScreeningBatteriesReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
@@ -381,8 +381,8 @@ module.controller('demographicsReportCtrl', ['$scope', '$http', 'ReportsService'
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartVDemographicsReport').then(function () {
                 console.log('clinicStatisticReportsPartVDemographicsReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
@@ -414,8 +414,8 @@ module.controller('avgTimePerModuleCtrl', ['$scope', '$http', 'ReportsService', 
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIVAverageTimePerModuleReport').then(function () {
                 console.log('clinicStatisticReportsPartIVAverageTimePerModuleReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
@@ -446,8 +446,8 @@ module.controller('mostSkippedQuestionsCtrl', ['$scope', '$http', 'ReportsServic
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport').then(function () {
                 console.log('clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
@@ -478,8 +478,8 @@ module.controller('mostCommonTypesOfAlertsPercentagesCtrl', ['$scope', '$http', 
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport').then(function () {
                 console.log('clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
@@ -510,8 +510,8 @@ module.controller('positiveScreensCtrl', ['$scope', '$http', 'ReportsService', f
             ReportsService.runNumericReport(formData, 'clinicStatisticReportsPartVIPositiveScreensReport').then(function () {
                 console.log('clinicStatisticReportsPartVIPositiveScreensReport report generated successfully');
             });
+            $scope.reset();
         }
-        $scope.reset();
     }
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
