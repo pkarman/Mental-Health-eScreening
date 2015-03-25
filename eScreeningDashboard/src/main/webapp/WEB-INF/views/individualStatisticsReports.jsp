@@ -139,6 +139,7 @@
 					</div>
 					<div class="col-md-6">
 						<label for="battery-list-table-filter">Select Modules *</label></strong>
+						<p class="help-block" ng-if="reportForm.selectAllSurvey.$error.required">Select Modules is Required</p>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							<input type="text" class="form-control" id="battery-list-table-filter" data-action="filter" data-filters="#battery-list-table" placeholder="Filter by Modules" />	
