@@ -4,9 +4,11 @@
 	angular.module('Editors')
 		.factory('AssessmentVariableManager', ['MeasureService', '$q', function(MeasureService, $q) {
 
-			function setTransformations(av) {
+			function setTransformations(av, block) {
 				var deferred = $q.defer();
 
+				av.transformations = [];
+				
 				if (av.measureTypeId === 1) {
 					// Get the validations for freetext
 					MeasureService.one(av.measureId).getList('validations').then(function (validations) {
@@ -15,15 +17,13 @@
 					});
 				}
 
-				if (av.measureTypeId === 3) {
-					// Get the answer list for multi or single select questions
-					MeasureService.one(av.measureId).getList('answers').then(function (answers) {
-						av.setTransformations(answers);
-						deferred.resolve(av.transformations);
-					});
-				}
+				//if this is a select multi then we only allow trans when in a text block (else set default transformations)
 				else {
-					av.setTransformations();
+					if (av.measureTypeId !== 3
+						|| !block || block.type === 'text'){ //block is normally only defined with conditions (but this could change)
+					
+						av.setTransformations();
+					}
 					deferred.resolve(av.transformations);
 				}
 
