@@ -110,7 +110,7 @@
 									   placeholder="MM/DD/YYYY" autocomplete="off" required  />
 									   <div class="input-group-addon"><i class="glyphicon glyphicon-calendar" title="Click to open calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>
-									<p class="help-block" ng-if="reportForm.fromDate.$error.required">The To Date is required</p>
+									<p class="help-block" ng-if="reportForm.toDate.$error.required">The To Date is required</p>
 								</div>
 							</div>
 						</div>
