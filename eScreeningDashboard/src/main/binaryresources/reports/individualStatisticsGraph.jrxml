@@ -37,25 +37,28 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement x="5" y="8" width="65" height="52" uuid="6fe7039b-1f86-4380-9896-001518588ca2"/>
+					<reportElement x="0" y="8" width="80" height="52" uuid="6fe7039b-1f86-4380-9896-001518588ca2"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font fontName="Arial" size="11" isBold="true"/>
+						<paragraph leftIndent="4" rightIndent="4"/>
 					</textElement>
 					<text><![CDATA[Last
 Depression
 Score]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="5" y="59" width="65" height="50" uuid="05409781-077c-49b0-9a1b-bbcd34a11372"/>
+					<reportElement x="0" y="59" width="80" height="50" uuid="05409781-077c-49b0-9a1b-bbcd34a11372"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font fontName="Arial" size="40" isBold="true"/>
+						<paragraph leftIndent="4" rightIndent="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{reportScore}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="5" y="108" width="65" height="28" uuid="5be799ba-4d57-4645-b411-16a2fca2ae69"/>
+					<reportElement x="0" y="108" width="80" height="28" uuid="5be799ba-4d57-4645-b411-16a2fca2ae69"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="Arial" size="10" isBold="false" isUnderline="false"/>
+						<paragraph leftIndent="4" rightIndent="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{scoreMeaning}]]></textFieldExpression>
 				</textField>
