@@ -7,6 +7,8 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.HealthFactor;
@@ -264,4 +266,16 @@ public interface VeteranAssessmentService {
      */
     Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
     		int numOfMonth);
+
+    String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getAverageTimePerAssessment(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getNumOfBatteries(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getVeteranWithMultiple(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
 }

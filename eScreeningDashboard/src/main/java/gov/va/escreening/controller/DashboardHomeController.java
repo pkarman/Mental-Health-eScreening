@@ -2,14 +2,6 @@ package gov.va.escreening.controller;
 
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -48,7 +46,7 @@ public class DashboardHomeController {
         return "dashboardHome";
     }
 
-    @RequestMapping(value = "/allowedTabs", method = RequestMethod.GET)
+    @RequestMapping(value = "/dashboard/allowedTabs", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Boolean> getTabPermissions(HttpServletRequest request) {
         logger.debug("Request for tab permissions");

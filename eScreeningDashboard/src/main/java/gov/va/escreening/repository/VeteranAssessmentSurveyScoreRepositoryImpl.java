@@ -2,16 +2,17 @@ package gov.va.escreening.repository;
 
 import gov.va.escreening.dto.report.ScoreDateDTO;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
+import gov.va.escreening.util.ReportRepositoryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static gov.va.escreening.util.ReportRepositoryUtil.*;
 
 /**
  * Created by kliu on 3/3/15.
@@ -29,19 +30,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         setClazz(VeteranAssessmentSurveyScore.class);
     }
 
-    private Date getDateFromString(String str){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-
-        try {
-            return simpleDateFormat.parse(str);
-        }
-        catch(ParseException e){
-            return null;
-        }
-
-    }
-
-    /**
+     /**
      * Query for 601
      *
      * @param surveyId
