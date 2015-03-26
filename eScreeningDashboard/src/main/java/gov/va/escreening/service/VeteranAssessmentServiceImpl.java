@@ -14,6 +14,7 @@ import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
@@ -1217,6 +1218,11 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     @Override
     public List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds) {
         return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
+    }
+
+    @Override
+    public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getTopSkippedQuestions(clinicIds, fromDate, toDate);
     }
 
 

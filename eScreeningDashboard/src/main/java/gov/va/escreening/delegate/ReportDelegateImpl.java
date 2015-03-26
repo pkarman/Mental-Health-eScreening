@@ -2,7 +2,6 @@ package gov.va.escreening.delegate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Table;
 import gov.va.escreening.controller.dashboard.ReportsController;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
@@ -26,7 +25,9 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by munnoo on 3/16/15.
@@ -657,34 +658,18 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachClinics(parameterMap, requestData);
         JRDataSource dataSource = null;
 
-        List<Report595DTO> dtos = Lists.newArrayList();
 
-        int i = 1;
-        for (Integer surveyId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
-            final Table<String, String, Object> assessmentVarsForSurvey = avs.getAssessmentVarsForSurvey(surveyId, true, false);
-            final Collection<Map<String, Object>> avCollection = assessmentVarsForSurvey.rowMap().values();
+        List<Integer> clinicIds = (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+        String fromDate = requestData.get(ReportsUtil.FROMDATE).toString();
+        String toDate = requestData.get(ReportsUtil.TODATE).toString();
 
-            for (Map<String, Object> av : avCollection) {
-                if (i <= 20 && !Integer.valueOf(0).equals(av.get("measureId"))) {
-                    Report595DTO report595DTO = new Report595DTO();
-                    report595DTO.setOrder("" + i++);
-                    report595DTO.setPercentage(String.format("%5.2f%%", Math.random() * 100));
-                    report595DTO.setQuestions(av.get("displayName").toString());
-                    report595DTO.setVariableName(av.get("name").toString());
-                    dtos.add(report595DTO);
-                }
-                if (i > 20) {
-                    break;
-                }
-            }
+        List<Report595DTO> dtos = veteranAssessmentService.getTopSkippedQuestions(clinicIds, fromDate, toDate);
+
+        if (dtos==null || dtos.isEmpty()){
+            dataSource = new JREmptyDataSource();
+        }else {
+            dataSource = new JRBeanCollectionDataSource(dtos);
         }
-        Collections.sort(dtos, new Comparator<Report595DTO>() {
-            @Override
-            public int compare(Report595DTO o1, Report595DTO o2) {
-                return Float.valueOf(o2.getPercentage().replaceAll("%", "").trim()).compareTo(Float.valueOf(o1.getPercentage().replaceAll("%", "").trim()));
-            }
-        });
-        dataSource = new JRBeanCollectionDataSource(dtos);
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
