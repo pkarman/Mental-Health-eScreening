@@ -5,8 +5,7 @@ $(document).ready(function() {
 
 	// Add Ladda preloader
 	// Ladda.bind( '.createAssessmentButton', 20000 );
-	
-		
+
 	// Load Selected Program 
 	var $li = $('.battery_list').find('li');
 	
@@ -16,6 +15,7 @@ $(document).ready(function() {
 	var clearAllModulesBtn 	= ".clear_all_modules"
 
 	
+	// Load Selected Program
 	loadSelectedProgram();
 	
 	// Tri State Check
@@ -29,13 +29,14 @@ $(document).ready(function() {
             case 0:
                 el.data('checked',1);
                 el.prop('indeterminate',true);
+				el.prop('checked',false);
                 break;
             
             // indeterminate, going checked
             case 1:
                 el.data('checked',2);
                 el.prop('indeterminate',false);
-                el.prop('checked',true);                
+                el.prop('checked',true);       
                 break;
             
             // checked, going unchecked
@@ -95,37 +96,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
-	/*
-	$(".battery_list input").on("click", function(e) {
-			$(".module_list tr input").prop('checked', false);
-			
-			if(reset_check == false){
-				for ( var i in module_values ) {
-					$("input:checkbox[value="+module_values[i]+"]").prop('checked', true);
-				}
-			}
-			
-			$(".module_list  ." + $(this).attr('class')).prop('checked', true);
-			$(".module_list tr").removeClass("highlight");
-			
-			var classes = $(this).attr('class').split(' ');
 
-			
-			for(var i=0; i<classes.length; i++){
-				  $(".module_list ."+classes[i]).closest("tr").addClass("highlight"); 
-			}
-	});*/
-	
-	
-	/*
-	var selectedProgramId = $("#selectedProgramId").val();
-	$li.hide().filter(".program_" + selectedProgramId).show();
-	if((selectedProgramId == "") || (typeof selectedProgramId == "undefined" )){
-		$li.show();	
-	}
-	*/
-	
 	
 	/* Need to clean - From edit Veteran Assessment */
 	
@@ -174,7 +145,7 @@ $(document).ready(function() {
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				//alert(errorThrown);
+				/// alert("Error");
 			}
 		});
 		
@@ -184,28 +155,18 @@ $(document).ready(function() {
 	
 	$(".battery_list input").on("click", function(e) {
 		 clearAllCheckbox();
-		//$(".module_list tr input").prop('checked', false);
-		// console.log($(this).attr("data-ref"));
 		function check(x, i){
 			if(x == 0){
-				console.log("selectedSurveyIdList"+i);
-				console.log("value "+ x);
-				//element = "selectedSurveyIdList"+i;
-				//document.getElementById(element).indeterminate = false;
-				//$(element).prop("indeterminate", false);
+				$(element).attr('checked', false);
 			}
 			if(x == 1){
-				console.log("selectedSurveyIdList"+i);
-				console.log("value "+ x);
 				element = "selectedSurveyIdList"+i;
 				document.getElementById(element).indeterminate = true;
-				$(element).prop("indeterminate", true);    
+				$(element).prop("indeterminate", true);
+				$(element).attr('checked', false);  
 			}
 			if(x == 2){
-				console.log("selectedSurveyIdList"+i);
-				console.log("value "+ x);
 				element = "#selectedSurveyIdList"+i;
-				//document.getElementById(element).indeterminate = false;
 				$(element).attr('checked', true);
 			}
 		}
@@ -217,9 +178,6 @@ $(document).ready(function() {
 		}
 		var data = $(this).attr("data-ref")
 		data = data.replace('{','').replace('}','').replace(/\s/g,"").split(',');
-		
-		console.log("data>>>>>>>>>> "+data);
-		console.log("data length >>>>>>>>> "+data.length);
 		
 		for (i = 0; i < data.length; ++i) {   
 			check(data[i], i+1);
@@ -285,7 +243,6 @@ $(document).ready(function() {
 	function loadSelectedProgram(){
 		var selectedProgramIdVal = $("#selectedProgramId").val();
 		$li.hide().filter(".program_" + selectedProgramIdVal).show();
-		//clearAllSelectins(); // Clear All Module Selections
 		
 		if((selectedProgramIdVal == "") || (typeof selectedProgramIdVal == "undefined" )){
 			$li.show();	
