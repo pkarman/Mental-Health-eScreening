@@ -2,11 +2,13 @@ package gov.va.escreening.delegate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gov.va.escreening.controller.dashboard.ReportsController;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.report.*;
+import gov.va.escreening.repository.UserProgramRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.*;
 import gov.va.escreening.util.ReportsUtil;
@@ -20,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -28,6 +31,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by munnoo on 3/16/15.
@@ -63,6 +67,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
     @Resource(type = VeteranAssessmentService.class)
     private VeteranAssessmentService veteranAssessmentService;
+
+    @Resource(type = UserProgramRepository.class)
+    private UserProgramRepository upr;
 
     @Resource(name = "reportableFormulasMap")
     Map<String, String> reportableFormulasMap;
@@ -495,8 +502,8 @@ public class ReportDelegateImpl implements ReportDelegate {
         final LocalDate toDate = dtf.parseLocalDate(requestData.get(ReportsUtil.TODATE).toString());
 
         List<Integer> clinicIds = (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
-        String strFromDate = (String)requestData.get(ReportsUtil.FROMDATE);
-        String strToDate = (String)requestData.get(ReportsUtil.TODATE);
+        String strFromDate = (String) requestData.get(ReportsUtil.FROMDATE);
+        String strToDate = (String) requestData.get(ReportsUtil.TODATE);
 
         int totals = 0;
         Map<LocalDate, Integer> dateTotalMap = Maps.newHashMap();
@@ -505,7 +512,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             List<Report593ByDayDTO> data = veteranAssessmentService.getBatteriesByDay(strFromDate, strToDate, clinicIds);
             parameterMap.put("byDay", data);
 
-            for(Report593ByDayDTO dto : data){
+            for (Report593ByDayDTO dto : data) {
                 totals += Integer.parseInt(dto.getTotal().trim());
             }
 
@@ -521,7 +528,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("showByTime", true);
             List<Report593ByTimeDTO> data = veteranAssessmentService.getBatteriesByTime(strFromDate, strToDate, clinicIds);
 
-            for(Report593ByTimeDTO dto : data){
+            for (Report593ByTimeDTO dto : data) {
                 total2 += Integer.parseInt(dto.getTotal().trim());
             }
 
@@ -567,7 +574,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 && (Boolean) requestData.get("averageTimePerAssessment")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue(
-                    veteranAssessmentService.getAverageTimePerAssessment(clinicIds, strFromDate, strToDate)+" min"
+                    veteranAssessmentService.getAverageTimePerAssessment(clinicIds, strFromDate, strToDate) + " min"
             );
             keyValueDTO.setKey("Average time per assessment");
             ks.add(keyValueDTO);
@@ -665,9 +672,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Report595DTO> dtos = veteranAssessmentService.getTopSkippedQuestions(clinicIds, fromDate, toDate);
 
-        if (dtos==null || dtos.isEmpty()){
+        if (dtos == null || dtos.isEmpty()) {
             dataSource = new JREmptyDataSource();
-        }else {
+        } else {
             dataSource = new JRBeanCollectionDataSource(dtos);
         }
 
@@ -740,6 +747,28 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClinicDto> getClinicDtoList(EscreenUser escreenUser) {
+        final List<ClinicDto> clinicDtoList = getClinicDtoList();
+        Integer userId = escreenUser.getUserId();
+
+        final List<ClinicDto> allowedClinic = Lists.newArrayList();
+        final Set<Integer> uniqueProgramIds= Sets.newHashSet();
+        // use this user Id and go an get try to get UserProgram using this id and each programId from clinic.
+        // If found then that is a intersection and that clinic is allowed
+        for (ClinicDto clinicDto : clinicDtoList) {
+            Integer programId=clinicDto.getProgramId();
+            boolean validProgramId=uniqueProgramIds.add(programId);
+
+            if (validProgramId && upr.hasUserAndProgram(userId, programId)) {
+                allowedClinic.add(clinicDto);
+            }
+        }
+
+        return allowedClinic;
     }
 
     private void attachDates(Map<String, Object> dataCollection, Map<String, Object> requestData) {

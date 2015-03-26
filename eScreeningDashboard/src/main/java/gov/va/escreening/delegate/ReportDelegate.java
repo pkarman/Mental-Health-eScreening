@@ -45,4 +45,6 @@ public interface ReportDelegate {
     Map<String,Object> genClinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
     Map<String,Object> genClinicStatisticReportsPartVIPositiveScreensReport(Map<String, Object> requestData, EscreenUser escreenUser);
+
+    List<ClinicDto> getClinicDtoList(EscreenUser escreenUser);
 }

@@ -43,8 +43,8 @@ public class ReportsController {
 
     @RequestMapping(value = "/listClinics", method = RequestMethod.GET)
     @ResponseBody
-    public List<ClinicDto> getAllClinics() {
-        return rd.getClinicDtoList();
+    public List<ClinicDto> getAllClinics(@CurrentUser EscreenUser escreenUser) {
+        return rd.getClinicDtoList(escreenUser);
     }
 
     // ticket 601 related
