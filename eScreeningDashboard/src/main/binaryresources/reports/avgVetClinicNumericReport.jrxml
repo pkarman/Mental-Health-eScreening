@@ -51,7 +51,7 @@
 				<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="25" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+				<reportElement x="0" y="24" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{veteranModuleGraphReportDTOs})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/VetNumericModule.jasper"]]></subreportExpression>
 			</subreport>

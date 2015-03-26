@@ -9,7 +9,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="211" splitType="Stretch">
+		<band height="179" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="572" height="20" uuid="9a2e54eb-d7e9-45b5-906b-8885d902bff6"/>
 				<textElement>

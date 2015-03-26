@@ -18,7 +18,7 @@
 				<textField>
 					<reportElement x="0" y="0" width="50" height="20" uuid="9c579dec-b631-423b-b546-28e41595aed0"/>
 					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font fontName="Arial" size="5"/>
+						<font fontName="Arial" size="4"/>
 						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{screeningDate}]]></textFieldExpression>
@@ -29,7 +29,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement x="0" y="0" width="150" height="20" uuid="05a35de8-587f-4d81-9971-bd8862683bd1"/>
 					<textElement verticalAlignment="Top">
-						<font fontName="Arial" size="5"/>
+						<font fontName="Arial" size="4"/>
 						<paragraph leftIndent="2" rightIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>

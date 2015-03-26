@@ -61,7 +61,7 @@
 					<textField>
 						<reportElement x="0" y="20" width="80" height="50" uuid="5c60bc7f-5b24-4742-9c52-f83ca3c2081e"/>
 						<textElement textAlignment="Center" verticalAlignment="Bottom">
-							<font fontName="Arial" size="30" isBold="true"/>
+							<font fontName="Arial" size="34" isBold="true"/>
 						</textElement>
 						<textFieldExpression><![CDATA[$F{score}]]></textFieldExpression>
 					</textField>
