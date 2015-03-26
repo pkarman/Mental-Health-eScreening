@@ -84,7 +84,7 @@
 
 
 
-	<div class="container">
+	<div class="container left-right-shadow">
 
 <form:form modelAttribute="veteranDetailFormBean" method="post">
 

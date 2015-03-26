@@ -16,6 +16,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -278,4 +279,23 @@ public interface VeteranAssessmentService {
     List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds);
 
     List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    
+    /**
+     * Creates an assessment that is associated with an appointment.
+     * @param veteranId
+     * @param programId
+     * @param clinicId
+     * @param clinicianId
+     * @param createdByUserId
+     * @param selectedNoteTitleId
+     * @param selectedBatteryId
+     * @param surveyIdList
+     * @param apptDate
+     * @return
+     */
+    public abstract boolean createAssessmentWithAppointment(Integer veteranId,
+			Integer programId, Integer clinicId, Integer clinicianId, Integer createdByUserId, Integer selectedNoteTitleId,
+			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate) throws AssessmentAlreadyExistException;
+
 }

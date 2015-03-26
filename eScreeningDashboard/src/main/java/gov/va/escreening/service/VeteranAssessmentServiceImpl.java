@@ -12,12 +12,53 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.*;
+
+import gov.va.escreening.entity.AssessmentAppointment;
+import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.ClinicalNote;
+import gov.va.escreening.entity.Consult;
+import gov.va.escreening.entity.DashboardAlert;
+import gov.va.escreening.entity.Event;
+import gov.va.escreening.entity.HealthFactor;
+import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.entity.SurveyPage;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentAuditLog;
+import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
+import gov.va.escreening.entity.VeteranAssessmentNote;
+import gov.va.escreening.entity.VeteranAssessmentSurvey;
+import gov.va.escreening.form.AssessmentReportFormBean;
+import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
+import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.BatteryRepository;
+import gov.va.escreening.repository.ClinicRepository;
+import gov.va.escreening.repository.ClinicalNoteRepository;
+import gov.va.escreening.repository.EventRepository;
+import gov.va.escreening.repository.NoteTitleRepository;
+import gov.va.escreening.repository.ProgramRepository;
+import gov.va.escreening.repository.SurveyRepository;
+import gov.va.escreening.repository.UserRepository;
+import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
+import gov.va.escreening.repository.VeteranAssessmentDashboardAlertRepository;
+import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
+import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
+import gov.va.escreening.repository.VeteranAssessmentRepository;
+import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
+import gov.va.escreening.repository.VeteranRepository;
+
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
@@ -75,6 +116,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	
 	@Autowired
 	private VariableResolverService variableResolverSvc;
+	
+	@Autowired
+	private AssessmentAppointmentRepository assessmentApptRepo;
 	
 	@Autowired
 	private AssessmentVariableRepository assessmentVariableRepo;
@@ -1219,5 +1263,26 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
     }
 
+	
+	@Override
+	public boolean createAssessmentWithAppointment(Integer veteranId, Integer programId,
+			Integer clinicId, Integer clinicianId, Integer createdByUserId,
+			Integer selectedNoteTitleId, Integer selectedBatteryId,
+			List<Integer> surveyIdList, Date date) throws AssessmentAlreadyExistException
+	{
+		Integer vetAssessmentId = create(veteranId, programId, clinicId, clinicianId,
+				createdByUserId, selectedNoteTitleId, selectedBatteryId, surveyIdList);
+		if(vetAssessmentId !=null)
+		{
+			AssessmentAppointment aa = new AssessmentAppointment();
+			aa.setAppointmentDate(date);
+			aa.setVetAssessmentId(vetAssessmentId);
+			aa.setDateCreated(Calendar.getInstance().getTime());
+			assessmentApptRepo.create(aa);
+			assessmentApptRepo.commit();
+			return true;
+		}
+		return false;
+	}
 
 }

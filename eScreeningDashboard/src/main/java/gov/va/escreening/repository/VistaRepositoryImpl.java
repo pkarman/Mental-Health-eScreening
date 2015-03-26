@@ -254,6 +254,23 @@ public class VistaRepositoryImpl implements VistaRepository {
 
 		return resultList;
 	}
+	
+	@Override
+	public List<VistaVeteranAppointment> getVeteranAppointments(String division, String vpid, String duz, Date start, Date end,String veteranIen) {
+
+		List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();
+		vistaRpcParamList.add(new VistaRpcParam("string", veteranIen)); 	// Veteran IEN
+		vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(start, VistaDateFormat.MMdd)));
+		vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(end, VistaDateFormat.MMddHHmmss)));
+		vistaRpcParamList.add(new VistaRpcParam("string", "0"));			// Skip (1 or 0), if 1 skip over admissions else include admissions
+		
+
+		List<VistaVeteranAppointment> resultList = query(division, vpid, duz, "", "OR CPRS GUI CHART", "ORWCV VST", vistaRpcParamList, new OrwptApptlstListExtractor());
+
+		return resultList;
+	}
+	
+	
 
 	@Override
 	public List<VistaVeteranClinicalReminder> getVeteranClinicalReminders(
