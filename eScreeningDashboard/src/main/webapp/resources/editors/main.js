@@ -46,12 +46,24 @@ Editors.value('TemplateCondition', EScreeningDashboardApp.models.TemplateConditi
 Editors.value('TemplateBlock', EScreeningDashboardApp.models.TemplateBlock);
 
 Editors.config(function (RestangularProvider, $provide) {
-
+	
     RestangularProvider.setBaseUrl('services/');
     RestangularProvider.setRequestSuffix('.json');
     // Explicitly setting cache to false because requests were becoming stale
     RestangularProvider.setDefaultHttpFields({cache: false});
 
+    /**
+     * Work around for a very strange default Restangular behavior: 
+     * https://github.com/mgonto/restangular/issues/78#issuecomment-18687759
+     */
+    RestangularProvider.setRequestInterceptor(function(elem, operation) {
+        if (operation === 'remove'){
+            return null;
+        }
+
+        return elem;
+    });
+    
     RestangularProvider.addResponseInterceptor(function (data, operation, what) {
 
         var newResponse;

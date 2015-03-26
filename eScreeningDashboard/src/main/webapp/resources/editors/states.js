@@ -68,21 +68,6 @@ angular.module('Editors')
 					resolve: {
 						rule: ['$stateParams', 'rules', 'RuleService', function($stateParams, rules, RuleService) {
 							return ($stateParams.id) ? rules.get($stateParams.id) : RuleService.one();
-						}],
-						assessmentVariables: ['AssessmentVariableService', function(AssessmentVariableService) {
-							return AssessmentVariableService.query({surveyId: 1});
-						}],
-						consults: ['EventService', function(EventService) {
-							return EventService.getList({type: 1});
-						}],
-						healthFactors: ['EventService', function(EventService) {
-							return EventService.getList({type: 2});
-						}],
-						dashboardAlerts: ['EventService', function(EventService) {
-							return EventService.getList({type: 3});
-						}],
-						questions: ['EventService', function(EventService) {
-							return EventService.getList({type: 4});
 						}]
 					}
 				})
