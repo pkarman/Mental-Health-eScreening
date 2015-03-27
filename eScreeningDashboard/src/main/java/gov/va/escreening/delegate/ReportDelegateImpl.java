@@ -756,14 +756,12 @@ public class ReportDelegateImpl implements ReportDelegate {
         Integer userId = escreenUser.getUserId();
 
         final List<ClinicDto> allowedClinic = Lists.newArrayList();
-        final Set<Integer> uniqueProgramIds= Sets.newHashSet();
         // use this user Id and go an get try to get UserProgram using this id and each programId from clinic.
         // If found then that is a intersection and that clinic is allowed
         for (ClinicDto clinicDto : clinicDtoList) {
             Integer programId=clinicDto.getProgramId();
-            boolean validProgramId=uniqueProgramIds.add(programId);
 
-            if (validProgramId && upr.hasUserAndProgram(userId, programId)) {
+            if (upr.hasUserAndProgram(userId, programId)) {
                 allowedClinic.add(clinicDto);
             }
         }
