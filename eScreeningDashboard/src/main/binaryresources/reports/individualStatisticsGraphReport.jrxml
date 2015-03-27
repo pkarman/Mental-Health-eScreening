@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.815000000000002"/>
+	<property name="ireport.zoom" value="1.9965000000000035"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
@@ -92,22 +92,22 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="7" width="80" height="32" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="80" height="20" uuid="f02d324f-1b2f-4294-9772-0cd47fa1df51"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="Arial" size="12"/>
+						<font fontName="Arial" size="10"/>
 						<paragraph leftIndent="3" rightIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="87" width="80" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<reportElement x="0" y="69" width="80" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="Arial"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreMeaning}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="38" width="80" height="50" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
+					<reportElement x="0" y="20" width="80" height="50" uuid="75785421-fa13-4d63-876d-a6bc32ac7644"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font fontName="Arial" size="34" isBold="true"/>
 					</textElement>
@@ -145,14 +145,14 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="7" width="215" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
-					<textElement textAlignment="Center">
+					<reportElement x="0" y="1" width="215" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement x="7" y="30" width="200" height="156" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<reportElement x="7" y="23" width="200" height="165" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber.jasper"]]></subreportExpression>
 				</subreport>

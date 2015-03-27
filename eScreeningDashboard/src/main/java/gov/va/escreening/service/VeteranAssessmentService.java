@@ -9,6 +9,7 @@ import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.HealthFactor;
@@ -280,7 +281,6 @@ public interface VeteranAssessmentService {
 
     List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
 
-    
     /**
      * Creates an assessment that is associated with an appointment.
      * @param veteranId
@@ -298,4 +298,7 @@ public interface VeteranAssessmentService {
 			Integer programId, Integer clinicId, Integer clinicianId, Integer createdByUserId, Integer selectedNoteTitleId,
 			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate) throws AssessmentAlreadyExistException;
 
+    List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
+
+    String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate);
 }

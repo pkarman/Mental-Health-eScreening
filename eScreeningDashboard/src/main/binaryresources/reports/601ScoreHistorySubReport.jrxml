@@ -13,7 +13,7 @@
 		<band height="20" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="480" height="20" uuid="4d5d3fb0-c36b-4b3c-b4f5-fe5659704072"/>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Bottom">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[  Score History by VistA Clinic]]></text>

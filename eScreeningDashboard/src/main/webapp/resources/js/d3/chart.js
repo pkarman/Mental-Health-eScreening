@@ -236,7 +236,7 @@ function graphGenerator(dataStructure, dataDataset){
 		      .attr('width', legendPanel.width)
 		      .attr('height', 5 * dataset.length)
 		      .attr('x', 0)
-		      .attr('y', 100);
+		      .attr('y', 120);
 		
 		   // legend Text & Box
 		  textWidth = 8;
@@ -257,14 +257,14 @@ function graphGenerator(dataStructure, dataDataset){
 				  .attr('font-family', 'Arial')
 				  .attr("dy", 0)
 				  .text(s)
-				  .call(wrap, 60);
+				  .call(wrap);
 
 			   box = g.append('rect')
 		          .attr('fill', colors[i])
 		          .attr('width', 10)
 		          .attr('height', 10)
 		          .attr('x', -15)
-		          .attr('y', 90);
+		          .attr('y', 92);
 		      	  textWidth += 60  + 10 ;
 				  
               console.log("Parse 8----");
@@ -512,7 +512,7 @@ function graphGenerator(dataStructure, dataDataset){
 					var text = graphParams.legends[i];
 					return text;
 				})
-				.call(wrap, 100);
+				.call(wrap);
 	
 			legend.append("circle")
 				.classed("point", true)
@@ -591,51 +591,55 @@ function graphGenerator(dataStructure, dataDataset){
 	 	   
 
 
-	// Text Wrapper
-	function wrap(text, width) {
-		console.log("wrap text");
-		console.log(text);
-		text.each(function () {
-			var text = d3.select(this),
-				words = text.text().split(/\s+/).reverse(),
-				word,
-				line = [],
-				lineNumber = 0,
-				lineHeight = 1.1, // ems
-				y = text.attr("y"),
-				dy = parseFloat(text.attr("dy")),
-				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-			while (word = words.pop()) {
-				line.push(word);
+// Text Wrapper
+function wrap(text) {
+	text.each(function () {
+		var text = d3.select(this),
+			words = text.text().split(/\s+/).reverse(),
+			word,
+			line = [],
+			lineNumber = -1,
+			lineHeight = 1.0, // ems
+			y = text.attr("y"),
+			dy = parseFloat(text.attr("dy")),
+			tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+			console.log("tspan >>");
+			console.log(tspan);
+			console.log("<< tspan");
+	
+		while (word = words.pop()) {
+			line.push(word);
+			tspan.text(line.join(" "));
+			//if (tspan.node().getComputedTextLength() > width) {
+				line.pop();
 				tspan.text(line.join(" "));
-				if (tspan.node().getComputedTextLength() > width) {
-					line.pop();
-					tspan.text(line.join(" "));
-					line = [word];
-					tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-				}
-			}
-		});
-	}
+				line = [word];
+				tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+
+			
+			//}
+		}
+	});
+}
 				
-	function hasMoreThanOne(obj) {
-			if (Object.keys) { 
-				return Object.keys(obj).length > 1;
-			}
-			var c = 0;
-			for (field in obj) {
-				if(c > 1){ return true; }
-				c++;
-			}
-			return false;
-			}	
-	}			
-	// Root Function to generate SVG obj
-	var svgObj  = function(){
-		// graphSVG created for Khalid
-		var graphSVG = $(".graphWrapper").html();
-		return graphSVG;
-	}
+function hasMoreThanOne(obj) {
+		if (Object.keys) { 
+			return Object.keys(obj).length > 1;
+		}
+		var c = 0;
+		for (field in obj) {
+			if(c > 1){ return true; }
+			c++;
+		}
+		return false;
+		}	
+}			
+// Root Function to generate SVG obj
+var svgObj  = function(){
+	// graphSVG created for Khalid
+	var graphSVG = $(".graphWrapper").html();
+	return graphSVG;
+}
 
 $(document).ready(function() {
 //	 // Example Dataset for Structure JSON and Data JSON

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="595Report" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="2.4157650000000035"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="73"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="noData" class="java.lang.Boolean"/>
@@ -147,7 +147,7 @@
 						</textElement>
 						<textFieldExpression><![CDATA[$F{order}]]></textFieldExpression>
 					</textField>
-					<textField isStretchWithOverflow="true">
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 						<reportElement stretchType="RelativeToTallestObject" x="51" y="0" width="100" height="24" uuid="f17e3844-d627-41fe-8f47-6684f658da59"/>
 						<box>
 							<pen lineWidth="1.0"/>

@@ -44,14 +44,14 @@
 	<detail>
 		<band height="256" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="150" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
+				<reportElement x="0" y="0" width="572" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clinicName}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="0" y="25" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+				<reportElement x="0" y="24" width="572" height="152" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{veteranModuleGraphReportDTOs})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["/reports/VetNumericModule.jasper"]]></subreportExpression>
 			</subreport>

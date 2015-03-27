@@ -1,15 +1,6 @@
 package gov.va.escreening.delegate;
 
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_EVENT_MARKED_COMPLETED;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_CALL_TIME;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_EMAIL;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_FIRST_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_LAST_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_MIDDLE_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_PHONE_;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_SSN_LAST_FOUR;
-import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
-import static gov.va.escreening.constants.AssessmentConstants.SURVEY_IDENTIFICATION_ID;
+import com.google.common.base.Strings;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.AssessmentContext;
@@ -17,10 +8,7 @@ import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranDtoHelper;
-import gov.va.escreening.dto.ae.Answer;
-import gov.va.escreening.dto.ae.AssessmentRequest;
-import gov.va.escreening.dto.ae.AssessmentResponse;
-import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.dto.ae.*;
 import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.EntityNotFoundException;
@@ -29,19 +17,17 @@ import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.repository.*;
 import gov.va.escreening.service.*;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import gov.va.escreening.variableresolver.VariableResolverServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Strings;
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
+
+import static gov.va.escreening.constants.AssessmentConstants.*;
 
 @Transactional
 public class AssessmentDelegateImpl implements AssessmentDelegate {
@@ -275,6 +261,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		// update the status of the assessment to complete
 		AssessmentStatus status = assessmentStatusRepository.findOne(AssessmentStatusEnum.COMPLETE.getAssessmentStatusId());
 		veteranAssessment.setAssessmentStatus(status);
+        veteranAssessment.setDateCompleted(new Date());
 		veteranAssessmentRepository.update(veteranAssessment);
 
 		// TODO: Currently only a Veteran can take the assessment, person type will need to be detected once a

@@ -15,6 +15,7 @@ import gov.va.escreening.dto.dashboard.SearchResult;
 
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
@@ -1263,7 +1264,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
     }
 
-	
 	@Override
 	public boolean createAssessmentWithAppointment(Integer veteranId, Integer programId,
 			Integer clinicId, Integer clinicianId, Integer createdByUserId,
@@ -1285,4 +1285,13 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		return false;
 	}
 
+    @Override
+    public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getTopSkippedQuestions(clinicIds, fromDate, toDate);
+    }
+
+    @Override
+    public String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        return String.valueOf(veteranAssessmentRepository.getAvgNumOfAssessmentPerClinicianClinicFor593(strFromDate, strToDate, clinicIds));
+    }
 }

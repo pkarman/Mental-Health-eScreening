@@ -6,13 +6,17 @@ import gov.va.escreening.dto.SortDirection;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -21,7 +25,11 @@ import static gov.va.escreening.util.ReportRepositoryUtil.getDateFromString;
 @Repository
 public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository<VeteranAssessment> implements VeteranAssessmentRepository {
 
-	public VeteranAssessmentRepositoryImpl() {
+
+    @Autowired
+    private MeasureRepository measureRepository;
+
+    public VeteranAssessmentRepositoryImpl() {
 		super();
 
 		setClazz(VeteranAssessment.class);
@@ -410,14 +418,26 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     }
 
     @Override
-    public Integer getNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds){
+    public Integer getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds){
 
-        Query q = entityManager.createNativeQuery("select count");
-      //  if ()
-        setParametersFor593(q, fromDate, toDate, clinicIds
-        );
+        Query q = entityManager.createNativeQuery("SELECT \n" +
+                "  count(*)\n" +
+                "FROM\n" +
+                "    veteran_assessment va, clinic c, user u \n" +
+                "WHERE\n" +
+                "\tva.clinic_id = c.clinic_id AND\n" +
+                "\tva.clinic_id = u.user_id AND\n" +
+                "    va.date_completed BETWEEN :fromDate AND :toDate AND\n" +
+                "    va.clinic_id IN (:clinicIds) \n" +
+                "GROUP BY c.clinic_id , u.user_id;");
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        final List<BigInteger> resultList = q.getResultList();
 
-        return 100;
+        int sum = 0;
+        for (BigInteger assessmentCnt : resultList) {
+            sum += Integer.parseInt(assessmentCnt.toString());
+        }
+        return sum / resultList.size();
     }
 
     @Override
@@ -603,6 +623,91 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         return resultList;
 
 
+    }
+
+    @Override
+    public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
+
+        List<Report595DTO> resultList = new ArrayList<>();
+
+        Query q = entityManager.createNativeQuery(
+                "select count(*), measure_id from veteran_assessment_question_presence vsaq " +
+                        "inner join veteran_assessment va on vsaq.veteran_assessment_id = va.veteran_assessment_id " +
+                " where skipped = -1 and date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null "+
+                " group by measure_id " +
+                " order by count(*) desc "
+        );
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        List r = q.getResultList();
+
+        if (r!=null && r.size() > 0){
+            for(Object aRow : q.getResultList()){
+                Object [] data = (Object[])aRow;
+
+                int count = ((Number)data[0]).intValue();
+                int measureId = ((Number)data[1]).intValue();
+
+                if (count == 0)
+                    break;
+
+                Report595DTO dto = new Report595DTO();
+
+                Query q1 = entityManager.createNativeQuery(
+                        "select count(*) from veteran_assessment_question_presence vsaq " +
+                                "inner join veteran_assessment va on vsaq.veteran_assessment_id = va.veteran_assessment_id " +
+                                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                                "and clinic_id in (:clinicIds) and date_completed is not null "+
+                                " and measure_id ="+measureId);
+                setParametersFor593(q1, fromDate, toDate, clinicIds);
+
+                int total = ((Number)q1.getSingleResult()).intValue();
+
+                DecimalFormat formatter = new DecimalFormat("###.##");
+
+                String percent =formatter.format(count*100d/total);
+
+                dto.setPercentage(percent+"% ("+count + "/" + total+")");
+
+                Measure m = measureRepository.findOne(measureId);
+
+                dto.setQuestions(((Number)data[1]).intValue()+"");
+                dto.setQuestions(m.getMeasureText());
+                dto.setVariableName(m.getVariableName());
+                resultList.add(dto);
+            }
+        }
+
+        Collections.sort(resultList, new Comparator<Report595DTO>() {
+            @Override
+            public int compare(Report595DTO o1, Report595DTO o2) {
+
+                String [] a1 = o1.getPercentage().split("%");
+                String [] a2 = o2.getPercentage().split("%");
+                float one = Float.parseFloat(a1[0]);
+                float two = Float.parseFloat(a2[0]);
+                if ( one>two )
+                    return 1;
+                else if (one < two)
+                    return -1;
+
+                return 0;
+            }
+        });
+
+        int index = 1;
+
+        List<Report595DTO> results = new ArrayList<>(20);
+
+        for(Report595DTO dto : resultList){
+            dto.setOrder(Integer.toString(index++));
+            results.add(dto);
+            if (index > 20)
+                break;
+        }
+        return results;
     }
 
     private void setParametersFor593(Query q , String fromDate, String toDate, List<Integer> clinicIds){
