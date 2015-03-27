@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.8150000000000117"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="456"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -421,7 +421,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{missingethnicity_percentage}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="395" y="43" width="46" height="15" uuid="6abbd9d0-e69b-47fa-9066-dca41af85d4c"/>
 					<box>
 						<pen lineWidth="0.5"/>
@@ -434,7 +434,7 @@
 						<font fontName="Arial"/>
 						<paragraph rightIndent="2"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{missingethnicity_count}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="11" y="58" width="100" height="13" uuid="98218c70-b7ea-426b-8087-ccad220c1fef"/>
@@ -734,7 +734,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
-				<text><![CDATA[  Race]]></text>
+				<text><![CDATA[  Age]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="253" width="121" height="142" backcolor="#CCCCCC" uuid="a263cd83-781b-4b00-8046-4bbd5517b137"/>
@@ -1149,7 +1149,7 @@
 						<font fontName="Arial"/>
 						<paragraph rightIndent="2"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{highschooldip_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Transparent" x="395" y="65" width="46" height="15" backcolor="#CCCCCC" uuid="406320f6-4be5-4d6a-89b7-722dd7c048cd"/>
