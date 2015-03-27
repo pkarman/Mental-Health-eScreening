@@ -568,7 +568,11 @@ public class RuleServiceImpl implements RuleService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void deleteRule(Integer ruleId) {
-        ruleRepository.delete(getDbRule(ruleId));
+        Rule rule = getDbRule(ruleId);
+        rule.getEvents().clear();
+        rule.getAssessmentVariables().clear();
+        ruleRepository.update(rule);
+        ruleRepository.delete(rule);
     }
 
     @Override

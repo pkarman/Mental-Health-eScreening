@@ -5,6 +5,9 @@
 	        <button ui-sref="rules.detail" class="btn btn-primary pull-right" type="button">Create Rule</button>
 
             <h1>Manage Rules</h1>
+            
+            <!-- Alerts and Messages -->
+            <alert ng-repeat="alert in alerts track by $index" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
             <div class="row clearfix">
                 <div class="col-md-12 column">

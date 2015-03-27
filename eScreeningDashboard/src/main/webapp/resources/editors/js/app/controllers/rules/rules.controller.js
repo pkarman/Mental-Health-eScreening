@@ -4,6 +4,7 @@
 	Editors.controller('RulesController', ['$scope', '$state', '$filter', 'ngTableParams', 'rules', 'MessageFactory', function ($scope, $state, $filter, ngTableParams, rules, MessageFactory) {
 
 		$scope.rules = rules;
+		$scope.alerts = MessageFactory.get();
 
 		$scope.tableParams = new ngTableParams({
 			page: 1, // show first page
@@ -34,11 +35,15 @@
 			$state.go('rules.detail', {id: rule.id});
 		};
 
-		$scope.deleteRule = function deleteRule(rule) {
-			rule.remove().then(function (response) {
-				MessageFactory.success('The selected rule has been marked for deletion.');
+		$scope.deleteRule = function deleteRule(ruleToRemove) {
+			ruleToRemove.remove().then(function (response) {
+				MessageFactory.clear();
+				MessageFactory.success("Rule '" + ruleToRemove.name + "' has been deleted.");
+				
+				$scope.rules.splice($scope.rules.indexOf(ruleToRemove), 1);
+				$scope.tableParams.reload();
 			}, function (result) {
-				MessageFactory.error('There was an error deleting the selected rule.');
+				MessageFactory.error("There was an error deleting the rule named: " + rule.name);
 			});
 		};
 
