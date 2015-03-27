@@ -2,10 +2,10 @@
     'use strict';
 
     angular.module('Editors').controller('RulesDetailController',
-    		['$scope', '$filter', '$state', '$q', 'rule', 'MessageFactory', 'EventService', 'AssessmentVariableService',
-     function($scope, $filter, $state, $q, rule, MessageFactory, EventService, AssessmentVariableService) {
+    		['$scope', '$filter', '$state', '$q', 'rule', 'rules', 'MessageFactory', 'EventService', 'AssessmentVariableService',
+     function($scope, $filter, $state, $q, rule, rules, MessageFactory, EventService, AssessmentVariableService) {
 
-		var removeQueue = [], addQueue = [];
+		var removeQueue = [], addQueue = [], newRule = true;
 
         $scope.rule = rule;
 		$scope.selectedEvents = {};
@@ -20,6 +20,7 @@
 		$scope.enableTypeDropdown = false;
 
 		if($scope.rule.id != null){
+			newRule = false;
 			rule.getList('events').then(function(events) {
 				$scope.savedEvents = events;
 				$scope.selectedEvents.consults = $filter('filter')(events, {type: 1});
@@ -132,6 +133,19 @@
 		};
 		
 		function successfulSave(){
+			if(newRule){ //add new rule to rule list
+				rules.push($scope.rule);
+			}
+			else{ //update rule name in list 
+				rules.some(function(r){
+					if(r.id == $scope.rule.id){
+						r.name = $scope.rule.name;
+						return true;
+					}
+					return false;
+				});
+			}
+			
 			MessageFactory.add('success', "Rule '" + $scope.rule.name + "' was successfully saved.", true, true);
 			$state.go('rules');
 		};
