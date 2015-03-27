@@ -281,4 +281,6 @@ public interface VeteranAssessmentService {
     List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
 
     List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
+
+    String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate);
 }

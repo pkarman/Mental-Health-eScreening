@@ -103,7 +103,7 @@ public interface VeteranAssessmentRepository extends RepositoryInterface<Veteran
 
     Integer getVetWithMultipleBatteriesFor593(String fromDate, String toDate, List<Integer> clinicIds);
 
-    Integer getNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds);
+    Integer getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds);
 
     List<Report593ByDayDTO> getBatteriesByDayFor593(String fromDate, String toDate, List<Integer> clinicIds);
 

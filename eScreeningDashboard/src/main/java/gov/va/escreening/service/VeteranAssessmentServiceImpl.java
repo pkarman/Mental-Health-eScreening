@@ -1225,5 +1225,10 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return veteranAssessmentRepository.getTopSkippedQuestions(clinicIds, fromDate, toDate);
     }
 
+    @Override
+    public String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        return String.valueOf(veteranAssessmentRepository.getAvgNumOfAssessmentPerClinicianClinicFor593(strFromDate, strToDate, clinicIds));
+    }
+
 
 }

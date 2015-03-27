@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -417,14 +418,26 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     }
 
     @Override
-    public Integer getNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds){
+    public Integer getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds){
 
-        Query q = entityManager.createNativeQuery("select count");
-      //  if ()
-        setParametersFor593(q, fromDate, toDate, clinicIds
-        );
+        Query q = entityManager.createNativeQuery("SELECT \n" +
+                "  count(*)\n" +
+                "FROM\n" +
+                "    veteran_assessment va, clinic c, user u \n" +
+                "WHERE\n" +
+                "\tva.clinic_id = c.clinic_id AND\n" +
+                "\tva.clinic_id = u.user_id AND\n" +
+                "    va.date_completed BETWEEN :fromDate AND :toDate AND\n" +
+                "    va.clinic_id IN (:clinicIds) \n" +
+                "GROUP BY c.clinic_id , u.user_id;");
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        final List<BigInteger> resultList = q.getResultList();
 
-        return 100;
+        int sum = 0;
+        for (BigInteger assessmentCnt : resultList) {
+            sum += Integer.parseInt(assessmentCnt.toString());
+        }
+        return sum / resultList.size();
     }
 
     @Override

@@ -584,7 +584,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberOfAssessmentsPerClinician") != null &&
                 (Boolean) requestData.get("numberOfAssessmentsPerClinician")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue("15");
+            keyValueDTO.setValue(veteranAssessmentService.calculateAvgAssessmentsPerClinician(clinicIds, strFromDate, strToDate));
             keyValueDTO.setKey("Number of assessments per clinician in each clinic");
             ks.add(keyValueDTO);
             bCheckAll = true;
