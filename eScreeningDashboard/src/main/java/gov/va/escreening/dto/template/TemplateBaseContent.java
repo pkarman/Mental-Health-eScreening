@@ -5,12 +5,16 @@ import gov.va.escreening.exception.EscreeningDataValidationException;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.google.common.base.Throwables;
 
 import static gov.va.escreening.constants.AssessmentConstants.*;
 
@@ -21,6 +25,7 @@ import static gov.va.escreening.constants.AssessmentConstants.*;
 	})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
+    private static final Logger logger = LoggerFactory.getLogger(TemplateBaseContent.class);
 	
 	public static String translate(String operator, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
 	{
@@ -100,9 +105,9 @@ public abstract class TemplateBaseContent {
 				translatedVar =  "getCustomValue("+translatedVar+")";
 			}
 		}
-		else if ("eq".equals(operator) || "neq".equals(operator) || 
-				"lt".equals(operator) || "gt".equals(operator) || "lte".equals(operator) 
-				|| "gte".equals(operator))
+		else if ("eq".equals(operator) || "neq".equals(operator) 
+		        || "lt".equals(operator) || "gt".equals(operator) 
+		        || "lte".equals(operator) || "gte".equals(operator))
 		{
 			if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))			
 			{
@@ -121,6 +126,22 @@ public abstract class TemplateBaseContent {
 				}
 				else
 					translatedVar =  "getResponse("+translatedVar+")";
+			}
+			if (left.measureTypeIs(MEASURE_TYPE_TABLE)) //at this point we only support numberOfEntries transformation compared with a number
+			{
+			    if (right instanceof TemplateTextContent)
+                {
+			        String rightContent = ((TemplateTextContent)right).getContent();
+                    try
+                    {
+                        Double.parseDouble(rightContent);
+                        translatedVar =  translatedVar +"?string != DEFAULT_VALUE && " + translatedVar;
+                    }
+                    catch(Exception e){
+                        logger.warn("Unsupported operation: Left operand: {} \nOperator: {}\n right operand: {}\n Full exception {}", 
+                                new Object[]{translatedVar, operator, rightContent, Throwables.getRootCause(e).getLocalizedMessage()});
+                    }
+                }
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
