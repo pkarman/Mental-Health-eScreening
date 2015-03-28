@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,21 +55,24 @@ public class MeasureAnswer implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer")//, fetch = FetchType.LAZY)
     private List<MeasureAnswerValidation> measureAnswerValidationList;
 
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
     @ManyToOne(optional = true)
     private Measure measure;
+    
     @JoinColumn(name = "calculation_type_id", referencedColumnName = "calculation_type_id")
-    @ManyToOne
+    @ManyToOne//(fetch = FetchType.LAZY)
     private CalculationType calculationType;
-    @OneToMany(mappedBy = "measureAnswer")
+    
+    @OneToMany(mappedBy = "measureAnswer")//, fetch = FetchType.LAZY)
     private List<AssessmentVariable> assessmentVariableList;
     /**
      * the following are response data which we do not want to change if this survey is changed *
      */
-    @OneToMany(mappedBy = "measureAnswer")
+    @OneToMany(mappedBy = "measureAnswer")//, fetch = FetchType.LAZY)
     private List<SurveyMeasureResponse> surveyMeasureResponseList;
 
     @Column(name = "vista_text")

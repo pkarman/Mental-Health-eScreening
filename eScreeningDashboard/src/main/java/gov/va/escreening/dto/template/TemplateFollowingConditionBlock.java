@@ -82,6 +82,13 @@ public class TemplateFollowingConditionBlock{
 	    return appendTranslation(BlockUtil.getSpringElTranslator(), sb, ids);
 	}
 	
+	/**
+	 * Translates subconditions with proper parenthesization 
+	 * @param translator
+	 * @param sb
+	 * @param ids
+	 * @return
+	 */
 	public StringBuilder appendTranslation(BlockTranslator translator, StringBuilder sb, Set<Integer>ids){
 	    StringBuilder result = sb;
         

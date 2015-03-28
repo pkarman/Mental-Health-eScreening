@@ -261,9 +261,9 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
-                    .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
-                    .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
-                    .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+                    .addColumn("col1", null, null, ImmutableList.of(false, false, false), null)
+                    .addColumn("col2", null, null, ImmutableList.of(false, true, false), null)
+                    .addColumn("col3", null, null, ImmutableList.of(false, false, false), null)
                     .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -484,7 +484,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("fourth", 
                 render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",3))}",
                         avBuilder));
-        //test when it doesn't exis
+        //test when it doesn't exist
         assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
                 render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",4))}",
                         avBuilder));

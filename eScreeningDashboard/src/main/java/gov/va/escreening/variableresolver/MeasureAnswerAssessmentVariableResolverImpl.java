@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.ErrorBuilder;
@@ -15,15 +16,12 @@ import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.google.common.base.Preconditions.*;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class,
 		UnsupportedOperationException.class, CouldNotResolveVariableValueException.class, UnsupportedOperationException.class, Exception.class})
@@ -45,37 +43,64 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     	this.surveyMeasureResponseRepository = checkNotNull(smrr);
     }    
     
-    /*	new AssessmentVariable(70, "var70", "string", "answer_270", "ACCOUNTANT", "ACCOUNTANT", null, null));  */
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
-                                                           Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash) {
-
-        MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
-        if (measureAnswer == null)
-            throw new AssessmentVariableInvalidValueException(String.format("AssessmentVariable of type MeasureAnswer did not reference a MeasureAnswer"
-                    + " VeteranAssessment id was: %s, AssessmentVariable id was: %s", veteranAssessmentId, assessmentVariable.getAssessmentVariableId()));
-
-        SurveyMeasureResponse response = surveyMeasureResponseRepository.findSmrUsingPreFetch(veteranAssessmentId, measureAnswer.getMeasureAnswerId(), null);
-        if (response == null)
-            throw new CouldNotResolveVariableException(String.format("There was not a MeasureAnswer reponse for MeasureAnswerId: %s, assessmentId: %s",
-                    measureAnswer.getMeasureAnswerId(), veteranAssessmentId));
-
-		return resolveAssessmentVariable(assessmentVariable, response, measureAnswerHash);
+            ResolverParameters params){
+        return resolveAssessmentVariable(assessmentVariable, params, null);
     }
-
+    
     @Override
-	public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable measureAnswerAssessmentVariable,
-			SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash) {
+    public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
+            ResolverParameters params, Answer response) {
 
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(measureAnswerAssessmentVariable);
-		//TODO: This is wrong (will fix this soon):
-		variableDto.setVariableId(getAnswerAssessmentVariableId(measureAnswerAssessmentVariable, response, measureAnswerHash));
-		
-		variableDto.setResponse(response);
-		
-		//TODO: remove the use of override text
-		variableDto.setOverrideText(getOverrideText(response, measureAnswerHash));
-		
+        Integer avId = assessmentVariable.getAssessmentVariableId();
+        params.checkUnresolvable(avId);
+        AssessmentVariableDto variableDto = params.getResolvedVariable(avId);
+        
+        if(variableDto == null 
+                || (response != null && response.getRowId() != null && ! response.getRowId().equals(variableDto.getRow()))){
+            
+            MeasureAnswer measureAnswer = assessmentVariable.getMeasureAnswer();
+            if (measureAnswer == null)
+                ErrorBuilder.throwing(AssessmentVariableInvalidValueException.class)
+                    .toAdmin(String.format("An assessment variable with ID %s does not have an associated measure answer.", assessmentVariable.getAssessmentVariableId()))
+                    .toUser("A system inconsistency was detected. Please call support")
+                    .throwIt();
+    
+            if(response == null){
+                logger.warn("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
+                List<Answer>responses = params.getAnswerResponse(measureAnswer.getMeasureAnswerId());
+                //this is a temporary fix until something better is figured out
+                if(!responses.isEmpty()){
+                    response = responses.get(0);
+                }
+            }
+            
+            try{
+                if (response == null)
+                    throw new CouldNotResolveVariableException(String.format("There is no reponse for MeasureAnswer with ID: %s",
+                            measureAnswer.getMeasureAnswerId()));
+        
+                variableDto = new AssessmentVariableDto(assessmentVariable);
+                
+                //TODO: This is wrong (remove this after researching if some templates assume this):
+                variableDto.setVariableId(getAnswerAssessmentVariableId(assessmentVariable, response.getAnswerId(), params));
+                
+                variableDto.setResponse(response);
+                
+                //TODO: remove the use of override text (two hand written templates still use it)
+                variableDto.setOverrideText(getOverrideText(response, params));
+                
+                //add resolved Dto to the cache
+                params.addResolvedVariable(variableDto);
+                
+                
+            }
+            catch(Exception e){
+                params.addUnresolvableVariable(assessmentVariable.getAssessmentVariableId());
+                throw e;
+            }
+        }
         return variableDto;
     }
 
@@ -173,27 +198,28 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         return null;
     }
 
-    private Integer getAnswerAssessmentVariableId(AssessmentVariable parentAssessmentVariable, SurveyMeasureResponse response,
-                                                  Map<Integer, AssessmentVariable> measureAnswerHash) {
+    private Integer getAnswerAssessmentVariableId(AssessmentVariable parentAssessmentVariable, Integer measureAnswerId,
+                                                  ResolverParameters params) {
 
         //If this answer has a mapped AssessmentVariable use that, otherwise use the parent id.
-        Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
-        if (measureAnswerHash.containsKey(measureAnswerId)) {
-            return measureAnswerHash.get(measureAnswerId).getAssessmentVariableId();
+        AssessmentVariable var = params.getAnswerAv(measureAnswerId);
+        if(var != null) {
+            return var.getAssessmentVariableId();
         }
 
         //It hasn't been mapped so use the parent's id
         return parentAssessmentVariable.getAssessmentVariableId();
     }
 
-	//TODO: This should be removed
-    private String getOverrideText(SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash) {
+	//TODO: This should be removed (only two template use this)
+    private String getOverrideText(Answer response, ResolverParameters params) {
 
         //check to see if the answer id is in the hash
-        Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
-        if (measureAnswerHash.containsKey(measureAnswerId)) {
+        Integer measureAnswerId = response.getAnswerId();
+        AssessmentVariable answerVariable = params.getAnswerAv(measureAnswerId);
+        if (answerVariable != null && !answerVariable.getVariableTemplateList().isEmpty()) {
             //if found then see if an override value has been set.
-            VariableTemplate variableTemplate = measureAnswerHash.get(measureAnswerId).getVariableTemplateList().get(0);
+            VariableTemplate variableTemplate = answerVariable.getVariableTemplateList().get(0);
             if (variableTemplate.getOverrideDisplayValue() != null && !variableTemplate.getOverrideDisplayValue().isEmpty())
                 return variableTemplate.getOverrideDisplayValue();
         }

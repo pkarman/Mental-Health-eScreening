@@ -1,17 +1,21 @@
 package gov.va.escreening.variableresolver;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
+import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class VariableResolverServiceImpl implements VariableResolverService {
@@ -49,16 +55,19 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     	List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
     	
     	Template template = templateRepository.findOne(templateId);
-    	if(template != null){
-    	    //process the requested templateType
+    	if(template != null){ //process the requested templateType
+    	    
+    	    //Initialize the resolver parameters
             List<VariableTemplate> variableTemplates = template.getVariableTemplateList();
+            ResolverParameters params = new ResolverParameters(veteranAssessmentId, exportDataSmrNullHandler, variableTemplates);
             
-            //Used for resolving override values
-            Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(variableTemplates);
+            //add all assessment responses
+            VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+            params.addResponses(assessment.getSurveyMeasureResponseList());
             
             for(VariableTemplate variableTemplate : variableTemplates) {
                 AssessmentVariable assessmentVariable = variableTemplate.getAssessmentVariableId();
-                assessmentVariableDtos.addAll(resolveAssessmentVariable(assessmentVariable, veteranAssessmentId, measureAnswerHash, templateSmrNullHandler ).asSet());
+                assessmentVariableDtos.addAll(resolveAssessmentVariable(assessmentVariable, params).asSet());
             }
     	}
     	
@@ -66,33 +75,32 @@ public class VariableResolverServiceImpl implements VariableResolverService {
 	}
     
     @Override
-    public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, Iterable<AssessmentVariable> dbVariables) {
+    public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
+            List<AssessmentVariable> dbVariables) {
         List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
         
         // clear the smr cache before resolving variable for every assessment 
         smrLister.clearSmrFromCache();
         
-        //Used for resolving override values
-        Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory.createMeasureAnswerTypeHash(dbVariables);
+        ResolverParameters params = new ResolverParameters(veteranAssessmentId, exportDataSmrNullHandler, dbVariables);
+        
+        //add responses from assessment
+        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+        params.addResponses(assessment.getSurveyMeasureResponseList());
         
         for(AssessmentVariable dbVariable : dbVariables){
-            assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, veteranAssessmentId, measureAnswerHash, exportDataSmrNullHandler).asSet());
+            assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, params).asSet());
         }
         
         return assessmentVariableDtos;
     }
     
-    /**
-     * 
-     * @param assessmentVariable
-     * @param veteranAssessmentId
-     * @param measureAnswerHash
-     * @return an {@code Optional} of the resolved dto. Will be absent of an allowable exception occurred.
-     * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
-     */
-    private Optional<AssessmentVariableDto> resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler){
+    @Override
+    public Optional<AssessmentVariableDto> resolveAssessmentVariable(
+            AssessmentVariable assessmentVariable, 
+            ResolverParameters params){
         try {
-            AssessmentVariableDto variableDto = assessmentVariableFactory.createAssessmentVariableDto(assessmentVariable, veteranAssessmentId, measureAnswerHash, smrNullHandler);
+            AssessmentVariableDto variableDto = assessmentVariableFactory.resolveAssessmentVariable(assessmentVariable, params);
             
             if(variableDto != null) {
                 return Optional.of(variableDto);
@@ -100,21 +108,21 @@ public class VariableResolverServiceImpl implements VariableResolverService {
             else {
                 throw new CouldNotResolveVariableException(
                         String.format("Could not resolve AssessmentVariable with id: %s for the VeteranAssessment id: %s", 
-                                assessmentVariable.getAssessmentVariableId(), veteranAssessmentId));
+                                assessmentVariable.getAssessmentVariableId(), params.getAssessmentId()));
             }
         }
         catch(UnsupportedOperationException uoe) {
             logger.error(String.format("UnsupportedOperationException for assessmentVariableId: %s and Veteran Assessment id: %s, exception message was: %s", 
-                    assessmentVariable.getAssessmentVariableId(), veteranAssessmentId, uoe.getMessage()));
+                    assessmentVariable.getAssessmentVariableId(), params.getAssessmentId(), uoe.getMessage()));
         }
         catch(AssessmentVariableInvalidValueException avive) {
             logger.error(String.format("AssessmentVariableInvalidValueException for assessmentVariableId: %s and Veteran Assessment id: %s, exception message was: %s", 
-                    assessmentVariable.getAssessmentVariableId(), veteranAssessmentId, avive.getErrorResponse().getLogMessage()));
+                    assessmentVariable.getAssessmentVariableId(), params.getAssessmentId(), avive.getErrorResponse().getLogMessage()));
         }
         catch(CouldNotResolveVariableException cnrve) {
             //This exception is not an error, it just means that a variable could not be resolved which is legitimate
             logger.debug(String.format("CouldNotResolveVariableException for assessmentVariableId: %s and Veteran Assessment id: %s, exception message was: %s", 
-                    assessmentVariable.getAssessmentVariableId(), veteranAssessmentId, cnrve.getMessage()));
+                    assessmentVariable.getAssessmentVariableId(), params.getAssessmentId(), cnrve.getMessage()));
         }
         return Optional.absent();
     }

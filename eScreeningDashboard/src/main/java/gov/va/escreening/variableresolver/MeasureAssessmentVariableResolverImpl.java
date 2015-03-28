@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.ErrorBuilder;
@@ -12,18 +13,17 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.google.common.base.Preconditions.*;
 
 @Transactional(noRollbackFor = {CouldNotResolveVariableException.class,
         AssessmentVariableInvalidValueException.class,
@@ -36,6 +36,8 @@ public class MeasureAssessmentVariableResolverImpl implements
 	//Please add to the constructor and do not use field based @Autowired	
 	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
 	private final SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+    private final ChildResolverFunction selectOneChildResolverFunction;
+    private final ChildResolverFunction selectMultiChildResolverFunction;
 
     private static final Logger logger = LoggerFactory
             .getLogger(MeasureAssessmentVariableResolverImpl.class);
@@ -46,6 +48,9 @@ public class MeasureAssessmentVariableResolverImpl implements
 			SurveyMeasureResponseRepository smrr){
 		measureAnswerVariableResolver = checkNotNull(mavr);
 		surveyMeasureResponseRepository = checkNotNull(smrr);
+		
+		selectOneChildResolverFunction = new SelectOneChildResolverFunction();
+		selectMultiChildResolverFunction = new SelectMultiChildResolverFunction();
 	}
 	
     @Override
@@ -106,99 +111,106 @@ public class MeasureAssessmentVariableResolverImpl implements
         return result;
     }
 
-    /*
-     * List<AssessmentVariable> ethnicityList = new
-     * ArrayList<AssessmentVariable>(); ethnicityList.add(new
-     * AssessmentVariable(31, "var31", "string", "answer_220", "false",
-     * "Hispanic/Latino", null, null)); ethnicityList.add(new
-     * AssessmentVariable(32, "var32", "string", "answer_221", "true",
-     * "Not Hispanic/Latino", "none Hispanic/Latino", null));
-     * ethnicityList.add(new AssessmentVariable(33, "var33", "none",
-     * "answer_222", "false", null, null, null)); //decline to answer
-     * root.put("var30", new AssessmentVariable(30, "var30", "string",
-     * "measure_21", null, null, null, null, ethnicityList));
-     */
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(
-            AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-            Map<Integer, AssessmentVariable> measureAnswerHash) {
+            AssessmentVariable assessmentVariable, 
+            ResolverParameters params) {
 
-        Integer measureId = assessmentVariable.getMeasure().getMeasureId();
-        if (measureId == null)
-            throw new AssessmentVariableInvalidValueException(
-                    String.format(
-                            "AssessmentVariable of type Measure did not conatain the required measureid"
+        Integer avId = assessmentVariable.getAssessmentVariableId();
+        params.checkUnresolvable(avId);
+        AssessmentVariableDto variableDto = params.getResolvedVariable(avId);
+        if(variableDto == null){
+            try{
+                Integer measureId = assessmentVariable.getMeasure().getMeasureId();
+                if (measureId == null)
+                    throw new AssessmentVariableInvalidValueException(
+                            String.format(
+                                    "AssessmentVariable of type Measure did not conatain the required measureid"
                                     + " VeteranAssessment id was: %s, AssessmentVariable id was: %s",
-                            veteranAssessmentId,
-                            assessmentVariable.getAssessmentVariableId()));
-
-        List<SurveyMeasureResponse> responses = surveyMeasureResponseRepository
-                .getForVeteranAssessmentAndMeasure(veteranAssessmentId,
-                        measureId);
-        if (responses == null) {
-            responses = Collections.emptyList();
+                                    params.getAssessmentId(),
+                                    assessmentVariable.getAssessmentVariableId()));
+        
+                variableDto = processMeasureType(assessmentVariable,
+                        assessmentVariable.getMeasure(), params);
+                
+                if (variableDto == null)
+                    throw new CouldNotResolveVariableException(
+                            String.format(
+                                    "Was unable to resolve the assessment variable for measureid: %s, assessmentId: %s",
+                                    measureId, params.getAssessmentId()));
+        
+                //add resolved Dto to the cache
+                params.addResolvedVariable(variableDto);
+            }
+            catch(Exception e){
+                params.addUnresolvableVariable(assessmentVariable.getAssessmentVariableId());
+                throw e;
+            }
         }
-        int measureTypeId = assessmentVariable.getMeasure().getMeasureType()
-                .getMeasureTypeId();
-        if (responses.size() == 0
+        
+        return variableDto;
+    }
+
+    private AssessmentVariableDto processMeasureType(
+            AssessmentVariable assessmentVariable,
+            Measure measure, 
+            ResolverParameters params){
+        return processMeasureType(assessmentVariable, measure, params, null);
+    }
+    
+    private AssessmentVariableDto processMeasureType(
+            AssessmentVariable assessmentVariable,
+            Measure measure, 
+            ResolverParameters params,
+            @Nullable
+            List<Answer> responses) {
+
+        Integer measureId = measure.getMeasureId();
+        int measureTypeId = measure.getMeasureType().getMeasureTypeId();
+        
+        if(responses == null){
+            responses = params.getMeasureResponses(measureId);
+        }
+        
+        if(responses.isEmpty()
                 && measureTypeId != AssessmentConstants.MEASURE_TYPE_TABLE
                 && measureTypeId != AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX
                 && measureTypeId != AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX)
             throw new CouldNotResolveVariableException(
                     String.format(
-                            "There were not any measure reponses for measureId: %s, assessmentId: %s",
-                            measureId, veteranAssessmentId));
-
-        AssessmentVariableDto variableDto = processMeasureType(measureTypeId,
-                measureId, veteranAssessmentId, assessmentVariable, responses,
-                measureAnswerHash);
-        if (variableDto == null)
-            throw new CouldNotResolveVariableException(
-                    String.format(
-                            "Was unable to resolve the assessment variable for measureid: %s, assessmentId: %s",
-                            measureId, veteranAssessmentId));
-
-        return variableDto;
-    }
-
-    private AssessmentVariableDto processMeasureType(int measureTypeId,
-                                                     int measureId, int veteranAssessmentId,
-                                                     AssessmentVariable assessmentVariable,
-                                                     List<SurveyMeasureResponse> responses,
-                                                     Map<Integer, AssessmentVariable> measureAnswerHash) {
-
+                            "There are no reponses for measure with Id: %s, measure's variable ID is %s, assessmentId: %s",
+                            measureId, measure.getAssessmentVariable().getAssessmentVariableId(), params.getAssessmentId()));
+        
         AssessmentVariableDto variableDto = null;
 
         switch (measureTypeId) {
 		case AssessmentConstants.MEASURE_TYPE_FREE_TEXT:
 		case AssessmentConstants.MEASURE_TYPE_READ_ONLY:
                 variableDto = resolveFreeTextAssessmentVariableQuestion(
-                        assessmentVariable, measureId, veteranAssessmentId,
-                        responses, measureAnswerHash);
+                        assessmentVariable, 
+                        responses, params);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE:
                 variableDto = resolveSelectOneAssessmentVariableQuestion(
-                        assessmentVariable, measureId, veteranAssessmentId,
-                        responses, measureAnswerHash);
+                        assessmentVariable, 
+                        responses, params);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI:
                 variableDto = resolveSelectMultiAssessmentVariableQuestion(
-                        assessmentVariable, measureId, veteranAssessmentId,
-                        responses, measureAnswerHash);
+                        assessmentVariable, 
+                        responses, params);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_TABLE:
                 variableDto = resolveTableAssessmentVariableQuestion(
-                        assessmentVariable, veteranAssessmentId, measureAnswerHash);
+                        assessmentVariable, params);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX:
-			variableDto = resolveSelectMultiMatrixAssessmentVariableQuestion(
-                        assessmentVariable, measureId, veteranAssessmentId,
-                        responses, measureAnswerHash);
+			variableDto = resolveParentQuestion(assessmentVariable, 
+			        params, selectMultiChildResolverFunction);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX:
-			variableDto = resolveSelectOneMatrixAssessmentVariableQuestion(
-                        assessmentVariable, measureId, veteranAssessmentId,
-                        responses, measureAnswerHash);
+			variableDto = resolveParentQuestion(assessmentVariable, 
+			        params, selectOneChildResolverFunction);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_INSTRUCTION:
             default:
@@ -212,29 +224,28 @@ public class MeasureAssessmentVariableResolverImpl implements
     }
 
     private AssessmentVariableDto resolveFreeTextAssessmentVariableQuestion(
-            AssessmentVariable assessmentVariable, Integer measureId,
-            Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-            Map<Integer, AssessmentVariable> measureAnswerHash) {
+            AssessmentVariable assessmentVariable, 
+            List<Answer> responses,
+            ResolverParameters params) {
 		
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
-		addResolvedAnswerTo(questionVariableDto, responses.get(0), measureAnswerHash);
+		addResolvedAnswerTo(questionVariableDto, responses.get(0), params);
 		
         return questionVariableDto;
     }
 
     private AssessmentVariableDto resolveSelectOneAssessmentVariableQuestion(
-            AssessmentVariable assessmentVariable, Integer measureId,
-            Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-            Map<Integer, AssessmentVariable> measureAnswerHash) {
+            AssessmentVariable assessmentVariable, 
+            List<Answer> responses,
+            ResolverParameters params) {
 
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
         // loop to find the first true value then process the answer
-        for (SurveyMeasureResponse response : responses) {
-            if (response.getBooleanValue() != null
-                    && response.getBooleanValue()) {
+        for (Answer response : responses) {
+            if (response.isTrue()) {
 				
-				addResolvedAnswerTo(questionVariableDto, response, measureAnswerHash);
+				addResolvedAnswerTo(questionVariableDto, response, params);
 				
 				//commenting out these because the question should not have these set only the child answer
 				//questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
@@ -244,64 +255,42 @@ public class MeasureAssessmentVariableResolverImpl implements
         }
 
         return questionVariableDto;
-    }
-
-	private AssessmentVariableDto resolveSelectOneMatrixAssessmentVariableQuestion(
-			AssessmentVariable assessmentVariable, Integer measureId,
-			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-			Map<Integer, AssessmentVariable> measureAnswerHash) {
-
-		return resolveParentQuestion(assessmentVariable, measureId, veteranAssessmentId, 
-				responses, measureAnswerHash, new SelectOneChildResolverFunction());
-	}
-	
+    }	
 	
     private AssessmentVariableDto resolveSelectMultiAssessmentVariableQuestion(
-            AssessmentVariable assessmentVariable, Integer measureId,
-            Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-            Map<Integer, AssessmentVariable> measureAnswerHash) {
+            AssessmentVariable assessmentVariable, 
+            List<Answer> responses,
+            ResolverParameters params) {
 
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
         // loop to find all of the true values then add them to the collection
-        for (SurveyMeasureResponse response : responses) {
-            if (response.getBooleanValue() != null
-                    && response.getBooleanValue()) {
+        for (Answer response : responses) {
+            if (response.isTrue()) {
 				
                 // call the answer level to resolve the value
-				addResolvedAnswerTo(questionVariableDto, response, measureAnswerHash);
+				addResolvedAnswerTo(questionVariableDto, response, params);
             }
         }
 
         return questionVariableDto;
     }
-	
-	private AssessmentVariableDto resolveSelectMultiMatrixAssessmentVariableQuestion(
-			AssessmentVariable assessmentVariable, Integer measureId,
-			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-			Map<Integer, AssessmentVariable> measureAnswerHash) {
-
-		return resolveParentQuestion(assessmentVariable, measureId, veteranAssessmentId, 
-				responses, measureAnswerHash, new SelectMultiChildResolverFunction());
-	}
-	
 
     private AssessmentVariableDto resolveTableAssessmentVariableQuestion(
-            AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-            Map<Integer, AssessmentVariable> measureAnswerHash) {
+            AssessmentVariable assessmentVariable, 
+            ResolverParameters params) {
 
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
         Measure parentMeasure = assessmentVariable.getMeasure();
-        List<SurveyMeasureResponse> parentResponses = parentMeasure
-                .getSurveyMeasureResponseList();
+        List<Answer> parentResponses = params.getMeasureResponses(parentMeasure.getMeasureId());
 
-		SurveyMeasureResponse parentResponse = parentResponses == null || parentResponses.isEmpty() ? null
+		Answer parentResponse = parentResponses == null || parentResponses.isEmpty() ? null
                 : parentResponses.get(0); // there should only be one response
-        // for the parent question for table
-        // type
-        if (parentResponse != null && parentResponse.getBooleanValue()) {
-			addResolvedAnswerTo(questionVariableDto, parentResponse, measureAnswerHash);
+        
+		// for the parent question for table type
+        if (parentResponse != null && parentResponse.isTrue()) {
+			addResolvedAnswerTo(questionVariableDto, parentResponse, params);
         } else {
             Set<Measure> childMeasures = parentMeasure.getChildren();
             if (childMeasures.size() == 0)
@@ -312,27 +301,24 @@ public class MeasureAssessmentVariableResolverImpl implements
 								AssessmentConstants.MEASURE_TYPE_TABLE,
                                 parentMeasure.getMeasureId(),
                                 assessmentVariable.getAssessmentVariableId(),
-                                veteranAssessmentId));
-			//TODO: This should be refactored to pull all row answers for a given child measure and create DTOs for each instead of guessing which row to query for (up to 1000)
-            for (Measure childMeasure : childMeasures) {
-                int tabularRow = 0;
-				do { 
-                    List<SurveyMeasureResponse> responses = surveyMeasureResponseRepository
-                            .findForAssessmentIdMeasureRow(veteranAssessmentId,
-                                    childMeasure.getMeasureId(), tabularRow);
-					if (responses == null || responses.isEmpty()
-                            || tabularRow > 1000)
+                                params.getAssessmentId()));
+            
+            for (Measure childMeasure : childMeasures) {   
+                Integer childMeasureId = childMeasure.getMeasureId();
+                
+                int rowCount = params.getMeasureRowCount(childMeasureId);
+                
+                for(int tabularRow = 0; tabularRow < rowCount; tabularRow++){
+                    List<Answer> responses = params.getMeasureResponses(childMeasureId, tabularRow);
+                    
+					if (responses.isEmpty())
                         break;
 
                     try {
                         // otherwise we have a response to process
 						AssessmentVariable childAV = childMeasure.getAssessmentVariable();
                         AssessmentVariableDto childQuestionVariableDto = processMeasureType(
-                                childMeasure.getMeasureType()
-                                        .getMeasureTypeId(),
-                                childMeasure.getMeasureId(),
-								veteranAssessmentId, childAV,
-                                responses, measureAnswerHash);
+                                childAV, childMeasure, params, responses);
 						
 						questionVariableDto.getChildren().add(childQuestionVariableDto);
 						
@@ -345,9 +331,7 @@ public class MeasureAssessmentVariableResolverImpl implements
                         //this is so that when a child measure is missing, the parent should still
                         //be resolved.
                     }
-
-                    tabularRow = tabularRow + 1;
-                } while (true);
+                }
             }
         }
         return questionVariableDto;
@@ -397,27 +381,33 @@ public class MeasureAssessmentVariableResolverImpl implements
 	 * Resolves response to an assessment variable for the measure answer represented 
 	 * by the response, and appends this AV dto to the children of the passed in question AV.
 	 * @param questionVariableDto the AV we are adding children to 
-	 * @param response the veteran's response to the given question
-	 * @param measureAnswerHash a map from measure_answer_id to assessment_variable
+	 * @param response the veteran's response to the given question. This is important
+	 * because there can be more than one response for the same given answer AV (due to table rows)
+	 * @param params parameters for this resolve task
 	 */
-	private void addResolvedAnswerTo(AssessmentVariableDto questionVariableDto, SurveyMeasureResponse response, Map<Integer, AssessmentVariable> measureAnswerHash){
-		Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
-		if(measureAnswerHash.containsKey(measureAnswerId)){
+	private void addResolvedAnswerTo(AssessmentVariableDto questionVariableDto, 
+	        Answer response, 
+	        ResolverParameters params){
+	    
+		AssessmentVariable answerAv = params.getAnswerAv(response.getAnswerId());
+		
+		if(answerAv != null){
 			// call the answer level to resolve the value
 			AssessmentVariableDto answerVariableDto = measureAnswerVariableResolver
-					.resolveAssessmentVariable(measureAnswerHash.get(measureAnswerId), response, measureAnswerHash);
+					.resolveAssessmentVariable(answerAv, params, response);
 			
 			questionVariableDto.getChildren().add(answerVariableDto);
 		}
 		else{
-			logger.warn("The measure answer with ID {} was found to not be in the measureAnswerHash. This indicates possible DB data corruption because all measure answers should have a cooresponding assessment variable.", measureAnswerId);
+		    //We could call something here to get the AV for the given measure answer but that would be expensive
+		    //and if we are setting up our editors correctly, we should not have to this here
+			logger.warn("The measure answer with ID {} was not in the measureAnswerHash.  This normally indicates that there is a mistake in the assessment variable bookkeeping for the service that is resolving (e.g. template, rules, formulas). All needed assessment variables must be associated to each of these system objects.", response.getAnswerId());
 		}
     }
 	
 	private AssessmentVariableDto resolveParentQuestion(
-			AssessmentVariable assessmentVariable, Integer measureId,
-			Integer veteranAssessmentId, List<SurveyMeasureResponse> responses,
-			Map<Integer, AssessmentVariable> measureAnswerHash,
+			AssessmentVariable assessmentVariable, 
+			ResolverParameters params,
 			ChildResolverFunction resolverFunction){
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
@@ -431,18 +421,11 @@ public class MeasureAssessmentVariableResolverImpl implements
 							AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX,
 							parentMeasure.getMeasureId(),
 							assessmentVariable.getAssessmentVariableId(),
-							veteranAssessmentId));
+							params.getAssessmentId()));
 		
 		//resolve children
 		for (Measure childMeasure : childMeasures) {
-			Integer childMeasureId = childMeasure.getMeasureId(); 
-			
-			List<SurveyMeasureResponse> childResponses = surveyMeasureResponseRepository
-					.getForVeteranAssessmentAndMeasure(veteranAssessmentId, childMeasure.getMeasureId());
-			
-			resolverFunction.addChild(questionVariableDto, childMeasure.getAssessmentVariable(), 
-					childMeasureId, veteranAssessmentId, childResponses, 
-					measureAnswerHash);
+			resolverFunction.addChild(questionVariableDto, childMeasure, params);
 		}
 		
 		return questionVariableDto;
@@ -450,29 +433,35 @@ public class MeasureAssessmentVariableResolverImpl implements
 	
 	//if only we had lamdas
 	private interface ChildResolverFunction {
-		void addChild(AssessmentVariableDto parentAvDto, AssessmentVariable childAV, Integer childMeasureId, 
-				Integer veteranAssessmentId, List<SurveyMeasureResponse> childResponses, Map<Integer, AssessmentVariable> measureAnswerHash);
+		void addChild(AssessmentVariableDto parentAvDto, 
+		        Measure childMeasure, ResolverParameters params);
 	}
 	
 	private class SelectOneChildResolverFunction implements ChildResolverFunction {
 		@Override
-		public void addChild(AssessmentVariableDto parentAvDto, AssessmentVariable childAV, Integer childMeasureId, 
-				Integer veteranAssessmentId, List<SurveyMeasureResponse> childResponses, Map<Integer, AssessmentVariable> measureAnswerHash){
+		public void addChild(AssessmentVariableDto parentAvDto, 
+                Measure childMeasure, ResolverParameters params){
 			
+		    List<Answer> childResponses = params.getMeasureResponses(childMeasure.getMeasureId());
+		    
 			parentAvDto.getChildren().add( 
-					resolveSelectOneAssessmentVariableQuestion(childAV, childMeasureId, 
-							veteranAssessmentId, childResponses, measureAnswerHash));
+					resolveSelectOneAssessmentVariableQuestion(
+					        childMeasure.getAssessmentVariable(),
+					        childResponses, params));
 		}
 	}
 	
 	private class SelectMultiChildResolverFunction implements ChildResolverFunction {
 		@Override
-		public void addChild(AssessmentVariableDto parentAvDto, AssessmentVariable childAV, Integer childMeasureId, 
-				Integer veteranAssessmentId, List<SurveyMeasureResponse> childResponses, Map<Integer, AssessmentVariable> measureAnswerHash){
+		public void addChild(AssessmentVariableDto parentAvDto, 
+                Measure childMeasure, ResolverParameters params){
 			
+		    List<Answer> childResponses = params.getMeasureResponses(childMeasure.getMeasureId());
+		    
 			parentAvDto.getChildren().add( 
-					resolveSelectMultiAssessmentVariableQuestion(childAV, childMeasureId, 
-							veteranAssessmentId, childResponses, measureAnswerHash));
+					resolveSelectMultiAssessmentVariableQuestion(
+					        childMeasure.getAssessmentVariable(),
+					        childResponses, params));
 		}
 	}
 

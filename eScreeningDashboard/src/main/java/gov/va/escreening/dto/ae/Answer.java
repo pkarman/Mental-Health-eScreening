@@ -1,12 +1,17 @@
 package gov.va.escreening.dto.ae;
 
 import com.google.common.base.Strings;
+
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.exception.CouldNotResolveVariableException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+
 import java.io.Serializable;
 
 
@@ -47,6 +52,8 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     private String vistaText;
     private String exportName;
     private String otherAnswerResponse;
+    //set to answerResponse when this is a text answer, otherwise set to answerText 
+    private String answerDisplayResponse;
     private Integer rowId;
     private String calculationType;
     private String calculationValue;
@@ -151,7 +158,8 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public void setAnswerResponse(String answerResponse) {
         this.answerResponse = answerResponse;
     }
-
+    
+    @Override
     public String getOtherAnswerResponse() {
         return otherAnswerResponse;
     }
@@ -165,44 +173,84 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public Integer getRowId() {
         return rowId;
     }
-
+    
     @Override
     public void setRowId(Integer rowId) {
         this.rowId = rowId;
     }
 
+    /**
+     * Pseudo field used for AV Dto resolution.
+     * Takes care of what an answer's display text should be 
+     * when used in templates.
+     * @return set to answerResponse when this is a text answer, 
+     * otherwise set to answerText. Returns null if no response 
+     * has been set.
+     */
+    public String getAnswerDisplayResponse() {
+        return answerDisplayResponse;
+    }
+
+    public void setAnswerDisplayResponse(String answerDisplayResponse) {
+        this.answerDisplayResponse = answerDisplayResponse;
+    }
+    
+    /**
+     * @return true if the response is set and can be interpreted as a boolean
+     */
+    public boolean isTrue(){
+        return Boolean.valueOf(answerResponse);
+    }
+    
     public Answer() {}
 
     public Answer(MeasureAnswer measureAnswer, 
             @Nullable SurveyMeasureResponse measureResponse){
 
-        this.answerId = measureAnswer.getMeasureAnswerId();
-        this.answerText = measureAnswer.getAnswerText();
-        this.answerType = measureAnswer.getAnswerType();
-        this.vistaText = measureAnswer.getVistaText();
-        this.exportName = measureAnswer.getExportName();
+        answerId = measureAnswer.getMeasureAnswerId();
+        answerText = measureAnswer.getAnswerText();
+        answerType = measureAnswer.getAnswerType();
+        vistaText = measureAnswer.getVistaText();
+        exportName = measureAnswer.getExportName();
         //TODO: Remove this when the use of calculation type is removed
-        this.calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
-        this.calculationValue=measureAnswer.getCalculationValue();
-        this.displayOrder =  measureAnswer.getDisplayOrder();
-        this.mhaValue = measureAnswer.getMhaValue();
+        calculationType=measureAnswer.getCalculationType()==null?null:measureAnswer.getCalculationType().getName();
+        calculationValue=measureAnswer.getCalculationValue();
+        displayOrder =  measureAnswer.getDisplayOrder();
+        mhaValue = measureAnswer.getMhaValue();
 
         //set user response
         if(measureResponse != null){
-            this.rowId = measureResponse.getTabularRow();
+            rowId = measureResponse.getTabularRow();
 
             if (StringUtils.isNotBlank(measureResponse.getOtherValue())) {
-                this.otherAnswerResponse = measureResponse.getOtherValue();
+                otherAnswerResponse = measureResponse.getOtherValue();
             }
 
             if (measureResponse.getNumberValue() != null) {                   
-                this.answerResponse = measureResponse.getNumberValue().toString();
+                answerResponse = measureResponse.getNumberValue().toString();
             }
             else if (measureResponse.getBooleanValue() != null) {
-                this.answerResponse = measureResponse.getBooleanValue().toString();
+                answerResponse = measureResponse.getBooleanValue().toString();
             }
             else if (!Strings.isNullOrEmpty(measureResponse.getTextValue())) {
-                this.answerResponse = measureResponse.getTextValue();
+                answerResponse = measureResponse.getTextValue();
+            }
+            else{
+                throw new CouldNotResolveVariableException(
+                        String.format("A value was not set for survey measure responseid: %s",
+                                measureResponse.getSurveyMeasureResponseId()));
+            }
+            
+            if(measureAnswer.getMeasure().getMeasureType().getMeasureTypeId() 
+                    == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
+                answerDisplayResponse = answerResponse;
+            }
+            else{
+                //The constraint has been removed which would set null here if the answer is of type none. Template functions do not assume
+                //this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
+                //delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
+                //show the text of the None answer so null should not be returned.
+                answerDisplayResponse = answerText;
             }
         }
     }

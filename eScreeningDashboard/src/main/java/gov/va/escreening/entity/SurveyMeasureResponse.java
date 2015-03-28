@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,17 +63,19 @@ public class SurveyMeasureResponse implements Serializable {
 	
 	
     @JoinColumn(name = "survey_id", referencedColumnName = "survey_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY))
 	private Survey survey;
+    
 	@JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY))
 	private Measure measure;
+	
 	@JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY))
 	private VeteranAssessment veteranAssessment;
 	
 	@JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false) //fetch is not lazy to increase performance in ResolverParameters
 	private MeasureAnswer measureAnswer;
 
 	public SurveyMeasureResponse() {
@@ -217,10 +220,14 @@ public class SurveyMeasureResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "gov.va.escreening.entity.SurveyMeasureResponse[ surveyMeasureResponseId="
-				+ surveyMeasureResponseId + ", answerId=" 
-				+ (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null) 
-				+ ", row=" + tabularRow + " ]";
+		return "gov.va.escreening.entity.SurveyMeasureResponse[ surveyMeasureResponseId=" + surveyMeasureResponseId 
+				+ ", surveyId=" + (survey != null ? survey.getSurveyId() : null)
+				+ ", measureAnswerId=" + (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null)
+				+ ", row=" + tabularRow 
+				+ (booleanValue != null ? ", value=" + booleanValue : "")
+				+ (textValue != null ? ", value=" + textValue : "")
+				+ (numberValue != null ? ", value=" + numberValue : "")
+				+ " ]";
 	}
 
 }

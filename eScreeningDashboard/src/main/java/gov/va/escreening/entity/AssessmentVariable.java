@@ -6,17 +6,31 @@
 
 package gov.va.escreening.entity;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author jocchiuzzo
@@ -43,7 +57,7 @@ public class AssessmentVariable implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY)
     private List<VariableTemplate> variableTemplateList;
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
     @ManyToOne
@@ -54,9 +68,11 @@ public class AssessmentVariable implements Serializable {
     @JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
     @ManyToOne
     private MeasureAnswer measureAnswer;
+    
+    //TODO: We should change this to have a list (or Set realy) of AssessmentVariables and not a list of AssessmentVarChildren
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent", orphanRemoval = true)
     private List<AssessmentVarChildren> assessmentVarChildrenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY)
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true)
     @OrderBy("displayOrder")
@@ -147,14 +163,7 @@ public class AssessmentVariable implements Serializable {
         this.measureAnswer = measureAnswer;
     }
 
-    //public List<RuleAssessmentVariable> getRuleAssessmentVariableList() {
-    //    return ruleAssessmentVariableList;
-    //}
-
-    //public void setRuleAssessmentVariableList(List<RuleAssessmentVariable> ruleAssessmentVariableList) {
-    //    this.ruleAssessmentVariableList = ruleAssessmentVariableList;
-    //}
-
+    //TODO: We should change this to have a list of AssessmentVariables and not a list of AssessmentVarChildren
     public List<AssessmentVarChildren> getAssessmentVarChildrenList() {
         return assessmentVarChildrenList;
     }
@@ -221,8 +230,12 @@ public class AssessmentVariable implements Serializable {
         return asMap;
     }
 
-    public List getAsList() {
-        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length()+1);
+    public List<String> getAsList() {
+        return Arrays.asList(getDisplayName(), 
+                getAssessmentVariableId().toString(), 
+                getDescription(), 
+                getFormulaTemplate(), 
+                Integer.valueOf(getDisplayName().length()+1).toString());
     }
 
     public void attachFormulaTokens(List<String> tokens) {

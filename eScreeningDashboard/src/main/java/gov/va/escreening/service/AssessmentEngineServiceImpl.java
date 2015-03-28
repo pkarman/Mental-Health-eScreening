@@ -57,7 +57,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 @Transactional
@@ -136,35 +136,6 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		return getAssessmentResponse(assessmentRequest);
 	}
 
-//	@Override
-//	public Map<Integer, Boolean> getUpdatedVisibility(
-//			AssessmentRequest assessmentRequest) {
-//		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
-//				.getPageId());
-//		checkArgument(page != null, "Invalid page ID given");
-//
-//		// we set the assessment ID from the context (not from the request)
-//		assessmentRequest.setAssessmentId(assessmentContext
-//				.getVeteranAssessmentId());
-//
-//		try {
-//			// First validate and save data.
-//			saveUserInput(assessmentRequest);
-//		} catch (Throwable t) {
-//			logger.warn(
-//					"Error during save of user data for follow-up question visibility update:\n{}",
-//					t.getLocalizedMessage());
-//		}
-//
-//		// update visibility for the measures found on the page
-//		ruleProcessorService.updateVisibilityForQuestions(
-//				assessmentContext.getVeteranAssessmentId(), page.getMeasures());
-//
-//		return measureVisibilityRepository.getVisibilityMapForSurveyPage(
-//				assessmentRequest.getAssessmentId(),
-//				assessmentRequest.getPageId());
-//	}
-
 	@Override
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
 			AssessmentRequest assessmentRequest) {
@@ -174,28 +145,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
 				.getPageId());
 
+		checkArgument(page != null, "Invalid page ID given");
+		
 		List<gov.va.escreening.entity.Measure> measures = page.getMeasures();
 
-		checkArgument(page != null, "Invalid page ID given");
-
 		List<Integer> objectIds = new ArrayList<>();
-		Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap = new HashedMap<Integer, Pair<gov.va.escreening.entity.Measure, Measure>>(
-				measures.size());
 		for (gov.va.escreening.entity.Measure m : measures) {
-			objectIds.add(m.getMeasureId());
-			Measure userAnswer = null;
-			for (Measure answer : assessmentRequest.getUserAnswers()) {
-				if (answer.getMeasureId().intValue() == m.getMeasureId()) {
-
-					userAnswer = answer;
-
-					break;
-				}
-			}
-
-			if (userAnswer != null) {
-				responseMap.put(m.getMeasureId(), Pair.of(m, userAnswer));
-			}
+		    objectIds.add(m.getMeasureId());
 		}
 		List<Event> events = eventRepo.getEventByTypeFilteredByObjectIds(
 				RuleConstants.EVENT_TYPE_SHOW_QUESTION, objectIds);
@@ -204,30 +160,31 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			return visibilityMap; // no update
 		}
 
+		//collect rules that can affect question visibility on page
 		Set<Rule> rules = Collections.emptySet();
 		for (Event e : events) {
 			rules = Sets.union(rules, e.getRules());
 		}
 
-		for (Rule r : rules) {
-			try {
-				boolean result = ruleProcessorService.evaluate(r, responseMap);
-				
-				for (Event e : r.getEvents()) {
-					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
-						if (result) {
-							visibilityMap.put(e.getRelatedObjectId(), true);
-						} else if (!visibilityMap.containsKey(e
-								.getRelatedObjectId())) {
-							visibilityMap.put(e.getRelatedObjectId(), false);
-						}
-					}
+		Set<Rule> trueRules = ruleProcessorService.filterTrue(rules, assessmentRequest);
+		
+		//hide questions with False rules
+		for (Rule r : Sets.difference(rules, trueRules)) {
+			for (Event e : r.getEvents()) {
+				if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+					visibilityMap.put(e.getRelatedObjectId(), false);
 				}
-
-			} catch (Throwable ex) {
-				logger.warn("rule evaluation exception", ex);
 			}
 		}
+		
+		//show questions with True rules (this should always happen after the False rules)
+        for(Rule r: trueRules){
+            for (Event e : r.getEvents()) {
+                if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+                    visibilityMap.put(e.getRelatedObjectId(), true);
+                }
+            }
+        }
 
 		return visibilityMap;
 	}
@@ -490,8 +447,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		}
 
 		// Validate surveyPage
-		SurveyPage surveyPage = surveyPageRepository.findOne(assessmentRequest
-				.getPageId());
+		SurveyPage surveyPage = surveyPageRepository.findOne(assessmentRequest.getPageId());
 		if (surveyPage == null) {
 			// Invalid survey page.
 			errorResponse.setCode(10);
@@ -528,6 +484,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 					.setCode(10).setProperty("system"));
 		}
 
+		List<gov.va.escreening.entity.Measure> dbMeasures = surveyPage.getMeasures();
+		Map<Integer, gov.va.escreening.entity.Measure> dbMeasureMap = Maps.newHashMapWithExpectedSize(dbMeasures.size());
+		for(gov.va.escreening.entity.Measure measure : dbMeasures){
+		    dbMeasureMap.put(measure.getMeasureId(), measure);
+		}
 		//
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
@@ -541,8 +502,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			AnswerSubmission.Builder submissionBuilder = new AnswerSubmission.Builder(
 					visMap).setErrorResponse(errorResponse);
 			// Get the data validation for this measure.
-			gov.va.escreening.entity.Measure dbMeasure = measureRepository
-					.findOne(measure.getMeasureId());
+			gov.va.escreening.entity.Measure dbMeasure = dbMeasureMap.get(measure.getMeasureId());
 
 			if (dbMeasure == null) {
 				logger.error("Invalid measure posted by client "

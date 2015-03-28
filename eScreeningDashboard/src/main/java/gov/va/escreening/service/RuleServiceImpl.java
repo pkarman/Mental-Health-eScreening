@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
+import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.rule.EventDto;
 import gov.va.escreening.dto.rule.RuleDto;
@@ -19,10 +20,8 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.EscreeningDataValidationException;
-import gov.va.escreening.expressionevaluator.FormulaDto;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.ConsultRepository;
 import gov.va.escreening.repository.DashboardAlertRepository;
@@ -33,9 +32,8 @@ import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
-import gov.va.escreening.variableresolver.AssessmentVariableDtoFactory;
-import gov.va.escreening.variableresolver.FormulaAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.NullValueHandler;
+import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
 import java.util.ArrayList;
@@ -47,9 +45,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,421 +73,234 @@ import com.google.common.collect.Table;
 @Transactional
 @Service
 public class RuleServiceImpl implements RuleService {
-	private static final Logger logger = LoggerFactory
-			.getLogger(RuleServiceImpl.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(RuleServiceImpl.class);
 
-	@Autowired
-	private RuleRepository ruleRepository;
-	@Autowired
-	private ConsultRepository consultRepository;
-	@Autowired
-	private HealthFactorRepository healthFactorRepository;
-	@Autowired
-	private DashboardAlertRepository dashboardAlertRepository;
-	@Autowired
-	private VeteranAssessmentService veteranAssessmentService;
-	@Autowired
-	private VariableResolverService variableResolverService;
-	@Autowired
-	private AssessmentVariableDtoFactory assessmentVariableFactory;
-	@Autowired
-	private AssessmentVariableRepository avRepository;
-	@Autowired
-	private EventRepository eventRepository;
-	@Autowired
-	private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
-	@Autowired
-	private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
-	@Autowired
-	private VeteranAssessmentRepository veteranAssessmentRepository;
+    @Autowired
+    private RuleRepository ruleRepository;
+    @Autowired
+    private ConsultRepository consultRepository;
+    @Autowired
+    private HealthFactorRepository healthFactorRepository;
+    @Autowired
+    private DashboardAlertRepository dashboardAlertRepository;
+    @Autowired
+    private VariableResolverService variableResolverService;
+    @Autowired
+    private AssessmentVariableRepository avRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
+    @Autowired
+    private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+    @Autowired
+    private VeteranAssessmentRepository veteranAssessmentRepository;
 
-	@Autowired
-	private FormulaAssessmentVariableResolver formulaAssessmentVariableResolver;
+    @Resource(name = "templateSmrNullHandler")
+    private NullValueHandler templateSmrNullHandler;
 
-	@Resource(name = "templateSmrNullHandler")
-	NullValueHandler templateSmrNullHandler;
+    @Override
+    public void processRules(Integer veteranAssessmentId,
+            Collection<SurveyMeasureResponse> responses) {
+        if (responses.isEmpty()) {
+            return;
+        }
 
-	@Override
-	public void processRules(Integer veteranAssessmentId,
-			Collection<SurveyMeasureResponse> responses) {
-		if (responses.isEmpty()) {
-			return;
-		}
-		Set<Measure> measureCollection = Sets
-				.newHashSetWithExpectedSize(responses.size());
-		for (SurveyMeasureResponse r : responses) {
-			measureCollection.add(r.getMeasure());
-		}
-		//updateVisibilityForQuestions(veteranAssessmentId, measureCollection);
+        List<Rule> rules = ruleRepository
+                .getRuleForAssessment(veteranAssessmentId);
 
-		List<Rule> rules = ruleRepository
-				.getRuleForAssessment(veteranAssessmentId);
+        // TODO: this can be done in parallel
+        Set<HealthFactor> healthFactorSet = new HashSet<HealthFactor>();
+        Set<Consult> consultSet = new HashSet<Consult>();
+        Set<DashboardAlert> alertSet = new HashSet<DashboardAlert>();
 
-		// TODO: this can be done in parallel
-		Set<HealthFactor> healthFactorSet = new HashSet<HealthFactor>();
-		Set<Consult> consultSet = new HashSet<Consult>();
-		Set<DashboardAlert> alertSet = new HashSet<DashboardAlert>();
+        for (Rule rule : filterTrue(rules, veteranAssessmentId)) {
+            fireEventsFor(veteranAssessmentId, rule, healthFactorSet,
+                    alertSet, consultSet);
+        }
 
-		// get Rules that correspond to the given responses
-		for (Rule rule : rules) {
+        VeteranAssessment veteranAssessment = veteranAssessmentRepository
+                .findOne(veteranAssessmentId);
 
-			// evaluate Rule
-			logger.debug("evaluating rule: " + rule.toString());
-			boolean result = evaluate(veteranAssessmentId, rule);
+        veteranAssessment.setHealthFactors(healthFactorSet);
+        veteranAssessment.setConsults(consultSet);
+        veteranAssessment.setDashboardAlerts(alertSet);
+        veteranAssessmentRepository.update(veteranAssessment);
+    }
 
-			if (result) {
-				fireEventsFor(veteranAssessmentId, rule, healthFactorSet,
-						alertSet, consultSet);
-			}
-		}
-		VeteranAssessment veteranAssessment = veteranAssessmentRepository
-				.findOne(veteranAssessmentId);
+    @Override
+    public Set<Rule> filterTrue(Collection<Rule> rules, Integer veteranAssessmentId){
+        return filterTrue(rules, veteranAssessmentId, null);
+    }
 
-		veteranAssessment.setHealthFactors(healthFactorSet);
-		veteranAssessment.setConsults(consultSet);
-		veteranAssessment.setDashboardAlerts(alertSet);
-		veteranAssessmentRepository.update(veteranAssessment);
-	}
+    @Override
+    public Set<Rule> filterTrue(Collection<Rule> rules, AssessmentRequest assessmentRequest){
+        return filterTrue(rules, assessmentRequest.getAssessmentId(), 
+                assessmentRequest.getUserAnswers());
+    }
 
-	@Override
-	public void updateVisibilityForQuestions(Integer veteranAssessmentId,
-			Collection<Measure> questions) {
-		if (questions.isEmpty())
-			return;
+    private Set<Rule> filterTrue(Collection<Rule> rules, 
+            Integer veteranAssessmentId,
+            @Nullable
+            List<gov.va.escreening.dto.ae.Measure> unsavedResponses){
+        Set<Rule> trueRules = new HashSet<>();
 
-		VisibilityUpdate update = new VisibilityUpdate(veteranAssessmentId,
-				questions);
+        Set<AssessmentVariable> variables = new HashSet<>();
+        for(Rule r : rules){
+            variables.addAll(r.getAssessmentVariables());
+        }
 
-		// get all events that relate to the given questions
-		List<Event> events = eventRepository
-				.getEventByTypeFilteredByObjectIds(
-						RuleConstants.EVENT_TYPE_SHOW_QUESTION,
-						update.getQuestionIds());
-		// collect the rules we should run
-		Set<Rule> rules = Collections.emptySet();
-		for (Event e : events) {
-			rules = Sets.union(rules, e.getRules());
-		}
+ //rules use the measure avs when we resolve these we have no record of 
+ //the measureAnswers' AVs because they are not included here.
+        
+        ResolverParameters params = new ResolverParameters(veteranAssessmentId,
+                templateSmrNullHandler, variables);
+        
+        //add response found for this assessment
+        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+        params.addResponses(assessment.getSurveyMeasureResponseList());
+        
+        //add any newly saved response
+        if(unsavedResponses != null)
+            params.addUnsavedResponses(unsavedResponses);
 
-		// evaluate the rules and update
-		for (Rule r : rules) {
-			update.addRuleResult(r, evaluate(veteranAssessmentId, r));
-		}
+        //filter rules
+        for(Rule r : rules){
+            if(evaluate(r, params)){
+                trueRules.add(r);
+            }
+        }
 
-		update.commitChanges();
-	}
+        return trueRules;
+    }
 
-	/**
-	 * Handles the updating of question visibility by composing an adjacency
-	 * list to construct the directed graph of questions which are connected by
-	 * Rules (i.e. Variables point at parent questions and ShowQuestion typed
-	 * Events point at child questions)
-	 * 
-	 * @author Robin Carnow
-	 * 
-	 */
-	private class VisibilityUpdate {
-		private final int veteranAssessmentId;
-		private final Map<Integer, Boolean> measureVis;
-		private final Table<Integer, Integer, Boolean> questionTable;
-		private Collection<Integer> allQuestions;
 
-		private VisibilityUpdate(int veteranAssessmentId,
-				Iterable<Integer> allQuestionIds) {
-			this.veteranAssessmentId = veteranAssessmentId;
-			questionTable = HashBasedTable.create();
 
-			ImmutableList.Builder<Integer> listBuilder = ImmutableList
-					.builder();
-			measureVis = Maps.newHashMap();
-			for (Integer id : allQuestionIds) {
-				measureVis.put(id, Boolean.TRUE);
-				listBuilder.add(id);
-			}
+    //	private void buildResponseMap(){
+    //	    Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap = Maps.newHashMapWithExpectedSize(measures.size());
+    //	    for (gov.va.escreening.entity.Measure m : measures) {
+    //            Measure userAnswer = null;
+    //            for (Measure answer : assessmentRequest.getUserAnswers()) {
+    //                if (answer.getMeasureId().intValue() == m.getMeasureId()) {
+    //
+    //                    userAnswer = answer;
+    //
+    //                    break;
+    //                }
+    //            }
+    //
+    //            if (userAnswer != null) {
+    //                responseMap.put(m.getMeasureId(), Pair.of(m, userAnswer));
+    //            }
+    //
+    //        }
+    //	}
 
-			this.allQuestions = listBuilder.build();
-		}
+    /**
+     * Evaluates the given Rule's logical expression and returns result.
+     * @param rule
+     * @return returns false if the expression evaluated to false or could not be evaluated
+     */
+    private boolean evaluate(Rule rule, ResolverParameters params) {
+        logger.debug("Evaluating rule {}", rule);
 
-		private VisibilityUpdate(int veteranAssessmentId,
-				Collection<Measure> allQuestions) {
-			this.veteranAssessmentId = veteranAssessmentId;
-			questionTable = HashBasedTable.create();
+        AssessmentVariable variable = new AssessmentVariable();
+        variable.setAssessmentVariableTypeId(new AssessmentVariableType(
+                AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
+        variable.setFormulaTemplate(rule.getExpression());
+        variable.setAssessmentVariableId(rule.getRuleId());
+        variable.setAssessmentVarChildrenList(createAssessmentVarChildrenList(rule
+                .getAssessmentVariables()));
+        
+        Optional<AssessmentVariableDto> evaluatedRule = variableResolverService.resolveAssessmentVariable(variable, params);
+        if(evaluatedRule.isPresent()){
+            return Boolean.parseBoolean(evaluatedRule.get().getValue());
+        }
 
-			ImmutableList.Builder<Integer> listBuilder = ImmutableList
-					.builder();
-			measureVis = Maps.newHashMapWithExpectedSize(allQuestions.size());
-			for (Measure m : allQuestions) {
-				if (m != null) { // if we had the WYSIWYG creating measures and
-									// adding them with a 0 index to the page
-									// this wouldn't happen
-					measureVis.put(m.getMeasureId(), Boolean.TRUE);
-					listBuilder.add(m.getMeasureId());
-				}
-			}
+        return false;
+    }
 
-			this.allQuestions = listBuilder.build();
-		}
+    //	@Override
+    //	public boolean evaluate(
+    //	        Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
+    //	        Rule rule) {
+    //		try {
+    //			FormulaDto formula = new FormulaDto();
+    //			formula.setExpressionTemplate(rule.getExpression());
+    //			Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
+    //					.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
+    //
+    //			Optional<String> value = formulaAssessmentVariableResolver
+    //					.resolveAssessmentVariable(
+    //							createAssessmentVarChildrenList(rule.getAssessmentVariables()), 
+    //							formula,
+    //							responseMap, 
+    //							measureAnswerHash);
+    //
+    //			if (value.isPresent()) {
+    //				return Boolean.parseBoolean(value.get());
+    //			}
+    //		} catch (CouldNotResolveVariableException e) {
+    //			// we might want to throw the exception instead of returning false
+    //			// in the future
+    //			logger.debug("Could not resolve variable for rule {}, message {}",
+    //					rule, e.getMessage());
+    //		}
+    //
+    //		return false;
+    //	}
 
-		private Collection<Integer> getQuestionIds() {
-			return allQuestions;
-		}
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public void updateVisibilityForQuestions(Integer veteranAssessmentId,
+            Collection<Measure> questions) {
+        if (questions.isEmpty())
+            return;
 
-		/**
-		 * Every rule should be called with the method and its result.
-		 * 
-		 * @param r
-		 * @param result
-		 */
-		private void addRuleResult(Rule r, boolean result) {
-			Set<Event> events = r.getEvents();
-			for (Event e : events) {
-				EventType type = e.getEventType();
-				if (type != null
-						&& type.getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
-					Integer childMeasureId = e.getRelatedObjectId();
-					measureVis.put(childMeasureId, Boolean.FALSE);
-					if (result) {
-						Set<AssessmentVariable> variables = r
-								.getAssessmentVariables();
-						// add any measures to our adjacency matrix for
-						// assessment_variables that relate to a measure
-						for (AssessmentVariable variable : variables) {
-							Measure measure = variable.getMeasure();
-							if (measure == null) {
-								MeasureAnswer answer = variable
-										.getMeasureAnswer();
-								if (answer != null) {
-									measure = answer.getMeasure();
-								}
-							}
-							if (measure != null) {
-								Integer parentMeasureId = measure
-										.getMeasureId();
-								if (parentMeasureId != null) {
-									// the cell value we set doesn't matter
-									questionTable.put(childMeasureId,
-											parentMeasureId, Boolean.TRUE);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+        VisibilityUpdate update = new VisibilityUpdate(veteranAssessmentId,
+                questions);
 
-		/**
-		 * Should be called when we are in the path finding phase of visibility
-		 * calculation. It should be called on each measureId.
-		 * 
-		 * @return
-		 */
-		private Boolean addMeasureVis(Integer measureId,
-				Map<Integer, Boolean> mVis) {
-			if (Boolean.TRUE.equals(mVis.get(measureId)))
-				return Boolean.TRUE;
+        // get all events that relate to the given questions
+        List<Event> events = eventRepository
+                .getEventByTypeFilteredByObjectIds(
+                        RuleConstants.EVENT_TYPE_SHOW_QUESTION,
+                        update.getQuestionIds());
 
-			// row represents the parent measures that are reachable
-			Map<Integer, Boolean> row = questionTable.row(measureId);
-			for (Integer parentId : row.keySet()) {
-				if (addMeasureVis(parentId, mVis)) {
-					mVis.put(measureId, Boolean.TRUE);
-					return Boolean.TRUE;
-				}
-			}
-			mVis.put(measureId, Boolean.FALSE);
-			return Boolean.FALSE;
-		}
+        // collect the rules we should run
+        Set<Rule> rules = Collections.emptySet();
+        for (Event e : events) {
+            rules = Sets.union(rules, e.getRules());
+        }
 
-		private void commitChanges() {
-			Set<Integer> hiddenMeasures = Sets
-					.newHashSetWithExpectedSize(allQuestions.size());
-			for (Integer id : allQuestions) {
-				if (!addMeasureVis(id, measureVis))
-					hiddenMeasures.add(id);
-			}
+        //evaluate rules and commit
+        update.setRules(rules).commitChanges();
+    }
 
-			// update database
-			veteranAssessmentMeasureVisibilityRepository
-					.setMeasureVisibilityFor(veteranAssessmentId, measureVis);
-			surveyMeasureResponseRepository.deleteResponsesForMeasures(
-					veteranAssessmentId, hiddenMeasures);
-		}
-	}
 
-	/**
-	 * Evaluates the given Rule's logical expression and fires any associative
-	 * events
-	 * 
-	 * @param rule
-	 */
-	@Override
-	public boolean evaluate(Integer veteranAssessmentId, Rule rule) {
+    private List<AssessmentVarChildren> createAssessmentVarChildrenList(
+            Set<AssessmentVariable> variables) {
+        List<AssessmentVarChildren> formulaDependencies = new ArrayList<AssessmentVarChildren>(
+                variables.size());
+        for (AssessmentVariable variable : variables) {
+            AssessmentVarChildren vc = new AssessmentVarChildren();
+            vc.setVariableChild(variable);
+            formulaDependencies.add(vc);
+        }
+        return formulaDependencies;
+    }
 
-		/*
-		 * Should support: for single select: a particular option was selected
-		 * (if each value has a calculated value then that would work) for
-		 * select multi: we have to know if the calculated value of an option
-		 * was true
-		 */
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventDto> getEventsByType(int type){
+        return toEventDtos(eventRepository.getEventByType(type));
+    }
 
-		// TODO: this is hacky; if the AssessmentVariableDtoFactory is updated
-		// to allow for the resolution to the calculated value we can use that
-		// directly with expressionEvaluatorService
-		AssessmentVariable variable = new AssessmentVariable();
-		variable.setAssessmentVariableTypeId(new AssessmentVariableType(
-				AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
-		variable.setFormulaTemplate(rule.getExpression());
-		variable.setAssessmentVariableId(rule.getRuleId());
-		variable.setAssessmentVarChildrenList(createAssessmentVarChildrenList(rule
-				.getAssessmentVariables()));
-
-		logger.debug("Evaluating rule {} with expression '{}'", rule,
-				variable.getFormulaTemplate());
-		boolean result = false;
-		Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
-				.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
-		try {
-			AssessmentVariableDto evaluatedRule = assessmentVariableFactory
-					.createAssessmentVariableDto(variable, veteranAssessmentId,
-							measureAnswerHash, templateSmrNullHandler);
-
-			result = Boolean.parseBoolean(evaluatedRule.getValue());
-		} catch (CouldNotResolveVariableException e) {
-			// we might want to throw the exception instead of returning false
-			// in the future
-			logger.debug("Could not resolve variable for rule {}, message {}",
-					rule, e.getMessage());
-		}
-
-		logger.debug("Rule {} is {}", rule, result);
-
-		return result;
-	}
-
-	private List<AssessmentVarChildren> createAssessmentVarChildrenList(
-			Set<AssessmentVariable> variables) {
-		List<AssessmentVarChildren> formulaDependencies = new ArrayList<AssessmentVarChildren>(
-				variables.size());
-		for (AssessmentVariable variable : variables) {
-			AssessmentVarChildren vc = new AssessmentVarChildren();
-			vc.setVariableChild(variable);
-			formulaDependencies.add(vc);
-		}
-		return formulaDependencies;
-	}
-
-	/**
-	 * Fires all events for the given rule
-	 * 
-	 * @param rule
-	 */
-	private void fireEventsFor(Integer veteranAssessmentId, Rule rule,
-			Set<HealthFactor> healthFactorSet, Set<DashboardAlert> alertSet,
-			Set<Consult> consultSet) {
-
-		// TODO: this can be done in parallel (update VisibilityUpdate to be
-		// thread safe if we do this)
-		for (Event event : rule.getEvents()) {
-			switch (event.getEventType().getEventTypeId()) {
-
-			case RuleConstants.EVENT_TYPE_CONSULT:
-				// add event's consult to assessment
-				Consult consult = consultRepository.findOne(event
-						.getRelatedObjectId());
-				if (consult == null) {
-					String message = String
-							.format("A event (with ID %d) references an invalid consult (with ID %d)",
-									event.getEventId(),
-									event.getRelatedObjectId());
-					logger.error(message);
-					throw new IllegalStateException(message);
-				}
-				logger.debug("Adding consult {} to assessment {}", consult,
-						veteranAssessmentId);
-				consultSet.add(consult);
-				break;
-
-			case RuleConstants.EVENT_TYPE_HEALTH_FACTOR:
-				// add event's health factor to assessment
-				HealthFactor healthFactor = healthFactorRepository
-						.findOne(event.getRelatedObjectId());
-				if (healthFactor == null) {
-					String message = String
-							.format("A event (with ID %d) references an invalid health factor (with ID %d)",
-									event.getEventId(),
-									event.getRelatedObjectId());
-					logger.error(message);
-					throw new IllegalStateException(message);
-				}
-
-				if (healthFactor.getVistaIen() != null) {
-					logger.debug("Adding health factor {} to assessment {}",
-							healthFactor, veteranAssessmentId);
-					healthFactorSet.add(healthFactor);
-				}
-				break;
-
-			case RuleConstants.EVENT_TYPE_DASHBOARD_ALERT:
-				// add event's dashboard alert system
-				DashboardAlert alert = dashboardAlertRepository.findOne(event
-						.getRelatedObjectId());
-				if (alert == null) {
-					String message = String
-							.format("A event (with ID %d) references an invalid dashboard alert (with ID %d)",
-									event.getEventId(),
-									event.getRelatedObjectId());
-					logger.error(message);
-					throw new IllegalStateException(message);
-				}
-
-				logger.debug("Adding dashboard alert {} to assessment {}",
-						alert, veteranAssessmentId);
-				alertSet.add(alert);
-				break;
-			}
-		}
-	}
-
-	@Override
-	public boolean evaluate(
-			Rule rule,
-			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap) {
-		try {
-			FormulaDto formula = new FormulaDto();
-			formula.setExpressionTemplate(rule.getExpression());
-			Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
-					.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
-
-			Optional<String> value = formulaAssessmentVariableResolver
-					.resolveAssessmentVariable(
-							createAssessmentVarChildrenList(rule
-									.getAssessmentVariables()), formula,
-							responseMap, measureAnswerHash);
-
-			if (value.isPresent()) {
-				return Boolean.parseBoolean(value.get());
-			}
-		} catch (CouldNotResolveVariableException e) {
-			// we might want to throw the exception instead of returning false
-			// in the future
-			logger.debug("Could not resolve variable for rule {}, message {}",
-					rule, e.getMessage());
-		}
-
-		return false;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<EventDto> getEventsByType(int type){
-	    return toEventDtos(eventRepository.getEventByType(type));
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public List<EventDto> getAllEvents(){
-	    return toEventDtos(eventRepository.findAll());
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventDto> getAllEvents(){
+        return toEventDtos(eventRepository.findAll());
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -502,7 +313,7 @@ public class RuleServiceImpl implements RuleService {
     public RuleDto getRule(Integer ruleId) {
         return new RuleDto(getDbRule(ruleId)); 
     }
-    
+
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public RuleDto createRule(RuleDto ruleDto) {
@@ -511,58 +322,13 @@ public class RuleServiceImpl implements RuleService {
         ruleDto.setId(dbRule.getRuleId());
         return ruleDto;
     }
-    
+
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public RuleDto updateRule(Integer ruleId, RuleDto ruleDto) {
         Rule dbRule = updateRuleEntity(ruleDto, getDbRule(ruleId));
         ruleRepository.update(dbRule);
         return new RuleDto(dbRule);
-    }
-    
-    private Rule updateRuleEntity(RuleDto src, Rule dst){
-        dst.setName(src.getName());
-        
-        TemplateIfBlockDTO condition = src.getCondition();
-        //set json in dbRule
-        dst.setCondition(condition);
-        
-        // translate condition into Spring EL and update expression
-        Set<Integer> avIds = new HashSet<>();
-        dst.setExpression(condition.translateToSpringEl(new StringBuilder(), avIds).toString());
-        
-        //update AVs associated with this rule
-        setRuleAssessmentVariables(dst, avIds);
-        
-        return dst;
-    }
-
-    private void setRuleAssessmentVariables(Rule rule, Set<Integer> avIds) {
-
-        Set<Integer> keepers = new HashSet<>();
-        if (rule.getAssessmentVariables() == null){
-            rule.setAssessmentVariables(Sets.<AssessmentVariable>newHashSetWithExpectedSize(avIds.size()));
-        }
-        else{
-            //remove the AVs that are not present in updated rule
-            Iterator<AssessmentVariable> avIter = rule.getAssessmentVariables().iterator();
-            while(avIter.hasNext()){
-                AssessmentVariable av = avIter.next();
-                if(!avIds.contains(av.getAssessmentVariableId())){
-                   avIter.remove(); 
-                }
-                else{
-                    keepers.add(av.getAssessmentVariableId());
-                }
-            }
-        }
-        
-        //add any AVs that are missing from the rule
-        for(Integer avId : avIds){
-            if(!keepers.contains(avId)){
-                rule.getAssessmentVariables().add(avRepository.findOne(avId));
-            }
-        }
     }
 
     @Override
@@ -582,7 +348,7 @@ public class RuleServiceImpl implements RuleService {
         if(dbRule.getEvents() == null || dbRule.getEvents().isEmpty()){
             return Collections.emptyList();
         }
-        
+
         List<EventDto> events = Lists.newArrayListWithExpectedSize(dbRule.getEvents().size());
         for(Event dbEvent : dbRule.getEvents()){
             events.add(new EventDto(dbEvent));
@@ -595,14 +361,14 @@ public class RuleServiceImpl implements RuleService {
     public EventDto addEventToRule(Integer ruleId, EventDto event) {
         Rule dbRule = getDbRule(ruleId);
         Event dbEvent = getDbEvent(event.getId());
-        
+
         if(dbRule.getEvents() == null){
             dbRule.setEvents(ImmutableSet.of(dbEvent)); 
         }
         else{
             dbRule.getEvents().add(dbEvent);
         }
-        
+
         ruleRepository.update(dbRule);
         return event;
     }
@@ -619,11 +385,246 @@ public class RuleServiceImpl implements RuleService {
     public void deleteRuleEvent(Integer ruleId, Integer eventId) {
         Rule dbRule = getDbRule(ruleId);
         Event dbEvent = getRuleEvent(dbRule, eventId);
-        
+
         dbRule.getEvents().remove(dbEvent);
         ruleRepository.update(dbRule);
     }
-    
+
+    /**
+     * Fires all events for the given rule
+     * 
+     * @param rule
+     */
+    private void fireEventsFor(Integer veteranAssessmentId, Rule rule,
+            Set<HealthFactor> healthFactorSet, Set<DashboardAlert> alertSet,
+            Set<Consult> consultSet) {
+
+        // TODO: this can be done in parallel (update VisibilityUpdate to be
+        // thread safe if we do this)
+        for (Event event : rule.getEvents()) {
+            switch (event.getEventType().getEventTypeId()) {
+
+            case RuleConstants.EVENT_TYPE_CONSULT:
+                // add event's consult to assessment
+                Consult consult = consultRepository.findOne(event
+                        .getRelatedObjectId());
+                if (consult == null) {
+                    String message = String
+                            .format("A event (with ID %d) references an invalid consult (with ID %d)",
+                                    event.getEventId(),
+                                    event.getRelatedObjectId());
+                    logger.error(message);
+                    throw new IllegalStateException(message);
+                }
+                logger.debug("Adding consult {} to assessment {}", consult,
+                        veteranAssessmentId);
+                consultSet.add(consult);
+                break;
+
+            case RuleConstants.EVENT_TYPE_HEALTH_FACTOR:
+                // add event's health factor to assessment
+                HealthFactor healthFactor = healthFactorRepository
+                .findOne(event.getRelatedObjectId());
+                if (healthFactor == null) {
+                    String message = String
+                            .format("A event (with ID %d) references an invalid health factor (with ID %d)",
+                                    event.getEventId(),
+                                    event.getRelatedObjectId());
+                    logger.error(message);
+                    throw new IllegalStateException(message);
+                }
+
+                if (healthFactor.getVistaIen() != null) {
+                    logger.debug("Adding health factor {} to assessment {}",
+                            healthFactor, veteranAssessmentId);
+                    healthFactorSet.add(healthFactor);
+                }
+                break;
+
+            case RuleConstants.EVENT_TYPE_DASHBOARD_ALERT:
+                // add event's dashboard alert system
+                DashboardAlert alert = dashboardAlertRepository.findOne(event
+                        .getRelatedObjectId());
+                if (alert == null) {
+                    String message = String
+                            .format("A event (with ID %d) references an invalid dashboard alert (with ID %d)",
+                                    event.getEventId(),
+                                    event.getRelatedObjectId());
+                    logger.error(message);
+                    throw new IllegalStateException(message);
+                }
+
+                logger.debug("Adding dashboard alert {} to assessment {}",
+                        alert, veteranAssessmentId);
+                alertSet.add(alert);
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * Handles the updating of question visibility by composing an adjacency
+     * list to construct the directed graph of questions which are connected by
+     * Rules (i.e. Variables point at parent questions and ShowQuestion typed
+     * Events point at child questions)
+     * 
+     * @author Robin Carnow
+     * 
+     */
+    private class VisibilityUpdate {
+        private final int veteranAssessmentId;
+        private final Map<Integer, Boolean> measureVis;
+        private final Table<Integer, Integer, Boolean> questionTable;
+        private Collection<Integer> allQuestions;
+
+        private VisibilityUpdate(int veteranAssessmentId,
+                Iterable<Integer> allQuestionIds) {
+            this.veteranAssessmentId = veteranAssessmentId;
+            questionTable = HashBasedTable.create();
+
+            ImmutableList.Builder<Integer> listBuilder = ImmutableList
+                    .builder();
+            measureVis = Maps.newHashMap();
+            for (Integer id : allQuestionIds) {
+                measureVis.put(id, Boolean.TRUE);
+                listBuilder.add(id);
+            }
+
+            this.allQuestions = listBuilder.build();
+        }
+
+        /**
+         * Evaluates all rules, records results and returns this object for chaining.
+         * @param allRules
+         * @return
+         */
+        public VisibilityUpdate setRules(Set<Rule> allRules) {
+            // evaluate the rules and update
+            Set<Rule> trueRules = filterTrue(allRules, veteranAssessmentId);
+            for (Rule r : Sets.difference(allRules, trueRules)) {
+                addRuleResult(r, false);
+            }
+
+            for(Rule r : trueRules){
+                addRuleResult(r, true);
+            }
+
+            return this;
+        }
+
+        private VisibilityUpdate(int veteranAssessmentId,
+                Collection<Measure> allQuestions) {
+            this.veteranAssessmentId = veteranAssessmentId;
+            questionTable = HashBasedTable.create();
+
+            ImmutableList.Builder<Integer> listBuilder = ImmutableList
+                    .builder();
+            measureVis = Maps.newHashMapWithExpectedSize(allQuestions.size());
+            for (Measure m : allQuestions) {
+                if (m != null) { // if we had the WYSIWYG creating measures and
+                    // adding them with a 0 index to the page
+                    // this wouldn't happen
+                    measureVis.put(m.getMeasureId(), Boolean.TRUE);
+                    listBuilder.add(m.getMeasureId());
+                }
+            }
+
+            this.allQuestions = listBuilder.build();
+        }
+
+        private Collection<Integer> getQuestionIds() {
+            return allQuestions;
+        }
+
+        /**
+         * Every rule should be called with the method and its result.
+         * 
+         * @param r
+         * @param result
+         */
+        private void addRuleResult(Rule r, boolean result) {
+            Set<Event> events = r.getEvents();
+            for (Event e : events) {
+                EventType type = e.getEventType();
+                if (type != null
+                        && type.getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
+                    Integer childMeasureId = e.getRelatedObjectId();
+                    measureVis.put(childMeasureId, Boolean.FALSE);
+                    if (result) {
+                        Set<AssessmentVariable> variables = r
+                                .getAssessmentVariables();
+                        // add any measures to our adjacency matrix for
+                        // assessment_variables that relate to a measure
+                        for (AssessmentVariable variable : variables) {
+                            Measure measure = variable.getMeasure();
+                            if (measure == null) {
+                                MeasureAnswer answer = variable
+                                        .getMeasureAnswer();
+                                if (answer != null) {
+                                    measure = answer.getMeasure();
+                                }
+                            }
+                            if (measure != null) {
+                                Integer parentMeasureId = measure
+                                        .getMeasureId();
+                                if (parentMeasureId != null) {
+                                    // the cell value we set doesn't matter
+                                    questionTable.put(childMeasureId,
+                                            parentMeasureId, Boolean.TRUE);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Should be called when we are in the path finding phase of visibility
+         * calculation. It should be called on each measureId.
+         * 
+         * @return
+         */
+        private Boolean addMeasureVis(Integer measureId,
+                Map<Integer, Boolean> mVis) {
+            if (Boolean.TRUE.equals(mVis.get(measureId)))
+                return Boolean.TRUE;
+
+            // row represents the parent measures that are reachable
+            Map<Integer, Boolean> row = questionTable.row(measureId);
+            for (Integer parentId : row.keySet()) {
+                if (addMeasureVis(parentId, mVis)) {
+                    mVis.put(measureId, Boolean.TRUE);
+                    return Boolean.TRUE;
+                }
+            }
+            mVis.put(measureId, Boolean.FALSE);
+            return Boolean.FALSE;
+        }
+
+        private void commitChanges() {
+            Set<Integer> hiddenMeasures = Sets
+                    .newHashSetWithExpectedSize(allQuestions.size());
+            for (Integer id : allQuestions) {
+                if (!addMeasureVis(id, measureVis))
+                    hiddenMeasures.add(id);
+            }
+
+            // update database
+            veteranAssessmentMeasureVisibilityRepository
+            .setMeasureVisibilityFor(veteranAssessmentId, measureVis);
+            surveyMeasureResponseRepository.deleteResponsesForMeasures(
+                    veteranAssessmentId, hiddenMeasures);
+        }
+    }
+
+    /**
+     * Retrieves a Rule's Event with some sanity checks
+     * @param dbRule
+     * @param eventId
+     * @return
+     */
     private Event getRuleEvent(Rule dbRule, Integer eventId){
         Event dbEvent = getDbEvent(eventId);
         if(!dbRule.getEvents().contains(dbEvent)){
@@ -634,7 +635,12 @@ public class RuleServiceImpl implements RuleService {
         }
         return dbEvent;
     }
-    
+
+    /**
+     * Retrieves the Event entity with some sanity checks
+     * @param eventId
+     * @return
+     */
     private Event getDbEvent(Integer eventId){
         if(eventId == null){
             ErrorBuilder.throwing(EscreeningDataValidationException.class)
@@ -642,7 +648,7 @@ public class RuleServiceImpl implements RuleService {
             .toUser("An invalid event request was made. Please call support.")
             .throwIt();
         }
-        
+
         Event dbEvent = eventRepository.findOne(eventId);
         if(dbEvent == null){
             ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -652,7 +658,12 @@ public class RuleServiceImpl implements RuleService {
         }
         return dbEvent;        
     }
-    
+
+    /**
+     * Retrieves the Rule entity with some sanity checks
+     * @param ruleId
+     * @return
+     */
     private Rule getDbRule(Integer ruleId){
         if(ruleId == null){
             ErrorBuilder.throwing(EscreeningDataValidationException.class)
@@ -660,7 +671,7 @@ public class RuleServiceImpl implements RuleService {
             .toUser("An invalid rule request was made. Please call support.")
             .throwIt();
         }
-        
+
         Rule dbRule = ruleRepository.findOne(ruleId);
         if(dbRule == null){
             ErrorBuilder.throwing(EntityNotFoundException.class)
@@ -671,7 +682,7 @@ public class RuleServiceImpl implements RuleService {
         return dbRule;
     }
 
-    
+
     /**
      * Translates a list of event entities to a list of event dtos
      * @param dbEvents
@@ -684,4 +695,55 @@ public class RuleServiceImpl implements RuleService {
         }
         return eventDtos;
     }
+
+    private Rule updateRuleEntity(RuleDto src, Rule dst){
+        dst.setName(src.getName());
+
+        TemplateIfBlockDTO condition = src.getCondition();
+        //set json in dbRule
+        dst.setCondition(condition);
+
+        // translate condition into Spring EL and update expression
+        Set<Integer> avIds = new HashSet<>();
+        dst.setExpression(condition.translateToSpringEl(new StringBuilder(), avIds).toString());
+
+        //update AVs associated with this rule
+        setRuleAssessmentVariables(dst, avIds);
+
+        return dst;
+    }
+
+    /**
+     * Updates a rule's associated assessment variables to the set given.
+     * @param rule
+     * @param avIds
+     */
+    private void setRuleAssessmentVariables(Rule rule, Set<Integer> avIds) {
+
+        Set<Integer> keepers = new HashSet<>();
+        if (rule.getAssessmentVariables() == null){
+            rule.setAssessmentVariables(Sets.<AssessmentVariable>newHashSetWithExpectedSize(avIds.size()));
+        }
+        else{
+            //remove the AVs that are not present in updated rule
+            Iterator<AssessmentVariable> avIter = rule.getAssessmentVariables().iterator();
+            while(avIter.hasNext()){
+                AssessmentVariable av = avIter.next();
+                if(!avIds.contains(av.getAssessmentVariableId())){
+                    avIter.remove(); 
+                }
+                else{
+                    keepers.add(av.getAssessmentVariableId());
+                }
+            }
+        }
+
+        //add any AVs that are missing from the rule
+        for(Integer avId : avIds){
+            if(!keepers.contains(avId)){
+                rule.getAssessmentVariables().add(avRepository.findOne(avId));
+            }
+        }
+    }
+
 }

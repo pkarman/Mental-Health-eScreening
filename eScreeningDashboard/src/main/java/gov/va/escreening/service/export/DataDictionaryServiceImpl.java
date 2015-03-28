@@ -147,9 +147,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
             // bind the survey (or module with its sheet)
             dataDictionary.put(s.getName(), sheet);
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));
-            }
+            //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
         }
 
         if (logger.isDebugEnabled()) {

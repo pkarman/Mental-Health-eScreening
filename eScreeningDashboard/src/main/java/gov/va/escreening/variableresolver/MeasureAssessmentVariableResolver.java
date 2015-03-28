@@ -7,17 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public interface MeasureAssessmentVariableResolver {
-
-    /**
-     * Resolves the given AssessmentVariable to an AssessmentVariableDto
-     * @param assessmentVariable
-     * @param veteranAssessmentId
-     * @param measureAnswerHash
-     * @return
-     */
-	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash);
+//TODO: see if we still need this interface
+public interface MeasureAssessmentVariableResolver extends VariableResolver{
 
 	String resolveCalculationValue(AssessmentVariable assessmentVariable,
 								   Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);

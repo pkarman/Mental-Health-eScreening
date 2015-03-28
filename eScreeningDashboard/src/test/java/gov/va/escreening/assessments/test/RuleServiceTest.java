@@ -21,12 +21,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.ImmutableSet;
 
 @Transactional
 // this is to ensure all tests do not leave trace, so they are repeatable.
@@ -36,7 +39,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 	static final int OOO_BATTERY_ID = 5;
 
-	Logger logger = Logger.getLogger(RuleServiceTest.class);
+	Logger logger = LoggerFactory.getLogger(RuleServiceTest.class);
 
 	@Resource
 	private AssessmentDelegate assessmentDelegate;
@@ -81,10 +84,11 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		VeteranAssessment assessment = createTestAssessment();
 		assertNotNull(assessment);
+		vetAssessmentRepo.commit();
+		
+		Rule r = ruleRepo.findOne(ruleId);
 
-		Rule r = ruleRepo.findOne(103);
-
-		assertFalse(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+		assertFalse(evaluateRule(assessment.getVeteranAssessmentId(), r));
 
 		SurveyMeasureResponse res = createResponse(240, 2401, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.setSurveyMeasureResponseList(new ArrayList<SurveyMeasureResponse>());
@@ -118,22 +122,33 @@ public class RuleServiceTest extends AssessmentTestBase {
 		res = createResponse(241, 2415, false, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
 
+		logger.debug("Updating assessment: {}", assessment);
+		
 		vetAssessmentRepo.update(assessment);
-
+		//this is needed to have the rule service pick up these new responses from the DB 
+        //(alternatively we can add this 100% in memory by using the other filterTrue method) 
+		vetAssessmentRepo.commit();
+		
 		// load fresh set of SMR list as they will be read from this cache while evaulating rules
 		smrLister.clearSmrFromCache();
-		assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+		assertTrue(evaluateRule(assessment.getVeteranAssessmentId(), r));
 	}
 
+	private boolean evaluateRule(Integer assessmentId, Rule r){
+	    return ! ruleService.filterTrue(ImmutableSet.of(r), assessmentId).isEmpty();
+	}
+	
 	@Test
 	@Transactional
 	public void testRule105() throws InterruptedException {
 		final VeteranAssessment assessment = createTestAssessment();
 		assertNotNull(assessment);
-
+		
+		vetAssessmentRepo.commit();
+		
 		final Rule r = ruleRepo.findOne(105);
 
-		assertFalse(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+		assertFalse(evaluateRule(assessment.getVeteranAssessmentId(), r));
 
 		SurveyMeasureResponse res = createResponse(542, 5421, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.setSurveyMeasureResponseList(new ArrayList<SurveyMeasureResponse>());
@@ -148,10 +163,15 @@ public class RuleServiceTest extends AssessmentTestBase {
 		res = createResponse(545, 5450, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
 
+		logger.debug("Updating assessment: {}", assessment);
+		
 		vetAssessmentRepo.update(assessment);
+		//this is needed to have the rule service pick up these new responses from the DB 
+		//(alternatively we can add this 100% in memory by using the other filterTrue method) 
+		vetAssessmentRepo.commit();
 
 		smrLister.clearSmrFromCache();
-		assertTrue(ruleService.evaluate(assessment.getVeteranAssessmentId(), r));
+		assertTrue(evaluateRule(assessment.getVeteranAssessmentId(), r));
 
 	}
 

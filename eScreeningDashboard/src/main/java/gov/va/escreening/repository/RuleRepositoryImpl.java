@@ -43,6 +43,7 @@ public class RuleRepositoryImpl extends AbstractHibernateRepository<Rule> implem
     @Override
     public List<Rule> getRuleForAssessment(int veteranAssessmentID)
     {
+        //TODO: See if we make this more efficient
         String sql = "select distinct rule.* from rule, rule_assessment_variable, assessment_variable "
                 + "where rule_assessment_variable.rule_id = rule.rule_id "
                 + "and rule_assessment_variable.assessment_variable_id=assessment_variable.assessment_variable_id "

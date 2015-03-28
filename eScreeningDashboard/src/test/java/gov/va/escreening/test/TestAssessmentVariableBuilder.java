@@ -1,24 +1,21 @@
 package gov.va.escreening.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_FREE_TEXT;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_TABLE;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.entity.AssessmentVarChildren;
@@ -54,10 +51,28 @@ import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolve
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl;
 import gov.va.escreening.variableresolver.NullValueHandler;
+import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
-import static org.mockito.Mockito.*;
-import static com.google.common.base.Preconditions.*;
-import static gov.va.escreening.constants.AssessmentConstants.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -77,6 +92,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     //Tracks what is added/built
     private final Map<Integer, AssessmentVariable> avMap = new HashMap<>();
     private final Map<Integer, AssessmentVariable> measureAnswerHash = new HashMap<>();
+    private final LinkedListMultimap<Integer, SurveyMeasureResponse> measureResponses = LinkedListMultimap.create();
 
     //resolvers - used to make sure all business rules are followed
     private final MeasureAnswerAssessmentVariableResolver answerResolver;
@@ -101,16 +117,21 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         answerResolver = new MeasureAnswerAssessmentVariableResolverImpl(surveyResponseRepo);
         measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver, surveyResponseRepo);
         customResolver = createCustomResolver();
-        formulaResolver = new FormulaAssessmentVariableResolverImpl(expressionService, answerResolver, measureResolver);
-        variableResolver = new AssessmentVariableDtoFactoryImpl(customResolver, formulaResolver, answerResolver, measureResolver); 
+        formulaResolver = new FormulaAssessmentVariableResolverImpl(expressionService, answerResolver, measureResolver, customResolver);
+        variableResolver = new AssessmentVariableDtoFactoryImpl(customResolver, formulaResolver, answerResolver, measureResolver);
     }
 
     @Override
     public List<AssessmentVariableDto> getDTOs(){
         List<AssessmentVariableDto> dtoList = new ArrayList<>(avMap.size());
+        
+        ResolverParameters params = new ResolverParameters(123, mock(NullValueHandler.class), measureAnswerHash.values());
+        params.addResponses(measureResponses.values());
+        
         for(AssessmentVariable av : avMap.values()){
             try{
-                dtoList.add(variableResolver.createAssessmentVariableDto(av, 123, measureAnswerHash, mock(NullValueHandler.class)));
+                AssessmentVariableDto dto = variableResolver.resolveAssessmentVariable(av, params);
+                dtoList.add(dto);
             }
             catch(CouldNotResolveVariableException e){
                 /*ignored*/
@@ -186,6 +207,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         if(row != null){
             when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
         }
+        
+        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
+        measureResponses.removeAll(measureId);
+        measureResponses.putAll(measureId, responseList);
     }
 
     private void addMeasureResponse(Measure measure, @Nullable Integer row, SurveyMeasureResponse response){
@@ -214,6 +239,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         if(row != null){
             when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
         }
+        
+        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
+        measureResponses.put(measureId, response);
     }
 
     private void setMeasureResponses(Measure measure,  SurveyMeasureResponse... smrs){
@@ -359,7 +387,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                         srm.setMeasure(childMeasure);
                         srm.setMeasureAnswer(childMeasure.getMeasureAnswerList().get(0));
                         srm.setTabularRow(rowIndex);
-                        setMeasureResponses(childMeasure, rowIndex, srm);
+                        if(rowIndex == 0){
+                            setMeasureResponses(childMeasure, rowIndex, srm);
+                        }
+                        else{
+                            addMeasureResponse(childMeasure, rowIndex, srm);
+                        }
                     }
                     rowIndex++;
                 }
@@ -512,7 +545,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         
         private TableQuestionAvBuilder addChildSelect(Integer measureTypeId, 
                 @Nullable Integer explicitMeasureId,
-                @Nullable Integer avId, @Nullable String questionText){
+                @Nullable Integer avId, 
+                @Nullable String questionText){
 
             SelectAvBuilder childBuilder = new SelectAvBuilder(getRootBuilder(), measureTypeId, explicitMeasureId, avId, questionText);
             currentSelectBuilder = childBuilder;
@@ -585,6 +619,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             defaultCalculationValue++;
 
             measure.getMeasureAnswerList().add(answer);
+            answer.setMeasure(measure);
 
             //create av for answer
             AssessmentVariable aav = associateAnswerAv(avId, answer);

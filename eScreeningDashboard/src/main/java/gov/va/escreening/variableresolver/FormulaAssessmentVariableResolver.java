@@ -12,16 +12,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.base.Optional;
 
-public interface FormulaAssessmentVariableResolver {
-	AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,  
-			Integer veteranAssessmentId, Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);
-
-
-	Optional<String> resolveAssessmentVariable(
-			List<AssessmentVarChildren> createAssessmentVarChildrenList,
-			FormulaDto formula,
-			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
-			Map<Integer, AssessmentVariable> measureAnswerHash);
-
-
+public interface FormulaAssessmentVariableResolver extends VariableResolver{
+	
+//	Optional<String> resolveAssessmentVariable(
+//			List<AssessmentVarChildren> createAssessmentVarChildrenList,
+//			FormulaDto formula,
+//			Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
+//			Map<Integer, AssessmentVariable> measureAnswerHash);
+	
 }

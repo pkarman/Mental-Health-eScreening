@@ -1,6 +1,7 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
@@ -156,30 +157,20 @@ public class AssessmentVariableDto {
 	}
 	
 	/**
+	 * Called when this is a measure answer dto.<br/>
 	 * Sets all fields having to do with a response except for the setting of OverrideText which should be removed.<br/>
 	 * Note: Much of this logic was taken from MeasureAnswerAssessmentVairableResolverImpl to centralize and simplify this code.
 	 * 
 	 * @param response the response to use for setting fields. This should not be a transient object.
 	 */
-	public void setResponse(SurveyMeasureResponse response){
-		setValue(getAnswerValue(response));
-		setRow(response.getTabularRow());
+	public void setResponse(Answer response){
+		setValue(response.getAnswerResponse());
+		setRow(response.getRowId());
 		
 		//TODO: the following logic was simplified from MeasureAnswerAssessmentVairableResolverImpl (we should remove one of these)
-		setOtherText(response.getOtherValue());
-		setOtherValue(response.getOtherValue());
-		
-		
-		if(response.getMeasure().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
-			setDisplayText(value);
-		}
-		else{
-			//The constraint has been removed which would set null here if the answer is of type none. Template functions do not assume
-			//this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
-			//delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
-			//show the text of the None answer so null should not be returned.
-			setDisplayText(response.getMeasureAnswer().getAnswerText());
-		}
+		setOtherText(response.getOtherAnswerResponse());
+		setOtherValue(response.getOtherAnswerResponse());
+		setDisplayText(response.getAnswerDisplayResponse());
 	}
 	
 	private Integer createColumn(AssessmentVariable av){
@@ -219,20 +210,6 @@ public class AssessmentVariableDto {
 				throw new UnsupportedOperationException("Invliad type: " + av.getAssessmentVariableTypeId().getAssessmentVariableTypeId());
 		}
 	}
-	
-	private String getAnswerValue(SurveyMeasureResponse response) {
-		if(response.getBooleanValue() != null)
-			return response.getBooleanValue().toString().toLowerCase();
-		if(response.getNumberValue() != null)
-			return response.getNumberValue().toString();
-		if(response.getTextValue() != null)
-			return response.getTextValue();
-
-		throw new CouldNotResolveVariableException(
-			String.format("A value was not set for surveymeasureresponseid: %s",
-					response.getSurveyMeasureResponseId()));
-	}
-
 	
 	//possible types are string, none, and other
 	private String createVariableTypeString(AssessmentVariable av) {
