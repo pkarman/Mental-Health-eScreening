@@ -1230,5 +1230,108 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return String.valueOf(veteranAssessmentRepository.getAvgNumOfAssessmentPerClinicianClinicFor593(strFromDate, strToDate, clinicIds));
     }
 
+    @Override
+    public List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate) {
+
+        List<Integer> measureAnswerId = new ArrayList<>(2);
+        measureAnswerId.add(160);
+        measureAnswerId.add(161);
+
+        return veteranAssessmentRepository.getGenderCount(clinicIds, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEthnicityCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>(3);
+        measureAnswerId.add(220);
+        measureAnswerId.add(221);
+        measureAnswerId.add(222);
+
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getRaceCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>(10);
+        measureAnswerId.add(230);
+        measureAnswerId.add(231);
+        measureAnswerId.add(232);
+        measureAnswerId.add(233);
+        measureAnswerId.add(234);
+        measureAnswerId.add(235);
+        measureAnswerId.add(236);
+
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEducationCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+
+        for(int i=240; i<=247; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEmploymentCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=250; i<=254; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+    @Override
+    public List<Integer> getTobaccoCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=3410; i<=3412; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getBranchCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=920; i<=925; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate) {
+        Integer measureId = 23;
+
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  23);
+    }
+
+    @Override
+    public int getTobaccoMissingCount(List<Integer> cList, String fromDate, String toDate) {
+
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  341);
+    }
+
+    @Override
+    public int getMissingBranchCount(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  92);
+    }
+
+    @Override
+    public int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  24);
+    }
+
+    @Override
+    public List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getAgeStatistics(cList, fromDate, toDate);
+    }
+
+    @Override
+    public List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getNumOfDeploymentStatistics(cList, fromDate, toDate);
+    }
+
 
 }

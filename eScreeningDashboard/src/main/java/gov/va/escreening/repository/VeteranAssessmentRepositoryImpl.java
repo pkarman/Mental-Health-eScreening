@@ -710,6 +710,108 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         return results;
     }
 
+    @Override
+    public List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate, List<Integer> measureAnswerIds) {
+
+        Query q = entityManager.createNativeQuery("SELECT measure_answer_id, sum(boolean_value)  FROM survey_measure_response " +
+                "where measure_answer_id in (:measureAnswerIds) " +
+                "and veteran_assessment_id in ( " +
+                "select distinct veteran_assessment_id from veteran_assessment " +
+                "where date_completed >= :fromDate and date_completed <=:toDate " +
+                "and date_completed is not null and clinic_id in (:clinicIds)  " +
+                ") and boolean_value is not null " +
+                "group by measure_answer_id order by measure_answer_id");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        q.setParameter("measureAnswerIds", measureAnswerIds);
+
+        List r = q.getResultList();
+
+        if (r!=null && r.size()>0) {
+            List<Integer> result = new ArrayList<>();
+
+
+            for(Object a : r){
+                Object [] aRow = (Object[])a;
+                result.add(((Number)aRow[1]).intValue());
+            }
+
+            return result;
+         }
+
+        return null;
+    }
+
+    @Override
+    public Integer getMissingCountFor(List<Integer> cList, String fromDate, String toDate, int measureId) {
+
+        Query q = entityManager.createNativeQuery("select count(*) from veteran_assessment_question_presence  " +
+                        "where measure_id = :measureId and skipped = -1 and veteran_assessment_id in (" +
+                        " select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate" +
+                        " and date_completed <= :toDate and date_completed is not null) "
+         );
+
+        setParametersFor593(q, fromDate, toDate, cList);
+        q.setParameter("measureId", measureId);
+        Object o = q.getSingleResult();
+
+        return ((Number)o).intValue();
+    }
+
+    @Override
+    public List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate) {
+
+        Query q = entityManager.createNativeQuery(
+                "select avg(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), min(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), " +
+                "max(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365)" +
+                " from survey_measure_response where measure_answer_id = 170 " +
+                " and text_value is not null and veteran_assessment_id in (select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and date_completed <= :toDate and date_completed is not null)");
+        setParametersFor593(q, fromDate, toDate, cList);
+        List r = q.getResultList();
+        if (r==null || r.size()==0) {
+            return null;
+        }
+        else{
+            List<Number> result = new ArrayList<>();
+
+            Object [] aRow = (Object [])r.get(0);
+
+            result.add((Number)aRow[0]);
+            result.add((Number)aRow[1]);
+            result.add((Number)aRow[2]);
+
+            return result;
+        }
+    }
+
+    @Override
+    public List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate) {
+        Query q = entityManager.createNativeQuery(
+                "select avg(numOfDeployment), min(numOfDeployment), max(numOfDeployment) from (select count(*) as numOfDeployment" +
+                        " from survey_measure_response where measure_answer_id = 1210 " +
+                        " and text_value is not null and veteran_assessment_id in (select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                        " and date_completed <= :toDate and date_completed is not null)" +
+                        " group by veteran_assessment_id) a ");
+        setParametersFor593(q, fromDate, toDate, cList);
+        List r = q.getResultList();
+        if (r==null || r.size()==0) {
+            return null;
+        }
+        else{
+            List<Number> result = new ArrayList<>();
+
+            Object [] aRow = (Object [])r.get(0);
+
+            result.add((Number)aRow[0]);
+            result.add((Number)aRow[1]);
+            result.add((Number)aRow[2]);
+
+            return result;
+        }
+    }
+
     private void setParametersFor593(Query q , String fromDate, String toDate, List<Integer> clinicIds){
         q.setParameter("fromDate", getDateFromString(fromDate+ " 00:00:00"));
         q.setParameter("toDate", getDateFromString(toDate+" 23:59:59"));

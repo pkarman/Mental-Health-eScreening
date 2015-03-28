@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.8150000000000117"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="456"/>
+	<property name="ireport.x" value="165"/>
+	<property name="ireport.y" value="401"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -1149,7 +1149,7 @@
 						<font fontName="Arial"/>
 						<paragraph rightIndent="2"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{highschooldip_percentage}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{highschooldip_count}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Transparent" x="395" y="65" width="46" height="15" backcolor="#CCCCCC" uuid="406320f6-4be5-4d6a-89b7-722dd7c048cd"/>
@@ -1862,7 +1862,7 @@
 					<font fontName="Arial"/>
 					<paragraph leftIndent="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{numberofdeployments}]]></textFieldExpression>
 			</textField>
 			<frame>
 				<reportElement x="121" y="618" width="451" height="68" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>

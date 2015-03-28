@@ -283,4 +283,30 @@ public interface VeteranAssessmentService {
     List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
 
     String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Integer> getGenderCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Integer> getEthnicityCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getRaceCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEducationCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEmploymentCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getTobaccoCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getBranchCount(List cList, String fromDate, String toDate);
+
+    Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getTobaccoMissingCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingBranchCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
 }

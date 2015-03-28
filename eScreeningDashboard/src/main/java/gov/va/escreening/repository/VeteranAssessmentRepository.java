@@ -110,4 +110,12 @@ public interface VeteranAssessmentRepository extends RepositoryInterface<Veteran
     List<Report593ByTimeDTO> getBatteriesByTimeFor593(String fromDate, String toDate, List<Integer>clinicIds);
 
     List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
+
+    List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate, List<Integer> measureAnswerIds);
+
+    Integer getMissingCountFor(List<Integer> cList, String fromDate, String toDate, int i);
+
+    List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
 }
