@@ -786,6 +786,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         for (Integer clicnicId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
             sb.append(clinicService.getClinicNameById(clicnicId)).append(", ");
         }
+        if (sb.length()>2){
+            sb.delete(sb.length()-2, sb.length());
+        }
         dataCollection.put("clinicNames", sb.toString());
     }
 
