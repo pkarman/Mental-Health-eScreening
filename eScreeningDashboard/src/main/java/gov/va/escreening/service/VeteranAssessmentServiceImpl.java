@@ -14,6 +14,7 @@ import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
 import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
@@ -1331,6 +1332,17 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     @Override
     public List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate) {
         return veteranAssessmentRepository.getNumOfDeploymentStatistics(cList, fromDate, toDate);
+    }
+
+    @Override
+    public int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        return veteranAssessmentRepository.getAssessmentCount(fromDate, toDate, clinicIds);
+    }
+
+    @Override
+    public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
     }
 
 

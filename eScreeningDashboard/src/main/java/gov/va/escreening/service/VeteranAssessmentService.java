@@ -9,6 +9,7 @@ import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
 import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
@@ -309,4 +310,8 @@ public interface VeteranAssessmentService {
     List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
 
     List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
 }

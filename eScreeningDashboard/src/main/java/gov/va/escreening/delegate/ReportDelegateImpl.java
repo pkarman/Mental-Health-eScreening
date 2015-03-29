@@ -689,20 +689,28 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
 
+        String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
+        String toDate = (String) requestData.get(ReportsUtil.TODATE);
+        List<Integer> clinicIds = (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+
+        int totalAssessment = veteranAssessmentService.findAssessmentCount(fromDate, toDate, clinicIds);
+
+        List<Report594DTO> dtos = veteranAssessmentService.findAlertsCount(fromDate, toDate, clinicIds);
+
         JRDataSource dataSource = null;
 
-        List<Report594DTO> dtos = Lists.newArrayList();
-
-        for (SurveyDto survey : surveyService.getSurveyList()) {
-            Report594DTO report594DTO = new Report594DTO();
-            report594DTO.setModuleName(survey.getName());
-            int numerator = (int) (Math.random() * 100);
-            int denominator = numerator + 10;
-            report594DTO.setModuleCount(String.format("%s/%s", numerator, denominator));
-            report594DTO.setModulePercent(String.format("%5.2f%%", Math.random() * 100));
-            dtos.add(report594DTO);
+        if (totalAssessment == 0 ||dtos == null || dtos.size() == 0){
+            dataSource = new JREmptyDataSource();
         }
-        dataSource = new JRBeanCollectionDataSource(dtos);
+        else {
+            for (Report594DTO report594DTO : dtos) {
+
+                int numerator = Integer.parseInt(report594DTO.getModuleCount());
+                report594DTO.setModuleCount(String.format("%s/%s", numerator, totalAssessment));
+                report594DTO.setModulePercent(String.format("%5.2f%%", numerator * 100.0f/totalAssessment));
+            }
+            dataSource = new JRBeanCollectionDataSource(dtos);
+        }
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);

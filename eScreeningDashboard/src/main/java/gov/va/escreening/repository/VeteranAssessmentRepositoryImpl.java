@@ -6,6 +6,7 @@ import gov.va.escreening.dto.SortDirection;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
 import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import org.apache.commons.lang3.StringUtils;
@@ -810,6 +811,44 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
             return result;
         }
+    }
+
+    @Override
+    public int getAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        Query q = entityManager.createNativeQuery("select count(*) from veteran_assessment " +
+                " where  clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and date_completed <= :toDate and date_completed is not null ");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        return ((Number)q.getSingleResult()).intValue();
+    }
+
+    @Override
+    public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        Query q = entityManager.createNativeQuery("select a.name, count(*)  from veteran_assessment_dashboard_alert vada join dashboard_alert a " +
+                "on vada.dashboard_alert_id=a.dashboard_alert_id " +
+                " inner join veteran_assessment va on vada.veteran_assessment_id=va.veteran_assessment_id " +
+                "where va.assessment_status_id in (3, 5) and va.clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and va.date_completed <= :toDate and va.date_completed is not null group by a.name");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        List<Object[]> rows = q.getResultList();
+
+        List<Report594DTO> dtos = new ArrayList<>();
+
+        if (rows!=null && rows.size() > 0 ){
+
+            for(Object [] aRow : rows){
+                Report594DTO dto = new Report594DTO();
+                dto.setModuleName((String)aRow[0]);
+                dto.setModuleCount(""+((Number)aRow[1]).intValue());
+                dtos.add(dto);
+            }
+        }
+
+        return dtos;
     }
 
     private void setParametersFor593(Query q , String fromDate, String toDate, List<Integer> clinicIds){

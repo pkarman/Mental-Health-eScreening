@@ -4,6 +4,7 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.dashboard.SearchResult;
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
 import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -118,4 +119,8 @@ public interface VeteranAssessmentRepository extends RepositoryInterface<Veteran
     List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
 
     List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    int getAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
 }
