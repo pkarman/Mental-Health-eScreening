@@ -125,7 +125,7 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
     class MeasureAnswerNameExtractor implements ExportNameExtractor {
         public String extractExportName(AssessmentVarChildren avc) {
             MeasureAnswer ma = avc.getVariableChild().getMeasureAnswer();
-            String exportName = ma != null ? ma.getExportName() : avc.getVariableChild().getDisplayName();
+            String exportName = ma != null ? ma.getIdentifyingText() : avc.getVariableChild().getDisplayName();
             return exportName;
         }
     }
@@ -133,7 +133,7 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
     class MeasureNameExtractor implements ExportNameExtractor {
         public String extractExportName(AssessmentVarChildren avc) {
             Measure m = avc.getVariableChild().getMeasure();
-            String exportName = m != null && !m.getMeasureAnswerList().isEmpty() ? m.getMeasureAnswerList().iterator().next().getExportName() : avc.getVariableChild().getDisplayName();
+            String exportName = m != null && !m.getMeasureAnswerList().isEmpty() ? m.getMeasureAnswerList().iterator().next().getIdentifyingText() : avc.getVariableChild().getDisplayName();
             return exportName;
         }
     }

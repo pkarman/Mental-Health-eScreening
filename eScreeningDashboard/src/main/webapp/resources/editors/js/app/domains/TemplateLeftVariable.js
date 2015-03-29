@@ -36,7 +36,7 @@ EScreeningDashboardApp.models.TemplateLeftVariable = function (jsonConfig) {
         if (this.type === "text") {
             this.content = jsonConfig.content;
         } else if (this.type === "var") {
-            this.content = new EScreeningDashboardApp.models.TemplateVariableContent(jsonConfig.content);
+            this.content = new EScreeningDashboardApp.models.AssessmentVariable(jsonConfig.content);
         }
     }
 

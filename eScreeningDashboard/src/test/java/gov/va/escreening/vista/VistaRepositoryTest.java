@@ -99,11 +99,6 @@ public class VistaRepositoryTest {
         logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
     }
     
-//    @Test
-//    public void testRefreshHF()
-//    {
-//        vistaServiceImpl.refreshHealthFactors(DIVISION, null, DUZ, null);
-//    }
     
     @Test
     public void testFetchVeteran()

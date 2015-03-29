@@ -917,6 +917,27 @@ a.offscreen:focus, a.offscreen:active {
   stroke:#2d5277;
   stroke-width: 2px;
 }
+
+/**/
+.change_program_block{
+	margin:0px 10px;
+}
+
+.change_program_block, .change_program_block a{
+}
+/*System Configuration Page */
+.otherSystemConfigurationBlock{
+	
+}
+.otherSystemConfigurationBlock ul, .otherSystemConfigurationBlock li{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+.otherSystemConfigurationBlock .sectionList{
+	font-weight:bold;
+}
+
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;

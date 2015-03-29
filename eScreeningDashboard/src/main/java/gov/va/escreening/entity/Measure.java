@@ -1,6 +1,9 @@
 package gov.va.escreening.entity;
 
+import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ValidationDataTypeEnum;
+import gov.va.escreening.exception.IllegalSystemStateException;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -223,6 +226,24 @@ public class Measure implements Serializable {
     public void setAssessmentVariableList(List<AssessmentVariable> assessmentVariableList) {
         this.assessmentVariableList = assessmentVariableList;
     }
+    
+    /**
+     * This is a method to move our code base from a one to many between measure and assessment variables to a one to one (as it should be)
+     * @return
+     * @throws IllegalSystemStateException is there is no AV for this measure.
+     */
+	public AssessmentVariable getAssessmentVariable() {
+		List<AssessmentVariable> avList = getAssessmentVariableList();
+		if(avList == null || avList.isEmpty()){
+			ErrorBuilder.throwing(IllegalSystemStateException.class)
+				.toAdmin("Each measure should have an assessment variable assigned to it but measure with the following ID doesn't: " + getMeasureId())
+				.toUser("A system issue has been detected. Please contact support")
+				.throwIt();
+		}
+		
+		return avList.get(0);
+	}
+
 
     public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
         return surveyMeasureResponseList;
@@ -280,7 +301,7 @@ public class Measure implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Measure[ measureId=" + measureId + " ]";
+        return "gov.va.escreening.entity.Measure[ measureId=" + measureId + ", text=\"" + measureText + "\" ]";
     }
 
     public boolean isNumeric() {
@@ -295,5 +316,11 @@ public class Measure implements Serializable {
     	}
     	return false;
     }
-
+    
+    public boolean isParent(){
+    	return measureType != null && 
+    			(measureType.getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX 
+				|| measureType.getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX
+				|| measureType.getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE);
+    }
 }

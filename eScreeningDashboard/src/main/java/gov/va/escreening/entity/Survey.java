@@ -98,52 +98,74 @@ public class Survey implements Serializable, SurveyBaseProperties{
         this.dateCreated = dateCreated;
     }
 
+    @Override
     public Integer getSurveyId() {
         return surveyId;
     }
 
+    @Override
     public void setSurveyId(Integer surveyId) {
         this.surveyId = surveyId;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public Integer getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(Integer version) {
         this.version = version;
     }
 
+    @Override
     public boolean isMha() {
         return hasMha;
     }
 
+    @Override
     public void setMha(boolean hasMha) {
         this.hasMha = hasMha;
     }
 
+    @Override
     public String getMhaTestName() {
         return mhaTestName;
     }
 
+    @Override
     public void setMhaTestName(String mhaTestName) {
         this.mhaTestName = mhaTestName;
+    }
+
+    @Override
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    @Override
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public String getMhaResultGroupIen() {
@@ -152,14 +174,6 @@ public class Survey implements Serializable, SurveyBaseProperties{
 
     public void setMhaResultGroupIen(String mhaResultGroupIen) {
         this.mhaResultGroupIen = mhaResultGroupIen;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     public List<VeteranAssessmentSurvey> getVeteranAssessmentSurveyList() {
@@ -224,12 +238,6 @@ public class Survey implements Serializable, SurveyBaseProperties{
     public void setTemplates(Set<Template> templates) {
         this.templates = templates;
     }
-    
-    public Boolean isClinicalReminder()
-    {
-        return clinicalReminderSurveyList!=null 
-                && (!clinicalReminderSurveyList.isEmpty());
-    }
 
     @Override
     public void setDisplayOrderForSection(Integer displayOrder) {
@@ -239,14 +247,6 @@ public class Survey implements Serializable, SurveyBaseProperties{
     @Override
     public Integer getDisplayOrderForSection() {
         return this.displayOrderForSection;
-    }
-
-    public String getVistaTitle() {
-        return vistaTitle;
-    }
-
-    public void setVistaTitle(String vistaTitle) {
-        this.vistaTitle = vistaTitle;
     }
 
     @Override

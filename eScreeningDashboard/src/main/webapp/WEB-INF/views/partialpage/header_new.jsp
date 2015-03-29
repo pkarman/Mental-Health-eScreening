@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col-md-9">
 			<div id="vaLogoDiv">
-				<a href="../home"><img src="resources/images/dva_eha_logo.png" alt="Department of Veterans Affairs | eScreening Program" border="0"></a> 
+				<a href="../home"><img src="<c:url value="/resources/images/dva_eha_logo.png" />" alt="Department of Veterans Affairs | eScreening Program" border="0"></a> 
 			</div>
 		</div>
 		

@@ -1,10 +1,14 @@
 package gov.va.escreening.assessments.test;
 
+import com.google.common.io.Files;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +39,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
     AssessmentVariableRepository avr;
 
     @Test
-    public void synvAvWithMeasureDdl() {
+    public void produceUpdateScript() throws IOException {
         Collection<AssessmentVariable> avList = avr.findAll();
         StringBuffer sb = new StringBuffer();
         for (AssessmentVariable av : avList) {
@@ -43,13 +47,20 @@ public class AssessmentVariableTest extends AssessmentTestBase {
         }
 
         String updateString = sb.toString();
+        //saveUpdateString(System.getProperty("FILE_NAME", "./assessment_vars_update_script.sql"), updateString);
         logger.info(updateString);
+    }
+
+    private void saveUpdateString(String fileName, String updateString) throws IOException {
+        File fileToWriteTo = new File(fileName);
+
+        Files.write(updateString, fileToWriteTo, Charset.defaultCharset());
     }
 
     private void buildUpdate(AssessmentVariable av, StringBuffer sb) {
         MeasureAnswer ma = av.getMeasureAnswer();
 
-        String name = ma != null ? ma.getExportName() : null;
+        String name = ma != null ? ma.getIdentifyingText() : null;
         String descr = ma != null ? ma.getAnswerText() : null;
 
         if (name == null && descr == null && av.getMeasure() != null) {
@@ -134,7 +145,7 @@ public class AssessmentVariableTest extends AssessmentTestBase {
         String insertStatements = sb.toString();
     }
 
-    @Test
+    //@Test
     public void testReplaceTickTick() {
         String hh = "Loss of consciousness/\"knocked out\"".replaceAll("\"", "'");
         int i = 0;

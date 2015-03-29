@@ -139,9 +139,10 @@ public interface VeteranAssessmentService {
      * @param selectedBatteryId
      * @param surveyIdList
      * @return
+     * @throws AssessmentAlreadyExistException 
      */
     Integer create(Integer veteranId, Integer programId, Integer clinicId, Integer clinicianId,
-            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList);
+            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList) throws AssessmentAlreadyExistException;
 
     /**
      * Updates an existing veteran assessment.

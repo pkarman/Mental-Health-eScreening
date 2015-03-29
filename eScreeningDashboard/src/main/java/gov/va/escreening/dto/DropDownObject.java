@@ -29,5 +29,8 @@ public class DropDownObject implements Serializable {
         this.stateId = stateId;
         this.stateName = stateName;
     }
+    public DropDownObject() {
+    	// needed for JSON encoding
+    }
 
 }
