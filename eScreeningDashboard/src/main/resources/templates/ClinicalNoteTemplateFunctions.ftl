@@ -708,7 +708,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 >
+    <#if measureTypeId == 1 || measureTypeId == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -755,7 +755,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
