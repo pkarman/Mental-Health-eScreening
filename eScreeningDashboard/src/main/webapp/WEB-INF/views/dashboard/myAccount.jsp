@@ -9,10 +9,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
       
-  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
-  <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-  <script type="text/javascript" src="resources/js/dashboard/myAccount.js"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/angular/angular.min.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/dashboard/myAccount.js" />"></script>
+  <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
   
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
   <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" />
@@ -161,6 +162,6 @@
   </div>
 </div>
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+
 </body>
 </html>
