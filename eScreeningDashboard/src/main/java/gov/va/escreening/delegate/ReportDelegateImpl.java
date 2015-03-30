@@ -476,18 +476,6 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> genAvgScoresVetByClinicNumeric(Map<String, Object> requestData, EscreenUser escreenUser) {
-        Map<String, Object> parameterMap = Maps.newHashMap();
-        String displayOption = (String) requestData.get(ReportsUtil.DISPLAY_OPTION);
-        if ("individualData".equals(displayOption)) {
-
-        }
-
-        List idList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
-        return parameterMap;
-    }
-
-    @Override
     public Map<String, Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
         attachDates(parameterMap, requestData);
@@ -1023,7 +1011,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Number> result = veteranAssessmentService.getAgeStatistics(cList, fromDate, toDate);
 
-        if (result == null || result.size()!=3){
+        if (result == null || result.isEmpty() || result.size()!=3){
             dataCollection.put("age", "");
         }else {
 

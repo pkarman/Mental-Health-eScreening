@@ -32,8 +32,6 @@ public interface ReportDelegate {
 
     Map<String, Object> genIndividualStatisticsNumeric(Map<String, Object> requestData, EscreenUser escreenUser);
 
-    Map<String, Object> genAvgScoresVetByClinicNumeric(Map<String, Object> requestData, EscreenUser escreenUser);
-
     Map<String,Object> genClinicStatisticReportsPart1eScreeningBatteriesReport(Map<String, Object> requestData, EscreenUser escreenUser);
 
     Map<String,Object> genClinicStatisticReportsPartIVAverageTimePerModuleReport(Map<String, Object> requestData, EscreenUser escreenUser);

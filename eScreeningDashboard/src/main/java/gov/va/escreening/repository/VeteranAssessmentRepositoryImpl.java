@@ -438,7 +438,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         for (BigInteger assessmentCnt : resultList) {
             sum += Integer.parseInt(assessmentCnt.toString());
         }
-        return sum / resultList.size();
+        return resultList.size()==0?0:sum / resultList.size();
     }
 
     @Override
@@ -779,10 +779,15 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
             Object [] aRow = (Object [])r.get(0);
 
-            result.add((Number)aRow[0]);
-            result.add((Number)aRow[1]);
-            result.add((Number)aRow[2]);
-
+            if (aRow[0]!=null) {
+                result.add((Number) aRow[0]);
+            }
+            if (aRow[1]!=null) {
+                result.add((Number) aRow[1]);
+            }
+            if (aRow[2]!=null) {
+                result.add((Number) aRow[2]);
+            }
             return result;
         }
     }
@@ -805,9 +810,15 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
             Object [] aRow = (Object [])r.get(0);
 
-            result.add((Number)aRow[0]);
-            result.add((Number)aRow[1]);
-            result.add((Number)aRow[2]);
+            if (aRow[0]!=null) {
+                result.add((Number) aRow[0]);
+            }
+            if (aRow[1]!=null) {
+                result.add((Number) aRow[1]);
+            }
+            if (aRow[2]!=null) {
+                result.add((Number) aRow[2]);
+            }
 
             return result;
         }
