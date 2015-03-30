@@ -755,7 +755,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 || measureTypeId?number == 5 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
