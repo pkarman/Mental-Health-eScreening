@@ -3,7 +3,7 @@ create table veteran_assessment_question_presence
 veteran_assessment_id int,
 measure_id int,
 skipped int
-);
+);;
 
 CREATE TRIGGER upd_question_presence BEFORE UPDATE ON veteran_assessment
 FOR EACH ROW
