@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphNumberReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.9487171000000147"/>
+	<property name="ireport.zoom" value="1.771561000000014"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
@@ -17,7 +17,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="133" splitType="Stretch">
+		<band height="130" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
 				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
@@ -56,9 +56,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="220" splitType="Stretch">
+		<band height="216" splitType="Stretch">
 			<frame>
-				<reportElement x="0" y="28" width="572" height="192" uuid="b4934b12-0cdc-4350-850b-4ceafade03c6">
+				<reportElement x="0" y="24" width="572" height="192" uuid="b4934b12-0cdc-4350-850b-4ceafade03c6">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -83,7 +83,7 @@
 				<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="28" width="81" height="192" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="24" width="81" height="192" uuid="3ccd7d7d-e8aa-4e8f-9c9a-07671f119109">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -100,7 +100,7 @@
 					<textFieldExpression><![CDATA[$F{scoreName}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="69" width="80" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
+					<reportElement x="0" y="70" width="80" height="20" uuid="544ade83-90c4-4c4e-97ec-6eb0f423e45b"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial"/>
 					</textElement>
@@ -115,7 +115,7 @@
 				</textField>
 			</frame>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="81" y="28" width="277" height="192" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c">
+				<reportElement stretchType="RelativeToTallestObject" x="81" y="24" width="277" height="192" uuid="2c658ac2-ce8d-4546-886d-1b78be37694c">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -124,7 +124,7 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<image scaleImage="FillFrame" hAlign="Center" vAlign="Top">
-					<reportElement x="3" y="8" width="270" height="178" uuid="ed0357a5-18ad-41d1-9701-b92f470502da">
+					<reportElement x="3" y="7" width="270" height="178" uuid="ed0357a5-18ad-41d1-9701-b92f470502da">
 						<printWhenExpression><![CDATA[$F{imageInput}.indexOf(" width=\"450\" height=\"300\"")>=0]]></printWhenExpression>
 					</reportElement>
 					<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstance($F{imageInput}.getBytes())]]></imageExpression>
@@ -137,7 +137,7 @@
 				</image>
 			</frame>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="358" y="28" width="214" height="192" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe">
+				<reportElement stretchType="RelativeToTallestObject" x="358" y="24" width="215" height="192" uuid="c2346659-f213-4a8d-ab3d-c2f265d92cfe">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( true )]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -145,14 +145,14 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="1" width="214" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
+					<reportElement x="0" y="0" width="214" height="20" uuid="e7f7dcb1-b1a8-40a2-9f00-341aee7aec49"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{scoreHistoryTitle}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement x="7" y="27" width="200" height="156" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
+					<reportElement x="0" y="24" width="215" height="164" uuid="cc7ecf63-0fa9-4f86-9544-e459d9688ebc"/>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{scoreHistory})]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/reports/clinicHistorySubReportWithNumber2.jasper"]]></subreportExpression>
 				</subreport>

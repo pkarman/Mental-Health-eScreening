@@ -696,6 +696,22 @@
 							</fileset>
 						</configuration>
 					</execution>
+                    	<!-- PLEASE NOTE: this is a specific configuration for ticket 595 (found on branch t597).
+					     Please create another execution entry for all other sprint 35 tickets -->
+					<execution>
+						<id>apply-sprint-35-ticket-595-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_35_595</basedir>
+							</fileset>
+						</configuration>
+                    </execution>
 					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>

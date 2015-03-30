@@ -92,8 +92,14 @@ public class ReportsController {
     @RequestMapping(value = "/avgScoresVetByClinicGraphicNumber", method = RequestMethod.POST)
     public ModelAndView genAvgScoresVetByClinicGraphicNumber(@RequestBody Map<String, Object> requestData, @CurrentUser EscreenUser escreenUser) {
 
-        // ticket 600 entry point after getting graph and numeric report
-        return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true);
+        if ("groupData".equals(((LinkedHashMap<String, Object>) requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
+            //Group Chart
+            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+        } else {
+            // individual chart
+            return getAvgScoresVetByClinicGraphReport(requestData, escreenUser);
+        }
+
     }
 
     @RequestMapping(value = "/avgScoresVetByClinicNumeric", method = RequestMethod.POST)
