@@ -85,7 +85,7 @@ public class FormulaAssessmentVariableResolverImpl implements
     			
     			List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
     			
-    			Set<AssessmentVarChildren> allformulaChildVars = 
+    			Set<AssessmentVariable> allformulaChildVars = 
     			        resolveDependencies(assessmentVariable.getAssessmentVarChildrenList(), 
     			                            params, formulaTypeList);
                 
@@ -176,12 +176,11 @@ public class FormulaAssessmentVariableResolverImpl implements
 	}
 
 	private Map<Integer, String> createResolvedVarValueMap(
-	        Collection<AssessmentVarChildren> avChildSet, 
+	        Collection<AssessmentVariable> avChildSet, 
 	        ResolverParameters params) {
 	    Map<Integer, String> valueMap = Maps.newHashMapWithExpectedSize(avChildSet.size());
 
-	    for(AssessmentVarChildren child : avChildSet){
-	        AssessmentVariable childAv = child.getVariableChild();
+	    for(AssessmentVariable childAv : avChildSet){
 	        Integer avId = childAv.getAssessmentVariableId();
 	        AssessmentVariableDto variable = params.getResolvedVariable(avId);
 	        
@@ -231,16 +230,17 @@ public class FormulaAssessmentVariableResolverImpl implements
 	 * @param formulaDependencies
 	 * @param params
 	 * @param formulaTypeList
-	 * @return list of all AssessmentVarChildren from this formula and any sub-formula
+	 * @return list of all AssessmentVariable needed from this formula and any sub-formula
 	 */
-	private Set<AssessmentVarChildren>  resolveDependencies(
+	private Set<AssessmentVariable>  resolveDependencies(
 	        List<AssessmentVarChildren> formulaDependencies,
 			ResolverParameters params,
 			List<AssessmentVariable> formulaTypeList) {
 
-	    Set<AssessmentVarChildren> allDependencies = Sets.newHashSet(formulaDependencies);
+	    Set<AssessmentVariable> allDependencies = Sets.newHashSet();
 		for (AssessmentVarChildren dependencyAssociation : formulaDependencies) {
 			AssessmentVariable child = dependencyAssociation.getVariableChild();
+			allDependencies.add(child);
 			switch (child.getAssessmentVariableTypeId()
 					.getAssessmentVariableTypeId()) {
 			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:

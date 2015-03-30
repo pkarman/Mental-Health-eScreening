@@ -53,7 +53,9 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
     
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, ResolverParameters params) {
-		Integer variableId = assessmentVariable.getAssessmentVariableId();
+        logger.debug("Resolving custom variable ID: {}", assessmentVariable.getAssessmentVariableId());
+        
+        Integer variableId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(variableId);
         AssessmentVariableDto variableDto = params.getResolvedVariable(variableId);
         

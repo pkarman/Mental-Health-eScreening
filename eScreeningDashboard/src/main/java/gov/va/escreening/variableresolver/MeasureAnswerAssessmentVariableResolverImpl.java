@@ -52,6 +52,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
             ResolverParameters params, Answer response) {
+        logger.debug("Resolving answer variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
 
         Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
