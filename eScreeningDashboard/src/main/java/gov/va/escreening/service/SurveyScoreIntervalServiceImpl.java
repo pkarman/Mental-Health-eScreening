@@ -76,6 +76,8 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
             }
         }
 
+        ticks.add(Float.valueOf(max));
+
         metaDataMap.put("ticks", ticks);
         metaDataMap.put("intervals", intervalsMap);
         metaDataMap.put("maxXPoint", Float.valueOf(max));

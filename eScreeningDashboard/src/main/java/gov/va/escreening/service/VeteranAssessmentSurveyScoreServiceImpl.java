@@ -264,7 +264,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
         if (scores != null && !scores.isEmpty()) {
-            result.setScore(Integer.toString(scores.get(0).getScore()));
+            result.setScore(getAvgOfScores(scores).toString());
             result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, scores.get(0).getScore()));
 
             List<ScoreHistoryDTO> history = new ArrayList<>();
@@ -282,6 +282,18 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
         return result;
     }
+
+    private Float getAvgOfScores(List<VeteranAssessmentSurveyScore> scores) {
+        float avg = 0.0f;
+        if (scores == null || scores.isEmpty()) {
+            return avg;
+        }
+        for (VeteranAssessmentSurveyScore vass : scores) {
+            avg += Float.valueOf(vass.getScore());
+        }
+        return avg / scores.size();
+    }
+
 
     private Collection<AssessmentVariable> getReportableAvsForSurvey(Survey s) {
         List<String> avDisplayNames = getDisplayNamesForSurvey(s);
