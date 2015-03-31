@@ -67,26 +67,21 @@
 				</tr>
 			</thead>
 			<tr>
-				<td class="text-left">Individual Statistic Reports</td>
+				<td class="text-left">Individual Statistic Report</td>
 				<td class="text-right"><a href="individualStatisticsReports" class="btn btn-primary btn-xs" name="Individual Statistic Reports" title="Individual Statistic Reports"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			<tr>
 				<td class="text-left">Average Scores for Veterans by Clinic Report</td>
 				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Veterans by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-
 			<tr>
-				<td class="text-left bg_color_subheader"><h4>Clinic Statistic Reports</h4></td>
+				<td class="text-left bg_color_subheader"><h4>Clinic Statistic Report</h4></td>
 				<td class="text-righ bg_color_subheader"></td>
 			</tr>
-
-
 			<tr>
 				<td class="text-left">Most Common Types of Alerts and Percentages Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartIIMostCommonTypesOfAlertsPercentagesReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-
-
 			<tr>
 				<td class="text-left">Positive Screens Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartVIPositiveScreensReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
@@ -94,7 +89,7 @@
 
 
 			<tr>
-				<td class="text-left">List Of Top 20 Most Skipped Questions Report</td>
+				<td class="text-left">Top 20 Most Skipped Questions Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartIIIList20MostSkippedQuestionsReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 			
@@ -110,8 +105,6 @@
 				<td class="text-left">Average Time Per Module Report</td>
 				<td class="text-right"><a href="clinicStatisticReportsPartIVAverageTimePerModuleReport" class="btn btn-primary btn-xs" name="View Clinic Statistic Reports PartIV: Average Time Per Module Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
-
-
 		</table>
 	</div>
 </div>
