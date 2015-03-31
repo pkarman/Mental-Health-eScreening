@@ -173,7 +173,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
+    public Map<String, Object> getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount, boolean isGraphOnly) {
         List<String> svgObject = (List<String>) requestData.get("svgData");
         Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
@@ -213,6 +213,10 @@ public class ReportDelegateImpl implements ReportDelegate {
                 if (moduleGraphReportDTO != null) {
                     dto.getGraphReport().add(moduleGraphReportDTO);
                     hasData = true;
+
+                    if (isGraphOnly){
+                        moduleGraphReportDTO.setScoreHistoryTitle(null);
+                    }
                 }
             }
 

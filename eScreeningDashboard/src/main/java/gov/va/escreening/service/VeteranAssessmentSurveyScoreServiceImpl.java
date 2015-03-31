@@ -201,7 +201,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
         result.setModuleName(survey.getName());
         result.setHasData(scores.isEmpty());
-        result.setScoreName("Average Score");
+        result.setScoreName("Average "+survey.getName()+"Score");
 
         if (!scores.isEmpty()){
             double total = 0d;
