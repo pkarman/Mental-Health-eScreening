@@ -538,7 +538,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberOfUniqueVeteran") != null
                 && (Boolean) requestData.get("numberOfUniqueVeteran")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setKey("Number of Unique Patients");
+            keyValueDTO.setKey("Number of Unique Veterans");
 
             keyValueDTO.setValue(veteranAssessmentService.getUniqueVeterns(clinicIds, strFromDate, strToDate));
             ks.add(keyValueDTO);
@@ -571,7 +571,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 (Boolean) requestData.get("numberOfAssessmentsPerClinician")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue(veteranAssessmentService.calculateAvgAssessmentsPerClinician(clinicIds, strFromDate, strToDate));
-            keyValueDTO.setKey("Number of assessments per clinician in each clinic");
+            keyValueDTO.setKey("Average number of assessments per clinician in each clinic");
             ks.add(keyValueDTO);
             bCheckAll = true;
         }

@@ -72,7 +72,7 @@
 			</tr>
 			<tr>
 				<td class="text-left">Average Scores for Veterans by Clinic Report</td>
-				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Patients by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
+				<td class="text-right"><a href="averageScoresForPatientsByClinic" class="btn btn-primary btn-xs" name="View Average Scores for Veterans by Clinic Report"><span class="glyphicon glyphicon-chevron-right"></span> View </a></td>
 			</tr>
 
 			<tr>

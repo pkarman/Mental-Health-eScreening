@@ -111,7 +111,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" isBold="true"/>
 				</textElement>
-				<text><![CDATA[  Number of eScreening batteries completed by Each day and Time of Day and day of week]]></text>
+				<text><![CDATA[  Number of eScreening Batteries Completed by Each Day and Time of Day and Day of Week]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="321" y="41" width="55" height="20" backcolor="#CCCCCC" uuid="acfdfb95-4781-4a37-8b08-f268be64d16f"/>
