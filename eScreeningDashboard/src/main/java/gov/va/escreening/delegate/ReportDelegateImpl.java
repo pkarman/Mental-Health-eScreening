@@ -687,15 +687,14 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         JRDataSource dataSource = null;
 
-        if (totalAssessment == 0 ||dtos == null || dtos.size() == 0){
+        if (totalAssessment == 0 || dtos == null || dtos.size() == 0) {
             dataSource = new JREmptyDataSource();
-        }
-        else {
+        } else {
             for (Report594DTO report594DTO : dtos) {
 
                 int numerator = Integer.parseInt(report594DTO.getModuleCount());
                 report594DTO.setModuleCount(String.format("%s/%s", numerator, totalAssessment));
-                report594DTO.setModulePercent(String.format("%5.2f%%", numerator * 100.0f/totalAssessment));
+                report594DTO.setModulePercent(String.format("%5.2f%%", numerator * 100.0f / totalAssessment));
             }
             dataSource = new JRBeanCollectionDataSource(dtos);
         }
@@ -753,7 +752,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         // use this user Id and go an get try to get UserProgram using this id and each programId from clinic.
         // If found then that is a intersection and that clinic is allowed
         for (ClinicDto clinicDto : clinicDtoList) {
-            Integer programId=clinicDto.getProgramId();
+            Integer programId = clinicDto.getProgramId();
 
             if (upr.hasUserAndProgram(userId, programId)) {
                 allowedClinic.add(clinicDto);
@@ -774,8 +773,8 @@ public class ReportDelegateImpl implements ReportDelegate {
         for (Integer clicnicId : (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST)) {
             sb.append(clinicService.getClinicNameById(clicnicId)).append(", ");
         }
-        if (sb.length()>2){
-            sb.delete(sb.length()-2, sb.length());
+        if (sb.length() > 2) {
+            sb.delete(sb.length() - 2, sb.length());
         }
         dataCollection.put("clinicNames", sb.toString());
     }
@@ -787,15 +786,15 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Number> result = veteranAssessmentService.getNumOfDeploymentStatistics(cList, fromDate, toDate);
 
-        if (result == null || result.size() != 3){
+        if (result == null || result.size() != 3) {
             dataCollection.put("numberofdeployments", "");
-        }else {
+        } else {
             dataCollection.put("numberofdeployments",
                     String.format("Mean number of deployments = %2.1f and minimum Value = %d and Maximum Value = %d",
                             result.get(0).floatValue(),
                             result.get(1).intValue(),
                             result.get(2).intValue()
-                            ));
+                    ));
         }
     }
 
@@ -809,25 +808,25 @@ public class ReportDelegateImpl implements ReportDelegate {
         int missing = veteranAssessmentService.getTobaccoMissingCount(cList, fromDate, toDate);
 
         int total = 0;
-        if (result !=null && result.size()>0) {
+        if (result != null && result.size() > 0) {
             for (Integer i : result) {
                 total += i;
             }
 
-            total+= missing;
+            total += missing;
             if (total != 0) {
-                dataCollection.put("tobacco_never_percentage",String.format("%d",result.get(0) * 100 / total) +"%");
-                dataCollection.put("tobacco_never_count", result.get(0)+"/"+total);
-                dataCollection.put("tobacco_no_percentage", String.format("%d",result.get(1) * 100 / total) +"%");
-                dataCollection.put("tobacco_no_count", result.get(1)+"/"+total);
-                dataCollection.put("tobacco_yes_percentage",String.format("%d",result.get(2) * 100 / total) + "%");
-                dataCollection.put("tobacco_yes_count",       result.get(2)+"/"+total);
-                dataCollection.put("tobacco_miss_percentage", String.format("%d",missing * 100 / total)+"%");
-                dataCollection.put("tobacco_miss_count", missing+"/"+total);
+                dataCollection.put("tobacco_never_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("tobacco_never_count", result.get(0) + "/" + total);
+                dataCollection.put("tobacco_no_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("tobacco_no_count", result.get(1) + "/" + total);
+                dataCollection.put("tobacco_yes_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("tobacco_yes_count", result.get(2) + "/" + total);
+                dataCollection.put("tobacco_miss_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("tobacco_miss_count", missing + "/" + total);
             }
         }
 
-        if (total==0){
+        if (total == 0) {
             dataCollection.put("tobacco_never_percentage", "0%");
             dataCollection.put("tobacco_never_count", "0/0");
             dataCollection.put("tobacco_no_percentage", "0%");
@@ -849,44 +848,44 @@ public class ReportDelegateImpl implements ReportDelegate {
         int missing = veteranAssessmentService.getMissingBranchCount(cList, fromDate, toDate);
 
         int total = 0;
-        if (result !=null && result.size()>0) {
+        if (result != null && result.size() > 0) {
             for (Integer i : result) {
                 total += i;
             }
             total += missing;
             if (total != 0) {
-                dataCollection.put("army_percentage", String.format("%d", result.get(0) * 100 / total) +"%");
-                dataCollection.put("army_count", result.get(0)+"/"+total);
-                dataCollection.put("airforce_percentage", String.format("%d", result.get(1) * 100 / total) +"%");
-                dataCollection.put("airforce_count", result.get(1)+"/"+total);
-                dataCollection.put("coast_percentage", String.format("%d", result.get(2) * 100 / total) +"%");
-                dataCollection.put("coast_count", result.get(2)+"/"+total);
-                dataCollection.put("marines_percentage", String.format("%d", result.get(3) * 100 / total) +"%");
-                dataCollection.put("marines_count", result.get(3)+"/"+total);
-                dataCollection.put("nationalguard_percentage", String.format("%d", result.get(4) * 100 / total) +"%");
-                dataCollection.put("nationalguard_count", result.get(4)+"/"+total);
-                dataCollection.put("navy_percentage", String.format("%d", result.get(5) * 100 / total) +"%");
-                dataCollection.put("navy_count", result.get(5)+"/"+total);
-                dataCollection.put("missingmilitary_percentage", String.format("%d", missing * 100 / total)+"%");
-                dataCollection.put("missingmilitary_count", missing+"/"+total);
+                dataCollection.put("army_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("army_count", result.get(0) + "/" + total);
+                dataCollection.put("airforce_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("airforce_count", result.get(1) + "/" + total);
+                dataCollection.put("coast_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("coast_count", result.get(2) + "/" + total);
+                dataCollection.put("marines_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("marines_count", result.get(3) + "/" + total);
+                dataCollection.put("nationalguard_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("nationalguard_count", result.get(4) + "/" + total);
+                dataCollection.put("navy_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("navy_count", result.get(5) + "/" + total);
+                dataCollection.put("missingmilitary_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingmilitary_count", missing + "/" + total);
             }
         }
 
-        if (total == 0){
+        if (total == 0) {
             dataCollection.put("army_percentage", "0%");
             dataCollection.put("army_count", "0/0");
             dataCollection.put("airforce_percentage", "0%");
             dataCollection.put("airforce_count", "0/0");
             dataCollection.put("coast_percentage", "0%");
-            dataCollection.put("coast_count", "0/"+total);
+            dataCollection.put("coast_count", "0/" + total);
             dataCollection.put("marines_percentage", "0%");
-            dataCollection.put("marines_count", "0/"+total);
+            dataCollection.put("marines_count", "0/" + total);
             dataCollection.put("nationalguard_percentage", "0%");
-            dataCollection.put("nationalguard_count", "0/"+total);
+            dataCollection.put("nationalguard_count", "0/" + total);
             dataCollection.put("navy_percentage", "0%");
-            dataCollection.put("navy_count", "0/"+total);
+            dataCollection.put("navy_count", "0/" + total);
             dataCollection.put("missingmilitary_percentage", "0%");
-            dataCollection.put("missingmilitary_count", "0/"+total);
+            dataCollection.put("missingmilitary_count", "0/" + total);
         }
     }
 
@@ -901,29 +900,29 @@ public class ReportDelegateImpl implements ReportDelegate {
         int missing = veteranAssessmentService.getMissingEmploymentCount(cList, fromDate, toDate);
 
         int total = 0;
-        if (result !=null && result.size()>0) {
+        if (result != null && result.size() > 0) {
             for (Integer i : result) {
                 total += i;
             }
 
-            if (total!=0) {
-                dataCollection.put("fulltime_percentage", String.format("%d", result.get(0) * 100 / total) +"%");
-                dataCollection.put("fulltime_count", result.get(0)+"/"+total);
-                dataCollection.put("parttime_percentage", String.format("%d", result.get(1) * 100 / total) +"%");
-                dataCollection.put("parttime_count", result.get(1)+"/"+total);
-                dataCollection.put("seasonal_percentage", String.format("%d", result.get(2) * 100 / total) +"%");
-                dataCollection.put("seasonal_count", result.get(2)+"/"+total);
-                dataCollection.put("daylabor_percentage", String.format("%d", result.get(3) * 100 / total) +"%");
-                dataCollection.put("daylabor_count", result.get(3)+"/"+total);
-                dataCollection.put("unemployed_percentage", String.format("%d", result.get(4) * 100 / total) +"%");
-                dataCollection.put("unemployed_count", result.get(4)+"/"+total);
+            if (total != 0) {
+                dataCollection.put("fulltime_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("fulltime_count", result.get(0) + "/" + total);
+                dataCollection.put("parttime_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("parttime_count", result.get(1) + "/" + total);
+                dataCollection.put("seasonal_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("seasonal_count", result.get(2) + "/" + total);
+                dataCollection.put("daylabor_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("daylabor_count", result.get(3) + "/" + total);
+                dataCollection.put("unemployed_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("unemployed_count", result.get(4) + "/" + total);
                 //TODO
                 dataCollection.put("missingemp_percentage", "0%");
-                dataCollection.put("missingemp_count", "0/"+total);
+                dataCollection.put("missingemp_count", "0/" + total);
             }
         }
 
-        if (total==0){
+        if (total == 0) {
             dataCollection.put("fulltime_percentage", "0%");
             dataCollection.put("fulltime_count", "0/0");
             dataCollection.put("parttime_percentage", "0%");
@@ -950,36 +949,36 @@ public class ReportDelegateImpl implements ReportDelegate {
         Integer missingCount = veteranAssessmentService.getMissingEducationCount(cList, fromDate, toDate);
 
         int total = 0;
-        if (result !=null && result.size()>0) {
-            for(Integer i : result){
+        if (result != null && result.size() > 0) {
+            for (Integer i : result) {
                 total += i;
             }
 
-            total+= missingCount;
-            
-            if (total != 0){
-                dataCollection.put("highschool_percentage", String.format("%d", result.get(0) * 100 / total) +"%");
-                dataCollection.put("highschool_count", result.get(0)+"/"+total);
-                dataCollection.put("ged_percentage", String.format("%d", result.get(1) * 100 / total) +"%");
-                dataCollection.put("ged_count", result.get(1)+"/"+total);
-                 dataCollection.put("highschooldip_percentage", String.format("%d", result.get(2) * 100 / total) +"%");
-                dataCollection.put("highschooldip_count", result.get(2)+"/"+total);
-                dataCollection.put("somecollege_percentage", String.format("%d", result.get(3) * 100 / total) +"%");
-                dataCollection.put("somecollege_count", result.get(3)+"/"+total);
-                dataCollection.put("associate_percentage", String.format("%d", result.get(4) * 100 / total) +"%");
-                dataCollection.put("associate_count", result.get(4)+"/"+total);
-                dataCollection.put("college_percentage", String.format("%d", result.get(5) * 100 / total) +"%");
-                dataCollection.put("college_count", result.get(5)+"/"+total);
-                dataCollection.put("master_percentage", String.format("%d", result.get(6) * 100 / total) +"%");
-                dataCollection.put("master_count", result.get(6)+"/"+total);
-                dataCollection.put("dr_percentage", String.format("%d", result.get(7) * 100 / total) +"%");
-                dataCollection.put("dr_count", result.get(7)+"/"+total);
-                dataCollection.put("missingedu_percentage", String.format("%d", missingCount * 100 / total) +"%");
-                dataCollection.put("missingedu_count", missingCount + "/"+total);
+            total += missingCount;
+
+            if (total != 0) {
+                dataCollection.put("highschool_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("highschool_count", result.get(0) + "/" + total);
+                dataCollection.put("ged_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("ged_count", result.get(1) + "/" + total);
+                dataCollection.put("highschooldip_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("highschooldip_count", result.get(2) + "/" + total);
+                dataCollection.put("somecollege_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("somecollege_count", result.get(3) + "/" + total);
+                dataCollection.put("associate_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("associate_count", result.get(4) + "/" + total);
+                dataCollection.put("college_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("college_count", result.get(5) + "/" + total);
+                dataCollection.put("master_percentage", String.format("%d", result.get(6) * 100 / total) + "%");
+                dataCollection.put("master_count", result.get(6) + "/" + total);
+                dataCollection.put("dr_percentage", String.format("%d", result.get(7) * 100 / total) + "%");
+                dataCollection.put("dr_count", result.get(7) + "/" + total);
+                dataCollection.put("missingedu_percentage", String.format("%d", missingCount * 100 / total) + "%");
+                dataCollection.put("missingedu_count", missingCount + "/" + total);
             }
         }
-           
-        if (total==0) {
+
+        if (total == 0) {
 
             dataCollection.put("highschool_percentage", "0%");
             dataCollection.put("highschool_count", "0/0");
@@ -1011,9 +1010,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Number> result = veteranAssessmentService.getAgeStatistics(cList, fromDate, toDate);
 
-        if (result == null || result.isEmpty() || result.size()!=3){
+        if (result == null || result.isEmpty() || result.size() != 3) {
             dataCollection.put("age", "");
-        }else {
+        } else {
 
             dataCollection.put("age",
                     String.format("Mean Age %3.1f years Minimum Value = %d and Maximum value = %d",
@@ -1030,10 +1029,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         List<Integer> result = veteranAssessmentService.getEthnicityCount(cList, fromDate, toDate);
 
         int total = 0;
-        if (result !=null && result.size()>0) {
-             total = result.get(0)+result.get(1)+result.get(2);
+        if (result != null && result.size() > 0) {
+            total = result.get(0) + result.get(1) + result.get(2);
 
-            if (total!=0) {
+            if (total != 0) {
                 dataCollection.put("hispanic_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
                 dataCollection.put("hispanic_count", result.get(0) + "/" + total);
                 dataCollection.put("non_hispanic_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
@@ -1042,7 +1041,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("missingethnicity_count", result.get(2) + "/" + total);
             }
         }
-        if (total ==0){
+        if (total == 0) {
             dataCollection.put("hispanic_percentage", "0%");
             dataCollection.put("hispanic_count", "0/0");
             dataCollection.put("non_hispanic_percentage", "0%");
@@ -1054,26 +1053,26 @@ public class ReportDelegateImpl implements ReportDelegate {
         total = 0;
         result = veteranAssessmentService.getRaceCount(cList, fromDate, toDate);
 
-        if (result !=null && result.size()>0) {
-            for(Integer i : result){
+        if (result != null && result.size() > 0) {
+            for (Integer i : result) {
                 total += i;
             }
 
-            if (total!=0){
-                dataCollection.put("white_percentage", String.format("%d", result.get(0) * 100 / total) +"%");
-                dataCollection.put("white_count", result.get(0)+"/"+total);
-                dataCollection.put("black_percentage", String.format("%d", result.get(1) * 100 / total) +"%");
-                dataCollection.put("black_count", result.get(1)+"/"+total);
-                dataCollection.put("indian_percentage", String.format("%d", result.get(2) * 100 / total) +"%");
-                dataCollection.put("indian_count", result.get(2)+"/"+total);
-                dataCollection.put("asian_percentage", String.format("%d", result.get(3) * 100 / total) +"%");
-                dataCollection.put("asian_count", result.get(3)+"/"+total);
-                dataCollection.put("hawaiian_percentage", String.format("%d", result.get(4) * 100 / total) +"%");
-                dataCollection.put("hawaiian_count", result.get(4)+"/"+total);
-                dataCollection.put("otherrace_percentage", String.format("%d", result.get(5) * 100 / total) +"%");
-                dataCollection.put("otherrace_count", result.get(5)+"/"+total);
-                dataCollection.put("norace_percentage", String.format("%d", result.get(6) * 100 / total) +"%");
-                dataCollection.put("norace_count", result.get(6)+"/"+total);
+            if (total != 0) {
+                dataCollection.put("white_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("white_count", result.get(0) + "/" + total);
+                dataCollection.put("black_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("black_count", result.get(1) + "/" + total);
+                dataCollection.put("indian_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("indian_count", result.get(2) + "/" + total);
+                dataCollection.put("asian_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("asian_count", result.get(3) + "/" + total);
+                dataCollection.put("hawaiian_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("hawaiian_count", result.get(4) + "/" + total);
+                dataCollection.put("otherrace_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("otherrace_count", result.get(5) + "/" + total);
+                dataCollection.put("norace_percentage", String.format("%d", result.get(6) * 100 / total) + "%");
+                dataCollection.put("norace_count", result.get(6) + "/" + total);
             }
         }
 
@@ -1104,7 +1103,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         List<Integer> result = veteranAssessmentService.getGenderCount(cList, fromDate, toDate);
 
-        if (result!=null) {
+        if (result != null) {
 
             int female = result.get(1);
             int male = result.get(0);
@@ -1115,9 +1114,8 @@ public class ReportDelegateImpl implements ReportDelegate {
             dataCollection.put("female_count", female + "/" + total);
             dataCollection.put("male_percentage", String.format("%d", male * 100 / total) + "%");
             dataCollection.put("male_count", male + "/" + total);
-        }
-        else{
-            dataCollection.put("female_percentage",  "0%");
+        } else {
+            dataCollection.put("female_percentage", "0%");
             dataCollection.put("female_count", "0/0");
             dataCollection.put("male_percentage", "0%");
             dataCollection.put("male_count", "0/0");
@@ -1133,7 +1131,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
         if (metaData != null) {
-            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
+            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? getAvgFromData(surveyDataForIndividualStatisticsGraph) : 0);
         }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
@@ -1149,12 +1147,23 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         final Map<String, Object> metaData = intervalService.generateMetadata(surveyId);
         if (metaData != null) {
-            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? surveyDataForIndividualStatisticsGraph.values().iterator().next() : 0);
+            metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? getAvgFromData(surveyDataForIndividualStatisticsGraph) : 0);
         }
         chartableDataMap.put("dataSet", surveyDataForIndividualStatisticsGraph);
         chartableDataMap.put("dataFormat", metaData);
 
         return chartableDataMap;
+    }
+
+    private Float getAvgFromData(Map<String, Object> surveyDataForIndividualStatisticsGraph) {
+        float avg = 0.0f;
+        if (surveyDataForIndividualStatisticsGraph == null || surveyDataForIndividualStatisticsGraph.isEmpty()) {
+            return avg;
+        }
+        for (Object d : surveyDataForIndividualStatisticsGraph.values()) {
+            avg += Float.valueOf(d.toString());
+        }
+        return avg / surveyDataForIndividualStatisticsGraph.size();
     }
 
     private Map<String, Object> createChartableDataForGrpAvgScoresForPatientsByClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate) {
