@@ -138,7 +138,7 @@
 
 					</div>
 					<div class="col-md-6">
-						<label for="battery-list-table-filter">Select Modules *</label></strong>
+						<label for="battery-list-table-filter">Select Modules *</label>
 						<p class="help-block" ng-if="reportForm.selectAllSurvey.$error.required">Select Modules is Required</p>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
