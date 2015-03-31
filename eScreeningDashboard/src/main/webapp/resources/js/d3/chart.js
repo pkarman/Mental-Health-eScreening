@@ -106,9 +106,10 @@ function graphGenerator(dataStructure, dataDataset){
 		      value;
 		      
 		      // Settings
-		      xMax            = d3.max(ticks),
+		      xMax            = d3.max(ticks), // change to maxPoint in case not able to send me the right ticket // graphParams.maxXPoint
 		      xCurrent        = graphParams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
+			  
 		      // colors       = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
 		      series          = graphParams.legends,
 		      dataset         = graphParams.dataset,
@@ -116,9 +117,11 @@ function graphGenerator(dataStructure, dataDataset){
 		      pointerWidth    = 36,
 		      pointerHeight   = 36,
 		      stack = d3.layout.stack();
+
 		
+			  // ticks 		  = ticks.push(graphParams.maxXPoint),
 	    stack(dataset);
-	    var dataset = dataset.map(
+		var dataset = dataset.map(
 		    function(group) {
 			    return group.map(function(d) {
 			        // Invert the x and y values, and y0 becomes x0
