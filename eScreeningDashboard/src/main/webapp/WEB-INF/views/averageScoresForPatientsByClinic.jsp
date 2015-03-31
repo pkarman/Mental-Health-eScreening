@@ -129,52 +129,57 @@
 																
 					</div>
 					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select Modules *</strong></div>
+						<label for="battery-list-table-filter">Select Modules *</label>
+						<p class="help-block" ng-if="reportForm.selectAllSurvey.$error.required">Select Modules is Required</p>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
+							<input type="text" class="form-control" id="battery-list-table-filter" data-action="filter" data-filters="#battery-list-table" placeholder="Filter by Modules" />	
 							<div class="checkbox">
 								<input type="checkbox" id="selectAllSurvey" class="selectAllSurvey" name="selectAllSurvey"  ng-change="selectAllSurvey()" ng-model="report.selectAllSurvey" data-cbgroup="checkbox_group_survey" />
 								<label class="labelAlign" for="selectAllSurvey" data-cbgroup="checkbox_group_survey">Select All Modules</label>
 							</div>
 							<hr class="hr_margin_5">
 							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="survey in surveysList">
-									<li><div class="checkbox"><input type="checkbox" id="survey_{{survey.surveyId}}" checklist-model="report.surveysList" checklist-value="survey.surveyId" name="survey{{survey.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{survey.surveyId}}">{{survey.name}}</label></div></li>
-								 </ul>
+								  <table  id="battery-list-table">
+										<tr ng-repeat="survey in surveysList">
+										  <td><div class="checkbox"><input type="checkbox" id="survey_{{survey.surveyId}}" checklist-model="report.surveysList" checklist-value="survey.surveyId" name="survey{{survey.surveyId}}" class="checkbox_group_survey" checkbox-group  />  <label class="labelAlign" for="survey_{{survey.surveyId}}">{{survey.name}}</label></div></td>
+										</tr>
+								  </table>
 							</div>
 						</div>
 					</div>
-					
+
+
 					<div class="col-md-3">
-						<div class="checkbox_group_label"><strong>Select VistA Clinics *</strong></div>
+
+						<label>Select VistA Clinics *</label>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
-							
-							
-							
-							
-							
-							
-							<!-- TODO: Program Evaluator Role only 602 / 603 -->				
+							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by  Clinic" />
+							<!-- Program Evaluator Role only 602 / 603 -->
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
-									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics *</label>
+									<label class="labelAlign" for="selectAllClinic" data-cbgroup="checkbox_group_clinic">Select All Clinics</label>
 								</div>
 							</div>
 							<hr class="hr_margin_5">
 							
 							
-							
-							
-							
 							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="clinic in clinicsList">
-									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>
-								 </ul>
+
+									<table  id="clinics-list-table">
+										<tr ng-repeat="clinic in clinicsList">
+										  <td><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></td>
+										</tr>
+								  </table>
+								  
 							</div>
 						</div>
+						
 					</div>
+					
+
 				</div>
 				<hr />
 				<div class="row">
