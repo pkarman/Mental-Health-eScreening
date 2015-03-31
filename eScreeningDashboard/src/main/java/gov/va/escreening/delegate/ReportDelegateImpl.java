@@ -69,8 +69,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(type = UserProgramRepository.class)
     private UserProgramRepository upr;
 
-    @Resource(name = "reportableFormulasMap")
-    Map<String, String> reportableFormulasMap;
+    @Resource(name = "selectedReportableScoresMap")
+    Map<String, String> selectedReportableScoresMap;
 
     private FileResolver fileResolver = new FileResolver() {
 
@@ -162,7 +162,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<SurveyDto> getSurveyList() {
 
         List<String> surveyNames = Lists.newArrayList();
-        surveyNames.addAll(reportableFormulasMap.keySet());
+        surveyNames.addAll(selectedReportableScoresMap.keySet());
 
         return surveyService.getSurveyListByNames(surveyNames);
     }
