@@ -1,5 +1,6 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
 
@@ -22,4 +23,5 @@ public interface VeteranAssessmentSurveyScoreRepository extends RepositoryInterf
                                             String fromDate, String toDate);
     public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate);
 
+    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList);
 }

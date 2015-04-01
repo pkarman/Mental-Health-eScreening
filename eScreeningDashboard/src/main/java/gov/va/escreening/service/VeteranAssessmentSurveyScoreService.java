@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import gov.va.escreening.dto.report.ModuleGraphReportDTO;
+import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.dto.report.VeteranModuleGraphReportDTO;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -34,4 +35,6 @@ public interface VeteranAssessmentSurveyScoreService {
     ModuleGraphReportDTO getGraphDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate, boolean containsCount);
 
      ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate);
+
+    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList);
 }

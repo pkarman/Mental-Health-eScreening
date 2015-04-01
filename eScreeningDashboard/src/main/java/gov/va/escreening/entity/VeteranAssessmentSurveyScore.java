@@ -31,6 +31,9 @@ public class VeteranAssessmentSurveyScore implements Serializable {
     @Column(name = "survey_score")
     private Integer score;
 
+    @Column(name = "screen_number")
+    private Integer screenNumber;
+
     @Column(name = "date_completed")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCompleted;
@@ -97,5 +100,13 @@ public class VeteranAssessmentSurveyScore implements Serializable {
 
     public void setClinic(Clinic clinic) {
         this.clinic = clinic;
+    }
+
+    public Integer getScreenNumber() {
+        return screenNumber;
+    }
+
+    public void setScreenNumber(Integer screenNumber) {
+        this.screenNumber = screenNumber;
     }
 }

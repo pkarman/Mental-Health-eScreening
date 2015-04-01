@@ -69,8 +69,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(type = UserProgramRepository.class)
     private UserProgramRepository upr;
 
-    @Resource(name = "reportableFormulasMap")
-    Map<String, String> reportableFormulasMap;
+    @Resource(name = "selectedReportableScoresMap")
+    Map<String, String> selectedReportableScoresMap;
 
     private FileResolver fileResolver = new FileResolver() {
 
@@ -162,7 +162,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<SurveyDto> getSurveyList() {
 
         List<String> surveyNames = Lists.newArrayList();
-        surveyNames.addAll(reportableFormulasMap.keySet());
+        surveyNames.addAll(selectedReportableScoresMap.keySet());
 
         return surveyService.getSurveyListByNames(surveyNames);
     }
@@ -173,7 +173,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
     @Override
-    public Map<String, Object> getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
+    public Map<String, Object> getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount, boolean isGraphOnly) {
         List<String> svgObject = (List<String>) requestData.get("svgData");
         Map<String, Object> userReqData = (Map<String, Object>) requestData.get("userReqData");
 
@@ -213,6 +213,10 @@ public class ReportDelegateImpl implements ReportDelegate {
                 if (moduleGraphReportDTO != null) {
                     dto.getGraphReport().add(moduleGraphReportDTO);
                     hasData = true;
+
+                    if (isGraphOnly){
+                        moduleGraphReportDTO.setScoreHistoryTitle(null);
+                    }
                 }
             }
 
@@ -538,7 +542,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberOfUniqueVeteran") != null
                 && (Boolean) requestData.get("numberOfUniqueVeteran")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setKey("Number of Unique Patients");
+            keyValueDTO.setKey("Number of Unique Veterans");
 
             keyValueDTO.setValue(veteranAssessmentService.getUniqueVeterns(clinicIds, strFromDate, strToDate));
             ks.add(keyValueDTO);
@@ -571,7 +575,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 (Boolean) requestData.get("numberOfAssessmentsPerClinician")) {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue(veteranAssessmentService.calculateAvgAssessmentsPerClinician(clinicIds, strFromDate, strToDate));
-            keyValueDTO.setKey("Number of assessments per clinician in each clinic");
+            keyValueDTO.setKey("Average number of assessments per clinician in each clinic");
             ks.add(keyValueDTO);
             bCheckAll = true;
         }
@@ -705,38 +709,40 @@ public class ReportDelegateImpl implements ReportDelegate {
     }
 
 
+    /**
+     * for 599 report
+     *
+     * @param requestData
+     * @param escreenUser
+     * @return
+     */
     @Override
     public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport
             (Map<String, Object> requestData, EscreenUser escreenUser) {
+
         Map<String, Object> parameterMap = Maps.newHashMap();
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
 
+        List<String> surveyNameList = new ArrayList<>();
+        surveyNameList.addAll(selectedReportableScoresMap.keySet());
+
+        String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
+        String toDate = (String) requestData.get(ReportsUtil.TODATE);
+        List<Integer> clinicIds = (List<Integer>) requestData.get(ReportsUtil.CLINIC_ID_LIST);
+
         JRDataSource dataSource = null;
 
-        List<Report599DTO> dtos = Lists.newArrayList();
+        List<Report599DTO> dtos = scoreService.getClinicStatisticReportsPartVIPositiveScreensReport
+                (fromDate, toDate, clinicIds, surveyNameList);
 
-        for (SurveyDto survey : surveyService.getSurveyList()) {
-            int totalCnt = (int) (Math.random() * 1000);
-            int missing = (int) (Math.random() * 100);
-            int negative = (int) (Math.random() * 100);
-            int positive = totalCnt - missing - negative;
-
-            Report599DTO dto = new Report599DTO();
-            dto.setModuleName(survey.getName());
-
-            dto.setMissingCount(String.format("%s/%s", missing, totalCnt));
-            dto.setMissingPercent(String.format("%5.2f%%", (float) missing / totalCnt * 100));
-
-            dto.setNegativeCount(String.format("%s/%s", negative, totalCnt));
-            dto.setNegativePercent(String.format("%5.2f%%", (float) negative / totalCnt * 100));
-
-            dto.setPositiveCount(String.format("%s/%s", positive, totalCnt));
-            dto.setPositivePercent(String.format("%5.2f%%", (float) positive / totalCnt * 100));
-            dtos.add(dto);
+        if (dtos== null || dtos.isEmpty()){
+            dataSource = new JREmptyDataSource();
+        }
+        else{
+            dataSource = new JRBeanCollectionDataSource(dtos);
         }
 
-        dataSource = new JRBeanCollectionDataSource(dtos);
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         return parameterMap;

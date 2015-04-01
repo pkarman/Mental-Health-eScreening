@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.8150000000000117"/>
-	<property name="ireport.x" value="165"/>
-	<property name="ireport.y" value="401"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="761"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -363,7 +363,7 @@
 					<text><![CDATA[  Non Hispanic]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="56" y="42" width="339" height="15" uuid="de31d6a9-baff-48a3-85e1-d2e1a946d4c2"/>
+					<reportElement x="56" y="43" width="339" height="15" uuid="de31d6a9-baff-48a3-85e1-d2e1a946d4c2"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -474,7 +474,7 @@
 					<textFieldExpression><![CDATA[$P{white_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="56" y="70" width="339" height="15" uuid="72c37033-b84f-4460-93a0-79edde1c91f4"/>
+					<reportElement x="56" y="71" width="339" height="15" uuid="72c37033-b84f-4460-93a0-79edde1c91f4"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -503,7 +503,7 @@
 					<textFieldExpression><![CDATA[$P{white_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="85" width="45" height="15" backcolor="#CCCCCC" uuid="3d92e1e0-cc03-4cb9-bcda-4f420bb11564"/>
+					<reportElement mode="Opaque" x="11" y="86" width="45" height="15" backcolor="#CCCCCC" uuid="3d92e1e0-cc03-4cb9-bcda-4f420bb11564"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -561,7 +561,7 @@
 					<text><![CDATA[  American Indian or Alaskan Native]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="395" y="100" width="46" height="15" uuid="125d2d1a-51d4-4560-9548-d35047f1fb26"/>
+					<reportElement x="395" y="101" width="46" height="15" uuid="125d2d1a-51d4-4560-9548-d35047f1fb26"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -707,7 +707,7 @@
 					<textFieldExpression><![CDATA[$P{norace_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="395" y="160" width="46" height="15" uuid="ef92dc5d-f2a6-46e5-bebd-ccaee581a435"/>
+					<reportElement x="395" y="161" width="46" height="15" uuid="ef92dc5d-f2a6-46e5-bebd-ccaee581a435"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1282,7 +1282,7 @@
 					<textFieldExpression><![CDATA[$P{parttime_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="18" width="339" height="15" backcolor="#CCCCCC" uuid="a4922ff5-66c7-4b39-930c-847943d2adc5"/>
+					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="a4922ff5-66c7-4b39-930c-847943d2adc5"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1340,7 +1340,7 @@
 					<textFieldExpression><![CDATA[$P{parttime_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="3" width="46" height="15" backcolor="#CCCCCC" uuid="9658007f-61e8-4209-a59f-2c815ae2aed8"/>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="9658007f-61e8-4209-a59f-2c815ae2aed8"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1383,7 +1383,7 @@
 					<text><![CDATA[  Day Labor]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Transparent" x="56" y="63" width="339" height="15" backcolor="#CCCCCC" uuid="f2064765-e73c-431e-87b3-24faadde46fa"/>
+					<reportElement mode="Transparent" x="56" y="64" width="339" height="15" backcolor="#CCCCCC" uuid="f2064765-e73c-431e-87b3-24faadde46fa"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1456,7 +1456,7 @@
 					<textFieldExpression><![CDATA[$P{daylabor_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="78" width="45" height="15" backcolor="#CCCCCC" uuid="a958d6bf-8b6b-4b11-843c-454b51ae1070"/>
+					<reportElement mode="Opaque" x="11" y="79" width="45" height="15" backcolor="#CCCCCC" uuid="a958d6bf-8b6b-4b11-843c-454b51ae1070"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1516,7 +1516,7 @@
 					<textFieldExpression><![CDATA[$P{daylabor_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="78" width="46" height="15" backcolor="#CCCCCC" uuid="25f74196-35d7-44b4-9b7d-6c82c312a1f8"/>
+					<reportElement mode="Opaque" x="395" y="79" width="46" height="15" backcolor="#CCCCCC" uuid="25f74196-35d7-44b4-9b7d-6c82c312a1f8"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1889,7 +1889,7 @@
 					<textFieldExpression><![CDATA[$P{tobacco_no_percentage}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="21" width="339" height="15" backcolor="#CCCCCC" uuid="2d8a4d56-a236-469d-b79f-06b3e0dd56c1"/>
+					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="2d8a4d56-a236-469d-b79f-06b3e0dd56c1"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1947,7 +1947,7 @@
 					<textFieldExpression><![CDATA[$P{tobacco_no_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Transparent" x="395" y="5" width="46" height="15" backcolor="#CCCCCC" uuid="56942fae-3702-48a7-9776-a796c1b121be"/>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="56942fae-3702-48a7-9776-a796c1b121be"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -1976,7 +1976,7 @@
 					<text><![CDATA[  Yes. I currently use tobacco on a regular basis.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="56" y="50" width="339" height="15" backcolor="#CCCCCC" uuid="f820ced0-f37c-4842-a086-d6103407ccbc"/>
+					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="f820ced0-f37c-4842-a086-d6103407ccbc"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -2005,7 +2005,7 @@
 					<textFieldExpression><![CDATA[$P{tobacco_yes_percentage}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="11" y="50" width="45" height="15" backcolor="#CCCCCC" uuid="ee2b666d-07cb-4e0d-8ad0-e58a5a93c7be"/>
+					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="ee2b666d-07cb-4e0d-8ad0-e58a5a93c7be"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -2035,7 +2035,7 @@
 					<textFieldExpression><![CDATA[$P{tobacco_yes_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement mode="Opaque" x="395" y="50" width="46" height="15" backcolor="#CCCCCC" uuid="fe126d32-646d-4bf6-ad89-926c40857bd1"/>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="fe126d32-646d-4bf6-ad89-926c40857bd1"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>

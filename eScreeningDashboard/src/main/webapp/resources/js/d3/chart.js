@@ -88,10 +88,11 @@ function graphGenerator(dataStructure, dataDataset){
 	
 	function appendStackGraph(parentSelector, graphParams){
 		var ticks = graphParams.ticks;
+		var title = graphParams.title;
 
         //Set d3 graph attributes
 	    var margins = {
-		          top: 46,
+		          top: 58,
 		          left: 15,
 		          right: 15,
 		          bottom: 0
@@ -114,8 +115,9 @@ function graphGenerator(dataStructure, dataDataset){
 		      series          = graphParams.legends,
 		      dataset         = graphParams.dataset,
 		      pointerColor    = '#0f3a65',
-		      pointerWidth    = 36,
+		      pointerWidth    = 40,
 		      pointerHeight   = 36,
+			  titleY 		  = -45,
 		      stack = d3.layout.stack();
 
 		
@@ -206,10 +208,10 @@ function graphGenerator(dataStructure, dataDataset){
 			.attr('x', xPos)
 			.attr('y', -15)
 			.attr('fill', 'white')
-			.attr('font-size', '20')
+			.attr('font-size', '16')
 			.attr('font-weight', 'bold')
 			.style("text-anchor", "middle")
-			.attr('font-family', 'sans-serif')
+			.attr('font-family', 'arial')
 			.text(xCurrent);
     
     
@@ -269,6 +271,17 @@ function graphGenerator(dataStructure, dataDataset){
 		          .attr('x', -15)
 		          .attr('y', 92);
 		      	  textWidth += 60  + 10 ;
+
+				svg.append('text')
+					.attr('x', parseFloat(width / 2))
+					.attr('y', titleY)
+					.attr('fill', 'black')
+					.attr('font-size', '14')
+					.attr('font-weight', 'bold')
+					.style("text-anchor", "middle")
+					.attr('font-family', 'arial')
+					.text(title);
+					
 				  
               console.log("Parse 8----");
 			  console.log(g.node().getBoundingClientRect().width);
@@ -289,6 +302,7 @@ function graphGenerator(dataStructure, dataDataset){
 		var maxValue;
 		var ticks 	= [];
 		var series  = graphParams.legends;
+		var title = graphParams.title;
 
 		$.each(dataDataset, function(date, valueStr){
 			//TODO: Add check if can't be parsed
@@ -309,7 +323,7 @@ function graphGenerator(dataStructure, dataDataset){
 		var containerWidth = 450,
 			containerHeight = 300,
 			margin = {
-				top: 20,
+				top: 35,
 				bottom: 60,
 				left: 30,
 				right: 140
@@ -573,6 +587,15 @@ function graphGenerator(dataStructure, dataDataset){
 				});
 
 
+			this.append('text')
+				.attr('x', parseFloat(width / 2))
+				.attr('y', -25)
+				.attr('fill', 'black')
+				.attr('font-size', '14')
+				.attr('font-weight', 'bold')
+				.style("text-anchor", "middle")
+				.attr('font-family', 'arial')
+				.text(title);
 	
 		colors.reverse(); // reset colors order
 	

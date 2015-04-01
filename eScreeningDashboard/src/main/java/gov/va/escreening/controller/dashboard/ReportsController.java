@@ -82,7 +82,7 @@ public class ReportsController {
         // ticket 600 entry point graph chart
         if ("groupData".equals(((LinkedHashMap<String, Object>) requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group Chart
-            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true, true);
         } else {
             // individual chart
             return getAvgScoresVetByClinicGraphReport(requestData, escreenUser);
@@ -94,7 +94,7 @@ public class ReportsController {
 
         if ("groupData".equals(((LinkedHashMap<String, Object>) requestData.get("userReqData")).get(ReportsUtil.DISPLAY_OPTION))) {
             //Group Chart
-            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, false);
+            return getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true, false);
         } else {
             // individual chart
             return getAvgScoresVetByClinicGraphReport(requestData, escreenUser);
@@ -193,7 +193,7 @@ public class ReportsController {
     // 601 numeric report
     private ModelAndView getAveScoresByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
 
-        return new ModelAndView("avgClinicNumericReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true));
+        return new ModelAndView("avgClinicNumericReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, true, false));
     }
 
     private ModelAndView getAvgScoresVetByClinicNumericReport(HashMap<String, Object> requestData, EscreenUser escreenUser) {
@@ -202,6 +202,7 @@ public class ReportsController {
     }
 
 
+    // 600
     // for avg individual
     private ModelAndView getAvgScoresVetByClinicGraphReport(Map<String, Object> requestData, EscreenUser escreenUser) {
 
@@ -209,8 +210,8 @@ public class ReportsController {
     }
 
     // FOR GROUP
-    private ModelAndView getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount) {
-        return new ModelAndView("avgClinicGraphReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, includeCount));
+    private ModelAndView getAveScoresByClinicGraphOrNumeric(Map<String, Object> requestData, EscreenUser escreenUser, boolean includeCount, boolean isGraphOnly) {
+        return new ModelAndView("avgClinicGraphReport", rd.getAveScoresByClinicGraphOrNumeric(requestData, escreenUser, includeCount, isGraphOnly));
     }
 
     private ModelAndView getIndividualStaticsGraphicPDF(Map<String, Object> requestData, EscreenUser escreenUser, String viewName) {

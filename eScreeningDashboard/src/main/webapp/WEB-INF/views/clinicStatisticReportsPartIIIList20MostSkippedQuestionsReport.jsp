@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports | Clinic Statistic Reports: List of top 20 Most Skipped Questions Report</title>
+  <title>Reports | Clinic Statistic Reports: Top 20 Most Skipped Questions Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -55,7 +55,7 @@
 
 <div class="container left-right-shadow">
 	<div class="row">
-		<div class="col-md-12"><h1>List of top 20 Most Skipped Questions Report</h1></div>
+		<div class="col-md-12"><h1>Top 20 Most Skipped Questions Report</h1></div>
 	</div>
 	
 	<div class="clear-fix"></div>
@@ -69,10 +69,6 @@
 						<label>Select VistA Clinics *</label>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
-							
-							
-							
-							
 							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by Clinic" />
 														
 							<!-- Program Evaluator Role only 602 / 603
@@ -85,10 +81,7 @@
 							<hr class="hr_margin_5">
 							-->
 							
-							
-							
-							
-
+			
 							
 							<div class="vertical_scoll_list_b module_list">
 
