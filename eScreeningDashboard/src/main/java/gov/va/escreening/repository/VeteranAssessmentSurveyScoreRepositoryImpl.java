@@ -46,7 +46,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 " and vassr.dateCompleted <= :toDate " +
                 " and vassr.survey.id = :surveyId  " +
                 " and vassr.veteran.id = :veteranId " +
-                " and vassr.screen_number is null" +
+                " and vassr.screenNumber is null" +
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
@@ -68,7 +68,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 " and vassr.survey.id = :surveyId  " +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.clinic.id = :clinicId " +
-                " and vassr.screen_number is null "+
+                " and vassr.screenNumber is null "+
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
@@ -99,7 +99,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 " and vassr.dateCompleted <= :toDate " +
                 " and vassr.clinic.id = :clinicId  " +
                 " and vassr.survey.id = (:surveyIds)  " +
-                " and vassr.screen_number is null " +
+                " and vassr.screenNumber is null " +
                 " order by vassr.clinic.id, vassr.veteran.id, vassr.survey.id,  vassr.dateCompleted asc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
