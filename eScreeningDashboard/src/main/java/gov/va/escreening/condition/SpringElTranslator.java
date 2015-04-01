@@ -13,7 +13,7 @@ public class SpringElTranslator implements BlockTranslator {
         return "condition placeholder";
         
         // transformations allowed:
-        //free text with a date format
+        //free text with a date format:  use: calculateAge
         
         //allow table child questions
         

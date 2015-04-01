@@ -1,11 +1,15 @@
 package gov.va.escreening.constants;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 
 
 /* PLEASE: define all as final */
 
 
 public class AssessmentConstants {
+    public static final DateTimeFormatter STANDARD_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
 	
 	//if display order is not specified then this value is used.
 	public static final int ASSESSMENT_VARIABLE_DEFAULT_COLUMN = 0; 

@@ -10,13 +10,12 @@ import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.exception.ErrorResponseRuntimeException;
 import gov.va.escreening.exception.ReferencedFormulaMissingException;
 import gov.va.escreening.exception.ReferencedVariableMissingException;
-import gov.va.escreening.expressionevaluator.CustomCalculations;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +38,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FormulaAssessmentVariableResolverImpl.class);
+	private static final ExpressionExtentionUtil expressionExtender = new ExpressionExtentionUtil();
 
 	@Autowired
 	public FormulaAssessmentVariableResolverImpl(
@@ -179,7 +179,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        Collection<AssessmentVariable> avChildSet, 
 	        ResolverParameters params) {
 	    Map<Integer, String> valueMap = Maps.newHashMapWithExpectedSize(avChildSet.size());
-
+	    
 	    for(AssessmentVariable childAv : avChildSet){
 	        Integer avId = childAv.getAssessmentVariableId();
 	        AssessmentVariableDto variable = params.getResolvedVariable(avId);
@@ -187,10 +187,10 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        String value = null;
 	        if(variable != null){	            
     	        if(variable.getType().equals("list")){
-    	            value = CustomCalculations.getListVariableAsNumber(variable);
+    	            value = expressionExtender.getListVariableAsNumber(variable);
     	        }
     	        else{
-    	            value = CustomCalculations.getVariableValue(variable);
+    	            value = expressionExtender.getVariableValue(variable);
     	        }
 	        }
 	        else{  //variable was not resolved
@@ -200,13 +200,12 @@ public class FormulaAssessmentVariableResolverImpl implements
                 }
 	        }
 	        
-	        if(value != null && value != CustomCalculations.DEFAULT_VALUE){
+	        if(value != null && value != ExpressionExtentionUtil.DEFAULT_VALUE){
 	            valueMap.put(avId, value);
 	            logger.debug("Value of variable {} is {}", avId, value);
 	        }
 	        else{
-	            logger.debug("Variable DTO {} could not be resolved to a value", 
-	                    avId);
+	            logger.debug("Variable DTO {} could not be resolved to a value", avId);
 	        }
 	    }
 	    return valueMap;

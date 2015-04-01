@@ -47,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -391,7 +392,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 
 	String processTemplate(String templateText,
-			List<AssessmentVariableDto> assessmentVariables, int templateId) throws IOException, TemplateException {
+			Collection<AssessmentVariableDto> assessmentVariables, int templateId) throws IOException, TemplateException {
 
 		// populate the root object which holds all beans to be merged with the
 		// template.

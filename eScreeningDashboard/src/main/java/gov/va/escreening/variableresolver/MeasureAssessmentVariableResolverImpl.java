@@ -149,6 +149,7 @@ public class MeasureAssessmentVariableResolverImpl implements
             }
         }
         
+        logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
         return variableDto;
     }
 

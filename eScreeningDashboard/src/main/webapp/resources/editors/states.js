@@ -405,7 +405,7 @@ angular.module('Editors')
                     displayName: 'Template Editor'
                 },
                 controller: "ModulesTemplatesEditController",
-                    resolve: {
+                resolve: {
                     template: ['$stateParams', '$q', 'MessageFactory', 'TemplateService', 'TemplateTypeService', function ($stateParams, $q, MessageFactory, TemplateService, TemplateTypeService) {
                                 var deferred = $q.defer();
                                 if (Object.isDefined($stateParams)
