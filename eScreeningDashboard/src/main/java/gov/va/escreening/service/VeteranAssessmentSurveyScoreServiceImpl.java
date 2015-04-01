@@ -3,10 +3,7 @@ package gov.va.escreening.service;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import gov.va.escreening.dto.report.ModuleGraphReportDTO;
-import gov.va.escreening.dto.report.ScoreDateDTO;
-import gov.va.escreening.dto.report.ScoreHistoryDTO;
-import gov.va.escreening.dto.report.TableReportDTO;
+import gov.va.escreening.dto.report.*;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.SurveyRepository;
@@ -331,6 +328,11 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         }
 
         return result;
+    }
+
+    @Override
+    public List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList) {
+        return vassRepos.getClinicStatisticReportsPartVIPositiveScreensReport(fromDate, toDate, clinicIds, surveyNameList);
     }
 
     private Float getAvgOfScores(List<VeteranAssessmentSurveyScore> scores) {
