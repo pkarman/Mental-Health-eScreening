@@ -60,14 +60,27 @@
         		<h1>Batch Complete</h1>
 				
 
-					 
-					<c:if test="${not hasErrors}">
-						<div class="alert alert-success">
-							 Battery Creation Successful for the Below Veterans. 
-						</div>
-					</c:if>
+					
 
-					<c:if test="${hasErrors}">
+					<c:set var="countSucceed" value="0" scope="page" />
+					<c:set var="countError" value="0" scope="page" />
+					<c:forEach var="item" items="${veterans}">
+							<c:choose>
+								<c:when test="${item.succeed == 'true'}">
+									<c:set var="countSucceed" value="${countSucceed + 1}" scope="page"/>
+								</c:when>
+								<c:otherwise>
+									<c:set var="countError" value="${countError + 1}" scope="page"/>
+								</c:otherwise>								
+							</c:choose>
+					</c:forEach>
+
+
+
+					<c:if test="${countSucceed > 0}">
+						<div class="alert alert-success">Battery Creation Successful for the Below Veterans.</div>
+					</c:if>
+					<c:if test="${countError > 0}">
   						<div class="alert alert-danger"> Battery Creation Failed for the Below Veterans.</div>
 					</c:if>
 
