@@ -379,9 +379,6 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
   </#if>
 </#function>
  
-
-<#-- ***********************  Template Editor Helper functions ************************* -->
-
 <#-- calculate number of years from given date -->
 <#function calcAge dt>
 	<#assign age = "">
@@ -394,34 +391,6 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 	<#return age>
 </#function>
 
-<#-- checks if a specific answer was selected given a question -->
-<#function isSelectedAnswer variableObj1 variableObj2 > 
-
-	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
-		<#return false>
-	</#if>
-    
-    <#list variableObj1.children as v>
-        <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
-            <#return true>
-        </#if>
-    </#list>
-    <#return false>
-</#function>
-
-<#-- sum all of the calculation values of all selected options -->
-<#function  sumCalcValues variableObj > 
-    <#assign total = 0>
-    <#if (variableObj)?? > 
-        <#list variableObj.children as v>
-            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
-                <#assign num = (v.calculationValue)?number>
-                <#assign total = total + num>
-            </#if>
-        </#list>
-    </#if>
-    <#return total>
-</#function>
 
 <#-- delimits the children of a variable using the prefix and suffix given, 
 boolean indicates if the suffix should be appended at the end of the list --> 
@@ -453,8 +422,44 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#return result>
 </#function>
 
+<#-- ***********************  Template Editor Helper functions ************************* -->
+
+<#-- checks if a specific answer was selected given a question -->
+<#function isSelectedAnswer variableObj1 variableObj2 > 
+
+	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
+		<#return false>
+	</#if>
+    
+    <#list variableObj1.children as v>
+        <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
+            <#return true>
+        </#if>
+    </#list>
+    <#return false>
+</#function>
+
+<#-- sum all of the calculation values of all selected options -->
+<#function  sumCalcValues variableObj > 
+    <#assign total = 0>
+    <#if (variableObj)?? > 
+        <#list variableObj.children as v>
+            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
+                <#assign num = (v.calculationValue)?number>
+                <#assign total = total + num>
+            </#if>
+        </#list>
+    </#if>
+    <#return total>
+</#function>
+
+
 <#-- ***********************  Only  Template Editor functions under this line ************************* -->
 
+<#-- TODO: All of these should be replaced with calls to ExpressionExtentionUtil.java 
+	       Preferably a single instance of ExpressionExtentionUtil should be reused for all of these, 
+	       instead of instantiating one for every call.  
+-->
 
 <#-- 
 This transformation takes a table question and allows for the selection of a single child question (i.e. field) 

@@ -233,7 +233,7 @@ public class AssessmentVariableDto {
 				return "string";
 			
 			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
-				if(av.getAssessmentVariableId() == CustomAssessmentVariableResolverImpl.CUSTOM_VETERAN_APPOINTMENTS)
+				if(CustomAssessmentVariableResolverImpl.CUSTOM_VETERAN_APPOINTMENTS.equals(av.getAssessmentVariableId()))
 					return "list";
 				return "string";
 				
