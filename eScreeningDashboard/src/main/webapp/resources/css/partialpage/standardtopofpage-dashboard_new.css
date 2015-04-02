@@ -983,8 +983,31 @@ a.offscreen:focus, a.offscreen:active {
 	font-weight:bold;
 }
 
+
 .bg_color_subheader{
 	background-color:#E0E0E0 !important;
+
+.text-capitalize{
+	text-transform:capitalize;
+} 
+
+.item-label-error{
+	color:#8C0002;
+}
+
+.icon-arrow-right{
+	  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  
+}
+.icon-arrow-left{
+	background-position: -240px -96px;
 }
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {

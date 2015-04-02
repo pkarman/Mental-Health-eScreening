@@ -99,7 +99,6 @@ $(document).ready(function() {
 
 	
 	/* Need to clean - From edit Veteran Assessment */
-	
 		$(selectedProgramId).change(function() {
 		$.ajax({
 			url: 'editVeteranAssessment/programs/' + $(selectedProgramId).val() + '/clinics',
@@ -156,22 +155,20 @@ $(document).ready(function() {
 	$(".battery_list input").on("click", function(e) {
 		 clearAllCheckbox();
 		function check(x, i){
-			if(x == 0){
+			element = "selectedSurveyIdList"+i;
+			if(x == 0){				
 				$(element).attr('checked', false);
 			}
 			if(x == 1){
-				element = "selectedSurveyIdList"+i;
 				document.getElementById(element).indeterminate = true;
 				$(element).prop("indeterminate", true);
 				$(element).attr('checked', false);  
 			}
 			if(x == 2){
-				element = "#selectedSurveyIdList"+i;
 				$(element).attr('checked', true);
 			}
 		}
 
-		
 		function dataFormat(data){
 			data.replace('{','').replace('}','').replace(/\s/g,"").split(',');
 			return data;			
