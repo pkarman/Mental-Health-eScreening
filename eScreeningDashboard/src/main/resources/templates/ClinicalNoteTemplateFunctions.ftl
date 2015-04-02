@@ -567,7 +567,7 @@ columnAnswerIdList is a set of column answer IDs which we are testing to see if 
 		</#if>
 	</#list>
 	
-	<#return delimitList(valList) >
+	<#return delimitList(valList)>
 </#function>  
 
 
@@ -708,7 +708,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 >
+    <#if measureTypeId == 1 || measureTypeId == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -755,7 +755,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
@@ -897,11 +897,15 @@ returns the negation of customHasResult
 </#function>
 
 <#--
-Returns true if the value given has a value. Currently only supports string values
+Returns true if the value given matrix has a value.
 -->
 <#function matrixHasResult matrix=DEFAULT_VALUE>
-	<#if matrix == DEFAULT_VALUE>
+	<#if matrix == DEFAULT_VALUE || !(matrix??) || !(matrix?has_content) || (matrix?string)=="">
 		<#return false>
+	</#if>
+	
+	<#if !(matrix?is_hash) && matrix?has_content >
+		<#return true>
 	</#if>
 	
 	<#assign responseList = []>

@@ -5,12 +5,16 @@ import gov.va.escreening.exception.EscreeningDataValidationException;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.google.common.base.Throwables;
 
 import static gov.va.escreening.constants.AssessmentConstants.*;
 
@@ -21,6 +25,7 @@ import static gov.va.escreening.constants.AssessmentConstants.*;
 	})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TemplateBaseContent {
+    private static final Logger logger = LoggerFactory.getLogger(TemplateBaseContent.class);
 	
 	public static String translate(String operator, TemplateBaseContent inLeft, TemplateBaseContent right, Set<Integer> ids)
 	{
@@ -42,11 +47,9 @@ public abstract class TemplateBaseContent {
 		
 		TemplateAssessmentVariableDTO left = leftContent.getContent();
 		
-		String inStr = "var" + left.getId();
+		String translatedVar = "var" + left.getId();
 		
 		ids.add(left.getId());
-		
-		String translatedVar = inStr;
 		
 		// we are going to apply transformation of variable.
 		if (left.getTransformations() != null && !left.getTransformations().isEmpty()) {
@@ -88,89 +91,107 @@ public abstract class TemplateBaseContent {
 		
 		if (operator == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
 		{//Don't pull value out if transformations were applied
-			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
+			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+				translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
 				
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar =  "getFormulaValue("+inStr+")";
+				translatedVar =  "getFormulaValue("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar =  "getCustomValue("+inStr+")";
+				translatedVar =  "getCustomValue("+translatedVar+")";
 			}
 		}
-		else if ("eq".equals(operator) || "neq".equals(operator) || 
-				"lt".equals(operator) || "gt".equals(operator) || "lte".equals(operator) 
-				|| "gte".equals(operator))
+		else if ("eq".equals(operator) || "neq".equals(operator) 
+		        || "lt".equals(operator) || "gt".equals(operator) 
+		        || "lte".equals(operator) || "gte".equals(operator))
 		{
-			if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))			
+			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY))			
 			{
 				if (right instanceof TemplateTextContent)
 				{
 					try
 					{
 						Double.parseDouble(((TemplateTextContent)right).getContent());
-						translatedVar = "asNumber("+inStr+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "asNumber("+translatedVar+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+translatedVar+", "+left.getMeasureTypeId()+")";
 					}
 					catch(Exception e)
 					{
 						// right is not a number;
-						translatedVar = "getResponse("+inStr+", "+left.getMeasureTypeId()+")";
+						translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
 					}
 				}
 				else
-					translatedVar =  "getResponse("+inStr+")";
+					translatedVar =  "getResponse("+translatedVar+")";
+			}
+			if (left.measureTypeIs(MEASURE_TYPE_TABLE)) //at this point we only support numberOfEntries transformation compared with a number
+			{
+			    if (right instanceof TemplateTextContent)
+                {
+			        String rightContent = ((TemplateTextContent)right).getContent();
+                    try
+                    {
+                        Double.parseDouble(rightContent);
+                        translatedVar =  translatedVar +"?string != DEFAULT_VALUE && " + translatedVar;
+                    }
+                    catch(Exception e){
+                        logger.warn("Unsupported operation: Left operand: {} \nOperator: {}\n right operand: {}\n Full exception {}", 
+                                new Object[]{translatedVar, operator, rightContent, Throwables.getRootCause(e).getLocalizedMessage()});
+                    }
+                }
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar =  "asNumber(getCustomValue("+inStr+"))?string != \"notset\" && asNumber(getCustomValue("+inStr+"))";
+				translatedVar =  "asNumber(getCustomValue("+translatedVar+"))?string != \"notset\" && asNumber(getCustomValue("+translatedVar+"))";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar = "getFormulaValue("+inStr+")?string != \"notset\" && getFormulaValue("+inStr+")";
+				translatedVar = "getFormulaValue("+translatedVar+")?string != \"notset\" && getFormulaValue("+translatedVar+")";
 			}
 		}
 		else if ("answered".equals(operator))
 		{
 			if (left.measureTypeIn(
-					MEASURE_TYPE_FREE_TEXT, 
+					MEASURE_TYPE_FREE_TEXT,
+					MEASURE_TYPE_READ_ONLY,
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasAnswered("+inStr+")";
+				translatedVar= "wasAnswered("+translatedVar+")";
 			}
 		}
 		else if ("nanswered".equals(operator))
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_FREE_TEXT,
+					MEASURE_TYPE_READ_ONLY,
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasntAnswered("+inStr+")";
+				translatedVar= "wasntAnswered("+translatedVar+")";
 			}
 		}
 		else if ("result".equals(operator))
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar= "formulaHasResult("+inStr+")";
+				translatedVar= "formulaHasResult("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar= "customHasResult("+inStr+")";
+				translatedVar= "customHasResult("+translatedVar+")";
 			}
 			else if (left.typeIn(
 					ASSESSMENT_VARIABLE_TYPE_MEASURE, 
 					MEASURE_TYPE_SELECT_ONE_MATRIX, 
 					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
-				translatedVar= "matrixHasResult("+inStr+")";
+				translatedVar= "matrixHasResult("+translatedVar+")";
 			}
 			
 		}
@@ -178,17 +199,17 @@ public abstract class TemplateBaseContent {
 		{
 			if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
 			{
-				translatedVar= "formulaHasNoResult("+inStr+")";
+				translatedVar= "formulaHasNoResult("+translatedVar+")";
 			}
 			else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
 			{
-				translatedVar= "customHasNoResult("+inStr+")";
+				translatedVar= "customHasNoResult("+translatedVar+")";
 			}
 			else if (left.measureTypeIn(
 					MEASURE_TYPE_SELECT_ONE_MATRIX, 
 					MEASURE_TYPE_SELECT_MULTI_MATRIX))
 			{
-				translatedVar= "matrixHasNoResult("+inStr+")";
+				translatedVar= "matrixHasNoResult("+translatedVar+")";
 			}
 		}
 		else if ("response".equals(operator))
@@ -197,7 +218,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar= "responseIs("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIs("+translatedVar+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("nresponse".equals(operator))
@@ -206,7 +227,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI))
 			{
-				translatedVar= "responseIsnt("+inStr+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
+				translatedVar= "responseIsnt("+translatedVar+", "+(translate(null, right, null, ids))+"," +left.getMeasureTypeId()+")";
 			}
 		}
 		else if ("none".equals(operator))
@@ -216,7 +237,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI,
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasAnswerNone("+inStr+")";
+				translatedVar= "wasAnswerNone("+translatedVar+")";
 			}
 			 
 		}
@@ -227,7 +248,7 @@ public abstract class TemplateBaseContent {
 					MEASURE_TYPE_SELECT_MULTI,
 					MEASURE_TYPE_TABLE))
 			{
-				translatedVar= "wasntAnswerNone("+inStr+")";
+				translatedVar= "wasntAnswerNone("+translatedVar+")";
 			}
 			 
 		}
