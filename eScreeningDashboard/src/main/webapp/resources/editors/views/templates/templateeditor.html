@@ -8,6 +8,139 @@
     </div>
 </div>
 
+
+<label for="graphicalTemplateChk">
+	<input id="graphicalTemplateChk" type="checkbox" ng-model="ModelData.graphicalTemplate"> Graphical Template
+</label>
+
+
+<div class="border-radius-main-form gray-lighter"  ng-show="ModelData.graphicalTemplate">
+
+
+  
+
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="templateTitle">Template Title *</label>
+				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="collection.title" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="graphHeader">Graph Header *</label>
+				<input type="text" class="form-control" id="graphHeader" placeholder="Enter Graph Header"  required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="graphFooter">Graph Footer</label>
+				<input type="text" class="form-control" id="graphFooter" placeholder="Enter Graph Footer" ng-model="collection.footer">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="selectVariable">Select Variable *</label>
+				<input type="text" class="form-control" id="selectVariable" placeholder="Enter Select Variable"  required>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-9">
+			<div><strong>Intervals</strong></div>
+			<hr class="hr-legend" />
+			<div class="row">
+				<div class="col-md-6">
+					<div class="border-radius-ul lighter-white">
+					<!-- Repeater Start -->
+
+
+       
+	   
+	   					
+					<ul>
+						<li ng-repeat="(key, data) in collection.intervals">
+							<div class="row">
+								<div class="col-md-7">	
+									<div class="form-group">
+										<label for="intervalsName{{$index + 1}}">Name *</label>
+										<input type="text" class="form-control" id="intervalsName{{$index + 1}}" placeholder="Enter Name" required  ng-model="key" >
+									</div>
+								</div>
+								<div class="col-md-5">	
+									<div class="form-group">
+										<label for="intervalsStartValue{{$index + 1}}">Start Value *</label>
+										<input type="text" class="form-control" id="intervalsStartValue{{$index + 1}}" placeholder="Enter Start Value"  ng-model="data" required>
+									</div>
+								</div>
+
+								<br>
+
+							</div>
+						</li>					
+					</ul>
+					<!-- Repeater End -->
+
+					<div class="row">
+						<div class="col-md-12">
+							<button class="btn btn-primary btn-xs" id="addIntervalValue"  ng-click="addIntervalValue()"><span class="glyphicon glyphicon-plus"></span> Add Value</button>
+						</div>
+					</div>
+					<br />
+					</div>										
+
+				</div>
+				<div class="col-md-6">					
+						<div class="row">
+						<div class="col-md-6">
+							<div class="border-radius-ul lighter-white">
+							<ul>
+								<li ng-repeat="(key, data) in collection.ticks">														
+									<div class="form-group">
+										<label for="axisValue{{$index + 1}}">Axis Value</label>
+										<input type="text" class="form-control" id="axisValue{{$index + 1}}" placeholder="Enter Axis Value"   ng-model="data">
+									</div>
+								</li>
+							</ul>
+
+							<div class="row">
+								<div class="col-md-12">
+									<button class="btn btn-primary btn-xs" id="addAxisValue" ng-click="addAxisValue()" ><span class="glyphicon glyphicon-plus"></span> Add Axis Value</button>
+								</div>
+							</div>
+							<br />
+							</div>
+						</div>
+
+						<div class="col-md-6">					
+							<div class="form-group padding-box-align">
+								<label for="graphMaximumValue">Graph Maximum Value</label>
+								<input type="text" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="collection.maxXPoint">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		
+		</div>
+		<div class="col-md-3">
+			<div><strong>Time Series Points</strong></div>
+			<hr class="hr-legend" />
+			<div class="form-group">
+				<label for="includeLast">Include data from last:</label>
+				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="collection.numberOfMonths" > <span  class="help-block">Month(s)</span>
+			</div>
+					
+		</div>
+	</div>
+			
+	
+</div>
+<br>
+
+
+
 <!-- Alerts and Messages -->
 <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 

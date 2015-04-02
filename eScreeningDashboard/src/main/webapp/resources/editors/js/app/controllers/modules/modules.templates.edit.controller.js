@@ -32,6 +32,27 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     
     
 
+	// Static Data
+	//$scope.collection = {"footer":"test","maxXPoint":27.0,"title":"PHQ-9","ticks":[0.0,1.0,5.0,10.0,15.0,20.0,27.0],"numberOfMonths":12,"score":22.5,"intervals":{"no depression":0.0,"minimal":1.0,"mild":5.0,"moderate":10.0,"moderately severe":15.0,"severe depression":20.0},"dataSet":{"03/31/2015 10:11:23":7,"03/30/2015 20:11:36":18}}; 
+ 
+    $scope.collection = {"id": 123, "isGraphical": true, "type": 3, "name": "", "title": "Pain", "graph": {"varId": 2300, "title": "My Pain Score", "footer": "", "numberOfMonths": 12, "intervals": { "None":0, "Minimal":1, "Moderate":4, "Severe":6, "Very Severe":8, "Worst Possible":10 }, "maxXPoint" : 10,  "ticks": [0, 1, 4, 6, 8, 10]}};
+
+    
+    $scope.addIntervalValue = function(){
+      $scope.collection.push($scope.newData);
+      console.log("$scope.collection");
+      console.log($scope.collection);
+      $scope.newData = '';
+    };
+
+    $scope.addAxisValue = function(){
+      $scope.collection.push($scope.newData);
+      console.log("$scope.collection");
+      console.log($scope.collection);
+      $scope.newData = '';
+    };
+	
+
     $scope.save = function () {
         console.log("Save clicked");
 
