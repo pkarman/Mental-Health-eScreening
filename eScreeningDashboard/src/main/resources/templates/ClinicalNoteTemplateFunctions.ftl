@@ -391,8 +391,6 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 	<#return age>
 </#function>
 
-	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
-
 <#-- delimits the children of a variable using the prefix and suffix given, 
 boolean indicates if the suffix should be appended at the end of the list --> 
 <#function delimitChildren variableObj=DEFAULT_VALUE prefix='' suffix='' includeSuffixAtEnd=true> 
@@ -428,8 +426,7 @@ boolean indicates if the suffix should be appended at the end of the list -->
 <#-- checks if a specific answer was selected given a question -->
 <#function isSelectedAnswer variableObj1=DEFAULT_VALUE variableObj2=DEFAULT_VALUE > 
 
-	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE 
-	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
+	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE || !(variableObj1.children)?? || variableObj1.children?size == 0>
 		<#return false>
 	</#if>
     
