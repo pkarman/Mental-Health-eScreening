@@ -8,7 +8,7 @@
     </div>
 </div>
 
-	<label for="graphicalTemplateChk" ng-show="collection.isGraphical">
+	<label for="graphicalTemplateChk" ng-show="template.isGraphical">
 		<input id="graphicalTemplateChk" type="checkbox" ng-model="graph.graphicalTemplate"> Graphical Template
 	</label>
 
@@ -18,7 +18,7 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="templateTitle">Template Title *</label>
-				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="collection.graph.title" required>
+				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="template.graph.title" required>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -30,7 +30,7 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="graphFooter">Graph Footer</label>
-				<input type="text" class="form-control" id="graphFooter" placeholder="Enter Graph Footer" ng-model="collection.graph.footer">
+				<input type="text" class="form-control" id="graphFooter" placeholder="Enter Graph Footer" ng-model="template.graph.footer">
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -60,7 +60,7 @@
 					<div class="border-radius-ul lighter-white">
 					<!-- Repeater Start -->
 					<ul>
-						<li ng-repeat="(key, data) in collection.graph.intervals">
+						<li ng-repeat="interval in intervalList">
 							<div class="row">
 								<div class="col-xs-7 col-md-7 col-lg-7">	
 									<div class="form-group">
@@ -68,7 +68,7 @@
 										<input type="text"
 											   class="form-control"
 											   id="intervalsName{{$index + 1}}"
-											   ng-model="key"
+											   ng-model="interval.name"
 											   ng-change=""
 											   placeholder="Enter Name"
 											   required >
@@ -85,7 +85,7 @@
 										</a>
 																			
 										<input type="number"
-												ng-model="data"
+												ng-model="interval.value"
 												class="form-control"
 												id="intervalsStartValue{{$index + 1}}"
 												placeholder="Enter Start Value" 
@@ -119,7 +119,7 @@
 						<div class="col-md-6">
 							<div class="border-radius-ul lighter-white">
 							<ul>
-								<li ng-repeat="(key, data) in collection.graph.ticks">														
+								<li ng-repeat="(key, data) in template.graph.ticks">														
 									<div class="form-group">
 										<label for="axisValue{{$index + 1}}">Axis Value</label>
 										<a href="javascript:void(0);"
@@ -144,7 +144,7 @@
 						<div class="col-md-6">					
 							<div class="form-group padding-box-align">
 								<label for="graphMaximumValue">Graph Maximum Value</label>
-								<input type="number" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="collection.graph.maxXPoint">
+								<input type="number" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="template.graph.maxXPoint">
 							</div>
 						</div>
 					</div>
@@ -157,7 +157,7 @@
 			<hr class="hr-legend" />
 			<div class="form-group  padding-box-align">
 				<label for="includeLast">Include data from last:</label>
-				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="collection.graph.numberOfMonths" > <span  class="help-block">Month(s)</span>
+				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="template.graph.numberOfMonths" > <span  class="help-block">Month(s)</span>
 			</div>
 					
 		</div>
