@@ -8,22 +8,17 @@
     </div>
 </div>
 
-
-<label for="graphicalTemplateChk">
-	<input id="graphicalTemplateChk" type="checkbox" ng-model="ModelData.graphicalTemplate"> Graphical Template
-</label>
-
-
-<div class="border-radius-main-form gray-lighter"  ng-show="ModelData.graphicalTemplate">
+	<label for="graphicalTemplateChk" ng-show="collection.isGraphical">
+		<input id="graphicalTemplateChk" type="checkbox" ng-model="graph.graphicalTemplate"> Graphical Template
+	</label>
 
 
-  
-
+<div class="border-radius-main-form gray-lighter"  ng-show="graph.graphicalTemplate">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="templateTitle">Template Title *</label>
-				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="collection.title" required>
+				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="collection.graph.title" required>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -35,13 +30,23 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="graphFooter">Graph Footer</label>
-				<input type="text" class="form-control" id="graphFooter" placeholder="Enter Graph Footer" ng-model="collection.footer">
+				<input type="text" class="form-control" id="graphFooter" placeholder="Enter Graph Footer" ng-model="collection.graph.footer">
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="selectVariable">Select Variable *</label>
-				<input type="text" class="form-control" id="selectVariable" placeholder="Enter Select Variable"  required>
+				<!-- <input type="text" class="form-control" id="selectVariable" placeholder="Enter Select Variable"  required> -->
+				
+				<div class="assessmentVariableSelection">
+					<div ng-click="openSelections($event)" on-enter="openSelections()" tabindex="3">
+						<link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.css">
+						<input type="hidden" name="selectedAssessmentVariable" ng-model="assessmentVariable" required update-hidden>
+						<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable.name || 'Select Variable'}}</span>
+					</div>
+					<mhe-assessment-var-tbl-dir assessment-variable="assessmentVariable" block="block" show="avMenu.show" ng-if="avMenu.show" class="assessmentVariableTable" />
+				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -54,29 +59,47 @@
 				<div class="col-md-6">
 					<div class="border-radius-ul lighter-white">
 					<!-- Repeater Start -->
-
-
-       
-	   
-	   					
 					<ul>
-						<li ng-repeat="(key, data) in collection.intervals">
+						<li ng-repeat="(key, data) in collection.graph.intervals">
 							<div class="row">
-								<div class="col-md-7">	
+								<div class="col-xs-7 col-md-7 col-lg-7">	
 									<div class="form-group">
 										<label for="intervalsName{{$index + 1}}">Name *</label>
-										<input type="text" class="form-control" id="intervalsName{{$index + 1}}" placeholder="Enter Name" required  ng-model="key" >
+										<input type="text"
+											   class="form-control"
+											   id="intervalsName{{$index + 1}}"
+											   ng-model="key"
+											   ng-change=""
+											   placeholder="Enter Name"
+											   required >
 									</div>
 								</div>
-								<div class="col-md-5">	
+								<div class="col-xs-5 col-md-5 col-lg-5">	
 									<div class="form-group">
 										<label for="intervalsStartValue{{$index + 1}}">Start Value *</label>
-										<input type="text" class="form-control" id="intervalsStartValue{{$index + 1}}" placeholder="Enter Start Value"  ng-model="data" required>
+
+										<a href="javascript:void(0);"
+											ng-really-click="deleteInterval($index)"
+											ng-really-message="Are you sure you want to delete this interval?" ng-show="$index > 1">
+											<span class="glyphicon glyphicon-remove-circle red-color pull-right"></span>
+										</a>
+																			
+										<input type="number"
+												ng-model="data"
+												class="form-control"
+												id="intervalsStartValue{{$index + 1}}"
+												placeholder="Enter Start Value" 
+												required>
 									</div>
+
+									
+									
+																		
 								</div>
 
+								
+					
 								<br>
-
 							</div>
 						</li>					
 					</ul>
@@ -84,7 +107,7 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<button class="btn btn-primary btn-xs" id="addIntervalValue"  ng-click="addIntervalValue()"><span class="glyphicon glyphicon-plus"></span> Add Value</button>
+							<button class="btn btn-primary btn-xs" id="addIntervalValue"  ng-click="addIntervalValue()"><span class="glyphicon glyphicon-plus"></span> Add Interval </button>
 						</div>
 					</div>
 					<br />
@@ -96,9 +119,14 @@
 						<div class="col-md-6">
 							<div class="border-radius-ul lighter-white">
 							<ul>
-								<li ng-repeat="(key, data) in collection.ticks">														
+								<li ng-repeat="(key, data) in collection.graph.ticks">														
 									<div class="form-group">
 										<label for="axisValue{{$index + 1}}">Axis Value</label>
+										<a href="javascript:void(0);"
+											ng-really-click="deleteAxis($index)"
+											ng-really-message="Are you sure you want to delete this interval?">
+											<span class="glyphicon glyphicon-remove-circle red-color pull-right"></span>
+										</a>										
 										<input type="text" class="form-control" id="axisValue{{$index + 1}}" placeholder="Enter Axis Value"   ng-model="data">
 									</div>
 								</li>
@@ -116,7 +144,7 @@
 						<div class="col-md-6">					
 							<div class="form-group padding-box-align">
 								<label for="graphMaximumValue">Graph Maximum Value</label>
-								<input type="text" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="collection.maxXPoint">
+								<input type="number" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="collection.graph.maxXPoint">
 							</div>
 						</div>
 					</div>
@@ -127,19 +155,15 @@
 		<div class="col-md-3">
 			<div><strong>Time Series Points</strong></div>
 			<hr class="hr-legend" />
-			<div class="form-group">
+			<div class="form-group  padding-box-align">
 				<label for="includeLast">Include data from last:</label>
-				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="collection.numberOfMonths" > <span  class="help-block">Month(s)</span>
+				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="collection.graph.numberOfMonths" > <span  class="help-block">Month(s)</span>
 			</div>
 					
 		</div>
-	</div>
-			
-	
+	</div>	
 </div>
 <br>
-
-
 
 <!-- Alerts and Messages -->
 <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>

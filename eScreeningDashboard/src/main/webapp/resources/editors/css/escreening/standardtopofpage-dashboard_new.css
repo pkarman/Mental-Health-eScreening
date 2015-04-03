@@ -776,7 +776,7 @@ span.countdown {
   -moz-border-radius: 5px;
   border-radius: 5px;
   border: 1px solid #bbb;
-  padding: 5px 10px 0px 10px;
+  padding: 20px 10px 0px 10px;
   background-color: #fff;
   margin:0px;
 }
@@ -789,7 +789,7 @@ span.countdown {
 	margin:8px 0px;
 }
 .padding-box-align{
-	padding:5px 0px 0px 0px;
+	padding:20px 0px 0px 0px;
 }
 @media only screen
 and (min-device-width : 768px)
