@@ -26,15 +26,17 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     	.then(function(assessmentVariables) {
 	    	assessmentVariables.forEach(function(variable){
 	    		TemplateBlockService.addVariableToHash(variable);
-				if($scope.template.graph.varId && (variable.id == $scope.template.graph.varId)){
-					$scope.assessmentVariable = variable;
-				} 
+				if($scope.template.isGraphical){
+					if($scope.template.graph.varId && (variable.id == $scope.template.graph.varId)){
+						$scope.assessmentVariable = variable;
+					}
+				}
 	    	});
 	    	$scope.assessmentVariables = assessmentVariables;
     });
     
 	// Static Data 
-    $scope.template = {"id": 123, "isGraphical": true, "type": 3, "name": "", "title": "Pain", "graph": {"varId": 2300, "title": "My Pain Score", "footer": "Footer Data", "numberOfMonths": 12, "intervals": { "None":0, "Minimal":1, "Moderate":4, "Severe":6, "Very Severe":8, "Worst Possible":10}, "maxXPoint" : 10,  "ticks": [0, 1, 4, 6, 8, 10]}};
+    //$scope.template = {"id": 123, "isGraphical": true, "type": 3, "name": "", "title": "Pain", "graph": {"varId": 2300, "title": "My Pain Score", "footer": "Footer Data", "numberOfMonths": 12, "intervals": { "None":0, "Minimal":1, "Moderate":4, "Severe":6, "Very Severe":8, "Worst Possible":10}, "maxXPoint" : 10,  "ticks": [0, 1, 4, 6, 8, 10]}};
     //$scope.template = {"id": "", "isGraphical": true, "type": "", "name": "", "title": "", "graph": {"varId": "", "title": "", "footer": "", "numberOfMonths": "", "intervals": { }, "maxXPoint" : "",  "ticks": []}};	
 	
 	$scope.intervalList = [];
@@ -43,33 +45,34 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		angular.forEach($scope.template.graph.intervals, function(value, key) {
 			$scope.intervalList.push( {'name' : key, 'value' : value } );
 		});
+
+		$scope.$watch('intervalList',function(newVal, oldVal){
+			
+			$scope.template.graph.intervals = {};
+			
+			$scope.intervalList.forEach(function(interval){
+				if(	interval.name != "" &&  interval.value != ""){
+					$scope.template.graph.intervals[interval.name] = interval.value ;
+				}
+			})
+		}, true);
+
+		$scope.addIntervalValue = function(){
+		  console.log("addIntervalValue Clicked");
+		  /*
+		  $scope.template.push($scope.newData);
+		  console.log("$scope.template");
+		  console.log($scope.template);
+		  $scope.newData = '';
+		  */
+		  $scope.intervalList.push({'name' : '', 'value' : '' });
+	
+		  //$scope.template.graph.intervals['']='';
+		};		
 	}
 	
 
-	$scope.$watch('intervalList',function(newVal, oldVal){
-		
-		$scope.template.graph.intervals = {};
-		
-		$scope.intervalList.forEach(function(interval){
-			if(	interval.name != "" &&  interval.value != ""){
-				$scope.template.graph.intervals[interval.name] = interval.value ;
-			}
-		})
-	}, true);
-	
-	    
-    $scope.addIntervalValue = function(){
-	  console.log("addIntervalValue Clicked");
-      /*
-	  $scope.template.push($scope.newData);
-      console.log("$scope.template");
-      console.log($scope.template);
-      $scope.newData = '';
-	  */
-	  $scope.intervalList.push({'name' : '', 'value' : '' });
 
-	  //$scope.template.graph.intervals['']='';
-    };
 
     $scope.addAxisValue = function(){
 	  console.log("addIntervalValue Clicked");
