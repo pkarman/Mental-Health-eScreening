@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter) {
+	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', 'limitToWithEllipsisFilter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter, limitToWithEllipsisFilter) {
 
 	        return {
 	            restrict: 'EA',
@@ -93,66 +93,51 @@
 			                scope.assessmentVariable = angular.copy(av);
 		                }
 
+		                
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
 						// Do not apply transformations to parent table blocks
 						// NOTE: Blocks are not passed in when directive is called from textAngular
 						if (!scope.block || scope.block.type !== 'table') {
-							if (scope.assessmentVariable.transformations.length === 0) {
-								AssessmentVariableManager.setTransformations(scope.assessmentVariable).then(function (transformations) {
-								});
-							}
-
-							if (av.getMeasureTypeName() === 'table') {
-								// Get the childQuestions table variables
-								MeasureService.one(av.measureId).get().then(function (measure) {
-									scope.childQuestions = measure.childQuestions;
-								});
-							}
-
-							// Apply assessmentVariable to block even though it should be done via the two-way data binding
-							if (scope.block) {
-								scope.block.left.content = scope.assessmentVariable;
-							}
+							
+							AssessmentVariableManager.setTransformations(scope.assessmentVariable, scope.block).then(
+								function(transformations){
+									
+									if (transformations.length !== 0) {
+										
+										if (av.getMeasureTypeName() === 'table') {
+											// Get the childQuestions table variables
+											MeasureService.one(av.measureId).get().then(function (measure) {
+												scope.childQuestions = measure.childQuestions;
+											});
+										}
+										
+										// Apply assessmentVariable to block even though it should be done via the two-way data binding
+										if (scope.block) {
+											scope.block.left.content = scope.assessmentVariable;
+										}
+										
+										scope.show = true;
+										scope.toggles.list = false;
+										scope.toggles.transformations = true;
+									}
+									else{
+										scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
+										scope.show = false;
+									}
+									
+									scope.tableParams.reload();
+								});														
 						}
-
-						if ((scope.assessmentVariable.type === 'Custom' && scope.assessmentVariable.id !== 6)
-							|| scope.transformationName === 'single-select'
-							|| (scope.block && scope.block.type === 'table')
-							|| (scope.block && scope.assessmentVariable.getMeasureTypeName() === 'multi-select'
-							|| scope.assessmentVariable.type === 'Formula')) {
-							scope.show = false;
-							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
-
+						else{
 							// Apply AV to block.table for table block types even though it should be working from the view. . .
 							if (scope.block && scope.block.type === 'table') {
 								scope.block.table.content = scope.assessmentVariable;
 							}
-
-						} else if (scope.transformationName === 'freetext') {
-							// Doing this manually here because setting transformations is not working as intended
-							MeasureService.one(scope.assessmentVariable.measureId).getList('validations').then(function(validations) {
-								var found;
-								_.each(validations, function (validation) {
-									if (validation.value === 'date') {
-										found = true;
-									}
-								});
-
-								if (found) {
-									scope.toggles.list = false;
-									scope.toggles.transformations = true;
-								} else {
-									scope.show = false;
-									scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
-								}
-							});
-						} else {
-							scope.toggles.list = false;
-							scope.toggles.transformations = true;
+							console.debug("selecting variable");
+							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
+							scope.tableParams.reload();
 						}
-
-			            scope.tableParams.reload();
 	                };
 
 					scope.applyTransformations = function applyTransformations(newScope) {
@@ -162,7 +147,10 @@
 						scope.toggles.transformations = false;
 
 						// Apply select transformation to AV
-						if (newScope.transformationType || scope.transformationName == 'mulit-select' || scope.transformationName === 'assessment') {
+						if (newScope.transformationType 
+								|| scope.transformationName == 'mulit-select' 
+								|| scope.transformationName === 'assessment') {
+							
 							scope.assessmentVariable.transformations = [newScope.transformationType];
 							scope.assessmentVariable.name = newScope.transformationType.name + '_' + scope.assessmentVariable.getName();
 

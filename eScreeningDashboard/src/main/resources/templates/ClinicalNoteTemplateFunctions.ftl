@@ -391,6 +391,7 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 	<#return age>
 </#function>
 
+	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
 
 <#-- delimits the children of a variable using the prefix and suffix given, 
 boolean indicates if the suffix should be appended at the end of the list --> 
@@ -425,9 +426,10 @@ boolean indicates if the suffix should be appended at the end of the list -->
 <#-- ***********************  Template Editor Helper functions ************************* -->
 
 <#-- checks if a specific answer was selected given a question -->
-<#function isSelectedAnswer variableObj1 variableObj2 > 
+<#function isSelectedAnswer variableObj1=DEFAULT_VALUE variableObj2=DEFAULT_VALUE > 
 
-	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
+	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE 
+	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
 		<#return false>
 	</#if>
     
@@ -572,7 +574,7 @@ columnAnswerIdList is a set of column answer IDs which we are testing to see if 
 		</#if>
 	</#list>
 	
-	<#return delimitList(valList) >
+	<#return delimitList(valList)>
 </#function>  
 
 
@@ -713,7 +715,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 >
+    <#if measureTypeId == 1 || measureTypeId == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -760,7 +762,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
@@ -902,11 +904,15 @@ returns the negation of customHasResult
 </#function>
 
 <#--
-Returns true if the value given has a value. Currently only supports string values
+Returns true if the value given matrix has a value.
 -->
 <#function matrixHasResult matrix=DEFAULT_VALUE>
-	<#if matrix == DEFAULT_VALUE>
+	<#if matrix == DEFAULT_VALUE || !(matrix??) || !(matrix?has_content) || (matrix?string)=="">
 		<#return false>
+	</#if>
+	
+	<#if !(matrix?is_hash) && matrix?has_content >
+		<#return true>
 	</#if>
 	
 	<#assign responseList = []>

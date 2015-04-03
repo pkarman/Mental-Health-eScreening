@@ -32,9 +32,6 @@ public class ManageFormulasRestController {
     @Resource(type = AssessmentVariableService.class)
     AssessmentVariableService avs;
 
-    @Resource(name = "sessionMgr")
-    SessionMgr sessionMgr;
-
     @Resource(type = ExpressionEvaluatorService.class)
     ExpressionEvaluatorService expressionEvaluator;
 
@@ -58,8 +55,6 @@ public class ManageFormulasRestController {
         try {
             Integer avId = expressionEvaluator.updateFormula(tgtFormula);
             m.put("data", String.valueOf(avId));
-            // invalidate the session so cached DD reflect latest data
-            sessionMgr.invalidateDD(request);
             return new ResponseEntity<Map>(m, HttpStatus.OK);
         } catch (Exception e) {
             m.put("data", Throwables.getRootCause(e).getMessage());

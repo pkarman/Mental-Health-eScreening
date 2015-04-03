@@ -566,8 +566,7 @@ public class VistaRepositoryImpl implements VistaRepository {
 	@Override
     public Map<String, String> getHealthFactorIENMap(String division,
 	            String vpid, String duz, String appProxyName, String componentIen) 
-	 {
-	    logger.info("Getting health factors for component Ien: " + componentIen);  
+	 { 
         Map<String, String> result = new HashMap<String, String>();
         String[] lines = getDialogPromptsAsString(division, vpid, duz, appProxyName, componentIen);
         if(lines == null) return result;
