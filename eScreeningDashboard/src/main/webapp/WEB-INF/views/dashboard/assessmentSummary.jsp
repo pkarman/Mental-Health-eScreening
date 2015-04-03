@@ -504,22 +504,24 @@ $(document).ready(function() {
  	    });
  	    
  	   function handleError(xhr, exception, errorThrown) {
-           data = "[" + xhr.responseText + "]";
-           data = $.parseJSON(data);
-     
+           data = xhr.responseJSON.error;
            var userMessage       = [];
            var developerMessage  = [];
-           for (var i = 0; i < data.length; ++i) {                    
-             for (var j = 0; j < data[i].errorMessages.length; j++) {
-               errorMessages = data[i].errorMessages[j];
-               userMessage.push("<div class='userErrorMessage'>" + [errorMessages.description] + "</div>");
+           
+           if(data){                     
+             for (var j = 0; j < data.errorMessages.length; j++) {
+               errorMessages = data.errorMessages[j];
+               userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
              }
-             if(data[i].developerMessage.length > 0){
-               result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + [data[i].id] + "</div>";
-               result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + [data[i].developerMessage] + "</div>";
-               result = result + "<div class='logErrorMessage'>" + "<strong>Log Message:</strong> " + [data[i].logMessage] + "</div>";
+             if(data.developerMessage.length > 0){
+               result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>";
+               result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
                developerMessage.push(result);
              }
+	           
+           }
+           else{
+        	   userMessage.push("<div class='userErrorMessage'>An unexpected error was received. Please call support.</div>");
            }
            var panelTemplate = userMessage;
                panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';

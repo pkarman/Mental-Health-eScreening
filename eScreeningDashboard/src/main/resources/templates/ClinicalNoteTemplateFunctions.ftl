@@ -395,9 +395,10 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 </#function>
 
 <#-- checks if a specific answer was selected given a question -->
-<#function isSelectedAnswer variableObj1 variableObj2 > 
+<#function isSelectedAnswer variableObj1=DEFAULT_VALUE variableObj2=DEFAULT_VALUE > 
 
-	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
+	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE 
+	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
 		<#return false>
 	</#if>
     
