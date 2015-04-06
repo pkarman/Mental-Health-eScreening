@@ -7,6 +7,10 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.HealthFactor;
@@ -264,4 +268,50 @@ public interface VeteranAssessmentService {
      */
     Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
     		int numOfMonth);
+
+    String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getAverageTimePerAssessment(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getNumOfBatteries(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getVeteranWithMultiple(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
+
+    String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Integer> getGenderCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Integer> getEthnicityCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getRaceCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEducationCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEmploymentCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getTobaccoCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getBranchCount(List cList, String fromDate, String toDate);
+
+    Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getTobaccoMissingCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingBranchCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
 }

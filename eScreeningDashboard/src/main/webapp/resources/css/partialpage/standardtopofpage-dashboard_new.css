@@ -918,13 +918,58 @@ a.offscreen:focus, a.offscreen:active {
   stroke-width: 2px;
 }
 
-/**/
+
+
+/* Reports */
+.vertical_scoll_list_b {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 140px;
+  margin: 5px;
+  border: 0px solid #D4D4D4;
+}
+
+.vertical_scoll_list_b ul, .vertical_scoll_list_b li{
+	margin:0px;
+	padding:0px;
+}
+.vertical_scoll_list_b ul li{
+	
+}
+.vertical_scoll_list_b input[type=checkbox], .checkbox_margin_right input[type=checkbox] {
+  margin-right: 5px;
+}
+.hr_margin_5{
+	margin:5px 0px !important;
+}
+.checkbox_group{
+}
+.checkbox_group_label{
+	margin:5px auto;
+}
+.form-group .help-block {
+  display: none;
+}
+ 
+.form-group.has-error .help-block {
+  display: block;
+}
+
+
+.ulclear, .ulclear li{
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+
+/* Programs */
 .change_program_block{
 	margin:0px 10px;
 }
 
 .change_program_block, .change_program_block a{
 }
+
 /*System Configuration Page */
 .otherSystemConfigurationBlock{
 	
@@ -936,6 +981,10 @@ a.offscreen:focus, a.offscreen:active {
 }
 .otherSystemConfigurationBlock .sectionList{
 	font-weight:bold;
+}
+
+.bg_color_subheader{
+	background-color:#E0E0E0 !important;
 }
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
