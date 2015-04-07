@@ -244,11 +244,8 @@ public class Measure implements Serializable {
 		return avList.get(0);
 	}
 
-
-    public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
-        return surveyMeasureResponseList;
-    }
-
+	//Please note: the setSurveyMeasureResponseList method has been removed because it is a mistake use it (please ask Robin Carnow if you have questions)
+	
     public void setSurveyMeasureResponseList(List<SurveyMeasureResponse> surveyMeasureResponseList) {
         this.surveyMeasureResponseList = surveyMeasureResponseList;
     }
