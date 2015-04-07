@@ -9,6 +9,7 @@ public interface EventRepository extends RepositoryInterface<Event> {
     
     /**
      * Gets all events with the given event type and with a related object ID contained in the give collection.
+     * Note: Only events which are associated with a rule will be returned.
      * @param eventType
      * @param objectIds
      * @return
