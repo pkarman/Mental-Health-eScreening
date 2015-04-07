@@ -103,7 +103,6 @@ input:focus, select:focus {
 	margin-top: 2px;
 	text-decoration:none;
 }
-/*
 input[type=submit]:hover, button:hover, input[type=button]:hover{
 	background-image: -o-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
 	background-image: -moz-linear-gradient(bottom, rgb(33,44,62) 24%, rgb(1,69,122) 62%);
@@ -114,9 +113,7 @@ input[type=submit]:hover, button:hover, input[type=button]:hover{
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
 	cursor:hand;
 	cursor:pointer;
-	/* color:#ffffff !important;*/
 }
-*/
 .submitImg{
 	width:168px;
 	height:40px;
@@ -127,8 +124,6 @@ input[type=submit]:hover, button:hover, input[type=button]:hover{
 }
 
 /* ----------------- Dashboard Buttons --------------------- */
-
-
 .submitButton {
 		background-color:#082f54;
 		display:inline-block;
