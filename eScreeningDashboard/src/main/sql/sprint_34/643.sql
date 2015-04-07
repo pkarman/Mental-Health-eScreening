@@ -1,3 +1,5 @@
+/* Author: Robin Carnow for ticket 643 */
+
 -- used to store json structure of rules send to server from UI
 ALTER TABLE rule ADD COLUMN condition_json mediumtext;
 
@@ -15,7 +17,6 @@ INSERT INTO rule_assessment_variable (rule_id, assessment_variable_id)
     WHERE 
 		measure_av.assessment_variable_type_id=1 AND answer_rav.rule_assessment_variable_id is NULL;
 		
-		
 -- add event for every question (name is set with first value that is non-null in this order: the variable name, or measure text, or question_[measure_id])
 INSERT INTO `event` (event_type_id, `name`, related_object_id)
 SELECT 4, SUBSTRING(
@@ -25,6 +26,18 @@ SELECT 4, SUBSTRING(
 	1, 30), m.measure_id
 FROM measure m 
 LEFT JOIN `event` e ON m.measure_id=e.related_object_id
-WHERE e.event_id IS NULL;
+WHERE e.event_id IS NULL OR e.event_type_id != 4;
 
+-- update current health factor events so their names are the same as the HF they represent
+UPDATE `event` e 
+JOIN health_factor hf ON e.related_object_id=hf.health_factor_id
+SET e.name=IFNULL(NULLIF(hf.name, ''), CONCAT('health_factor_', CAST(hf.health_factor_id AS CHAR)))
+WHERE e.event_type_id = 2;
 
+-- add event for every health factor
+INSERT INTO `event` (event_type_id, `name`, related_object_id)
+SELECT 2, IFNULL(NULLIF(hf.name, ''),
+				 CONCAT('health_factor_', CAST(hf.health_factor_id AS CHAR))), hf.health_factor_id
+FROM health_factor hf 
+LEFT JOIN `event` e ON hf.health_factor_id=e.related_object_id
+WHERE e.event_id IS NULL OR e.event_type_id != 2;
