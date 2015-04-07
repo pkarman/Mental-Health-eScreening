@@ -36,7 +36,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
     });
     
 	// Static Data 
-    $scope.template = {"id": 123, "isGraphical": true, "type": 3, "name": "", "title": "Pain", "graph": {"varId": 2300, "title": "My Pain Score", "footer": "Footer Data", "numberOfMonths": 12, "intervals": { "None":0, "Minimal":1, "Moderate":4, "Severe":6, "Very Severe":8, "Worst Possible":10}, "maxXPoint" : 10,  "ticks": [0, 1, 4, 6, 8, 10]}};
+    $scope.template = {"id": 123, "isGraphical": true, "type": 3, "name": "", "title": "Pain", "graph": {"varId": 2300, "title": "My Pain Score", "footer": "Footer Data", "numberOfMonths": 12, "intervals": { "None":0, "Minimal":1, "Moderate":4, "Severe":6, "Very Severe":8, "Worst Possible":10}, "maxXPoint" : 10,  "ticks": [0, 1, 4, 5, 8, 10]}};
     //$scope.template = {"id": "", "isGraphical": true, "type": "", "name": "", "title": "", "graph": {"varId": "", "title": "", "footer": "", "numberOfMonths": "", "intervals": { }, "maxXPoint" : "",  "ticks": []}};	
 	
 	$scope.intervalList = [];
@@ -62,27 +62,31 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		  $scope.intervalList.push({'name' : '', 'value' : '' });
 		};		
 
-		/* ****************************************************************** */
-		/* Ticks */
-		angular.forEach($scope.template.graph.ticks, function(key) {
-			$scope.tickList.push(key);
+
+		/* Ticks */		
+		angular.forEach($scope.template.graph.ticks, function(value, key) {
+			console.log("value");
+			
+			$scope.tickList.push( {'name' : key, 'value' : value } );
 		});
 
 		$scope.$watch('tickList',function(newVal, oldVal){			
-			$scope.template.graph.ticks = [];
-
+			$scope.template.graph.ticks = {};
+			
 			$scope.tickList.forEach(function(tick){
-				if(	tick.name != ""){
-					$scope.template.graph.ticks = tick.name ;
+				if(	tick.name != "" &&  tick.value != ""){
+					$scope.template.graph.ticks[tick.name] = tick.value ;
 				}
 			})
 		}, true);
 
 		$scope.addTickValue = function(){
 		  console.log("addTickValue Clicked");
-		  $scope.tickList.push('');
-		};
-
+		  $scope.tickList.push({'name' : '', 'value' : '' });
+		  console.log(" -- $scope.tickList --");
+		  console.log($scope.tickList);
+		};		
+		
 	}
 	
 
