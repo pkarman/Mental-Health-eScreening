@@ -36,17 +36,14 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="selectVariable">Select Variable *</label>
-				<!-- <input type="text" class="form-control" id="selectVariable" placeholder="Enter Select Variable"  required> -->
-				
-				<div class="assessmentVariableSelection">
-					<div ng-click="openSelections($event)" on-enter="openSelections()" tabindex="3">
-						<link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.css">
-						<input type="hidden" name="selectedAssessmentVariable" ng-model="assessmentVariable" required update-hidden>
-						<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable.name || 'Select Variable'}}</span>
-					</div>
-					<mhe-assessment-var-tbl-dir assessment-variable="assessmentVariable" block="block" show="avMenu.show" ng-if="avMenu.show" class="assessmentVariableTable" />
-				</div>
-				
+				<!--
+				<label class="sr-only">Select Variable</label>
+				<input type="hidden"
+						ng-model="condition.left.content"
+						ng-change="updateLogicalOptions(condition)"
+						update-hidden>
+				<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
+				-->
 			</div>
 		</div>
 	</div>
@@ -152,21 +149,20 @@
 							<div class="row">
 								<div class="col-xs-12 col-md-12 col-lg-12">	
 									<div class="form-group">
-										<label for="ticksStartValue{{$index + 1}}">Start Value *</label>
+										<label for="ticksStartValue{{$index + 1}}">Axis Value *</label>
 										<a href="javascript:void(0);"
 											ng-really-click="deleteTick($index)"
-											ng-really-message="Are you sure you want to delete this tick?" ng-show="$index > 1">
+											ng-really-message="Are you sure you want to delete this tick?">
 											<span class="glyphicon glyphicon-remove-circle red-color pull-right"></span>
 										</a>							
 										<input type="number"
-												ng-model="tick.value"
+												ng-model="tick"
 												class="form-control"
 												id="ticksStartValue{{$index + 1}}"
 												placeholder="Enter Start Value" 
 												required>
 									</div>																
 								</div>
-								<br>
 							</div>
 						</li>					
 					</ul>

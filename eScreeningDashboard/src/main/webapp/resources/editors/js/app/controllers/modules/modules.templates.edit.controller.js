@@ -49,7 +49,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 		$scope.$watch('intervalList',function(newVal, oldVal){			
 			$scope.template.graph.intervals = {};
-			
+
 			$scope.intervalList.forEach(function(interval){
 				if(	interval.name != "" &&  interval.value != ""){
 					$scope.template.graph.intervals[interval.name] = interval.value ;
@@ -58,42 +58,37 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 		}, true);
 
 		$scope.addIntervalValue = function(){
-		  console.log("addIntervalValue Clicked");
 		  $scope.intervalList.push({'name' : '', 'value' : '' });
 		};		
 
+		$scope.deleteInterval = function(index){
+			  $scope.intervalList.splice(index, 1);
+		};
 
 		/* Ticks */		
 		angular.forEach($scope.template.graph.ticks, function(value, key) {
-			console.log("value");
-			
-			$scope.tickList.push( {'name' : key, 'value' : value } );
+			$scope.tickList.push( value );
 		});
 
 		$scope.$watch('tickList',function(newVal, oldVal){			
-			$scope.template.graph.ticks = {};
-			
+			$scope.template.graph.ticks = [];
+							
 			$scope.tickList.forEach(function(tick){
-				if(	tick.name != "" &&  tick.value != ""){
-					$scope.template.graph.ticks[tick.name] = tick.value ;
+				if(	tick != ""){
+					$scope.template.graph.ticks = tick;
 				}
 			})
 		}, true);
 
 		$scope.addTickValue = function(){
-		  console.log("addTickValue Clicked");
-		  $scope.tickList.push({'name' : '', 'value' : '' });
-		  console.log(" -- $scope.tickList --");
-		  console.log($scope.tickList);
-		};		
-		
+			$scope.tickList.push('');
+		};
+
+		$scope.deleteTick = function(index){
+			$scope.tickList.splice(index, 1);
+		};
 	}
-	
 
-
-
-
-	
 
     $scope.save = function () {
 		if ($scope.template.isGraphical && $scope.assessmentVariable.id){
