@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html ng-app="Editors">
 <head lang="en">
+    <title>VA Editors</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>VA Editors</title>
+
     <!-- CSS -->
 	<link href="resources/editors/vendors/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
@@ -333,11 +334,11 @@
     <!-- angular-ui-select for mng formulas (starts after this line)-->
     <!-- Select2 theme -->
     <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/select2/3.4.5/select2.css">
     <!--
       Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
     -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/selectize.js/0.8.5/css/selectize.default.css">
     <style>
         /* body {padding: 15px;} */
         .select2 > .select2-choice.ui-select-match {
@@ -350,6 +351,5 @@
     </style>
     <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
     <!-- angular-ui-select for mng formulas (finishes before this line)-->
-
 </body>
 </html>
