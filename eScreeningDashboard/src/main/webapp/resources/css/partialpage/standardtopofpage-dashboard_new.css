@@ -443,14 +443,16 @@ iframe {
   margin-bottom: 8px;
 }
 /* Form Updates for Export Data and may be common */
-
+.exportData .wrap{
+    white-space: normal !important;
+}
 .exportImg {
   width: 19px;
   margin-top: 3px;
   margin-left: 3px;
 }
 table.gridtable {
-  font-family: verdana, arial, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 11px;
   color: #333333;
   border-width: 1px;
