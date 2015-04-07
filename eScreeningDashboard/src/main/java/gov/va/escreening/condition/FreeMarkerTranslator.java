@@ -1,51 +1,32 @@
 package gov.va.escreening.condition;
 
-import static gov.va.escreening.constants.AssessmentConstants.*;
-import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
-import gov.va.escreening.dto.template.TemplateBaseContent;
-import gov.va.escreening.dto.template.TemplateTextContent;
-import gov.va.escreening.dto.template.TemplateVariableContent;
 import gov.va.escreening.dto.template.VariableTransformationDTO;
-import gov.va.escreening.exception.EscreeningDataValidationException;
-
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Throwables;
-
-public class FreeMarkerTranslator implements BlockTranslator {
+/**
+ * FreeMarker {@link BlockTranslator}
+ * 
+ * @author Robin Carnow
+ *
+ */
+public class FreeMarkerTranslator extends BlockTranslator {
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(FreeMarkerTranslator.class);
 
     @Override
-    public String translateCondition(String operator, TemplateBaseContent inLeft,
-            TemplateBaseContent right, Set<Integer> avIds) {
-
-        if (inLeft instanceof TemplateTextContent){
-            try {
-                Double.parseDouble(((TemplateTextContent)inLeft).getContent());
-                return ((TemplateTextContent)inLeft).getContent();
-            }
-            catch(Exception e){}
-            return "\""+((TemplateTextContent)inLeft).getContent()+"\"";
-        }
-
-        TemplateVariableContent leftContent = (TemplateVariableContent) inLeft;
-
-        TemplateAssessmentVariableDTO left = leftContent.getContent();
-
-        String translatedVar = "var" + left.getId();
-
-        avIds.add(left.getId());
-
+    protected StringBuilder createInitialContent(TemplateAssessmentVariableDTO left){
+        //add initial variable dereference value
+        StringBuilder translatedVar = new StringBuilder("var").append(left.getId());
+        
         // we are going to apply transformation of variable.
         if (left.getTransformations() != null && !left.getTransformations().isEmpty()) {
             for (VariableTransformationDTO transformation : left.getTransformations()) {
                 StringBuilder s = new StringBuilder(transformation.getName());
                 s.append("(").append(translatedVar);
-
+    
                 if (transformation.getParams() != null) {
                     for (String param : transformation.getParams()){
                         String trimmed = param.trim();
@@ -61,7 +42,7 @@ public class FreeMarkerTranslator implements BlockTranslator {
                             s.append(",").append(param.toLowerCase());
                         }
                         else{
-
+    
                             try{//if the param is a number don't put quotes around it
                                 Double.parseDouble(param);
                                 s.append(",").append(param);
@@ -73,182 +54,10 @@ public class FreeMarkerTranslator implements BlockTranslator {
                     }
                 }
                 //replace translatedVar with transformed variable
-                translatedVar = s.append(")").toString();
+                translatedVar = s.append(")");
             }
         }
-        String beforeOperator = translatedVar;
-
-        if (operator == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
-        {//Don't pull value out if transformations were applied
-            if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
-            {
-                translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
-
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
-            {
-                translatedVar =  "getFormulaValue("+translatedVar+")";
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
-            {
-                translatedVar =  "getCustomValue("+translatedVar+")";
-            }
-        }
-        else if ("eq".equals(operator) || "neq".equals(operator) 
-                || "lt".equals(operator) || "gt".equals(operator) 
-                || "lte".equals(operator) || "gte".equals(operator))
-        {
-            if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY))         
-            {
-                if (right instanceof TemplateTextContent)
-                {
-                    try
-                    {
-                        Double.parseDouble(((TemplateTextContent)right).getContent());
-                        translatedVar = "asNumber("+translatedVar+", "+left.getMeasureTypeId()+")?string != DEFAULT_VALUE && asNumber("+translatedVar+", "+left.getMeasureTypeId()+")";
-                    }
-                    catch(Exception e)
-                    {
-                        // right is not a number;
-                        translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
-                    }
-                }
-                else
-                    translatedVar =  "getResponse("+translatedVar+")";
-            }
-            if (left.measureTypeIs(MEASURE_TYPE_TABLE)) //at this point we only support numberOfEntries transformation compared with a number
-            {
-                if (right instanceof TemplateTextContent)
-                {
-                    String rightContent = ((TemplateTextContent)right).getContent();
-                    try
-                    {
-                        Double.parseDouble(rightContent);
-                        translatedVar =  translatedVar +"?string != DEFAULT_VALUE && " + translatedVar;
-                    }
-                    catch(Exception e){
-                        logger.warn("Unsupported operation: Left operand: {} \nOperator: {}\n right operand: {}\n Full exception {}", 
-                                new Object[]{translatedVar, operator, rightContent, Throwables.getRootCause(e).getLocalizedMessage()});
-                    }
-                }
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
-            {
-                translatedVar =  "asNumber(getCustomValue("+translatedVar+"))?string != \"notset\" && asNumber(getCustomValue("+translatedVar+"))";
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
-            {
-                translatedVar = "getFormulaValue("+translatedVar+")?string != \"notset\" && getFormulaValue("+translatedVar+")";
-            }
-        }
-        else if ("answered".equals(operator))
-        {
-            if (left.measureTypeIn(
-                    MEASURE_TYPE_FREE_TEXT,
-                    MEASURE_TYPE_READ_ONLY,
-                    MEASURE_TYPE_SELECT_ONE, 
-                    MEASURE_TYPE_SELECT_MULTI, 
-                    MEASURE_TYPE_TABLE))
-            {
-                translatedVar= "wasAnswered("+translatedVar+")";
-            }
-        }
-        else if ("nanswered".equals(operator))
-        {
-            if (left.measureTypeIn(
-                    MEASURE_TYPE_FREE_TEXT,
-                    MEASURE_TYPE_READ_ONLY,
-                    MEASURE_TYPE_SELECT_ONE, 
-                    MEASURE_TYPE_SELECT_MULTI, 
-                    MEASURE_TYPE_TABLE))
-            {
-                translatedVar= "wasntAnswered("+translatedVar+")";
-            }
-        }
-        else if ("result".equals(operator))
-        {
-            if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
-            {
-                translatedVar= "formulaHasResult("+translatedVar+")";
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
-            {
-                translatedVar= "customHasResult("+translatedVar+")";
-            }
-            else if (left.typeIn(
-                    ASSESSMENT_VARIABLE_TYPE_MEASURE, 
-                    MEASURE_TYPE_SELECT_ONE_MATRIX, 
-                    MEASURE_TYPE_SELECT_MULTI_MATRIX))
-            {
-                translatedVar= "matrixHasResult("+translatedVar+")";
-            }
-
-        }
-        else if ("nresult".equals(operator))
-        {
-            if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
-            {
-                translatedVar= "formulaHasNoResult("+translatedVar+")";
-            }
-            else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
-            {
-                translatedVar= "customHasNoResult("+translatedVar+")";
-            }
-            else if (left.measureTypeIn(
-                    MEASURE_TYPE_SELECT_ONE_MATRIX, 
-                    MEASURE_TYPE_SELECT_MULTI_MATRIX))
-            {
-                translatedVar= "matrixHasNoResult("+translatedVar+")";
-            }
-        }
-        else if ("response".equals(operator))
-        {
-            if (left.measureTypeIn(
-                    MEASURE_TYPE_SELECT_ONE, 
-                    MEASURE_TYPE_SELECT_MULTI))
-            {
-                translatedVar= "responseIs("+translatedVar+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
-            }
-        }
-        else if ("nresponse".equals(operator))
-        {
-            if (left.measureTypeIn(
-                    MEASURE_TYPE_SELECT_ONE, 
-                    MEASURE_TYPE_SELECT_MULTI))
-            {
-                translatedVar= "responseIsnt("+translatedVar+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
-            }
-        }
-        else if ("none".equals(operator))
-        {
-            if (left.measureTypeIn( 
-                    MEASURE_TYPE_SELECT_ONE,
-                    MEASURE_TYPE_SELECT_MULTI,
-                    MEASURE_TYPE_TABLE))
-            {
-                translatedVar= "wasAnswerNone("+translatedVar+")";
-            }
-
-        }
-        else if ("nnone".equals(operator))
-        {
-            if (left.measureTypeIn(
-                    MEASURE_TYPE_SELECT_ONE, 
-                    MEASURE_TYPE_SELECT_MULTI,
-                    MEASURE_TYPE_TABLE))
-            {
-                translatedVar= "wasntAnswerNone("+translatedVar+")";
-            }
-
-        }
-
-        if(translatedVar == beforeOperator && operator != null && !operator.isEmpty()){
-            ErrorBuilder.throwing(EscreeningDataValidationException.class)
-            .toAdmin("Operator: '" + operator + "' is unsupported for variable (with ID: " + left.getId() + ") of type: " + left.getTypeId())
-            .toUser("An unsupported template operation was used.  Please call support")
-            .throwIt();
-        }
-
         return translatedVar;
     }
+    
 }

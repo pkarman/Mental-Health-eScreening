@@ -40,9 +40,9 @@ import com.google.common.base.Strings;
  */
 public class ExpressionExtentionUtil {
     public static final String DEFAULT_VALUE = "notset";
+    public static final String NUMBER_FORMAT = "%sf";
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionExtentionUtil.class);
-    private static final String NUMBER_FORMAT = "%sf";
     private static final String DEFAULT_PREFIX = "";
     private static final String DEFAULT_LASTPREFIX = "and ";
     private static final String DEFAULT_SUFFIX = ", ";
@@ -89,73 +89,6 @@ public class ExpressionExtentionUtil {
         
         int years = period.getYears();
         return String.valueOf(years);
-    }
-    
-    /**
-     * Gets the numerical value of the given list-typed variable.
-     * For select measures this means the calculation vaule.
-     * For text answers it means the veteran entered value
-     * @param var
-     * @return
-     */
-    public String getListVariableAsNumber(AssessmentVariableDto var){
-        if(var == null){
-            return DEFAULT_VALUE;
-        }
-        String result;
-        
-        if(var.getMeasureTypeId() != null){
-            switch(var.getMeasureTypeId()){
-                case MEASURE_TYPE_FREE_TEXT:
-                     result = getFreeTextAnswer(var, DEFAULT_VALUE);
-                     if(result != null && result != DEFAULT_VALUE){
-                         try{
-                             Double.valueOf(result);
-                             return String.format(NUMBER_FORMAT, result);
-                         }
-                         catch(Exception e){ return result; }
-                     }
-                     break;
-                case MEASURE_TYPE_SELECT_ONE:
-                    AssessmentVariableDto response = getSelectOneAnswerVar(var);
-                    if(response == null){
-                        return DEFAULT_VALUE;
-                    }
-                    result = response.getCalculationValue();
-                    if(result == null){
-                        result = response.getOtherText();
-                    }
-                    if(result != null){
-                        return String.format(NUMBER_FORMAT, result);
-                    }
-                    break;
-                case MEASURE_TYPE_SELECT_MULTI:// we could sum the calculation values
-                default: 
-                    return "[Error: unsupported question type]";
-            }
-        }
-        else{
-            return "[Error: unsupported question type]";
-        }
-        
-        return DEFAULT_VALUE;
-    }
-    
-    public String getVariableValue(AssessmentVariableDto var){
-        if(var == null || var.getValue() == null){
-            return DEFAULT_VALUE;
-        }
-        if(var.getValue() == "true" || var.getValue() == "false" ){
-            return var.getValue();
-        }
-        
-        try{
-            Double.valueOf(var.getValue());
-            return String.format(NUMBER_FORMAT, var.getValue());
-        }
-        catch(Exception e){ /* ignore */}
-
-        return var.getValue();
     }
     
     public String getFreeTextAnswer(AssessmentVariableDto var, String defaultValue){     
@@ -233,6 +166,16 @@ public class ExpressionExtentionUtil {
             }
         }
         return rows;
+    }
+    
+    /**
+     * Allows for generic testing of values to see if the given value is defined.
+     * This is important in some cases where a boolean expressions are used
+     * @param value the value to test. Object is used here because the type can be anything.
+     * @return true if number is defined.
+     */
+    public boolean isDefined(Object value){
+        return value != null;
     }
     
     /**
@@ -772,6 +715,8 @@ public class ExpressionExtentionUtil {
     }
     
     /**
+     * This transformation is what is called when a matrix has been delimited 
+     * into a string and the user what's to know if there is any result.
      * @return true if the value given has a value. Currently only supports string values
      */
     public boolean matrixHasResult(String matrix){

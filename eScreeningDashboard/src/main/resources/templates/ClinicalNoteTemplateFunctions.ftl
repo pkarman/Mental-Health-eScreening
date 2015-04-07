@@ -1054,4 +1054,10 @@ The var given can be single or multi select.
   </#if>
 </#function>
 
-
+<#--
+Allows for generic testing of values to see if the given value is defined.
+Returns true if value is defined.
+-->
+<#function isDefined value=DEFAULT_VALUE>
+	<#return (value?string) != DEFAULT_VALUE >
+</#function>
