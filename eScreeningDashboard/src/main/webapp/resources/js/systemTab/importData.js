@@ -1,12 +1,13 @@
-
 $(document).ready(function() {
+	// Tab
+	tabsLoad("systemConfiguration");
+
 	var current_case			= "";
 	var import_modal_label 		= $("#import_modal_label");
 	var verification_message 	= $("#verification_message");
 	var user_verification_link 	= $(".user_verification_link");
 	var btn_verify 				= $("#btn_verify");
 	var btn_close 				= $('#btn_close');
-
 
 	$("#btn_close").on("click", function(){
 		btn_close.text("Cancel");
@@ -45,6 +46,9 @@ $(document).ready(function() {
 		case "case_note":
 			current_url = 'importData/noteTitles/refresh';
 			break;
+		case "case_health":
+			current_url = 'importData/hf/refresh';
+			break;
 		default:		
 	}   
 
@@ -76,7 +80,7 @@ $(document).ready(function() {
 				btn_verify.text('Import Again');
 			}
 	   }
-});
+	});
    
 	});
 });

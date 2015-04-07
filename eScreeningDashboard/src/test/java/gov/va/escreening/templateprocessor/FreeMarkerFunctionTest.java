@@ -16,7 +16,7 @@ public class FreeMarkerFunctionTest {
 	protected TestAssessmentVariableBuilder avBuilder;
 	
     @Before
-    public void setUp() {
+    public void setUp(){
     	avBuilder = new TestAssessmentVariableBuilder();
     }
 

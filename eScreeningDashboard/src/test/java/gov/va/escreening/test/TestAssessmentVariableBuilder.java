@@ -2,15 +2,7 @@ package gov.va.escreening.test;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM;
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_FREE_TEXT;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_TABLE;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -35,6 +27,8 @@ import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
+import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.service.SystemPropertyService;
@@ -56,6 +50,7 @@ import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,8 +66,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -88,6 +85,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
     private static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE);
     private static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_CUSTOM);
+    private static final AssessmentVariableType TYPE_FORMULA = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_FORMULA);
 
     //Tracks what is added/built
     private final Map<Integer, AssessmentVariable> avMap = new HashMap<>();
@@ -100,10 +98,11 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private final CustomAssessmentVariableResolver customResolver;
     private final FormulaAssessmentVariableResolver formulaResolver;
     private final AssessmentVariableDtoFactory variableResolver;
+    private final ExpressionEvaluatorService expressionService;
 
     //mocked supporting objects for resolvers
     private final SurveyMeasureResponseRepository surveyResponseRepo = mock(SurveyMeasureResponseRepository.class);
-    private final ExpressionEvaluatorService expressionService = mock(ExpressionEvaluatorService.class);
+    private final AssessmentVariableRepository assessmentVariableRepo = mock(AssessmentVariableRepository.class);
     private final VeteranAssessment assessment = mock(VeteranAssessment.class);
     private final Veteran vet = mock(Veteran.class);
     private final List<VistaVeteranAppointment>appointments = new ArrayList<>();
@@ -113,17 +112,23 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private int defaultAnswerId = 3000;
     private int defualtAvId = 1000;
 
-    public TestAssessmentVariableBuilder(){
+    public TestAssessmentVariableBuilder() {
         answerResolver = new MeasureAnswerAssessmentVariableResolverImpl(surveyResponseRepo);
         measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver, surveyResponseRepo);
         customResolver = createCustomResolver();
+        try{
+            expressionService = new ExpressionEvaluatorServiceImpl(assessmentVariableRepo);
+        }
+        catch(Exception e){
+            throw new IllegalStateException("Failure to register expression evaluator service functions.", e);
+        }
         formulaResolver = new FormulaAssessmentVariableResolverImpl(expressionService, answerResolver, measureResolver, customResolver);
         variableResolver = new AssessmentVariableDtoFactoryImpl(customResolver, formulaResolver, answerResolver, measureResolver);
     }
 
     @Override
-    public List<AssessmentVariableDto> getDTOs(){
-        List<AssessmentVariableDto> dtoList = new ArrayList<>(avMap.size());
+    public Map<Integer, AssessmentVariableDto> buildDtoMap(){
+        Map<Integer, AssessmentVariableDto> dtoList = Maps.newHashMapWithExpectedSize(avMap.size());
         
         ResolverParameters params = new ResolverParameters(123, mock(NullValueHandler.class), measureAnswerHash.values());
         params.addResponses(measureResponses.values());
@@ -131,7 +136,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         for(AssessmentVariable av : avMap.values()){
             try{
                 AssessmentVariableDto dto = variableResolver.resolveAssessmentVariable(av, params);
-                dtoList.add(dto);
+                dtoList.put(dto.getVariableId(), dto);
             }
             catch(CouldNotResolveVariableException e){
                 /*ignored*/
@@ -140,29 +145,39 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         }
         return dtoList;
     }
+    
+    @Override
+    public Collection<AssessmentVariableDto> getDTOs(){
+        return buildDtoMap().values();
+    }
 
     @Override
-    public FreeTextAvBuilder addFreeTextAV(int avId, String questionText, @Nullable String response){
+    public Collection<AssessmentVariable> getVariables(){
+        return ImmutableSet.copyOf(avMap.values());
+    }
+    
+    @Override
+    public FreeTextAvBuilder addFreeTextAv(@Nullable Integer avId, String questionText, @Nullable String response){
         return new FreeTextAvBuilder(this, avId, questionText, response);
     }
 
     @Override
-    public SelectAvBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText){
+    public SelectAvBuilder addSelectOneAv(@Nullable Integer avId, @Nullable String questionText){
         return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_ONE, null, avId, questionText);
     }
 
     @Override
-    public SelectAvBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText){
+    public SelectAvBuilder addSelectMultiAv(@Nullable Integer avId, @Nullable String questionText){
         return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_MULTI, null, avId, questionText);
     }
 
     @Override
-    public MatrixAvBuilder addSelectOneMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+    public MatrixAvBuilder addSelectOneMatrixAv(@Nullable Integer avId, @Nullable String questionText){
         return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_ONE_MATRIX, avId, questionText);
     }
 
     @Override
-    public MatrixAvBuilder addSelectMultiMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+    public MatrixAvBuilder addSelectMultiMatrixAv(@Nullable Integer avId, @Nullable String questionText){
         return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_MULTI_MATRIX, avId, questionText);
     }
 
@@ -174,10 +189,14 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     }
 
     @Override
-    public CustomAvBuilder addCustomAV(int avId){
+    public CustomAvBuilder addCustomAv(int avId){
         return new CustomAvBuilder(this, avId);
     }
-
+    
+    @Override
+    public FormulaAvBuilder addFormulaAv(int avId, String expression){
+        return new FormulaAvBuilder(this, avId, expression);
+    }
 
     //Builder methods 
 
@@ -968,5 +987,33 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         when(cad.getVeteranAppointments(eq(mockUser), anyString())).thenReturn(appointments);
 
         return new CustomAssessmentVariableResolverImpl(sps, vas, ur, cad);
-    }	
+    }
+    
+    public class FormulaAvBuilder extends ForwardingAssessmentVariableBuilder{
+        private final AssessmentVariable variable;
+        
+        private FormulaAvBuilder(AssessmentVariableBuilder rootBuilder, @Nullable Integer avId, String expression){
+            super(rootBuilder);
+
+            variable = newAssessmentVariable(avId, TYPE_FORMULA);
+            variable.setFormulaTemplate(expression);
+            avMap.put(variable.getAssessmentVariableId(), variable);
+        }
+        
+        /**
+         * Add assessment variables which are found in the formula's expression. 
+         * If this is not done they will not be resolved or available when the expression is evaluated.
+         * @param children one or more of this formula's dependencies 
+         * @return this builder
+         */
+        public FormulaAvBuilder addAvChildren(Collection<AssessmentVariable> children){
+            for(AssessmentVariable child : children){
+                AssessmentVarChildren vc = new AssessmentVarChildren();
+                vc.setVariableChild(child);
+                vc.setVariableParent(variable);
+                variable.getAssessmentVarChildrenList().add(vc);
+            }
+            return this;
+        }
+    }
 }

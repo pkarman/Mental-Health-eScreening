@@ -220,7 +220,7 @@ public class SurveyMeasureResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "gov.va.escreening.entity.SurveyMeasureResponse[ surveyMeasureResponseId=" + surveyMeasureResponseId 
+		return "SurveyMeasureResponse[ Id=" + surveyMeasureResponseId 
 				+ ", surveyId=" + (survey != null ? survey.getSurveyId() : null)
 				+ ", measureAnswerId=" + (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null)
 				+ ", row=" + tabularRow 

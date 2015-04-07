@@ -1,6 +1,9 @@
 package gov.va.escreening.controller.dashboard;
 
 import gov.va.escreening.domain.ProgramDto;
+import gov.va.escreening.dto.DropDownObject;
+import gov.va.escreening.security.CurrentUser;
+import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ProgramService;
 
 import java.util.List;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -39,5 +43,13 @@ public class ProgramListViewController {
         model.addAttribute("programList", programList);
 
         return "systemTab/programListView";
+    }
+    
+    @RequestMapping(value = "/programList", method = RequestMethod.GET)
+    @ResponseBody
+    public List<DropDownObject> getProgramList(Model model) {
+
+        List<DropDownObject> programList = programService.getDropdownObjects();
+        return programList;
     }
 }

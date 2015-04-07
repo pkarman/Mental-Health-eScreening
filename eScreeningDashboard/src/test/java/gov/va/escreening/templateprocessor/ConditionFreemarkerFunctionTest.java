@@ -35,7 +35,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("false",
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -51,7 +51,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("false",
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -67,7 +67,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("false",
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -82,7 +82,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("true",
                 render("${matrixHasResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -105,7 +105,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("true",
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -120,7 +120,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("true",
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -135,7 +135,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("true",
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")
@@ -150,7 +150,7 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
         assertEquals("false",
                 render("${matrixHasNoResult(var123)?c}",
                         avBuilder
-                        .addSelectOneMatrixAV(123, "test matrix question")
+                        .addSelectOneMatrixAv(123, "test matrix question")
                             .addChildWithAvId(111, "q1")
                             .addChildWithAvId(222, "q2")
                             .addChildWithAvId(333, "q3")

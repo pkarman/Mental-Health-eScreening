@@ -46,6 +46,9 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			case 4:
 				type = 'table';
 				break;
+				case 5:
+					type = 'read-only';
+					break;
 			case 6:
 				type = 'single-matrix';
 				break;
@@ -112,27 +115,18 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 				}
 			});
 		}
-
 		// If select multi, add delimit (for other answer types pull the veteran text)
-		if (av.measureTypeId === 3) {
+			else if (av.measureTypeId === 3) {
 			av.transformations = [transformations.delimit];
-			// Get the answer list for multi or single select questions
-			_.each(arr, function(answer) {
-				if (answer.answerType === 'Other') {
-					// Pull veteran text
-					// TODO confirm this is correct with Robin
-					av.transformations[0].defaultValue = answer.answerText;
-				}
-			});
 		}
 
 		// If table, add delimitTableField and numberOfEntries
-		if (av.measureTypeId === 4) {
+			else if (av.measureTypeId === 4) {
 			av.transformations = [transformations.delimitTableField, transformations.numberOfEntries];
 		}
 
 		// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)
-		if (av.measureTypeId === 6 || av.measureTypeId === 7) {
+			else if (av.measureTypeId === 6 || av.measureTypeId === 7) {
 			av.transformations = [transformations.delimitedMatrixQuestions];
 		}
 	};

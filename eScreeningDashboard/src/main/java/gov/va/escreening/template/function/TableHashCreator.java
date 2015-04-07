@@ -1,13 +1,12 @@
 package gov.va.escreening.template.function;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 /**
  * Freemarker helper function takes a table question and returns an array of Maps where each entry is a row/entry, and the Map 
@@ -20,7 +19,8 @@ import gov.va.escreening.variableresolver.AssessmentVariableDto;
  *
  */
 public class TableHashCreator extends TemplateFunction implements TemplateMethodModelEx{
-
+    private static ExpressionExtentionUtil extentionUtil = new ExpressionExtentionUtil();
+    
     @Override
     public List<Map<String, AssessmentVariableDto>> exec(@SuppressWarnings("rawtypes") List params) 
             throws TemplateModelException{
@@ -31,31 +31,6 @@ public class TableHashCreator extends TemplateFunction implements TemplateMethod
 
         AssessmentVariableDto table = unwrapParam(params.get(0), AssessmentVariableDto.class);
 
-        if(table == null || table.getChildren() == null || table.getChildren().isEmpty()){
-            return Collections.emptyList();
-        }
-
-        List<Map<String, AssessmentVariableDto>> rows = new ArrayList<>();
-
-        for(AssessmentVariableDto qVar : table.getChildren()){
-            if(qVar.getVariableId() != null && qVar.getChildren() != null && !qVar.getChildren().isEmpty()){
-                Integer rowIndex = qVar.getChildren().get(0).getRow();
-                if(rowIndex != null){
-                    ensureSize(rows, rowIndex);
-                    rows.get(rowIndex).put(qVar.getVariableId().toString(), qVar);
-                }
-            }
-        }
-
-        return rows;
-    }
-
-    private void ensureSize(List<Map<String, AssessmentVariableDto>> rows,
-            Integer rowIndex) {
-        if(rowIndex >= rows.size()){
-            for(int i = rows.size(); i <= rowIndex; i++){
-                rows.add(new HashMap<String, AssessmentVariableDto>());
-            }
-        }
+        return extentionUtil.createTableHash(table);
     }
 }

@@ -538,8 +538,22 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	public Integer create(Integer veteranId, Integer programId,
 			Integer clinicId, Integer clinicianId, Integer createdByUserId,
 			Integer selectedNoteTitleId, Integer selectedBatteryId,
-			List<Integer> surveyIdList) {
+			List<Integer> surveyIdList) throws AssessmentAlreadyExistException {
 
+		List<Integer> programIdList = new ArrayList<Integer>();
+		programIdList.add(programId);
+		List<VeteranAssessment> assessments = veteranAssessmentRepository.findByVeteranIdAndProgramIdList(veteranId, programIdList);
+		if(assessments != null && assessments.size()>0)
+		{
+			for(VeteranAssessment va : assessments)
+			{
+				if(va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId() ||
+						va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.INCOMPLETE.getAssessmentStatusId())
+				{
+					throw new AssessmentAlreadyExistException(va.getVeteranAssessmentId(), programId);
+				}
+			}
+		}
 		// 1. create a new veteran assessment.
 		VeteranAssessment veteranAssessment = new VeteranAssessment();
 

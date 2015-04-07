@@ -3,15 +3,14 @@ package gov.va.escreening.vista;
 import gov.va.med.crypto.VistaKernelHash;
 import gov.va.med.crypto.VistaKernelHashCountLimitExceededException;
 import gov.va.med.vistalink.adapter.cci.VistaLinkConnectionSpecImpl;
-
-import java.util.ArrayList;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.util.ArrayList;
 
 /**
  * This is the connection spec class to use for Access/Verify-code based re-authentication.
@@ -60,7 +59,7 @@ public class VistaBrokerVistaLinkConnectionSpec
     /**
      * The logger used by this class
      */
-    private static Log logger = LogFactory.getLog(VistaBrokerVistaLinkConnectionSpec.class);
+    private static final Logger logger = LoggerFactory.getLogger(VistaBrokerVistaLinkConnectionSpec.class);
 
     /**
      * parameter-less constructor -- not very useful, use the constructor with parameters instead.

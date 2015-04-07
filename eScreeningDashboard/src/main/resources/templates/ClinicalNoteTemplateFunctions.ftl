@@ -379,9 +379,6 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
   </#if>
 </#function>
  
-
-<#-- ***********************  Template Editor Helper functions ************************* -->
-
 <#-- calculate number of years from given date -->
 <#function calcAge dt>
 	<#assign age = "">
@@ -392,35 +389,6 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 	</#if>
 	
 	<#return age>
-</#function>
-
-<#-- checks if a specific answer was selected given a question -->
-<#function isSelectedAnswer variableObj1 variableObj2 > 
-
-	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
-		<#return false>
-	</#if>
-    
-    <#list variableObj1.children as v>
-        <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
-            <#return true>
-        </#if>
-    </#list>
-    <#return false>
-</#function>
-
-<#-- sum all of the calculation values of all selected options -->
-<#function  sumCalcValues variableObj > 
-    <#assign total = 0>
-    <#if (variableObj)?? > 
-        <#list variableObj.children as v>
-            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
-                <#assign num = (v.calculationValue)?number>
-                <#assign total = total + num>
-            </#if>
-        </#list>
-    </#if>
-    <#return total>
 </#function>
 
 <#-- delimits the children of a variable using the prefix and suffix given, 
@@ -453,8 +421,44 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#return result>
 </#function>
 
+<#-- ***********************  Template Editor Helper functions ************************* -->
+
+<#-- checks if a specific answer was selected given a question -->
+<#function isSelectedAnswer variableObj1=DEFAULT_VALUE variableObj2=DEFAULT_VALUE > 
+
+	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE || !(variableObj1.children)?? || variableObj1.children?size == 0>
+		<#return false>
+	</#if>
+    
+    <#list variableObj1.children as v>
+        <#if (v.variableId)?? && (variableObj2.variableId)?? && v.variableId = variableObj2.variableId>
+            <#return true>
+        </#if>
+    </#list>
+    <#return false>
+</#function>
+
+<#-- sum all of the calculation values of all selected options -->
+<#function  sumCalcValues variableObj > 
+    <#assign total = 0>
+    <#if (variableObj)?? > 
+        <#list variableObj.children as v>
+            <#if ((v.calculationValue)?? && (v.calculationValue)?has_content && (v.value)?? && v.value = 'true')>   
+                <#assign num = (v.calculationValue)?number>
+                <#assign total = total + num>
+            </#if>
+        </#list>
+    </#if>
+    <#return total>
+</#function>
+
+
 <#-- ***********************  Only  Template Editor functions under this line ************************* -->
 
+<#-- TODO: All of these should be replaced with calls to ExpressionExtentionUtil.java 
+	       Preferably a single instance of ExpressionExtentionUtil should be reused for all of these, 
+	       instead of instantiating one for every call.  
+-->
 
 <#-- 
 This transformation takes a table question and allows for the selection of a single child question (i.e. field) 
@@ -567,7 +571,7 @@ columnAnswerIdList is a set of column answer IDs which we are testing to see if 
 		</#if>
 	</#list>
 	
-	<#return delimitList(valList) >
+	<#return delimitList(valList)>
 </#function>  
 
 
@@ -708,7 +712,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 >
+    <#if measureTypeId == 1 || measureTypeId == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -755,7 +759,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
@@ -897,11 +901,15 @@ returns the negation of customHasResult
 </#function>
 
 <#--
-Returns true if the value given has a value. Currently only supports string values
+Returns true if the value given matrix has a value.
 -->
 <#function matrixHasResult matrix=DEFAULT_VALUE>
-	<#if matrix == DEFAULT_VALUE>
+	<#if matrix == DEFAULT_VALUE || !(matrix??) || !(matrix?has_content) || (matrix?string)=="">
 		<#return false>
+	</#if>
+	
+	<#if !(matrix?is_hash) && matrix?has_content >
+		<#return true>
 	</#if>
 	
 	<#assign responseList = []>

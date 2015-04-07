@@ -51,18 +51,13 @@ public class ExpressionEvaluatorServiceImpl implements
     private final ExpressionParser parser;
 
     @Autowired
-    ExpressionEvaluatorServiceImpl(AssessmentVariableRepository avr)
+    public ExpressionEvaluatorServiceImpl(AssessmentVariableRepository avr)
             throws NoSuchMethodException, SecurityException {
         this.avr = checkNotNull(avr);
-
-        // Register helper methods
         stdContext = new StandardEvaluationContext();
-        stdContext.registerFunction("calculateAge",
-                CustomCalculations.class.getDeclaredMethod("calculateAge",
-                        new Class[] { String.class }));
         parser = new SpelExpressionParser();
     }
-
+    
     @Override
     @Transactional(readOnly = true)
     public Map extractInputsRecursively(String filteredExpTemplate) {
@@ -145,29 +140,15 @@ public class ExpressionEvaluatorServiceImpl implements
         return answer;
     }
 
-    /**
-     * POJO used to pass variables into an expression in a thread safe way (i.e.
-     * by passing it into a call to getValue and not in the context object which
-     * is reused)
-     * 
-     * @author Robin Carnow
-     */
-    private static class ExpressionParams {
-        private Map<Integer, AssessmentVariableDto> variableMap;
-
-        ExpressionParams(Map<Integer, AssessmentVariableDto> variableMap) {
-            this.variableMap = variableMap;
-        }
-    }
-
     @Override
     public String evaluateFormula(String formulaAsStr,
             Map<Integer, AssessmentVariableDto> variableMap) {
 
         logger.debug("Evaluating resolved formula: {}", formulaAsStr);
+        ExpressionExtentionUtil extentionUtil = new ExpressionExtentionUtil().setVariableMap(variableMap);
         
         String testResult = parser.parseExpression(formulaAsStr).getValue(
-                stdContext, new ExpressionParams(variableMap), String.class);
+                stdContext, extentionUtil, String.class);
 
         logger.debug("The result of {} is: {}", formulaAsStr, testResult);
 

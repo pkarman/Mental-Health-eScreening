@@ -29,7 +29,6 @@ EScreeningDashboardApp.models.Survey = (function survey() {
         var survey = {
             id: '',
             name: '',
-            vistaTitle: '',
             description: '',
             version: '',
             mha: '',

@@ -10,13 +10,12 @@ import gov.va.escreening.exception.CouldNotResolveVariableValueException;
 import gov.va.escreening.exception.ErrorResponseRuntimeException;
 import gov.va.escreening.exception.ReferencedFormulaMissingException;
 import gov.va.escreening.exception.ReferencedVariableMissingException;
-import gov.va.escreening.expressionevaluator.CustomCalculations;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +38,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FormulaAssessmentVariableResolverImpl.class);
+	private static final ExpressionExtentionUtil expressionExtender = new ExpressionExtentionUtil();
 
 	@Autowired
 	public FormulaAssessmentVariableResolverImpl(
@@ -85,7 +85,7 @@ public class FormulaAssessmentVariableResolverImpl implements
     			
     			List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
     			
-    			Set<AssessmentVarChildren> allformulaChildVars = 
+    			Set<AssessmentVariable> allformulaChildVars = 
     			        resolveDependencies(assessmentVariable.getAssessmentVarChildrenList(), 
     			                            params, formulaTypeList);
                 
@@ -176,22 +176,21 @@ public class FormulaAssessmentVariableResolverImpl implements
 	}
 
 	private Map<Integer, String> createResolvedVarValueMap(
-	        Collection<AssessmentVarChildren> avChildSet, 
+	        Collection<AssessmentVariable> avChildSet, 
 	        ResolverParameters params) {
 	    Map<Integer, String> valueMap = Maps.newHashMapWithExpectedSize(avChildSet.size());
-
-	    for(AssessmentVarChildren child : avChildSet){
-	        AssessmentVariable childAv = child.getVariableChild();
+	    
+	    for(AssessmentVariable childAv : avChildSet){
 	        Integer avId = childAv.getAssessmentVariableId();
 	        AssessmentVariableDto variable = params.getResolvedVariable(avId);
 	        
 	        String value = null;
 	        if(variable != null){	            
     	        if(variable.getType().equals("list")){
-    	            value = CustomCalculations.getListVariableAsNumber(variable);
+    	            value = expressionExtender.getListVariableAsNumber(variable);
     	        }
     	        else{
-    	            value = CustomCalculations.getVariableValue(variable);
+    	            value = expressionExtender.getVariableValue(variable);
     	        }
 	        }
 	        else{  //variable was not resolved
@@ -201,13 +200,12 @@ public class FormulaAssessmentVariableResolverImpl implements
                 }
 	        }
 	        
-	        if(value != null && value != CustomCalculations.DEFAULT_VALUE){
+	        if(value != null && value != ExpressionExtentionUtil.DEFAULT_VALUE){
 	            valueMap.put(avId, value);
 	            logger.debug("Value of variable {} is {}", avId, value);
 	        }
 	        else{
-	            logger.debug("Variable DTO {} could not be resolved to a value", 
-	                    avId);
+	            logger.debug("Variable DTO {} could not be resolved to a value", avId);
 	        }
 	    }
 	    return valueMap;
@@ -231,16 +229,17 @@ public class FormulaAssessmentVariableResolverImpl implements
 	 * @param formulaDependencies
 	 * @param params
 	 * @param formulaTypeList
-	 * @return list of all AssessmentVarChildren from this formula and any sub-formula
+	 * @return list of all AssessmentVariable needed from this formula and any sub-formula
 	 */
-	private Set<AssessmentVarChildren>  resolveDependencies(
+	private Set<AssessmentVariable>  resolveDependencies(
 	        List<AssessmentVarChildren> formulaDependencies,
 			ResolverParameters params,
 			List<AssessmentVariable> formulaTypeList) {
 
-	    Set<AssessmentVarChildren> allDependencies = Sets.newHashSet(formulaDependencies);
+	    Set<AssessmentVariable> allDependencies = Sets.newHashSet();
 		for (AssessmentVarChildren dependencyAssociation : formulaDependencies) {
 			AssessmentVariable child = dependencyAssociation.getVariableChild();
+			allDependencies.add(child);
 			switch (child.getAssessmentVariableTypeId()
 					.getAssessmentVariableTypeId()) {
 			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
