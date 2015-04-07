@@ -18,8 +18,7 @@
 			vars$demo_race_asian : "1",
 			vars$demo_race_oth : "1",
 			other$demo_race_othspec:"Pakaistani",
-			vars$demo_race_decline : "2",
-			'derive$Calculate age' : "47"
+			vars$demo_race_decline : "2"
 		}
 	} ]
 }
