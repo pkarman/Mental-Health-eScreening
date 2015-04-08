@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.8150000000000117"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="761"/>
+	<property name="ireport.x" value="259"/>
+	<property name="ireport.y" value="194"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -602,7 +602,7 @@
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial"/>
 					</textElement>
-					<text><![CDATA[  Native hawaiian or pacific Islander]]></text>
+					<text><![CDATA[  Native Hawaiian or Pacific Islander]]></text>
 				</staticText>
 				<textField>
 					<reportElement mode="Opaque" x="395" y="116" width="46" height="15" backcolor="#CCCCCC" uuid="f71561f0-7aed-4242-a800-ba5b9c642080"/>
@@ -807,7 +807,7 @@
 				<text><![CDATA[  Num of Deployments]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="132" y="188" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
+				<reportElement x="132" y="189" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -822,7 +822,7 @@
 				<textFieldExpression><![CDATA[$P{asian_percentage}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="132" y="218" width="45" height="15" uuid="343c2cc8-f938-4b02-95fd-2bdd9d347841"/>
+				<reportElement x="132" y="219" width="45" height="15" uuid="343c2cc8-f938-4b02-95fd-2bdd9d347841"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>

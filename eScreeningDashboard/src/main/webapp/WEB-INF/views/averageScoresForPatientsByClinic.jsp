@@ -204,7 +204,6 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
 	<script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
-	<script src="<c:url value="/resources/js/d3/chart.js" />"></script>
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>

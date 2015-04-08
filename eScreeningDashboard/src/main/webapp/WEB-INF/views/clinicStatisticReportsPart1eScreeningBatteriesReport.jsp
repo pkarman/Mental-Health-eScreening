@@ -76,7 +76,7 @@
 							
 							
 							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by  Clinic" />
-							<!-- TODO: Program Evaluator Role only 602 / 603
+							<!-- TODO: Program Evaluator Role only 602 / 603 -->
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
@@ -84,7 +84,7 @@
 								</div>
 							</div>
 							<hr class="hr_margin_5">
-							-->
+							
 							
 							
 							

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.815000000000003"/>
+	<property name="ireport.zoom" value="1.3636363636363658"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
@@ -66,7 +66,7 @@
 					<bottomPen lineWidth="2.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement x="145" y="67" width="196" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
+					<reportElement x="0" y="67" width="572" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
 						<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">

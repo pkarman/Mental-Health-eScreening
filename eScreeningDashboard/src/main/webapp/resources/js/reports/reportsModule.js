@@ -351,6 +351,17 @@ module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+		
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -384,6 +395,17 @@ module.controller('demographicsReportCtrl', ['$scope', '$http', 'ReportsService'
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+		
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -417,6 +439,15 @@ module.controller('avgTimePerModuleCtrl', ['$scope', '$http', 'ReportsService', 
             $scope.reset();
         }
     }
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }	
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -449,6 +480,17 @@ module.controller('mostSkippedQuestionsCtrl', ['$scope', '$http', 'ReportsServic
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+		
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -481,6 +523,17 @@ module.controller('mostCommonTypesOfAlertsPercentagesCtrl', ['$scope', '$http', 
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+		
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -513,6 +566,15 @@ module.controller('positiveScreensCtrl', ['$scope', '$http', 'ReportsService', f
             $scope.reset();
         }
     }
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }	
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
