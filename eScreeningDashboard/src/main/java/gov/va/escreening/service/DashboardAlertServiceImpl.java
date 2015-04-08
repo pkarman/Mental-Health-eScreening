@@ -21,6 +21,9 @@ public class DashboardAlertServiceImpl implements DashboardAlertService
 	@Autowired
 	DashboardAlertRepository alertRepo;
 	
+	@Autowired 
+	EventService eventService;
+	
 	@Override
 	public List<DropDownObject> getAll() {
 		List<DashboardAlert> all = alertRepo.findAll();
@@ -44,6 +47,7 @@ public class DashboardAlertServiceImpl implements DashboardAlertService
 			a.setDashboardAlertType(new DashboardAlertType(1));
 			a.setDateCreated(Calendar.getInstance().getTime());
 			alertRepo.create(a);
+			eventService.updateDashboardAlertEvent(a);
 		}
 		else
 		{
@@ -55,7 +59,7 @@ public class DashboardAlertServiceImpl implements DashboardAlertService
 					a.setName(name);
 					a.setMessage(name);
 					alertRepo.update(a);
-					
+					eventService.updateDashboardAlertEvent(a);
 				}
 			}
 			else

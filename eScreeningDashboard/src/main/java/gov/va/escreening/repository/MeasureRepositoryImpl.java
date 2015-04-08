@@ -15,6 +15,7 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureType;
 import gov.va.escreening.entity.MeasureValidation;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
+import gov.va.escreening.service.EventService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,13 +35,16 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         implements MeasureRepository {
 
     @Autowired
-    ValidationRepository validationRepo;
+    private ValidationRepository validationRepo;
 
     @Autowired
-    MeasureTypeRepository measureTypeRepo;
+    private MeasureTypeRepository measureTypeRepo;
     
     @Autowired
-    AssessmentVariableRepository assessmentVariableRepository;
+    private AssessmentVariableRepository assessmentVariableRepository;
+    
+    @Autowired
+    private EventService eventService;
 
     public MeasureRepositoryImpl() {
         super();
@@ -166,6 +170,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         validateMeasure(m);
         update(m);
         updatedAssessmentVar(m, removedAnswers);
+        eventService.updateMeasureEvent(m);
         assignParent(m, measureDto.getChildMeasures());
 
         return m;
@@ -196,6 +201,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         addDefaultAnswers(m);
         create(m);
         updatedAssessmentVar(m, removedAnswers);
+        eventService.updateMeasureEvent(m);
         
         measureDto.setMeasureId(m.getMeasureId());
         assignParent(m, measureDto.getChildMeasures());
@@ -292,6 +298,8 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
 	    	}
     	}
     }
+    
+    
 
     /**
      * 
