@@ -4,10 +4,6 @@ LIMIT 0, 1000
 
 -- Date: 2015-04-06 16:08
 */
-INSERT INTO `measure_answer` (`measure_answer_id`,`measure_id`,`export_name`,`other_export_name`,`answer_text`,`answer_type`,`answer_value`,`calculation_type_id`,`calculation_value`,`mha_value`,`display_order`,`vista_text`,`date_created`) VALUES (6221,615,'dis_none',NULL,'none','none',NULL,NULL,'','',30,NULL,'2015-03-13 12:22:22');
-
-INSERT INTO `measure_answer` (`measure_answer_id`,`measure_id`,`export_name`,`other_export_name`,`answer_text`,`answer_type`,`answer_value`,`calculation_type_id`,`calculation_value`,`mha_value`,`display_order`,`vista_text`,`date_created`) VALUES (6063,609,'mhacpoc_today_none',NULL,'None','none',NULL,NULL,'',NULL,14,NULL,'2015-03-05 10:59:53');
-INSERT INTO `measure_answer` (`measure_answer_id`,`measure_id`,`export_name`,`other_export_name`,`answer_text`,`answer_type`,`answer_value`,`calculation_type_id`,`calculation_value`,`mha_value`,`display_order`,`vista_text`,`date_created`) VALUES (6220,614,'stress_none',NULL,'none','none',NULL,NULL,'','',8,NULL,'2015-03-13 12:22:22');
 
  INSERT INTO `assessment_variable` (`assessment_variable_id`,`assessment_variable_type_id`,`display_name`,`description`,`measure_id`,`measure_answer_id`,`formula_template`,`date_created`) VALUES (11054,1,'HCQ1','You worried about the cost.',650,NULL,NULL,'2015-03-04 12:45:44');
  INSERT INTO `assessment_variable` (`assessment_variable_id`,`assessment_variable_type_id`,`display_name`,`description`,`measure_id`,`measure_answer_id`,`formula_template`,`date_created`) VALUES (11055,2,'HCQ1','Not a Problem',NULL,6060,NULL,'2015-03-04 12:45:44');

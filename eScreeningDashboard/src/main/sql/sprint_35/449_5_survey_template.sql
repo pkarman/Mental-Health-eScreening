@@ -20,3 +20,19 @@ INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`d
 INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (88,41,367,'2015-04-02 11:16:02');
 INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (90,42,369,'2015-04-03 11:46:37');
 INSERT INTO `survey_template` (`survey_template_id`,`survey_id`,`template_id`,`date_created`) VALUES (91,11,370,'2015-04-06 08:14:10');
+
+/**8 OEF/OIF Clinical Reminder-CPRS Template deleted **/
+delete from survey_template where template_id=13;
+delete from variable_template where template_id=13;
+delete from template where template_id=13;
+
+/**11 Service History-CPRS note template **/
+delete from survey_template where template_id=12;
+delete from variable_template where template_id=12;
+delete from template where template_id=12;
+
+/**Prior MH Treatment- CPRS Template **/
+delete from survey_template where template_id=23;
+delete from variable_template where template_id=23;
+delete from template where template_id=23;
+
