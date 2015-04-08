@@ -1,18 +1,7 @@
 $(document).ready(function(){
-	/*
-	$.ajax({
-	    type: 'POST',
-	    url: 'http://localhost:8080/escreeningdashboard/dashboard/services/usermanagement/verifyclinician',
-	    data: '{"accessCode":"1pharmacist","verifyCode":"pharmacist1","ssn":"666324119"}',  
-	    //data: '{"accessCode":"1radiologist","verifyCode":"radiologist1","ssn":"123456789"}',
-	    //data: '{"accessCode":"bad","verifyCode":"bad","ssn":"666324119"}',
-	    //data: '{"accessCode":"bad","verifyCode":"bad","ssn":""}',
-	    success: function(data) { alert(JSON.stringify(data)); },
-	    contentType: "application/json",
-	    dataType: 'json'
-	});
-	*/
-	
+	/* Tabs */ 
+	tabsLoad("userManagement");
+
 	//set the display for the selected tab.
 	$("#adminTab").removeClass('menuButtonUnselected');
 	$("#adminTab").addClass('menuButtonSelected');
@@ -38,6 +27,5 @@ $(document).ready(function(){
             { "mData": "userStatusName" },
             { "mData": "roleName" }
         ]
-    } ); 
-    
+    });    
 });

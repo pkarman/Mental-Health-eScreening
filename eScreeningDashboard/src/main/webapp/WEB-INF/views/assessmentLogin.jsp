@@ -4,10 +4,11 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!doctype html>
 <html>
-	<head>
+<head>
+    <title>Veteran Login</title>
+	
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -20,8 +21,7 @@
     <link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
     <link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
     <meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
-        
-    <title>Veteran Login</title>
+	
     <link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/login.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/common-ui-styles/forms.css" rel="stylesheet" type="text/css">
@@ -31,7 +31,8 @@
     <script type="text/javascript">
     
       $(document).ready(function() {	
-      // Check URL Querystring to play sound in case of timeout or complete
+      // TODO: Need to move to external JS file
+	  // Check URL Querystring to play sound in case of timeout or complete
       gup('reason');
       function gup( name ){
          name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -147,13 +148,8 @@
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
-	</head>
-	<body>
-
-      
-    
-    
-    
+</head>
+<body>
     <%@ include file="/WEB-INF/views/partialpage/survey_header_new.jsp" %>
 	<div id="clear-fix"></div>
 <div class="container left-right-shadow">

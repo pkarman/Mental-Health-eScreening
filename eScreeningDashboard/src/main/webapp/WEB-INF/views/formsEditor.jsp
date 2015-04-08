@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html ng-app="Editors">
 <head lang="en">
+    <title>VA Editors</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +16,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>VA Editors</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- CSS -->
+	<link href="resources/editors/vendors/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/vendors/textAngular/textAngular.css" type="text/css">
@@ -29,19 +31,29 @@
     <link rel="stylesheet" href="resources/editors/css/escreening/section_surveys.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/css/main.css">
     <link rel="stylesheet" type="text/css" href="resources/css/common.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/editors/css/formsEditor.css">
+
+    <!-- JS -->
+	<!-- jQuery JS 1.10.2 -->
+	<script src="resources/editors/vendors/jquery/1.10.2/jquery.min.js"></script>
+
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
+    <script src="resources/editors/vendors/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Angular JS 1.2.25 -->
+    <script type="text/javascript" src="resources/editors/vendors/angularjs/1.2.25/angular.min.js"></script>
+    <script type="text/javascript" src="resources/editors/vendors/angularjs/1.2.25/angular-resource.min.js"></script>
+    <script type="text/javascript" src='resources/editors/vendors/angularjs/1.2.25/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
+
+    <!-- vendors -->
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
 
-    
+    <!-- Tabs -->
+    <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+
     <!-- Utility classes and non-Angular, non-framework classes -->
     <script type="text/javascript" src="resources/editors/js/app/utils/HttpRejectionProcessor.js"></script>
 
@@ -62,7 +74,6 @@
     <script type="text/javascript" src="resources/vendor-libs/byte-pushers/js/ResponseTransformer.js"></script>
 
     <!-- Domain Object -->
-
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
@@ -199,63 +210,6 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
 
-    <style type="text/css">
-	    <!-- TODO: Need to move to external CSS file -->
-      @media (min-width:1024px) { 
-			.navbar > .container {
-			    text-align: center;
-			}
-			.navbar-header,.navbar-brand,.navbar .navbar-nav,.navbar .navbar-nav > li {
-			    float: none;
-			    display: inline-block;
-			}
-			.collapse.navbar-collapse {
-			    float: none;
-			    display: inline-block!important;
-			    width: auto;
-			    clear: none;
-			}
-			/* Promote these to main.css when done. - JBH */
-			
-			.btnHeader{
-				color:#ffffff;
-				background-color:#003f72;
-				margin-left:-4px;
-				margin-right:-4px;
-			}
-			
-			.btnHeader:hover{
-				color:#ffffff;
-				background-color:#001441;
-			}
-			
-			.btnHeader:active{
-				color:#ffae00;
-				background-color:#001441;
-				
-			}
-			
-			.btnHeaderMid{
-				border-radius:0px;
-			}
-			
-			.btnHeaderLeft{
-				border-top-right-radius:0px;
-				border-bottom-right-radius:0px;
-			}
-			
-			.btnHeaderRight{
-				border-top-left-radius:0px;
-				border-bottom-left-radius:0px;
-			}
-			
-			.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
-				color: #ffae00;
-				background-color: #001441;
-				border-color: #adadad;
-			}
-		}
-    </style>
     <script type="text/javascript">	
         $(document).ready(function() {
             tabsLoad("formsEditor");
@@ -380,11 +334,11 @@
     <!-- angular-ui-select for mng formulas (starts after this line)-->
     <!-- Select2 theme -->
     <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/select2/3.4.5/select2.css">
     <!--
       Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
     -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/selectize.js/0.8.5/css/selectize.default.css">
     <style>
         /* body {padding: 15px;} */
         .select2 > .select2-choice.ui-select-match {
@@ -397,6 +351,5 @@
     </style>
     <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
     <!-- angular-ui-select for mng formulas (finishes before this line)-->
-
 </body>
 </html>

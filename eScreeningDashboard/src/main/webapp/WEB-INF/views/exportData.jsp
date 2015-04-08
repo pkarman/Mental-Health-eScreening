@@ -12,13 +12,6 @@
   <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
   <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon"> 
   
-  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
-  <!-- <script type="text/javascript" src="resources/js/jquery/ui/jquery-ui.min.js"></script> -->
-  <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
-  <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>  
-  <script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>    
-  
   <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
   <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
   <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css">
@@ -33,11 +26,12 @@
   <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
 	
   <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
-  <style type="text/css">
-  .wrap{
-    white-space: normal !important;
-  }
-  </style>
+
+  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
+  <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>  
+  <script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>    
 </head>
 <body>
 
@@ -57,7 +51,7 @@
       <!--/.nav-collapse --> 
     </div>
   </div>
-  <div class="" ng-controller="exportDataController" >
+  <div class="exportData" ng-controller="exportDataController" >
     <form id="dataExportForm" name="dataExportForm"  ng-submit="searchDatabase()">
       <div id="bodyDiv" class="bgImgMiddle" align="center">
         <div id="exportDataFormBodyDiv"></div>
@@ -271,11 +265,8 @@
       </div>
     </form>
   </div>
-
-
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/dashboard/exportData.js?v=1" />"></script>
 </body>
-  <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-  <script type="text/javascript" src="<c:url value="/resources/js/dashboard/exportData.js?v=1" />"></script>
 </html>

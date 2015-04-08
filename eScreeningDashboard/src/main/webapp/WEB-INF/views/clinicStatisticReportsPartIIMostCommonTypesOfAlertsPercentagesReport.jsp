@@ -8,14 +8,7 @@
 <head>
   <title>Reports | Clinic Statistic Reports: Most Common Types of Alerts and Percentages Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
-    <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
-    <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
-    <script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-		
+			
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
 	<link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />
 	<link href="<c:url value="/resources/images/valogo.ico" />" rel="SHORTCUT ICON" type="image/x-icon" />
@@ -28,6 +21,13 @@
 	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
 
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-datepicker/datepicker.css" />">
+
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery.dataTables.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/adminDashboardTabs.js" />"></script>
+    <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
+    <script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
+    <script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 </head>
 <body ng-app="reportsModule" ng-controller="mostCommonTypesOfAlertsPercentagesCtrl">
 <a href="#skip" class="offscreen">Skip to main content</a>
@@ -70,9 +70,6 @@
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
 							
-							
-							
-							
 							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by  Clinic" />
 							<!-- Program Evaluator Role only 602 / 603
 							<div>
@@ -83,11 +80,6 @@
 							</div>
 							<hr class="hr_margin_5">
 							-->
-							
-							
-							
-							
-
 							
 							<div class="vertical_scoll_list_b module_list">
 								  <table  id="clinics-list-table">
@@ -127,8 +119,6 @@
 							</div>
 						</div>								
 					</div>
-					
-					
 
 				</div>
 				<hr />
