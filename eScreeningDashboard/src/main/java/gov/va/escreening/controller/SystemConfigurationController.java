@@ -6,6 +6,7 @@ import gov.va.escreening.security.EscreenUser;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -46,6 +47,11 @@ public class SystemConfigurationController {
 	public String requestHrtBeat(HttpServletRequest request,
 			@CurrentUser EscreenUser escreenUser) {
 		logger.debug("returning requestHrtBeat");
-		return String.format("session id %s returned at %s", request.getSession(false).getId(), ISODateTimeFormat.dateTime().print(new DateTime()));
+		HttpSession session = request.getSession(false);
+		if (session!=null) {
+			return String.format("session id %s returned at %s", session.getId(), ISODateTimeFormat.dateTime().print(new DateTime()));
+		} else {
+			return String.format("out of session at %s", ISODateTimeFormat.dateTime().print(new DateTime()));
+		}
 	}
 }

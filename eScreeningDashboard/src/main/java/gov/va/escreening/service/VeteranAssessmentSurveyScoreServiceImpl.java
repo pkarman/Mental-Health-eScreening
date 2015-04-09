@@ -249,10 +249,10 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Clinic clinic = clinicRepository.findOne(clinicId);
 
         result.setModuleName(survey.getName());
-        result.setHasData(scores.isEmpty());
+        result.setHasData(!scores.isEmpty());
         result.setScoreName("Average " + survey.getName() + "Score");
 
-        if (!scores.isEmpty()) {
+        if (result.getHasData()) {
             double total = 0d;
             int totalCount = 0;
             result.setScoreHistory(new ArrayList<ScoreHistoryDTO>());
@@ -276,7 +276,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, ((int) (total / totalCount))));
 
             result.setScoreHistoryTitle("Average Score History by VistA Clinic");
-            result.setHasData(true);
 
             result.setVeteranCount(" Number of Veterans, N=" + vassRepos.getVeteranCountForClinic(clinicId, surveyId, fromDate, toDate));
             return result;

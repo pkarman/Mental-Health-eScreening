@@ -214,7 +214,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                     dto.getGraphReport().add(moduleGraphReportDTO);
                     hasData = true;
 
-                    if (isGraphOnly){
+                    if (isGraphOnly) {
                         moduleGraphReportDTO.setScoreHistoryTitle(null);
                     }
                 }
@@ -718,7 +718,7 @@ public class ReportDelegateImpl implements ReportDelegate {
      */
     @Override
     public Map<String, Object> genClinicStatisticReportsPartVIPositiveScreensReport
-            (Map<String, Object> requestData, EscreenUser escreenUser) {
+    (Map<String, Object> requestData, EscreenUser escreenUser) {
 
         Map<String, Object> parameterMap = Maps.newHashMap();
         attachDates(parameterMap, requestData);
@@ -736,10 +736,9 @@ public class ReportDelegateImpl implements ReportDelegate {
         List<Report599DTO> dtos = scoreService.getClinicStatisticReportsPartVIPositiveScreensReport
                 (fromDate, toDate, clinicIds, surveyNameList);
 
-        if (dtos== null || dtos.isEmpty()){
+        if (dtos == null || dtos.isEmpty()) {
             dataSource = new JREmptyDataSource();
-        }
-        else{
+        } else {
             dataSource = new JRBeanCollectionDataSource(dtos);
         }
 
@@ -752,9 +751,15 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Transactional(readOnly = true)
     public List<ClinicDto> getClinicDtoList(EscreenUser escreenUser) {
         final List<ClinicDto> clinicDtoList = getClinicDtoList();
-        Integer userId = escreenUser.getUserId();
 
         final List<ClinicDto> allowedClinic = Lists.newArrayList();
+
+        Integer userId = escreenUser == null ? 0 : escreenUser.getUserId();
+
+        if (userId == 0) {
+            logger.warn(String.format("User Id is 0, therefore no clinics will be returned. Please check the user id of the ecreen user logged in"));
+        }
+
         // use this user Id and go an get try to get UserProgram using this id and each programId from clinic.
         // If found then that is a intersection and that clinic is allowed
         for (ClinicDto clinicDto : clinicDtoList) {
