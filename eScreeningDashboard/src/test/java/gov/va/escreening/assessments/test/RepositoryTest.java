@@ -237,8 +237,8 @@ public class RepositoryTest {
     	assertEquals(1, surveys.size());
     	assertEquals(24, surveys.get(0).getSurveyId().intValue());
     	
-    	List<Battery> batteries = batteryRepo.findByTemplateId(1);
-    	assertEquals(1, batteries.size());
+    	List<Battery> batteries = batteryRepo.findByTemplateId(3);
+    	
     	
     }
     
