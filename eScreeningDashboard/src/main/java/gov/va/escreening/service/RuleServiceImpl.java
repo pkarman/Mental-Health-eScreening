@@ -150,10 +150,7 @@ public class RuleServiceImpl implements RuleService {
         for(Rule r : rules){
             variables.addAll(r.getAssessmentVariables());
         }
-
- //rules use the measure avs when we resolve these we have no record of 
- //the measureAnswers' AVs because they are not included here.
-        
+     
         ResolverParameters params = new ResolverParameters(veteranAssessmentId,
                 templateSmrNullHandler, variables);
         

@@ -124,7 +124,8 @@ public class AssessmentEngineController {
 		logger.debug("updating survey page visibility");
 
 		assessmentDelegate.ensureValidAssessmentContext();
-
+		assessmentRequest.setAssessmentId(assessmentDelegate.getVeteranAssessmentId());
+		
 		//long start = System.currentTimeMillis();
 		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
 		//long end1 = System.currentTimeMillis();

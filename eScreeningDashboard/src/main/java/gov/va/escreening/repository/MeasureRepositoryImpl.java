@@ -348,7 +348,7 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
             	ma.setMeasure(null);
             }
         }
-        //remove measures that were deleted
+        //remove answers that were deleted
         maList.removeAll(removedAnswers.values());
         
         for (Answer newAnswer : newAnswerList) {
