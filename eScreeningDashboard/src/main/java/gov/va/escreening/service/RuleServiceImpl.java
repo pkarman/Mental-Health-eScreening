@@ -206,7 +206,7 @@ public class RuleServiceImpl implements RuleService {
         variable.setAssessmentVariableTypeId(new AssessmentVariableType(
                 AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
         variable.setFormulaTemplate(rule.getExpression());
-        variable.setAssessmentVariableId(rule.getRuleId());
+        variable.setAssessmentVariableId(-rule.getRuleId());
         variable.setAssessmentVarChildrenList(createAssessmentVarChildrenList(rule
                 .getAssessmentVariables()));
         
