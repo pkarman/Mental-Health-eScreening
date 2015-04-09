@@ -8,23 +8,23 @@
     </div>
 </div>
 
-	<label for="graphicalTemplateChk" ng-show="template.isGraphical">
-		<input id="graphicalTemplateChk" type="checkbox" ng-model="graph.graphicalTemplate"> Graphical Template
-	</label>
+<label for="graphicalTemplateChk">
+	<input id="graphicalTemplateChk" type="checkbox" ng-model="template.isGraphical"> Graphical Template
+</label>
 
-
-<div class="border-radius-main-form gray-lighter"  ng-show="graph.graphicalTemplate">
+<form name="graphicalTemplateForm">
+<div class="border-radius-main-form gray-lighter" ng-show="template.isGraphical">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="templateTitle">Template Title *</label>
-				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="template.graph.title" required>
+				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="template.title" required>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="graphHeader">Graph Header *</label>
-				<input type="text" class="form-control" id="graphHeader" placeholder="Enter Graph Header"  required>
+				<input type="text" class="form-control" id="graphHeader" placeholder="Enter Graph Header" ng-model="template.graph.title" required>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -36,14 +36,14 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="selectVariable">Select Variable *</label>
-				<!--
-				<label class="sr-only">Select Variable</label>
-				<input type="hidden"
-						ng-model="condition.left.content"
-						ng-change="updateLogicalOptions(condition)"
-						update-hidden>
-				<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
-				-->
+				<input id="selectVariable" type="hidden" ng-model="assessmentVariable.name" update-hidden>
+				<div ng-show="assessmentVariables.length == 0">Loading...</div>
+				<mhe-assessment-var-dropdown-menu-dir 
+					id="selectVariable"
+					assessment-variable="assessmentVariable" 
+					block="graphicalBlock"
+					ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" 
+					ng-show="assessmentVariables.length != 0"/>
 			</div>
 		</div>
 	</div>
@@ -88,14 +88,7 @@
 												placeholder="Enter Start Value" 
 												required>
 									</div>
-
-									
-									
-																		
 								</div>
-
-								
-					
 								<br>
 							</div>
 						</li>					
@@ -111,33 +104,7 @@
 					</div>										
 
 				</div>
-				
-				
-				
-				
-				
-
-
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+	
 				<div class="col-md-6">					
 						<div class="row">
 						<div class="col-md-6">
@@ -145,20 +112,20 @@
 					<div class="border-radius-ul lighter-white">
 					<!-- Repeater Start -->
 					<ul>
-						<li ng-repeat="tick in tickList">
+						<li ng-repeat="tick in template.graph.ticks track by $index">
 							<div class="row">
 								<div class="col-xs-12 col-md-12 col-lg-12">	
 									<div class="form-group">
-										<label for="ticksStartValue{{$index + 1}}">Axis Value *</label>
+										<label for="ticksStartValue{{$index}}">Axis Value *</label>
 										<a href="javascript:void(0);"
 											ng-really-click="deleteTick($index)"
-											ng-really-message="Are you sure you want to delete this tick?">
+											ng-really-message="Are you sure you want to delete this axis value?">
 											<span class="glyphicon glyphicon-remove-circle red-color pull-right"></span>
 										</a>							
 										<input type="number"
-												ng-model="tick"
+												ng-model="template.graph.ticks[$index]"
 												class="form-control"
-												id="ticksStartValue{{$index + 1}}"
+												id="ticksStartValue{{$index}}"
 												placeholder="Enter Start Value" 
 												required>
 									</div>																
@@ -170,19 +137,19 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<button class="btn btn-primary btn-xs" id="addTickValue"  ng-click="addTickValue()"><span class="glyphicon glyphicon-plus"></span> Add Axis Value </button>
+							<button class="btn btn-primary btn-xs" id="addTickValue" ng-click="addTickValue()">
+							<span class="glyphicon glyphicon-plus"></span> Add Axis Value </button>
 						</div>
 					</div>
 					<br />
 					</div>	
-					
-												
 						</div>
 
 						<div class="col-md-6">					
 							<div class="form-group padding-box-align">
 								<label for="graphMaximumValue">Graph Maximum Value</label>
-								<input type="number" class="form-control" id="graphMaximumValue" placeholder="Enter Graph Maximum Value"  ng-model="template.graph.maxXPoint">
+								<input type="number" class="form-control" id="graphMaximumValue" 
+									placeholder="Enter Graph Maximum Value" ng-model="template.graph.maxXPoint">
 							</div>
 						</div>
 					</div>
@@ -194,13 +161,16 @@
 			<div><strong>Time Series Points</strong></div>
 			<hr class="hr-legend" />
 			<div class="form-group  padding-box-align">
-				<label for="includeLast">Include data from last:</label>
-				<input type="number" class="form-control" id="includeLast" placeholder="Enter Number" value="12" maxlength="2"  ng-model="template.graph.numberOfMonths" > <span  class="help-block">Month(s)</span>
+				<label for="includeLast">Include data from last: *</label>
+				<input type="number" class="form-control" 
+					id="includeLast" placeholder="Enter Number" 
+					maxlength="2"  ng-model="template.graph.numberOfMonths" required> 
+					<span class="help-block">Month(s)</span>
 			</div>
-					
 		</div>
 	</div>	
 </div>
+</form>
 <br>
 
 <!-- Alerts and Messages -->
@@ -247,7 +217,7 @@
 
 					<div ui-tree="treeOptions">
 						<ol ui-tree-nodes ng-model="template.blocks">
-							<li ng-repeat="block in template.blocks" ui-tree-node ng-include="'block_renderer.html'"  class="templateBlockLi"></li>
+							<li ng-repeat="block in template.blocks" ui-tree-node ng-include="'block_renderer.html'" class="templateBlockLi"></li>
 						</ol>
 					</div>
 				</div>
@@ -261,7 +231,10 @@
 <div class="row">
     <div class="col-md-12">
         <div class="form-group pull-right">
-            <button class="btn btn-primary" ng-click="save();">Save</button>
+        
+            <button class="btn btn-primary" ng-click="save();" 
+            	ng-disabled="template.isGraphical && ! graphicalTemplateForm.$valid">Save</button>
+            	
             <button class="btn btn-default" 
             ng-really-message="Cancel template editing and lose changes?"
             ng-really-click="done();"
