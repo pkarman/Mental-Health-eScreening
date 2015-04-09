@@ -87,7 +87,7 @@
 
 	</util:map>
 
-	<!-- Following is a list those clinicalReminderIen which are to be shown 
+	<!-- Following is a list those clinicalReminderIen which are to be shown
 		in the Clicical Reminder List of escreening -->
 	<util:list id="allowedClinicalReminders" value-type="java.lang.String">
 		<value>Alcohol Use Screen (AUDIT-C)</value>
@@ -103,6 +103,29 @@
 		<value>Screen for PTSD</value>
 		<value>TBI Screening</value>
 	</util:list>
+
+    <util:map id="selectedReportableScoresMap" map-class="java.util.HashMap">
+        <entry key="Basic Pain" value="pain_number" />
+        <entry key="WHODAS 2.0" value="whodas_society_mean,whodas_work_mean,whodas_household_mean,whodas_people_mean,whodas_selfcare_mean,whodas_mobility_mean,whodas_understand_mean" />
+        <entry key="PHQ-9" value="dep_score_phq9" />
+        <entry key="GAD 7 Anxiety" value="gad7_score" />
+        <entry key="PCL-C" value="pcl_score" />
+        <entry key="ISI" value="sleep_score" />
+        <entry key="ROAS" value="ROAS_weighted_score" />
+        <entry key="CD-RISC-10" value="res_score" />
+        <entry key="BMI over 24" value="demo_BMI" />
+        <entry key="NSI" value="NSI_score" />
+    </util:map>
+
+    <util:map id="selectedReportableScreensMap" map-class="java.util.HashMap">
+        <entry key="AUDIT-C" value="alc_score_audit$3" />
+        <entry key="DAST-10" value="DAST_score$3" />
+        <entry key="BTBIS" value="tbi_score2$1" />
+        <entry key="PHQ-9" value="dep_score_phq9$10" />
+        <entry key="MDQ" value="hyp_score$1" />
+        <entry key="PCL-C" value="pcl_score$50" />
+        <entry key="PC-PTSD" value="pcptsd_score$3" />
+    </util:map>
 
 	<util:set id="filterMeasureTypes" value-type="java.lang.Integer">
 		<value>1</value>

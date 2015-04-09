@@ -269,6 +269,11 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	}
 	
 	@Override
+    public Collection<AssessmentVariable> findByDisplayNames(List<String> displayNames) {
+		return avr.findByDisplayNames(displayNames);
+	}
+
+	@Override
 	@Transactional(readOnly = true)
 	/**
 	 * return assessment variables as perf following rules

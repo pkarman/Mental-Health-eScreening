@@ -26,6 +26,8 @@ public interface VeteranRepository extends RepositoryInterface<Veteran> {
      * @return
      */
     List<Veteran> getVeterans(Veteran veteran);
+    
+    List<Veteran> getVeteranByIens(String[] iens);
 
     /**
      * 

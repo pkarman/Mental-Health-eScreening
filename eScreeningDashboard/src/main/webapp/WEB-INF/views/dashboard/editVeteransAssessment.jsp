@@ -27,7 +27,6 @@
 	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
-	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
 	
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
@@ -151,7 +150,7 @@
 							<div class="col-md-3">
 								<div class="form-group">
 									<form:label path="selectedProgramId">Program *</form:label>
-									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedProgramId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Program"/>
 										<form:options items="${programList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -167,7 +166,7 @@
 							<div class="col-md-3">								
 								<div class="form-group">
 									<form:label path="selectedNoteTitleId">Note Title *</form:label>
-									<form:select path="selectedNoteTitleId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedNoteTitleId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Note Title"/>
 										<form:options items="${noteTitleList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -177,7 +176,7 @@
 							<div class="col-md-3">								
 								<div class="form-group">
 									<form:label path="selectedClinicianId">Clinician *</form:label>
-									<form:select path="selectedClinicianId" cssClass="form-control" disabled="${isReadOnly}">
+									<form:select path="selectedClinicianId" cssClass="form-control" disabled="${isReadOnly}"  required="true">
 										<form:option value="" label="Please Select a Clinician"/>
 										<form:options items="${clinicianList}" itemValue="stateId" itemLabel="stateName"/>
 									</form:select>
@@ -217,7 +216,7 @@
 													<div class="row">
 														<div class="col-md-6 padding_5">
 														<div class="radio border_right_gray">
-		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId}" disabled="${isReadOnly}" /> 
+		                                        			<form:radiobutton path="selectedBatteryId" value="${item.stateId}" label="${item.stateName}" cssClass="battery_${item.stateId} " disabled="${isReadOnly}" data-ref="${dueClinicalReminders}"  required="true" /> 
 		                                            	</div>
 		                                            	</div>
 														<div class="col-md-6 padding_5">
@@ -225,10 +224,11 @@
 														</div>
 													</div>
 												</li>
-											</c:forEach>
-										</ul>	
+											</c:forEach>										
+										</ul>
 											<hr />
-											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span> <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span>
+											<span  class="clear_all"><a href="#" class="btn btn-default btn-xs" role="button">Clear all </a></span>
+											<!-- <span  class="reset"><a href="#" class="btn btn-default btn-xs" role="button">Reset </a></span> -->
                       						<span  class="clear_all_modules pull-right"><a href="#" class="btn btn-default btn-xs" role="button">Clear all Checked Modules</a></span>
 											<hr />					
 									</div>
@@ -246,18 +246,20 @@
 											    <c:forEach var="item" items="${surveyList}">
 				                                    <tr>
 				                                        <td class="tri">
-				                                            <c:set var="classNameVar" value=" " />
+				                                            <div class="checkbox">
+															<c:set var="classNameVar" value=" " />
 				                                            <c:forEach var="battery" items="${item.batteryList}">
 				                                                <c:set var="classNameVar">
 				                                                    <c:out value="${classNameVar} battery_${battery.batteryId}"  />
 				                                                </c:set>
 				                                            </c:forEach>
-				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" indeterminate="true"  />
-				                                        </td>
+				                                            <form:checkbox path="selectedSurveyIdList" value="${item.surveyId}" label="${item.name}" cssClass="${classNameVar}" disabled="${isReadOnly}" />
+				                                        	</div>
+														</td>
 				                                        <td><c:out value="${item.description}" /></td>
 				                                        <td><c:out value="${item.note}" /></td>
 				                                    </tr>
-				                                </c:forEach>                
+				                                </c:forEach>   
 				    						</tbody>
 				    					</table>
 			    					</div>
@@ -266,12 +268,12 @@
 								<div class="row">
 									<div class="col-md-8 col-md-offset-4 text-right ">
 										<c:if test="${not isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" class="btn btn-primary ladda-button createAssessmentButton" data-style="expand-right" />
 										</c:if>
 										<c:if test="${isReadOnly}">
-											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary" />
+											<input id="saveButton" name="saveButton" value="Create Assessments" type="submit" disabled class="btn btn-primary ladda-button createAssessmentButton" data-style="expand-right" />
 										</c:if>
-		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="submit" class="btn btn-default" />
+		                        		<input id="cancelButton" name="cancelButton" value="Cancel" type="button" class="btn btn-default btn-default-black"  />
 									</div>
 								</div>
 								</div>
@@ -285,7 +287,9 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+	<!-- Scripts -->
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+	<!-- Page Scripts -->
+	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </body>
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </html>

@@ -43,7 +43,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -71,7 +70,16 @@ public class VistaServiceImpl implements VistaService {
 
     @Autowired
     private ClinicRepository clinicRepo;
+    
+    @Autowired 
+    private EventService eventService;
 
+    @Autowired
+    private HealthFactorRepository healthFactorRepo;
+
+    @Autowired
+    private SurveyRepository surveyRepo;
+    
     /**
      * The primary station number of the VistA Server. If this system ever support more than one VistA Server at a time,
      * then this will have to be supplied by the end-user to know which VistA server we are working with.
@@ -83,12 +91,6 @@ public class VistaServiceImpl implements VistaService {
     private String vistaApplicationName;
     private UserService userService;
     private VistaRepository vistaRepository;
-
-    @Autowired
-    HealthFactorRepository healthFactorRepo;
-
-    @Autowired
-    SurveyRepository surveyRepo;
 
     @Autowired
     public void setClinicalReminderService(ClinicalReminderService clinicalReminderService) {
@@ -669,6 +671,7 @@ public class VistaServiceImpl implements VistaService {
                     {
                         hf.setVistaIen(hfIenMap.get(name));
                         healthFactorRepo.update(hf);
+                        eventService.updateHealthFactorEvent(hf);
                         logger.info("Updated vistaIen for HealthFactor " + hf.getName() + " to " + hfIenMap.get(name));
                         numRecord++;
                     }
@@ -682,6 +685,7 @@ public class VistaServiceImpl implements VistaService {
             		newHf.setVistaIen(ien);
             		newHf.setIsHistorical(false);
             		healthFactorRepo.create(newHf);
+            		eventService.updateHealthFactorEvent(newHf);
             		numRecord++;
             	}
             }

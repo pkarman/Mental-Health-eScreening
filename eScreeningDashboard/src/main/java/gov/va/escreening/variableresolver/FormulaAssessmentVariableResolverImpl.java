@@ -1,6 +1,11 @@
 package gov.va.escreening.variableresolver;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_FREE_TEXT;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE;
+import static gov.va.escreening.expressionevaluator.ExpressionExtentionUtil.DEFAULT_VALUE;
+import static gov.va.escreening.expressionevaluator.ExpressionExtentionUtil.NUMBER_FORMAT;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVarChildren;
@@ -187,10 +192,10 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        String value = null;
 	        if(variable != null){	            
     	        if(variable.getType().equals("list")){
-    	            value = expressionExtender.getListVariableAsNumber(variable);
+    	            value = getListVariableAsNumber(variable);
     	        }
     	        else{
-    	            value = expressionExtender.getVariableValue(variable);
+    	            value = getVariableValue(variable);
     	        }
 	        }
 	        else{  //variable was not resolved
@@ -200,7 +205,7 @@ public class FormulaAssessmentVariableResolverImpl implements
                 }
 	        }
 	        
-	        if(value != null && value != ExpressionExtentionUtil.DEFAULT_VALUE){
+	        if(value != null && value != DEFAULT_VALUE){
 	            valueMap.put(avId, value);
 	            logger.debug("Value of variable {} is {}", avId, value);
 	        }
@@ -211,7 +216,72 @@ public class FormulaAssessmentVariableResolverImpl implements
 	    return valueMap;
 	}
 
+    /**
+     * Gets the numerical value of the given list-typed variable.
+     * For select measures this means the calculation vaule.
+     * For text answers it means the veteran entered value
+     * @param var
+     * @return
+     */
+    private String getListVariableAsNumber(AssessmentVariableDto var){
+        if(var == null){
+            return DEFAULT_VALUE;
+        }
+        String result;
+        
+        if(var.getMeasureTypeId() != null){
+            switch(var.getMeasureTypeId()){
+                case MEASURE_TYPE_FREE_TEXT:
+                     result = expressionExtender.getFreeTextAnswer(var, DEFAULT_VALUE);
+                     if(result != null && result != DEFAULT_VALUE){
+                         try{
+                             Double.valueOf(result);
+                             return String.format(NUMBER_FORMAT, result);
+                         }
+                         catch(Exception e){ return result; }
+                     }
+                     break;
+                case MEASURE_TYPE_SELECT_ONE:
+                    AssessmentVariableDto response = expressionExtender.getSelectOneAnswerVar(var);
+                    if(response == null){
+                        return DEFAULT_VALUE;
+                    }
+                    result = response.getCalculationValue();
+                    if(result == null){
+                        result = response.getOtherText();
+                    }
+                    if(result != null){
+                        return String.format(NUMBER_FORMAT, result);
+                    }
+                    break;
+                case MEASURE_TYPE_SELECT_MULTI:// we could sum the calculation values
+                default: 
+                    return "[Error: unsupported question type]";
+            }
+        }
+        else{
+            return "[Error: unsupported question type]";
+        }
+        
+        return DEFAULT_VALUE;
+    }
+    
+    private String getVariableValue(AssessmentVariableDto var){
+        if(var == null || var.getValue() == null){
+            return DEFAULT_VALUE;
+        }
+        if(var.getValue() == "true" || var.getValue() == "false" ){
+            return var.getValue();
+        }
+        
+        try{
+            Double.valueOf(var.getValue());
+            return String.format(NUMBER_FORMAT, var.getValue());
+        }
+        catch(Exception e){ /* ignore */}
 
+        return var.getValue();
+    }
 
     private String getCouldNotResolveMessage(int assessmentVariableId,
 			int assessmentId, String originalExceptionMsg) {

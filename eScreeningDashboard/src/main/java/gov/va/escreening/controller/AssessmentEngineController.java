@@ -98,33 +98,59 @@ public class AssessmentEngineController {
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		// set the time of session create time as this will be used to measure
-		// the duration of this assessment
-		Long startTime=(Long)session.getAttribute("start_time");
-		if (startTime==null){
-			startTime=System.currentTimeMillis();
-		}
+        startInstrumentation(assessmentRequest, session);
 
-		assessmentRequest.setStartTime(startTime);
 		smrLister.clearSmrFromCache();
 		AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
 		smrLister.clearSmrFromCache();
-		
-		session.setAttribute("start_time", System.currentTimeMillis());
 
-		//logger.debug("processData()::assessmentResponse \n{}", assessmentResponse);
+        finishInstrumentation(assessmentResponse, session);
 
 		return assessmentResponse;
 	}
 
-	@RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
+    private void finishInstrumentation(AssessmentResponse assessmentResponse, HttpSession session) {
+        Long now = System.currentTimeMillis();
+        session.setAttribute("assessment_start_time", now);
+
+        if (assessmentResponse.getAssessment().getPageId()!=null) {
+            Integer moduleId = assessmentDelegate.getModuleId(assessmentResponse.getAssessment().getPageId());
+            String moduleStartTimeKey = String.format("module_%s_start_time", moduleId);
+            session.setAttribute(moduleStartTimeKey, now);
+        }
+    }
+
+    private void startInstrumentation(AssessmentRequest assessmentRequest, HttpSession session) {
+        Long now = System.currentTimeMillis();
+
+        // get the module and seed its start time
+        if (assessmentRequest.getPageId()!=null) {
+            Integer moduleId = assessmentDelegate.getModuleId(assessmentRequest.getPageId());
+            String moduleStartTimeKey = String.format("module_%s_start_time", moduleId);
+            Long moduleStartTime = (Long) session.getAttribute(moduleStartTimeKey);
+            if (moduleStartTime == null) {
+                moduleStartTime = now;
+            }
+            assessmentRequest.setModuleStartTime(moduleId, moduleStartTime);
+        }
+        // set the time of session create time as this will be used to measure
+        // the duration of this assessment
+        Long assessmentStartTime=(Long)session.getAttribute("assessment_start_time");
+        if (assessmentStartTime==null){
+            assessmentStartTime=now;
+        }
+        assessmentRequest.setAssessmentStartTime(assessmentStartTime);
+    }
+
+    @RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
 	public Map<Integer, Boolean> processSurveyPageMeasureVisibility(
 			@RequestBody AssessmentRequest assessmentRequest) {
 		logger.debug("updating survey page visibility");
 
 		assessmentDelegate.ensureValidAssessmentContext();
-
+		assessmentRequest.setAssessmentId(assessmentDelegate.getVeteranAssessmentId());
+		
 		//long start = System.currentTimeMillis();
 		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
 		//long end1 = System.currentTimeMillis();

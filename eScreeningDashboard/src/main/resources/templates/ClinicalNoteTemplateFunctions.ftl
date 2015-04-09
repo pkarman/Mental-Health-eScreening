@@ -697,7 +697,9 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         <#return var>
     </#if> 
     
-    <#if measureTypeId?is_string && measureTypeId == DEFAULT_VALUE> 
+    <#assign measureType = getMeasureType(var, measureTypeId)>
+    
+    <#if measureType?is_string && measureType == DEFAULT_VALUE> 
         <#if (var.value)?? >
             <#return var.value?number>
         
@@ -712,7 +714,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 || measureTypeId == 5 >
+    <#if measureType == 1 || measureType == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -720,7 +722,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         <#return result?number>
     </#if>
     
-    <#if measureTypeId == 2 || measureTypeId == 3 > 
+    <#if measureType == 2 || measureType == 3 > 
         <#return (sumCalcValues(var))?number >
     </#if>
     
@@ -730,7 +732,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
 
 <#--
 Used because we pass in the measure type and now we are moving to 
-the use of the measureTypeId field on AVs.
+the use of the measureTypeId field in AVs.
 -->
 <#function getMeasureType var measureTypeId=DEFAULT_VALUE>
     
@@ -742,7 +744,7 @@ the use of the measureTypeId field on AVs.
         <#return var.measureTypeId?number>
     </#if>
 
-    <#return '[Error: no question type given]'>
+    <#return DEFAULT_VALUE>
     
 </#function>
 
@@ -758,6 +760,10 @@ For multi select - returns a comma delimited list
     </#if>
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
+    
+    <#if measureType?is_string && measureType == DEFAULT_VALUE> 
+    	<#return '[Error: unsupported question type]'>
+    </#if>
     
     <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
@@ -946,6 +952,10 @@ Returns true if the value given matrix has a value.
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
+    <#if measureType?is_string && measureType == DEFAULT_VALUE> 
+   		<#return '[Error: unsupported question type]'>
+    </#if>
+    
     <#if measureType == 2 >
     	<#if var.children?? && (var.children?size > 0) && (var.children[0].answerId)??>
     		<#if (var.children[0].answerId = right) >
@@ -1054,4 +1064,10 @@ The var given can be single or multi select.
   </#if>
 </#function>
 
-
+<#--
+Allows for generic testing of values to see if the given value is defined.
+Returns true if value is defined.
+-->
+<#function isDefined value=DEFAULT_VALUE>
+	<#return (value?string) != DEFAULT_VALUE >
+</#function>

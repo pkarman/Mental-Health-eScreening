@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
 
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-	<script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>    
+	<script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
     <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
@@ -22,9 +22,8 @@
     <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
     <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css"/>
-    <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="<c:url value="resources/css/bootstrap-datepicker/datepicker.css" />">
-
+	<link rel="stylesheet" type="text/css" href="<c:url value="resources/js/lib/ladda-bootstrap/dist/ladda-themeless.min.css" />">
 	<style type="text/css">
 	.loading{
 		background-image: url("resources/images/ajax-loader.gif");
@@ -35,10 +34,11 @@
 	}
 	
 	</style>
-
-<!-- Bootstrap -->
-<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
+	<!-- Bootstrap -->
+	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
+	
+	<link rel="stylesheet" type="text/css" href="resources/js/lib/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css">
 
 </head>
 <body>
@@ -92,9 +92,10 @@
 							<div class="col-md-4">
 								<div class="form-group">
 									<form:label path="selectedClinic">VistA Clinic *</form:label>
-									<form:select path="selectedClinic" cssClass="form-control">
+
+									<form:select path="selectedClinic" cssClass="form-control selectpicker"  required="true"  data-live-search="true" title="Please select a VistA Clinic ...">
 										<form:option value="" label="Please Select VistA Clinic"/>
-										<form:options items="${clinics}" itemValue="stateId" itemLabel="stateName"/>
+										<form:options items="${clinics}" itemValue="stateId" itemLabel="stateName" />
 									</form:select>
 									<form:errors path="selectedClinic" cssClass="help-inline"/>						 
 								</div>
@@ -104,7 +105,7 @@
 								<div class="form-group">
 										<form:label path="startDate">From Date *</form:label>
 									<div class="input-group date" id="fromAssessmentDateGroup">
-										<form:input path="startDate" maxlength="10" cssClass="form-control startDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY" value="01/01/2010"   required="true"   />
+										<form:input path="startDate" maxlength="10" cssClass="form-control startDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY" required="true"   />
 										<form:errors path="startDate"  cssClass="help-inline"/>
 										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>
@@ -116,7 +117,7 @@
 								<div class="form-group">
 									<form:label path="endDate">To Date *</form:label>
 									<div class="input-group date" id="toAssessmentDateGroup">
-										<form:input path="endDate" maxlength="10" cssClass="form-control endDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY" value="01/01/2015" />
+										<form:input path="endDate" maxlength="10" cssClass="form-control endDate" cssErrorClass="form-control" placeholder="MM/DD/YYYY"  required="true" />
 										<form:errors path="endDate"  cssClass="help-inline"/>
 										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i><div class="add-on"  title="Click to open calendar"></div></div>
 									</div>
@@ -159,7 +160,7 @@
 									<td colspan="6">No record found</td>
 								</c:if>
 								<c:if test="${not empty searchResult}">
-									<td colspan="6"><c:out value="${searchResultSize}" /> record(s) found</td>
+									<td colspan="6"><c:out value="${searchResultListSize}" /> record(s) found</td>
 								</c:if>
 							</tr>
 						</tfoot>
@@ -178,12 +179,11 @@
 							</c:if>
 						</tbody>
 					</table>
-					
-	
-					
 					<div class="row">
 						<div class="col-md-12">					
-							<input id="createAssessmentButton" name="selectVeterans" value="Select Veterans" type="submit" class="btn btn-primary pull-right" />
+							<button id="createAssessmentButton" name="selectVeterans" type="submit" class="btn btn-primary pull-right  ladda-button createAssessmentButton" data-style="expand-right" disabled>
+							<span class="ladda-label">Select Veterans</span>
+							</button>
 						</div>
 					</div>
 					</form:form>
@@ -192,11 +192,16 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 
-<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-</body>
+	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
+	
+	<!-- Scripts -->
+	<script type="text/javascript" src="<c:url value="/resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap-select.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+	<script src="resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap.min.js"></script>
+	<script src="resources/js/lib/ladda-bootstrap/dist/spin.min.js"></script>
+	<script src="resources/js/lib/ladda-bootstrap/dist/ladda.min.js"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/selectVeterans.js?v=2" />"></script>
+</body>	
 </html>

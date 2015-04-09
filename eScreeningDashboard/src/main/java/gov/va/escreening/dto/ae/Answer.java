@@ -6,7 +6,6 @@ import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -235,11 +234,12 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
             else if (!Strings.isNullOrEmpty(measureResponse.getTextValue())) {
                 answerResponse = measureResponse.getTextValue();
             }
-            else{
-                throw new CouldNotResolveVariableException(
-                        String.format("A value was not set for survey measure responseid: %s",
-                                measureResponse.getSurveyMeasureResponseId()));
-            }
+            //measureResponse might be non-null from the veteran but still not have any value set 
+//            else{
+//                throw new CouldNotResolveVariableException(
+//                        String.format("A value was not set for survey measure responseid: %s",
+//                                measureResponse.getSurveyMeasureResponseId()));
+//            }
             
             if(measureAnswer.getMeasure().getMeasureType().getMeasureTypeId() 
                     == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){

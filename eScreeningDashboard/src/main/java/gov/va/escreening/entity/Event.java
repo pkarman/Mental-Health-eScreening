@@ -1,5 +1,7 @@
 package gov.va.escreening.entity;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -70,10 +72,10 @@ public class Event implements Serializable {
         this.eventId = eventId;
     }
 
-    public Event(Integer eventId, String name, Date dateCreated) {
-        this.eventId = eventId;
-        this.name = name;
-        this.dateCreated = dateCreated;
+    public Event(String name, Integer relatedObjectId, EventType eventType) {
+        this.name = checkNotNull(name);
+        this.relatedObjectId = checkNotNull(relatedObjectId);
+        this.eventType = checkNotNull(eventType);
     }
 
     public Integer getEventId() {
@@ -147,7 +149,8 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Event[ eventId=" + eventId 
+        return "gov.va.escreening.entity.Event[ id=" + eventId 
+                + ", name=" + name
                 + ", eventType=" + eventType 
                 + ", relatedObjectId=" + relatedObjectId + "]";
     }

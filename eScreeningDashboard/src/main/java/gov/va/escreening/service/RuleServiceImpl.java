@@ -150,10 +150,7 @@ public class RuleServiceImpl implements RuleService {
         for(Rule r : rules){
             variables.addAll(r.getAssessmentVariables());
         }
-
- //rules use the measure avs when we resolve these we have no record of 
- //the measureAnswers' AVs because they are not included here.
-        
+     
         ResolverParameters params = new ResolverParameters(veteranAssessmentId,
                 templateSmrNullHandler, variables);
         
@@ -209,7 +206,7 @@ public class RuleServiceImpl implements RuleService {
         variable.setAssessmentVariableTypeId(new AssessmentVariableType(
                 AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
         variable.setFormulaTemplate(rule.getExpression());
-        variable.setAssessmentVariableId(rule.getRuleId());
+        variable.setAssessmentVariableId(-rule.getRuleId());
         variable.setAssessmentVarChildrenList(createAssessmentVarChildrenList(rule
                 .getAssessmentVariables()));
         

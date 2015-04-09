@@ -45,8 +45,14 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.4.1.1</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-bridge</artifactId>
+            <version>1.7</version>
+        </dependency>
 
-		<!-- Spring -->
+
+        <!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -382,12 +388,18 @@
 	</dependencies>
 
 	<build>
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+            <resource>
+                <directory>src/main/binaryresources</directory>
+                <filtering>false</filtering>
+            </resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -616,6 +628,19 @@
 								</fileset>
 							</configuration>
 					</execution>
+					<execution>
+						<id>apply-sprint-31-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_31</basedir>
+								</fileset>
+							</configuration>
+					</execution>
 					<!-- PLEASE NOTE: this is a specific configuration for ticket 787.
 					     Please create another execution entry for all other sprint 31 tickets -->
 					<execution>
@@ -631,19 +656,6 @@
 								<basedir>src/main/sql/sprint_31_787</basedir>
 							</fileset>
 						</configuration>
-					</execution>
-					<execution>
-						<id>apply-sprint-31-data</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>execute</goal>
-							</goals>
-							<configuration>
-								<orderFile>ascending</orderFile>
-								<fileset>
-									<basedir>src/main/sql/sprint_31</basedir>
-								</fileset>
-							</configuration>
 					</execution>
 					<execution>
 						<id>apply-sprint-32-data</id>
@@ -672,17 +684,46 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>apply-sprint-34-data</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>execute</goal>
-							</goals>
-							<configuration>
-								<orderFile>ascending</orderFile>
-								<fileset>
-									<basedir>src/main/sql/sprint_34</basedir>
-								</fileset>
-							</configuration>
+						<id>apply-sprint-34-ticket-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_34</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-35-ticket-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_35</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+		                    	<!-- PLEASE NOTE: this is a specific configuration for ticket 595 (found on branch t597).
+					     Please create another execution entry for all other sprint 35 tickets -->
+					<execution>
+						<id>apply-sprint-35-ticket-595-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<delimiter>;;</delimiter>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_35_595</basedir>
+							</fileset>
+						</configuration>
 					</execution>
 					<execution>
 						<id>test-data-fill</id>

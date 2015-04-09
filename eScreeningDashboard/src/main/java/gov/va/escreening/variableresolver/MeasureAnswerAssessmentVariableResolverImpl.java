@@ -69,7 +69,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                     .throwIt();
     
             if(response == null){
-                logger.warn("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
+                logger.debug("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
                 List<Answer>responses = params.getAnswerResponse(measureAnswer.getMeasureAnswerId());
                 //this is a temporary fix until something better is figured out
                 if(!responses.isEmpty()){

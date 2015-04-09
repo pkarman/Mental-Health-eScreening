@@ -164,6 +164,7 @@ public class AssessmentVariableDto {
 	 * @param response the response to use for setting fields. This should not be a transient object.
 	 */
 	public void setResponse(Answer response){
+	    setAnswerId(response.getAnswerId());
 		setValue(response.getAnswerResponse());
 		setRow(response.getRowId());
 		
