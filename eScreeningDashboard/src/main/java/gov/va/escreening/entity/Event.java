@@ -149,7 +149,8 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Event[ eventId=" + eventId 
+        return "gov.va.escreening.entity.Event[ id=" + eventId 
+                + ", name=" + name
                 + ", eventType=" + eventType 
                 + ", relatedObjectId=" + relatedObjectId + "]";
     }

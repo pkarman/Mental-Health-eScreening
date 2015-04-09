@@ -741,28 +741,18 @@ public class ExpressionExtentionUtil {
      *  If var123 is null then false is returned.
      *  param right can be an answer object (not supported in UI right now), or an integer
      */
-    public boolean responseIs(AssessmentVariableDto var, String right){
-        if(var != null && !Strings.isNullOrEmpty(right)){
-            Integer rightId = null;
-            try{
-                rightId = Integer.valueOf(right);
-            }
-            catch(Exception e){ 
-                logger.warn("Right operand could not be parsed as a AV ID: {}. Was being comparined to variable with ID {}. This should have been guarded against in condition editor.", right, var.getVariableId());
-            }
-            
-            if(rightId != null && var.getMeasureTypeId() != null){
-                if(var.getMeasureTypeId() == MEASURE_TYPE_SELECT_ONE ||
-                        var.getMeasureTypeId() == MEASURE_TYPE_SELECT_MULTI){
-                    for(AssessmentVariableDto responseVariable : var.getChildren()){
-                        if(rightId.equals(responseVariable.getVariableId())){
-                            return true;
-                        }
+    public boolean responseIs(AssessmentVariableDto var, Integer rightId){
+        if(var != null && rightId != null && var.getMeasureTypeId() != null){
+            if(var.getMeasureTypeId() == MEASURE_TYPE_SELECT_ONE ||
+                    var.getMeasureTypeId() == MEASURE_TYPE_SELECT_MULTI){
+                for(AssessmentVariableDto responseVariable : var.getChildren()){
+                    if(rightId.equals(responseVariable.getAnswerId())){
+                        return true;
                     }
                 }
-                else{
-                    logger.warn("Unsuppored question type (ID: {})", var.getMeasureTypeId());
-                }
+            }
+            else{
+                logger.warn("Unsuppored question type (ID: {})", var.getMeasureTypeId());
             }
         }
         return false;
@@ -771,7 +761,7 @@ public class ExpressionExtentionUtil {
     /**
      * @return the negation of responseIs
      */
-    public boolean responseIsnt(AssessmentVariableDto var, String right){
+    public boolean responseIsnt(AssessmentVariableDto var, Integer right){
         return !responseIs(var, right);
     }
     

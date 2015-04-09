@@ -67,7 +67,7 @@ public abstract class BlockTranslator {
             if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY, 
                     MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
             {
-                translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
+                translatedVar = "getResponse(" + translatedVar + ")";
 
             }
             else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
@@ -90,12 +90,12 @@ public abstract class BlockTranslator {
                     try
                     {
                         Double.parseDouble(((TemplateTextContent)right).getContent());
-                        translatedVar = "isDefined(asNumber("+translatedVar+", "+left.getMeasureTypeId()+") && asNumber("+translatedVar+", "+left.getMeasureTypeId()+")";
+                        translatedVar = "isDefined(asNumber("+translatedVar+")) && asNumber("+translatedVar+")";
                     }
                     catch(Exception e)
                     {
                         // right is not a number;
-                        translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
+                        translatedVar = "getResponse("+translatedVar+")";
                     }
                 }
                 else
@@ -192,7 +192,7 @@ public abstract class BlockTranslator {
                     MEASURE_TYPE_SELECT_ONE, 
                     MEASURE_TYPE_SELECT_MULTI))
             {
-                translatedVar= "responseIs("+translatedVar+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
+                translatedVar= "responseIs("+translatedVar+", "+(translateCondition(null, right, null, avIds)) + ")";
             }
         }
         else if ("nresponse".equals(operator))
@@ -201,7 +201,7 @@ public abstract class BlockTranslator {
                     MEASURE_TYPE_SELECT_ONE, 
                     MEASURE_TYPE_SELECT_MULTI))
             {
-                translatedVar= "responseIsnt("+translatedVar+", "+(translateCondition(null, right, null, avIds))+"," +left.getMeasureTypeId()+")";
+                translatedVar= "responseIsnt("+translatedVar+", "+(translateCondition(null, right, null, avIds))+")";
             }
         }
         else if ("none".equals(operator))
