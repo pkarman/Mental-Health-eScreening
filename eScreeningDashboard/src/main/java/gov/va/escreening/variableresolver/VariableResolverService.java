@@ -3,6 +3,7 @@ package gov.va.escreening.variableresolver;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Optional;
@@ -25,7 +26,7 @@ public interface VariableResolverService {
 	 * @return the resolved assessment variable dtos
 	 * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
 	 */
-    Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, List<AssessmentVariable> dbVariables);
+    Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, Collection<AssessmentVariable> dbVariables);
     
     /**
      * 

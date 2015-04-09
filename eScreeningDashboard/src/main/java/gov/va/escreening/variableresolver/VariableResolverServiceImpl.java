@@ -76,7 +76,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     
     @Override
     public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
-            List<AssessmentVariable> dbVariables) {
+            Collection<AssessmentVariable> dbVariables) {
         List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
         
         // clear the smr cache before resolving variable for every assessment 

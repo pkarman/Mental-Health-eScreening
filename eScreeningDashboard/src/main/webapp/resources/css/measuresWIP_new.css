@@ -108,8 +108,8 @@ label {
 #savedTime {
 	float: right;
 	color: #333333;
-	font-family: LUCIDA CONSOLE;
-	font-size: 14px;
+	font-family: verdana,arial,sans-serif;
+	font-size: 12px;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	word-spacing: -2px;

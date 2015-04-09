@@ -94,8 +94,8 @@ public class AssessmentVariableController {
 				.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 		return avTableToList(t);
-    }
-
+	}
+	
     @RequestMapping(value = "/services/avs2MngFormulas", params = "moduleId", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List<Map<String, Object>> getAssessmentVarsToMngFormulas(@RequestParam("moduleId") Integer moduleId) {

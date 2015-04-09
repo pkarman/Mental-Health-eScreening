@@ -20,8 +20,6 @@
 	<logger name="gov.va.escreening.interceptor">
 		<level value="WARN" />
 	</logger>
-
-	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>

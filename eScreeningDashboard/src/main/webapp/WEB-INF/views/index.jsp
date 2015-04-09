@@ -4,14 +4,12 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!DOCTYPE html>
 <htmL>
 <head>
 	<title>Welcome Page</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	
 	<!-- FAVICON -->
@@ -34,6 +32,7 @@
 	
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script> 
 	<script type="text/javascript">
+		// TODO: need to move to external JS
 		$(function() {
 		    $('.wecomePageDiv3 img:gt(0)').hide(); // to hide all but the first image when page loads
 		
@@ -97,15 +96,11 @@
                         </div>
                     </div>
     			</div>
-                
-                
-                
 			</div>
 		</div>
 	</div> 
 </div>
 <%@ include file="/WEB-INF/views/partialpage/footer_login.jsp" %>
-</body>
-
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
+</body>
 </htmL>

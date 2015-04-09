@@ -1,10 +1,13 @@
 package gov.va.escreening.repository;
 
+import com.google.common.collect.Lists;
 import gov.va.escreening.dto.ae.Measure;
+import gov.va.escreening.entity.Program;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -97,7 +100,24 @@ public class VeteranAssessmentSurveyRepositoryImpl extends AbstractHibernateRepo
 
         return query.getResultList();
     }
-    
+
+    @Override
+    public List<VeteranAssessmentSurvey> findByClinicAndDateRange(List<Integer> clinicIds, Date startDate, Date finishDate) {
+
+        String sql = "SELECT vas FROM VeteranAssessmentSurvey vas JOIN vas.veteranAssessment va JOIN va.clinic c "
+        		+ "WHERE c.clinicId in (:clinicIds) AND vas.dateCreated BETWEEN :startDate AND :finishDate";
+
+        List<VeteranAssessmentSurvey> resultList = Lists.newArrayList();
+        if (clinicIds != null && clinicIds.size() > 0) {
+            TypedQuery<VeteranAssessmentSurvey> query = entityManager.createQuery(sql, VeteranAssessmentSurvey.class);
+            query.setParameter("clinicIds", clinicIds);
+            query.setParameter("startDate", startDate);
+            query.setParameter("finishDate", finishDate);
+            resultList = query.getResultList();
+        }
+        return resultList;
+    }
+
     /* query strings */
     /* adapted from the SurveyPageRepositoryImpl.SKIP_QUERY_FORMAT */ 
     private static final String CALCULATE_PROGRESS_MAIN = 

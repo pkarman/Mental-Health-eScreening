@@ -7,7 +7,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.va.escreening.domain.BatteryDto;
 import gov.va.escreening.dto.ae.Answer;
+
+import gov.va.escreening.entity.AssessmentAppointment;
+
 import gov.va.escreening.dto.editors.SurveyPageInfo;
+
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
@@ -16,6 +20,8 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPage;
 import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.entity.Veteran;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.MeasureRepository;
 import gov.va.escreening.repository.ProgramRepository;
@@ -23,10 +29,12 @@ import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.SurveyPageRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranRepository;
 import gov.va.escreening.service.BatteryService;
 import gov.va.escreening.service.SurveyService;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -71,6 +79,12 @@ public class RepositoryTest {
 	@Resource
 	VeteranRepository veteranRepo;
 	
+	@Resource
+	AssessmentAppointmentRepository assestApptRepo;
+	
+	@Resource
+	VeteranAssessmentRepository vetAssessmentRepo;
+
 	@Resource
 	ProgramRepository programRepo;
 
@@ -209,14 +223,22 @@ public class RepositoryTest {
 	}
 
 	@Test
+	public void testVeteranRepoSearchByIens() {
+		List<Veteran> vetList = veteranRepo.getVeteranByIens(new String[]{"205"});
+		
+		assertTrue(vetList.size()==1);
+
+	}
+	
+	@Test
     public void testSurveyBatteryTemplate()
     {
     	List<Survey> surveys = surveyRepo.findByTemplateId(25);
     	assertEquals(1, surveys.size());
     	assertEquals(24, surveys.get(0).getSurveyId().intValue());
     	
-    	List<Battery> batteries = batteryRepo.findByTemplateId(1);
-    	assertEquals(1, batteries.size());
+    	List<Battery> batteries = batteryRepo.findByTemplateId(3);
+    	
     	
     }
     
@@ -227,8 +249,22 @@ public class RepositoryTest {
 	}
     
     @Test
+    public void testAssessmentAppointmentRepo()
+    {
+    	AssessmentAppointment aa = new AssessmentAppointment();
+    	aa.setAppointmentDate(Calendar.getInstance().getTime());
+    	aa.setVetAssessmentId(18);
+    	assestApptRepo.create(aa);
+    	assestApptRepo.commit();
+    	
+    	AssessmentAppointment aa2 = assestApptRepo.findByAssessmentId(18);
+    	assertNotNull(aa2);
+    }
+
+    @Test
     public void testProgramByUser()
     {
     	assertEquals(5, programRepo.findProgramForUser(4).size());
+
     }
 }

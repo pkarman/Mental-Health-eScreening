@@ -91,9 +91,9 @@ public class TemplateTest {
 		
 		TemplateFileDTO fileDTO = new TemplateFileDTO();
 		
-		Template template = templateRepository.findOne(40);
+		Template template = templateRepository.findOne(100);
 		
-		fileDTO.setId(40);;
+		fileDTO.setId(100);;
 		fileDTO.setIsGraphical(template.getIsGraphical());
 
 		fileDTO.setBlocks(new ArrayList<INode>());

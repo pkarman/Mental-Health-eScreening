@@ -224,7 +224,6 @@
 				</div>
 			</div>
 		</div>
-		
 		<div class="row">
 			<div class="col-md-12">
 				<h2>Other Configuration</h2>
@@ -241,7 +240,6 @@
 			</div>
 		</div>
 	</div>
-
 <%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 </body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>

@@ -1,0 +1,2055 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="1.8150000000000117"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="761"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="clinicNames" class="java.lang.String"/>
+	<parameter name="female_percentage" class="java.lang.String"/>
+	<parameter name="female_count" class="java.lang.String"/>
+	<parameter name="male_percentage" class="java.lang.String"/>
+	<parameter name="male_count" class="java.lang.String"/>
+	<parameter name="hispanic_percentage" class="java.lang.String"/>
+	<parameter name="hispanic_count" class="java.lang.String"/>
+	<parameter name="non_hispanic_percentage" class="java.lang.String"/>
+	<parameter name="non_hispanic_count" class="java.lang.String"/>
+	<parameter name="missingethnicity_percentage" class="java.lang.String"/>
+	<parameter name="missingethnicity_count" class="java.lang.String"/>
+	<parameter name="white_percentage" class="java.lang.String"/>
+	<parameter name="white_count" class="java.lang.String"/>
+	<parameter name="black_percentage" class="java.lang.String"/>
+	<parameter name="black_count" class="java.lang.String"/>
+	<parameter name="indian_percentage" class="java.lang.String"/>
+	<parameter name="indian_count" class="java.lang.String"/>
+	<parameter name="hawaiian_percentage" class="java.lang.String"/>
+	<parameter name="hawaiian_count" class="java.lang.String"/>
+	<parameter name="asian_percentage" class="java.lang.String"/>
+	<parameter name="asian_count" class="java.lang.String"/>
+	<parameter name="norace_percentage" class="java.lang.String"/>
+	<parameter name="norace_count" class="java.lang.String"/>
+	<parameter name="otherrace_percentage" class="java.lang.String"/>
+	<parameter name="otherrace_count" class="java.lang.String"/>
+	<parameter name="highschool_percentage" class="java.lang.String"/>
+	<parameter name="highschool_count" class="java.lang.String"/>
+	<parameter name="ged_percentage" class="java.lang.String"/>
+	<parameter name="ged_count" class="java.lang.String"/>
+	<parameter name="highschooldip_percentage" class="java.lang.String"/>
+	<parameter name="highschooldip_count" class="java.lang.String"/>
+	<parameter name="somecollege_percentage" class="java.lang.String"/>
+	<parameter name="somecollege_count" class="java.lang.String"/>
+	<parameter name="associate_percentage" class="java.lang.String"/>
+	<parameter name="associate_count" class="java.lang.String"/>
+	<parameter name="college_percentage" class="java.lang.String"/>
+	<parameter name="college_count" class="java.lang.String"/>
+	<parameter name="master_percentage" class="java.lang.String"/>
+	<parameter name="master_count" class="java.lang.String"/>
+	<parameter name="dr_percentage" class="java.lang.String"/>
+	<parameter name="dr_count" class="java.lang.String"/>
+	<parameter name="missingedu_percentage" class="java.lang.String"/>
+	<parameter name="missingedu_count" class="java.lang.String"/>
+	<parameter name="fulltime_percentage" class="java.lang.String"/>
+	<parameter name="fulltime_count" class="java.lang.String"/>
+	<parameter name="parttime_percentage" class="java.lang.String"/>
+	<parameter name="parttime_count" class="java.lang.String"/>
+	<parameter name="seasonal_percentage" class="java.lang.String"/>
+	<parameter name="seasonal_count" class="java.lang.String"/>
+	<parameter name="daylabor_percentage" class="java.lang.String"/>
+	<parameter name="daylabor_count" class="java.lang.String"/>
+	<parameter name="unemployed_percentage" class="java.lang.String"/>
+	<parameter name="unemployed_count" class="java.lang.String"/>
+	<parameter name="missingemp_percentage" class="java.lang.String"/>
+	<parameter name="missingemp_count" class="java.lang.String"/>
+	<parameter name="army_percentage" class="java.lang.String"/>
+	<parameter name="army_count" class="java.lang.String"/>
+	<parameter name="airforce_percentage" class="java.lang.String"/>
+	<parameter name="airforce_count" class="java.lang.String"/>
+	<parameter name="coast_percentage" class="java.lang.String"/>
+	<parameter name="coast_count" class="java.lang.String"/>
+	<parameter name="marines_percentage" class="java.lang.String"/>
+	<parameter name="marines_count" class="java.lang.String"/>
+	<parameter name="nationalguard_percentage" class="java.lang.String"/>
+	<parameter name="nationalguard_count" class="java.lang.String"/>
+	<parameter name="navy_percentage" class="java.lang.String"/>
+	<parameter name="navy_count" class="java.lang.String"/>
+	<parameter name="missingmilitary_percentage" class="java.lang.String"/>
+	<parameter name="missingmilitary_count" class="java.lang.String"/>
+	<parameter name="tobacco_never_percentage" class="java.lang.String"/>
+	<parameter name="tobacco_never_count" class="java.lang.String"/>
+	<parameter name="tobacco_no_percentage" class="java.lang.String"/>
+	<parameter name="tobacco_no_count" class="java.lang.String"/>
+	<parameter name="tobacco_yes_percentage" class="java.lang.String"/>
+	<parameter name="tobacco_miss_percentage" class="java.lang.String"/>
+	<parameter name="tobacco_yes_count" class="java.lang.String"/>
+	<parameter name="tobacco_miss_count" class="java.lang.String"/>
+	<parameter name="numberofdeployments" class="java.lang.String"/>
+	<parameter name="age" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="151" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Demographics Report]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="386" y="78" width="181" height="26" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VistA Clinics]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="133" width="572" height="15" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<summary>
+		<band height="686" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="121" height="18" backcolor="#CCCCCC" uuid="c791534e-6443-4f05-ab33-2c0568038e12"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Demographics]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="121" y="0" width="451" height="18" backcolor="#CCCCCC" uuid="78de47e7-8015-4075-a088-6b40118fc994"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Questions]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="18" width="121" height="40" uuid="2cc439b1-d0de-4d47-871c-517c3a0ad6a2"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Gender]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="121" y="18" width="451" height="40" uuid="4fc41660-6b61-44eb-84b0-e7c12c5c24e3"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<staticText>
+					<reportElement x="57" y="5" width="339" height="15" uuid="9cd1fcb9-298b-4390-ba93-08fd7dc3afbf"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Male]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="57" y="20" width="339" height="15" backcolor="#CCCCCC" uuid="c3361e49-eb5c-4416-97af-eca86a3a8d2e"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Female]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="11" y="5" width="46" height="15" uuid="f39b0d2e-f107-45c7-88f3-37b38f2b86e2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{male_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="20" width="46" height="15" backcolor="#CCCCCC" uuid="dda6d00a-8652-4bf9-9bed-85c8a3f90909"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{female_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="396" y="5" width="46" height="15" uuid="8073d678-647a-402a-9d0d-947b80ef7261"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{male_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="396" y="20" width="46" height="15" backcolor="#CCCCCC" uuid="cd68811d-c313-4e5f-92cf-15416fa38f33"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{female_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="58" width="121" height="180" backcolor="#CCCCCC" uuid="63aecd57-729b-464f-88cc-5a0f912f5a61"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Ethinicity/Race]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="121" y="58" width="451" height="180" uuid="9fb54242-c865-4c28-96c2-f2c82b6fe9e5"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<staticText>
+					<reportElement x="56" y="13" width="339" height="15" uuid="bcb0e058-e31a-4171-8d0b-04d0e75924ee"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Hispanic]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="11" y="13" width="45" height="15" uuid="ac5396c2-af39-44f6-93bd-b8dc8b6708f2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{hispanic_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="11" y="1" width="440" height="12" uuid="76fa9f14-66f5-4a1f-8a1f-d833bc283f06"/>
+					<textElement>
+						<font fontName="Arial" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ethnicity]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="395" y="13" width="46" height="15" uuid="0a4ed352-2571-4325-a6e2-6f6972d43b06"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{hispanic_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="28" width="339" height="15" backcolor="#CCCCCC" uuid="a63df629-97db-4e50-a547-96ee0e0c78dd"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Non Hispanic]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="56" y="43" width="339" height="15" uuid="de31d6a9-baff-48a3-85e1-d2e1a946d4c2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Missing]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="28" width="46" height="15" backcolor="#CCCCCC" uuid="083e81e6-5751-4994-aec7-c865af085530"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{non_hispanic_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="28" width="45" height="15" backcolor="#CCCCCC" uuid="318d2072-ce5c-462e-bc99-64d597b6e706"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="11" y="43" width="45" height="15" uuid="28990bf2-7602-4b7a-8a49-0dfb4496e033"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingethnicity_percentage}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="395" y="43" width="46" height="15" uuid="6abbd9d0-e69b-47fa-9066-dca41af85d4c"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingethnicity_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="11" y="58" width="100" height="13" uuid="98218c70-b7ea-426b-8087-ccad220c1fef"/>
+					<textElement>
+						<font fontName="Arial" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Race]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="11" y="101" width="45" height="15" uuid="073102ce-580e-43f7-9ddd-2c85d5aec409"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{indian_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="11" y="71" width="45" height="15" uuid="1910f327-42b9-44ae-88ad-2375d1c8edd3"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{white_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="56" y="71" width="339" height="15" uuid="72c37033-b84f-4460-93a0-79edde1c91f4"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  White/Caucasian]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="395" y="71" width="46" height="15" uuid="b68721a7-8b7b-4072-a406-7fd3ba3076ff"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{white_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="86" width="45" height="15" backcolor="#CCCCCC" uuid="3d92e1e0-cc03-4cb9-bcda-4f420bb11564"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{black_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="86" width="339" height="15" backcolor="#CCCCCC" uuid="15ef638e-b85e-4005-ae40-d0c154b9d0d2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Black/African American]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="86" width="46" height="15" backcolor="#CCCCCC" uuid="a9ab0758-197c-49db-8d29-60222e118cc5"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{black_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="56" y="101" width="339" height="15" uuid="ae8125ad-5d40-49ce-87f4-c57c08f835f0"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  American Indian or Alaskan Native]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="395" y="101" width="46" height="15" uuid="125d2d1a-51d4-4560-9548-d35047f1fb26"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{indian_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="116" width="45" height="15" backcolor="#CCCCCC" uuid="9a3dc265-e9fb-4ff5-ac39-ca2c840dff53"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{non_hispanic_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="116" width="339" height="15" backcolor="#CCCCCC" uuid="3fe03f6c-7ff1-4dd1-b78c-09fae30ed217"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Native hawaiian or pacific Islander]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="116" width="46" height="15" backcolor="#CCCCCC" uuid="f71561f0-7aed-4242-a800-ba5b9c642080"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{hawaiian_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="56" y="131" width="339" height="15" uuid="1a17fa66-22c9-41ab-93e5-94e4fc3cfbbb"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Asian (Filipino, Japanese, Korean, Chinese, Vietnamese, etc.)]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="395" y="131" width="46" height="15" uuid="03094174-016d-4937-b76c-9784c771468e"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{asian_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="146" width="339" height="15" backcolor="#CCCCCC" uuid="04e84ffb-b9e1-4ce5-bb3e-969a811a9187"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Decline To Answer]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="56" y="161" width="339" height="15" uuid="92cccdc8-4aa2-47c4-98ea-97e260150bd0"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Other]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="146" width="45" height="15" backcolor="#CCCCCC" uuid="00f3e780-1e12-4389-864e-ca7e8222e125"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{norace_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="146" width="46" height="15" backcolor="#CCCCCC" uuid="850e97e6-50b8-4a26-bbbb-17724f26dc01"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{norace_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="395" y="161" width="46" height="15" uuid="ef92dc5d-f2a6-46e5-bebd-ccaee581a435"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{otherrace_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement x="0" y="238" width="121" height="15" uuid="45abb781-ae3a-46a7-b897-6dfaf7a9f92e"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Age]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="253" width="121" height="142" backcolor="#CCCCCC" uuid="a263cd83-781b-4b00-8046-4bbd5517b137"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Education]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="491" width="121" height="112" backcolor="#CCCCCC" uuid="26653884-fb01-402c-8bea-3a8391bdb9a9"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Branch of Military]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="618" width="121" height="68" uuid="8373fd1f-1ac7-4514-9fcb-cad2a2d1da03"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Tobacco Use Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="395" width="121" height="96" uuid="0189c151-3628-422d-b35c-8668e0a18bd0"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Employment Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="603" width="121" height="15" uuid="6b9ebae4-aba3-43d1-8cc1-a954518358cb"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Num of Deployments]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="132" y="188" width="45" height="15" uuid="2e520b08-0531-41db-a2fc-9ca60562c25e"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{asian_percentage}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="132" y="218" width="45" height="15" uuid="343c2cc8-f938-4b02-95fd-2bdd9d347841"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Arial"/>
+					<paragraph leftIndent="2" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{otherrace_percentage}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="121" y="253" width="451" height="142" uuid="b2a7fb21-f319-4927-8756-414658881631"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="20" width="45" height="15" backcolor="#CCCCCC" uuid="82ad1279-b4cf-43ed-9163-36b97c91a452"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ged_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="20" width="339" height="15" backcolor="#CCCCCC" uuid="389be84e-b5ec-4301-999c-0065a4f1bca0"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  GED]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="5" width="339" height="15" backcolor="#CCCCCC" uuid="048e536e-a86f-4aeb-9e83-c8440dbd3fcb"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Some High School]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="5" width="45" height="15" backcolor="#CCCCCC" uuid="55bdc50b-68f1-4913-842f-4e45eeae35e2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{highschool_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="20" width="46" height="15" backcolor="#CCCCCC" uuid="89abd4cd-969c-4a6b-b121-a18833cc7de9"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ged_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="5" width="46" height="15" backcolor="#CCCCCC" uuid="71f1d259-16bc-4427-aa91-3aeb6f385f36"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{highschool_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="35" width="339" height="15" backcolor="#CCCCCC" uuid="dc11e923-7f20-4824-a5ee-29d32f4f7869"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  High School Diploma]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="50" width="339" height="15" backcolor="#CCCCCC" uuid="253edcde-79c4-410e-8779-eab46de0fb9c"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Some College]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="65" width="339" height="15" backcolor="#CCCCCC" uuid="2bfd20ad-49c3-42a0-a494-c150de89d237"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Associate Degree]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="80" width="339" height="15" backcolor="#CCCCCC" uuid="08cbbe8b-ef4b-4a04-ac2b-908c9cc2752f"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  4-year College Degree]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="95" width="339" height="15" backcolor="#CCCCCC" uuid="c52d4166-c9c0-40b3-8ca0-5c2d98151372"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Master's Degree]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="110" width="339" height="15" backcolor="#CCCCCC" uuid="6e2650de-6163-4140-95a2-6c431e9300ba"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Doctoral Degree (Ph.D., M.D., DDS, etc.)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="125" width="339" height="15" backcolor="#CCCCCC" uuid="8962c0aa-9b18-4af1-b398-dd67b0a52189"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Missing]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="35" width="45" height="15" backcolor="#CCCCCC" uuid="3053dd10-1927-4369-a575-7141d2bc020a"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{highschooldip_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="65" width="45" height="15" backcolor="#CCCCCC" uuid="f6ac280b-2699-49b6-a4a4-5ce7ee4c775f"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{associate_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="50" width="45" height="15" backcolor="#CCCCCC" uuid="e09d1cca-50ab-4b43-9851-66ef4a283d87"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{somecollege_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="80" width="45" height="15" backcolor="#CCCCCC" uuid="de3e1760-a28e-4267-855f-b863e6921845"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{college_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="110" width="45" height="15" backcolor="#CCCCCC" uuid="b88af5e9-d960-4c42-b0f5-86733722ec89"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{dr_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="95" width="45" height="15" backcolor="#CCCCCC" uuid="316e4b4c-9841-44bd-be31-cc5d6969ebfd"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{master_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="125" width="45" height="15" backcolor="#CCCCCC" uuid="f77e6f03-c0cf-4402-968a-3c628d5a2c40"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingedu_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="35" width="46" height="15" backcolor="#CCCCCC" uuid="b31a131e-167c-4dc4-b8bd-2b6f2e5c2782"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{highschooldip_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="65" width="46" height="15" backcolor="#CCCCCC" uuid="406320f6-4be5-4d6a-89b7-722dd7c048cd"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{associate_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="95" width="46" height="15" backcolor="#CCCCCC" uuid="a1114e2d-1c96-4d66-96a0-6bf70bce9126"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{master_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="125" width="46" height="15" backcolor="#CCCCCC" uuid="217b7a47-4158-4e34-8972-7aac4d182ea3"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingedu_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="50" width="46" height="15" backcolor="#CCCCCC" uuid="947022a6-0355-431c-b324-d11e9f40c240"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{somecollege_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="80" width="46" height="15" backcolor="#CCCCCC" uuid="cd32f4f4-4623-41a2-8b13-100b6d22c839"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{college_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="109" width="46" height="15" backcolor="#CCCCCC" uuid="473f90b7-46fc-42bf-a4e4-d018f863b960"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{dr_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<textField>
+				<reportElement x="121" y="238" width="451" height="15" uuid="3f8e65f5-10bf-4da2-818f-95aa96294c8c"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement>
+					<font fontName="Arial"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{age}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="121" y="395" width="451" height="96" uuid="a9a786cb-6194-45b4-a0ae-3afe5d2342d4"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="19" width="45" height="15" backcolor="#CCCCCC" uuid="63639ac6-8102-4ee2-b331-0f69e5fa8cd7"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{parttime_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="a4922ff5-66c7-4b39-930c-847943d2adc5"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Part Time]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="4" width="339" height="15" backcolor="#CCCCCC" uuid="b80a3dc1-1567-45e4-902d-367cc6abda75"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Full Time]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="4" width="45" height="15" backcolor="#CCCCCC" uuid="6a4d5b2d-ccd6-4486-bdea-2037175f61c2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{fulltime_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="24361eb7-0252-4553-89ae-0cbbdd598384"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{parttime_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="9658007f-61e8-4209-a59f-2c815ae2aed8"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{fulltime_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="34" width="339" height="15" backcolor="#CCCCCC" uuid="1d1834aa-354d-4caa-8b42-ea8f9adc7dea"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Seasonal]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="a9ce0182-b29b-4024-b573-7589e3b0bde2"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Day Labor]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="64" width="339" height="15" backcolor="#CCCCCC" uuid="f2064765-e73c-431e-87b3-24faadde46fa"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Unemployed]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="79" width="339" height="15" backcolor="#CCCCCC" uuid="a0911006-b002-41db-ae4c-9d123b80be9b"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Missing]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="34" width="45" height="15" backcolor="#CCCCCC" uuid="120af974-f118-4d59-b5c0-22a97519eea1"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{seasonal_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="64" width="45" height="15" backcolor="#CCCCCC" uuid="53d4fefc-e419-477b-9241-332fbb8cbea8"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{unemployed_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="ec1efe2d-fc3a-4975-8a81-d77a035300e4"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{daylabor_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="79" width="45" height="15" backcolor="#CCCCCC" uuid="a958d6bf-8b6b-4b11-843c-454b51ae1070"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingemp_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="75113dea-f25e-4774-bd10-859705e3179d"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{seasonal_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="64" width="46" height="15" backcolor="#CCCCCC" uuid="4198de45-ecfb-4445-9e8e-5f2bdedf225c"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{unemployed_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="f3e21d3d-60bc-4410-ac2c-8f85b8a1b5da"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{daylabor_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="79" width="46" height="15" backcolor="#CCCCCC" uuid="25f74196-35d7-44b4-9b7d-6c82c312a1f8"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingemp_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="121" y="491" width="451" height="112" uuid="3c71a2c8-c6a0-484f-b717-00127674fff7"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="19" width="45" height="15" backcolor="#CCCCCC" uuid="73b76c87-eb3f-4f8b-98d7-29f9ad5c84d8"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{airforce_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="ea2efb8a-0b23-4b5c-8951-4adef5bae6d6"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Air Force]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="4" width="339" height="15" backcolor="#CCCCCC" uuid="29baf934-418a-4e48-a84e-9fd5182f7ce6"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Army]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="4" width="45" height="15" backcolor="#CCCCCC" uuid="22729219-9746-43d2-b6b4-22baa7f4b2fb"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{army_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="b49860ea-5bb9-4afe-904f-f1909a46dfe6"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{airforce_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="09bae013-7617-4449-bcac-3ce85c2ed111"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{army_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="34" width="339" height="15" backcolor="#CCCCCC" uuid="03cf3b05-7cbc-4c2f-b36d-b520fb9acbfd"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Coast Guard]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="f616b108-cf32-4546-a6c3-1f59110012b4"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Marines]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="64" width="339" height="15" backcolor="#CCCCCC" uuid="ee51790d-7847-4cfb-aa7e-59f8f83d2396"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  National Guard]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="79" width="339" height="15" backcolor="#CCCCCC" uuid="f90dec76-7f75-434c-bfe2-da592ab89f76"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Navy]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="34" width="45" height="15" backcolor="#CCCCCC" uuid="ee0921dd-6624-413a-9788-f59ce15da00b"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{coast_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="64" width="45" height="15" backcolor="#CCCCCC" uuid="c95c19b2-d0e7-4cb8-b1eb-913ccb62de21"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{nationalguard_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="866b4cb3-1fe0-4a76-83fd-1a6eb2da12d5"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{marines_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="79" width="45" height="15" backcolor="#CCCCCC" uuid="ba176c36-d6fe-4ad3-9ddc-d51d5cb06da7"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{navy_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="3bef2e75-0537-4e31-af18-6ccac164796b"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{coast_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="64" width="46" height="15" backcolor="#CCCCCC" uuid="4b128815-01c2-447c-b35a-670a7da1a390"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{nationalguard_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="f70ba39d-4ad4-4dce-a9e4-74df8b0b15d7"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{marines_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="79" width="46" height="15" backcolor="#CCCCCC" uuid="54701994-ff70-434f-a8b6-6066bbcb8e78"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{navy_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="94" width="339" height="15" backcolor="#CCCCCC" uuid="f890deae-cfdd-41b2-a092-2bebb6dabaa1"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Missing]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="94" width="45" height="15" backcolor="#CCCCCC" uuid="69256a7f-0685-4f03-8a62-6e450fee2a1f"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingmilitary_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="94" width="46" height="15" backcolor="#CCCCCC" uuid="34b08b6e-cbae-46bc-be96-b8ca3c94ae5e"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{missingmilitary_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<textField>
+				<reportElement x="121" y="603" width="451" height="15" uuid="3a7e1ab3-a887-4fc4-b75f-9a2347a3e29b"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement>
+					<font fontName="Arial"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{numberofdeployments}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="121" y="618" width="451" height="68" uuid="0e29411f-1c50-426c-be21-7192806b77fc"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="19" width="45" height="15" backcolor="#CCCCCC" uuid="f59afad6-f80e-4711-b192-4a1db6737617"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_no_percentage}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="19" width="339" height="15" backcolor="#CCCCCC" uuid="2d8a4d56-a236-469d-b79f-06b3e0dd56c1"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  No. I used tobacco in the past, but have quit.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="4" width="339" height="15" backcolor="#CCCCCC" uuid="d0e630de-1239-4d03-b840-afdad2414d98"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Never. I have never used tobacco on a regular basis]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="4" width="45" height="15" backcolor="#CCCCCC" uuid="c20b193b-44af-4b82-8acb-890554028779"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_never_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="19" width="46" height="15" backcolor="#CCCCCC" uuid="b016135c-2908-4736-908a-62143fbb80b0"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_no_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="4" width="46" height="15" backcolor="#CCCCCC" uuid="56942fae-3702-48a7-9776-a796c1b121be"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_never_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="56" y="34" width="339" height="15" backcolor="#CCCCCC" uuid="199e62f0-2a9d-432a-8266-6f02c50111e1"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Yes. I currently use tobacco on a regular basis.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="56" y="49" width="339" height="15" backcolor="#CCCCCC" uuid="f820ced0-f37c-4842-a086-d6103407ccbc"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<text><![CDATA[  Missing]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Transparent" x="11" y="34" width="45" height="15" backcolor="#CCCCCC" uuid="738fc933-ea60-44bb-b77e-4ff2bff4735b"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_yes_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="11" y="49" width="45" height="15" backcolor="#CCCCCC" uuid="ee2b666d-07cb-4e0d-8ad0-e58a5a93c7be"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph leftIndent="2" rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_miss_percentage}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Transparent" x="395" y="34" width="46" height="15" backcolor="#CCCCCC" uuid="2d945862-77c3-4b1d-b8c3-1eb902b49d10"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_yes_count}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="395" y="49" width="46" height="15" backcolor="#CCCCCC" uuid="fe126d32-646d-4bf6-ad89-926c40857bd1"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{tobacco_miss_count}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>
