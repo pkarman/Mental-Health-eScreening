@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="averageTimePermoduleReport" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="2.657341500000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="192"/>
+	<property name="ireport.y" value="188"/>
 	<subDataset name="Table Dataset 1" uuid="5fbd32eb-732d-4507-9783-129a5dc03a11"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
@@ -82,7 +82,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial" size="14" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{moduleTime}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["N= "+ $F{moduleTime}]]></textFieldExpression>
 				</textField>
 				<rectangle radius="4">
 					<reportElement x="198" y="23" width="85" height="20" backcolor="#CCCCCC" uuid="153edc02-6723-45c2-85aa-e2295197fe93"/>
