@@ -21,7 +21,6 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 	$scope.relatedObj = relatedObj;
 	TemplateBlockService.resetVariableHash(template);
 	$scope.assessmentVariable = {};
-	$scope.graphicalBlock = {};
 
 	var queryObj;
 	if ($scope.relatedObj.type === "module") {

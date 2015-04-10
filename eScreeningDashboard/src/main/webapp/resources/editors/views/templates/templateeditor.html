@@ -18,7 +18,7 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="templateTitle">Template Title *</label>
-				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="template.title" required>
+				<input type="text" class="form-control" id="templateTitle" placeholder="Enter Template Title"  ng-model="template.name" required>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -41,7 +41,6 @@
 				<mhe-assessment-var-dropdown-menu-dir 
 					id="selectVariable"
 					assessment-variable="assessmentVariable" 
-					block="graphicalBlock"
 					ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" 
 					ng-show="assessmentVariables.length != 0"/>
 			</div>

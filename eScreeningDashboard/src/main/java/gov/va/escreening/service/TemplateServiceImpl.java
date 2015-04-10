@@ -3,8 +3,8 @@ package gov.va.escreening.service;
 import static gov.va.escreening.constants.AssessmentConstants.*;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
-import gov.va.escreening.dto.TemplateDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
+import gov.va.escreening.dto.template.GraphParamsDto;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -21,7 +21,6 @@ import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.TemplateTypeRepository;
 import gov.va.escreening.repository.VariableTemplateRepository;
-import gov.va.escreening.transformer.TemplateTransformer;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -46,6 +45,11 @@ import com.google.common.collect.Maps;
 @Service
 public class TemplateServiceImpl implements TemplateService {
 	private static final Logger logger = LoggerFactory.getLogger(TemplateServiceImpl.class);
+	private static final String GRAPHICAL_TEMPLATE_FORMAT = 
+        "<#if (var%d.children)??  &&  ((var%d.children)?size > 0)>\n"
+        + "${MODULE_TITLE_START}%s${MODULE_TITLE_END}\n"
+        + "${GRAPH_SECTION_START}\n ${GRAPH_BODY_START}\n%s\n"
+        + " ${GRAPH_BODY_END}\n${GRAPH_SECTION_END}\n";
 
 	@Autowired
 	private TemplateRepository templateRepository;
@@ -130,67 +134,6 @@ public class TemplateServiceImpl implements TemplateService {
 		templateRepository.deleteById(templateId);
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public TemplateDTO getTemplate(Integer templateId) {
-		Template template = templateRepository.findOne(templateId);
-
-		if (template == null) {
-			return null;
-		} else {
-			return TemplateTransformer.copyToTemplateDTO(template, null);
-		}
-
-	}
-
-	@Override
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public TemplateDTO updateTemplate(TemplateDTO templateDTO) {
-
-		Template template = templateRepository.findOne(templateDTO
-				.getTemplateId());
-		if (template == null) {
-			throw new IllegalArgumentException("Could not find template");
-		}
-		TemplateTransformer.copyToTemplate(templateDTO, template);
-		template.setModifiedDate(new Date());
-		templateRepository.update(template);
-		return TemplateTransformer.copyToTemplateDTO(template, null);
-	}
-
-	@Override
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public TemplateDTO createTemplate(TemplateDTO templateDTO, Integer templateTypeId, 
-			Integer parentId, boolean isSurvey) {
-		Template template = TemplateTransformer.copyToTemplate(templateDTO,	null);
-
-		template.setTemplateType(templateTypeRepository.findOne(templateTypeId));
-		template.setModifiedDate(new Date());
-
-		if (parentId == null) {
-			templateRepository.create(template);
-		} else {
-			if (isSurvey) {
-				Survey survey = surveyRepository.findOne(parentId);
-				Set<Template> templateSet = survey.getTemplates();
-				survey.setTemplates(addTemplateToSet(templateSet, template,
-						surveyTemplates));
-				surveyRepository.update(survey);
-				template.setName("Survey "+template.getTemplateType().getName());
-			} else {
-				Battery battery = batteryRepository.findOne(parentId);
-				Set<Template> templateSet = battery.getTemplates();
-				battery.setTemplates(addTemplateToSet(templateSet, template,
-						batteryTemplates));
-				template.setName("Battery "+template.getTemplateType().getName());
-				batteryRepository.update(battery);
-			}
-		}
-
-		return TemplateTransformer.copyToTemplateDTO(template, null);
-
-	}
-
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void addVariableTemplate(Integer templateId,
@@ -246,140 +189,60 @@ public class TemplateServiceImpl implements TemplateService {
 		template.setVariableTemplateList(variableTemplates);
 		template.setModifiedDate(new Date());
 		templateRepository.update(template);
-	}
-
-	/**
-	 * 
-	 * Ensure the uniqueness of the template in either survey or battery
-	 * 
-	 * @param templateSet
-	 * @param template
-	 * @param uniquTemplateTypes
-	 * @return
-	 */
-	private Set<Template> addTemplateToSet(Set<Template> templateSet,
-			Template template, List<TemplateType> uniquTemplateTypes) {
-		if (templateSet == null) {
-			templateSet = new HashSet<Template>();
-			templateSet.add(template);
-		} else {
-			// first we make sure
-			boolean needsToBeUnique = false;
-
-			for (TemplateType tt : uniquTemplateTypes) {
-				if (tt.getId() == template.getTemplateType()
-						.getTemplateTypeId()) {
-					needsToBeUnique = true;
-					break;
-				}
-			}
-
-			if (needsToBeUnique) {
-				for (Template t : templateSet) {
-					if (t.getTemplateType().getTemplateTypeId() == template
-							.getTemplateType().getTemplateTypeId()) {
-						templateSet.remove(t);
-						break;
-					}
-				}
-			}
-
-			templateSet.add(template);
-		}
-
-		return templateSet;
-	}
-
-	@Override
-	public TemplateDTO getTemplateBySurveyAndTemplateType(Integer surveyId,
-			Integer templateTypeId) {
-
-		Template t = templateRepository.getTemplateByIdAndTemplateType(
-				surveyId, templateTypeId);
-		TemplateDTO dto = null;
-		if (t != null) {
-			dto = new TemplateDTO();
-			dto.setTemplateId(t.getTemplateId());
-			dto.setName(t.getName());
-			dto.setDateCreated(t.getDateCreated());
-			dto.setDescription(t.getDescription());
-			dto.setGraphical(t.getIsGraphical());
-			dto.setTemplateFile(t.getTemplateFile());
-			dto.setTemplateType(templateTypeId);
-		}
-		return dto;
-	}
-	
+	}	
 	
 	@Override
 	public TemplateFileDTO getTemplateFileAsTree(Integer templateId) {
 		
-			Template t = templateRepository.findOne(templateId);
+	    Template t = templateRepository.findOne(templateId);
 
-			if (t == null)
-				return null;
-			
-			TemplateFileDTO dto = new TemplateFileDTO();
-			
-			dto.setJson(t.getJsonFile());
-			
-			if (t.getJsonFile() != null)
-			{
-				// now parsing the template file
-				ObjectMapper om = new ObjectMapper();
-				try
-				{
-					dto.setBlocks(Arrays.asList( om.readValue(t.getJsonFile(), INode[].class)));
-				}catch(IOException e)
-				{
-					logger.error("Error reading json file field as template blocks. Template ID: " + t.getTemplateId(), e);
-					return null;
-				}
-			}else{
-				if (t.getTemplateFile() != null && t.getTemplateFile().length() > 0 ){
-					dto.setBlocks(null);
-				}
-			}
-				
-			
-			dto.setName(t.getName());
-			dto.setId(templateId);
-			dto.setIsGraphical(t.getIsGraphical());
+	    if (t == null)
+	        return null;
 
-			TemplateTypeDTO ttDTO = new TemplateTypeDTO();
-			dto.setType(ttDTO);
-			ttDTO.setName(t.getTemplateType().getName());
-			ttDTO.setId(t.getTemplateType().getTemplateTypeId());
-			ttDTO.setDescription(t.getTemplateType().getDescription());
+	    TemplateFileDTO dto = new TemplateFileDTO();
 
-			/*
-			  String templateFile = t.getTemplateFile();
+	    dto.setJson(t.getJsonFile());
+	    ObjectMapper om = new ObjectMapper();
 
-			templateFile = templateFile.replace("${NBSP}", "&nbsp;")
-					.replace("${LINE_BREAK}", "<br/>")
-					.replace("<#include \"clinicalnotefunctions\">", "");
+	    if (t.getJsonFile() != null) {
+	        // now parsing the template file
+	        try{
+	            dto.setBlocks(Arrays.asList( om.readValue(t.getJsonFile(), INode[].class)));
+	        }
+	        catch(IOException e){
+	            //TODO: see if we should throw an illegal system state exception here
+	            logger.error("Error reading json file field as template blocks. Template ID: " + t.getTemplateId(), e);
+	            return null;
+	        }
+	    }else{
+	        dto.setBlocks(Collections.<INode>emptyList());
+	    }
 
-			try {
-				freemarker.template.Template fmTemplate = templateProcessorService
-						.getTemplate(templateId, templateFile);
-				for (int i = 0; i < fmTemplate.getRootTreeNode()
-						.getChildCount(); i++) {
-					INode nod = nodeIterate(((TemplateElement) fmTemplate
-							.getRootTreeNode().getChildAt(i)), null);
-					if (nod == null)
-						continue;
+	    if(t.getGraphParams() != null){
+	        try {
+	            dto.setGraph(om.readValue(t.getGraphParams(), GraphParamsDto.class));
+	        }
+	        catch(IOException e){
+	            //TODO: see if we should throw an illegal system state exception here
+	            logger.error("Error reading json graphical template parameters. Template ID: " + t.getTemplateId(), e);
+	            return null;
+	        }
+	    }
+	    else{
+	        dto.setGraph(new GraphParamsDto());
+	    }
 
-					dto.getBlocks().add(nod);
-				}
+	    dto.setName(t.getName());
+	    dto.setId(templateId);
+	    dto.setIsGraphical(t.getIsGraphical());
 
-			} catch (IOException e) {
-				return null;
-			}
-			return dto;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
-		return dto;
+	    TemplateTypeDTO ttDTO = new TemplateTypeDTO();
+	    dto.setType(ttDTO);
+	    ttDTO.setName(t.getTemplateType().getName());
+	    ttDTO.setId(t.getTemplateType().getTemplateTypeId());
+	    ttDTO.setDescription(t.getTemplateType().getDescription());
+
+	    return dto;
 	}
  
 	@Override
@@ -394,20 +257,30 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		return templateId;
 	}
-	
-	
 
-	private String generateFreeMarkerTemplateFile(List<INode> blocks, Set<Integer>ids) {
-		StringBuilder file = new StringBuilder();
-		file.append("<#include \"clinicalnotefunctions\">\n");
-		
-		file.append("<#-- generated file. Do not change -->\n");
+	private String generateFreeMarkerTemplateFile(TemplateFileDTO templateDto, Set<Integer>ids, String graphParams) {
+	    List<INode> blocks = templateDto.getBlocks();
+	    
+	    StringBuilder file = new StringBuilder();
+        file.append("<#include \"clinicalnotefunctions\">\n<#-- generated file. Do not change -->\n");
+        
+        if(templateDto.getIsGraphical()){
+            Integer varId = templateDto.getGraph().getVarId();
+            file.append(String.format(GRAPHICAL_TEMPLATE_FORMAT, 
+                    varId, varId, 
+                    templateDto.getName(), 
+                    graphParams));
+        }
 
 		file.append("${MODULE_START}\n");
 		for(INode block : blocks){
 			file = block.appendFreeMarkerFormat(file, ids, assessmentVariableService);
 		}
 		file.append("\n${MODULE_END}\n");
+		
+		if(templateDto.getIsGraphical()){
+		    file.append("</#if>");
+		}
 		
 		return file.toString();
 	}
@@ -418,42 +291,54 @@ public class TemplateServiceImpl implements TemplateService {
 			TemplateFileDTO templateFile) {
 		Template template = templateRepository.findOne(templateId);
 		
-		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
-		template.setTemplateType(templateType);
+		setTemplateFields(template, templateFile);
 		
-		
-		template.setIsGraphical(templateFile.getIsGraphical());
-		
-		if (templateFile.getBlocks() == null || templateFile.getBlocks().isEmpty())
-		{
-			template.setJsonFile(null);
-		}
-		else
-		{
-			// save raw json file to the database
-			ObjectMapper om = new ObjectMapper();
-			try
-			{
-				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
-			}
-			catch(IOException e) {
-				logger.error("Error setting block data", e);
-				template.setJsonFile(null);
-			}
-			
-			Set<Integer> assessmentVariableIds = new HashSet<Integer>();
-			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), assessmentVariableIds));			
-			setVariableTemplates(template, assessmentVariableIds);
-		}
-		
-		if (template.getTemplateFile()==null)
-		{
-			template.setTemplateFile("");
-		}
-
 		templateRepository.update(template);
-		
+	}
+	
+	private void setTemplateFields(Template template, TemplateFileDTO templateFile){
+	    gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateFile.getType().getId());
+        template.setTemplateType(templateType);
+        
+        template.setModifiedDate(new Date());
+        
+        template.setIsGraphical(templateFile.getIsGraphical());
+        template.setName(templateFile.getName());
+        ObjectMapper om = new ObjectMapper();
+        
+        // set json encoded graphical parameters
+        if(templateFile.getIsGraphical()){
+            try{
+                template.setGraphParams(om.writeValueAsString(templateFile.getGraph()));
+            }
+            catch(IOException e) {
+                logger.error("Error setting graphical template parameters for new template", e); 
+                template.setGraphParams(null);
+            }
+        }
+        
+        // save raw json file to the database
+        if (templateFile.getBlocks() == null || templateFile.getBlocks().isEmpty()) {
+            template.setJsonFile(null);
+        }
+        else {
+            try{
+                template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
+            }
+            catch(IOException e){
+                logger.error("Error setting json blocks for new template", e); 
+                template.setJsonFile(null);
+            }
+         }
+        
+        //generate the FreeMarker
+        Set<Integer> avIds = new HashSet<Integer>();
+        template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile, avIds, template.getGraphParams()));
+        setVariableTemplates(template, avIds);
+        
+        if (template.getTemplateFile()==null){
+            template.setTemplateFile("");
+        }
 	}
 	
 	/**
@@ -467,59 +352,20 @@ public class TemplateServiceImpl implements TemplateService {
 	private Integer createTemplate(Integer templateTypeId, TemplateFileDTO templateFile, Set<Template> templates ) throws IllegalSystemStateException{
 		
 		Template template = new Template();
+		setTemplateFields(template, templateFile);
 		
-		gov.va.escreening.entity.TemplateType templateType = templateTypeRepository.findOne(templateTypeId);
-		template.setTemplateType(templateType);
-		
-		template.setDateCreated(new Date());
-		template.setModifiedDate(new Date());
-		template.setIsGraphical(templateFile.getIsGraphical());
-		template.setName(templateFile.getName());
-		
-		// save raw json file to the database
-		if (templateFile.getBlocks() == null || templateFile.getBlocks().size() == 0)
-		{
-			template.setJsonFile(null);
-		}
-		else
-		{
-			ObjectMapper om = new ObjectMapper();
-			try
-			{
-				template.setJsonFile(om.writeValueAsString(templateFile.getBlocks()));
-			}
-			catch(IOException e)
-			{
-				logger.error("Error setting json blocks into template", e); 
-				e.printStackTrace();
-				template.setJsonFile(null);
-			}
-			Set<Integer> ids = new HashSet<Integer>();
-			
-			template.setTemplateFile(generateFreeMarkerTemplateFile(templateFile.getBlocks(), ids));
-			setVariableTemplates(template, ids);
-		 }
-		
-		if (template.getTemplateFile()==null)
-		{
-			template.setTemplateFile("");
-		}
 		/**
 		 * for survey one template per type
 		 */
-		for(Template t : templates)
-		{
-			if (t.getTemplateType().getTemplateTypeId().longValue() == templateFile.getType().getId().longValue())
-			{
+		for(Template t : templates){
+			if (t.getTemplateType().getTemplateTypeId().equals(templateFile.getType().getId())){
 				templates.remove(t);
 				break;
 			}
 		}
 		
 		templates.add(template);
-		
 		return template.getTemplateId();
-		
 	}
 
 	/**
