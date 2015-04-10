@@ -111,7 +111,7 @@
         <entry key="GAD 7 Anxiety" value="gad7_score" />
         <entry key="PCL-C" value="pcl_score" />
         <entry key="ISI" value="sleep_score" />
-        <entry key="ROAS" value="ROAS_weighted_score" />
+        <!--entry key="ROAS" value="ROAS_weighted_score" /-->
         <entry key="CD-RISC-10" value="res_score" />
         <entry key="BMI over 24" value="demo_BMI" />
         <entry key="NSI" value="NSI_score" />

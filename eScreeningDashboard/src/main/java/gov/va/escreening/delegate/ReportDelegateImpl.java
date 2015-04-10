@@ -583,7 +583,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberAndPercentVeteransWithMultiple") != null
                 && (Boolean) requestData.get("numberAndPercentVeteransWithMultiple")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate));
+            keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate)+"%");
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
             ks.add(keyValueDTO);
             bCheckAll = true;
@@ -602,18 +602,21 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
 
-        Map<Integer, Integer> surveyAvgTimeMap = vasSrv.calculateAvgTimePerSurvey(requestData);
+        Map<Integer, Map<String,String>> surveyAvgTimeMap = vasSrv.calculateAvgTimePerSurvey(requestData);
 
         JRDataSource dataSource = null;
 
         List<SurveyTimeDTO> dtos = Lists.newArrayList();
 
         for (SurveyDto survey : surveyService.getSurveyList()) {
-            Integer surveyAvgTime = surveyAvgTimeMap.get(survey.getSurveyId());
+            Map<String, String> surveyAvgTime = surveyAvgTimeMap.get(survey.getSurveyId());
             if (surveyAvgTime != null) {
                 SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
                 surveyTimeDTO.setModuleName(survey.getName());
-                surveyTimeDTO.setModuleTime(String.valueOf(surveyAvgTime));
+                surveyTimeDTO.setModuleTime(surveyAvgTime.get("AVG_TIME_AS_STRING"));
+                surveyTimeDTO.setModuleTotalCnt(surveyAvgTime.get("MODULE_TOTAL_CNT"));
+                surveyTimeDTO.setModuleAvgMin(surveyAvgTime.get("MODULE_AVG_MIN"));
+                surveyTimeDTO.setModuleAvgSec(surveyAvgTime.get("MODULE_AVG_SEC"));
                 dtos.add(surveyTimeDTO);
             }
         }
