@@ -2,12 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="averageTimePermoduleReport" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="2.657341500000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="192"/>
 	<subDataset name="Table Dataset 1" uuid="5fbd32eb-732d-4507-9783-129a5dc03a11"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<field name="moduleName" class="java.lang.String"/>
 	<field name="moduleTime" class="java.lang.String"/>
+	<field name="moduleAvgMin" class="java.lang.String"/>
+	<field name="moduleAvgSec" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -88,13 +90,13 @@
 						<pen lineWidth="0.0"/>
 					</graphicElement>
 				</rectangle>
-				<staticText>
-					<reportElement mode="Transparent" x="211" y="25" width="58" height="17" backcolor="#000000" uuid="fe1ef4d5-40d3-4c11-9437-4d0bf2ae15e4"/>
+				<textField>
+					<reportElement x="198" y="23" width="85" height="20" uuid="2e41d1e1-4293-4999-9c0b-cd4c14209567"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial"/>
+						<font fontName="Arial" size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[mins]]></text>
-				</staticText>
+					<textFieldExpression><![CDATA[$F{moduleAvgMin} + ":" + $F{moduleAvgSec}  + " Mins"]]></textFieldExpression>
+				</textField>
 			</frame>
 		</band>
 	</detail>
