@@ -613,8 +613,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             if (surveyAvgTime != null) {
                 SurveyTimeDTO surveyTimeDTO = new SurveyTimeDTO();
                 surveyTimeDTO.setModuleName(survey.getName());
-                surveyTimeDTO.setModuleTime(surveyAvgTime.get("AVG_TIME_AS_STRING"));
-                surveyTimeDTO.setModuleTotalCnt(surveyAvgTime.get("MODULE_TOTAL_CNT"));
+                surveyTimeDTO.setModuleTime(surveyAvgTime.get("MODULE_TOTAL_TIME"));
                 surveyTimeDTO.setModuleAvgMin(surveyAvgTime.get("MODULE_AVG_MIN"));
                 surveyTimeDTO.setModuleAvgSec(surveyAvgTime.get("MODULE_AVG_SEC"));
                 dtos.add(surveyTimeDTO);

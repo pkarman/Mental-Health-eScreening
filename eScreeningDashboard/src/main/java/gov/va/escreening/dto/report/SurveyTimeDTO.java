@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class SurveyTimeDTO implements Serializable {
 
     private String moduleName;
-    private String moduleTotalCnt;
     private String moduleAvgMin;
     private String moduleAvgSec;
     private String moduleTime;
@@ -19,14 +18,6 @@ public class SurveyTimeDTO implements Serializable {
 
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
-    }
-
-    public String getModuleTotalCnt() {
-        return moduleTotalCnt;
-    }
-
-    public void setModuleTotalCnt(String moduleTotalCnt) {
-        this.moduleTotalCnt = moduleTotalCnt;
     }
 
     public String getModuleAvgMin() {

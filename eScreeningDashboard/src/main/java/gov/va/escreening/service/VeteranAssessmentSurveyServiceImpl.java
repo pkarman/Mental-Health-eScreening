@@ -191,7 +191,7 @@ public class VeteranAssessmentSurveyServiceImpl implements
         int avgSec = (int) avgTotalSecs % 60;
 
         Map<String, String> m = Maps.newHashMap();
-        m.put("MODULE_TOTAL_CNT", String.valueOf(totalSurveyAttempts));
+        m.put("MODULE_TOTAL_TIME", String.valueOf(totalSurveyAttempts));
         m.put("MODULE_AVG_SEC", String.valueOf(avgSec));
         m.put("MODULE_AVG_MIN", String.valueOf(avgMin));
         m.put("AVG_TIME_AS_STRING", String.format("%sm %ss n=%s", avgMin, avgSec, totalSurveyAttempts));
