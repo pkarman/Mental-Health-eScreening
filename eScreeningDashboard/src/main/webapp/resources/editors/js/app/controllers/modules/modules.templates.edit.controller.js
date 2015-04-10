@@ -49,6 +49,10 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 			$scope.intervalList.push( {'name' : key, 'value' : value } );
 		});
 	}
+	//we have a req for min of 2 intervals 
+	while($scope.intervalList.length < 2){
+		$scope.intervalList.push({'name' : "", 'value' : ""});
+	}
 
 	$scope.save = function () {
 		console.log("Save clicked");
