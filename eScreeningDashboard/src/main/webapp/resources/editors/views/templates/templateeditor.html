@@ -3,9 +3,6 @@
     <div class="col-md-10">
       <h1>Edit {{relatedObj.name}} | {{template.type.name}}</h1>
     </div>
-    <div class="col-md-2">
-      <button title="Add New Block" ng-click="updateBlock(null, true);" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
-    </div>
 </div>
 
 <label for="graphicalTemplateChk">
@@ -227,6 +224,9 @@
 						<ol ui-tree-nodes ng-model="template.blocks">
 							<li ng-repeat="block in template.blocks" ui-tree-node ng-include="'block_renderer.html'" class="templateBlockLi"></li>
 						</ol>
+						<div class="col-md-2">
+      						<button title="Add New Block" ng-click="updateBlock(null, true);" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
+    					</div>
 					</div>
 				</div>
 			</div>
