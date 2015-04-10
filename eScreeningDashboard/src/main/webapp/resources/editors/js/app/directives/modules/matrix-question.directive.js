@@ -16,6 +16,7 @@
 				scope.selectedMHAQuestions = [];
 
 				scope.answerTypes = [
+					{ name: 'Regular', value: '' },
 					{ name: 'Other', value: 'other' },
 					{ name: 'None', value: 'none' }
 				];
@@ -62,6 +63,7 @@
 						_.each(prototypeQuestions[0].answers, function (answer) {
 							scope.answers.push({
 								text: answer.text,
+								type: answer.type,
 								exportName: (prototypeQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(prototypeQuestions[0].variableName + '_', '') : answer.exportName,
 								calculationValue: answer.calculationValue,
 								mhaValue: answer.mhaValue || ''
@@ -125,7 +127,7 @@
 								}
 
 								if (question.type === 'selectMulti') {
-									question.answers[j].exportName = question.variableName + '_' + answer.exportName;
+									question.answers[j].exportName = answer.exportName;
 								}
 
 								question.answers[j].displayOrder = j + 1;

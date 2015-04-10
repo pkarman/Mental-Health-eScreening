@@ -10,9 +10,18 @@ public class VistaVeteranAppointment implements Serializable {
     private String clinicName;
     private Date appointmentDate;
     private String status;
+    private transient String visitStr;
 
 
-    public String getClinicName() {
+    public String getVisitStr() {
+		return visitStr;
+	}
+
+	public void setVisitStr(String visitStr) {
+		this.visitStr = visitStr;
+	}
+
+	public String getClinicName() {
         return clinicName;
     }
 

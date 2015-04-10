@@ -4,32 +4,33 @@ import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.SortDirection;
 import gov.va.escreening.dto.dashboard.SearchResult;
-import gov.va.escreening.entity.AssessmentStatus;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.Program;
-import gov.va.escreening.entity.User;
-import gov.va.escreening.entity.Veteran;
-import gov.va.escreening.entity.VeteranAssessment;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
+import gov.va.escreening.dto.report.Report595DTO;
+import gov.va.escreening.entity.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static gov.va.escreening.util.ReportRepositoryUtil.getDateFromString;
 
 @Repository
 public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository<VeteranAssessment> implements VeteranAssessmentRepository {
 
-	public VeteranAssessmentRepositoryImpl() {
+
+    @Autowired
+    private MeasureRepository measureRepository;
+
+    public VeteranAssessmentRepositoryImpl() {
 		super();
 
 		setClazz(VeteranAssessment.class);
@@ -324,7 +325,9 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		return entityManager.createQuery(sql, Measure.class).setParameter("veteranAssessmentId", veteranAssessmentId).getResultList();
 	}
 
-	@Override
+
+
+    @Override
 	public List<VeteranAssessment> findByVeteranIdAndProgramIdList(
 			int veteranId, List<Integer> programIdList) {
 
@@ -342,4 +345,533 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		return veteranAssessmentList;
 	}
 
+    @Override
+    public Integer getVeteranCountFor593(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        Query q = entityManager.createNativeQuery("select count(distinct veteran_id) from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null ");
+
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        Object r = q.getSingleResult();
+
+        if (r!=null){
+            return ((Number)r).intValue();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer getBatteryCountFor593(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        Query q = entityManager.createNativeQuery("select count(*) from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null ");
+
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        Object r = q.getSingleResult();
+
+        if (r!=null){
+            return ((Number)r).intValue();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer getAvgDurantionFor593(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        Query q = entityManager.createNativeQuery("select avg(duration) from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null ");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        Object r = q.getSingleResult();
+
+        if (r!=null){
+            return ((Number)r).intValue();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer getVetWithMultipleBatteriesFor593(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        Query q = entityManager.createNativeQuery("select  count(veteran_id) from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null " +
+                "group by veteran_id " +
+                "having count(*) > 1 " );
+
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        List r = q.getResultList();
+
+        if (r!=null){
+            return r.size();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public Integer getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds){
+
+        Query q = entityManager.createNativeQuery("SELECT \n" +
+                "  count(*)\n" +
+                "FROM\n" +
+                "    veteran_assessment va, clinic c, user u \n" +
+                "WHERE\n" +
+                "\tva.clinic_id = c.clinic_id AND\n" +
+                "\tva.clinic_id = u.user_id AND\n" +
+                "    va.date_completed BETWEEN :fromDate AND :toDate AND\n" +
+                "    va.clinic_id IN (:clinicIds) \n" +
+                "GROUP BY c.clinic_id , u.user_id;");
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+        final List<BigInteger> resultList = q.getResultList();
+
+        int sum = 0;
+        for (BigInteger assessmentCnt : resultList) {
+            sum += Integer.parseInt(assessmentCnt.toString());
+        }
+        return resultList.size()==0?0:sum / resultList.size();
+    }
+
+    @Override
+    public List<Report593ByDayDTO> getBatteriesByDayFor593(String fromDate, String toDate, List<Integer> clinicIds){
+        Query q = entityManager.createNativeQuery("select date_format(date_completed, '%m/%d/%Y'), date_format(date_completed, '%W'), " +
+                " count(*)" +
+                " from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null " +
+                "group by date_format( date_completed, '%Y%m%d' ) " +
+                "order by date_format( date_completed, '%Y%m%d' ) ");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds );
+
+        List<Report593ByDayDTO> result = new ArrayList<>();
+        for(Object aRow : q.getResultList()){
+            Object [] objs = (Object [])aRow;
+            Report593ByDayDTO dto = new Report593ByDayDTO();
+            dto.setTotal(Integer.toString(((Number)objs[2]).intValue()));
+            dto.setDate((String) objs[0]);
+            dto.setDayOfWeek((String)objs[1]);
+            result.add(dto);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Report593ByTimeDTO> getBatteriesByTimeFor593(String fromDate, String toDate, List<Integer>clinicIds){
+
+        HashMap<String, Report593ByTimeDTO> cache = new HashMap<>();
+        Report593ByTimeDTO dto = null;
+
+        Query q = entityManager.createNativeQuery("select date_format(date_completed, '%m/%d/%Y'), date_format(date_completed, '%W'), " +
+                " count(*)" +
+                " from veteran_assessment " +
+                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null " +
+                "and  extract(HOUR from date_completed) >= :fr and extract(HOUR from date_completed) <= :to "+
+                "group by date_format( date_completed, '%Y%m%d' ) " +
+                "order by date_format( date_completed, '%Y%m%d' ) ");
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+
+        List result = getData(q,  6, 7);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = new Report593ByTimeDTO();
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setSixToEight(Integer.toString(((Number) objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        result = getData(q, 8, 9);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = cache.get((String)objs[0]);
+                if (dto == null) {
+                    dto = new Report593ByTimeDTO();
+                }
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setEightToTen(Integer.toString(((Number)objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+
+         result = getData(q, 10, 11);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = cache.get((String)objs[0]);
+                if (dto == null) {
+                    dto = new Report593ByTimeDTO();
+                }
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setTenToTwelve(Integer.toString(((Number) objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+         result = getData(q, 12, 13);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = cache.get((String)objs[0]);
+                if (dto == null) {
+                    dto = new Report593ByTimeDTO();
+                }
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setTwelveToTwo(Integer.toString(((Number)objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+         result = getData(q, 14, 15);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = cache.get((String)objs[0]);
+                if (dto == null) {
+                    dto = new Report593ByTimeDTO();
+                }
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setTwoToFour(Integer.toString(((Number) objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+
+        result = getData(q, 16, 17);
+        if (result!=null && result.size()>0) {
+            for (Object aRow : result) {
+                Object[] objs = (Object[])aRow;
+                dto = cache.get((String)objs[0]);
+                if (dto == null) {
+                    dto = new Report593ByTimeDTO();
+                }
+                dto.setDate((String)objs[0]);
+                dto.setDayOfWeek((String)objs[1]);
+                dto.setFourToSix(Integer.toString(((Number) objs[2]).intValue()));
+                cache.put(dto.getDate(), dto);
+            }
+        }
+
+        List<Report593ByTimeDTO> resultList = new ArrayList<>();
+        if (!cache.isEmpty()) {
+            resultList.addAll(cache.values());
+
+            for(Report593ByTimeDTO d : resultList){
+                if (d.getEightToTen()==null){
+                    d.setEightToTen("0");
+                }
+                if (d.getFourToSix()==null){
+                    d.setFourToSix("0");
+                }
+                if (d.getSixToEight()==null){
+                    d.setSixToEight("0");
+                }
+                if (d.getTenToTwelve()==null){
+                    d.setTenToTwelve("0");
+                }
+                if (d.getTwelveToTwo()==null){
+                    d.setTwelveToTwo("0");
+                }
+                if (d.getTwoToFour()==null){
+                    d.setTwoToFour("0");
+                }
+
+                d.setTotal(
+                        Integer.toString(
+                                Integer.parseInt(d.getEightToTen())+
+                                Integer.parseInt(d.getFourToSix())+
+                                Integer.parseInt(d.getSixToEight())+
+                                Integer.parseInt(d.getTenToTwelve())+
+                                Integer.parseInt(d.getTwelveToTwo())+
+                                Integer.parseInt(d.getTwoToFour())
+                        )
+                );
+            }
+
+            Collections.sort(resultList, new Comparator<Report593ByTimeDTO>() {
+                @Override
+                public int compare(Report593ByTimeDTO o1, Report593ByTimeDTO o2) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                    try {
+                        return sdf.parse(o1.getDate()).compareTo(sdf.parse(o2.getDate()));
+                    }
+                    catch(Exception e){
+                        return 0;
+                    }
+
+                }
+            });
+        }
+
+        return resultList;
+
+
+    }
+
+    @Override
+    public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
+
+        List<Report595DTO> resultList = new ArrayList<>();
+
+        Query q = entityManager.createNativeQuery(
+                "select count(*), measure_id from veteran_assessment_question_presence vsaq " +
+                        "inner join veteran_assessment va on vsaq.veteran_assessment_id = va.veteran_assessment_id " +
+                " where skipped = -1 and date_completed >= :fromDate and date_completed <= :toDate " +
+                "and clinic_id in (:clinicIds) and date_completed is not null "+
+                " group by measure_id " +
+                " order by count(*) desc "
+        );
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        List r = q.getResultList();
+
+        if (r!=null && r.size() > 0){
+            for(Object aRow : q.getResultList()){
+                Object [] data = (Object[])aRow;
+
+                int count = ((Number)data[0]).intValue();
+                int measureId = ((Number)data[1]).intValue();
+
+                if (count == 0)
+                    break;
+
+                Report595DTO dto = new Report595DTO();
+
+                Query q1 = entityManager.createNativeQuery(
+                        "select count(*) from veteran_assessment_question_presence vsaq " +
+                                "inner join veteran_assessment va on vsaq.veteran_assessment_id = va.veteran_assessment_id " +
+                                " where date_completed >= :fromDate and date_completed <= :toDate " +
+                                "and clinic_id in (:clinicIds) and date_completed is not null "+
+                                " and measure_id ="+measureId);
+                setParametersFor593(q1, fromDate, toDate, clinicIds);
+
+                int total = ((Number)q1.getSingleResult()).intValue();
+
+                DecimalFormat formatter = new DecimalFormat("###.##");
+
+                String percent =formatter.format(count*100d/total);
+
+                dto.setPercentage(percent+"% ("+count + "/" + total+")");
+
+                Measure m = measureRepository.findOne(measureId);
+
+                dto.setQuestions(((Number)data[1]).intValue()+"");
+                dto.setQuestions(m.getMeasureText());
+                dto.setVariableName(m.getVariableName());
+                resultList.add(dto);
+            }
+        }
+
+        Collections.sort(resultList, new Comparator<Report595DTO>() {
+            @Override
+            public int compare(Report595DTO o1, Report595DTO o2) {
+
+                String [] a1 = o1.getPercentage().split("%");
+                String [] a2 = o2.getPercentage().split("%");
+                float one = Float.parseFloat(a1[0]);
+                float two = Float.parseFloat(a2[0]);
+                if ( one>two )
+                    return 1;
+                else if (one < two)
+                    return -1;
+
+                return 0;
+            }
+        });
+
+        int index = 1;
+
+        List<Report595DTO> results = new ArrayList<>(20);
+
+        for(Report595DTO dto : resultList){
+            dto.setOrder(Integer.toString(index++));
+            results.add(dto);
+            if (index > 20)
+                break;
+        }
+        return results;
+    }
+
+    @Override
+    public List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate, List<Integer> measureAnswerIds) {
+
+        Query q = entityManager.createNativeQuery("SELECT measure_answer_id, sum(boolean_value)  FROM survey_measure_response " +
+                "where measure_answer_id in (:measureAnswerIds) " +
+                "and veteran_assessment_id in ( " +
+                "select distinct veteran_assessment_id from veteran_assessment " +
+                "where date_completed >= :fromDate and date_completed <=:toDate " +
+                "and date_completed is not null and clinic_id in (:clinicIds)  " +
+                ") and boolean_value is not null " +
+                "group by measure_answer_id order by measure_answer_id");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        q.setParameter("measureAnswerIds", measureAnswerIds);
+
+        List r = q.getResultList();
+
+        if (r!=null && r.size()>0) {
+            List<Integer> result = new ArrayList<>();
+
+
+            for(Object a : r){
+                Object [] aRow = (Object[])a;
+                result.add(((Number)aRow[1]).intValue());
+            }
+
+            return result;
+         }
+
+        return null;
+    }
+
+    @Override
+    public Integer getMissingCountFor(List<Integer> cList, String fromDate, String toDate, int measureId) {
+
+        Query q = entityManager.createNativeQuery("select count(*) from veteran_assessment_question_presence  " +
+                        "where measure_id = :measureId and skipped = -1 and veteran_assessment_id in (" +
+                        " select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate" +
+                        " and date_completed <= :toDate and date_completed is not null) "
+         );
+
+        setParametersFor593(q, fromDate, toDate, cList);
+        q.setParameter("measureId", measureId);
+        Object o = q.getSingleResult();
+
+        return ((Number)o).intValue();
+    }
+
+    @Override
+    public List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate) {
+
+        Query q = entityManager.createNativeQuery(
+                "select avg(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), min(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), " +
+                "max(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365)" +
+                " from survey_measure_response where measure_answer_id = 170 " +
+                " and text_value is not null and veteran_assessment_id in (select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and date_completed <= :toDate and date_completed is not null)");
+        setParametersFor593(q, fromDate, toDate, cList);
+        List r = q.getResultList();
+        if (r==null || r.size()==0) {
+            return null;
+        }
+        else{
+            List<Number> result = new ArrayList<>();
+
+            Object [] aRow = (Object [])r.get(0);
+
+            if (aRow[0]!=null) {
+                result.add((Number) aRow[0]);
+            }
+            if (aRow[1]!=null) {
+                result.add((Number) aRow[1]);
+            }
+            if (aRow[2]!=null) {
+                result.add((Number) aRow[2]);
+            }
+            return result;
+        }
+    }
+
+    @Override
+    public List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate) {
+        Query q = entityManager.createNativeQuery(
+                "select avg(numOfDeployment), min(numOfDeployment), max(numOfDeployment) from (select count(*) as numOfDeployment" +
+                        " from survey_measure_response where measure_answer_id = 1210 " +
+                        " and text_value is not null and veteran_assessment_id in (select veteran_assessment_id from veteran_assessment where clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                        " and date_completed <= :toDate and date_completed is not null)" +
+                        " group by veteran_assessment_id) a ");
+        setParametersFor593(q, fromDate, toDate, cList);
+        List r = q.getResultList();
+        if (r==null || r.size()==0) {
+            return null;
+        }
+        else{
+            List<Number> result = new ArrayList<>();
+
+            Object [] aRow = (Object [])r.get(0);
+
+            if (aRow[0]!=null) {
+                result.add((Number) aRow[0]);
+            }
+            if (aRow[1]!=null) {
+                result.add((Number) aRow[1]);
+            }
+            if (aRow[2]!=null) {
+                result.add((Number) aRow[2]);
+            }
+
+            return result;
+        }
+    }
+
+    @Override
+    public int getAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        Query q = entityManager.createNativeQuery("select count(*) from veteran_assessment " +
+                " where  clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and date_completed <= :toDate and date_completed is not null ");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        return ((Number)q.getSingleResult()).intValue();
+    }
+
+    @Override
+    public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        Query q = entityManager.createNativeQuery("select a.name, count(*)  from veteran_assessment_dashboard_alert vada join dashboard_alert a " +
+                "on vada.dashboard_alert_id=a.dashboard_alert_id " +
+                " inner join veteran_assessment va on vada.veteran_assessment_id=va.veteran_assessment_id " +
+                "where va.assessment_status_id in (3, 5) and va.clinic_id in (:clinicIds) and date_completed >= :fromDate " +
+                " and va.date_completed <= :toDate and va.date_completed is not null group by a.name");
+
+        setParametersFor593(q, fromDate, toDate, clinicIds);
+
+        List<Object[]> rows = q.getResultList();
+
+        List<Report594DTO> dtos = new ArrayList<>();
+
+        if (rows!=null && rows.size() > 0 ){
+
+            for(Object [] aRow : rows){
+                Report594DTO dto = new Report594DTO();
+                dto.setModuleName((String)aRow[0]);
+                dto.setModuleCount(""+((Number)aRow[1]).intValue());
+                dtos.add(dto);
+            }
+        }
+
+        return dtos;
+    }
+
+    private void setParametersFor593(Query q , String fromDate, String toDate, List<Integer> clinicIds){
+        q.setParameter("fromDate", getDateFromString(fromDate+ " 00:00:00"));
+        q.setParameter("toDate", getDateFromString(toDate+" 23:59:59"));
+        q.setParameter("clinicIds", clinicIds);
+    }
+
+
+    private List getData(Query q,  int fr, int to){
+        q.setParameter("fr", fr);
+        q.setParameter("to", to);
+        return q.getResultList();
+    }
 }

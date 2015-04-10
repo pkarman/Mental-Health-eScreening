@@ -1,7 +1,10 @@
 package gov.va.escreening.dto.ae;
 
+import com.google.common.collect.Maps;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class AssessmentRequest implements Serializable {
 
@@ -10,9 +13,10 @@ public class AssessmentRequest implements Serializable {
     private Integer assessmentId;
     private Integer pageId;
     private String navigation;
-    private Integer targetSection = null;
-    private long startTime;
+    private Integer targetSection;
+    private long assessmentStartTime;
     private List<Measure> userAnswers;
+    final private Map<Integer, Long> moduleStartTimeMap;
 
     public Integer getAssessmentId() {
         return assessmentId;
@@ -54,7 +58,9 @@ public class AssessmentRequest implements Serializable {
         this.targetSection = targetSection;
     }
     
-    public AssessmentRequest() {}
+    public AssessmentRequest() {
+        moduleStartTimeMap = Maps.newHashMap();
+    }
 
     @Override
     public String toString() {
@@ -63,12 +69,19 @@ public class AssessmentRequest implements Serializable {
                 + ", targetSection=" + targetSection + "]";
     }
 
-	public long getStartTime() {
-		return startTime;
+	public long getAssessmentStartTime() {
+		return assessmentStartTime;
 	}
 
-	public void setStartTime(long startTime) {
-		this.startTime = startTime;
+	public void setAssessmentStartTime(long assessmentStartTime) {
+		this.assessmentStartTime = assessmentStartTime;
 	}
 
+    public void setModuleStartTime(Integer moduleId, Long startTime){
+        this.moduleStartTimeMap.put(moduleId, startTime);
+    }
+
+    public Long getModuleStartTime(Integer moduleId){
+        return this.moduleStartTimeMap.get(moduleId);
+    }
 }
