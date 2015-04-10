@@ -488,6 +488,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		Map<Integer, gov.va.escreening.entity.Measure> dbMeasureMap = Maps.newHashMapWithExpectedSize(dbMeasures.size());
 		for(gov.va.escreening.entity.Measure measure : dbMeasures){
 		    dbMeasureMap.put(measure.getMeasureId(), measure);
+		    if(measure.getChildren() != null){
+		        for(gov.va.escreening.entity.Measure  childMeasure : measure.getChildren()){
+		            dbMeasureMap.put(childMeasure.getMeasureId(), childMeasure);
+		        }
+		    }
 		}
 		//
 		// Well, if we got this far, then we can start applying the data

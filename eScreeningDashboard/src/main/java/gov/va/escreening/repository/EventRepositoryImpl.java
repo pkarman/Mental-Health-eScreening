@@ -32,7 +32,7 @@ public class EventRepositoryImpl extends AbstractHibernateRepository<Event>
         if(objectIds.isEmpty())
             return Collections.emptyList();
         
-        String sql = "SELECT e FROM Event e INNER JOIN e.rules WHERE e.eventType.eventTypeId = :eventTypeId and e.relatedObjectId IN (:objectIds)";
+        String sql = "SELECT e FROM Event e INNER JOIN e.rules WHERE e.eventType.eventTypeId = :eventTypeId and e.relatedObjectId IN (:objectIds) GROUP BY e";
         
         return entityManager
             .createQuery(sql, Event.class)
