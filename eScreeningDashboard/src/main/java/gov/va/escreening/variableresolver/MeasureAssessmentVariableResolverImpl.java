@@ -5,6 +5,7 @@ import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
@@ -292,12 +293,14 @@ public class MeasureAssessmentVariableResolverImpl implements
 
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
+        //Temp fix until ticket 643 is complete. At which point this code should go away.
         Measure parentMeasure = assessmentVariable.getMeasure();
-        List<SurveyMeasureResponse> parentResponses = parentMeasure
-                .getSurveyMeasureResponseList();
-
-		SurveyMeasureResponse parentResponse = parentResponses == null || parentResponses.isEmpty() ? null
-                : parentResponses.get(0); // there should only be one response
+        List<MeasureAnswer> answers = parentMeasure.getMeasureAnswerList();
+        SurveyMeasureResponse parentResponse = null;
+        if(answers != null && !answers.isEmpty()){
+            parentResponse = surveyMeasureResponseRepository.findSmrUsingPreFetch(veteranAssessmentId, answers.get(0).getMeasureAnswerId(), null);
+        }
+        
         // for the parent question for table
         // type
         if (parentResponse != null && parentResponse.getBooleanValue()) {
