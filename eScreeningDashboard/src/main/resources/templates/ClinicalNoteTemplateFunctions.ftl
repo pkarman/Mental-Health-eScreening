@@ -812,8 +812,12 @@ returns true if the variable is defined and has a value; false otherwise.
 If type == 3 then at least one option must be set to true.
  -->
 <#function wasAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
-    <#if var == DEFAULT_VALUE>
+    <#if var?string == DEFAULT_VALUE>
         <#return false>
+    </#if>
+    
+    <#if var?is_number >
+    	<#return ((var?number) > 0)>
     </#if>
     
     <#if !(var.variableId??) > <#-- if this is not a variable then just see if it has content -->
