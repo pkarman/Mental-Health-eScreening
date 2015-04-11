@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -20,7 +19,6 @@ import com.google.common.collect.Lists;
  *
  */
 @Category(IntegrationTest.class)
-@Transactional
 @RunWith(JUnit4.class)
 public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
 
