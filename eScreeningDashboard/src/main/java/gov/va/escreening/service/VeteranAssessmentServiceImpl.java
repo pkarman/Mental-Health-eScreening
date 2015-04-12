@@ -1305,7 +1305,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate) {
         Integer measureId = 23;
 
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  23);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 23);
     }
 
     @Override
@@ -1321,7 +1321,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
     @Override
     public int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate) {
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  24);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 24);
     }
 
     @Override
@@ -1345,5 +1345,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
     }
 
+	@Override
+	public int getMissingEthnicityCount(List cList, String fromDate, String toDate) {
+		return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  21);
+	}
 
 }

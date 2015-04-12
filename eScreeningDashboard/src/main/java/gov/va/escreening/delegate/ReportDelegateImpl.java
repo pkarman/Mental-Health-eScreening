@@ -1040,18 +1040,19 @@ public class ReportDelegateImpl implements ReportDelegate {
         List cList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
 
         List<Integer> result = veteranAssessmentService.getEthnicityCount(cList, fromDate, toDate);
+        int missing = veteranAssessmentService.getMissingEthnicityCount(cList, fromDate, toDate);
 
         int total = 0;
         if (result != null && result.size() > 0) {
-            total = result.get(0) + result.get(1) + result.get(2);
+            total = result.get(0) + result.get(1) + result.get(2) + missing;
 
             if (total != 0) {
                 dataCollection.put("hispanic_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
                 dataCollection.put("hispanic_count", result.get(0) + "/" + total);
                 dataCollection.put("non_hispanic_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
                 dataCollection.put("non_hispanic_count", result.get(1) + "/" + total);
-                dataCollection.put("missingethnicity_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
-                dataCollection.put("missingethnicity_count", result.get(2) + "/" + total);
+                dataCollection.put("missingethnicity_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingethnicity_count", missing + "/" + total);
             }
         }
         if (total == 0) {
@@ -1122,17 +1123,19 @@ public class ReportDelegateImpl implements ReportDelegate {
             int male = result.get(0);
             int total = female + male;
 
-
-            dataCollection.put("female_percentage", String.format("%d", female * 100 / total) + "%");
-            dataCollection.put("female_count", female + "/" + total);
-            dataCollection.put("male_percentage", String.format("%d", male * 100 / total) + "%");
-            dataCollection.put("male_count", male + "/" + total);
-        } else {
+            if (total > 0) {
+                dataCollection.put("female_percentage", String.format("%d", female * 100 / total) + "%");
+                dataCollection.put("female_count", female + "/" + total);
+                dataCollection.put("male_percentage", String.format("%d", male * 100 / total) + "%");
+                dataCollection.put("male_count", male + "/" + total);
+                return;
+            }
+        }
             dataCollection.put("female_percentage", "0%");
             dataCollection.put("female_count", "0/0");
             dataCollection.put("male_percentage", "0%");
             dataCollection.put("male_count", "0/0");
-        }
+
 
     }
 
