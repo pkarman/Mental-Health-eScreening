@@ -134,7 +134,6 @@
 							if (scope.block && scope.block.type === 'table') {
 								scope.block.table.content = scope.assessmentVariable;
 							}
-							console.debug("selecting variable");
 							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 							scope.tableParams.reload();
 						}

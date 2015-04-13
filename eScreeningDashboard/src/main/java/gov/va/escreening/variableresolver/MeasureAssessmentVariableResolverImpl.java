@@ -6,6 +6,7 @@ import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
@@ -286,7 +287,6 @@ public class MeasureAssessmentVariableResolverImpl implements
 
         Measure parentMeasure = assessmentVariable.getMeasure();
         List<Answer> parentResponses = params.getMeasureResponses(parentMeasure.getMeasureId());
-
 		Answer parentResponse = parentResponses == null || parentResponses.isEmpty() ? null
                 : parentResponses.get(0); // there should only be one response
         
