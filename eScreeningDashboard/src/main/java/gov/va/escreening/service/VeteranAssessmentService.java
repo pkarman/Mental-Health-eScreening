@@ -314,4 +314,6 @@ public interface VeteranAssessmentService {
     int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
 
     List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    int getMissingEthnicityCount(List cList, String fromDate, String toDate);
 }

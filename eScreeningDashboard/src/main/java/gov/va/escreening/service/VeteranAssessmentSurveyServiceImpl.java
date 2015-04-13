@@ -185,15 +185,16 @@ public class VeteranAssessmentSurveyServiceImpl implements
         // calculate the avg
         long secs = totalPeriod.toStandardDuration().getStandardSeconds();
         NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
-        double avgTotalSecs = totalSurveyAttempts == 0 ? 0.00 : Double.parseDouble(nf.format(secs / totalSurveyAttempts));
+        String standardSecs=nf.format(secs / totalSurveyAttempts);
+        double avgTotalSecs = totalSurveyAttempts == 0 ? 0.00 : Double.parseDouble(standardSecs);
 
         int avgMin = (int) avgTotalSecs / 60;
         int avgSec = (int) avgTotalSecs % 60;
 
         Map<String, String> m = Maps.newHashMap();
         m.put("MODULE_TOTAL_TIME", String.valueOf(totalSurveyAttempts));
-        m.put("MODULE_AVG_SEC", String.valueOf(avgSec));
-        m.put("MODULE_AVG_MIN", String.valueOf(avgMin));
+        m.put("MODULE_AVG_SEC", String.format("%02d",avgSec));
+        m.put("MODULE_AVG_MIN", String.format("%02d",avgMin));
         m.put("AVG_TIME_AS_STRING", String.format("%sm %ss n=%s", avgMin, avgSec, totalSurveyAttempts));
 
 
