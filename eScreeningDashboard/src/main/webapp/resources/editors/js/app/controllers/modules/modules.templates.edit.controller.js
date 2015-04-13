@@ -45,9 +45,16 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 	if($scope.template.isGraphical){
 		// init intervalList
+		var intervalTicks = {};
 		angular.forEach($scope.template.graph.intervals, function(value, key) {
 			$scope.intervalList.push( {'name' : key, 'value' : value } );
+			intervalTicks[value] = true;
 		});
+		$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
+			function(tick){
+				return ! intervalTicks[tick];
+			}
+		);
 	}
 	//we have a req for min of 2 intervals 
 	while($scope.intervalList.length < 2){
@@ -64,12 +71,36 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 			$scope.template.graph.varId = $scope.assessmentVariable.id;
 
 			//update template intervals
+			var reverseLookup = {};
 			$scope.template.graph.intervals = {};
 			$scope.intervalList.forEach(function(interval){
-				if(	interval.name != "" &&  interval.value != ""){
-					$scope.template.graph.intervals[interval.name] = interval.value ;
+				if(	interval.name !== "" &&  interval.value !== ""){
+					$scope.template.graph.intervals[interval.name] = interval.value;
+					reverseLookup[interval.value] = interval.name;
+					//all intervals need a tick mark
+					$scope.template.graph.ticks.push(interval.value);
 				}
 			});
+			//we want both the ticks and the intervals map in order
+			$scope.template.graph.ticks.sort(function(a, b) {return a - b;});
+			
+			//remove duplicates and order the intervals map
+			var orderedIntervals = {};
+			var prev = null;
+			$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
+					function(tick){
+						if(tick !== prev){
+							if(reverseLookup[tick]){
+								orderedIntervals[reverseLookup[tick]] = tick;
+							}
+							prev = tick;
+							return true;
+						}
+						prev = tick;
+						return false;
+					});
+			
+			$scope.template.graph.intervals = orderedIntervals;
 		}
 
 		$scope.template.saveFor($scope.relatedObj).then(
