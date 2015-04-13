@@ -4,5 +4,5 @@
 		<input type="hidden" name="selectedAssessmentVariable" ng-model="assessmentVariable" required update-hidden>
 		<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable.name | limitToWithEllipsis: 33 || 'Select Variable'}}</span>
 	</div>
-	<mhe-assessment-var-tbl-dir assessment-variable="assessmentVariable" block="block" show="avMenu.show" ng-if="avMenu.show" class="assessmentVariableTable" />
+	<mhe-assessment-var-tbl-dir assessment-variable="assessmentVariable" block="block" allow-transformations="allowTransformations" show="avMenu.show" ng-if="avMenu.show" class="assessmentVariableTable" />
 </div>

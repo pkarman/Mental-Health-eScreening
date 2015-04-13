@@ -12,13 +12,13 @@
 	            scope: {
 		            assessmentVariable: '=',
 		            show: '=',
-					block: '='
+					block: '=',
+					allowTransformations: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
 
 					var parentBlock = AssessmentVariableService.parentBlock || {};
-
 					scope.toggles = {
 						list: true,
 						transformations: false
@@ -83,7 +83,8 @@
 		            scope.tableParams.settings().$scope = scope;
 
 		            scope.select = function(e, av) {
-
+		            	scope.allowTransformations = angular.isUndefined(scope.allowTransformations) ? true : scope.allowTransformations;
+		            	
 			            if (e) e.stopPropagation();
 
 		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
@@ -92,13 +93,11 @@
 			                // This is also needed to the populate the $scope.assessmentVariable
 			                scope.assessmentVariable = angular.copy(av);
 		                }
-
 		                
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
 
-						// Do not apply transformations to parent table blocks
 						// NOTE: Blocks are not passed in when directive is called from textAngular
-						if (!scope.block || scope.block.type !== 'table') {
+						if (scope.allowTransformations) {
 							
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable, scope.block).then(
 								function(transformations){
@@ -135,6 +134,7 @@
 								scope.block.table.content = scope.assessmentVariable;
 							}
 							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
+							scope.show = false;
 							scope.tableParams.reload();
 						}
 	                };
