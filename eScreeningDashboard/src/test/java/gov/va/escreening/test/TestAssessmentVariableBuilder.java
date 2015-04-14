@@ -182,6 +182,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
         //setup service calls
         when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
+        
+        for(SurveyMeasureResponse response : responseList){
+            when(surveyResponseRepo.findSmrUsingPreFetch(anyInt(), eq(response.getMeasureAnswer().getMeasureAnswerId()), eq(row))).thenReturn(response);
+        }
 
         if(row != null){
             when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
