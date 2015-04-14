@@ -366,7 +366,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
     private VeteranAssessmentSurveyScore tryCreateVASS(Survey s, AssessmentVariableDto avDto, VeteranAssessment veteranAssessment) {
         String scoreAsStr = avDto.getDisplayText();
-        if (scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
+        if (!"false".equals(avDto.getValue()) && scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
             VeteranAssessmentSurveyScore vass = new VeteranAssessmentSurveyScore();
             vass.setClinic(veteranAssessment.getClinic());
             vass.setDateCompleted(new Date());

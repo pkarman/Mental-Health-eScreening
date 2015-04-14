@@ -42,8 +42,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
-                " where vassr.dateCompleted >= :fromDate " +
-                " and vassr.dateCompleted <= :toDate " +
+                " where vassr.dateCompleted between :fromDate and :toDate " +
                 " and vassr.survey.id = :surveyId  " +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.screenNumber is null" +
