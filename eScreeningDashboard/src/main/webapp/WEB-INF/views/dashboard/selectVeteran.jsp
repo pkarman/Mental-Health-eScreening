@@ -134,7 +134,7 @@
                 
 
 					<div class="border-radius-main-form gray-lighter">
-					<h2>Search or Create New Veteran</h2>
+					<h2>Select Veteran from search result; search again; or create a new Veteran record</h2>
 					
 					<form:errors path="*" element="div" cssClass="alert alert-danger" />
 					
