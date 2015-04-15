@@ -10,7 +10,7 @@
 </label>
 
 <form name="graphicalTemplateForm">
-<div class="border-radius-main-form gray-lighter" ng-show="template.isGraphical">
+<div class="border-radius-main-form margin-bottom-20 gray-lighter" ng-show="template.isGraphical">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -53,8 +53,8 @@
 	
 	<div class="row">
 		<div class="col-md-9">
-			<div><strong>Legend</strong></div>
-			<hr class="hr-legend" />
+		<fieldset class="group-border">
+			<legend class="group-border">Legend</legend>
 			<div class="row">
 				<div class="col-md-6">
 					<div class="border-radius-ul lighter-white">
@@ -116,7 +116,7 @@
 						<div class="row">
 						<div class="col-md-6">
 
-					<div class="border-radius-ul lighter-white">
+					<div class="border-radius-ul lighter-white min-height-235">
 					<!-- Repeater Start -->
 					<ul>
 						<li ng-repeat="tick in template.graph.ticks track by $index">
@@ -142,7 +142,7 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<button class="btn btn-primary btn-xs" id="addTickValue" 
+							<button class="btn btn-primary btn-xs btn-block" id="addTickValue" 
 								ng-click="addTickValue()" tooltip="Each interval will have an X axis value. This adds extra values">
 							<span class="glyphicon glyphicon-plus"></span> Add Extra Axis Value </button>
 						</div>
@@ -160,12 +160,12 @@
 						</div>
 					</div>
 				</div>
-			</div>			
-		
+			</div>		
+		</fieldset>	
 		</div>
 		<div class="col-md-3">
-			<div><strong>Time Series Points</strong></div>
-			<hr class="hr-legend" />
+		<fieldset class="group-border">
+			<legend class="group-border">Time Series Points</legend>
 			<div class="form-group  padding-box-align">
 				<label for="includeLast">Include data from last: *</label>
 				<input type="number" class="form-control" 
@@ -173,11 +173,11 @@
 					maxlength="2"  ng-model="template.graph.numberOfMonths" required> 
 					<span class="help-block">Month(s)</span>
 			</div>
+		</fieldset>	
 		</div>
 	</div>	
 </div>
 </form>
-<br>
 
 <!-- Alerts and Messages -->
 <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
@@ -185,7 +185,7 @@
 <div class="col-md-12">
 	<div class="row">
 
-		<div class="border-radius-main-form gray-lighter">
+		<div class="border-radius-main-form margin-bottom-20 gray-lighter min-height-150">
 			<div class="row">
 				<div class="col-md-12">
 
@@ -225,9 +225,9 @@
 						<ol ui-tree-nodes ng-model="template.blocks">
 							<li ng-repeat="block in template.blocks" ui-tree-node ng-include="'block_renderer.html'" class="templateBlockLi"></li>
 						</ol>
-						<div class="col-md-2">
-      						<button title="Add New Block" ng-click="updateBlock(null, true);" class="btn btn-primary h1_button pull-right" type="button">Add New Block</button>
-    					</div>
+					</div>
+					<div  ng-class="template.blocks.length > 0 ? 'text-left' : ( template.blocks.length < 0 ? 'text-center' : 'text-center')">
+						<button title="Add New Block" ng-click="updateBlock(null, true);" class="btn btn-primary" type="button">Add New Block</button>
 					</div>
 				</div>
 			</div>
