@@ -6,6 +6,7 @@
 <!doctype html>
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
@@ -111,14 +112,8 @@
  		<div class="col-md-12">
  		
  		
- 		<div class="row">
- 			
- 			<div class="col-md-4 pull-right">
- 				<form:form method="post">
-			      <button id="createButton" name="createButton" type="submit" class="btn btn-primary form-control h1_button"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
-			    </form:form>
-			</div>
-			<div class="col-md-8 pull-left"><a name="skip" > </a ><h1>Select Veteran</h1></div>
+ 		<div class="row"> 			
+			<div class="col-md-12"><a name="skip" > </a ><h1>Create Battery</h1></div>
  		</div>
 
 			<c:if test="${!isCprsVerified}">
@@ -129,6 +124,7 @@
 			</c:if>
 
         <div class="clearfix"></div>
+                <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">		
 
 				<ul class="nav nav-tabs" role="tablist">
 					<li class="active"><a href="#" role="tab"><strong>Create Assessment for Unscheduled Visit</strong></a></li>
@@ -136,9 +132,9 @@
 				</ul>
 				<br>          
                 
-                <form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
+
 					<div class="border-radius-main-form gray-lighter">
-					<h2>Search Criteria</h2>
+					<h2>Search or Create New Veteran</h2>
 					
 					<form:errors path="*" element="div" cssClass="alert alert-danger" />
 					
@@ -178,10 +174,11 @@
                 	
 
 	                
-                </form:form>
+               
 
 			<c:if test="${isPostBack}">
-	            <h2>Search Result</h2>
+	            <br>
+				<h2>Search Result</h2>
 	            <table class="table table-striped table-hover" summary="Search Result Table">
 	                <thead>
 	                    <tr>
@@ -245,8 +242,19 @@
 	                	</c:if>
 	                </tbody>
 	            </table>
+
+				<div class="row">
+                        <div class="col-md-12">
+                            <hr />
+                            <!--form:form method="post"-->
+                            <button id="createButton" name="createButton" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Create Veteran Record in DB</button>
+                            <!--/form:form-->
+                        </div>
+                    </div>				
 			</c:if>
+			 </form:form>
             <br/><br/>
+			
             <!--  -->
 
 		</div>
