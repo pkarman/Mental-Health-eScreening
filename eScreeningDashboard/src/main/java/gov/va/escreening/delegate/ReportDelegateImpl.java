@@ -740,7 +740,9 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         if (dtos == null || dtos.isEmpty()) {
             dataSource = new JREmptyDataSource();
+            parameterMap.put("noData", true);
         } else {
+            parameterMap.put("noData", false);
             dataSource = new JRBeanCollectionDataSource(dtos);
         }
 
