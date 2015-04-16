@@ -324,18 +324,13 @@ public class ResolverParameters {
      * @param assessmentVariables Assessment Variables to create map with. This will overwrite previous calls
      */
     private final void createAnswerHash(List<VariableTemplate> variableTemplates){
-        measureAnswerHash = Maps.newHashMap();
-        avIdToMeasureAnswerMap = Maps.newHashMap();
+        Set<AssessmentVariable> variables = Sets.newHashSetWithExpectedSize(variableTemplates.size());
+        
         for (VariableTemplate variableTemplate : variableTemplates) {
-            if (variableTemplate.getAssessmentVariableId().getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER) {
-                MeasureAnswer measureAnswer = variableTemplate.getAssessmentVariableId().getMeasureAnswer();
-                AssessmentVariable assessmentVariable = variableTemplate.getAssessmentVariableId();
-                if (measureAnswer != null && assessmentVariable != null){
-                    measureAnswerHash.put(measureAnswer.getMeasureAnswerId(), assessmentVariable);
-                    avIdToMeasureAnswerMap.put(assessmentVariable.getAssessmentVariableId(), measureAnswer);
-                }
-            }
+            variables.add(variableTemplate.getAssessmentVariableId());
         }
+        
+        createAnswerHash(variables);
     }
     
 }

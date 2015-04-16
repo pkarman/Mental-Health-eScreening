@@ -115,7 +115,9 @@ public class AssessmentVarChildren implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.AssessmentVarChildren[ assessmentVarChildrenId=" + assessmentVarChildrenId + " ]";
+        return "AssessmentVarChildren[ parentId=" + variableParent.getAssessmentVariableId() 
+                + ", childId=" + variableChild.getAssessmentVariableId()
+                + "]";
     }
     
 }

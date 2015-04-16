@@ -1,8 +1,6 @@
 package gov.va.escreening.variableresolver;
 
-import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
-import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
@@ -15,7 +13,6 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -25,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class VariableResolverServiceImpl implements VariableResolverService {
