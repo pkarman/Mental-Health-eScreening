@@ -20,7 +20,6 @@ import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
-import gov.va.escreening.repository.*;
 
 import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.AssessmentStatus;
@@ -40,8 +39,6 @@ import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.entity.VeteranAssessmentNote;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
-import gov.va.escreening.form.AssessmentReportFormBean;
-import gov.va.escreening.form.ExportDataFormBean;
 import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.AssessmentStatusRepository;
 import gov.va.escreening.repository.AssessmentVariableRepository;
@@ -1142,8 +1139,22 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
-		List<AssessmentVariable> dbVariables = new ArrayList<>(1);
+		
+		List<AssessmentVariable> dbVariables = new ArrayList<>();
 		dbVariables.add(dbVariable);
+		
+		//if this variable is a measure (question) then add all answers' variables
+		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
+		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
+		        if(answer.getAssessmentVariable() != null){
+		            dbVariables.add(answer.getAssessmentVariable());
+		        }
+		        else{
+		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 
+		                    answer.getMeasureAnswerId());
+		        }
+		    }
+		}
 		List<VeteranAssessment> assessmentList = veteranAssessmentRepository
 				.findByVeteranId(veteranId);
 
@@ -1193,11 +1204,33 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				}
 					
 				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
-				
 				AssessmentVariableDto result = dto.iterator().next();
+				
+				//TODO: Move this logic into the AssessmentVariableDto object
+				String value = null;
 				if (result.getValue() != null) {
-					timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  result.getValue());
-					total++;
+					value = result.getValue();
+				}
+				else if(result.getChildren() != null){
+				    double sum = 0d;
+				    boolean useSum = false;
+				    for(AssessmentVariableDto answerVariable : result.getChildren()){
+				        try{
+				            sum += Double.valueOf(answerVariable.getCalculationValue());
+				            useSum = true;
+				        }
+				        catch(Exception e){ /* ignore */ 
+				            logger.warn("Error converting answer's value into a double (answer variable: {})", answerVariable);
+				        }
+				    }
+				    if(useSum){
+				        value = Double.toString(sum);
+				    }
+				}
+				
+				if(value != null){
+				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
+				    total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);

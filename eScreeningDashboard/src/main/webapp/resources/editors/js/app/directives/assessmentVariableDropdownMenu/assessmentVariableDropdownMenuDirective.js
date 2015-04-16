@@ -21,11 +21,17 @@
 			            show: false
 		            };
 
-		            $document.bind('click', function(e) {
+		            /* This has been commented out for now because we need to force the user to make 
+		             * a decision on what variable they are selecting and what transformations to apply.
+		             * When time permits we can add this back in but we will have to:
+		             * 1. save the current variable that is selected before allowing for a new one to be selected
+		             * 2. we will have to reinstat this variable if the user is allowed to cancel the operation by clicking away.
+		             $document.bind('click', function(e) {
 			            scope.$apply(function() {
 				            scope.avMenu.show = false;
 			            });
 		            });
+		            */
 
 		            scope.openSelections = function(e) {
 			            // Stop bubbling

@@ -71,7 +71,7 @@ public abstract class RestController {
         else{
         	er = new ErrorResponse();
 	        er.setDeveloperMessage(iae.getMessage());
-	        er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
+	        er.addMessage("We are unable to process your request at this time. If this continues, please contact your system administrator.");
 	        er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     	
@@ -89,7 +89,7 @@ public abstract class RestController {
         else{
         	er = new ErrorResponse();
         	er.setDeveloperMessage(iae.getMessage());
-            er.addMessage("Sorry; but we are unable to process your request at this time.  If this continues, please contact your system administrator.");
+            er.addMessage("An unexpected error has occured. Please contact your system administrator.");
             er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
