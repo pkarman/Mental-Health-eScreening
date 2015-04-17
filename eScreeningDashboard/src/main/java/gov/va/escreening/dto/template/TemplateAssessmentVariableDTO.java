@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.entity.AssessmentVariable;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,6 +18,20 @@ public class TemplateAssessmentVariableDTO {
 	private Integer measureAnswerId;
 	private List<VariableTransformationDTO> transformations;
 
+	TemplateAssessmentVariableDTO(){
+	    /* needed for json encoding/decoding */
+	}
+	
+	public TemplateAssessmentVariableDTO(AssessmentVariable av){
+	    id = av.getAssessmentVariableId();
+	    name = av.getDisplayName();
+	    displayName = av.getDescription();
+	    typeId = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
+	    measureId = av.getMeasure() == null ? null : av.getMeasure().getMeasureId();
+	    measureTypeId = av.getMeasure() == null ? null : av.getMeasure().getMeasureType().getMeasureTypeId();
+	    measureAnswerId = av.getMeasureAnswer() == null ? null : av.getMeasureAnswer().getMeasureAnswerId();
+	}
+	
 	public String getName() {
 		return name;
 	}

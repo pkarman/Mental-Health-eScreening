@@ -5,6 +5,9 @@
     </div>
 </div>
 
+<!-- Alerts and Messages -->
+<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+
 <label for="graphicalTemplateChk">
 	<input id="graphicalTemplateChk" type="checkbox" ng-model="template.isGraphical"> Graphical Template
 </label>
@@ -119,7 +122,7 @@
 					<div class="border-radius-ul lighter-white min-height-235">
 					<!-- Repeater Start -->
 					<ul>
-						<li ng-repeat="tick in template.graph.ticks track by $index">
+						<li ng-repeat="tick in ticks track by $index">
 							<div class="row">
 								<div class="col-xs-12 col-md-12 col-lg-12">	
 									<div class="form-group">
@@ -128,7 +131,7 @@
 											<span class="glyphicon glyphicon-remove-circle red-color pull-right"></span>
 										</a>							
 										<input type="number"
-												ng-model="template.graph.ticks[$index]"
+												ng-model="ticks[$index]"
 												class="form-control"
 												id="ticksStartValue{{$index}}"
 												placeholder="Enter Start Value" 
@@ -179,8 +182,6 @@
 </div>
 </form>
 
-<!-- Alerts and Messages -->
-<alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
 <div class="col-md-12">
 	<div class="row">

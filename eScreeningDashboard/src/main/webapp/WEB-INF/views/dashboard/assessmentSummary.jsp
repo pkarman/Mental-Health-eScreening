@@ -447,15 +447,12 @@ $(document).ready(function() {
 	   		    $(modal_contents).show().html(r);
 	            $(".graphicBody").each(function(graphId){
 	            	
-	                //TODO: mayb we should add a "loading..." icon while we get data from server
-	                
 	            	var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
 					
 	                $this.html(""); //clear the graph area
 	        		var stackGraphParams = processIntervals(graphObj);
 	        		var timeSeriesParams = processIntervals(graphObj);
-	                
 					
 	                var parentDiv = $this.parents(".moduleTemplate");
 	                parentDiv.addClass("graphicBlock");
@@ -693,14 +690,8 @@ $(document).ready(function() {
 		return graphParams;
 	}
 	
-	
-    //TODO:
-	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
-	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
-	  // 2. the y axis label should not be given 
-	  // 3. the score is not showing up in the graph
        
-    var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
+    var colors	= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 	
 	function appendStackGraph(parentSelector, graphParams){
 

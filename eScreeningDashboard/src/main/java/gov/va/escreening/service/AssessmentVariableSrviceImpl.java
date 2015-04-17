@@ -62,6 +62,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			this.assessments = assessments;
 		}
 
+		//TODO: This has to be refactored to use TemplateAssessmentVariableDTO objects and not a multi map all with the same key
 		private void addAv2Table(AssessmentVariable av, Measure m,
 				MeasureAnswer ma) {
 			Integer avId = av.getAssessmentVariableId();

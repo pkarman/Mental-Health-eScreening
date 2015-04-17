@@ -2,6 +2,10 @@ package gov.va.escreening.dto.template;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * DTO that holds parameters for our graphical templates
@@ -9,12 +13,15 @@ import java.util.Map;
  * @author Robin Carnow
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GraphParamsDto {
-
+    private static final String GRAPHICAL_FREEMARKER_WRAPPER = "${%s}";
+    private static final Pattern GRAPICAL_FREEMARKER_UNWRAPPER = Pattern.compile("\\$\\{([^\\}]+)\\}");
     private Integer varId;
     private String title;
     private String footer;
     private Integer numberOfMonths;
+    private String score;
     private Map<String, Integer> intervals;
     private Double maxXPoint;
     private List<Double> ticks;
@@ -42,6 +49,19 @@ public class GraphParamsDto {
     }
     public void setNumberOfMonths(Integer numberOfMonths) {
         this.numberOfMonths = numberOfMonths;
+    }
+    public String getScore() {
+        return score;
+    }
+    public String unwrappedScore(){
+        Matcher m = GRAPICAL_FREEMARKER_UNWRAPPER.matcher(score);
+        if(m.matches()){
+            return m.group(1);
+        }
+        return score;
+    }
+    public void setScore(String score) {
+        this.score = score == null || score.startsWith("$") ? score : String.format(GRAPHICAL_FREEMARKER_WRAPPER, score);
     }
     public Map<String, Integer> getIntervals() {
         return intervals;

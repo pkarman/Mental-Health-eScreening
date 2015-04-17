@@ -1,12 +1,16 @@
 package gov.va.escreening.service;
 
 import static gov.va.escreening.constants.AssessmentConstants.*;
+import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateTypeDTO;
+import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.template.GraphParamsDto;
 import gov.va.escreening.dto.template.INode;
+import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
 import gov.va.escreening.dto.template.TemplateFileDTO;
+import gov.va.escreening.dto.template.TemplateVariableContent;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Measure;
@@ -14,6 +18,7 @@ import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
@@ -41,12 +46,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
 	private static final Logger logger = LoggerFactory.getLogger(TemplateServiceImpl.class);
 	private static final String GRAPHICAL_TEMPLATE_FORMAT = 
-        "<#if (var%d.children)??  &&  ((var%d.children)?size > 0)>\n"
+        "<#if %s?string != DEFAULT_VALUE >\n"
         + "${MODULE_TITLE_START}%s${MODULE_TITLE_END}\n"
         + "${GRAPH_SECTION_START}\n ${GRAPH_BODY_START}\n%s\n"
         + " ${GRAPH_BODY_END}\n${GRAPH_SECTION_END}\n";
@@ -265,9 +271,8 @@ public class TemplateServiceImpl implements TemplateService {
         file.append("<#include \"clinicalnotefunctions\">\n<#-- generated file. Do not change -->\n");
         
         if(templateDto.getIsGraphical()){
-            Integer varId = templateDto.getGraph().getVarId();
             file.append(String.format(GRAPHICAL_TEMPLATE_FORMAT, 
-                    varId, varId, 
+                    templateDto.getGraph().unwrappedScore(), 
                     templateDto.getName(), 
                     graphParams));
         }
@@ -308,6 +313,23 @@ public class TemplateServiceImpl implements TemplateService {
         
         // set json encoded graphical parameters
         if(templateFile.getIsGraphical()){
+            
+            //set the score field if needed
+            if(templateFile.getGraph().getScore() == null){
+                AssessmentVariable scoreVariable = avRepository.findOne(templateFile.getGraph().getVarId());
+                if(scoreVariable == null){
+                    ErrorBuilder.throwing(EntityNotFoundException.class)
+                    .toAdmin("There is no variable with ID: " + templateFile.getGraph().getVarId())
+                    .toUser("The selected variable for this graphical template is unknown")
+                    .throwIt();
+                }
+                
+                TemplateAssessmentVariableDTO scoreVarDto = new TemplateAssessmentVariableDTO(scoreVariable);
+                TemplateVariableContent scoreContent = new TemplateVariableContent(scoreVarDto); 
+                String scoreFreeMarker = BlockUtil.toFreeMarker(scoreContent, Sets.<Integer>newHashSetWithExpectedSize(1));
+                templateFile.getGraph().setScore(scoreFreeMarker);
+            }
+            
             try{
                 template.setGraphParams(om.writeValueAsString(templateFile.getGraph()));
             }

@@ -15,6 +15,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 	$scope.hasChanged = false;
 	$scope.assessmentVariables = [];
 	$scope.intervalList = [];
+	$scope.ticks = $scope.template.graph.ticks ? $scope.template.graph.ticks : [];
 	$scope.debug = false;
 	$scope.logId=0;
 	$scope.alerts = MessageFactory.get();
@@ -46,16 +47,23 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 	if($scope.template.isGraphical){
 		// init intervalList
 		var intervalTicks = {};
+		
+		//add the max X value
+		if(angular.isDefined($scope.template.graph.maxXPoint)){
+			intervalTicks[$scope.template.graph.maxXPoint] = true;
+		}
+		
 		angular.forEach($scope.template.graph.intervals, function(value, key) {
 			$scope.intervalList.push( {'name' : key, 'value' : value } );
 			intervalTicks[value] = true;
 		});
-		$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
+		$scope.ticks = $scope.ticks.filter(
 			function(tick){
 				return ! intervalTicks[tick];
 			}
 		);
 	}
+	
 	//we have a req for min of 2 intervals 
 	while($scope.intervalList.length < 2){
 		$scope.intervalList.push({'name' : "", 'value' : ""});
@@ -69,7 +77,9 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 			//update selected variable ID
 			$scope.template.graph.varId = $scope.assessmentVariable.id;
-
+			//update ticks
+			angular.copy($scope.ticks, $scope.template.graph.ticks);
+			
 			//update template intervals
 			var reverseLookup = {};
 			$scope.template.graph.intervals = {};
@@ -81,6 +91,12 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 					$scope.template.graph.ticks.push(interval.value);
 				}
 			});
+			
+			//add the max X to the ticks for the user
+			if(angular.isDefined($scope.template.graph.maxXPoint)){
+				$scope.template.graph.ticks.push($scope.template.graph.maxXPoint);
+			}
+			
 			//we want both the ticks and the intervals map in order
 			$scope.template.graph.ticks.sort(function(a, b) {return a - b;});
 			
@@ -88,17 +104,17 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 			var orderedIntervals = {};
 			var prev = null;
 			$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
-					function(tick){
-						if(tick !== prev){
-							if(reverseLookup[tick]){
-								orderedIntervals[reverseLookup[tick]] = tick;
-							}
-							prev = tick;
-							return true;
+				function(tick){
+					if(tick !== prev){
+						if(reverseLookup[tick]){
+							orderedIntervals[reverseLookup[tick]] = tick;
 						}
 						prev = tick;
-						return false;
-					});
+						return true;
+					}
+					prev = tick;
+					return false;
+				});
 			
 			$scope.template.graph.intervals = orderedIntervals;
 		}
@@ -110,7 +126,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				});
 			}, 
 			function(response) {
-				MessageFactory.error('An error occurred trying to save the template.');
+				MessageFactory.error('An error occurred when trying to save the template. Please contact support.');
 			}
 		);
 	};
@@ -133,14 +149,11 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 	};
 
 	$scope.addTickValue = function(){
-		if(!$scope.template.graph.ticks){
-			$scope.template.graph.ticks = [];
-		}
-		$scope.template.graph.ticks.push('');
+		$scope.ticks.push('');
 	};
 
 	$scope.deleteTick = function(index){
-		$scope.template.graph.ticks.splice(index, 1);
+		$scope.ticks.splice(index, 1);
 	};
 	
 	//helper function for debugging drag and drop rules (only when we want tons of logs)
