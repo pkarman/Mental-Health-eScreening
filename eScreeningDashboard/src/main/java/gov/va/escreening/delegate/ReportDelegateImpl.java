@@ -694,8 +694,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         JRDataSource dataSource = null;
 
         if (totalAssessment == 0 || dtos == null || dtos.size() == 0) {
+            parameterMap.put("noData", true);
             dataSource = new JREmptyDataSource();
         } else {
+            parameterMap.put("noData", false);
             for (Report594DTO report594DTO : dtos) {
 
                 int numerator = Integer.parseInt(report594DTO.getModuleCount());
