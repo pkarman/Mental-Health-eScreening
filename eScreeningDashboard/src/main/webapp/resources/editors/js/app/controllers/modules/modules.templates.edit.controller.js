@@ -77,7 +77,11 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 			//update selected variable ID
 			$scope.template.graph.varId = $scope.assessmentVariable.id;
+			
 			//update ticks
+			if(!$scope.template.graph.ticks){
+				$scope.template.graph.ticks = [];
+			}
 			angular.copy($scope.ticks, $scope.template.graph.ticks);
 			
 			//update template intervals
@@ -93,7 +97,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 			});
 			
 			//add the max X to the ticks for the user
-			if(angular.isDefined($scope.template.graph.maxXPoint)){
+			if(angular.isDefined($scope.template.graph.maxXPoint) && 
+					$scope.template.graph.maxXPoint != null){
 				$scope.template.graph.ticks.push($scope.template.graph.maxXPoint);
 			}
 			

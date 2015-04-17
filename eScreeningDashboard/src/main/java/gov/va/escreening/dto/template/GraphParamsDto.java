@@ -22,7 +22,7 @@ public class GraphParamsDto {
     private String footer;
     private Integer numberOfMonths;
     private String score;
-    private Map<String, Integer> intervals;
+    private Map<String, Double> intervals;
     private Double maxXPoint;
     private List<Double> ticks;
     
@@ -63,10 +63,10 @@ public class GraphParamsDto {
     public void setScore(String score) {
         this.score = score == null || score.startsWith("$") ? score : String.format(GRAPHICAL_FREEMARKER_WRAPPER, score);
     }
-    public Map<String, Integer> getIntervals() {
+    public Map<String, Double> getIntervals() {
         return intervals;
     }
-    public void setIntervals(Map<String, Integer> intervals) {
+    public void setIntervals(Map<String, Double> intervals) {
         this.intervals = intervals;
     }
     public Double getMaxXPoint() {

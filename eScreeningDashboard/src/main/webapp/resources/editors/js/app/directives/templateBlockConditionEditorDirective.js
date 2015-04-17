@@ -43,7 +43,8 @@
                     { name: 'Response is',     value: 'response',  category: 'select' },
                     { name: 'Response isn\'t',  value: 'nresponse', category: 'select' }
                 ];
-
+                
+                //TODO: These two might be dead code (see same methods in templateBlockEditorDirective.js)
                 scope.addAndConditionBlock = function(selectedCondition) {
                     if(selectedCondition.children) {
                         selectedCondition.children.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
