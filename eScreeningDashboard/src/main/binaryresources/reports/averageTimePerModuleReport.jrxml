@@ -2,10 +2,11 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="averageTimePermoduleReport" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" whenNoDataType="NoDataSection" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.6500000000000032"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="201"/>
+	<property name="ireport.y" value="132"/>
 	<subDataset name="Table Dataset 1" uuid="5fbd32eb-732d-4507-9783-129a5dc03a11"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean"/>
 	<field name="moduleName" class="java.lang.String"/>
 	<field name="moduleTime" class="java.lang.String"/>
 	<field name="moduleAvgMin" class="java.lang.String"/>
@@ -61,6 +62,7 @@
 	</title>
 	<detail>
 		<band height="47" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<frame>
 				<reportElement x="0" y="0" width="286" height="47" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
 				<box>
@@ -100,8 +102,9 @@
 			</frame>
 		</band>
 	</detail>
-	<noData>
+	<summary>
 		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
 			<staticText>
 				<reportElement x="0" y="0" width="572" height="50" uuid="477e9c19-4582-4445-8ffb-925b75993d07"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -110,5 +113,5 @@
 				<text><![CDATA[No results found.]]></text>
 			</staticText>
 		</band>
-	</noData>
+	</summary>
 </jasperReport>

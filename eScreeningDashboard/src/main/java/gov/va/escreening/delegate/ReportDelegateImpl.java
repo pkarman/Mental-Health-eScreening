@@ -620,8 +620,14 @@ public class ReportDelegateImpl implements ReportDelegate {
             }
         }
 
-        dataSource = new JRBeanCollectionDataSource(dtos);
-        //dataSource = new JREmptyDataSource();
+        if (dtos.isEmpty()){
+            dataSource = new JREmptyDataSource();
+            parameterMap.put("noData", true);
+        }
+        else {
+            dataSource = new JRBeanCollectionDataSource(dtos);
+            parameterMap.put("noData", false);
+        }
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
@@ -665,8 +671,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         List<Report595DTO> dtos = veteranAssessmentService.getTopSkippedQuestions(clinicIds, fromDate, toDate);
 
         if (dtos == null || dtos.isEmpty()) {
+            parameterMap.put("noData", true);
             dataSource = new JREmptyDataSource();
         } else {
+            parameterMap.put("noData", false);
             dataSource = new JRBeanCollectionDataSource(dtos);
         }
 
