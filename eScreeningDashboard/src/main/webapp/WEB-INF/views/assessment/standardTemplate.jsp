@@ -11,7 +11,7 @@
 	<head>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
     
 		<meta name="apple-mobile-web-app-capable" content="yes">
     <!-- <meta name="viewport" content="user-scalable=no,width=device-width" /> -->
@@ -50,10 +50,9 @@
   		<script type="text/javascript" src="resources/js/measures/measures-validations.js?v=12"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-requestbuilder.js"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
+
 	</head>
 	<body>
-
-
 		<div class="top_header_message">
 		    <div class="top_header">
 		        
@@ -85,7 +84,7 @@
             </ul>
         </div>
 		<!-- Three columns, fixed-fluid-fixed -->
-        <div id="center" class="column contentAreaGrayRadial" aria-hidden="false">
+        <div id="center" class="column contentAreaGrayRadial padding-bottom" aria-hidden="false">
 			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
 			<!-- Dynamic Content Region -->
 			<div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
@@ -111,7 +110,10 @@
 
              </div>             
              <div id="savedTime"></div>
-        </div>
+        
+		<br>
+		<div class="clearfix"></div>
+		</div>
         
         <div id="right" class="column">
             <!-- Dead Space -->
