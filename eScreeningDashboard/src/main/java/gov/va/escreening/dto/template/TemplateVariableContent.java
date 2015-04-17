@@ -7,7 +7,7 @@ public class TemplateVariableContent extends TemplateBaseContent{
 
 	private TemplateAssessmentVariableDTO content;
 	
-	TemplateVariableContent() {
+	public TemplateVariableContent() {
 	    /* needed for json encoding/decoding */
 	}
 	

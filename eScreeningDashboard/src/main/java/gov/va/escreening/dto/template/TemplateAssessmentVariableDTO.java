@@ -18,7 +18,7 @@ public class TemplateAssessmentVariableDTO {
 	private Integer measureAnswerId;
 	private List<VariableTransformationDTO> transformations;
 
-	TemplateAssessmentVariableDTO(){
+	public TemplateAssessmentVariableDTO(){
 	    /* needed for json encoding/decoding */
 	}
 	
