@@ -639,11 +639,13 @@ public class ReportDelegateImpl implements ReportDelegate {
     public Map<String, Object> genClinicStatisticReportsPartVDemographicsReport(Map<String, Object> requestData, EscreenUser escreenUser) {
         Map<String, Object> parameterMap = Maps.newHashMap();
 
+        parameterMap.put("noData", true);
         attachDates(parameterMap, requestData);
         attachClinics(parameterMap, requestData);
         attachGender(parameterMap, requestData);
         attachEthnicity(parameterMap, requestData);
         attachAge(parameterMap, requestData);
+
         attachEducation(parameterMap, requestData);
         attachEmploymentStatus(parameterMap, requestData);
         attachMilitaryBranch(parameterMap, requestData);
@@ -820,6 +822,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                             result.get(1).intValue(),
                             result.get(2).intValue()
                     ));
+            dataCollection.put("noData", false);
         }
     }
 
@@ -848,6 +851,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("tobacco_yes_count", result.get(2) + "/" + total);
                 dataCollection.put("tobacco_miss_percentage", String.format("%d", missing * 100 / total) + "%");
                 dataCollection.put("tobacco_miss_count", missing + "/" + total);
+                dataCollection.put("noData", false);
             }
         }
 
@@ -893,6 +897,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("navy_count", result.get(5) + "/" + total);
                 dataCollection.put("missingmilitary_percentage", String.format("%d", missing * 100 / total) + "%");
                 dataCollection.put("missingmilitary_count", missing + "/" + total);
+                dataCollection.put("noData", false);
             }
         }
 
@@ -941,6 +946,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("daylabor_count", result.get(3) + "/" + total);
                 dataCollection.put("unemployed_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
                 dataCollection.put("unemployed_count", result.get(4) + "/" + total);
+                dataCollection.put("noData", false);
                 //TODO
                 dataCollection.put("missingemp_percentage", "0%");
                 dataCollection.put("missingemp_count", "0/" + total);
@@ -1000,6 +1006,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("dr_count", result.get(7) + "/" + total);
                 dataCollection.put("missingedu_percentage", String.format("%d", missingCount * 100 / total) + "%");
                 dataCollection.put("missingedu_count", missingCount + "/" + total);
+                dataCollection.put("noData", false);
             }
         }
 
@@ -1042,6 +1049,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             dataCollection.put("age",
                     String.format("Mean Age %3.1f years Minimum Value = %d and Maximum value = %d",
                             result.get(0).floatValue(), result.get(1).intValue(), result.get(2).intValue()));
+            dataCollection.put("noData", false);
         }
     }
 
@@ -1065,6 +1073,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("non_hispanic_count", result.get(1) + "/" + total);
                 dataCollection.put("missingethnicity_percentage", String.format("%d", missing * 100 / total) + "%");
                 dataCollection.put("missingethnicity_count", missing + "/" + total);
+                dataCollection.put("noData", false);
             }
         }
         if (total == 0) {
@@ -1140,6 +1149,7 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("female_count", female + "/" + total);
                 dataCollection.put("male_percentage", String.format("%d", male * 100 / total) + "%");
                 dataCollection.put("male_count", male + "/" + total);
+                dataCollection.put("noData", false);
                 return;
             }
         }

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="demographicsReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="2.1961500000000145"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="272"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="female_percentage" class="java.lang.String"/>
@@ -83,9 +83,7 @@
 	<parameter name="tobacco_miss_count" class="java.lang.String"/>
 	<parameter name="numberofdeployments" class="java.lang.String"/>
 	<parameter name="age" class="java.lang.String"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
+	<parameter name="noData" class="java.lang.Boolean"/>
 	<title>
 		<band height="151" splitType="Stretch">
 			<image>
@@ -133,8 +131,21 @@
 			</textField>
 		</band>
 	</title>
+	<detail>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="189" y="18" width="152" height="32" uuid="55b1c2df-0598-42b8-8949-84e37f91d8a1"/>
+				<textElement>
+					<font size="13"/>
+				</textElement>
+				<text><![CDATA[No results found.]]></text>
+			</staticText>
+		</band>
+	</detail>
 	<summary>
 		<band height="686" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="121" height="18" backcolor="#CCCCCC" uuid="c791534e-6443-4f05-ab33-2c0568038e12"/>
 				<box>
