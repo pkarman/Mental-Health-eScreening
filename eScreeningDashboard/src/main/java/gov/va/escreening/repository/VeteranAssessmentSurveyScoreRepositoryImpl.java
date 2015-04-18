@@ -206,13 +206,13 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 dto.setNegativeCount("0/0");
             }else{
                 dto.setMissingPercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getMissingCount()) / total * 100)
+                        String.format("%3.0f%%", Float.parseFloat(dto.getMissingCount()) / total * 100)
                 );
                 dto.setPositivePercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getPositiveCount()) / total * 100)
+                        String.format("%3.0f%%", Float.parseFloat(dto.getPositiveCount()) / total * 100)
                 );
                 dto.setNegativePercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getNegativeCount()) / total * 100)
+                        String.format("%3.0f%%", Float.parseFloat(dto.getNegativeCount()) / total * 100)
                 );
                 dto.setMissingCount(dto.getMissingCount()+"/"+total);
                 dto.setPositiveCount(dto.getPositiveCount()+"/"+total);

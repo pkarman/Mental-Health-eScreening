@@ -72,6 +72,9 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(name = "selectedReportableScoresMap")
     Map<String, String> selectedReportableScoresMap;
 
+    @Resource(name = "selectedReportableScreensMap")
+    Map<String, String> selectedReportableScreensMap;
+
     private FileResolver fileResolver = new FileResolver() {
 
         @Override
@@ -766,7 +769,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachClinics(parameterMap, requestData);
 
         List<String> surveyNameList = new ArrayList<>();
-        surveyNameList.addAll(selectedReportableScoresMap.keySet());
+        surveyNameList.addAll(selectedReportableScreensMap.keySet());
 
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
