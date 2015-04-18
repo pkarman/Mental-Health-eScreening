@@ -486,6 +486,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         attachClinics(parameterMap, requestData);
 
         parameterMap.put("datasource", new JREmptyDataSource());
+        parameterMap.put("noData", true);
 
         final DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy");
         final LocalDate fromDate = dtf.parseLocalDate(requestData.get(ReportsUtil.FROMDATE).toString());
@@ -507,6 +508,9 @@ public class ReportDelegateImpl implements ReportDelegate {
             }
 
             parameterMap.put("grandTotal", "" + totals);
+            if (totals > 0){
+                parameterMap.put("noData", false);
+            }
         } else {
             parameterMap.put("showByDay", false);
             parameterMap.put("byDay", Lists.newArrayList());
@@ -525,11 +529,16 @@ public class ReportDelegateImpl implements ReportDelegate {
             parameterMap.put("byTime", data);
             parameterMap.put("grandTotal", "" + total2);
 
+            if (total2 > 0){
+                parameterMap.put("noData", false);
+            }
+
 
         } else {
             parameterMap.put("showByTime", false);
             parameterMap.put("byTime", Lists.newArrayList());
         }
+
 
         List<KeyValueDTO> ks = Lists.newArrayList();
 
@@ -545,6 +554,9 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setKey("Number of Unique Veterans");
 
             keyValueDTO.setValue(veteranAssessmentService.getUniqueVeterns(clinicIds, strFromDate, strToDate));
+            if(!keyValueDTO.getValue().equals("0")){
+                parameterMap.put("noData", false);
+            }
             ks.add(keyValueDTO);
             bCheckAll = true;
         }
@@ -555,6 +567,9 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO.setValue(
                     veteranAssessmentService.getNumOfBatteries(clinicIds, strFromDate, strToDate)
             );
+            if(!keyValueDTO.getValue().equals("0")){
+                parameterMap.put("noData", false);
+            }
             keyValueDTO.setKey("Number of eScreening batteries completed");
             ks.add(keyValueDTO);
             bCheckAll = true;
@@ -563,11 +578,16 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("averageTimePerAssessment") != null
                 && (Boolean) requestData.get("averageTimePerAssessment")) {
             keyValueDTO = new KeyValueDTO();
+            String value = veteranAssessmentService.getAverageTimePerAssessment(clinicIds, strFromDate, strToDate);
+            if (!value.equals("0")){
+                parameterMap.put("noData", false);
+            }
             keyValueDTO.setValue(
-                    veteranAssessmentService.getAverageTimePerAssessment(clinicIds, strFromDate, strToDate) + " min"
+                  value  + " min"
             );
             keyValueDTO.setKey("Average time per assessment");
             ks.add(keyValueDTO);
+
             bCheckAll = true;
         }
 
@@ -576,6 +596,10 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue(veteranAssessmentService.calculateAvgAssessmentsPerClinician(clinicIds, strFromDate, strToDate));
             keyValueDTO.setKey("Average number of assessments per clinician in each clinic");
+
+            if(keyValueDTO.getValue()!=null && !keyValueDTO.getValue().equals("0")){
+                parameterMap.put("noData", false);
+            }
             ks.add(keyValueDTO);
             bCheckAll = true;
         }
@@ -583,8 +607,11 @@ public class ReportDelegateImpl implements ReportDelegate {
         if (requestData.get("numberAndPercentVeteransWithMultiple") != null
                 && (Boolean) requestData.get("numberAndPercentVeteransWithMultiple")) {
             keyValueDTO = new KeyValueDTO();
-            keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate)+"%");
+            keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate) + "%");
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
+            if (!keyValueDTO.equals("0%")){
+                parameterMap.put("noData", false);
+            }
             ks.add(keyValueDTO);
             bCheckAll = true;
         }
