@@ -1,6 +1,7 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.VariableTemplate;
@@ -11,9 +12,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -70,34 +75,54 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 	@Override
 	public Map<Integer, AssessmentVariable> createMeasureAnswerTypeHash(
 			List<VariableTemplate> variableTemplates) {
-		Map<Integer, AssessmentVariable> measureAnswerHash = new HashMap<Integer, AssessmentVariable>();
-
+	    
+	    //This is a temporary fix until ticket 643 is complete. If there is a conflict with ticket 643 please remove these changes
+		Set<AssessmentVariable> variables = Sets.newHashSetWithExpectedSize(variableTemplates.size());
 		for (VariableTemplate variableTemplate : variableTemplates) {
-			if (variableTemplate.getAssessmentVariableId().getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER) {
-				MeasureAnswer measureAnswer = variableTemplate.getAssessmentVariableId().getMeasureAnswer();
-				AssessmentVariable assessmentVariable = variableTemplate.getAssessmentVariableId();
-				if (measureAnswer != null && assessmentVariable != null)
-					measureAnswerHash.put(measureAnswer.getMeasureAnswerId(), assessmentVariable);
-			}
+		    variables.add(variableTemplate.getAssessmentVariableId());
 		}
+		return createMeasureAnswerTypeHash(variables);
 
-		return measureAnswerHash;
 	}
 
 	@Override
 	public Map<Integer, AssessmentVariable> createMeasureAnswerTypeHash(
 			Iterable<AssessmentVariable> assessmentVariables) {
 		Map<Integer, AssessmentVariable> measureAnswerHash = new HashMap<Integer, AssessmentVariable>();
-
-		for (AssessmentVariable variable : assessmentVariables) {
-			if (variable.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER) {
-				MeasureAnswer measureAnswer = variable.getMeasureAnswer();
-				if (measureAnswer != null)
-					measureAnswerHash.put(measureAnswer.getMeasureAnswerId(), variable);
-			}
+		
+		//This is a temporary fix until ticket 643 is complete. If there is a conflict with ticket 643 please remove these changes
+		Set<AssessmentVariable> answerAvs = Sets.newHashSet(); 		
+		
+		for(AssessmentVariable av : assessmentVariables){
+		    collectAnswerAvs(av, answerAvs);
 		}
-
+		measureAnswerHash = Maps.newHashMapWithExpectedSize(answerAvs.size());
+		for (AssessmentVariable variable : answerAvs) {
+		    MeasureAnswer measureAnswer = variable.getMeasureAnswer();
+		    if (measureAnswer != null){
+		        measureAnswerHash.put(measureAnswer.getMeasureAnswerId(), variable);
+		    }
+		} 
 		return measureAnswerHash;
 	}
-
+	
+	//This is a temporary fix until ticket 643 is complete. If there is a conflict with ticket 643 please remove these changes
+	private Set<AssessmentVariable> collectAnswerAvs(AssessmentVariable av, Set<AssessmentVariable> answerAvs){
+	    switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+	    case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+	        for(AssessmentVarChildren child : av.getAssessmentVarChildrenList()){
+	            collectAnswerAvs(child.getVariableChild(), answerAvs);
+	        }
+	        break;
+	    case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+	        for(MeasureAnswer ma : av.getMeasure().getMeasureAnswerList()){
+	            answerAvs.add(ma.getAssessmentVariable());
+	        }
+	        break;
+	    case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+	        answerAvs.add(av);
+	        break;
+	    }
+	    return answerAvs;
+	}
 }

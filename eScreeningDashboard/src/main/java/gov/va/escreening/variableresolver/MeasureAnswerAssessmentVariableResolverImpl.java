@@ -192,10 +192,13 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         //check to see if the answer id is in the hash
         Integer measureAnswerId = response.getMeasureAnswer().getMeasureAnswerId();
         if (measureAnswerHash.containsKey(measureAnswerId)) {
-            //if found then see if an override value has been set.
-            VariableTemplate variableTemplate = measureAnswerHash.get(measureAnswerId).getVariableTemplateList().get(0);
-            if (variableTemplate.getOverrideDisplayValue() != null && !variableTemplate.getOverrideDisplayValue().isEmpty())
-                return variableTemplate.getOverrideDisplayValue();
+            //This is a temporary fix until ticket 643 is complete. If there is a conflict with ticket 643 (or 718) please remove these changes
+            List<VariableTemplate> variableTemplateList = measureAnswerHash.get(measureAnswerId).getVariableTemplateList();
+            if(variableTemplateList != null && !variableTemplateList.isEmpty()){
+                VariableTemplate variableTemplate = variableTemplateList.get(0);
+                if (variableTemplate.getOverrideDisplayValue() != null && !variableTemplate.getOverrideDisplayValue().isEmpty())
+                    return variableTemplate.getOverrideDisplayValue();
+            }
         }
 
         //Check to see if the measure answer has an override value
