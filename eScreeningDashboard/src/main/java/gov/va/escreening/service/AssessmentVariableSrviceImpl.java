@@ -202,7 +202,12 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
         return htmlText != null ? htmlText.replaceAll("\\<.*?>", "") : "";
     }
 
-    @Override
+	@Override
+	public AssessmentVariable findById(Integer variableId) {
+		return avr.findOne(variableId);
+	}
+
+	@Override
     public void filterBySurvey(Survey survey, AvBuilder<?> avBldr,
                                Collection<Measure> smList, Collection<AssessmentVariable> avList,
                                boolean useFilteredMeasures, boolean includeFormulaTokens) {

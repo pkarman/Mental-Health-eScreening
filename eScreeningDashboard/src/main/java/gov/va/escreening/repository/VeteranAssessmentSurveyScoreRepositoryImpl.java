@@ -39,17 +39,19 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
      * @return
      */
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
                 " where vassr.dateCompleted between :fromDate and :toDate " +
                 " and vassr.survey.id = :surveyId  " +
+                ((avId!=null)?" and vassr.assessmentVariable.id = :avId  ":"") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.screenNumber is null" +
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
+        if (avId!=null)query.setParameter("avId", avId);
         query.setParameter("veteranId", veteranId);
 
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
@@ -59,12 +61,13 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
                 " where vassr.dateCompleted >= :fromDate " +
                 " and vassr.dateCompleted <= :toDate " +
                 " and vassr.survey.id = :surveyId  " +
+                ((avId!=null)?" and vassr.assessmentVariable.id = :avId  ":"") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.clinic.id = :clinicId " +
                 " and vassr.screenNumber is null "+
@@ -72,6 +75,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
+        if (avId!=null)query.setParameter("avId", avId);
         query.setParameter("veteranId", veteranId);
         query.setParameter("clinicId", clinicId);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));

@@ -69,10 +69,10 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         }
     }
 
-    private List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment, Map<String, String> map) {
+    private List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment, Map<String, String> selectedReportableScreensMap) {
         List<VeteranAssessmentSurveyScore> vassLst = Lists.newArrayList();
         for (Survey s : veteranAssessment.getSurveys()) {
-            final String screenAvPlusThreshold = map.get(s.getName());
+            final String screenAvPlusThreshold = selectedReportableScreensMap.get(s.getName());
             if (screenAvPlusThreshold == null) {
                 continue;
             }
@@ -127,8 +127,8 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
-        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, veteranId, fromDate, toDate);
+    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avId, veteranId, fromDate, toDate);
 
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
@@ -141,8 +141,8 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
-        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, veteranId, fromDate, toDate);
+    public Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, avId, veteranId, fromDate, toDate);
 
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
@@ -155,16 +155,17 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
 
         Survey survey = surveyRepository.findOne(surveyId);
 
-        TableReportDTO result = new TableReportDTO();
+        AssessmentVariable av = avId == null ? null : avSrv.findById(avId);
 
-        result.setModuleName(survey.getName());
+        TableReportDTO result = new TableReportDTO();
+        result.setModuleName(intervalService.getModuleName(surveyId, avId));
         result.setScreeningModuleName(survey.getDescription());
 
-        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, veteranId, fromDate, toDate);
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avId, veteranId, fromDate, toDate);
 
 
         if (scores != null && !scores.isEmpty()) {
@@ -190,15 +191,17 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public ModuleGraphReportDTO getGraphReportDTOForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public ModuleGraphReportDTO getGraphReportDTOForIndividual(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
 
         Survey survey = surveyRepository.findOne(surveyId);
 
-        ModuleGraphReportDTO result = new ModuleGraphReportDTO();
-        result.setModuleName(survey.getName());
-        //result.setScreeningModuleName(survey.getDescription());
+        AssessmentVariable av = avId == null ? null : avSrv.findById(avId);
 
-        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, veteranId, fromDate, toDate);
+        ModuleGraphReportDTO result = new ModuleGraphReportDTO();
+        result.setModuleName(intervalService.getModuleName(surveyId, avId));
+
+
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avId, veteranId, fromDate, toDate);
 
         if (scores != null && !scores.isEmpty()) {
             result.setScore(Integer.toString(scores.get(0).getScore()));
@@ -228,15 +231,10 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Map<String, Object> data = Maps.newLinkedHashMap();
         if (scores != null && !scores.isEmpty()) {
             for (ScoreDateDTO score : scores) {
-                data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
+                data.put(dateFormatter.format(score.getDateCompleted()), df.format(score.getScore()));
             }
         }
         return data;
-    }
-
-    @Override
-    public ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyIds, String fromDate, String toDate) {
-        return null;
     }
 
     @Override
@@ -249,10 +247,9 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Clinic clinic = clinicRepository.findOne(clinicId);
 
         result.setModuleName(survey.getName());
-        result.setHasData(!scores.isEmpty());
         result.setScoreName("Average " + survey.getName() + "Score");
 
-        if (result.getHasData()) {
+        if (scores != null && !scores.isEmpty()) {
             double total = 0d;
             int totalCount = 0;
             result.setScoreHistory(new ArrayList<ScoreHistoryDTO>());
@@ -295,21 +292,23 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
      * @return
      */
     @Override
-    public ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
 
         ModuleGraphReportDTO result = new ModuleGraphReportDTO();
 
         Survey s = surveyRepository.findOne(surveyId);
+        AssessmentVariable av = avId == null ? null : avSrv.findById(avId);
 
-        result.setModuleName(s.getName());
+        result.setModuleName(intervalService.getModuleName(surveyId, avId));
         result.setScoreName("Average Score");
 
 
-        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, veteranId, fromDate, toDate);
+        List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(clinicId, surveyId, avId, veteranId, fromDate, toDate);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
         if (scores != null && !scores.isEmpty()) {
+            result.setHasData(true);
             result.setScore(getAvgOfScores(scores).toString());
             result.setScoreMeaning(intervalService.getScoreMeaning(surveyId, scores.get(0).getScore()));
 
@@ -378,6 +377,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             vass.setSurvey(s);
             vass.setVeteran(veteranAssessment.getVeteran());
             vass.setVeteranAssessment(veteranAssessment);
+            vass.setAssessmentVariable(avSrv.findById(avDto.getVariableId()));
             return vass;
         }
         return null;

@@ -28,6 +28,10 @@ public class VeteranAssessmentSurveyScore implements Serializable {
     @ManyToOne
     private Survey survey;
 
+    @JoinColumn(name="assessment_var_id", referencedColumnName = "assessment_variable_id")
+    @ManyToOne
+    private AssessmentVariable assessmentVariable;
+
     @Column(name = "survey_score")
     private Integer score;
 
@@ -108,5 +112,13 @@ public class VeteranAssessmentSurveyScore implements Serializable {
 
     public void setScreenNumber(Integer screenNumber) {
         this.screenNumber = screenNumber;
+    }
+
+    public AssessmentVariable getAssessmentVariable() {
+        return assessmentVariable;
+    }
+
+    public void setAssessmentVariable(AssessmentVariable assessmentVariable) {
+        this.assessmentVariable = assessmentVariable;
     }
 }

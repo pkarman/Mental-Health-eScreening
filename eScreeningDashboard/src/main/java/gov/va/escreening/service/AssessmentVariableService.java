@@ -67,4 +67,6 @@ public interface AssessmentVariableService {
 	List<Map<String, String>> askFormulasFor(Integer moduleId);
 
 	String getPlainText(String htmlText);
+
+    AssessmentVariable findById(Integer variableId);
 }
