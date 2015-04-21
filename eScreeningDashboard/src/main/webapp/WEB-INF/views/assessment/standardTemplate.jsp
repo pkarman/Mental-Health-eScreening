@@ -52,14 +52,13 @@
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
 		<script>
 			$(document).ready(function(){
+				//$('input').bind('focusout',function() {
+				//	$("#assessmentContainer").attr('tabindex',-1).focus();
+				//});
 
-				$('input').bind('focusout',function() {
-					var keyboard_shown = $(window).scrollTop() > 0;
-			
-					$('#test').append(keyboard_shown?' keyboard ':' nokeyboard ');
-					$("#assessmentContainer").attr('tabindex',-1).focus();
+				$( "input" ).focusout(function() {
+					$("#assessmentContainer").focus();
 				});
-				
 			});		
 		</script>
 	</head>
@@ -98,7 +97,6 @@
         <div id="center" class="column contentAreaGrayRadial padding-bottom" aria-hidden="false">
 			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
 			<!-- Dynamic Content Region -->
-			<div id="test">IPAD ONLY</div>
 			<div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
             	<!-- This is the active region container for the active view's (page) form controls.  When a page is selected, the question JSON 
             	returned, this will be populated with the form controls drawn by iteration over the response's JSON object. -->
