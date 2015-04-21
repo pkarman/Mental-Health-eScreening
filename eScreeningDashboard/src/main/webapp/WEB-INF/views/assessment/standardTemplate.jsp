@@ -50,7 +50,17 @@
   		<script type="text/javascript" src="resources/js/measures/measures-validations.js?v=12"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-requestbuilder.js"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
-
+		<script>
+			$(document).ready(function(){
+				$('input').bind('focus',function() {
+					$(window).scrollTop(10);
+					var keyboard_shown = $(window).scrollTop() > 0;
+					$(window).scrollTop(0);
+			
+					$('#test').append(keyboard_shown?'keyboard ':'nokeyboard ');
+				});
+			});		
+		</script>
 	</head>
 	<body>
 		<div class="top_header_message">
@@ -107,7 +117,7 @@
                  </button>
                  	
                  <input id="nextBtn" class="searchBtn" type="button" value="Next &#187;">
-
+				 <div id="#test">IPAD ONLY</div>
              </div>             
              <div id="savedTime"></div>
         
