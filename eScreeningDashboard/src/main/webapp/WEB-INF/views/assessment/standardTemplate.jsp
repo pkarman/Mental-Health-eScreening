@@ -52,12 +52,15 @@
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
 		<script>
 			$(document).ready(function(){
-				$('input').bind('focus',function() {
+				$('input').bind('focusout',function() {
+					$("#assessmentContainer").attr('tabindex',-1).focus();
+					/*
 					$(window).scrollTop(10);
 					var keyboard_shown = $(window).scrollTop() > 0;
 					$(window).scrollTop(0);
 			
 					$('#test').append(keyboard_shown?'keyboard ':'nokeyboard ');
+					*/										
 				});
 			});		
 		</script>
