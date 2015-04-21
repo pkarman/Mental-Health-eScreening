@@ -199,7 +199,7 @@
             <div class="col-md-12">
                   <div class="form-group">
                     <form:label path="lastFourSsn">Last Four SSN</form:label>
-                    <form:input path="lastFourSsn" id="lastFourSsn" class="immediate-help form-control input-lg" maxlength="4" type="password" placeholder="Enter Last Four SSN" />
+                    <form:input path="lastFourSsn" id="lastFourSsn" class="immediate-help form-control input-lg" maxlength="4" type="password" placeholder="Enter Last Four SSN" pattern="[0-9]*" inputmode="numeric" />
                     <c:if test="${status.error}">
                           <div id="lastFourSsnErrorDiv" class="input-help errorInputStyle"> <img id="lastFourSsnImage" src="resources/images/errorIcon.jpg" class="errorImgWidth" /><form:errors path="lastFourSsn" /></div>
                     </c:if>

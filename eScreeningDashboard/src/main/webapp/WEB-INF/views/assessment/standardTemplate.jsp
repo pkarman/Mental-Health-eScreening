@@ -112,7 +112,8 @@
              <div id="savedTime"></div>
         
 		<br>
-		<div class="clearfix"></div>
+		<div class="clearfix"></div> -
+		
 		</div>
         
         <div id="right" class="column">
