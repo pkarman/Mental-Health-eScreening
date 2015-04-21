@@ -117,7 +117,7 @@
                  </button>
                  	
                  <input id="nextBtn" class="searchBtn" type="button" value="Next &#187;">
-				 <div id="#test">IPAD ONLY</div>
+				 <div id="test">IPAD ONLY</div>
              </div>             
              <div id="savedTime"></div>
         
