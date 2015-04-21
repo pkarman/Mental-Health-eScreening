@@ -121,12 +121,12 @@
 			<div class="pull-right blockLableMarginTop">
 				<button title="AND"
 				        class="btn btn-default"
-				        ng-click="addAndConditionBlock(block, templateBlockEditorForm)"
+				        ng-click="addAndCondition(block, templateBlockEditorForm)"
 				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">AND
 				</button>
 				<button title="OR"
 				        class="btn btn-default"
-				        ng-click="addOrConditionBlock(block, templateBlockEditorForm)"
+				        ng-click="addOrCondition(block, templateBlockEditorForm)"
 				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'"
 				        ng-disable="templateBlockEditorForm.$invalid">OR
 				</button>
@@ -257,10 +257,10 @@ conditionForm.conditionOperator.$dirty}">
 			</div>
 			<div class="col-md-2">
 				<div class="pull-right blockLableMarginTop">
-					<button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
-					<button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
+					<button title="AND" class="btn btn-default" ng-click="addAndCondition(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
+					<button title="OR" class="btn btn-default" ng-click="addOrCondition(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
 	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
-	                      ng-click="removeConditionBlock(block.conditions, condition)"></span>
+	                      ng-click="removeCondition(block.conditions, condition)"></span>
 				</div>
 				<div class="clearfix"></div>
 			</div>
@@ -292,8 +292,7 @@ conditionForm.conditionOperator.$dirty}">
 								</div>
 							</div>
 							<div class="col-md-4" ng-show="condition.left.content.id">
-								<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid &&
-conditionForm.conditionOperator.$dirty}">
+								<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid && conditionForm.conditionOperator.$dirty}">
 									<select class="form-control"
 											name="conditionOperator"
 											ng-model="condition.operator"
@@ -372,10 +371,10 @@ conditionForm.conditionOperator.$dirty}">
 				</div>
 				<div class="col-md-2">
 					<div class="pull-right blockLableMarginTop">
-						<button title="AND" class="btn btn-default" ng-click="addAndConditionBlock(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
-						<button title="OR" class="btn btn-default" ng-click="addOrConditionBlock(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
+						<button title="AND" class="btn btn-default" ng-click="addAndCondition(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
+						<button title="OR" class="btn btn-default" ng-click="addOrCondition(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
 	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
-			                ng-click="removeConditionBlock(block.conditions, condition)"></span>
+			                ng-click="removeCondition(condition.conditions, condition)"></span>
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -383,4 +382,13 @@ conditionForm.conditionOperator.$dirty}">
 		</ng-form>
 	</div>
 </div>
-
+<div class="row" ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">
+	<div class="col-md-12">
+		<button class="btn btn-default" type="button"
+			ng-click="addAndCondition(block, templateBlockEditorForm)">Add
+			AND Condition</button>
+		<button class="btn btn-default" type="button"
+			ng-click="addOrCondition(block, templateBlockEditorForm)">Add
+			OR Condition</button>
+	</div>
+</div>

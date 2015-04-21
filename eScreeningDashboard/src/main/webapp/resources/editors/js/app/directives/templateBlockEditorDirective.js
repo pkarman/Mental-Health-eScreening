@@ -2,8 +2,8 @@
     "use strict";
 
     Editors.directive('templateBlockEditor', [
-		'$compile', 'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 'AssessmentVariableManager', 'AssessmentVariable', 'Rule',
-		function($compile, limitToWithEllipsisFilter, TemplateBlockService, MeasureService, AssessmentVariableManager) {
+		'limitToWithEllipsisFilter', 'TemplateBlockService', 'MeasureService', 'AssessmentVariableManager', 'AssessmentVariable', 'Rule',
+		function(limitToWithEllipsisFilter, TemplateBlockService, MeasureService, AssessmentVariableManager) {
 
         // TODO Move to service or domain object to be shared and encapsulated elsewhere?
 	    var blockTypes = [
@@ -185,30 +185,29 @@
                     selectedBlock.children.push(TemplateBlockService.newBlock(EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig));
                 };
 
-                scope.addAndConditionBlock = function(item, form) {
-					scope.showValidationMessages = true;
-	                if (form.$valid) {
-						item.conditions = item.conditions || [];
-						console.log(item.conditions);
-						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
-	                }
-					//console.log(item.conditions);
-                };
-
-                scope.addOrConditionBlock = function(item, form) {
-	                scope.showValidationMessages = true;
-	                if (form.$valid) {
-						item.conditions = item.conditions || [];
-						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
-	                }
-                };
-
-                scope.removeConditionBlock = function(selectedBlockConditions, selectedCondition) {
+                scope.removeCondition = function(selectedBlockConditions, selectedCondition) {
                     var selectedConditionIndex = selectedBlockConditions.indexOf(selectedCondition);
                     if(selectedConditionIndex > -1) {
                         selectedBlockConditions.splice(selectedConditionIndex, 1);
                     }
                 };
+                
+                scope.addAndCondition = function addAndCondition(item, form) {
+                	scope.showValidationMessages = true;
+	                if (form.$valid) {
+						item.conditions = item.conditions || [];
+						console.log(item.conditions);
+						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
+	                }
+        		};
+
+        		scope.addOrCondition = function addOrCondition(item, form) {
+        			scope.showValidationMessages = true;
+	                if (form.$valid) {
+						item.conditions = item.conditions || [];
+						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig));
+	                }
+        		};
 
 	            scope.showBlockConditionRight = function(operatorValue) {
 		            var result = (operatorValue);
