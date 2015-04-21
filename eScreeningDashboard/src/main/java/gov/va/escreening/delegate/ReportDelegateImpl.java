@@ -944,11 +944,11 @@ public class ReportDelegateImpl implements ReportDelegate {
             dataCollection.put("airforce_percentage", "0%");
             dataCollection.put("airforce_count", "0/0");
             dataCollection.put("coast_percentage", "0%");
-            dataCollection.put("coast_count", "0/" + total);
+            dataCollection.put("coast_count", "0/0");
             dataCollection.put("marines_percentage", "0%");
             dataCollection.put("marines_count", "0/" + total);
             dataCollection.put("nationalguard_percentage", "0%");
-            dataCollection.put("nationalguard_count", "0/" + total);
+            dataCollection.put("nationalguard_count", "0/0");
             dataCollection.put("navy_percentage", "0%");
             dataCollection.put("navy_count", "0/" + total);
             dataCollection.put("missingmilitary_percentage", "0%");
@@ -972,6 +972,8 @@ public class ReportDelegateImpl implements ReportDelegate {
                 total += i;
             }
 
+            total += missing;
+
             if (total != 0) {
                 dataCollection.put("fulltime_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
                 dataCollection.put("fulltime_count", result.get(0) + "/" + total);
@@ -984,9 +986,9 @@ public class ReportDelegateImpl implements ReportDelegate {
                 dataCollection.put("unemployed_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
                 dataCollection.put("unemployed_count", result.get(4) + "/" + total);
                 dataCollection.put("noData", false);
-                //TODO
-                dataCollection.put("missingemp_percentage", "0%");
-                dataCollection.put("missingemp_count", "0/" + total);
+
+                dataCollection.put("missingemp_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingemp_count", missing+"/" + total);
             }
         }
 
