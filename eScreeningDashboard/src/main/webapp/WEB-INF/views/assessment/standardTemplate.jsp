@@ -52,13 +52,15 @@
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
 		<script>
 			$(document).ready(function(){
-				//$('input').bind('focusout',function() {
-				//	$("#assessmentContainer").attr('tabindex',-1).focus();
-				//});
-
-				$( "input" ).focusout(function() {
+				$('input').bind('focusout',function() {
+					// $("#assessmentContainer").attr('tabindex',-1).focus();
 					$("#assessmentContainer").focus();
 				});
+
+
+				//$( "input" ).focusout(function() {
+				//	$("#assessmentContainer").focus();
+				//});
 			});		
 		</script>
 	</head>
