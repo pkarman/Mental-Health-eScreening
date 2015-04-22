@@ -81,7 +81,7 @@
 						 //isKeyboard = false;
 						//alert("Out: " + isKeyboard);
 						if(!isKeyboard){
-							$("#formContainer").focus();
+							$("#FormContainer").focus();
 							$(".tableQuestionEntry").removeClass("highlightTableQuestionEntry");
 							//alert("In: " + isKeyboard);
 						}
