@@ -75,9 +75,12 @@
 					$(window).scrollTop(10);
 					var isKeyboard = ($(window).scrollTop() > 0);
 					$(window).scrollTop(scrollPosition);
-			
-					alert(isKeyboard);
-					$("#assessmentContainer").focus();
+					isKeyboard = false;
+					//alert(isKeyboard);
+					if(!isKeyboard){
+						$("#assessmentContainer").focus();
+						alert(isKeyboard);
+					}
 				});
 	
 	
