@@ -928,7 +928,7 @@ function TableBuilder(formBuilder){
 		formBuilder.fillFormContainer(measures, questionDiv, rowIndex);
 		
 		//set highlight for entry on any focus in it
-		questionDiv.find("*").focus(function(){highlightEntry($(this), true);});
+		//questionDiv.find("*").focus(function(){highlightEntry($(this), true);});
 	
 		//this is needed to that we can shrink the entry for animations (i.e. entry css does not allow)
 		var entryWrapper = $("<div/>")
