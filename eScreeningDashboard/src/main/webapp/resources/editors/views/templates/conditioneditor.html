@@ -49,7 +49,7 @@
 							       ng-if="condition.measureValidations['number']"
 							       min="{{condition.measureValidations['minValue']}}"
 							       max="{{condition.measureValidations['maxValue']}}"
-							       cast-integer
+							       string-to-number
 							       required>
 							<input type="email"
 							       class="form-control"
@@ -91,7 +91,7 @@
 							ng-model="condition.right.content"
 							ng-if="condition.measureAnswers && condition.measureAnswers.length"
 							ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
-							cast-integer
+							string-to-number
 							required>
 							<option value="">-- Answer --</option>
 						</select>
