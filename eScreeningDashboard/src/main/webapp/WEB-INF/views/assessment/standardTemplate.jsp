@@ -52,9 +52,21 @@
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
 		<script>
 			$(document).ready(function(){
-				$('input').bind('focusout',function() {
+				//$('input').bind('focusout',function() {
 					// $("#assessmentContainer").attr('tabindex',-1).focus();
-					$("#assessmentContainer").focus();
+				//	$("#assessmentContainer").focus();
+				//	console.log("focus out");
+				//});
+					
+					$( "input" ).blur(function() {
+						$("#assessmentContainer").focus();
+						console.log("Blur");
+					});
+					
+				$("#assessmentContainer").bind("DOMSubtreeModified", function() {
+					console.log("tree changed");
+					
+
 				});
 
 
