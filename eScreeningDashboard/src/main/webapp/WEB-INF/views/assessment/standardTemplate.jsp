@@ -68,20 +68,24 @@
 					
 				//});
 
-	
-	
-				$('input').blur(function(){
-					var scrollPosition = $(window).scrollTop();
-					$(window).scrollTop(10);
-					var isKeyboard = ($(window).scrollTop() > 0);
-					$(window).scrollTop(scrollPosition);
-					 isKeyboard = false;
-					// alert("Out: " + isKeyboard);
-					if(!isKeyboard){
-						$(".tableQuestionEntry").removeClass("highlightTableQuestionEntry");
-						//alert("In: " + isKeyboard);
-					}
+				checkChange();
+				$("#assessmentContainer").bind("DOMSubtreeModified", function() {
+					checkChange();
 				});
+				function checkChange(){
+					$('input').blur(function(){
+						var scrollPosition = $(window).scrollTop();
+						$(window).scrollTop(10);
+						var isKeyboard = ($(window).scrollTop() > 0);
+						$(window).scrollTop(scrollPosition);
+						 //isKeyboard = false;
+						//alert("Out: " + isKeyboard);
+						if(!isKeyboard){
+							$(".tableQuestionEntry").removeClass("highlightTableQuestionEntry");
+							//alert("In: " + isKeyboard);
+						}
+					});
+				}
 	
 	
 
