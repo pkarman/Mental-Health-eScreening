@@ -75,11 +75,11 @@
 					$(window).scrollTop(10);
 					var isKeyboard = ($(window).scrollTop() > 0);
 					$(window).scrollTop(scrollPosition);
-					// isKeyboard = false;
-					alert("Out: " + isKeyboard);
+					 isKeyboard = false;
+					// alert("Out: " + isKeyboard);
 					if(!isKeyboard){
-						$("#nextBtn").focus();
-						alert("In: " + isKeyboard);
+						$(".tableQuestionEntry").removeClass("highlightTableQuestionEntry");
+						//alert("In: " + isKeyboard);
 					}
 				});
 	
