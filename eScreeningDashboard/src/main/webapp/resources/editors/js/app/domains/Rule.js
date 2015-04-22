@@ -18,51 +18,15 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			name: '',
 			section: '',
 			children: [],
-			operator: '',
-			left: {
-				type:'var',
-				content: new AssessmentVariable({
-					id: null,
-					name: '',
-					displayName: '',
-					typeId: '',
-					measureId: '',
-					measureTypeId: '',
-					measureAnswerId: '',
-					transformations:[]
-				})
-			},
-			'right': {
-				'type': 'text',
-				'content': ''
-			},
-			'conditions': []
 		};
 
 		this.condition.getTypeOf = function() {
 			return 'Rule';
 		};
 
-		// Initialize existing condition content (AV)
-		if (obj.condition && obj.condition.left && obj.condition.left.content) {
-			this.condition.left.content = new AssessmentVariable(obj.condition.left.content);
-		}
+		// Initialize condition operands and operators
+		angular.extend(this.condition, new EScreeningDashboardApp.models.TemplateCondition(this.condition));
 	}
-
-	Rule.prototype.createCondition = function createCondition(connector) {
-		return {
-			connector: connector,
-			left: {
-				type: "var",
-				content: {}
-			},
-			right: {
-				type: "text",
-				content: ""
-			},
-			conditions: []
-		};
-	};
 
 	EScreeningDashboardApp.models.Rule = Rule;
 

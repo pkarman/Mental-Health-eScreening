@@ -14,19 +14,11 @@
 			</div>
 		</div>
 
-		<div class="col-md-8">
-			<div ng-if="block.type && block.type !== 'text' && block.type !== 'else'" class="blockLableMarginTop">
+		<div class="col-md-8" ng-if="block.type === 'table'">
+			<div class="blockLableMarginTop">
 				<div class="row">
 					<div class="col-md-4">
-						<div class="form-group" ng-if="block.type !== 'table'">
-							<label class="sr-only">Select Variable</label>
-							<input type="hidden"
-							       ng-model="block.left.content"
-							       ng-change="updateLogicalOptions(block)"
-							       update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir assessment-variable="block.left.content" block="block" ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
-						</div>
-						<div class="form-group" ng-if="block.type === 'table'">
+						<div class="form-group">
 							<label class="sr-only">Select Variable</label>
 							<input type="hidden"
 									ng-model="block.table.content"
@@ -38,108 +30,22 @@
 								ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>
 					</div>
-					<div class="col-md-4" ng-show="block.left.content.id">
-						<div class="form-group"
-						     ng-class="{'has-error': templateBlockEditorForm.blockOperator.$invalid && showValidationMessages}"
-							 ng-if="block.type !== 'table'">
-							<select name="blockOperator"
-							        class="form-control"
-							        ng-model="block.operator"
-							        ng-options="operator.value as operator.name for operator in block.operators"
-							        required>
-								<option value="">-- Operator --</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-4">
-						<div class="form-group"
-						     ng-if="showBlockConditionRight(block.operator)"
-						     ng-class="{'has-error': templateBlockEditorForm.blockValue.$invalid && showValidationMessages}">
-							<label class="sr-only" for="blockvalue">Enter Value</label>
-							<div ng-if="!block.measureAnswers || !block.measureAnswers.length">
-								<input type="number"
-								       class="form-control"
-								       name="blockValue"
-								       id="blockvalue"
-								       placeholder="Enter Value"
-								       ng-model="block.right.content"
-								       ng-if="block.measureValidations['number']"
-								       min="{{block.measureValidations['minValue']}}"
-								       max="{{block.measureValidations['maxValue']}}"
-								       cast-integer
-								       required>
-								<input type="email"
-								       class="form-control"
-								       name="blockValue"
-								       id="blockvalue"
-								       placeholder="Enter Value"
-								       ng-model="block.right.content"
-								       ng-if="block.measureValidations['email']"
-								       required>
-								<input
-										type="text"
-										class="form-control"
-										name="blockValue"
-										id="blockvalue"
-										datepicker-popup="'MM/dd/yyyy"
-										ng-model="block.right.content"
-										ng-if="block.measureValidations['date']"
-										init-date="dt"
-										show-weeks="false"
-										is-open="opened"
-										datepicker-options="{ startingDay: 1}"
-										close-text="Close"
-										required />
-								<input type="text"
-								       class="form-control"
-								       name="blockValue"
-								       id="blockvalue"
-								       placeholder="Enter Value"
-								       ng-model="block.right.content"
-								       ng-if="!block.measureValidations['email'] && !block.measureValidations['date'] && !block.measureValidations['number']"
-								       ng-minlength="{{ block.measureValidations['minLength'] || 0 }}"
-								       ng-maxlength="{{ block.measureValidations['maxLength'] || 150}}"
-								       required>
-							</div>
-							<select class="form-control"
-							        name="blockValue"
-							        id="blockvalue"
-							        ng-model="block.right.content"
-							        ng-if="block.measureAnswers && block.measureAnswers.length"
-							        ng-options="answer.measureAnswerId as answer.answerText for answer in block.measureAnswers"
-							        cast-integer
-							        required>
-								<option value="">-- Answer --</option>
-							</select>
-						</div>
-					</div>
-				</div>
+				</div>	
 			</div>
 		</div>
-		<div class="col-md-2 pull-right">
-			<div class="pull-right blockLableMarginTop">
-				<button title="AND"
-				        class="btn btn-default"
-				        ng-click="addAndCondition(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">AND
-				</button>
-				<button title="OR"
-				        class="btn btn-default"
-				        ng-click="addOrCondition(block, templateBlockEditorForm)"
-				        ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'"
-				        ng-disable="templateBlockEditorForm.$invalid">OR
-				</button>
-				<!--button title="PLUS" class="btn btn-default" ng-click="addBlock(block)"  ng-if="block.type && block.type !== 'text'"><i class="fa fa-plus"></i></button-->
+
+		<div class="col-md-12" ng-if="block.type && block.type !== 'table' && block.type !== 'text' && block.type !== 'else'">
+			<div class="blockLableMarginTop">
+				<form name="blockCondition">
+					<condition-editor condition="block" />
+				</form>
 			</div>
-			<div class="clearfix"></div>
 		</div>
 	</div>
 
-
 	<div class="clearfix form-group" ng-if="block.type === 'text'">
 		<hr />
-
+	
 		<div text-angular="text-angular"
 		     ta-toolbar="[['h1','h2','h3'],['bold','italics', 'underline'], ['ol', 'ul'], ['justifyLeft', 'justifyCenter', 'justifyRight'], ['indent', 'outdent'], ['insertLink', 'insertImage', 'insertVideo', 'insertTable'], ['redo', 'undo'] , ['html'], ['insertVariable']]"
 		     ng-model="block.content"
@@ -150,245 +56,16 @@
 		     name="text-block-editor"
 		     class="tab-content"></div>
 	</div>
-</div>
-<div class="border-radius-block-type bg-gray-light" ng-repeat="condition in block.conditions">
-	<ng-form name="conditionForm">
-		<div class="row">
-			<div class="col-md-2">
-				<div class="blockLableMarginTop">
-					<button title="{{condition.connector | uppercase}}"
-					        class="btn btn-default"
-					        ng-bind="condition.connector | uppercase"
-					        disabled></button>
-				</div>
-			</div>
-
-			<div class="col-md-8">
-				<div class="blockLableMarginTop">
-					<div class="row">
-						<div class="col-md-4">
-							<div class="form-group">
-								<label class="sr-only">Select Variable</label>
-								<input type="hidden"
-								       ng-model="condition.left.content"
-								       ng-change="updateLogicalOptions(condition)"
-								       update-hidden>
-								<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
-							</div>
-						</div>
-						<div class="col-md-4" ng-show="condition.left.content.id">
-							<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid &&
-conditionForm.conditionOperator.$dirty}">
-								<select class="form-control"
-								        name="conditionOperator"
-								        ng-model="condition.operator"
-								        ng-options="operator.value as operator.name for operator in condition.operators"
-								        required>
-									<option value="">-- Operator --</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="col-md-4">
-							<div class="form-group"
-							     ng-if="showBlockConditionRight(condition.operator)"
-							     ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty}">
-								<label class="sr-only" for="conditionValue">Enter Value</label>
-								<div ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
-									<input type="number"
-									       class="form-control"
-									       name="conditionValue"
-									       id="conditionvalue"
-									       placeholder="Enter Value"
-									       ng-model="condition.right.content"
-									       ng-if="condition.measureValidations['number']"
-									       min="{{condition.measureValidations['minValue']}}"
-									       max="{{condition.measureValidations['maxValue']}}"
-									       cast-integer
-									       required>
-									<input type="email"
-									       class="form-control"
-									       name="conditionValue"
-									       id="conditionvalue"
-									       placeholder="Enter Value"
-									       ng-model="condition.right.content"
-									       ng-if="condition.measureValidations['email']"
-									       required>
-									<input
-											type="text"
-											class="form-control"
-											name="conditionValue"
-											id="conditionvalue"
-											datepicker-popup="'MM/dd/yyyy"
-											ng-model="condition.right.content"
-											ng-if="condition.measureValidations['date']"
-											init-date="dt"
-											show-weeks="false"
-											is-open="opened"
-											datepicker-options="{ startingDay: 1}"
-											close-text="Close"
-											required />
-									<input type="text"
-									       class="form-control"
-									       name="conditionValue"
-									       id="conditionvalue"
-									       placeholder="Enter Value"
-									       ng-model="condition.right.content"
-									       ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']"
-									       ng-minlength="{{condition.measureValidations['minLength'] || 0}}"
-									       ng-maxlegnth="{{condition.measureValidations['maxLength'] || 150}}"
-									       required>
-								</div>
-								<select
-									class="form-control"
-									name="blockValue"
-									id="conditionvalue"
-									ng-model="condition.right.content"
-									ng-if="condition.measureAnswers && condition.measureAnswers.length"
-									ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
-									cast-integer
-									required>
-									<option value="">-- Answer --</option>
-								</select>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-2">
-				<div class="pull-right blockLableMarginTop">
-					<button title="AND" class="btn btn-default" ng-click="addAndCondition(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
-					<button title="OR" class="btn btn-default" ng-click="addOrCondition(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
-	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
-	                      ng-click="removeCondition(block.conditions, condition)"></span>
-				</div>
-				<div class="clearfix"></div>
-			</div>
+	
+	<div class="row" ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">
+		<div class="col-md-12">
+			<button class="btn btn-default" type="button"
+				ng-click="addAndCondition(block, templateBlockEditorForm)">Add
+				AND Condition</button>
+			<button class="btn btn-default" type="button"
+				ng-click="addOrCondition(block, templateBlockEditorForm)">Add
+				OR Condition</button>
 		</div>
-	</ng-form>
-	<div class="border-radius-block-type bg-gray-light" ng-repeat="condition in condition.conditions" style="margin-left: 15px">
-		<ng-form name="conditionForm">
-			<div class="row">
-				<div class="col-md-2">
-					<div class="blockLableMarginTop">
-						<button title="{{condition.connector | uppercase}}"
-								class="btn btn-default"
-								ng-bind="condition.connector | uppercase"
-								disabled></button>
-					</div>
-				</div>
-
-				<div class="col-md-8">
-					<div class="blockLableMarginTop">
-						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group">
-									<label class="sr-only">Select Variable</label>
-									<input type="hidden"
-											ng-model="condition.left.content"
-											ng-change="updateLogicalOptions(condition)"
-											update-hidden>
-									<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
-								</div>
-							</div>
-							<div class="col-md-4" ng-show="condition.left.content.id">
-								<div class="form-group" ng-class="{'has-error': conditionForm.conditionOperator.$invalid && conditionForm.conditionOperator.$dirty}">
-									<select class="form-control"
-											name="conditionOperator"
-											ng-model="condition.operator"
-											ng-options="operator.value as operator.name for operator in condition.operators"
-											required>
-										<option value="">-- Operator --</option>
-									</select>
-								</div>
-							</div>
-
-							<div class="col-md-4">
-								<div class="form-group"
-										ng-if="showBlockConditionRight(condition.operator)"
-										ng-class="{'has-error': conditionForm.conditionValue.$invalid && conditionForm.conditionValue.$dirty}">
-									<label class="sr-only" for="conditionValue">Enter Value</label>
-									<div ng-if="!condition.measureAnswers || !condition.measureAnswers.length">
-										<input type="number"
-												class="form-control"
-												name="conditionValue"
-												id="conditionvalue"
-												placeholder="Enter Value"
-												ng-model="condition.right.content"
-												ng-if="condition.measureValidations['number']"
-												min="{{condition.measureValidations['minValue']}}"
-												max="{{condition.measureValidations['maxValue']}}"
-												cast-integer
-												required>
-										<input type="email"
-												class="form-control"
-												name="conditionValue"
-												id="conditionvalue"
-												placeholder="Enter Value"
-												ng-model="condition.right.content"
-												ng-if="condition.measureValidations['email']"
-												required>
-										<input
-												type="text"
-												class="form-control"
-												name="conditionValue"
-												id="conditionvalue"
-												datepicker-popup="'MM/dd/yyyy"
-												ng-model="condition.right.content"
-												ng-if="condition.measureValidations['date']"
-												init-date="dt"
-												show-weeks="false"
-												is-open="opened"
-												datepicker-options="{ startingDay: 1}"
-												close-text="Close"
-												required />
-										<input type="text"
-												class="form-control"
-												name="conditionValue"
-												id="conditionvalue"
-												placeholder="Enter Value"
-												ng-model="condition.right.content"
-												ng-if="!condition.measureValidations['email'] && !condition.measureValidations['number'] && !condition.measureValidations['date']"
-												ng-minlength="{{condition.measureValidations['minLength'] || 0}}"
-												ng-maxlegnth="{{condition.measureValidations['maxLength'] || 150}}"
-												required>
-									</div>
-									<select
-											class="form-control"
-											name="blockValue"
-											id="conditionvalue"
-											ng-model="condition.right.content"
-											ng-if="condition.measureAnswers && condition.measureAnswers.length"
-											ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
-											cast-integer
-											required>
-										<option value="">-- Answer --</option>
-									</select>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="pull-right blockLableMarginTop">
-						<button title="AND" class="btn btn-default" ng-click="addAndCondition(condition, conditionForm)" ng-if="isRuleCondition">AND</button>
-						<button title="OR" class="btn btn-default" ng-click="addOrCondition(condition, conditionForm)" ng-if="isRuleCondition">OR</button>
-	                <span class="glyphicon glyphicon-remove-circle cursor_pointer" style="margin-left: 10px; color:red;"
-			                ng-click="removeCondition(condition.conditions, condition)"></span>
-					</div>
-					<div class="clearfix"></div>
-				</div>
-			</div>
-		</ng-form>
 	</div>
-</div>
-<div class="row" ng-if="block.type && block.type !== 'text' && block.type !== 'else' && block.type !== 'table'">
-	<div class="col-md-12">
-		<button class="btn btn-default" type="button"
-			ng-click="addAndCondition(block, templateBlockEditorForm)">Add
-			AND Condition</button>
-		<button class="btn btn-default" type="button"
-			ng-click="addOrCondition(block, templateBlockEditorForm)">Add
-			OR Condition</button>
-	</div>
+
 </div>

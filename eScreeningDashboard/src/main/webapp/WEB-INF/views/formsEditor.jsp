@@ -122,8 +122,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateBlock.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateCondition.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
@@ -163,6 +161,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/RecursionHelper.js"></script>
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
@@ -215,7 +214,9 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
+
 
     <script type="text/javascript">	
         $(document).ready(function() {

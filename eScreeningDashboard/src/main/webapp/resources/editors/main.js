@@ -26,6 +26,7 @@ var Editors = angular.module('Editors', [
 	'EscreeningDashboardApp.services.question',
 	'EscreeningDashboardApp.services.templateBlock',
 	'EscreeningDashboardApp.services.eventBus',
+	'EscreeningDashboardApp.services.core',
 	'EscreeningDashboardApp.filters.messages',
 	'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
 	'EscreeningDashboardApp.filters.limitToWithEllipsis'
