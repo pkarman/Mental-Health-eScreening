@@ -50,51 +50,6 @@
   		<script type="text/javascript" src="resources/js/measures/measures-validations.js?v=12"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-requestbuilder.js"></script>
   		<script type="text/javascript" src="resources/js/measures/measures-integrated.js"></script>		
-		<script>
-			$(document).ready(function(){
-				//$('input').bind('focusout',function() {
-					// $("#assessmentContainer").attr('tabindex',-1).focus();
-				//	$("#assessmentContainer").focus();
-				//	console.log("focus out");
-				//});
-					
-				//	$( "input" ).blur(function() {
-				//		$("#assessmentContainer").focus();
-				//		console.log("Blur");
-				//	});
-					
-				//$("#assessmentContainer").bind("DOMSubtreeModified", function() {
-				//	console.log("tree changed");
-					
-				//});
-
-				checkChange();
-				$("#assessmentContainer").bind("DOMSubtreeModified", function() {
-					checkChange();
-				});
-				function checkChange(){
-					$('input').blur(function(){
-						var scrollPosition = $(window).scrollTop();
-						$(window).scrollTop(10);
-						var isKeyboard = ($(window).scrollTop() > 0);
-						$(window).scrollTop(scrollPosition);
-						 //isKeyboard = false;
-						//alert("Out: " + isKeyboard);
-						if(!isKeyboard){
-							$("#FormContainer").focus();
-							$(".tableQuestionEntry").removeClass("highlightTableQuestionEntry");
-							//alert("In: " + isKeyboard);
-						}
-					});
-				}
-	
-	
-
-				//$( "input" ).focusout(function() {
-				//	$("#assessmentContainer").focus();
-				//});
-			});		
-		</script>
 	</head>
 	<body>
 		<div class="top_header_message">
@@ -156,7 +111,6 @@
              <div id="savedTime"></div>
         
 		<br>
-		<div class="clearfix"></div> -
 		
 		</div>
         
@@ -204,6 +158,6 @@
 
      
       
-     <div class="clearfix"></div> -         
+     <div class="clearfix"></div>
 	</body>
 </html>
