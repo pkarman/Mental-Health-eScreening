@@ -214,7 +214,7 @@
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/stringToNumberDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/conditionEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
 
 

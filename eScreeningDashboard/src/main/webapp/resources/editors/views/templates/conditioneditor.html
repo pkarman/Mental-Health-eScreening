@@ -91,7 +91,6 @@
 							ng-model="condition.right.content"
 							ng-if="condition.measureAnswers && condition.measureAnswers.length"
 							ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
-							string-to-number
 							required>
 							<option value="">-- Answer --</option>
 						</select>
