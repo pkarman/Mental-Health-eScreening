@@ -58,17 +58,29 @@
 				//	console.log("focus out");
 				//});
 					
-					$( "input" ).blur(function() {
-						$("#assessmentContainer").focus();
-						console.log("Blur");
-					});
+				//	$( "input" ).blur(function() {
+				//		$("#assessmentContainer").focus();
+				//		console.log("Blur");
+				//	});
 					
-				$("#assessmentContainer").bind("DOMSubtreeModified", function() {
-					console.log("tree changed");
+				//$("#assessmentContainer").bind("DOMSubtreeModified", function() {
+				//	console.log("tree changed");
 					
+				//});
 
+	
+	
+				$('input').blur(function(){
+					var scrollPosition = $(window).scrollTop();
+					$(window).scrollTop(10);
+					var isKeyboard = ($(window).scrollTop() > 0);
+					$(window).scrollTop(scrollPosition);
+			
+					alert(isKeyboard);
+					$("#assessmentContainer").focus();
 				});
-
+	
+	
 
 				//$( "input" ).focusout(function() {
 				//	$("#assessmentContainer").focus();
