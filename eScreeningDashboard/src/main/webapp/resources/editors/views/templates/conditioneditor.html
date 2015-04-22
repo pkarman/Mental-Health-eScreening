@@ -110,8 +110,9 @@
 				ng-click="addOrCondition(condition, conditionForm)">OR</button>
                <span class="glyphicon glyphicon-remove-circle cursor_pointer" 
                	  style="margin-left: 10px; color:red;"
-                     ng-if="condition.connector"
-                     ng-click="removeCondition(parentCondition.conditions, condition)"></span>
+					 ng-if="condition.connector"
+                     ng-really-click="removeCondition(parentCondition.conditions, condition)" 
+                     ng-really-message="Please confirm deletion of this condition."></span>
 		</div>
 		<div class="clearfix"></div>
 	</div>
