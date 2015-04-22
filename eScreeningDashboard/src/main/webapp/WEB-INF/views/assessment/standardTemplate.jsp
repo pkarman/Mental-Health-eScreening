@@ -78,7 +78,7 @@
 					// isKeyboard = false;
 					alert("Out: " + isKeyboard);
 					if(!isKeyboard){
-						$(window).focus();
+						$("#nextBtn").focus();
 						alert("In: " + isKeyboard);
 					}
 				});
