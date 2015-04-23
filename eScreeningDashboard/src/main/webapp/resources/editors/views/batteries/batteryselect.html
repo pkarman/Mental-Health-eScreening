@@ -7,8 +7,8 @@
       <table ng-table="tableParams" show-filter="true" class="table table-hover" summary="Select Battery Table">
         <tr ng-repeat="battery in $data" ng-class-odd="'odd'" ng-class-even="'even'">
           <td data-title="'Title'" sortable="'name'" filter="{ 'name': 'text' }" class="col-md-4"> {{battery.name}} </td>
-          <td data-title="'Disabled'" sortable="'disabled'" filter="{ 'disabled': 'text' }"  class="col-md-1"> {{battery.disabled}}</td>
-          <td data-title="'Description'"  class="col-md-5"> {{battery.description}} </td>
+          <td data-title="'Disabled'" sortable="'disabled'" class="col-md-1"> {{battery.disabled ? 'True' : 'False'}} </td>
+          <td data-title="'Description'" class="col-md-5"> {{battery.description}} </td>
           <td data-title="Actions"  class="col-md-2"><div class="pull-right"> <button  ng-click="editBattery(battery);" class="btn btn-default btn-xs"  title="Edit {{battery.name}}"><span class="glyphicon glyphicon-edit"></span> Edit</button> &nbsp;&nbsp; 
               <!--span  ng-really-message="This will delete the Battery, and it will not be available in the future. Click 'OK' to permanently delete it." ng-really-click="deleteBattery(battery);" class="cursor-pointer">
                 <span class="glyphicon glyphicon-remove-circle cursor-pointer" title="Delete" style="color:red;"></span> Delete</span-->
