@@ -23,5 +23,5 @@ public interface VeteranAssessmentSurveyScoreRepository extends RepositoryInterf
                                             String fromDate, String toDate);
     public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate);
 
-    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList);
+    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds);
 }

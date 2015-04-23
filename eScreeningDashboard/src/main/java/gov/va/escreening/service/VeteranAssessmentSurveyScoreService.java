@@ -5,6 +5,7 @@ import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.dto.report.VeteranModuleGraphReportDTO;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ public interface VeteranAssessmentSurveyScoreService {
      * @param veteranAssessment
      */
     void recordAllReportableScores(VeteranAssessment veteranAssessment);
+
+    List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment);
 
     Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
     
@@ -34,5 +37,5 @@ public interface VeteranAssessmentSurveyScoreService {
 
      ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
 
-    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList);
+    List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds);
 }

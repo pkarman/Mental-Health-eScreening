@@ -7,3 +7,7 @@ UPDATE survey_score_interval SET max='3.99' WHERE id='30';
 UPDATE survey_score_interval SET max='4.99' WHERE id='31';
 UPDATE survey_score_interval SET max='5.99' WHERE id='32';
 
+ALTER TABLE veteran_assessment_survey_score
+CHANGE COLUMN assessment_var_id av_name VARCHAR(255) NOT NULL ;
+
+
