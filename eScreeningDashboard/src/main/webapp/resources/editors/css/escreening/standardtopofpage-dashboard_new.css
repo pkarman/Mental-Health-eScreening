@@ -791,15 +791,14 @@ span.countdown {
 .padding-box-align{
 	padding:20px 0px 0px 0px;
 }
-/* Rule Editor */
-.rule-editor-block{
-	padding-top:15px !important;
+/* Condition Editor */
+.condition-editor-block-children{
+	margin-left: 2%;
 }
-
-.rule-editor-block :nth-child(+2){
-	border:0px  !important;
+.condition-editor-block{
+	background:white;
+	padding-top:14px;
 }
-
  
 
 @media only screen

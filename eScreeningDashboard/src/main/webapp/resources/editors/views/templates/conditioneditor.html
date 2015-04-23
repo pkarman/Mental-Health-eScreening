@@ -1,8 +1,6 @@
-<div class="row">
+<div class="row bg-white condition-editor-block border-radius-block-type">
 
 	<div class="col-md-10">
-	
-
 
 		<div class="">
 			<div class="row">
@@ -108,18 +106,19 @@
 				ng-click="addAndCondition(condition, conditionForm)">AND</button>
 			<button title="OR" 
 				class="btn btn-default" 
-				ng-click="addOrCondition(condition, conditionForm)">OR</button>
-               <span class="glyphicon glyphicon-remove-circle cursor_pointer color-red" 
-               	  style="margin-left: 10px;"
-					 ng-if="condition.connector"
-                     ng-really-click="removeCondition(parentCondition.conditions, condition)" 
-                     ng-really-message="Please confirm deletion of this condition."></span>
+				ng-click="addOrCondition(condition, conditionForm)">OR</button>&nbsp;<span class="glyphicon glyphicon-remove-circle cursor_pointer color-red pull-right" 
+             	style="margin-left: 10px;"
+			 	ng-if="condition.connector"
+                ng-really-click="removeCondition(parentCondition.conditions, condition)" 
+                ng-really-message="Please confirm deletion of this condition."></span>
 		</div>
 		<div class="clearfix"></div>
 	</div>
 </div>
-<div class="bg-gray-light border-radius-block-type rule-editor-block" ng-repeat="subcondition in condition.conditions" style="margin-left: 5px">
-	<form>
-		<condition-editor condition="subcondition" parent-condition="condition"/>
-	</form>
+<div class="condition-editor-block-children" ng-if="condition.conditions && condition.conditions.length">
+	<div ng-repeat="subcondition in condition.conditions">
+		<form>
+			<condition-editor condition="subcondition" parent-condition="condition"/>
+		</form>
+	</div>
 </div>
