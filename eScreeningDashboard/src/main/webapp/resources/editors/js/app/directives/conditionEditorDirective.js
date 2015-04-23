@@ -81,7 +81,7 @@
             scope: {
                 condition: '=',
                 parentCondition: '=',
-                assessmentVariables: '='                
+                assessmentVariables: '='
             },
             templateUrl: 'resources/editors/views/templates/conditioneditor.html',
             compile: function(element) {

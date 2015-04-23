@@ -1,6 +1,6 @@
-<div class="row bg-white condition-editor-block border-radius-block-type">
+<div class="row condition-editor-block border-radius-block-type">
 
-	<div class="col-md-9">
+	<div ng-class="condition.connector ? 'col-md-9' : 'col-md-10'">
 
 		<div class="">
 			<div class="row">
@@ -11,7 +11,7 @@
 								disabled></button>
 				</div>
 	
-				<div ng-class="condition.connector ? 'col-md-3' : 'col-md-4'">
+				<div class="col-md-4">
 					<div class="form-group select-variable-block">
 						<label class="sr-only">Select Variable</label>
 						<input type="hidden"
@@ -99,7 +99,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-3">
+	<div ng-class="condition.connector ? 'col-md-3' : 'col-md-2'">
 		<div class="pull-right">
 			<button title="AND" 
 				class="btn btn-default" 

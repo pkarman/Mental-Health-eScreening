@@ -79,7 +79,8 @@
                 block: '=',
                 assessmentVariables: '=',
 	            showValidationMessages: '=',
-	            enableTypes: '=enableTypesDropdown'
+	            enableTypes: '=enableTypesDropdown',
+	            editorWidth: '='
             },
             templateUrl: 'resources/editors/views/templates/templateblockeditor.html',
             link: function(scope, element, attrs, formController) {
