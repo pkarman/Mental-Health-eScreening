@@ -101,7 +101,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         var result = "";
         fragments.forEach(function(frag){
             var content = null;
-            if(frag.indexOf("<") != 0){
+            if(frag.indexOf("<") !== 0){
                 result += frag.replace(/\s/g, "&nbsp;"); 
             }
             else{
@@ -132,7 +132,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		if(block.type == "text"){
 			block.summary = "";
 			block.name = Object.isDefined(block.name) ? block.name :"";
-			var setTitle = this.name.trim() == "";
+			var setTitle = this.name.trim() === "";
 
 			for(var i=0; ((setTitle && block.name < TEXT_NAME_LENGTH) || block.summary.length < 100)
 				&&  i< block.contents.length; i++){
@@ -140,7 +140,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				if(blockContent.type == "text"){
                     var text = blockContent.content.replace(/&nbsp;|<\s*br\s*\/*>/g, " ");
                     text = text.replace(CLEAN_SUMMARY_REG, "");
-                    if(block.summary == ""){
+                    if(block.summary === ""){
                         text = text.replace(/^\s+/, "");
                     }
 					block.summary += text;
@@ -260,14 +260,14 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 		if(block.children){
 			block.children.forEach(function(child){
 				variables.push.apply(variables, child.getVariables());
-			})
+			});
 		}
 		
 		return variables;
 	}
 
     function toString() {
-        return "TemplateBlock [guid: " + guid +
+        return "TemplateBlock [guid: " + this.guid +
             ",section: " + this.section +
             ", name: " + this.name +
             ", type: " + this.type +
@@ -359,7 +359,7 @@ EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(
     });
 
     return templateBlocks;
-}
+};
 EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig = {
     left: {
         type: "var",

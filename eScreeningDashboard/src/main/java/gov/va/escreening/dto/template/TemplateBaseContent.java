@@ -91,7 +91,7 @@ public abstract class TemplateBaseContent {
 		
 		if (operator == null && (left.getTransformations() == null || left.getTransformations().isEmpty()))
 		{//Don't pull value out if transformations were applied
-			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
+			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY, MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))
 			{
 				translatedVar = "getResponse("+translatedVar+", "+left.getMeasureTypeId()+")";
 				
@@ -109,7 +109,7 @@ public abstract class TemplateBaseContent {
 		        || "lt".equals(operator) || "gt".equals(operator) 
 		        || "lte".equals(operator) || "gte".equals(operator))
 		{
-			if (left.measureTypeIs(MEASURE_TYPE_FREE_TEXT))			
+			if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY))			
 			{
 				if (right instanceof TemplateTextContent)
 				{
@@ -155,7 +155,8 @@ public abstract class TemplateBaseContent {
 		else if ("answered".equals(operator))
 		{
 			if (left.measureTypeIn(
-					MEASURE_TYPE_FREE_TEXT, 
+					MEASURE_TYPE_FREE_TEXT,
+					MEASURE_TYPE_READ_ONLY,
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))
@@ -167,6 +168,7 @@ public abstract class TemplateBaseContent {
 		{
 			if (left.measureTypeIn(
 					MEASURE_TYPE_FREE_TEXT,
+					MEASURE_TYPE_READ_ONLY,
 					MEASURE_TYPE_SELECT_ONE, 
 					MEASURE_TYPE_SELECT_MULTI, 
 					MEASURE_TYPE_TABLE))

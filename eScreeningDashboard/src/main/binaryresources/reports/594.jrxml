@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="594Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
+	<property name="ireport.zoom" value="2.4157650000000026"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="clinicNames" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean"/>
+	<field name="moduleName" class="java.lang.String"/>
+	<field name="modulePercent" class="java.lang.String"/>
+	<field name="moduleCount" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="151" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
+				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="424" y="0" width="148" height="54" uuid="f6cc4c95-9f57-40cb-bf48-139d62083ca7"/>
+				<imageExpression><![CDATA["/reports/assessment_start_screen_capture_logo_trans_print.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="77" width="572" height="27" backcolor="#CCCCCC" uuid="525c6c10-353c-4d14-8590-213199b43e92"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Most Common Types of Alerts and Percentages Report]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="104" width="572" height="1" uuid="cae91766-73b0-4b4c-91a5-c8fda984c380"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="386" y="78" width="181" height="26" uuid="e1e143b0-d31f-4f15-9bc0-7666ad204a46"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="115" width="572" height="18" uuid="32315d6d-216b-4ff1-a12e-c76f26f4766b"/>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VistA Clinics]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="133" width="572" height="18" uuid="dc4689d0-20d1-4fa5-a8aa-3800181c5451"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{clinicNames}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="286" height="47" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textField>
+					<reportElement x="0" y="0" width="195" height="47" uuid="8f236864-7590-4591-8a0b-563934ec3c91"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{moduleName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="195" y="0" width="86" height="30" uuid="0347e9ea-c7e8-4dc6-94c8-cc1d8e262ae1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{modulePercent}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="4">
+					<reportElement x="195" y="25" width="85" height="20" backcolor="#CCCCCC" uuid="40c929f6-7d35-4a9f-a63c-979e2a86927c"/>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<textField>
+					<reportElement mode="Opaque" x="200" y="28" width="74" height="15" backcolor="#CCCCCC" uuid="3e35ad77-eaa3-41aa-b929-c7998965f8c9"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{moduleCount}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

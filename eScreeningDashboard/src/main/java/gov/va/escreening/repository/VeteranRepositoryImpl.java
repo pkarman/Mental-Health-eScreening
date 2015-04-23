@@ -10,9 +10,11 @@ import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -278,5 +280,21 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
 
         return veteranResultList;
     }
+
+	@Override
+	public List<Veteran> getVeteranByIens(String[] iens) {
+		
+		if(iens!= null && iens.length>0)
+		{
+			List<String> ienList = Arrays.asList(iens);
+		
+			String sql = "from Veteran v where v.veteranIen in :ien";
+		
+			Query q = entityManager.createQuery(sql, Veteran.class).setParameter("ien", ienList);
+			List<Veteran> result = q.getResultList();
+			return result;
+		}
+		return new ArrayList<>();
+	}
 
 }

@@ -129,37 +129,39 @@
                 ];
 
                 var filterOperators = function(operator) {
-                    var includeOperator = false;
+                	var includeOperator = false;
 
-	                if (operator && this.type) {
-		                if(_.contains(operator.categories, 'numerical')) {
-							if (this.measureTypeId === 4 && this.transformations && this.transformations[0].name === 'numberOfEntries') {
-								includeOperator = true;
-							}
-			                if(this.type.toUpperCase() === 'CUSTOM' || this.type.toUpperCase() === 'FORMULA') {
-				                includeOperator = true;
-			                } else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
-				                includeOperator = true;
-			                }
-		                } else if((this.type.toUpperCase() === 'QUESTION') && (this.getMeasureTypeName() !== 'single-matrix' && this.getMeasureTypeName() !== 'multi-matrix') && _.contains(operator.categories, 'question')) {
-			                includeOperator = true;
-		                } else if((this.type.toUpperCase() === 'FORMULA') && _.contains(operator.categories, 'formula')) {
-			                includeOperator = true;
-		                } else if((this.type.toUpperCase() === 'QUESTION') && _.contains(operator.categories, 'select')) {
-			                if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
-				                includeOperator = true;
-			                }
-		                }
-						else if((this.measureTypeId === 4) && _.contains(operator.categories, 'table')) {
-							includeOperator = true;
-						}
-						else if((this.getMeasureTypeName() === 'single-matrix' || this.getMeasureTypeName() === 'multi-matrix') && _.contains(operator.categories, 'matrix')) {
-							includeOperator = true;
-						} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'custom')) {
-							includeOperator = true;
-						}
-	                }
-                    return includeOperator;
+                	if (operator && this.type) {
+                		if(_.contains(operator.categories, 'numerical')) {
+                			if (this.measureTypeId === 4 && this.transformations 
+                					&& this.transformations && this.transformations.length > 0 
+                					&& this.transformations[0].name === 'numberOfEntries') {
+                				includeOperator = true;
+                			}
+                			if(this.type.toUpperCase() === 'CUSTOM' || this.type.toUpperCase() === 'FORMULA') {
+                				includeOperator = true;
+                			} else if (this.type.toUpperCase() === "QUESTION" && this.measureTypeId === 1) {
+                				includeOperator = true;
+                			}
+                		} else if((this.type.toUpperCase() === 'QUESTION') && (this.getMeasureTypeName() !== 'single-matrix' && this.getMeasureTypeName() !== 'multi-matrix') && _.contains(operator.categories, 'question')) {
+                			includeOperator = true;
+                		} else if((this.type.toUpperCase() === 'FORMULA') && _.contains(operator.categories, 'formula')) {
+                			includeOperator = true;
+                		} else if((this.type.toUpperCase() === 'QUESTION') && _.contains(operator.categories, 'select')) {
+                			if(Object.isDefined(this.measureTypeId) && (this.measureTypeId === 2 || this.measureTypeId === 3)){
+                				includeOperator = true;
+                			}
+                		}
+                		else if((this.measureTypeId === 4) && _.contains(operator.categories, 'table')) {
+                			includeOperator = true;
+                		}
+                		else if((this.getMeasureTypeName() === 'single-matrix' || this.getMeasureTypeName() === 'multi-matrix') && _.contains(operator.categories, 'matrix')) {
+                			includeOperator = true;
+                		} else if (this.type.toUpperCase() === 'CUSTOM' && _.contains(operator.categories, 'custom')) {
+                			includeOperator = true;
+                		}
+                	}
+                	return includeOperator;
                 };
                 
                 scope.$watch('block.type', function(newValue, oldValue) {

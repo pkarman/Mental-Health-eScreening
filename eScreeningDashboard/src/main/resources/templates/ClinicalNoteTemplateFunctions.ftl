@@ -395,9 +395,10 @@ It is as if the scope bleeds over...a hard lesson learned :( -->
 </#function>
 
 <#-- checks if a specific answer was selected given a question -->
-<#function isSelectedAnswer variableObj1 variableObj2 > 
+<#function isSelectedAnswer variableObj1=DEFAULT_VALUE variableObj2=DEFAULT_VALUE > 
 
-	<#if !(variableObj2)?? || !(variableObj1)?? || !(variableObj1.children)?? || variableObj1.children?size == 0>
+	<#if variableObj1 == DEFAULT_VALUE || variableObj2 == DEFAULT_VALUE 
+	    || !(variableObj1.children)?? || variableObj1.children?size == 0>
 		<#return false>
 	</#if>
     
@@ -708,7 +709,7 @@ if measureTypeId==2 or 3:  return the calculated value  -->
         
     </#if>
     
-    <#if measureTypeId == 1 >
+    <#if measureTypeId == 1 || measureTypeId == 5 >
         <#assign result = getFreeTextAnswer(var, DEFAULT_VALUE) >
         <#if result == DEFAULT_VALUE>
             <#return result>
@@ -755,7 +756,7 @@ For multi select - returns a comma delimited list
     
     <#assign measureType = getMeasureType(var, measureTypeId)>
     
-    <#if measureType?number == 1 >
+    <#if measureType?number == 1 || measureType?number == 5 >
         <#return getFreeTextAnswer(var, DEFAULT_VALUE) >
     <#elseif measureType?number == 2 >
         <#return getSelectOneResponse(var) >
@@ -811,8 +812,12 @@ returns true if the variable is defined and has a value; false otherwise.
 If type == 3 then at least one option must be set to true.
  -->
 <#function wasAnswered var=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE> 
-    <#if var == DEFAULT_VALUE>
+    <#if var?string == DEFAULT_VALUE>
         <#return false>
+    </#if>
+    
+    <#if var?is_number >
+    	<#return ((var?number) > 0)>
     </#if>
     
     <#if !(var.variableId??) > <#-- if this is not a variable then just see if it has content -->

@@ -47,4 +47,78 @@
           p:url="classpath:/reports/assessmentAuditLogReport.jrxml"
           p:reportDataKey="datasource" />
 
+    <!-- Individual statistics Reports -->
+    <bean id="IndividualStatisticsReportsNumericOnlyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/IndividualStatisticsNumericOnlyReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <bean id="individualStatisticsGraphReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/individualStatisticsGraphReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <bean id="individualStatisticsGraphNumberReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/individualStatisticsGraphNumberReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 600 avg graph report-->
+    <bean id="avgClinicGraphReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/avgClinicGraphReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <bean id="avgVetClinicGraphReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/avgVetClinicGraphReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 597 -->
+    <bean id="demographicsReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/demographicsReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 596 -->
+    <bean id="averageTimePerModuleReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/averageTimePerModuleReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 593 -->
+    <bean id="batteriesReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/batteriesReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 595 -->
+    <bean id="mostSkippedQuestionsReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/595.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 594 -->
+    <bean id="mostCommonTypesOfAlertsPercentagesReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/594.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 599 -->
+    <bean id="positiveScreensReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/599.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <!-- ticket 600 numeric report -->
+    <bean id="avgClinicNumericReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/avgClinicNumericReport.jrxml"
+          p:reportDataKey="datasource"/>
+
+    <bean id="avgVetClinicNumericReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:/reports/avgVetClinicNumericReport.jrxml"
+          p:reportDataKey="datasource"/>
+
 </beans>

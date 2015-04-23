@@ -452,4 +452,23 @@ public class SurveyServiceImpl implements SurveyService {
     public void removeSurveyPage(Integer surveyId, Integer pageId) {
         surveyPageRepository.deleteById(pageId);
     }
+
+    @Override
+    public List<SurveyDto> getSurveyListByNames(List<String> surveyNames) {
+
+        logger.debug("getSurveyListByNames()");
+
+        List<Survey> surveys = surveyRepository.getSurveyList();
+
+        // create adapter object for view
+        List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
+        for (Survey survey : surveys) {
+            if (surveyNames.contains(survey.getName())) {
+                surveyDtoList.add(new SurveyDto(survey));
+            }
+        }
+
+        return surveyDtoList;
+
+    }
 }

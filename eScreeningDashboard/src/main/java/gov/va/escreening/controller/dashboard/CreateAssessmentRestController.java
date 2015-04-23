@@ -1,10 +1,19 @@
 package gov.va.escreening.controller.dashboard;
 
+import gov.va.escreening.delegate.BatchBatteryCreateDelegate;
+import gov.va.escreening.delegate.CreateAssessmentDelegate;
+import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.DataTableResponse;
+import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.ClinicService;
 import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.vista.dto.VistaClinicAppointment;
+import gov.va.escreening.webservice.Response;
+import gov.va.escreening.webservice.ResponseStatus;
+import gov.va.escreening.webservice.ResponseStatus.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -29,6 +39,18 @@ public class CreateAssessmentRestController {
 
     @Autowired
     private VeteranService veteranService;
+    
+    @Autowired
+    private ClinicService clinicService;
+    
+    @Autowired
+    private BatchBatteryCreateDelegate batchCreateDelegate;
+
+    @Autowired
+	private CreateAssessmentDelegate createAssessmentDelegate;
+    
+    @Autowired
+    private ClinicRepository clinicRepo;
 
     @RequestMapping(value = "/veteranSearch/services/veterans/search2", method = RequestMethod.POST)
     @ResponseBody
@@ -89,5 +111,13 @@ public class CreateAssessmentRestController {
 
         return veterans;
     }
-
+    
+    
+    @RequestMapping(value = "/clinics/list", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ClinicDto> getAllClinics(@CurrentUser EscreenUser escreenUser) 
+    {
+    	return clinicService.getClinicDtoList();
+    }
+	
 }

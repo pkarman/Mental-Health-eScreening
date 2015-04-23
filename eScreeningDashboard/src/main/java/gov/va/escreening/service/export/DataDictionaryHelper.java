@@ -127,17 +127,17 @@ public class DataDictionaryHelper implements MessageSourceAware {
 			Collection<AssessmentVariable> avLstWithFormulae) {
         AvBuilder<Set<List<String>>> formulaColumnsBldr = new FormulaColumnsBldr(surveyFormulae, avUsed, avs);
         avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false, false);
-			}
+            }
 
 
     String msg(String propertySuffix) {
         return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
-				}
+                }
 
     public String getPlainText(String htmlText) {
         return avs.getPlainText(htmlText);
-			}
-						}
+            }
+                        }
 
 abstract class Resolver {
     private final Logger logger = LoggerFactory.getLogger(getClass());

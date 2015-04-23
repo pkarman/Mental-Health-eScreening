@@ -90,4 +90,12 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
         query.setParameter("templateId", templateId);
         return query.getResultList();
 	}
+
+    @Override
+    public List<Survey> getSurveyListByIds(List<Integer> surveyIdList) {
+        String sql = "From Survey s where s.id in (:ids)";
+        TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
+        query.setParameter("ids", surveyIdList);
+        return query.getResultList();
+    }
 }
