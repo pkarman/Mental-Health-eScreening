@@ -791,6 +791,17 @@ span.countdown {
 .padding-box-align{
 	padding:20px 0px 0px 0px;
 }
+/* Rule Editor */
+.rule-editor-block{
+	padding-top:15px !important;
+}
+
+.rule-editor-block :nth-child(+2){
+	border:0px  !important;
+}
+
+ 
+
 @media only screen
 and (min-device-width : 768px)
 and (max-device-width : 1024px)
