@@ -1,6 +1,6 @@
 <div class="row bg-white condition-editor-block border-radius-block-type">
 
-	<div class="col-md-10">
+	<div class="col-md-9">
 
 		<div class="">
 			<div class="row">
@@ -11,7 +11,7 @@
 								disabled></button>
 				</div>
 	
-				<div ng-class="condition.connector ? 'col-md-4' : 'col-md-5'">
+				<div ng-class="condition.connector ? 'col-md-3' : 'col-md-4'">
 					<div class="form-group select-variable-block">
 						<label class="sr-only">Select Variable</label>
 						<input type="hidden"
@@ -99,15 +99,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-2">
+	<div class="col-md-3">
 		<div class="pull-right">
 			<button title="AND" 
 				class="btn btn-default" 
-				ng-click="addAndCondition(condition, conditionForm)">AND</button>
+				ng-click="addAndCondition(condition, conditionForm)"><i class="fa fa-level-down"></i> AND</button>
 			<button title="OR" 
 				class="btn btn-default" 
-				ng-click="addOrCondition(condition, conditionForm)">OR</button>&nbsp;<span class="glyphicon glyphicon-remove-circle cursor_pointer color-red pull-right" 
-             	style="margin-left: 10px;"
+				ng-click="addOrCondition(condition, conditionForm)"><i class="fa fa-level-down"></i> OR</button>&nbsp;<span class="glyphicon glyphicon-remove-circle cursor_pointer color-red pull-right" 
+             	style="margin-left: 10px; margin-top:10px;"
 			 	ng-if="condition.connector"
                 ng-really-click="removeCondition(parentCondition.conditions, condition)" 
                 ng-really-message="Please confirm deletion of this condition."></span>
