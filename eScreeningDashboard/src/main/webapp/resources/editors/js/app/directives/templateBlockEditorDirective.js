@@ -119,7 +119,6 @@
                 	scope.showValidationMessages = true;
 	                if (form.$valid) {
 						item.conditions = item.conditions || [];
-						console.log(item.conditions);
 						item.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig));
 	                }
         		};

@@ -51,7 +51,7 @@
 							       ng-if="condition.measureValidations['number']"
 							       min="{{condition.measureValidations['minValue']}}"
 							       max="{{condition.measureValidations['maxValue']}}"
-							       cast-integer
+							       string-to-number
 							       required>
 							<input type="email"
 							       class="form-control"
@@ -93,7 +93,6 @@
 							ng-model="condition.right.content"
 							ng-if="condition.measureAnswers && condition.measureAnswers.length"
 							ng-options="answer.measureAnswerId as answer.answerText for answer in condition.measureAnswers"
-							cast-integer
 							required>
 							<option value="">-- Answer --</option>
 						</select>
@@ -112,8 +111,9 @@
 				ng-click="addOrCondition(condition, conditionForm)">OR</button>
                <span class="glyphicon glyphicon-remove-circle cursor_pointer color-red" 
                	  style="margin-left: 10px;"
-                     ng-if="condition.connector"
-                     ng-click="removeCondition(parentCondition.conditions, condition)"></span>
+					 ng-if="condition.connector"
+                     ng-really-click="removeCondition(parentCondition.conditions, condition)" 
+                     ng-really-message="Please confirm deletion of this condition."></span>
 		</div>
 		<div class="clearfix"></div>
 	</div>

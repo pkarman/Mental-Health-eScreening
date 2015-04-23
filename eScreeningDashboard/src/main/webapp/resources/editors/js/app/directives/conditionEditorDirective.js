@@ -1,3 +1,7 @@
+/**
+ * This is a recursive directive which allows for a condition to have subconditions editable by this directive.
+ * @author Robin Carnow
+ */
 (function(angular) {
     "use strict";
 
