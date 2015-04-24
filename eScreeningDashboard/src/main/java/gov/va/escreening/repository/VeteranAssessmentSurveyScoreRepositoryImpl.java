@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.dto.report.ScoreDateDTO;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
-import gov.va.escreening.util.ReportRepositoryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -62,19 +61,19 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
      * @return
      */
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
                 " where vassr.dateCompleted between :fromDate and :toDate " +
                 " and vassr.survey.id = :surveyId  " +
-                ((avId != null) ? " and vassr.assessmentVariable.id = :avId  " : "") +
+                ((avName != null) ? " and vassr.avName = :avName  " : "") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.screenNumber is null" +
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
-        if (avId != null) query.setParameter("avId", avId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("veteranId", veteranId);
 
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
@@ -84,13 +83,13 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
                 " where vassr.dateCompleted >= :fromDate " +
                 " and vassr.dateCompleted <= :toDate " +
                 " and vassr.survey.id = :surveyId  " +
-                ((avId != null) ? " and vassr.assessmentVariable.id = :avId  " : "") +
+                ((avName != null) ? " and vassr.avName = :avName  " : "") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.clinic.id = :clinicId " +
                 " and vassr.screenNumber is null " +
@@ -98,7 +97,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
-        if (avId != null) query.setParameter("avId", avId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("veteranId", veteranId);
         query.setParameter("clinicId", clinicId);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
@@ -138,17 +137,19 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
     @Override
-    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate) {
+    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String avName, String fromDate, String toDate) {
         String sql = "SELECT count(DISTINCT(veteran_id)) " +
                 " FROM veteran_assessment_survey_score s " +
                 " WHERE clinic_id = :clinicId AND survey_id = :surveyId " +
-                " AND date_completed >= :fromDate AND date_completed <= :toDate " +
+                ((avName != null) ? " AND s.av_name = :avName " : "") +
+                " AND s.date_completed between :fromDate :toDate " +
                 " AND s.screen_number IS NULL ";
 
         Query query = entityManager.createNativeQuery(sql);
 
         query.setParameter("clinicId", clinicId);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
@@ -359,13 +360,14 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
     @Override
     public List<ScoreDateDTO> getDataForClicnic(Integer clinicId, Integer surveyId,
-                                                String fromDate, String toDate) {
+                                                String avName, String fromDate, String toDate) {
 
         String sql = "SELECT c.name, survey_id, date(date_completed), count(*), avg(survey_score) " +
                 " FROM veteran_assessment_survey_score s " +
                 " INNER JOIN clinic c ON s.clinic_id = c.clinic_id " +
                 " WHERE c.clinic_id = :clinicId AND survey_id = :surveyId " +
-                " AND date_completed >= :fromDate AND date_completed <= :toDate " +
+                ((avName != null) ? " AND s.av_name = :avName " : "") +
+                " AND s.date_completed between :fromDate AND :toDate " +
                 " AND s.screen_number IS NULL " +
                 " GROUP BY c.name, survey_id, date(date_completed) " +
                 " ORDER BY c.name, survey_id, date(date_completed) ";
@@ -374,6 +376,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
         query.setParameter("clinicId", clinicId);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
@@ -393,31 +396,6 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         }
 
         return scores;
-    }
-
-
-    @Override
-    public List getAverageForClicnic(Integer clinicId, Integer surveyId,
-                                     String fromDate, String toDate) {
-
-        String sql = "SELECT clinic_id, survey_id, avg(survey_score) " +
-                " FROM veteran_assessment_survey_score " +
-                " WHERE clinic_id = :clinicId AND survey_id = :surveyId " +
-                " AND date_completed >= :fromDate AND date_completed <= :toDate " +
-                " AND screen_number IS NULL" +
-                " GROUP BY clinic_id, survey_id " +
-                " ORDER BY clinic_id, survey_id  ";
-
-        Query query = entityManager.createNativeQuery(sql);
-
-        query.setParameter("clinicId", clinicId);
-        query.setParameter("surveyId", surveyId);
-        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
-        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
-
-        List result = query.getResultList();
-
-        return result;
     }
 
 

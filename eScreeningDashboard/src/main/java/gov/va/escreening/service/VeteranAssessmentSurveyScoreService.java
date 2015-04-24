@@ -22,20 +22,20 @@ public interface VeteranAssessmentSurveyScoreService {
 
     List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment);
 
-    Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
+    Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
     
-    Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
+    Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer clinicId, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
 
-    TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
+    TableReportDTO getSurveyDataForIndividualStatisticsReport(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
 
-    ModuleGraphReportDTO getGraphReportDTOForIndividual(Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
+    ModuleGraphReportDTO getGraphReportDTOForIndividual(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
 
 
-    Map<String, Object> getSurveyDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate);
+    Map<String, Object> getSurveyDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String avName, String fromDate, String toDate);
     
-    ModuleGraphReportDTO getGraphDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String fromDate, String toDate, boolean containsCount);
+    ModuleGraphReportDTO getGraphDataForClinicStatisticsGraph(Integer clinicId, Integer surveyId, String avName, String fromDate, String toDate, boolean containsCount);
 
-     ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, Integer avId, Integer veteranId, String fromDate, String toDate);
+     ModuleGraphReportDTO getSurveyDataForVetClinicReport(Integer clinicId, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
 
     List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds);
 }

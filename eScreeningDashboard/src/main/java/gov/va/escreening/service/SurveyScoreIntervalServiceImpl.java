@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import gov.va.escreening.delegate.ReportFunctionCommon;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyScoreInterval;
@@ -30,6 +31,9 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
     @Resource(name = "assessmentVariableService")
     AssessmentVariableService avs;
 
+    @Resource(type = ReportFunctionCommon.class)
+    private ReportFunctionCommon reportsHelper;
+
     @Transactional(readOnly = true)
     @Override
     public String getScoreMeaning(Integer surveyId, Number score) {
@@ -51,7 +55,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Transactional(readOnly = true)
     @Override
-    public Map<String, Object> generateMetadata(Integer surveyId, Integer avId) {
+    public Map<String, Object> generateMetadata(Integer surveyId, String avName) {
 
         List<SurveyScoreInterval> intervals = intervalRepository.getIntervalsBySurvey(surveyId);
         if (intervals == null || intervals.isEmpty()) {
@@ -61,7 +65,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         String max = "-1";
         String min = "100000";
 
-        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId, avId);
+        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId, avName);
         List<Float> ticks = Lists.newArrayList();
         Map<String, Object> intervalsMap = Maps.newLinkedHashMap();
 
@@ -89,27 +93,12 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         return metaDataMap;
     }
 
-    private Map<String, Object> createTemplateMetaData(int surveyId, Integer avId) {
+    private Map<String, Object> createTemplateMetaData(int surveyId, String avName) {
         Map<String, Object> metaDataMap = Maps.newHashMap();
         metaDataMap.put("footer", ""); //todo what to do here?
-        String title = getModuleName(surveyId, avId);
+        String title = reportsHelper.getModuleName(surveyId, avName);
         metaDataMap.put("title", title);
         metaDataMap.put("numberOfMonths", 12); //todo find a logic to assign the right number here
         return metaDataMap;
-    }
-
-    @Override
-    public String getModuleName(Integer surveyId, Integer avId) {
-        final Survey survey = sr.findOne(surveyId);
-        final String surveyName = survey.getName();
-
-        String moduleName = surveyName;
-        if (avId != null) {
-            final AssessmentVariable av = avs.findById(avId);
-            final String displayName = av.getDisplayName();
-            moduleName = String.format("%s - %s", surveyName, displayName);
-        }
-
-        return moduleName;
     }
 }

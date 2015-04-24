@@ -106,16 +106,15 @@
     </util:list>
 
     <util:map id="selectedReportableScoresMap" map-class="java.util.HashMap">
-        <entry key="Basic Pain" value="pain_number"/>
-        <entry key="WHODAS 2.0" value="whodas_society_mean,whodas_work_mean,whodas_household_mean,whodas_people_mean,whodas_selfcare_mean,whodas_mobility_mean,whodas_understand_mean"/>
-        <entry key="PHQ-9" value="dep_score_phq9"/>
-        <entry key="GAD 7 Anxiety" value="gad7_score"/>
-        <entry key="PCL-C" value="pcl_score"/>
-        <entry key="ISI" value="sleep_score"/>
-        <!--entry key="ROAS" value="ROAS_weighted_score" /-->
-        <entry key="CD-RISC-10" value="res_score"/>
-        <entry key="BMI over 24" value="demo_BMI"/>
-        <entry key="NSI" value="NSI_score"/>
+        <entry key="Basic Pain" value="[{var:'pain_number'}]"/>
+        <entry key="WHODAS 2.0" value="[{alias:'WHODAS 2.0 [whodas_society_mean]',var:'whodas_society_mean', split:true}, {alias:'WHODAS 2.0 [whodas_work_mean]',var:'whodas_work_mean', split:true}, {alias:'WHODAS 2.0 [whodas_household_mean]',var:'whodas_household_mean', split:true}, {alias:'WHODAS 2.0 [whodas_people_mean]',var:'whodas_people_mean', split:true}, {alias:'WHODAS 2.0 [whodas_selfcare_mean]',var:'whodas_selfcare_mean', split:true}, {alias:'WHODAS 2.0 [whodas_mobility_mean]',var:'whodas_mobility_mean', split:true}, {alias:'WHODAS 2.0 [whodas_understand_mean]',var:'whodas_understand_mean', split:true}]"/>
+        <entry key="PHQ-9" value="[{var:'dep_score_phq9'}]"/>
+        <entry key="GAD 7 Anxiety" value="[{var:'gad7_score'}]"/>
+        <entry key="PCL-C" value="[{var:'pcl_score'}]"/>
+        <entry key="ISI" value="[{var:'sleep_score'}]"/>
+        <entry key="CD-RISC-10" value="[{var:'res_score'}]"/>
+        <entry key="BMI over 24" value="[{var:'demo_BMI'}]"/>
+        <entry key="NSI" value="[{var:'NSI_score'}]"/>
     </util:map>
 
     <util:map id="selectedReportableScreensMap" map-class="java.util.HashMap">
@@ -129,6 +128,18 @@
         <entry key="AV Hallucinations" value="[{var:'health18_voices',pos:[{op:'gt',val:0}], neg:[{op:'eq',val:0}]},{var:'health19_seeing',pos:[{op:'gt',val:0}],neg:[{op:'eq',val:0}]}]"/>
 
         <entry key="PHQ-9" value="[{var:'dep_score_phq9', pos:[{op:'gte',val:10}],neg:[{op:'lt',val:10}]},{var:'dep9_dead', split:true, alias:'Suicidal Ideation', pos:[{op:'gte',val:1}],neg:[{op:'eq',val:0}]}]"/>
+    </util:map>
+
+    <util:map id="repFuncMap" map-class="java.util.HashMap">
+
+        <entry key="indivStatNumeric" value-ref="indivStatNumeric"/>
+        <entry key="indivStatChart" value-ref="indivStatChart"/>
+        <entry key="indivStatGraphPlusNumber" value-ref="indivStatGraphPlusNumber"/>
+
+        <entry key="avgStatGraph" value-ref="avgStatGraph"/>
+        <entry key="avgStatIndivChart" value-ref="avgStatIndivChart"/>
+        <entry key="avgStatGrpChart" value-ref="avgStatGrpChart"/>
+        <entry key="avgStatGrpGraphOrNumber" value-ref="avgStatGrpGraphOrNumber"/>
     </util:map>
 
     <util:map id="opFunctionMap" map-class="java.util.HashMap">
