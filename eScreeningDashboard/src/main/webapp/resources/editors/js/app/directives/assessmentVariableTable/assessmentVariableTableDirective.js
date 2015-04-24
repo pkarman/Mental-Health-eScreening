@@ -24,7 +24,7 @@
 						transformations: false
 					};
 
-		            scope.searchObj = {type: ''};
+		            scope.searchObj = {type: '', displayName:''};
 
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
 

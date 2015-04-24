@@ -16,6 +16,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -71,10 +72,10 @@ public class AssessmentVariable implements Serializable {
     @ManyToOne
     private MeasureAnswer measureAnswer;
     
-    //TODO: We should change this to have a list (or Set realy) of AssessmentVariables and not a list of AssessmentVarChildren
+    //TODO: We should change this to have a list (or Set really) of AssessmentVariables and not a list of AssessmentVarChildren
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent", orphanRemoval = true)
     private List<AssessmentVarChildren> assessmentVarChildrenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId", fetch = FetchType.LAZY)
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true)
     @OrderBy("displayOrder")
@@ -172,11 +173,12 @@ public class AssessmentVariable implements Serializable {
 
     public void setAssessmentVarChildrenList(List<AssessmentVarChildren> assessmentVarChildrenList) {
         if (this.assessmentVarChildrenList == null) {
-        this.assessmentVarChildrenList = assessmentVarChildrenList;
-        } else {
+            this.assessmentVarChildrenList = assessmentVarChildrenList;
+        } 
+        else {
             this.assessmentVarChildrenList.clear();
             this.assessmentVarChildrenList.addAll(assessmentVarChildrenList);
-    }
+        }
     }
 
     public List<AssessmentVariableColumn> getAssessmentVariableColumnList() {
