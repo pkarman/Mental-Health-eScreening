@@ -50,4 +50,7 @@ public class ReportsTest {
         System.out.println(rules);
     }
 
+    @Test
+    public void testUnfuddleTicket601()
+
 }
