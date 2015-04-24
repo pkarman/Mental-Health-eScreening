@@ -42,80 +42,37 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 
 		logger.trace("getSurveyPagesForVeteranAssessmentId");
 
-		/**
-		 * <pre>
-		 * String sql = &quot;SELECT smr FROM SurveyMeasureResponse smr WHERE smr.veteranAssessment.veteranAssessmentId = :veteranAssessmentId AND smr.survey.surveyId = :surveyId ORDER BY smr.tabularRow&quot;;
-		 * 
-		 * TypedQuery&lt;SurveyMeasureResponse&gt; query = entityManager.createQuery(sql, SurveyMeasureResponse.class);
-		 * query.setParameter(&quot;veteranAssessmentId&quot;, veteranAssessmentId);
-		 * query.setParameter(&quot;surveyId&quot;, surveyId);
-		 * 
-		 * // get query results and convert into a Map
-		 * List&lt;SurveyMeasureResponse&gt; measureResponseList = query.getResultList();
-		 * </pre>
-		 */
-
-		List<SurveyMeasureResponse> measureResponseList = new ArrayList<SurveyMeasureResponse>();
-		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
-			if (smr.getSurvey().getSurveyId().equals(surveyId)) {
-				measureResponseList.add(smr);
-			}
+		ListMultimap<Integer, SurveyMeasureResponse> responseMap = smrLister.fetchCachedSmrBySurvey(veteranAssessmentId, surveyId);
+		
+		if(responseMap == null){
+		    TypedQuery<SurveyMeasureResponse> query = entityManager
+		        .createQuery(
+		            "SELECT smr FROM SurveyMeasureResponse smr WHERE smr.veteranAssessment.veteranAssessmentId = :veteranAssessmentId AND smr.survey.surveyId = :surveyId ORDER BY smr.tabularRow",
+		            SurveyMeasureResponse.class)
+	            .setParameter("veteranAssessmentId", veteranAssessmentId)
+	            .setParameter("surveyId", surveyId);
+	         
+	        // get query results and convert into a Map
+	        responseMap = toMultiMap(query.getResultList());
+	        
+	        smrLister.setCachedSmrBySurvey(veteranAssessmentId, surveyId, responseMap);
 		}
-
-		// Collections.sort(measureResponseList, new Comparator<SurveyMeasureResponse>() {
-		//
-		// @Override
-		// public int compare(SurveyMeasureResponse o1,
-		// SurveyMeasureResponse o2) {
-		// return o1.getTabularRow().compareTo(o2.getTabularRow());
-		// }
-		// });
-
-		ListMultimap<Integer, SurveyMeasureResponse> surveyMeasureResponseMap = LinkedListMultimap.create();
-		for (SurveyMeasureResponse measureResponse : measureResponseList) {
-			surveyMeasureResponseMap.put(measureResponse.getMeasureAnswer().getMeasureAnswerId().intValue(), measureResponse);
-		}
-
-		return surveyMeasureResponseMap;
+		
+		return responseMap;
 	}
 
+	private ListMultimap<Integer, SurveyMeasureResponse> toMultiMap(List<SurveyMeasureResponse> measureResponseList){
+	    ListMultimap<Integer, SurveyMeasureResponse> surveyMeasureResponseMap = LinkedListMultimap.create();
+        for (SurveyMeasureResponse measureResponse : measureResponseList) {
+            surveyMeasureResponseMap.put(measureResponse.getMeasureAnswer().getMeasureAnswerId().intValue(), measureResponse);
+        }
+
+        return surveyMeasureResponseMap;
+	}
+	
 	private List<SurveyMeasureResponse> fetchSmrList(int veteranAssessmentId) {
 		List<SurveyMeasureResponse> smrList = smrLister.fetchCachedSmr(veteranAssessmentId);
 		return smrList;
-	}
-
-	@Override
-	public List<SurveyMeasureResponse> findForAssessmentIdMeasureRow(
-			int veteranAssessmentId, int measureId, int tabularRow) {
-		logger.trace("findForAssessmentIdMeasureRow");
-
-		/**
-		 * <pre>
-		 * String sql = &quot;SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measure m JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND m.measureId = :measureId AND smr.tabularRow = :tabularRow ORDER BY ma.displayOrder&quot;;
-		 * 
-		 * TypedQuery&lt;SurveyMeasureResponse&gt; query = entityManager.createQuery(sql, SurveyMeasureResponse.class);
-		 * query.setParameter(&quot;veteranAssessmentId&quot;, veteranAssessmentId);
-		 * query.setParameter(&quot;measureId&quot;, measureId);
-		 * query.setParameter(&quot;tabularRow&quot;, tabularRow);
-		 * List&lt;SurveyMeasureResponse&gt; surveyMeasureResponseList = query.getResultList();
-		 * </pre>
-		 */
-		List<SurveyMeasureResponse> surveyMeasureResponseList = new ArrayList<SurveyMeasureResponse>();
-		for (SurveyMeasureResponse smr : fetchSmrList(veteranAssessmentId)) {
-			if (smr.getMeasure().getMeasureId().equals(measureId) && smr.getTabularRow().equals(tabularRow)) {
-				surveyMeasureResponseList.add(smr);
-			}
-		}
-
-		Collections.sort(surveyMeasureResponseList, new Comparator<SurveyMeasureResponse>() {
-			@Override
-			public int compare(SurveyMeasureResponse o1,
-					SurveyMeasureResponse o2) {
-				return o1.getMeasureAnswer().getDisplayOrder().compareTo(o2.getMeasureAnswer().getDisplayOrder());
-			}
-		});
-
-		return surveyMeasureResponseList;
 	}
 
 	@Override
@@ -176,38 +133,6 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 			}
 		}
 		return null;
-
-	}
-
-	@Override
-	public SurveyMeasureResponse find(int veteranAssessmentId,
-			int measureAnswerId, @Nullable Integer tabularRow) {
-
-		return findSmrUsingPreFetch(veteranAssessmentId, measureAnswerId, tabularRow);
-		// logger.trace("find");
-		//
-		// String sql =
-		// "SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measureAnswer ma WHERE va.veteranAssessmentId = :veteranAssessmentId AND ma.measureAnswerId = :measureAnswerId";
-		//
-		// if (tabularRow != null) {
-		// sql += " AND smr.tabularRow = :tabularRow";
-		// }
-		//
-		// TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql,
-		// SurveyMeasureResponse.class).setParameter("veteranAssessmentId",
-		// veteranAssessmentId).setParameter("measureAnswerId", measureAnswerId);
-		//
-		// if (tabularRow != null) {
-		// query.setParameter("tabularRow", tabularRow);
-		// }
-		//
-		// List<SurveyMeasureResponse> surveyMeasureResponseList = query.getResultList();
-		//
-		// if (surveyMeasureResponseList.size() > 0) {
-		// return surveyMeasureResponseList.get(0);
-		// } else {
-		// return null;
-		// }
 
 	}
 

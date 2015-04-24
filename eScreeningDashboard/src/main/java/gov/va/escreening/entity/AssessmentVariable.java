@@ -57,7 +57,9 @@ public class AssessmentVariable implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY)
+    
+    //can't make this lazy until we stop using override values (see MeasureAnswerAssessmentVariableResolverImpl)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY) 
     private List<VariableTemplate> variableTemplateList;
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
     @ManyToOne

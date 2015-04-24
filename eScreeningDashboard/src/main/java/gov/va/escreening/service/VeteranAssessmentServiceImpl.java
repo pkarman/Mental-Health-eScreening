@@ -1146,8 +1146,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		//if this variable is a measure (question) then add all answers' variables
 		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
 		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
-		        if(answer.getAssessmentVariable() != null){
-		            dbVariables.add(answer.getAssessmentVariable());
+		        if(answer.assessmentVariable() != null){
+		            dbVariables.add(answer.assessmentVariable());
 		        }
 		        else{
 		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 

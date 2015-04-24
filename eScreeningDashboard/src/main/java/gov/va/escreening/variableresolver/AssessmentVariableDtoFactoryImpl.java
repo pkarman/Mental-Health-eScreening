@@ -41,7 +41,7 @@ public class AssessmentVariableDtoFactoryImpl implements AssessmentVariableDtoFa
 	    
 		AssessmentVariableDto variableDto = params.getResolvedVariable(assessmentVariable.getAssessmentVariableId());
 		if(variableDto == null){
-		    logger.debug("Resolving variable with ID: {}", assessmentVariable.getAssessmentVariableId());
+		    //logger.debug("Resolving variable with ID: {}", assessmentVariable.getAssessmentVariableId());
 		    
     		Integer type = assessmentVariable.getAssessmentVariableTypeId().getAssessmentVariableTypeId();
     		switch (type) {

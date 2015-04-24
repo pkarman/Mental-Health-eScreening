@@ -115,7 +115,7 @@ public class MeasureAssessmentVariableResolverImpl implements
     public AssessmentVariableDto resolveAssessmentVariable(
             AssessmentVariable assessmentVariable, 
             ResolverParameters params) {
-        logger.debug("Resolving measure variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
+        //logger.debug("Resolving measure variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
         
         Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -149,7 +149,7 @@ public class MeasureAssessmentVariableResolverImpl implements
             }
         }
         
-        logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
+        //logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
         return variableDto;
     }
 
@@ -399,11 +399,11 @@ public class MeasureAssessmentVariableResolverImpl implements
 			
 			questionVariableDto.getChildren().add(answerVariableDto);
 		}
-		else{
-		    //We could call something here to get the AV for the given measure answer but that would be expensive
-		    //and if we are setting up our editors correctly, we should not have to this here
-			logger.warn("The measure answer with ID {} was not in the measureAnswerHash.  This normally indicates that there is a mistake in the assessment variable bookkeeping for the service that is resolving (e.g. template, rules, formulas). All needed assessment variables must be associated to each of these system objects.", response.getAnswerId());
-		}
+//		else{
+//		    //We could call something here to get the AV for the given measure answer but that would be expensive
+//		    //and if we are setting up our editors correctly, we should not have to this here
+//			//logger.warn("The measure answer with ID {} was not in the measureAnswerHash.  This normally indicates that there is a mistake in the assessment variable bookkeeping for the service that is resolving (e.g. template, rules, formulas). All needed assessment variables must be associated to each of these system objects.", response.getAnswerId());
+//		}
     }
 	
 	private AssessmentVariableDto resolveParentQuestion(

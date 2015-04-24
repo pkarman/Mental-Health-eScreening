@@ -62,9 +62,9 @@ public class FormulaAssessmentVariableResolverImpl implements
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, ResolverParameters params) {
 
-	    logger.debug("\n\nResolving formula {} \nWith expression: {}", 
-	            assessmentVariable.getAssessmentVariableId(), 
-	            assessmentVariable.getFormulaTemplate());
+	    //logger.debug("\n\nResolving formula {} \nWith expression: {}", 
+	    //        assessmentVariable.getAssessmentVariableId(), 
+	    //        assessmentVariable.getFormulaTemplate());
 	    
 	    Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -207,7 +207,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        
 	        if(value != null && value != DEFAULT_VALUE){
 	            valueMap.put(avId, value);
-	            logger.debug("Value of variable {} is {}", avId, value);
+	            //logger.debug("Value of variable {} is {}", avId, value);
 	        }
 	        else{
 	            logger.debug("Variable DTO {} could not be resolved to a value", avId);

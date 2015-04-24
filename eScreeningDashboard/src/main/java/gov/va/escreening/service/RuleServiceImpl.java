@@ -200,7 +200,7 @@ public class RuleServiceImpl implements RuleService {
      * @return returns false if the expression evaluated to false or could not be evaluated
      */
     private boolean evaluate(Rule rule, ResolverParameters params) {
-        logger.debug("Evaluating rule {}", rule);
+        //logger.debug("Evaluating rule {}", rule);
 
         AssessmentVariable variable = new AssessmentVariable();
         variable.setAssessmentVariableTypeId(new AssessmentVariableType(
@@ -413,8 +413,8 @@ public class RuleServiceImpl implements RuleService {
                     logger.error(message);
                     throw new IllegalStateException(message);
                 }
-                logger.debug("Adding consult {} to assessment {}", consult,
-                        veteranAssessmentId);
+                //logger.debug("Adding consult {} to assessment {}", consult,
+                //        veteranAssessmentId);
                 consultSet.add(consult);
                 break;
 
@@ -432,8 +432,8 @@ public class RuleServiceImpl implements RuleService {
                 }
 
                 if (healthFactor.getVistaIen() != null) {
-                    logger.debug("Adding health factor {} to assessment {}",
-                            healthFactor, veteranAssessmentId);
+                    //logger.debug("Adding health factor {} to assessment {}",
+                    //        healthFactor, veteranAssessmentId);
                     healthFactorSet.add(healthFactor);
                 }
                 break;
@@ -451,8 +451,8 @@ public class RuleServiceImpl implements RuleService {
                     throw new IllegalStateException(message);
                 }
 
-                logger.debug("Adding dashboard alert {} to assessment {}",
-                        alert, veteranAssessmentId);
+                //logger.debug("Adding dashboard alert {} to assessment {}",
+                //        alert, veteranAssessmentId);
                 alertSet.add(alert);
                 break;
             }

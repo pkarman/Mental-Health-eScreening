@@ -435,6 +435,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				.findOne(assessmentContext.getVeteranAssessmentId());
 
 		if (veteranAssessment == null) {
+		    //TODO: Use ErrorBuilder
 			// Invalid veteran assessment id;
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
@@ -449,6 +450,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		// Validate surveyPage
 		SurveyPage surveyPage = surveyPageRepository.findOne(assessmentRequest.getPageId());
 		if (surveyPage == null) {
+		    //TODO: Use ErrorBuilder
 			// Invalid survey page.
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
@@ -464,6 +466,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		Survey survey = surveyPage.getSurvey();
 
 		if (!veteranAssessment.containsSurvey(survey)) {
+		    //TODO: Use ErrorBuilder
 			// Invalid veteran assessment survey.
 			errorResponse.setCode(10);
 			errorResponse.setProperty("system");
@@ -494,6 +497,9 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		        }
 		    }
 		}
+		
+		ListMultimap<Integer, SurveyMeasureResponse> previousResponseMap = surveyMeasureResponseRepository.getForVeteranAssessmentAndSurvey(veteranAssessment.getVeteranAssessmentId(), survey.getSurveyId());
+		
 		//
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
@@ -532,7 +538,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				// Now, for each answer, we need to validate and then save add
 				// response to surveyMeasureResponseList.
 				prepareSurveyResponseList(surveyMeasureResponseList,
-						errorResponse, assessmentRequest, measure,
+				        previousResponseMap,
+						errorResponse, measure,
 						submissionBuilder, veteranAssessment, surveyPage,
 						dbMeasure);
 			}
@@ -722,9 +729,12 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	// of the passed in objects
 	private void prepareSurveyResponseList(
 			List<SurveyMeasureResponse> surveyMeasureResponseList,
-			ErrorResponse errorResponse, AssessmentRequest assessmentRequest,
-			Measure measure, AnswerSubmission.Builder submissionBuilder,
-			VeteranAssessment veteranAssessment, SurveyPage surveyPage,
+			ListMultimap<Integer, SurveyMeasureResponse> previousResponseMap,
+			ErrorResponse errorResponse, 
+			Measure measure, 
+			AnswerSubmission.Builder submissionBuilder,
+			VeteranAssessment veteranAssessment, 
+			SurveyPage surveyPage,
 			gov.va.escreening.entity.Measure dbMeasure) {
 
 		// Now, for each answer, we need to validate and then save.
@@ -741,10 +751,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			}
 
 			// See if this has already been answered. If not, create a new one.
-			SurveyMeasureResponse surveyMeasureResponse = surveyMeasureResponseRepository
-					.find(assessmentRequest.getAssessmentId(), answerId,
-							answer.getRowId());
-
+			SurveyMeasureResponse surveyMeasureResponse = null;
+			List<SurveyMeasureResponse> responseRows = previousResponseMap.get(answerId);
+			int rowIndex = answer.getRowId() == null ? 0 : answer.getRowId();
+			if(responseRows != null && rowIndex < responseRows.size()){
+			    surveyMeasureResponse = responseRows.get(rowIndex);
+			}
+			
 			// This is a 'transient' hibernate object since we created it.
 			if (surveyMeasureResponse == null) {
 				surveyMeasureResponse = new SurveyMeasureResponse();

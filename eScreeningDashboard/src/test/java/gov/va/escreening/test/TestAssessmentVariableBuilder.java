@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -206,70 +207,64 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
      * @param row optional index of the row to set in the responses
      * @param smrs
      */
-    private void setMeasureResponses(Measure measure, @Nullable Integer row, SurveyMeasureResponse... smrs){
-        List<SurveyMeasureResponse> responseList;
-        Integer measureId = measure.getMeasureId();
-
-        if(smrs == null){ 
-            responseList = Collections.emptyList();
-        }
-        else{ 
-            responseList = Arrays.asList(smrs); 
-        }
-
-        //set the list on the measure
-        measure.setSurveyMeasureResponseList(responseList);
-
-        //setup service calls
-        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-        
-        for(SurveyMeasureResponse response : responseList){
-            when(surveyResponseRepo.findSmrUsingPreFetch(anyInt(), eq(response.getMeasureAnswer().getMeasureAnswerId()), eq(row))).thenReturn(response);
-        }
-
-        if(row != null){
-            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
-        }
-        
-        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
-        measureResponses.removeAll(measureId);
-        measureResponses.putAll(measureId, responseList);
-    }
+//    private void setMeasureResponses(Measure measure, @Nullable Integer row, SurveyMeasureResponse... smrs){
+//        List<SurveyMeasureResponse> responseList;
+//        Integer measureId = measure.getMeasureId();
+//
+//        if(smrs == null){ 
+//            responseList = Collections.emptyList();
+//        }
+//        else{ 
+//            responseList = Arrays.asList(smrs); 
+//        }
+//
+//        //set the list on the measure
+//        measure.setSurveyMeasureResponseList(responseList);
+//
+//        //setup service calls
+//        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
+//        
+//        for(SurveyMeasureResponse response : responseList){
+//            when(surveyResponseRepo.findSmrUsingPreFetch(anyInt(), eq(response.getMeasureAnswer().getMeasureAnswerId()), eq(row))).thenReturn(response);
+//        }
+//
+//        if(row != null){
+//            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
+//        }
+//        
+//        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
+//        measureResponses.removeAll(measureId);
+//        measureResponses.putAll(measureId, responseList);
+//    }
 
     private void addMeasureResponse(Measure measure, @Nullable Integer row, SurveyMeasureResponse response){
-        List<SurveyMeasureResponse> responseList;
+        ListMultimap<Integer, SurveyMeasureResponse> responseList;
         Integer measureId = measure.getMeasureId();
+        Integer answerId = response.getMeasureAnswer().getMeasureAnswerId();
 
-        if(row != null){
-            responseList = surveyResponseRepo.findForAssessmentIdMeasureRow(4, measureId, row);
-        }
-        else{
-            responseList = surveyResponseRepo.getForVeteranAssessmentAndMeasure(4, measureId);	
-        }
+        responseList = surveyResponseRepo.getForVeteranAssessmentAndSurvey(4, 4);
 
         if(responseList == null){
-            responseList = new LinkedList<>();
+            responseList = LinkedListMultimap.create();
         }
 
-        responseList.add(response);
+        responseList.put(answerId, response);
 
         //set the list on the measure
-        measure.setSurveyMeasureResponseList(responseList);
+        measure.setSurveyMeasureResponseList(responseList.get(answerId));
 
         //setup service calls
-        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-
         if(row != null){
-            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
+            when(surveyResponseRepo.getForVeteranAssessmentAndSurvey(anyInt(), anyInt())).thenReturn(responseList);
         }
         
         //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
         measureResponses.put(measureId, response);
     }
 
-    private void setMeasureResponses(Measure measure,  SurveyMeasureResponse... smrs){
-        setMeasureResponses(measure, null, smrs);
-    }
+//    private void setMeasureResponses(Measure measure,  SurveyMeasureResponse... smrs){
+//        setMeasureResponses(measure, null, smrs);
+//    }
 
     private void addMeasureResponse(Measure measure, SurveyMeasureResponse response){
         addMeasureResponse(measure, null, response);
@@ -375,7 +370,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                     srm.setBooleanValue(noneResponse);
                     srm.setMeasure(tableMeasure);
                     srm.setMeasureAnswer(answer);
-                    setMeasureResponses(tableMeasure, srm);
+                    addMeasureResponse(tableMeasure, srm);
                 }
             }
         }
@@ -410,12 +405,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                         srm.setMeasure(childMeasure);
                         srm.setMeasureAnswer(childMeasure.getMeasureAnswerList().get(0));
                         srm.setTabularRow(rowIndex);
-                        if(rowIndex == 0){
-                            setMeasureResponses(childMeasure, rowIndex, srm);
-                        }
-                        else{
-                            addMeasureResponse(childMeasure, rowIndex, srm);
-                        }
+                        addMeasureResponse(childMeasure, rowIndex, srm);
                     }
                     rowIndex++;
                 }
@@ -862,7 +852,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 srm.setTextValue(response);
                 srm.setMeasure(measure);
                 srm.setMeasureAnswer(answer);
-                setMeasureResponses(measure, srm);
+                addMeasureResponse(measure, srm);
             }
         }
 

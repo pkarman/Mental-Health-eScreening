@@ -461,7 +461,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	private void addAnswerVariableTemplates(Template template, Measure measure, Map<Integer, VariableTemplate> currentVtMap, Set<Integer>addedAvIds){
 		for(MeasureAnswer ma : measure.getMeasureAnswerList()){
-		    addVariableTemplate(template, ma.getAssessmentVariable(), currentVtMap, addedAvIds);
+		    addVariableTemplate(template, ma.assessmentVariable(), currentVtMap, addedAvIds);
 		}
 	}
 

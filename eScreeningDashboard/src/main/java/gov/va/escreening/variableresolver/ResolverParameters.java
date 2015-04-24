@@ -12,6 +12,7 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedListMultimap;
@@ -56,6 +59,8 @@ public class ResolverParameters {
     private final Map<Integer, AssessmentVariableDto> avMap;
     //Set to track AVs that cannot be resolved
     private final Set<Integer> unresolvable = new HashSet<>();
+    //Stores answer override text (this should be removed when we remove the use of override text)
+    private final Map<Integer, Optional<String>> overrideMap = new HashMap<>();
     
     /**
      * @param veteranAssessmentId the assessment to resolve against
@@ -69,7 +74,7 @@ public class ResolverParameters {
         assessmentId = veteranAssessmentId;
         this.nullHandler = nullHandler;
         
-        createAnswerHash(assessmentVariables);        
+        createAnswerHash(assessmentVariables);
         avMap = Maps.newHashMapWithExpectedSize(assessmentVariables.size());
     }
     
@@ -85,7 +90,7 @@ public class ResolverParameters {
         assessmentId = veteranAssessmentId;
         this.nullHandler = nullHandler;
         
-        createAnswerHash(variableTemplates);        
+        createAnswerHash(variableTemplates);
         avMap = Maps.newHashMapWithExpectedSize(measureAnswerHash.size());
     }
     
@@ -268,6 +273,24 @@ public class ResolverParameters {
         }
     }
     
+    //TODO: This should be removed (only two template use OverrideText)
+    public String getOverrideText(Answer response) {
+        Optional<String> overrideValue = overrideMap.get(response.getAnswerId());
+        if(overrideValue == null){
+            overrideValue = Optional.fromNullable(getOverrideValue(response.getAnswerId()));
+            overrideMap.put(response.getAnswerId(), overrideValue);
+        }
+        return overrideValue.orNull();
+    }
+    
+    //TODO: this should be removed as soon as we stop using override values
+    private String getOverrideValue(Integer answerId){
+        AssessmentVariable answerVariable = getAnswerAv(answerId);
+        if (answerVariable != null && !answerVariable.getVariableTemplateList().isEmpty()) {
+            return Strings.emptyToNull(answerVariable.getVariableTemplateList().get(0).getOverrideDisplayValue());
+        }
+        return null;
+    }    
     
     //TODO: Make this obsolete by updating our bookkeeping of AVs for Rules, Formula, and Templates to save not only the AVs used by any dependent AVs.
     //we need variable resolution to be as fast as possible so this calculation should be saved once when these system objects are saved
@@ -281,7 +304,7 @@ public class ResolverParameters {
                 break;
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
                 for(MeasureAnswer ma : av.getMeasure().getMeasureAnswerList()){
-                    answerAvs.add(ma.getAssessmentVariable());
+                    answerAvs.add(ma.assessmentVariable());
                 }
                 break;
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:

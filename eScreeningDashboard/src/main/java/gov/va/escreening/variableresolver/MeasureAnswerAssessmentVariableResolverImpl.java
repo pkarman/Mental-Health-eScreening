@@ -8,7 +8,6 @@ import gov.va.escreening.dto.ae.Measure;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
@@ -52,7 +51,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
             ResolverParameters params, Answer response) {
-        logger.debug("Resolving answer variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
+        //logger.debug("Resolving answer variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
 
         Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -69,7 +68,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                     .throwIt();
     
             if(response == null){
-                logger.debug("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
+                //logger.debug("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
                 List<Answer>responses = params.getAnswerResponse(measureAnswer.getMeasureAnswerId());
                 //this is a temporary fix until something better is figured out
                 if(!responses.isEmpty()){
@@ -90,7 +89,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                 variableDto.setResponse(response);
                 
                 //TODO: remove the use of override text (two hand written templates still use it)
-                variableDto.setOverrideText(getOverrideText(response, params));
+                variableDto.setOverrideText(params.getOverrideText(response));
                 
                 //add resolved Dto to the cache
                 params.addResolvedVariable(variableDto);
@@ -102,7 +101,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                 throw e;
             }
         }
-        logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
+        //logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
         return variableDto;
     }
 
@@ -120,7 +119,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
         }
 
         String calcValue = resolveCalculationValue(assessmentVariable, veteranAssessmentId, response);
-        logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
+        //logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
         return calcValue;
     }
 
@@ -138,7 +137,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                     measureAnswer.getMeasureAnswerId(), veteranAssessmentId));
 
         String calcValue = resolveCalculationValue(assessmentVariable, veteranAssessmentId, response);
-        logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
+        //logger.debug("Resolved assessment variable {} to value {}", assessmentVariable, calcValue);
         return calcValue;
     }
 
@@ -211,23 +210,6 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
 
         //It hasn't been mapped so use the parent's id
         return parentAssessmentVariable.getAssessmentVariableId();
-    }
-
-	//TODO: This should be removed (only two template use this)
-    private String getOverrideText(Answer response, ResolverParameters params) {
-
-        //check to see if the answer id is in the hash
-        Integer measureAnswerId = response.getAnswerId();
-        AssessmentVariable answerVariable = params.getAnswerAv(measureAnswerId);
-        if (answerVariable != null && !answerVariable.getVariableTemplateList().isEmpty()) {
-            //if found then see if an override value has been set.
-            VariableTemplate variableTemplate = answerVariable.getVariableTemplateList().get(0);
-            if (variableTemplate.getOverrideDisplayValue() != null && !variableTemplate.getOverrideDisplayValue().isEmpty())
-                return variableTemplate.getOverrideDisplayValue();
-        }
-
-        //Check to see if the measure answer has an override value
-        return null;
     }
 
     @Override

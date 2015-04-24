@@ -27,7 +27,7 @@ public class EventRepositoryImpl extends AbstractHibernateRepository<Event>
     @Override
     public List<Event> getEventByTypeFilteredByObjectIds(int eventTypeId, Collection<Integer> objectIds){
         
-        logger.debug("Getting events with type {} and filtered by {} related object IDs", eventTypeId, objectIds.size());
+        //logger.debug("Getting events with type {} and filtered by {} related object IDs", eventTypeId, objectIds.size());
         
         if(objectIds.isEmpty())
             return Collections.emptyList();
@@ -54,7 +54,7 @@ public class EventRepositoryImpl extends AbstractHibernateRepository<Event>
     
     @Override
     public Event getEventForObject(int relatedObjectId, int eventTypeId){
-        logger.debug("Getting event with type ID of {} and related object ID of {}", eventTypeId, relatedObjectId);
+        //logger.debug("Getting event with type ID of {} and related object ID of {}", eventTypeId, relatedObjectId);
         String sql = "SELECT e FROM Event e WHERE e.eventType.eventTypeId = :eventTypeId AND e.relatedObjectId = :relatedObjectId";
         
         try{

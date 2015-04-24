@@ -94,14 +94,18 @@ public class AssessmentEngineController {
 			@RequestBody AssessmentRequest assessmentRequest,
 			HttpSession session) {
 
-		logger.debug("POST:/services/assessments/active\nIn processData() \n{}", assessmentRequest);
+		logger.debug("POST:/services/assessments/active");//\nIn processData() \n{}", assessmentRequest);
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
         startInstrumentation(assessmentRequest, session);
 
 		smrLister.clearSmrFromCache();
-		AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
+		long startTime = System.nanoTime();
+        AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
+        long endTime = System.nanoTime();
+        logger.debug("processPage time: {}", (endTime - startTime)/1000000l);
+        
 		smrLister.clearSmrFromCache();
 
         finishInstrumentation(assessmentResponse, session);
