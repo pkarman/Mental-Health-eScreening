@@ -141,7 +141,9 @@ public class ReportFunctionCommon {
 
     public List<String> getAllAvsFromModule(String name) {
         List<Map> avMaps = avMap.get(name);
-
+        if (avMaps == null) {
+            return null;
+        }
         List<String> avNames = Lists.newArrayList();
         for (Map avMap : avMaps) {
             avNames.add(avMap.get("var").toString());
