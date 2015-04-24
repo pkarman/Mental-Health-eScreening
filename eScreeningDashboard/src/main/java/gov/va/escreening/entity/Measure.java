@@ -104,10 +104,6 @@ public class Measure implements Serializable {
     @OneToMany(mappedBy = "measure")
     private List<AssessmentVariable> assessmentVariableList;
     
-    /** the following are response data which we do not want to change if this survey is changed **/
-    @OneToMany(mappedBy = "measure")
-    private List<SurveyMeasureResponse> surveyMeasureResponseList;
-    
     @ManyToOne(cascade = { CascadeType.ALL }, optional = true)
     @JoinColumn(name = "parent_measure_id")
     private Measure parent;
@@ -243,12 +239,6 @@ public class Measure implements Serializable {
 		
 		return avList.get(0);
 	}
-
-	//Please note: the setSurveyMeasureResponseList method has been removed because it is a mistake use it (please ask Robin Carnow if you have questions)
-	
-    public void setSurveyMeasureResponseList(List<SurveyMeasureResponse> surveyMeasureResponseList) {
-        this.surveyMeasureResponseList = surveyMeasureResponseList;
-    }
 
     public Measure getParent() {
         return parent;

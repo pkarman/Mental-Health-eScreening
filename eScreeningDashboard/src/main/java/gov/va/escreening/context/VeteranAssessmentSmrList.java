@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 
 @Component("veteranAssessmentSmrList")
 public class VeteranAssessmentSmrList {

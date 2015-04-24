@@ -3,23 +3,17 @@ package gov.va.escreening.variableresolver;
 import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
-import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.exception.AssessmentEngineDataValidationException;
 import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.exception.CouldNotResolveVariableValueException;
-import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +29,6 @@ public class MeasureAssessmentVariableResolverImpl implements
 
 	//Please add to the constructor and do not use field based @Autowired	
 	private final MeasureAnswerAssessmentVariableResolver measureAnswerVariableResolver;
-	private final SurveyMeasureResponseRepository surveyMeasureResponseRepository;
     private final ChildResolverFunction selectOneChildResolverFunction;
     private final ChildResolverFunction selectMultiChildResolverFunction;
 
@@ -44,72 +37,11 @@ public class MeasureAssessmentVariableResolverImpl implements
 
 	@Autowired
 	public MeasureAssessmentVariableResolverImpl(
-			MeasureAnswerAssessmentVariableResolver mavr, 
-			SurveyMeasureResponseRepository smrr){
+			MeasureAnswerAssessmentVariableResolver mavr){
 		measureAnswerVariableResolver = checkNotNull(mavr);
-		surveyMeasureResponseRepository = checkNotNull(smrr);
-		
 		selectOneChildResolverFunction = new SelectOneChildResolverFunction();
 		selectMultiChildResolverFunction = new SelectMultiChildResolverFunction();
 	}
-	
-    @Override
-    public String resolveCalculationValue(
-            AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-            Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler) {
-
-        if (assessmentVariable.getMeasure() == null
-                || assessmentVariable.getMeasure().getMeasureId() == null) {
-
-            throw new AssessmentVariableInvalidValueException(
-                    String.format(
-                            "AssessmentVariable of type Measure did not contain the required measureid"
-                                    + " VeteranAssessment id was: %s, AssessmentVariable id was: %s",
-                            veteranAssessmentId,
-                            assessmentVariable.getAssessmentVariableId()));
-        }
-
-        Integer measureId = assessmentVariable.getMeasure().getMeasureId();
-        List<SurveyMeasureResponse> responses = surveyMeasureResponseRepository
-                .getForVeteranAssessmentAndMeasure(veteranAssessmentId,
-                        measureId);
-        if (responses == null || responses.size() == 0) {
-            return smrNullHandler.handleMeasure(this, measureId, veteranAssessmentId);
-        }
-
-        String result = null;
-        int measureTypeId = assessmentVariable.getMeasure().getMeasureType()
-                .getMeasureTypeId();
-        switch (measureTypeId) {
-		case AssessmentConstants.MEASURE_TYPE_FREE_TEXT:
-                result = resolveFreeTextCalculationValue(assessmentVariable,
-                        responses, veteranAssessmentId);
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE:
-                result = resolveSelectOneCalculationValue(assessmentVariable,
-                        responses, veteranAssessmentId);
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX: 
-                result = resolveSelectOneCalculationValue(assessmentVariable,
-                        responses, veteranAssessmentId);
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI:
-		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX:  
-		case AssessmentConstants.MEASURE_TYPE_TABLE:
-		case AssessmentConstants.MEASURE_TYPE_READ_ONLY: 
-		case AssessmentConstants.MEASURE_TYPE_INSTRUCTION:  
-            default:
-                throw new UnsupportedOperationException(
-                        String.format(
-                                "Resolution of calculation value for measure type of: %s is not supported.",
-                                measureTypeId));
-        }
-
-        if (result == null) {
-            result = smrNullHandler.resolveCalculationDefaultValue(this, measureId, veteranAssessmentId);
-        }
-        return result;
-    }
 
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(
@@ -338,46 +270,6 @@ public class MeasureAssessmentVariableResolverImpl implements
         return questionVariableDto;
     }
 
-    private String resolveFreeTextCalculationValue(
-            AssessmentVariable answerVariable,
-            List<SurveyMeasureResponse> responses, Integer veteranAssessmentId) {
-
-        String result = null;
-        if (responses.size() > 1)
-            throw new CouldNotResolveVariableException(
-                    String.format(
-                            "Measure of type: %s had more than one free text value, answerVariableId: %s, assessmentId: %s",
-							AssessmentConstants.MEASURE_TYPE_FREE_TEXT,
-                            answerVariable.getAssessmentVariableId(),
-                            veteranAssessmentId));
-
-        // There should only be one response for this type
-        SurveyMeasureResponse response = responses.get(0);
-        result = measureAnswerVariableResolver.resolveCalculationValue(
-                answerVariable, veteranAssessmentId, response);
-
-        return result;
-    }
-
-    private String resolveSelectOneCalculationValue(
-            AssessmentVariable answerVariable,
-            List<SurveyMeasureResponse> responses, Integer veteranAssessmentId) {
-
-        String result = null;
-
-        // look for the true value then call answer to pull the value
-        for (SurveyMeasureResponse response : responses) {
-            if (response.getBooleanValue() != null
-                    && response.getBooleanValue()) {
-                // call the answer level to resolve the value
-                result = measureAnswerVariableResolver.resolveCalculationValue(
-                        answerVariable, veteranAssessmentId, response);
-            }
-        }
-
-        return result;
-    }
-
 	/**
 	 * Resolves response to an assessment variable for the measure answer represented 
 	 * by the response, and appends this AV dto to the children of the passed in question AV.
@@ -465,74 +357,4 @@ public class MeasureAssessmentVariableResolverImpl implements
 					        childResponses, params));
 		}
 	}
-
-	
-    @Override
-    public String resolveCalculationValue(AssessmentVariable measureVariable,
-                                          Pair<Measure, gov.va.escreening.dto.ae.Measure> answer,
-                                          Map<Integer, AssessmentVariable> measureAnswerHash) {
-
-        String result = null;
-        int measureTypeId = measureVariable.getMeasure().getMeasureType()
-                .getMeasureTypeId();
-        switch (measureTypeId) {
-		case AssessmentConstants.MEASURE_TYPE_FREE_TEXT:
-                result = answer.getRight().getAnswers().get(0).getAnswerResponse();
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE:
-                result = resolveSelectOneCalculationValue(measureVariable,
-                        answer);
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX:
-                result = resolveSelectOneCalculationValue(measureVariable,
-                        answer);
-                break;
-		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI:
-		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX:
-		case AssessmentConstants.MEASURE_TYPE_TABLE:
-		case AssessmentConstants.MEASURE_TYPE_READ_ONLY:
-		case AssessmentConstants.MEASURE_TYPE_INSTRUCTION:
-            default:
-                throw new UnsupportedOperationException(
-                        String.format(
-                                "Resolution of calculation value for measure type of: %s is not supported.",
-                                measureTypeId));
-        }
-
-//		if (result == null)
-//			
-//		 throw new CouldNotResolveVariableValueException(String.format("Was unable to resolve the calculation value for measureid: %s",
-//		     measureId));
-
-        return result;
-    }
-
-    private String resolveSelectOneCalculationValue(
-            AssessmentVariable measureVariable,
-            Pair<Measure, gov.va.escreening.dto.ae.Measure> answer) {
-
-        String result = null;
-
-        Measure dbMeasure = answer.getLeft();
-        gov.va.escreening.dto.ae.Measure measureDto = answer.getRight();
-        
-        if(dbMeasure.getMeasureAnswerList().size() != measureDto.getAnswers().size()){
-            ErrorBuilder.throwing(AssessmentEngineDataValidationException.class)
-                .toAdmin("UI sent a different number of responses (" + measureDto.getAnswers().size() + ") than what was expected(" +  dbMeasure.getMeasureAnswerList().size() + ").")
-                .toUser("A system error has occurred. Please contact support.")
-                .throwIt();
-        }
-        
-        // look for the true value then call answer to pull the value
-        for (int i = 0; i < measureDto.getAnswers().size(); i++) {
-            Answer answerVal = measureDto.getAnswers().get(i);
-            if (answerVal.getAnswerResponse() != null && answerVal.getAnswerResponse().equalsIgnoreCase("true")) {
-                // call the answer level to resolve the value
-                result = measureAnswerVariableResolver.resolveCalculationValue(answer, i);
-                break;
-            }
-        }
-
-        return result;
-    }
 }

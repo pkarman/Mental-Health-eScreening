@@ -29,7 +29,6 @@ import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
 import gov.va.escreening.repository.AssessmentVariableRepository;
-import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
@@ -49,9 +48,7 @@ import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,7 +65,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -102,7 +98,6 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private final ExpressionEvaluatorService expressionService;
 
     //mocked supporting objects for resolvers
-    private final SurveyMeasureResponseRepository surveyResponseRepo = mock(SurveyMeasureResponseRepository.class);
     private final AssessmentVariableRepository assessmentVariableRepo = mock(AssessmentVariableRepository.class);
     private final VeteranAssessment assessment = mock(VeteranAssessment.class);
     private final Veteran vet = mock(Veteran.class);
@@ -114,8 +109,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private int defualtAvId = 1000;
 
     public TestAssessmentVariableBuilder() {
-        answerResolver = new MeasureAnswerAssessmentVariableResolverImpl(surveyResponseRepo);
-        measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver, surveyResponseRepo);
+        answerResolver = new MeasureAnswerAssessmentVariableResolverImpl();
+        measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver);
         customResolver = createCustomResolver();
         try{
             expressionService = new ExpressionEvaluatorServiceImpl(assessmentVariableRepo);
@@ -201,70 +196,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
     //Builder methods 
 
-    /**
-     * It is important to note that calling this a second time with the same measure ID will overwrite the previous call.
-     * @param measure the measure to update
-     * @param row optional index of the row to set in the responses
-     * @param smrs
-     */
-//    private void setMeasureResponses(Measure measure, @Nullable Integer row, SurveyMeasureResponse... smrs){
-//        List<SurveyMeasureResponse> responseList;
-//        Integer measureId = measure.getMeasureId();
-//
-//        if(smrs == null){ 
-//            responseList = Collections.emptyList();
-//        }
-//        else{ 
-//            responseList = Arrays.asList(smrs); 
-//        }
-//
-//        //set the list on the measure
-//        measure.setSurveyMeasureResponseList(responseList);
-//
-//        //setup service calls
-//        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-//        
-//        for(SurveyMeasureResponse response : responseList){
-//            when(surveyResponseRepo.findSmrUsingPreFetch(anyInt(), eq(response.getMeasureAnswer().getMeasureAnswerId()), eq(row))).thenReturn(response);
-//        }
-//
-//        if(row != null){
-//            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
-//        }
-//        
-//        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
-//        measureResponses.removeAll(measureId);
-//        measureResponses.putAll(measureId, responseList);
-//    }
-
     private void addMeasureResponse(Measure measure, @Nullable Integer row, SurveyMeasureResponse response){
-        ListMultimap<Integer, SurveyMeasureResponse> responseList;
-        Integer measureId = measure.getMeasureId();
-        Integer answerId = response.getMeasureAnswer().getMeasureAnswerId();
-
-        responseList = surveyResponseRepo.getForVeteranAssessmentAndSurvey(4, 4);
-
-        if(responseList == null){
-            responseList = LinkedListMultimap.create();
-        }
-
-        responseList.put(answerId, response);
-
-        //set the list on the measure
-        measure.setSurveyMeasureResponseList(responseList.get(answerId));
-
-        //setup service calls
-        if(row != null){
-            when(surveyResponseRepo.getForVeteranAssessmentAndSurvey(anyInt(), anyInt())).thenReturn(responseList);
-        }
-        
-        //TODO: Eventually we should be able to stop the use of surveyResponseRepo because resolvers will only use the ResolverParameter object
-        measureResponses.put(measureId, response);
+        measureResponses.put(measure.getMeasureId(), response);
     }
-
-//    private void setMeasureResponses(Measure measure,  SurveyMeasureResponse... smrs){
-//        setMeasureResponses(measure, null, smrs);
-//    }
 
     private void addMeasureResponse(Measure measure, SurveyMeasureResponse response){
         addMeasureResponse(measure, null, response);
