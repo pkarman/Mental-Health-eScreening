@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import gov.va.escreening.delegate.ReportFunctionCommon;
+import gov.va.escreening.delegate.ScoreMap;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyScoreInterval;
@@ -33,6 +34,9 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Resource(type = ReportFunctionCommon.class)
     private ReportFunctionCommon reportsHelper;
+
+    @Resource(name = "scoreMap")
+    ScoreMap scoreMap;
 
     @Transactional(readOnly = true)
     @Override
@@ -96,7 +100,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
     private Map<String, Object> createTemplateMetaData(int surveyId, String avName) {
         Map<String, Object> metaDataMap = Maps.newHashMap();
         metaDataMap.put("footer", ""); //todo what to do here?
-        String title = reportsHelper.getModuleName(surveyId, avName);
+        String title = reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap());
         metaDataMap.put("title", title);
         metaDataMap.put("numberOfMonths", 12); //todo find a logic to assign the right number here
         return metaDataMap;

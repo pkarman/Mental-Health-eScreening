@@ -4,6 +4,7 @@ import gov.va.escreening.dto.report.ModuleGraphReportDTO;
 import gov.va.escreening.util.ReportsUtil;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,9 @@ import java.util.Map;
  */
 @Component("avgStatGrpGraphOrNumber")
 public class ReportFunctionAvgStatGrpGraphOrNumber extends ReportFunctionCommon implements ReportFunction {
+    @Resource(name="scoreMap")
+    ScoreMap scoreMap;
+
     @Override
     public void createReport(Object[] args) {
         // userReqData, surveyId, clinicId, svgObject, graphReport, includeCount, isGraphOnly
@@ -26,8 +30,8 @@ public class ReportFunctionAvgStatGrpGraphOrNumber extends ReportFunctionCommon 
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
 
-        if (isSplittableModule(surveyId)) {
-            List<String> avNames = findSplittableAvNames(surveyId);
+        if (isSplittableModule(surveyId, scoreMap.getAvMap())) {
+            List<String> avNames = findSplittableAvNames(surveyId, scoreMap.getAvMap());
             for (String avName : avNames) {
                 addModuleGraphReportDTO(surveyId, avName, clinicId, svgObject, graphReport, fromDate, toDate, includeCount, isGraphOnly);
             }
@@ -44,7 +48,7 @@ public class ReportFunctionAvgStatGrpGraphOrNumber extends ReportFunctionCommon 
                 moduleGraphReportDTO.setScoreHistoryTitle(null);
             }
             if (svgObject != null && !svgObject.isEmpty()) {
-                String svgData = svgObject.get(getModuleName(surveyId, avName));
+                String svgData = svgObject.get(getModuleName(surveyId, avName, scoreMap.getAvMap()));
                 if (svgData != null) {
                     moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgData);
                 }

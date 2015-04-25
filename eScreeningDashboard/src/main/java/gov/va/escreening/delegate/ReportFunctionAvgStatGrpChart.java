@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import gov.va.escreening.util.ReportsUtil;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,9 @@ import java.util.Map;
  */
 @Component("avgStatGrpChart")
 public class ReportFunctionAvgStatGrpChart extends ReportFunctionCommon implements ReportFunction {
+    @Resource(name="scoreMap")
+    ScoreMap scoreMap;
+
     @Override
     public void createReport(Object[] args) {
         // requestData, surveyId, clinicId, chartableDataList
@@ -23,8 +27,8 @@ public class ReportFunctionAvgStatGrpChart extends ReportFunctionCommon implemen
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
 
-        if (isSplittableModule(surveyId)) {
-            List<String> avNames = findSplittableAvNames(surveyId);
+        if (isSplittableModule(surveyId, scoreMap.getAvMap())) {
+            List<String> avNames = findSplittableAvNames(surveyId, scoreMap.getAvMap());
             for (String avName : avNames) {
                 addData(clinicId, surveyId, avName, fromDate, toDate, chartableDataList);
             }

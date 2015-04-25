@@ -28,8 +28,8 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     @Autowired
     private VeteranRepository veteranRepository;
 
-    @Resource(name = "selectedReportableScreensMap")
-    Map<String, String> selectedReportableScreensMap;
+    @Resource(name = "modulesForPositiveScreeningMap")
+    Map<String, String> modulesForPositiveScreeningMap;
 
     Map<String, List<Map>> posNegScreenScoreRulesMap;
 
@@ -40,8 +40,8 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     private void constructPosNegScreenScoreRulesMap() {
         Gson gson = new GsonBuilder().create();
         this.posNegScreenScoreRulesMap = Maps.newHashMap();
-        for (String moduleName : selectedReportableScreensMap.keySet()) {
-            String modulePosNegJson = selectedReportableScreensMap.get(moduleName);
+        for (String moduleName : modulesForPositiveScreeningMap.keySet()) {
+            String modulePosNegJson = modulesForPositiveScreeningMap.get(moduleName);
             List<Map> modulePosNegMap = gson.fromJson(modulePosNegJson, List.class);
             this.posNegScreenScoreRulesMap.put(moduleName, modulePosNegMap);
         }

@@ -5,6 +5,7 @@ import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.util.ReportsUtil;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,9 @@ import java.util.Map;
  */
 @Component("indivStatGraphPlusNumber")
 public class ReportFunctionIndivStatGraphNumber extends ReportFunctionCommon implements ReportFunction {
+    @Resource(name="scoreMap")
+    ScoreMap scoreMap;
+
     @Override
     public void createReport(Object[] args) {
         Map<String, Object> requestData = (Map<String, Object>) args[0];
@@ -24,8 +28,8 @@ public class ReportFunctionIndivStatGraphNumber extends ReportFunctionCommon imp
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
 
-        if (isSplittableModule(surveyId)) {
-            List<String> avNames = findSplittableAvNames(surveyId);
+        if (isSplittableModule(surveyId, this.scoreMap.getAvMap())) {
+            List<String> avNames = findSplittableAvNames(surveyId, this.scoreMap.getAvMap());
             for (String avName : avNames) {
                 addModuleGraphReportDTO(svgObject, surveyId, avName, veteranId, fromDate, toDate, resultList);
             }
@@ -35,7 +39,7 @@ public class ReportFunctionIndivStatGraphNumber extends ReportFunctionCommon imp
     }
 
     private void addModuleGraphReportDTO(Map<String, String> svgObject, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate, List<ModuleGraphReportDTO> resultList) {
-        String svgData = (svgObject != null && !svgObject.isEmpty()) ? svgObject.get(getModuleName(surveyId, avName)) : null;
+        String svgData = (svgObject != null && !svgObject.isEmpty()) ? svgObject.get(getModuleName(surveyId, avName, this.scoreMap.getAvMap())) : null;
         if (svgData != null) {
             ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, avName, veteranId, fromDate, toDate);
             if (moduleGraphReportDTO.getHasData()) {

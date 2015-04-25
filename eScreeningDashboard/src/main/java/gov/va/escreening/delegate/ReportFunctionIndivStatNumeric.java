@@ -4,6 +4,7 @@ import gov.va.escreening.dto.report.TableReportDTO;
 import gov.va.escreening.util.ReportsUtil;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,10 @@ import java.util.Map;
  */
 @Component("indivStatNumeric")
 public class ReportFunctionIndivStatNumeric extends ReportFunctionCommon implements ReportFunction {
+
+    @Resource(name="scoreMap")
+    ScoreMap scoreMap;
+
     @Override
     public void createReport(Object[] args) {
         Map<String, Object> requestData = (Map<String, Object>) args[0];
@@ -22,8 +27,8 @@ public class ReportFunctionIndivStatNumeric extends ReportFunctionCommon impleme
         String fromDate = (String) requestData.get(ReportsUtil.FROMDATE);
         String toDate = (String) requestData.get(ReportsUtil.TODATE);
 
-        if (isSplittableModule(surveyId)) {
-            List<String> avNames = findSplittableAvNames(surveyId);
+        if (isSplittableModule(surveyId, scoreMap.getAvMap())) {
+            List<String> avNames = findSplittableAvNames(surveyId, scoreMap.getAvMap());
             for (String avName : avNames) {
                 addTableReportDTO(surveyId, avName, veteranId, fromDate, toDate, reports);
             }

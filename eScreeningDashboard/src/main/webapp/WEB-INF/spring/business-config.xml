@@ -105,7 +105,7 @@
         <value>TBI Screening</value>
     </util:list>
 
-    <util:map id="selectedReportableScoresMap" map-class="java.util.HashMap">
+    <util:map id="modulesForScoringMap" map-class="java.util.HashMap">
         <entry key="Basic Pain" value="[{var:'pain_number'}]"/>
         <entry key="WHODAS 2.0" value="[{alias:'WHODAS 2.0 [whodas_society_mean]',var:'whodas_society_mean', split:true}, {alias:'WHODAS 2.0 [whodas_work_mean]',var:'whodas_work_mean', split:true}, {alias:'WHODAS 2.0 [whodas_household_mean]',var:'whodas_household_mean', split:true}, {alias:'WHODAS 2.0 [whodas_people_mean]',var:'whodas_people_mean', split:true}, {alias:'WHODAS 2.0 [whodas_selfcare_mean]',var:'whodas_selfcare_mean', split:true}, {alias:'WHODAS 2.0 [whodas_mobility_mean]',var:'whodas_mobility_mean', split:true}, {alias:'WHODAS 2.0 [whodas_understand_mean]',var:'whodas_understand_mean', split:true}]"/>
         <entry key="PHQ-9" value="[{var:'dep_score_phq9'}]"/>
@@ -117,7 +117,7 @@
         <entry key="NSI" value="[{var:'NSI_score'}]"/>
     </util:map>
 
-    <util:map id="selectedReportableScreensMap" map-class="java.util.HashMap">
+    <util:map id="modulesForPositiveScreeningMap" map-class="java.util.HashMap">
         <entry key="AUDIT-C" value="[{var:'alc_score_audit',pos:[{op:'gte',val:4}],neg:[{op:'lt',val:4}]}]"/>
         <entry key="DAST-10" value="[{var:'DAST_score', pos:[{op:'gte', val:3}], neg:[{op:'lt',val:3}]}]"/>
         <entry key="BTBIS" value="[{var:tbi_score1, pos:[{op:'eq',val:4}],neg:[{op:'lt',val:4}]}]"/>

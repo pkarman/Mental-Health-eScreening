@@ -75,8 +75,8 @@ public class ReportDelegateImpl implements ReportDelegate {
     @Resource(name = "repFuncMap")
     Map<String, ReportFunction> repFuncMap;
 
-    @Resource(name = "selectedReportableScoresMap")
-    Map<String, String> selectedReportableScoresMap;
+    @Resource(name = "modulesForScoringMap")
+    Map<String, String> modulesForScoringMap;
 
     private FileResolver fileResolver = new FileResolver() {
 
@@ -149,7 +149,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<SurveyDto> getSurveyList() {
 
         List<String> surveyNames = Lists.newArrayList();
-        surveyNames.addAll(selectedReportableScoresMap.keySet());
+        surveyNames.addAll(modulesForScoringMap.keySet());
 
         return surveyService.getSurveyListByNames(surveyNames);
     }

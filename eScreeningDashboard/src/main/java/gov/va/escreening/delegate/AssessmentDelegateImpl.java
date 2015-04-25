@@ -270,7 +270,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
-        // after the assessment is done, we will calculate the score first before returing to UI.
+        // after the assessment is done, we will calculate the score first before returning to UI.
         recordAllReportableScores(veteranAssessment);
 	}
 

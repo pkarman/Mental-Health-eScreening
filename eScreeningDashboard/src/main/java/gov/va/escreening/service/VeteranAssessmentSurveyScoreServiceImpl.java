@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.ReportFunctionCommon;
+import gov.va.escreening.delegate.ScoreMap;
 import gov.va.escreening.dto.report.*;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.*;
@@ -26,6 +27,9 @@ import java.util.*;
  */
 @Service("veteranAssessmentSurveyScoreService")
 public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmentSurveyScoreService {
+    private static final Integer POSITIVE_SCORE = 1;
+    private static final Integer NEGATIVE_SCORE = 0;
+    private static final Integer MISSING_SCORE = 999;
     @Resource(type = VariableResolverService.class)
     VariableResolverService vrSrv;
 
@@ -47,11 +51,11 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     @Autowired
     private SurveyScoreIntervalService intervalService;
 
-    // map between surveyName and formulas that belong to that survey
-    // this is defined in WEB-INF/spring/business-config.xml:107
-    @Resource(name = "selectedReportableScoresMap")
-    Map<String, String> selectedReportableScoresMap;
-    Map<String, List<Map>> reportableModulesMap;
+    @Resource(name = "scoreMap")
+    ScoreMap scoreMap;
+
+    @Resource(name = "poitiveScreenMap")
+    ScreenMap screenMap;
 
     @Resource(type = MeasureRepository.class)
     MeasureRepository measureRepository;
@@ -65,40 +69,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
     @Resource(name = "opFunctionMap")
     Map<String, OpFunction> opFunctionMap;
-
-
-    @Resource(name = "selectedReportableScreensMap")
-    Map<String, String> selectedReportableScreensMap;
-    Map<String, List<Map>> posNegScreenScoreRulesMap;
-
-    /**
-     * build posNegScreenScoreRulesMap after dependency injection is done to perform any initialization
-     */
-    @PostConstruct
-    private void constructPosNegScreenScoreRulesMap() {
-        loadPosNegScreenScoresRulesMap();
-        loadReportableModulesMap();
-    }
-
-    private void loadReportableModulesMap() {
-        Gson gson = new GsonBuilder().create();
-        this.reportableModulesMap = Maps.newHashMap();
-        for (String moduleName : selectedReportableScoresMap.keySet()) {
-            String avNames = selectedReportableScoresMap.get(moduleName);
-            List<Map> avMaps = gson.fromJson(avNames, List.class);
-            this.reportableModulesMap.put(moduleName, avMaps);
-        }
-    }
-
-    private void loadPosNegScreenScoresRulesMap() {
-        Gson gson = new GsonBuilder().create();
-        this.posNegScreenScoreRulesMap = Maps.newHashMap();
-        for (String moduleName : selectedReportableScreensMap.keySet()) {
-            String modulePosNegJson = selectedReportableScreensMap.get(moduleName);
-            List<Map> modulePosNegMap = gson.fromJson(modulePosNegJson, List.class);
-            this.posNegScreenScoreRulesMap.put(moduleName, modulePosNegMap);
-        }
-    }
 
     @Override
     @Transactional
@@ -118,44 +88,108 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     @Override
     public List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment) {
         List<VeteranAssessmentSurveyScore> vassLst = Lists.newArrayList();
+        final Map<String, List<Map>> avMap = this.screenMap.getAvMap();
         for (Survey s : veteranAssessment.getSurveys()) {
-            final List<Map> posNegScreenModuleRules = this.posNegScreenScoreRulesMap.get(s.getName());
-            if (posNegScreenModuleRules == null) {
+            final List<Map> screenModules = avMap.get(s.getName());
+            if (screenModules == null) {
                 continue;
             }
 
-            for (Map posNegScreenModuleRule : posNegScreenModuleRules) {
-
-                String avName = posNegScreenModuleRule.get("var").toString();
-
-                Collection<AssessmentVariable> reportableAvs = avSrv.findByDisplayNames(Arrays.asList(avName));
-                // use assessment variables and veteran Assessment Id
-                final Iterable<AssessmentVariableDto> reportableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), reportableAvs);
-                int vassLstSize = vassLst.size();
-                for (AssessmentVariableDto avDto : reportableAvDtos) {
-                    VeteranAssessmentSurveyScore vass = tryCreateVASS(s, avDto, veteranAssessment);
-                    if (vass != null) {
-                        decideScoreScreen(vass, (List<Map>) posNegScreenModuleRule.get("pos"), (List<Map>) posNegScreenModuleRule.get("neg"));
-                        vassLst.add(vass);
-                    }
-                }
-                // look for missing responses
-                if (vassLst.size() == vassLstSize) {
-                    vassLst.add(createVASS(veteranAssessment, -1, s, avName, 999));
-                }
-            }
+            final Map<String, List<Map>> partitionAssessmentVariables = reportsHelper.partitionAvMap(s.getSurveyId(), screenMap.getAvMap());
+            processScreensForSplittables(partitionAssessmentVariables.get("splittable"), s, veteranAssessment, vassLst);
+            processScreensForOridinary(partitionAssessmentVariables.get("ordinary"), s, veteranAssessment, vassLst);
         }
         return vassLst;
     }
 
+    private void processScreensForOridinary(List<Map> ordinaryAvMaps, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
+        //todo implement this correctly after consulting from client about rules for following ambiguities
+        // suppose for Module AV Halluciniation, there are two assessment variables which are needed to combine there score and based on their score, screening is decided
+
+        // health18_voices		health19_seeing		Result AV Name		Result Score
+        //  POSTIVE				POSITIVE			?					POSITIVE
+        //  POSITIVE			NEGATIVE			health18_voices		POSTIVE
+        //  POSITIVE			MISSING				health18_voices		POSITIVE
+        //  NEGATIVE			POSITIVE			health19_seeing		POSTIVE
+        //  NEGATIVE			NEGATIVE			?					NEGATIVE
+        //  NEGATIVE			MISSING				health18_voices		?
+        //  MISSING				POSITIVE			health19_seeing		POSITIVE
+        //  MISSING				NEGATIVE			health19_seeing		?
+        //  MISSING				MISSING				?					MISSING
+
+        List<VeteranAssessmentSurveyScore> negScoresLst = Lists.newArrayList();
+        List<VeteranAssessmentSurveyScore> missScoresLst = Lists.newArrayList();
+        boolean positiveScore = false;
+        for (Map normalAvMap : ordinaryAvMaps) {
+            Collection<AssessmentVariable> ordinaryAvs = avSrv.findByDisplayNames(Arrays.asList(reportsHelper.getAvName(normalAvMap)));
+            final Iterable<AssessmentVariableDto> ordinaryAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), ordinaryAvs);
+            int vassLstSize = vassLst.size();
+            for (AssessmentVariableDto avDto : ordinaryAvDtos) {
+
+                VeteranAssessmentSurveyScore vass = tryCreateVASS(survey, avDto, veteranAssessment);
+
+                if (vass != null) {
+                    decideScoreScreen(vass, (List<Map>) normalAvMap.get("pos"), (List<Map>) normalAvMap.get("neg"));
+
+                    if (vass.getScreenNumber() == POSITIVE_SCORE) {
+                        vassLst.add(vass);
+                        positiveScore = true;
+                        break; // one response can only have one score
+                    } else if (vass.getScreenNumber() == NEGATIVE_SCORE) {
+                        negScoresLst.add(vass);
+                        break;
+                    }
+                }
+            }
+
+            if (!positiveScore && negScoresLst.isEmpty() && vassLst.size() == vassLstSize) {
+                // there was no positive or negative response
+                missScoresLst.add(createVASS(veteranAssessment, -1, survey, reportsHelper.getAvName(normalAvMap), MISSING_SCORE));
+            }
+
+            if (positiveScore) {
+                break;
+            }
+        }
+
+        if (!positiveScore) {
+            if (!negScoresLst.isEmpty() && (negScoresLst.size() == ordinaryAvMaps.size() || negScoresLst.size() >= missScoresLst.size())) {
+                // mark the answer as negative if either all answers are marked as negative or there are no positive answer but at least one negative answer
+                vassLst.add(negScoresLst.iterator().next());
+            } else {
+                vassLst.add(missScoresLst.iterator().next());
+            }
+        }
+    }
+
+
+    private void processScreensForSplittables(List<Map> splittable, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
+        for (Map splittableAvMap : splittable) {
+            Collection<AssessmentVariable> splittableAvs = avSrv.findByDisplayNames(Arrays.asList(reportsHelper.getAvName(splittableAvMap)));
+            // use assessment variables and veteran Assessment Id
+            final Iterable<AssessmentVariableDto> splittableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), splittableAvs);
+            int vassLstSize = vassLst.size();
+            for (AssessmentVariableDto avDto : splittableAvDtos) {
+                VeteranAssessmentSurveyScore vass = tryCreateVASS(survey, avDto, veteranAssessment);
+                if (vass != null) {
+                    decideScoreScreen(vass, (List<Map>) splittableAvMap.get("pos"), (List<Map>) splittableAvMap.get("neg"));
+                    vassLst.add(vass);
+                    break; // one response can only have one score
+                }
+            }
+            // look for missing responses
+            if (vassLst.size() == vassLstSize) {
+                vassLst.add(createVASS(veteranAssessment, -1, survey, reportsHelper.getAvName(splittableAvMap), MISSING_SCORE));
+            }
+        }
+    }
+
     private void decideScoreScreen(VeteranAssessmentSurveyScore vass, List<Map> pos, List<Map> neg) {
         Integer vassScore = vass.getScore();
-        if (vassScore == null) {
-            vass.setScreenNumber(999);
-        } else if (resolveExpression(vass, pos)) {
-            vass.setScreenNumber(1);// if score is equal or more than the threshold than +ve screen is POSITIVEßß
+        if (resolveExpression(vass, pos)) {
+            vass.setScreenNumber(POSITIVE_SCORE);// if score is equal or more than the threshold than +ve screen is POSITIVEßß
         } else if (resolveExpression(vass, neg)) {
-            vass.setScreenNumber(0);  // if score is less than the threshold than +ve screen is NEGATIVE
+            vass.setScreenNumber(NEGATIVE_SCORE);  // if score is less than the threshold than +ve screen is NEGATIVE
         }
     }
 
@@ -176,21 +210,55 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         for (Survey s : veteranAssessment.getSurveys()) {
             // find reportable Assessment Variables for each Survey in this Veteran Assessment. Most of these Assessment Variables will be Formulas,
             // and also most of the Formulas would be Aggregate Formulas
-            final Collection<AssessmentVariable> reportableAvs = getReportableAvsForSurvey(s, this.reportableModulesMap.get(s.getName()));
+            final Collection<AssessmentVariable> reportableAvs = getReportableAvsForSurvey(s, this.scoreMap.getAvMap());
 
             // in case a survey does not have any Assessment Variable as reportable
             if (reportableAvs != null) {
                 // use assessment variables and veteran Assessment Id
                 final Iterable<AssessmentVariableDto> reportableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), reportableAvs);
-                for (AssessmentVariableDto avDto : reportableAvDtos) {
-                    VeteranAssessmentSurveyScore vass = tryCreateVASS(s, avDto, veteranAssessment);
-                    if (vass != null) {
-                        vassLst.add(vass);
-                    }
-                }
+
+                collectSurveyScoresFromReportableDtos(veteranAssessment, s, reportableAvDtos, vassLst);
             }
         }
         return vassLst;
+    }
+
+    private void collectSurveyScoresFromReportableDtos(VeteranAssessment veteranAssessment, Survey s, Iterable<AssessmentVariableDto> reportableAvDtos, List<VeteranAssessmentSurveyScore> vassLst) {
+        // partition the list in two lists, one for splittables, and other for ordinary variables
+        // splittable assessment variables are those variable would be projected at a module level.
+        // That means that they will have their own graph
+
+        Map<String, List<String>> avMap = reportsHelper.partitionAssessmentVariables(s.getSurveyId(), this.scoreMap.getAvMap());
+
+        processScoreForSplittable(avMap.get("splittable"), reportableAvDtos, s, veteranAssessment, vassLst);
+        processScoreForOrdinary(avMap.get("ordinary"), reportableAvDtos, s, veteranAssessment, vassLst);
+    }
+
+    private void processScoreForOrdinary(List<String> ordinaryAvLst, Iterable<AssessmentVariableDto> reportableAvDtos, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
+        // todo change the code for different behavior for ordinary assessemnt variables
+        for (Iterator<AssessmentVariableDto> iter = reportableAvDtos.iterator(); iter.hasNext(); ) {
+            AssessmentVariableDto avDto = iter.next();
+            if (ordinaryAvLst.contains(avDto.getDisplayName())) {
+                VeteranAssessmentSurveyScore vass = tryCreateVASS(survey, avDto, veteranAssessment);
+                if (vass != null) {
+                    vassLst.add(vass);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void processScoreForSplittable(List<String> splittableAvLst, Iterable<AssessmentVariableDto> reportableAvDtos, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
+        for (Iterator<AssessmentVariableDto> iter = reportableAvDtos.iterator(); iter.hasNext(); ) {
+            AssessmentVariableDto avDto = iter.next();
+            if (splittableAvLst.contains(avDto.getDisplayName())) {
+                VeteranAssessmentSurveyScore vass = tryCreateVASS(survey, avDto, veteranAssessment);
+                if (vass != null) {
+                    vassLst.add(vass);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -203,7 +271,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
                 data.put(dateFormatter.format(score.getDateCompleted()), score.getScore());
             }
         }
-
         return data;
     }
 
@@ -227,7 +294,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Survey survey = surveyRepository.findOne(surveyId);
 
         TableReportDTO result = new TableReportDTO();
-        result.setModuleName(avName == null ? reportsHelper.getModuleName(surveyId) : reportsHelper.getModuleName(surveyId, avName));
+        result.setModuleName(avName == null ? reportsHelper.getModuleName(surveyId) : reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
         result.setScreeningModuleName(survey.getDescription());
 
         List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avName, veteranId, fromDate, toDate);
@@ -261,7 +328,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Survey survey = surveyRepository.findOne(surveyId);
 
         ModuleGraphReportDTO result = new ModuleGraphReportDTO();
-        result.setModuleName(reportsHelper.getModuleName(surveyId, avName));
+        result.setModuleName(reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
 
 
         List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avName, veteranId, fromDate, toDate);
@@ -360,7 +427,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         ModuleGraphReportDTO result = new ModuleGraphReportDTO();
 
         Survey s = surveyRepository.findOne(surveyId);
-        result.setModuleName(reportsHelper.getModuleName(surveyId, avName));
+        result.setModuleName(reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
         result.setScoreName("Average Score");
 
 
@@ -406,8 +473,8 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
 
-    private Collection<AssessmentVariable> getReportableAvsForSurvey(Survey s, List<Map> avMap) {
-        List<String> avDisplayNames = reportsHelper.getAllAvsFromModule(s.getName());
+    private Collection<AssessmentVariable> getReportableAvsForSurvey(Survey s, Map<String, List<Map>> m) {
+        List<String> avDisplayNames = reportsHelper.getAllAvsFromModule(s.getName(), m);
         if (avDisplayNames == null) {
             return null;
         }

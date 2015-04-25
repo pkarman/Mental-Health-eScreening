@@ -28,8 +28,8 @@ import java.util.Set;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
 public class ReportsTest {
-    @Resource(name = "selectedReportableScreensMap")
-    Map<String, String> selectedReportableScreensMap;
+    @Resource(name = "modulesForPositiveScreeningMap")
+    Map<String, String> modulesForPositiveScreeningMap;
     @Resource(type = VeteranAssessmentSurveyScoreService.class)
     VeteranAssessmentSurveyScoreService vasss;
 
@@ -42,11 +42,20 @@ public class ReportsTest {
     public void testReportablePositiveNegativeScreenDataStructures() {
         Gson gson = new GsonBuilder().create();
         Map<String, List<Map>> rules = Maps.newHashMap();
-        for (String moduleName : selectedReportableScreensMap.keySet()) {
-            String modulePosNegJson = selectedReportableScreensMap.get(moduleName);
+        for (String moduleName : modulesForPositiveScreeningMap.keySet()) {
+            String modulePosNegJson = modulesForPositiveScreeningMap.get(moduleName);
             List<Map> modulePosNegMap = gson.fromJson(modulePosNegJson, List.class);
             rules.put(moduleName, modulePosNegMap);
         }
         System.out.println(rules);
+    }
+
+    @Test
+    public void testT601_All_with_NoResponse() {
+        // "Basic Pain (BP)", "WHODAS 2.0 (W)", "PHQ-9 (P9)", "GAD 7 Anxiety (G7)", "PCL-C (PC)", "ISI (I)","CD-RISC-10 ()","BMI over 24","NSI"
+
+        // find a veteran v
+        // create an assessment a with batteries for
+
     }
 }
