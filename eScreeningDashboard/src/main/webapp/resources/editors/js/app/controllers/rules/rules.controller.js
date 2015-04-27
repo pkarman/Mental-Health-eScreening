@@ -37,7 +37,7 @@
 
 		$scope.deleteRule = function deleteRule(ruleToRemove) {
 			ruleToRemove.remove().then(function (response) {
-				MessageFactory.clear();
+				MessageFactory.clear(true);
 				MessageFactory.success("Rule '" + ruleToRemove.name + "' has been deleted.");
 				
 				$scope.rules.splice($scope.rules.indexOf(ruleToRemove), 1);
