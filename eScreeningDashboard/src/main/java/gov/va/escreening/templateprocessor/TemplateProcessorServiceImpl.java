@@ -18,6 +18,7 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.TemplateModelException;
 import freemarker.template.Version;
 import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.DocumentType;
@@ -33,6 +34,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.TemplateRepository;
@@ -104,7 +106,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	// may be modified so we will not worry about caching.
 	private Configuration freemarkerConfiguration = null;
 
-	synchronized Configuration getFreemarkerConfiguration() throws IOException {
+	private synchronized Configuration getFreemarkerConfiguration() throws IOException, TemplateModelException {
 		if (freemarkerConfiguration == null)
 			freemarkerConfiguration = initializeFreemarkerConfig();
 		return freemarkerConfiguration;
@@ -454,7 +456,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return noSpace;
 	}
 
-	private Configuration initializeFreemarkerConfig() throws IOException {
+	private Configuration initializeFreemarkerConfig() throws IOException, TemplateModelException {
 		Configuration cfg = new Configuration();
 
 		// We have to use the string loader because we are storing the templates
@@ -478,6 +480,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		// topic...
 		// for now just use this:
 		cfg.setObjectWrapper(new DefaultObjectWrapper());
+		
+		// Set the expression utility object (carries out the template editor operations)
+		cfg.setSharedVariable("util", new ExpressionExtentionUtil());
 
 		// Set your preferred charset template files are stored in. UTF-8 is
 		// a good choice in most applications:

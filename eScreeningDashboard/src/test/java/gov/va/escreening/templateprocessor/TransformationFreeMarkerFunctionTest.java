@@ -291,7 +291,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
         templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
 
-        assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(templateText.toString(), avBuilder));
+        assertEquals("", render(templateText.toString(), avBuilder));
     }
 
     @Test
@@ -312,7 +312,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
         templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
 
-        assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(templateText.toString(), avBuilder));
+        assertEquals("", render(templateText.toString(), avBuilder));
     }
 
     /** TESTS for numberOfEntries translation for table questions  **/

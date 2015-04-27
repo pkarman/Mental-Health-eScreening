@@ -28,6 +28,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.service.SystemPropertyService;
@@ -75,8 +76,7 @@ import com.google.common.collect.Maps;
  *
  */
 public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
-    //if this value changes in ClinicalNoteTemplateFunctions.ftl then it has to change here.
-    public static final String DEFAULT_VALUE = "notset";
+    public static final String DEFAULT_VALUE = ExpressionExtentionUtil.DEFAULT_VALUE;
 
     private static final Logger logger = LoggerFactory.getLogger(TestAssessmentVariableBuilder.class); 
     private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);

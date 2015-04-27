@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 /**
  * This class unifies the functions we use to extend both our FreeMarker templates and Spring EL expressions.
@@ -66,8 +67,11 @@ public class ExpressionExtentionUtil {
     
     /**
      * Calculates the number of years between now and the given date string (formatted as {@link AssessmentConstants.STANDARD_DATE_FORMAT})
-     * @param veteranBirthDate
-     * @return 
+     * @param veteranBirthDate - this is a string because the expression evaluator resolves references before calling this method, but 
+     * a better practice would be to use AssessmentVariableDto objects and the yearsFromDate. Since this method is rarely used 
+     * and the formula editor does not easily support the use of transformations, we can keep this around.
+     * @return a string containing the number of years between today and the given 
+     * date ({@code veteranBirthDate} must be in the standard format). 
      */
     public String calculateAge(String veteranBirthDate) {
         return yearsFromDate(veteranBirthDate);
@@ -80,7 +84,21 @@ public class ExpressionExtentionUtil {
      * @param date
      * @return
      */
+    public String yearsFromDate(AssessmentVariableDto var){
+        return yearsFromDate(getFreeTextAnswer(var, DEFAULT_VALUE));
+    }
+    
+    /**
+     * Converts formatted date string into number of years since that date
+     * @param date 
+     * @return a string containing the number of years between today and the given 
+     * date ({@code date} must be in the standard format). 
+     */
     public String yearsFromDate(String date){
+        if(date == null || DEFAULT_VALUE.equals(date)){
+            return DEFAULT_VALUE;
+        }
+        
         DateTime today = DateTime.now();
         DateTime startDate = STANDARD_DATE_FORMAT.parseDateTime(date);
             
@@ -175,7 +193,7 @@ public class ExpressionExtentionUtil {
      * @return true if number is defined.
      */
     public boolean isDefined(Object value){
-        return value != null;
+        return value != null && !DEFAULT_VALUE.equals(value);
     }
     
     /**
@@ -284,7 +302,7 @@ public class ExpressionExtentionUtil {
     
     public String delimitTableField(
             @Nullable AssessmentVariableDto table,
-            @Nullable Integer childQuestionId,
+            @Nullable Number childQuestionId,
             @Nullable String prefix,
             @Nullable String lastPrefix,
             @Nullable String suffix,
@@ -325,7 +343,7 @@ public class ExpressionExtentionUtil {
      */
     public List<String> collectColumnValues(
             @Nullable AssessmentVariableDto table, 
-            @Nullable Integer columnQuestionId){
+            @Nullable Number columnQuestionId){
         
         List<String> result = Collections.emptyList();
         if(table != null 
@@ -337,7 +355,7 @@ public class ExpressionExtentionUtil {
             
             for(AssessmentVariableDto question : table.getChildren()){
                 //check to see if the given child question is the one to output 
-                if(columnQuestionId.equals(question.getMeasureId()) 
+                if(columnQuestionId.intValue() == question.getMeasureId().intValue()
                         && question.getChildren() != null 
                         && !question.getChildren().isEmpty()){
                     String response = getResponse(question);
@@ -372,10 +390,12 @@ public class ExpressionExtentionUtil {
      * @param rowIndex the row index to pull the actual AV containing the response for the row
      * @return the AV for the given child question and row; or null if no response exists
      */
-    public AssessmentVariableDto getTableVariable(List<Map<String, AssessmentVariableDto>> tableHash, 
+    public AssessmentVariableDto getTableVariable(
+            List<Map<String, AssessmentVariableDto>> tableHash, 
             @Nullable AssessmentVariableDto tableChildVar, 
-            @Nullable Integer rowIndex){
-        Integer index = rowIndex == null ? 0 : rowIndex;
+            @Nullable Number rowIndex){
+
+        Integer index = rowIndex == null ? 0 : rowIndex.intValue();
         
         if(tableChildVar != null && tableChildVar.getVariableId() != null){
 
@@ -400,13 +420,18 @@ public class ExpressionExtentionUtil {
     public String delimitedMatrixQuestions(
             @Nullable AssessmentVariableDto matrix, 
             @Nullable Map<String, String>rowMeasureIdToOutputMap,
-            @Nullable List<Integer> columnAnswerIdList){
+            @Nullable List<Number> columnAnswerIdList){
         
         if(matrix == null || rowMeasureIdToOutputMap == null || columnAnswerIdList == null){
-            return DEFAULT_VALUE;
+            return "";
         }
         List<String> valList = new ArrayList<>();
-        Set<Integer> columnSet = new HashSet<>(columnAnswerIdList);
+        Set<Integer> columnSet = Sets.newHashSetWithExpectedSize(columnAnswerIdList.size());
+        
+        //this is necessary because FreeMarker is sending in a list of BigDecimal for columnAnswerIdList. Isn't type erasure grand! 
+        for(Number answerId : columnAnswerIdList){
+            columnSet.add(answerId.intValue());
+        }
         
         //loop over each of the matrix question's child question assessment variables 
         for(AssessmentVariableDto question : matrix.getChildren()){
@@ -574,6 +599,7 @@ public class ExpressionExtentionUtil {
         }
         return getResponseText(var);
     }
+
     
     /**
      * Note: this is a bit different from the corresponding template function
@@ -622,6 +648,9 @@ public class ExpressionExtentionUtil {
      * @return
      */
     public boolean wasAnswered(String val){
+        if(DEFAULT_VALUE.equals(val)){
+            return false;
+        }
         return !Strings.isNullOrEmpty(val);
     }
     
@@ -651,11 +680,19 @@ public class ExpressionExtentionUtil {
         return false;
     }
     
+    public boolean wasAnswerNone(String var){
+        return false;
+    }
+    
     /**
      * @return  the negation of wasAnswerNone
      */
     public boolean wasntAnswerNone(AssessmentVariableDto var){
         return !wasAnswerNone(var);
+    }
+    
+    public boolean wasntAnswerNone(String var){
+        return true;
     }
     
     /**
@@ -720,7 +757,7 @@ public class ExpressionExtentionUtil {
      * @return true if the value given has a value. Currently only supports string values
      */
     public boolean matrixHasResult(String matrix){
-        return !Strings.isNullOrEmpty(matrix);
+        return !Strings.isNullOrEmpty(matrix) && !matrix.equals(DEFAULT_VALUE);
     }
     
     /**
@@ -741,17 +778,19 @@ public class ExpressionExtentionUtil {
      *  If var123 is null then false is returned.
      *  param right can be an answer object (not supported in UI right now), or an integer
      */
-    public boolean responseIs(AssessmentVariableDto var, Integer rightId){
+    public boolean responseIs(AssessmentVariableDto var, Number rightId){
         if(var != null && rightId != null && var.getMeasureTypeId() != null){
             if(var.getMeasureTypeId() == MEASURE_TYPE_SELECT_ONE ||
                     var.getMeasureTypeId() == MEASURE_TYPE_SELECT_MULTI){
                 for(AssessmentVariableDto responseVariable : var.getChildren()){
-                    if(rightId.equals(responseVariable.getAnswerId())){
+                    //using intValue is needed because FreeMarker uses BigDecimal for numerical values
+                    if(rightId.intValue() == responseVariable.getAnswerId().intValue()){
                         return true;
                     }
                 }
             }
             else{
+                //maybe this should be an exception?
                 logger.warn("Unsuppored question type (ID: {})", var.getMeasureTypeId());
             }
         }
@@ -761,7 +800,7 @@ public class ExpressionExtentionUtil {
     /**
      * @return the negation of responseIs
      */
-    public boolean responseIsnt(AssessmentVariableDto var, Integer right){
+    public boolean responseIsnt(AssessmentVariableDto var, Number right){
         return !responseIs(var, right);
     }
     
