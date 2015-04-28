@@ -440,15 +440,6 @@ boolean indicates if the suffix should be appended at the end of the list -->
     <#return util.isSelectedAnswer(questionVariable, answerVariable)>
 </#function>
 
-<#-- sum all of the calculation values of all selected options -->
-<#function  sumCalcValues var=DEFAULT_VALUE >
-	<#if (var?string) == DEFAULT_VALUE>
-		<#return 0>
-	</#if>
-
-    <#return util.sumCalcValues(var)>
-</#function>
-
 <#-- 
 This transformation takes a table question and allows for the selection of a single child question (i.e. field) 
 childQuestionId is the child question's ID that we should output values for (the field)
@@ -699,7 +690,7 @@ Returns true if the value given matrix has a value.
   param right can be an answer object (not supported in UI right now), or an integer
 -->
 <#function responseIs var=DEFAULT_VALUE right=DEFAULT_VALUE measureTypeId=DEFAULT_VALUE>
-    <#if (var?string) == DEFAULT_VALUE || (right?is_string && right == DEFAULT_VALUE)>
+    <#if ((var?string) == DEFAULT_VALUE) || ((right?string) == DEFAULT_VALUE)>
         <#return false>
     </#if>
 
@@ -722,24 +713,6 @@ returns the negation of responseIs
     <#return util.getFreeTextAnswer(var, deflt)>
 </#function>
 
-<#function getSelectOneResponse var=DEFAULT_VALUE>
-    <#if (var?string) == DEFAULT_VALUE>
-        <#return DEFAULT_VALUE>
-	</#if>	
-    <#return util.getSelectOneResponse(var)>
-</#function>
-
-<#-- 
-Returns the list of AV objects containing for the select responses (i.e. the options set to true by the veteran).  
-The var given can be single or multi select.
--->
-<#function getSelectedResponses var=DEFAULT_VALUE >
-    <#if (var?string) == DEFAULT_VALUE>
-        <#return []>
-	</#if>
-	<#return util.getSelectedResponses(var)>
-</#function>
-
 <#function getResponseText var=DEFAULT_VALUE>
     <#if (var?string) == DEFAULT_VALUE>
         <#return DEFAULT_VALUE>
@@ -752,5 +725,5 @@ Allows for generic testing of values to see if the given value is defined.
 Returns true if value is defined.
 -->
 <#function isDefined value=DEFAULT_VALUE>
-	<#return util.isDefined(var)>
+	<#return util.isDefined(value)>
 </#function>

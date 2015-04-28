@@ -1,7 +1,12 @@
 package gov.va.escreening.templateprocessor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
+import java.util.Date;
+
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.test.IntegrationTest;
+import gov.va.escreening.test.TestAssessmentVariableBuilder.SelectAvBuilder;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -11,8 +16,10 @@ import org.junit.runners.JUnit4;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import gov.va.escreening.variableresolver.CustomAssessmentVariableResolver;
+
 /**
- * This class is concerned with the testing of freemarker functions defined for all templates.<br/>
+ * This class is concerned with the testing of freemarker functions used by template conditions.<br/>
  * This is an integration test.<br/>
  * 
  * @author Robin Carnow
@@ -44,7 +51,6 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                             .addColumn(null, null, null, null, null)));
     }
 
-
     @Test
     public void testMatrixHasResultConditionValueAllEmpty() throws Exception{
         //if all options are set to false then not response (returns false)
@@ -59,7 +65,6 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)
                             .addColumn(null, null, null, Lists.<Boolean>newArrayList(null, null, null), null)));
     }
-
 
     @Test
     public void testMatrixHasResultConditionValueAllFalse() throws Exception{
@@ -97,7 +102,6 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
 
         assertEquals("true",
                 render("${matrixHasNoResult(var123)?c}", avBuilder));
-
     }
 
     @Test
@@ -176,9 +180,18 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${wasAnswerNone(var1)?c}",
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
-                            .addChildFreeText(null, "free text question", null)));
+                            .addChildFreeText(null, "free text question",  Lists.newArrayList("first"))));
     }
 
+    @Test
+    public void testTableWasAnswerNoneForNoAnswerCase() throws Exception{
+        assertEquals("false",
+                render("${wasAnswerNone(var1)?c}",
+                        avBuilder
+                        .addTableQuestionAv(1, null, true, null)
+                            .addChildFreeText(null, "free text question", null)));
+    }
+    
     @Test
     public void testTableWasntAnswerNoneForTrueCase() throws Exception{
         //if None was selected return false
@@ -196,13 +209,16 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                 render("${wasntAnswerNone(var1)?c}",
                         avBuilder
                         .addTableQuestionAv(1, null, true, false)
-                            .addChildFreeText(null, "free text question", null)));
-
+                            .addChildFreeText(null, "free text question", ImmutableList.of("one", "two","three"))));
+    }
+    
+    @Test
+    public void testTableWasntAnswerNoneForNoAnswerCase() throws Exception{
         assertEquals("true",
                 render("${wasntAnswerNone(var1)?c}",
                         avBuilder
-                        .addTableQuestionAv(1, null, true, false)
-                            .addChildFreeText(null, "free text question", ImmutableList.of("one", "two","three"))));
+                        .addTableQuestionAv(1, null, true, null)
+                            .addChildFreeText(null, "free text question", null)));
     }
 
     @Test
@@ -379,4 +395,512 @@ public class ConditionFreemarkerFunctionTest extends FreeMarkerFunctionTest{
                                 .addChildSelectAnswer(null, Lists.<Boolean>newArrayList(null, null, null), null)
                                 .addChildSelectAnswer(null, Lists.<Boolean>newArrayList(null, null, null), null)));
     }
+
+    @Test
+    public void testIsDefinedForFreeText() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addFreeTextAv(1, "free text question", "answer")));
+        
+        assertEquals("false",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addFreeTextAv(2, "free text question", null)));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectOne() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectOneAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("true",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addSelectOneAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("false",
+                render("${isDefined(var3)?c}",
+                        avBuilder
+                        .addSelectOneAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectMulti() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectMultiAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("true",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addSelectMultiAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("false",
+                render("${isDefined(var3)?c}",
+                        avBuilder
+                        .addSelectMultiAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectOneMatrixTrue() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectOneMatrixAv(1, null)
+                        .addChildWithAvId(null, null)
+                        .addColumn("answer1", null, 1d, 
+                                Lists.<Boolean>newArrayList(true), null)));
+    
+        assertEquals("true",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addSelectOneMatrixAv(2, null)
+                        .addChildWithAvId(null, null)
+                        .addColumn("answer1", null, 1d, 
+                                Lists.<Boolean>newArrayList(false), null)));
+    }
+    
+    @Test
+    public void testIsDefinedFalseCase() throws Exception {
+        //missing response list
+        assertEquals("false",
+                render("${isDefined(var1)?c}", avBuilder));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectOneMatrixFalse() throws Exception {
+        //missing response list
+        assertEquals("false",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectOneMatrixAv(1, null)));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectMultiMatrixTrue() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectMultiMatrixAv(1, null)
+                        .addChildWithAvId(null, null)
+                        .addColumn("answer1", null, 1d, 
+                                Lists.<Boolean>newArrayList(true), null)));
+    
+        assertEquals("true",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addSelectMultiMatrixAv(2, null)
+                        .addChildWithAvId(null, null)
+                        .addColumn("answer1", null, 1d, 
+                                Lists.<Boolean>newArrayList(false), null)));
+    }
+    
+    @Test
+    public void testIsDefinedForSelectMultiMatrixFalse() throws Exception {
+        //missing response list
+        assertEquals("false",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addSelectMultiMatrixAv(1, null)));
+    }
+    
+    @Test
+    public void testIsDefinedForTableTrue() throws Exception {
+        assertEquals("true",
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addTableQuestionAv(1, null, true, true)
+                            .addChildFreeText(null, "free text question", null)));
+        assertEquals("true",
+                render("${isDefined(var2)?c}",
+                        avBuilder
+                        .addTableQuestionAv(2, null, true, false)
+                            .addChildFreeText(null, "free text question", null)));
+        
+        assertEquals("true",
+                render("${isDefined(var3)?c}",
+                        avBuilder
+                        .addTableQuestionAv(3, null, true, null)
+                            .addChildFreeText(null, "free text question", Lists.newArrayList(null, "first", null))));
+    }
+    
+    @Test
+    public void testIsDefinedForTableFalse() throws Exception {
+        assertEquals("false", 
+                render("${isDefined(var1)?c}",
+                        avBuilder
+                        .addTableQuestionAv(1, null, true, null)));
+    }
+    
+    @Test
+    public void testWasAnsweredForFreeText() throws Exception {
+        assertEquals("true",
+                render("${wasAnswered(var1)?c}",
+                        avBuilder
+                        .addFreeTextAv(1, "free text question", "answer")));
+        
+        assertEquals("false",
+                render("${wasAnswered(var2)?c}",
+                        avBuilder
+                        .addFreeTextAv(2, "free text question", null)));
+    }
+    
+    @Test
+    public void testWasntAnsweredForFreeText() throws Exception {
+        assertEquals("false",
+                render("${wasntAnswered(var1)?c}",
+                        avBuilder
+                        .addFreeTextAv(1, "free text question", "answer")));
+        
+        assertEquals("true",
+                render("${wasntAnswered(var2)?c}",
+                        avBuilder
+                        .addFreeTextAv(2, "free text question", null)));
+    }
+    
+    @Test
+    public void testWasAnsweredForSelectOne() throws Exception {
+        assertEquals("true",
+                render("${wasAnswered(var1)?c}",
+                        avBuilder
+                        .addSelectOneAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("false",
+                render("${wasAnswered(var2)?c}",
+                        avBuilder
+                        .addSelectOneAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("false",
+                render("${wasAnswered(var3)?c}",
+                        avBuilder
+                        .addSelectOneAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    @Test
+    public void testWasntAnsweredForSelectOne() throws Exception {
+        assertEquals("false",
+                render("${wasntAnswered(var1)?c}",
+                        avBuilder
+                        .addSelectOneAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("true",
+                render("${wasntAnswered(var2)?c}",
+                        avBuilder
+                        .addSelectOneAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("true",
+                render("${wasntAnswered(var3)?c}",
+                        avBuilder
+                        .addSelectOneAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    @Test
+    public void testWasAnsweredForSelectMulti() throws Exception {
+        assertEquals("true",
+                render("${wasAnswered(var1)?c}",
+                        avBuilder
+                        .addSelectMultiAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("false",
+                render("${wasAnswered(var2)?c}",
+                        avBuilder
+                        .addSelectMultiAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("false",
+                render("${wasAnswered(var3)?c}",
+                        avBuilder
+                        .addSelectMultiAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    @Test
+    public void testWasntAnsweredForSelectMulti() throws Exception {
+        assertEquals("false",
+                render("${wasntAnswered(var1)?c}",
+                        avBuilder
+                        .addSelectMultiAv(1, null)
+                        .addAnswer("answer1", true, null)));
+        
+        assertEquals("true",
+                render("${wasntAnswered(var2)?c}",
+                        avBuilder
+                        .addSelectMultiAv(2, null)
+                        .addAnswer("answer1", false, null)));
+        
+        assertEquals("true",
+                render("${wasntAnswered(var3)?c}",
+                        avBuilder
+                        .addSelectMultiAv(3, null)
+                        .addAnswer("answer1", null, null)));
+    }
+    
+    //hasResult is the only available operation for both select one and select multi matrices 
+    
+    @Test
+    public void testFormulaHasResult() throws Exception{
+        assertEquals("true",
+                render("${formulaHasResult(var1)?c}",
+                        avBuilder
+                        .addFormulaAv(1, "2 + 2")));
+        
+        assertEquals("false",
+                render("${formulaHasResult(var2)?c}",
+                        avBuilder
+                        .addFormulaAv(3, "[100]")));
+    }
+    
+    @Test
+    public void testFormulaHasNoResult() throws Exception{
+        assertEquals("false",
+                render("${formulaHasNoResult(var1)?c}",
+                        avBuilder
+                        .addFormulaAv(1, "2 + 2")));
+        
+        assertEquals("true",
+                render("${formulaHasNoResult(var2)?c}",
+                        avBuilder
+                        .addFormulaAv(3, "[100]")));
+    }
+    
+    @Test
+    public void testCustomHasResult() throws Exception{
+        assertEquals("true",
+                render(String.format("${customHasResult(var%d)?c}", CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_DURATION),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_DURATION)
+                        .setAssessmentDuration(20)));
+        
+        assertEquals("false",
+                render(String.format("${customHasResult(var%d)?c}", CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_LAST_MODIFIED),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_LAST_MODIFIED)));
+    }
+    
+    @Test
+    public void testCustomHasNoResult() throws Exception{
+        assertEquals("false",
+                render(String.format("${customHasNoResult(var%d)?c}", CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_DURATION),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_DURATION)
+                        .setAssessmentDuration(20)));
+        
+        assertEquals("true",
+                render(String.format("${customHasNoResult(var%d)?c}", CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_LAST_MODIFIED),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_ASSESSMENT_LAST_MODIFIED)));
+    }
+    
+    @Test
+    public void testCustomHasResultForAppointmentsTrue() throws Exception{
+        assertEquals("true",
+                render(String.format("${customHasResult(delimit(var%d,\"*\",\"**\",\"-\",true,\"\"))?c}", 
+                        CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)
+                        .addAppointment("clinic1", new Date(), "scheduled")));
+    }
+    
+    @Test
+    public void testCustomHasResultForAppointmentsFalse() throws Exception{
+        assertEquals("false",
+                render(String.format("${customHasResult(delimit(var%d,\"*\",\"**\",\"-\",true,\"\"))?c}", 
+                        CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)));
+    }
+    
+    @Test
+    public void testCustomHasNoResultForAppointmentsTrue() throws Exception{
+        assertEquals("true",
+                render(String.format("${customHasNoResult(delimit(var%d,\"*\",\"**\",\"-\",true,\"\"))?c}", 
+                        CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)));
+    }
+    
+    @Test
+    public void testCustomHasNoResultForAppointmentsFalse() throws Exception{
+        assertEquals("false",
+                render(String.format("${customHasNoResult(delimit(var%d,\"*\",\"**\",\"-\",true,\"\"))?c}", 
+                        CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS),
+                        avBuilder
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)
+                        .addAppointment("clinic1", new Date(), "scheduled")));
+    }
+    
+    //TODO: With lambdas the following 8 tests could use a helper method to run the tests but after an evaluation the complexity of doing it here with java 7 was not going to make it easier to maintain
+
+    @Test
+    public void testResponseIsForSelectOneUsingVariable() throws Exception{
+        //this also tests isSelectedAnswer
+        SelectAvBuilder builder = avBuilder
+                .addSelectOneAv(1, null)
+                .addAnswer("answer1", true, null);
+        
+        AssessmentVariable answerAv = builder.getAnswerAvs().get(0);
+        
+        String varFormat = "${responseIs(var1, var%d)?c}";
+        String template = String.format(varFormat, answerAv.getAssessmentVariableId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(varFormat, 100);
+        assertEquals("false", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsForSelectOneUsingAnswerId() throws Exception{
+        SelectAvBuilder builder = avBuilder
+                .addSelectOneAv(1, null)
+                .addAnswer("answer1", true, null);
+        
+        AssessmentVariable answerAv = builder.getAnswerAvs().get(0);
+        
+        String answerIdFormat = "${responseIs(var1, %d)?c}";
+        String template = String.format(answerIdFormat, answerAv.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(answerIdFormat, 100);
+        assertEquals("false", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsntForSelectOneUsingVariable() throws Exception{
+      //this also tests isSelectedAnswer
+        SelectAvBuilder builder = avBuilder
+                .addSelectOneAv(1, null)
+                .addAnswer("answer1", true, null);
+        
+        AssessmentVariable answerAv = builder.getAnswerAvs().get(0);
+        
+        String varFormat = "${responseIsnt(var1, var%d)?c}";
+        String template = String.format(varFormat, answerAv.getAssessmentVariableId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(varFormat, 100);
+        assertEquals("true", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsntForSelectOneUsingAnswerId() throws Exception{
+        SelectAvBuilder builder = avBuilder
+                .addSelectOneAv(1, null)
+                .addAnswer("answer1", true, null);
+        
+        AssessmentVariable answerAv = builder.getAnswerAvs().get(0);
+        
+        String answerIdFormat = "${responseIsnt(var1, %d)?c}";
+        String template = String.format(answerIdFormat, answerAv.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(answerIdFormat, 100);
+        assertEquals("true", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsForSelectMultiUsingVariable() throws Exception{
+      //this also tests isSelectedAnswer
+        SelectAvBuilder builder = avBuilder
+                .addSelectMultiAv(1, null)
+                .addAnswer("answer1", false, null)
+                .addAnswer("answer2", true, null)
+                .addAnswer("answer3", false, null);
+        
+        AssessmentVariable answerAv2 = builder.getAnswerAvs().get(1);
+        AssessmentVariable answerAv3 = builder.getAnswerAvs().get(2);
+        
+        String varFormat = "${responseIs(var1, var%d)?c}";
+        String template = String.format(varFormat, answerAv2.getAssessmentVariableId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(varFormat, answerAv3.getAssessmentVariableId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(varFormat, 100);
+        assertEquals("false", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsForSelectMultiUsingAnswerId() throws Exception{
+        SelectAvBuilder builder = avBuilder
+                .addSelectMultiAv(1, null)
+                .addAnswer("answer1", false, null)
+                .addAnswer("answer2", true, null)
+                .addAnswer("answer3", false, null);
+        
+        AssessmentVariable answerAv2 = builder.getAnswerAvs().get(1);
+        AssessmentVariable answerAv3 = builder.getAnswerAvs().get(2);
+        
+        String answerIdFormat = "${responseIs(var1, %d)?c}";
+        String template = String.format(answerIdFormat, answerAv2.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(answerIdFormat, answerAv3.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(answerIdFormat, 100);
+        assertEquals("false", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsntForSelectMultiUsingVariable() throws Exception{
+      //this also tests isSelectedAnswer
+        SelectAvBuilder builder = avBuilder
+                .addSelectMultiAv(1, null)
+                .addAnswer("answer1", false, null)
+                .addAnswer("answer2", true, null)
+                .addAnswer("answer3", false, null);
+        
+        AssessmentVariable answerAv2 = builder.getAnswerAvs().get(1);
+        AssessmentVariable answerAv3 = builder.getAnswerAvs().get(2);
+        
+        String varFormat = "${responseIsnt(var1, var%d)?c}";
+        String template = String.format(varFormat, answerAv2.getAssessmentVariableId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(varFormat, answerAv3.getAssessmentVariableId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(varFormat, 100);
+        assertEquals("true", render(template, builder));
+    }
+    
+    @Test
+    public void testResponseIsntForSelectMultiUsingAnswerId() throws Exception{
+        SelectAvBuilder builder = avBuilder
+                .addSelectMultiAv(1, null)
+                .addAnswer("answer1", false, null)
+                .addAnswer("answer2", true, null)
+                .addAnswer("answer3", false, null);
+        
+        AssessmentVariable answerAv2 = builder.getAnswerAvs().get(1);
+        AssessmentVariable answerAv3 = builder.getAnswerAvs().get(2);
+        
+        String answerIdFormat = "${responseIsnt(var1, %d)?c}";
+        String template = String.format(answerIdFormat, answerAv2.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("false", render(template, builder));
+        
+        template = String.format(answerIdFormat, answerAv3.getMeasureAnswer().getMeasureAnswerId());
+        assertEquals("true", render(template, builder));
+        
+        template = String.format(answerIdFormat, 100);
+        assertEquals("true", render(template, builder));
+    }    
 }

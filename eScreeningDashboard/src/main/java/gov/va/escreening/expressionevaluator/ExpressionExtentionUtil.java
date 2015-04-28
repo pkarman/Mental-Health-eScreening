@@ -49,7 +49,7 @@ public class ExpressionExtentionUtil {
     private static final String DEFAULT_SUFFIX = ", ";
     private static final Boolean DEFAULT_SUFFIX_AT_END = Boolean.FALSE;
     
-    public Map<Integer, AssessmentVariableDto> variableMap = Collections.emptyMap();
+    private Map<Integer, AssessmentVariableDto> variableMap = Collections.emptyMap();
     
     public ExpressionExtentionUtil setVariableMap(Map<Integer, AssessmentVariableDto> variableMap){
         this.variableMap = variableMap;
@@ -127,32 +127,7 @@ public class ExpressionExtentionUtil {
         return defaultValue;
     }
     
-    /**
-     * Extracts a value for a variable (will not work on parent type variables)<br/>
-     * Logic taken from Freemarker template helper functions.
-     * @param var
-     * @return
-     */
-    public String getResponseText(AssessmentVariableDto var){
-        if(var == null){
-            return DEFAULT_VALUE;
-        }
-        
-        if(!Strings.isNullOrEmpty(var.getOtherText())){
-            return var.getOtherText();
-        }
-        
-        if(!Strings.isNullOrEmpty(var.getOverrideText())){
-            return var.getOverrideText();
-        }
-        
-        if(!Strings.isNullOrEmpty(var.getDisplayText())){
-            return var.getDisplayText();
-        }
-        
-        return DEFAULT_VALUE;
-    }
-    
+    //This not used in templates or rules
     public AssessmentVariableDto getSelectOneAnswerVar(AssessmentVariableDto var){
         return getFirstAnswer(var);
     }
@@ -216,31 +191,6 @@ public class ExpressionExtentionUtil {
         }
         
         return false;
-    }
-    
-    /**
-     * Sums all child calculation values if the given child has a value of true.
-     * So this should be used with select questions
-     * @param var
-     * @return
-     */
-    public Double sumCalcValues(AssessmentVariableDto var){
-        Double result = 0.0;
-        if(var != null && var.getChildren() != null){
-            for(AssessmentVariableDto response : var.getChildren()){
-                if(!Strings.isNullOrEmpty(response.getCalculationValue()) 
-                        && "true".equals(response.getValue())){
-                    try{
-                        result += Double.valueOf(response.getCalculationValue());
-                    }
-                    catch(Exception e){
-                        logger.error("Calculation value {} could not be parsed to a number.",
-                                response.getCalculationValue());
-                    }
-                }
-            }
-        }
-        return result;
     }
     
     /**
@@ -333,39 +283,6 @@ public class ExpressionExtentionUtil {
         
         List<String> responses = collectColumnValues(table, childQuestionId);
         return delimitList(responses, prefix, lastPrefix, suffix, includeSuffixAtEnd, defaultVal);
-    }
-    
-    /**
-     * Iterate over table rows and collect answers for the given question AV ID
-     * @param table
-     * @param columnQuestionId
-     * @return
-     */
-    public List<String> collectColumnValues(
-            @Nullable AssessmentVariableDto table, 
-            @Nullable Number columnQuestionId){
-        
-        List<String> result = Collections.emptyList();
-        if(table != null 
-                && columnQuestionId != null 
-                && !table.getChildren().isEmpty() 
-                && !wasAnswerNone(table)){
-            
-            result = new ArrayList<>(table.getChildren().size());
-            
-            for(AssessmentVariableDto question : table.getChildren()){
-                //check to see if the given child question is the one to output 
-                if(columnQuestionId.intValue() == question.getMeasureId().intValue()
-                        && question.getChildren() != null 
-                        && !question.getChildren().isEmpty()){
-                    String response = getResponse(question);
-                    if(! Strings.isNullOrEmpty(response)){
-                        result.add(response);
-                    }
-                }
-            }
-        }
-        return result;
     }
     
     /**
@@ -502,23 +419,6 @@ public class ExpressionExtentionUtil {
      */
     public String delimit(@Nullable AssessmentVariableDto var, String defaultValue){
         return delimit(var, null, null, null, null, defaultValue);
-    }
-    
-    /**
-     * @return an array of the 'value' field for each child of the given variable
-     */
-    public List<String> getChildValues(AssessmentVariableDto var){
-        return collectFromChildren(var, valueGetter);
-    }
-    
-    /**
-     * Returns an array of the 'displayText' field for each child of the given variable.
-     * This uses getResponseText to pull out the value which checks several fields
-     * @param var
-     * @return
-     */
-    public List<String> getChildDisplayText(AssessmentVariableDto var){
-        return collectFromChildren(var, responseTextGetter);       
     }
     
     /**
@@ -731,6 +631,24 @@ public class ExpressionExtentionUtil {
     }
     
     /**
+     * @return true if the translated (i.e. delimited) custom variable has some value
+     */
+    public boolean customHasResult(String val){
+        if(val == null){
+            return false;
+        }
+        
+        return !val.isEmpty() && val != DEFAULT_VALUE;
+    }
+    
+    /**
+     * @return the negation of customHasResult
+     */
+    public boolean customHasNoResult(String val){
+        return ! customHasResult(val);
+    }
+    
+    /**
      * @return true if the value given has a value. Currently only supports string values
      */
     public boolean matrixHasResult(AssessmentVariableDto matrix){
@@ -824,7 +742,7 @@ public class ExpressionExtentionUtil {
     /**
      * @return the response to the select one or default value
      */
-    public String getSelectOneResponse(AssessmentVariableDto var){
+    private String getSelectOneResponse(AssessmentVariableDto var){
         if(var != null && var.getChildren() != null){
             AssessmentVariableDto answer = getSelectOneAnswerVar(var);
             if(answer != null){
@@ -835,10 +753,35 @@ public class ExpressionExtentionUtil {
     }
     
     /**
+     * Sums all child calculation values if the given child has a value of true.
+     * So this should be used with select questions
+     * @param var
+     * @return
+     */
+    private Double sumCalcValues(AssessmentVariableDto var){
+        Double result = 0.0;
+        if(var != null && var.getChildren() != null){
+            for(AssessmentVariableDto response : var.getChildren()){
+                if(!Strings.isNullOrEmpty(response.getCalculationValue()) 
+                        && "true".equals(response.getValue())){
+                    try{
+                        result += Double.valueOf(response.getCalculationValue());
+                    }
+                    catch(Exception e){
+                        logger.error("Calculation value {} could not be parsed to a number.",
+                                response.getCalculationValue());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
      * @return the list of AV objects containing for the select responses (i.e. the options set to true by the veteran).
      * The var given can be single or multi select.
      */
-    public List<AssessmentVariableDto> getSelectedResponses(AssessmentVariableDto var){
+    private List<AssessmentVariableDto> getSelectedResponses(AssessmentVariableDto var){
         if(var != null && var.getChildren() != null){
             List<AssessmentVariableDto> result = new ArrayList<>(var.getChildren().size());
             for(AssessmentVariableDto answer : var.getChildren()){
@@ -851,7 +794,81 @@ public class ExpressionExtentionUtil {
         return Collections.emptyList();
     }
     
+    /**
+     * Extracts a value for a variable (will not work on parent type variables)<br/>
+     * Logic taken from Freemarker template helper functions.
+     * @param var
+     * @return
+     */
+    private String getResponseText(AssessmentVariableDto var){
+        if(var == null){
+            return DEFAULT_VALUE;
+        }
+        
+        if(!Strings.isNullOrEmpty(var.getOtherText())){
+            return var.getOtherText();
+        }
+        
+        if(!Strings.isNullOrEmpty(var.getOverrideText())){
+            return var.getOverrideText();
+        }
+        
+        if(!Strings.isNullOrEmpty(var.getDisplayText())){
+            return var.getDisplayText();
+        }
+        
+        return DEFAULT_VALUE;
+    }
     
+    /**
+     * Iterate over table rows and collect answers for the given question AV ID
+     * @param table
+     * @param columnQuestionId
+     * @return
+     */
+    private List<String> collectColumnValues(
+            @Nullable AssessmentVariableDto table, 
+            @Nullable Number columnQuestionId){
+        
+        List<String> result = Collections.emptyList();
+        if(table != null 
+                && columnQuestionId != null 
+                && !table.getChildren().isEmpty() 
+                && !wasAnswerNone(table)){
+            
+            result = new ArrayList<>(table.getChildren().size());
+            
+            for(AssessmentVariableDto question : table.getChildren()){
+                //check to see if the given child question is the one to output 
+                if(columnQuestionId.intValue() == question.getMeasureId().intValue()
+                        && question.getChildren() != null 
+                        && !question.getChildren().isEmpty()){
+                    String response = getResponse(question);
+                    if(! Strings.isNullOrEmpty(response)){
+                        result.add(response);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * @return an array of the 'value' field for each child of the given variable
+     */
+    private List<String> getChildValues(AssessmentVariableDto var){
+        return collectFromChildren(var, valueGetter);
+    }
+    
+    /**
+     * Returns an array of the 'displayText' field for each child of the given variable.
+     * This uses getResponseText to pull out the value which checks several fields
+     * @param var
+     * @return
+     */
+    private List<String> getChildDisplayText(AssessmentVariableDto var){
+        return collectFromChildren(var, responseTextGetter);       
+    }
     
     private Double parseDouble(String value){
         try{
@@ -866,9 +883,10 @@ public class ExpressionExtentionUtil {
     /**
      * Generic function which <i>maps</i> (from functional programming) a given function over the children of
      * the given parent.
-     * @param parent
-     * @param collector
-     * @return
+     * @param parent the parent variable which may contain children
+     * @param collector function which is applied to every child 
+     * @return a list of the same size as the list of children in {@code parent}. The values in the list
+     * correspond to the result of applying the collector function to each element.
      */
     private <O> List<O> collectFromChildren(AssessmentVariableDto parent, Function<AssessmentVariableDto,O> collector){
         if(parent != null && parent.getChildren() != null){
@@ -904,7 +922,6 @@ public class ExpressionExtentionUtil {
         }
     };
     
-    
     /**
      * Ensures that rows has a row available for the given row index
      * @param rows
@@ -931,6 +948,4 @@ public class ExpressionExtentionUtil {
         
         return var.getChildren().get(0);
     }
-    
-    
 }

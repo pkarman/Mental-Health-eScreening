@@ -68,6 +68,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -129,7 +130,11 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         ResolverParameters params = new ResolverParameters(123, mock(NullValueHandler.class), measureAnswerHash.values());
         params.addResponses(measureResponses.values());
         
-        for(AssessmentVariable av : avMap.values()){
+        //We resolve the variables that were added and any answer variables
+        Collection<AssessmentVariable> variables = new LinkedList<>(avMap.values());
+        variables.addAll(measureAnswerHash.values());
+        
+        for(AssessmentVariable av : variables){
             try{
                 AssessmentVariableDto dto = variableResolver.resolveAssessmentVariable(av, params);
                 dtoList.put(dto.getVariableId(), dto);

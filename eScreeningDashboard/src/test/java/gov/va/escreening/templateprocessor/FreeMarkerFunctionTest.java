@@ -26,7 +26,7 @@ public class FreeMarkerFunctionTest {
 				"<#include \"clinicalnotefunctions\">" + templateText, 
 				avBuilder.getDTOs(), 1);
 		
-		logger.debug("template rendered:\n" + result);
+		logger.debug("\nTemplate: " + templateText + "\nRendered to:\n" + result);
 		
 		return result;
 	}

@@ -83,7 +83,8 @@ public abstract class BlockTranslator {
                 || "lt".equals(operator) || "gt".equals(operator) 
                 || "lte".equals(operator) || "gte".equals(operator))
         {
-            if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY))         
+            if (left.measureTypeIn(MEASURE_TYPE_FREE_TEXT, MEASURE_TYPE_READ_ONLY, 
+                    MEASURE_TYPE_SELECT_ONE, MEASURE_TYPE_SELECT_MULTI))         
             {
                 if (right instanceof TemplateTextContent)
                 {
@@ -101,7 +102,7 @@ public abstract class BlockTranslator {
                 else
                     translatedVar =  "getResponse("+translatedVar+")";
             }
-            if (left.measureTypeIs(MEASURE_TYPE_TABLE)) //at this point we only support numberOfEntries transformation compared with a number
+            else if (left.measureTypeIs(MEASURE_TYPE_TABLE)) //at this point we only support numberOfEntries transformation compared with a number
             {
                 if (right instanceof TemplateTextContent)
                 {
@@ -119,7 +120,7 @@ public abstract class BlockTranslator {
             }
             else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_CUSTOM))
             {
-                translatedVar =  "isDefined(asNumber(getCustomValue("+translatedVar+"))) && asNumber(getCustomValue("+translatedVar+"))";
+                translatedVar =  "isDefined("+translatedVar+") && " + translatedVar;
             }
             else if (left.typeIs(ASSESSMENT_VARIABLE_TYPE_FORMULA))
             {
