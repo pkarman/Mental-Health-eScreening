@@ -96,6 +96,10 @@ public class ReportFunctionCommon {
         return avNames;
     }
 
+    public String createChartId(Integer moduleId, String avName, Integer veteranId, Integer clinicId) {
+        return String.format("%s_%s_%s_%s", moduleId, avName, veteranId, clinicId);
+    }
+
     public String getModuleName(Integer moduleId, String avName, Map<String, List<Map>> m) {
         if (avName == null) {
             return getModuleName(moduleId);

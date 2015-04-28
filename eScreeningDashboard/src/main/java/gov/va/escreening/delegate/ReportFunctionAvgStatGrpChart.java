@@ -49,7 +49,7 @@ public class ReportFunctionAvgStatGrpChart extends ReportFunctionCommon implemen
 
         final Map<String, Object> surveyDataForClinicStatisticsGraph = scoreService.getSurveyDataForClinicStatisticsGraph(clinicId, surveyId, avName, fromDate, toDate);
 
-        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId, avName);
+        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId, null, avName, clinicId);
         if (metaData != null) {
             metaData.put("score", !surveyDataForClinicStatisticsGraph.isEmpty() ? surveyDataForClinicStatisticsGraph.values().iterator().next() : 0);
         }

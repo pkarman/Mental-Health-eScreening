@@ -50,7 +50,7 @@ public class ReportFunctionAvgStatIndivChart extends ReportFunctionCommon implem
 
         final Map<String, Object> surveyDataForIndividualStatisticsGraph = scoreService.getSurveyDataForIndividualStatisticsGraph(clinicId, surveyId, avName, veteranId, fromDate, toDate);
 
-        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId, avName);
+        final Map<String, Object> metaData = intervalService.generateMetadata(surveyId, veteranId, avName, clinicId);
         if (metaData != null) {
             metaData.put("score", !surveyDataForIndividualStatisticsGraph.isEmpty() ? getAvgFromData(surveyDataForIndividualStatisticsGraph) : 0);
         }

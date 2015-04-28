@@ -48,7 +48,7 @@ public class ReportFunctionAvgStatGrpGraphOrNumber extends ReportFunctionCommon 
                 moduleGraphReportDTO.setScoreHistoryTitle(null);
             }
             if (svgObject != null && !svgObject.isEmpty()) {
-                String svgData = svgObject.get(getModuleName(surveyId, avName, scoreMap.getAvMap()));
+                String svgData = svgObject.get(createChartId(surveyId, avName, null, clinicId));
                 if (svgData != null) {
                     moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgData);
                 }

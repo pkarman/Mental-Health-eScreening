@@ -59,7 +59,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Transactional(readOnly = true)
     @Override
-    public Map<String, Object> generateMetadata(Integer surveyId, String avName) {
+    public Map<String, Object> generateMetadata(Integer surveyId, Integer veteranId, String avName, Integer clinicId) {
 
         List<SurveyScoreInterval> intervals = intervalRepository.getIntervalsBySurvey(surveyId);
         if (intervals == null || intervals.isEmpty()) {
@@ -69,7 +69,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         String max = "-1";
         String min = "100000";
 
-        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId, avName);
+        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId, veteranId, avName, clinicId);
         List<Float> ticks = Lists.newArrayList();
         Map<String, Object> intervalsMap = Maps.newLinkedHashMap();
 
@@ -97,11 +97,12 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         return metaDataMap;
     }
 
-    private Map<String, Object> createTemplateMetaData(int surveyId, String avName) {
+    private Map<String, Object> createTemplateMetaData(int surveyId,  Integer veteranId, String avName, Integer clinicId) {
         Map<String, Object> metaDataMap = Maps.newHashMap();
         metaDataMap.put("footer", ""); //todo what to do here?
         String title = reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap());
         metaDataMap.put("title", title);
+        metaDataMap.put("chartId", reportsHelper.createChartId(surveyId, avName, veteranId, clinicId));
         metaDataMap.put("numberOfMonths", 12); //todo find a logic to assign the right number here
         return metaDataMap;
     }

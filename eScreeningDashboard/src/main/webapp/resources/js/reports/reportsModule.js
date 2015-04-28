@@ -135,7 +135,7 @@ module.factory('ReportsService', ['$http', function ($http) {
             graphGenerator(df, ds); // library function in chart.js
             var svgData = svgObj(); // library function in chart.js
 
-            svgObjectMap[dataMap.dataFormat.title] = svgData;
+            svgObjectMap[dataMap.dataFormat.chartId] = svgData;
         });
         return svgObjectMap;
     };

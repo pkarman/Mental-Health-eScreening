@@ -9,6 +9,6 @@ public interface SurveyScoreIntervalService {
 
     public String getScoreMeaning(Integer surveyId, Number score);
 
-    public Map<String, Object> generateMetadata(Integer surveyId, String avName);
+    public Map<String, Object> generateMetadata(Integer surveyId, Integer veteranId, String avName, Integer clinicId);
 
 }
