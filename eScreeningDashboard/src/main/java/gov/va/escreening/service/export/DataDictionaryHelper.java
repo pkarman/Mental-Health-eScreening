@@ -188,7 +188,7 @@ abstract class Resolver {
 		String quesType = index == 0 ? m.getMeasureType().getName() : "";
 		String quesDesc = ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText());
 		boolean addMore = ma != null;
-		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getIdentifyingText()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+		String varName = getVariableName(addMore, s,m,mvMap,ma,index,other,salt);
 		String valsRange = addMore ? getValuesRange(m, ma, other) : "";
 		String valsDesc = addMore ? getValuesDescription(m, ma, other) : "";
 		String dataVal = addMore ? getValidationDescription(m, mvMap, other) : "";
@@ -197,6 +197,11 @@ abstract class Resolver {
 
 		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel, other);
 	}
+
+	protected String getVariableName(boolean addMore, Survey s, Measure m, Multimap mvMap, MeasureAnswer ma, int index, boolean other, String salt){
+		return addMore ? !other ? Strings.nullToEmpty(ma.getIdentifyingText()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+	}
+
 
 	protected String generateRowId(String partialRowId, String salt, int index) {
 		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + partialRowId + salt) : salt);
@@ -259,6 +264,12 @@ class SelectOneResolver extends Resolver {
 	
 	protected SelectOneResolver(DataDictionaryHelper ddr) {
 		super(ddr);
+	}
+
+	@Override
+	protected String getVariableName(boolean addMore, Survey s, Measure m, Multimap mvMap, MeasureAnswer ma, int index, boolean other, String salt) {
+		String measureVarName=m.getVariableName();
+		return addMore ? (!other ? (Strings.isNullOrEmpty(measureVarName) ? (Strings.nullToEmpty(ma.getIdentifyingText())) : measureVarName) : Strings.nullToEmpty(ma.getOtherExportName())) : "";
 	}
 
 	/**
