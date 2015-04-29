@@ -5,25 +5,29 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarTblDir', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', 'limitToWithEllipsisFilter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter, limitToWithEllipsisFilter) {
+	    .directive('assessmentVarTbl', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', 'limitToWithEllipsisFilter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter, limitToWithEllipsisFilter) {
 
 	        return {
 	            restrict: 'EA',
 	            scope: {
 		            assessmentVariable: '=',
 		            show: '=',
-					block: '=',
+					block: '=',   //this is only used for block.type
 					allowTransformations: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
-
+	            	
+	            	if(!scope.assessmentVariable){
+						throw "Assessment variable is a required attribute";
+					}
+					            	
 					var parentBlock = AssessmentVariableService.parentBlock || {};
 					scope.toggles = {
 						list: true,
 						transformations: false
 					};
-
+					
 		            scope.searchObj = {type: '', displayName:''};
 
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
@@ -90,8 +94,6 @@
 		                if(!scope.assessmentVariable || av.id !== scope.assessmentVariable.id) {
 			                // This is needed to trigger a change on in main.js for textAngular (unknown hack)
 			                angular.copy(av, scope.assessmentVariable);
-			                // This is also needed to the populate the $scope.assessmentVariable
-			                scope.assessmentVariable = angular.copy(av);
 		                }
 		                
 						scope.transformationName = (scope.assessmentVariable.id === 6) ? 'appointment' : scope.assessmentVariable.getMeasureTypeName();
@@ -111,11 +113,6 @@
 											});
 										}
 										
-										// Apply assessmentVariable to block even though it should be done via the two-way data binding
-										if (scope.block) {
-											scope.block.left.content = scope.assessmentVariable;
-										}
-										
 										scope.show = true;
 										scope.toggles.list = false;
 										scope.toggles.transformations = true;
@@ -129,10 +126,6 @@
 								});														
 						}
 						else{
-							// Apply AV to block.table for table block types even though it should be working from the view. . .
-							if (scope.block && scope.block.type === 'table') {
-								scope.block.table.content = scope.assessmentVariable;
-							}
 							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 							scope.show = false;
 							scope.tableParams.reload();

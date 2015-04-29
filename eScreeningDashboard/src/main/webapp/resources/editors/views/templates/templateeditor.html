@@ -44,7 +44,7 @@
 				<label for="selectVariable">Select Variable *</label>
 				<input id="selectVariable" type="hidden" ng-model="assessmentVariable.name" update-hidden required>
 				<div ng-show="assessmentVariables.length == 0">Loading...</div>
-				<mhe-assessment-var-dropdown-menu-dir 
+				<assessment-var-select 
 					id="selectVariable"
 					assessment-variable="assessmentVariable" 
 					allow-transformations="false"

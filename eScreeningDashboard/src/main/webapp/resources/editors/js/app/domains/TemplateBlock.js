@@ -46,11 +46,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     this.contents = [];
 
     if(jsonConfig){
-        this.section = (Object.isDefined(jsonConfig.section))? jsonConfig.section: null;
-        this.name = (Object.isDefined(jsonConfig.name))? jsonConfig.name: null;
-        this.type = (Object.isDefined(jsonConfig.type))? jsonConfig.type: null;
-        this.summary = (Object.isDefined(jsonConfig.summary))? jsonConfig.summary: null;
-        this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
+        this.section = jsonConfig.section;
+        this.name = jsonConfig.name;
+        this.type = jsonConfig.type;
+        this.summary = jsonConfig.summary;
+        this.content = jsonConfig.content || '';
         
         var condition = new EScreeningDashboardApp.models.TemplateCondition(jsonConfig);  
         this.left = condition.left;
@@ -90,7 +90,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.contents = [];
 
 		if (this.type === 'table') {
-			this.table = { type : 'var' };
+			this.table = { 
+					type : 'var',
+					content: new EScreeningDashboardApp.models.AssessmentVariable()
+			};
 		}
     }
 

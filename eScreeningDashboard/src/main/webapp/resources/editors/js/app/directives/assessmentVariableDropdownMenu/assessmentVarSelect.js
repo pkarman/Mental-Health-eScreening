@@ -2,16 +2,16 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('mheAssessmentVarDropdownMenuDir', ['$document', function($document) {
+	    .directive('assessmentVarSelect', ['$document', function($document) {
 	        return {
 	            restrict: 'EA',
 	            scope: {
 	                assessmentVariable: '=',
-					block: '=',
+					block: '=',  //this is only used for block.type
 					allowTransformations: '='
 	            },
 		        require: '^form',
-	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.html',
+	            templateUrl: 'resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableSelect.html',
 	            link: function(scope, element, attributes, formController) {
 		            // These are used for form validation from block and condition contexts
 		            scope.templateBlockEditorForm = formController;

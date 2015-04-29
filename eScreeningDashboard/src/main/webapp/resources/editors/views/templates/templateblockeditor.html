@@ -23,9 +23,9 @@
 							<input type="hidden"
 									ng-model="block.table.content"
 									update-hidden>
-							<mhe-assessment-var-dropdown-menu-dir 
-								assessment-variable="block.table.content" 
-								block="block" 
+							<assessment-var-select 
+								assessment-variable="block.table.content"
+								block="block"
 								allow-transformations="false"
 								ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
 						</div>

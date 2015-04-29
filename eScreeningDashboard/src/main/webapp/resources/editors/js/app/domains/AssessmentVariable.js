@@ -8,20 +8,38 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 (function () {
 	'use strict';
-
+	
+	var types = {
+		1: 'Question',
+		2: 'Answer',
+		3: 'Custom',
+		4: 'Formula'
+	};
+	
 	function AssessmentVariable(obj) {
-		this.id = obj.id || null;
-		this.typeId = obj.typeId || null;
-		this.answerId = obj.answerId || null;
-		this.measureId = obj.measureId || null;
-		this.measureTypeId = obj.measureTypeId || null;
-		this.parentMeasureId = obj.parentMeasureId || null;
-		this.name = obj.name || null;
-		this.displayName = obj.displayName || null;
-		this.type = obj.type || null;
-		this.transformations = obj.transformations || [];
-
-		if (obj.typeId) {
+		this.id,
+		this.typeId,
+		this.answerId,
+		this.measureId,
+		this.measureTypeId,
+		this.parentMeasureId,
+		this.name,
+		this.displayName,
+		this.type,
+		this.transformations = [];
+		
+		if(obj){
+			this.id = obj.id;
+			this.typeId = obj.typeId;
+			this.answerId = obj.answerId;
+			this.measureId = obj.measureId;
+			this.measureTypeId = obj.measureTypeId;
+			this.parentMeasureId = obj.parentMeasureId;
+			this.name = obj.name;
+			this.displayName = obj.displayName;
+			this.type = obj.type;
+			this.transformations = obj.transformations || [];
+			
 			this.setType();
 		}
 	}
@@ -46,9 +64,9 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			case 4:
 				type = 'table';
 				break;
-				case 5:
-					type = 'read-only';
-					break;
+			case 5:
+				type = 'read-only';
+				break;
 			case 6:
 				type = 'single-matrix';
 				break;
@@ -60,15 +78,9 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 	};
 
 	AssessmentVariable.prototype.setType = function setType() {
-
-		var types = {
-			1: 'Question',
-			2: 'Answer',
-			3: 'Custom',
-			4: 'Formula'
-		};
-
-		this.type = types[this.typeId] || 'Other';
+		if (this.typeId){
+			this.type = types[this.typeId] || 'Other';
+		}
 	};
 
 	AssessmentVariable.prototype.setTransformations = function setTransformations(arr) {

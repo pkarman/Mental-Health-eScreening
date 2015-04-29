@@ -18,8 +18,9 @@
 						       ng-model="condition.left.content"
 						       ng-change="updateLogicalOptions(condition)"
 						       update-hidden>
-						<mhe-assessment-var-dropdown-menu-dir assessment-variable="condition.left.content" 
-						ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
+						<assessment-var-select 
+							assessment-variable="condition.left.content"
+							ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
 					</div>
 				</div>
 				<div class="col-md-4" ng-show="condition.left.content.id">
