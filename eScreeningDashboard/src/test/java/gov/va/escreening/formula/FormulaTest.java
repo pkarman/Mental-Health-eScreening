@@ -60,6 +60,10 @@ public class FormulaTest {
             }
         });
     }
+    @Test
+    public void showDecmalFormatting() {
+        String d=String.format("%03d", 4 * 100 / 47);
+    }
 
     @Test
     public void showFormulasAsUserWouldEnter() {

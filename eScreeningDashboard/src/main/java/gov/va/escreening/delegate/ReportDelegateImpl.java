@@ -38,7 +38,8 @@ import java.util.Map;
 public class ReportDelegateImpl implements ReportDelegate {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private static final String PERCENT_FORMAT="%02d";
+    private static final String ZERO_PERCENT="00%";
     @Resource(type = AssessmentDelegate.class)
     private AssessmentDelegate assessmentDelegate;
 
@@ -736,25 +737,25 @@ public class ReportDelegateImpl implements ReportDelegate {
 
             total += missing;
             if (total != 0) {
-                dataCollection.put("tobacco_never_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("tobacco_never_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total) + "%");
                 dataCollection.put("tobacco_never_count", result.get(0) + "/" + total);
-                dataCollection.put("tobacco_no_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("tobacco_no_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total) + "%");
                 dataCollection.put("tobacco_no_count", result.get(1) + "/" + total);
-                dataCollection.put("tobacco_yes_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("tobacco_yes_percentage", String.format(PERCENT_FORMAT, result.get(2) * 100 / total) + "%");
                 dataCollection.put("tobacco_yes_count", result.get(2) + "/" + total);
-                dataCollection.put("tobacco_miss_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("tobacco_miss_percentage", String.format(PERCENT_FORMAT, missing * 100 / total) + "%");
                 dataCollection.put("tobacco_miss_count", missing + "/" + total);
                 dataCollection.put("noData", false);
             }
         }
 
         if (total == 0) {
-            dataCollection.put("tobacco_never_percentage", "0%");
+            dataCollection.put("tobacco_never_percentage", ZERO_PERCENT);
             dataCollection.put("tobacco_never_count", "0/0");
-            dataCollection.put("tobacco_no_percentage", "0%");
+            dataCollection.put("tobacco_no_percentage", ZERO_PERCENT);
             dataCollection.put("tobacco_no_count", "0/0");
-            dataCollection.put("tobacco_yes_percentage", "0%");
-            dataCollection.put("tobacco_miss_percentage", "0%");
+            dataCollection.put("tobacco_yes_percentage", ZERO_PERCENT);
+            dataCollection.put("tobacco_miss_percentage", ZERO_PERCENT);
             dataCollection.put("tobacco_yes_count", "0/0");
             dataCollection.put("tobacco_miss_count", "0/0");
         }
@@ -776,38 +777,38 @@ public class ReportDelegateImpl implements ReportDelegate {
             }
             total += missing;
             if (total != 0) {
-                dataCollection.put("army_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("army_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total)+"%");
                 dataCollection.put("army_count", result.get(0) + "/" + total);
-                dataCollection.put("airforce_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("airforce_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total)+"%");
                 dataCollection.put("airforce_count", result.get(1) + "/" + total);
-                dataCollection.put("coast_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("coast_percentage", String.format(PERCENT_FORMAT, result.get(2) * 100 / total)+"%");
                 dataCollection.put("coast_count", result.get(2) + "/" + total);
-                dataCollection.put("marines_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("marines_percentage", String.format(PERCENT_FORMAT, result.get(3) * 100 / total)+"%");
                 dataCollection.put("marines_count", result.get(3) + "/" + total);
-                dataCollection.put("nationalguard_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("nationalguard_percentage", String.format(PERCENT_FORMAT, result.get(4) * 100 / total)+"%");
                 dataCollection.put("nationalguard_count", result.get(4) + "/" + total);
-                dataCollection.put("navy_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("navy_percentage", String.format(PERCENT_FORMAT, result.get(5) * 100 / total)+"%");
                 dataCollection.put("navy_count", result.get(5) + "/" + total);
-                dataCollection.put("missingmilitary_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingmilitary_percentage", String.format(PERCENT_FORMAT, missing * 100 / total)+"%");
                 dataCollection.put("missingmilitary_count", missing + "/" + total);
                 dataCollection.put("noData", false);
             }
         }
 
         if (total == 0) {
-            dataCollection.put("army_percentage", "0%");
+            dataCollection.put("army_percentage", ZERO_PERCENT);
             dataCollection.put("army_count", "0/0");
-            dataCollection.put("airforce_percentage", "0%");
+            dataCollection.put("airforce_percentage", ZERO_PERCENT);
             dataCollection.put("airforce_count", "0/0");
-            dataCollection.put("coast_percentage", "0%");
+            dataCollection.put("coast_percentage", ZERO_PERCENT);
             dataCollection.put("coast_count", "0/0");
-            dataCollection.put("marines_percentage", "0%");
+            dataCollection.put("marines_percentage", ZERO_PERCENT);
             dataCollection.put("marines_count", "0/" + total);
-            dataCollection.put("nationalguard_percentage", "0%");
+            dataCollection.put("nationalguard_percentage", ZERO_PERCENT);
             dataCollection.put("nationalguard_count", "0/0");
-            dataCollection.put("navy_percentage", "0%");
+            dataCollection.put("navy_percentage", ZERO_PERCENT);
             dataCollection.put("navy_count", "0/" + total);
-            dataCollection.put("missingmilitary_percentage", "0%");
+            dataCollection.put("missingmilitary_percentage", ZERO_PERCENT);
             dataCollection.put("missingmilitary_count", "0/" + total);
         }
     }
@@ -831,35 +832,35 @@ public class ReportDelegateImpl implements ReportDelegate {
             total += missing;
 
             if (total != 0) {
-                dataCollection.put("fulltime_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("fulltime_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total) + "%");
                 dataCollection.put("fulltime_count", result.get(0) + "/" + total);
-                dataCollection.put("parttime_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("parttime_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total) + "%");
                 dataCollection.put("parttime_count", result.get(1) + "/" + total);
-                dataCollection.put("seasonal_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("seasonal_percentage", String.format(PERCENT_FORMAT, result.get(2) * 100 / total) + "%");
                 dataCollection.put("seasonal_count", result.get(2) + "/" + total);
-                dataCollection.put("daylabor_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("daylabor_percentage", String.format(PERCENT_FORMAT, result.get(3) * 100 / total) + "%");
                 dataCollection.put("daylabor_count", result.get(3) + "/" + total);
-                dataCollection.put("unemployed_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("unemployed_percentage", String.format(PERCENT_FORMAT, result.get(4) * 100 / total) + "%");
                 dataCollection.put("unemployed_count", result.get(4) + "/" + total);
                 dataCollection.put("noData", false);
 
-                dataCollection.put("missingemp_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingemp_percentage", String.format(PERCENT_FORMAT, missing * 100 / total) + "%");
                 dataCollection.put("missingemp_count", missing + "/" + total);
             }
         }
 
         if (total == 0) {
-            dataCollection.put("fulltime_percentage", "0%");
+            dataCollection.put("fulltime_percentage", ZERO_PERCENT);
             dataCollection.put("fulltime_count", "0/0");
-            dataCollection.put("parttime_percentage", "0%");
+            dataCollection.put("parttime_percentage", ZERO_PERCENT);
             dataCollection.put("parttime_count", "0/0");
-            dataCollection.put("seasonal_percentage", "0%");
+            dataCollection.put("seasonal_percentage", ZERO_PERCENT);
             dataCollection.put("seasonal_count", "0/0");
-            dataCollection.put("daylabor_percentage", "0%");
+            dataCollection.put("daylabor_percentage", ZERO_PERCENT);
             dataCollection.put("daylabor_count", "0/0");
-            dataCollection.put("unemployed_percentage", "0%");
+            dataCollection.put("unemployed_percentage", ZERO_PERCENT);
             dataCollection.put("unemployed_count", "0/0");
-            dataCollection.put("missingemp_percentage", "0%");
+            dataCollection.put("missingemp_percentage", ZERO_PERCENT);
             dataCollection.put("missingemp_count", "0/0");
         }
     }
@@ -883,23 +884,23 @@ public class ReportDelegateImpl implements ReportDelegate {
             total += missingCount;
 
             if (total != 0) {
-                dataCollection.put("highschool_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("highschool_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total) + "%");
                 dataCollection.put("highschool_count", result.get(0) + "/" + total);
-                dataCollection.put("ged_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("ged_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total) + "%");
                 dataCollection.put("ged_count", result.get(1) + "/" + total);
-                dataCollection.put("highschooldip_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("highschooldip_percentage", String.format(PERCENT_FORMAT, result.get(2) * 100 / total) + "%");
                 dataCollection.put("highschooldip_count", result.get(2) + "/" + total);
-                dataCollection.put("somecollege_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("somecollege_percentage", String.format(PERCENT_FORMAT, result.get(3) * 100 / total) + "%");
                 dataCollection.put("somecollege_count", result.get(3) + "/" + total);
-                dataCollection.put("associate_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("associate_percentage", String.format(PERCENT_FORMAT, result.get(4) * 100 / total) + "%");
                 dataCollection.put("associate_count", result.get(4) + "/" + total);
-                dataCollection.put("college_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("college_percentage", String.format(PERCENT_FORMAT, result.get(5) * 100 / total) + "%");
                 dataCollection.put("college_count", result.get(5) + "/" + total);
-                dataCollection.put("master_percentage", String.format("%d", result.get(6) * 100 / total) + "%");
+                dataCollection.put("master_percentage", String.format(PERCENT_FORMAT, result.get(6) * 100 / total) + "%");
                 dataCollection.put("master_count", result.get(6) + "/" + total);
-                dataCollection.put("dr_percentage", String.format("%d", result.get(7) * 100 / total) + "%");
+                dataCollection.put("dr_percentage", String.format(PERCENT_FORMAT, result.get(7) * 100 / total) + "%");
                 dataCollection.put("dr_count", result.get(7) + "/" + total);
-                dataCollection.put("missingedu_percentage", String.format("%d", missingCount * 100 / total) + "%");
+                dataCollection.put("missingedu_percentage", String.format(PERCENT_FORMAT, missingCount * 100 / total) + "%");
                 dataCollection.put("missingedu_count", missingCount + "/" + total);
                 dataCollection.put("noData", false);
             }
@@ -907,25 +908,25 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         if (total == 0) {
 
-            dataCollection.put("highschool_percentage", "0%");
+            dataCollection.put("highschool_percentage", ZERO_PERCENT);
             dataCollection.put("highschool_count", "0/0");
-            dataCollection.put("ged_percentage", "0%");
+            dataCollection.put("ged_percentage", ZERO_PERCENT);
             dataCollection.put("ged_count", "0/0");
-            dataCollection.put("highschooldip_percentage", "0%");
+            dataCollection.put("highschooldip_percentage", ZERO_PERCENT);
             dataCollection.put("highschooldip_count", "0/0");
-            dataCollection.put("ged_percentage", "0%");
+            dataCollection.put("ged_percentage", ZERO_PERCENT);
             dataCollection.put("ged_count", "0/0");
-            dataCollection.put("somecollege_percentage", "0%");
+            dataCollection.put("somecollege_percentage", ZERO_PERCENT);
             dataCollection.put("somecollege_count", "0/0");
-            dataCollection.put("associate_percentage", "0%");
+            dataCollection.put("associate_percentage", ZERO_PERCENT);
             dataCollection.put("associate_count", "0/0");
-            dataCollection.put("college_percentage", "0%");
+            dataCollection.put("college_percentage", ZERO_PERCENT);
             dataCollection.put("college_count", "0/0");
-            dataCollection.put("master_percentage", "0%");
+            dataCollection.put("master_percentage", ZERO_PERCENT);
             dataCollection.put("master_count", "0/0");
-            dataCollection.put("dr_percentage", "0%");
+            dataCollection.put("dr_percentage", ZERO_PERCENT);
             dataCollection.put("dr_count", "0/0");
-            dataCollection.put("missingedu_percentage", "0%");
+            dataCollection.put("missingedu_percentage", ZERO_PERCENT);
             dataCollection.put("missingedu_count", "0/0");
         }
     }
@@ -962,21 +963,21 @@ public class ReportDelegateImpl implements ReportDelegate {
             total = result.get(0) + result.get(1) + result.get(2) + missing;
 
             if (total != 0) {
-                dataCollection.put("hispanic_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("hispanic_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total) + "%");
                 dataCollection.put("hispanic_count", result.get(0) + "/" + total);
-                dataCollection.put("non_hispanic_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("non_hispanic_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total) + "%");
                 dataCollection.put("non_hispanic_count", result.get(1) + "/" + total);
-                dataCollection.put("missingethnicity_percentage", String.format("%d", missing * 100 / total) + "%");
+                dataCollection.put("missingethnicity_percentage", String.format(PERCENT_FORMAT, missing * 100 / total) + "%");
                 dataCollection.put("missingethnicity_count", missing + "/" + total);
                 dataCollection.put("noData", false);
             }
         }
         if (total == 0) {
-            dataCollection.put("hispanic_percentage", "0%");
+            dataCollection.put("hispanic_percentage", ZERO_PERCENT);
             dataCollection.put("hispanic_count", "0/0");
-            dataCollection.put("non_hispanic_percentage", "0%");
+            dataCollection.put("non_hispanic_percentage", ZERO_PERCENT);
             dataCollection.put("non_hispanic_count", "0/0");
-            dataCollection.put("missingethnicity_percentage", "0%");
+            dataCollection.put("missingethnicity_percentage", ZERO_PERCENT);
             dataCollection.put("missingethnicity_count", "0/0");
         }
 
@@ -989,38 +990,38 @@ public class ReportDelegateImpl implements ReportDelegate {
             }
 
             if (total != 0) {
-                dataCollection.put("white_percentage", String.format("%d", result.get(0) * 100 / total) + "%");
+                dataCollection.put("white_percentage", String.format(PERCENT_FORMAT, result.get(0) * 100 / total) + "%");
                 dataCollection.put("white_count", result.get(0) + "/" + total);
-                dataCollection.put("black_percentage", String.format("%d", result.get(1) * 100 / total) + "%");
+                dataCollection.put("black_percentage", String.format(PERCENT_FORMAT, result.get(1) * 100 / total) + "%");
                 dataCollection.put("black_count", result.get(1) + "/" + total);
-                dataCollection.put("indian_percentage", String.format("%d", result.get(2) * 100 / total) + "%");
+                dataCollection.put("indian_percentage", String.format(PERCENT_FORMAT, result.get(2) * 100 / total) + "%");
                 dataCollection.put("indian_count", result.get(2) + "/" + total);
-                dataCollection.put("asian_percentage", String.format("%d", result.get(3) * 100 / total) + "%");
+                dataCollection.put("asian_percentage", String.format(PERCENT_FORMAT, result.get(3) * 100 / total) + "%");
                 dataCollection.put("asian_count", result.get(3) + "/" + total);
-                dataCollection.put("hawaiian_percentage", String.format("%d", result.get(4) * 100 / total) + "%");
+                dataCollection.put("hawaiian_percentage", String.format(PERCENT_FORMAT, result.get(4) * 100 / total) + "%");
                 dataCollection.put("hawaiian_count", result.get(4) + "/" + total);
-                dataCollection.put("otherrace_percentage", String.format("%d", result.get(5) * 100 / total) + "%");
+                dataCollection.put("otherrace_percentage", String.format(PERCENT_FORMAT, result.get(5) * 100 / total) + "%");
                 dataCollection.put("otherrace_count", result.get(5) + "/" + total);
-                dataCollection.put("norace_percentage", String.format("%d", result.get(6) * 100 / total) + "%");
+                dataCollection.put("norace_percentage", String.format(PERCENT_FORMAT, result.get(6) * 100 / total) + "%");
                 dataCollection.put("norace_count", result.get(6) + "/" + total);
             }
         }
 
         if (total == 0) {
 
-            dataCollection.put("white_percentage", "0%");
+            dataCollection.put("white_percentage", ZERO_PERCENT);
             dataCollection.put("white_count", "0/0");
-            dataCollection.put("black_percentage", "0%");
+            dataCollection.put("black_percentage", ZERO_PERCENT);
             dataCollection.put("black_count", "0/0");
-            dataCollection.put("indian_percentage", "0%");
+            dataCollection.put("indian_percentage", ZERO_PERCENT);
             dataCollection.put("indian_count", "0/0");
-            dataCollection.put("asian_percentage", "0%");
+            dataCollection.put("asian_percentage", ZERO_PERCENT);
             dataCollection.put("asian_count", "0/0");
-            dataCollection.put("hawaiian_percentage", "0%");
+            dataCollection.put("hawaiian_percentage", ZERO_PERCENT);
             dataCollection.put("hawaiian_count", "0/0");
-            dataCollection.put("otherrace_percentage", "0%");
+            dataCollection.put("otherrace_percentage", ZERO_PERCENT);
             dataCollection.put("otherrace_count", "0/0");
-            dataCollection.put("norace_percentage", "0%");
+            dataCollection.put("norace_percentage", ZERO_PERCENT);
             dataCollection.put("norace_count", "0/0");
         }
     }
@@ -1040,17 +1041,17 @@ public class ReportDelegateImpl implements ReportDelegate {
             int total = female + male;
 
             if (total > 0) {
-                dataCollection.put("female_percentage", String.format("%d", female * 100 / total) + "%");
+                dataCollection.put("female_percentage", String.format(PERCENT_FORMAT, female * 100 / total) + "%");
                 dataCollection.put("female_count", female + "/" + total);
-                dataCollection.put("male_percentage", String.format("%d", male * 100 / total) + "%");
+                dataCollection.put("male_percentage", String.format(PERCENT_FORMAT, male * 100 / total) + "%");
                 dataCollection.put("male_count", male + "/" + total);
                 dataCollection.put("noData", false);
                 return;
             }
         }
-        dataCollection.put("female_percentage", "0%");
+        dataCollection.put("female_percentage", ZERO_PERCENT);
         dataCollection.put("female_count", "0/0");
-        dataCollection.put("male_percentage", "0%");
+        dataCollection.put("male_percentage", ZERO_PERCENT);
         dataCollection.put("male_count", "0/0");
 
 
