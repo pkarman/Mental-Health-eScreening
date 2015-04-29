@@ -24,12 +24,15 @@ public interface DataExtractor {
 class ExportName implements DataExtractor {
     @Override
     public Map<String, String> apply(SurveyMeasureResponse smr, SurveyResponsesHelper srh) {
-        MeasureAnswer ma = smr.getMeasureAnswer();
+        String exportName = smr.getMeasureAnswer().getIdentifyingText();
+        if ((smr.getMeasure().getMeasureType().getMeasureTypeId() == 2) && !Strings.isNullOrEmpty(smr.getMeasure().getVariableName())) {
+            exportName = smr.getMeasure().getVariableName();
+        }
 
         // data export column we could be interested in
-        String xportName = srh.buildExportName(smr, ma.getIdentifyingText());
+        String xportName = srh.buildExportName(smr, exportName);
         if (xportName == null) {
-            logger.warn(String.format("%s export name is null--returning null from here", ma));
+            logger.warn(String.format("%s export name is null--returning null from here", smr));
             return null;
         }
         // user entered data
@@ -39,7 +42,7 @@ class ExportName implements DataExtractor {
         // marker to identify that this measure answer record was selected
         Boolean boolValue = smr.getBooleanValue();
 
-        String exportableResponse = testTableQuestionChosen(smr.getVeteranAssessment(), ma, boolValue);
+        String exportableResponse = testTableQuestionChosen(smr.getVeteranAssessment(), smr.getMeasureAnswer(), boolValue);
 
         // bypass all logic if this was a table question and if the table question was marked as YES or NO
         if (exportableResponse == null) {
@@ -48,7 +51,7 @@ class ExportName implements DataExtractor {
             } else if (numberValue != null) {
                 exportableResponse = String.valueOf(numberValue);
             } else if (boolValue != null && boolValue) {
-                exportableResponse = ma.getCalculationValue();
+                exportableResponse = smr.getMeasureAnswer().getCalculationValue();
                 if (Strings.isNullOrEmpty(exportableResponse)) {
                     exportableResponse = "1";
                 }
@@ -118,14 +121,14 @@ class ExportName implements DataExtractor {
     /**
      * this will simply find any child measures inside the list of SMR of this asessment
      *
-     * @param measure
+     * @param parentMeasure
      * @param va
      * @return
      */
     private boolean findChildMeasures(Measure parentMeasure, VeteranAssessment va) {
         for (SurveyMeasureResponse smr : va.getSurveyMeasureResponseList()) {
             final Measure parent = smr.getMeasureAnswer().getMeasure().getParent();
-            if (parent!=null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
+            if (parent != null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
                 return true;
             }
         }
