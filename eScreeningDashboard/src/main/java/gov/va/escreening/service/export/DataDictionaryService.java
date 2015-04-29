@@ -12,4 +12,6 @@ public interface DataDictionaryService {
 	public String getExportNameKeyPrefix();
 
 	public String createTableResponseVarName(String exportName);
+
+	List<String> findAllFormulas(String surveyName, Map<String, Table<String, String, String>> dd);
 }
