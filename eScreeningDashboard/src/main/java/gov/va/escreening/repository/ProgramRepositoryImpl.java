@@ -1,7 +1,6 @@
 package gov.va.escreening.repository;
 
 import gov.va.escreening.entity.Program;
-import gov.va.escreening.security.EscreenUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +64,13 @@ public class ProgramRepositoryImpl extends AbstractHibernateRepository<Program> 
 
 	@Override
 	public List<Program> findProgramForUser(int id) {
-		String sql = "SELECT p.* FROM Program p inner join user_program up on p.program_id=up.program_id WHERE up.user_id=:id "
+	    //Here a native query is being created so the "p" in "program" must be lowercase. This may work on Windoze but not on Linux where case matters. 
+		String sql = "SELECT p.* FROM program p inner join user_program up on p.program_id=up.program_id WHERE up.user_id=:id "
 				+ "and p.is_disabled=0";
 		Query q = entityManager.createNativeQuery(sql, Program.class).setParameter("id", id);
 		
-		List<Program> result = q.getResultList();
+		@SuppressWarnings("unchecked")
+        List<Program> result = q.getResultList();
 		
 		return result;
 	}
