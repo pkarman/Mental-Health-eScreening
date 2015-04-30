@@ -107,26 +107,25 @@
 
     <util:map id="modulesForScoringMap" map-class="java.util.HashMap">
         <entry key="Basic Pain" value="[{var:'pain_number'}]"/>
-        <entry key="WHODAS 2.0" value="[{alias:'WHODAS 2.0 [whodas_society_mean]',var:'whodas_society_mean', split:true}, {alias:'WHODAS 2.0 [whodas_work_mean]',var:'whodas_work_mean', split:true}, {alias:'WHODAS 2.0 [whodas_household_mean]',var:'whodas_household_mean', split:true}, {alias:'WHODAS 2.0 [whodas_people_mean]',var:'whodas_people_mean', split:true}, {alias:'WHODAS 2.0 [whodas_selfcare_mean]',var:'whodas_selfcare_mean', split:true}, {alias:'WHODAS 2.0 [whodas_mobility_mean]',var:'whodas_mobility_mean', split:true}, {alias:'WHODAS 2.0 [whodas_understand_mean]',var:'whodas_understand_mean', split:true}]"/>
-        <entry key="PHQ-9" value="[{var:'dep_score_phq9'}]"/>
-        <entry key="GAD 7 Anxiety" value="[{var:'gad7_score'}]"/>
-        <entry key="PCL-C" value="[{var:'pcl_score'}]"/>
-        <entry key="ISI" value="[{var:'sleep_score'}]"/>
-        <entry key="CD-RISC-10" value="[{var:'res_score'}]"/>
         <entry key="BMI over 24" value="[{var:'demo_BMI'}]"/>
+        <entry key="CD-RISC-10" value="[{var:'res_score'}]"/>
+        <entry key="GAD 7 Anxiety" value="[{var:'gad7_score'}]"/>
+        <entry key="ISI" value="[{var:'sleep_score'}]"/>
         <entry key="NSI" value="[{var:'NSI_score'}]"/>
+        <entry key="PCL-C" value="[{var:'pcl_score'}]"/>
+        <entry key="PHQ-9" value="[{var:'dep_score_phq9'}]"/>
+        <entry key="WHODAS 2.0" value="[{alias:'WHODAS 2.0 [whodas_society_mean]',var:'whodas_society_mean', split:true}, {alias:'WHODAS 2.0 [whodas_work_mean]',var:'whodas_work_mean', split:true}, {alias:'WHODAS 2.0 [whodas_household_mean]',var:'whodas_household_mean', split:true}, {alias:'WHODAS 2.0 [whodas_people_mean]',var:'whodas_people_mean', split:true}, {alias:'WHODAS 2.0 [whodas_selfcare_mean]',var:'whodas_selfcare_mean', split:true}, {alias:'WHODAS 2.0 [whodas_mobility_mean]',var:'whodas_mobility_mean', split:true}, {alias:'WHODAS 2.0 [whodas_understand_mean]',var:'whodas_understand_mean', split:true}]"/>
     </util:map>
 
     <util:map id="modulesForPositiveScreeningMap" map-class="java.util.HashMap">
         <entry key="AUDIT-C" value="[{var:'alc_score_audit',pos:[{op:'gte',val:4}],neg:[{op:'lt',val:4}]}]"/>
-        <entry key="DAST-10" value="[{var:'DAST_score', pos:[{op:'gte', val:3}], neg:[{op:'lt',val:3}]}]"/>
+        <entry key="AV Hallucinations" value="[{var:'health18_voices',pos:[{op:'gt',val:0}], neg:[{op:'eq',val:0}]},{var:'health19_seeing',pos:[{op:'gt',val:0}],neg:[{op:'eq',val:0}]}]"/>
         <entry key="BTBIS" value="[{var:tbi_score1, pos:[{op:'eq',val:4}],neg:[{op:'lt',val:4}]}]"/>
+        <entry key="DAST-10" value="[{var:'DAST_score', pos:[{op:'gte', val:3}], neg:[{op:'lt',val:3}]}]"/>
         <entry key="MDQ" value="[{var:'hyp_score',pos:[{op:'gte',val:1}],neg:[{op:'eq',val:0}]}]"/>
         <entry key="MST" value="[{var:'mst1_2',pos:[{op:'eq',val:1}],neg:[{op:'eq',val:2},{op:'eq',val:0}]}]"/>
         <entry key="PCL-C" value="[{var:'pcl_score',pos:[{op:'gte',val:44}],neg:[{op:'lt',val:44}]}]"/>
         <entry key="PC-PTSD" value="[{var:'pcptsd_score',pos:[{op:'gte',val:3}],neg:[{op:'lt',val:3}]}]"/>
-        <entry key="AV Hallucinations" value="[{var:'health18_voices',pos:[{op:'gt',val:0}], neg:[{op:'eq',val:0}]},{var:'health19_seeing',pos:[{op:'gt',val:0}],neg:[{op:'eq',val:0}]}]"/>
-
         <entry key="PHQ-9" value="[{var:'dep_score_phq9', pos:[{op:'gte',val:10}],neg:[{op:'lt',val:10}]},{var:'dep9_dead', split:true, alias:'Suicidal Ideation', pos:[{op:'gte',val:1}],neg:[{op:'eq',val:0}]}]"/>
     </util:map>
 

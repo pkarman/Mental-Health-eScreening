@@ -255,7 +255,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
                 VeteranAssessmentSurveyScore vass = tryCreateVASS(survey, avDto, veteranAssessment);
                 if (vass != null) {
                     vassLst.add(vass);
-                    break;
                 }
             }
         }
