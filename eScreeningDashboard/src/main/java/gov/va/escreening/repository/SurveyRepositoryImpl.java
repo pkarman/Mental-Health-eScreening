@@ -26,7 +26,7 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
 
         logger.debug("in getAssignableSurveys()");
 
-        String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE ss.surveySectionId != :surveySectionId ORDER BY s.displayOrder";
+        String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE ss.surveySectionId != :surveySectionId ORDER BY s.displayOrderForSection";
 
         TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
         query.setParameter("surveySectionId", 1);
@@ -39,7 +39,7 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
     @Override
     public List<Survey> getRequiredSurveys() {
         logger.debug("in getRequiredSurveys()");
-        String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE ss.surveySectionId = :surveySectionId ORDER BY s.displayOrder";
+        String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE ss.surveySectionId = :surveySectionId ORDER BY s.displayOrderForSection";
 
         TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
         query.setParameter("surveySectionId", 1);
@@ -90,4 +90,12 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
         query.setParameter("templateId", templateId);
         return query.getResultList();
 	}
+
+    @Override
+    public List<Survey> getSurveyListByIds(List<Integer> surveyIdList) {
+        String sql = "From Survey s where s.id in (:ids)";
+        TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
+        query.setParameter("ids", surveyIdList);
+        return query.getResultList();
+    }
 }

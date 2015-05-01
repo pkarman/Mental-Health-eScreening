@@ -250,10 +250,6 @@ footer {
   box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
 }
 .footer_container {
-  background-color: #061a43;
-  margin-top: 6px;
-  padding: 10px 10px;
-  line-height: 24px;
 }
 .veteran_block, .staff_block {
   margin-bottom: 20px;
@@ -447,14 +443,16 @@ iframe {
   margin-bottom: 8px;
 }
 /* Form Updates for Export Data and may be common */
-
+.exportData .wrap{
+    white-space: normal !important;
+}
 .exportImg {
   width: 19px;
   margin-top: 3px;
   margin-left: 3px;
 }
 table.gridtable {
-  font-family: verdana, arial, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 11px;
   color: #333333;
   border-width: 1px;
@@ -770,7 +768,7 @@ span.countdown {
   text-align: center;
 }
 .nav>li>a {
-  padding: 15px 10px;
+  padding: 15px 8px;
 }
 .offscreen {
   position: absolute;
@@ -872,10 +870,6 @@ a.offscreen:focus, a.offscreen:active {
 .bg_head_table {
   background-color: #303335;
 }
-.print{
-  margin:10px 0px;
-}
-
 .userErrorMessage{
   margin:10px 0;  
 }
@@ -885,6 +879,139 @@ a.offscreen:focus, a.offscreen:active {
 .logErrorMessage{
   margin:10px 0;
 }
+
+/* Time Series */
+.timeSeries text{
+  font-size:11px;
+}
+.timeSeries #chart{
+	border: 0px solid #CCC;
+}
+.timeSeries .bar{
+	fill: purple;
+	shape-rendering: crispEdges;
+}
+.timeSeries .bar-label{
+	fill: black;
+	text-anchor: middle;
+	font-size: 18px;
+}
+.timeSeries .axis path,
+.timeSeries .axis line{
+	fill: none;
+	stroke: #AAAAAA;
+	shape-rendering: crispEdges;
+}
+.timeSeries .gridline path,
+.timeSeries .gridline line{
+	fill: none;
+	stroke: #ccc;
+	shape-rendering: crispEdges;
+}
+.timeSeries .trendline{
+	fill: none;
+	stroke: #2d5277;
+	stroke-width: 2px;
+}
+
+.timeSeries .point{
+  fill:rgba(45,82,119,.40);
+  stroke:#2d5277;
+  stroke-width: 2px;
+}
+
+
+
+/* Reports */
+.vertical_scoll_list_b {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 140px;
+  margin: 5px;
+  border: 0px solid #D4D4D4;
+}
+
+.vertical_scoll_list_b ul, .vertical_scoll_list_b li{
+	margin:0px;
+	padding:0px;
+}
+.vertical_scoll_list_b ul li{
+	
+}
+.vertical_scoll_list_b input[type=checkbox], .checkbox_margin_right input[type=checkbox] {
+  margin-right: 5px;
+}
+.hr_margin_5{
+	margin:5px 0px !important;
+}
+.checkbox_group{
+}
+.checkbox_group_label{
+	margin:5px auto;
+}
+.form-group .help-block {
+  display: none;
+}
+ 
+.form-group.has-error .help-block {
+  display: block;
+}
+
+
+.ulclear, .ulclear li{
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+
+/* Programs */
+.change_program_block{
+	margin:0px 10px;
+}
+
+.change_program_block, .change_program_block a{
+}
+
+/*System Configuration Page */
+.otherSystemConfigurationBlock{
+	
+}
+.otherSystemConfigurationBlock ul, .otherSystemConfigurationBlock li{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+.otherSystemConfigurationBlock .sectionList{
+	font-weight:bold;
+}
+
+
+.bg_color_subheader{
+	background-color:#E0E0E0 !important;
+
+.text-capitalize{
+	text-transform:capitalize;
+} 
+
+.item-label-error{
+	color:#8C0002;
+}
+
+.icon-arrow-right{
+	  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  
+}
+.icon-arrow-left{
+	background-position: -240px -96px;
+}
+
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
   width: 100%;
@@ -910,15 +1037,39 @@ a.offscreen:focus, a.offscreen:active {
 }
 
 @media only print {
-.nonPrintableArea {
-  display: none;
-}
 .modal-header, .modal-content {
   border: none;
 }
 .modal {
   overflow: visible;
   position: absolute;
+  left: 0;
+  top: 0;
+  width: 1100px !important;
+  height: auto !important;
+  background-color: #454545;
+  visibility: visible !important;
+  min-height: none !important;
+  max-height: none !important;
+  padding: 0px;
+  margin: 0px;
+}
+.container_main {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 auto;
+}
+.nonPrintableArea {
+  display: none;
+}
+.modal-header, .modal-content{
+  border:none;
+}
+
+
+.modal{
+  overflow:visible;
+  position:absolute;
   left: 0;
   top: 0;
   width: 1100px !important;

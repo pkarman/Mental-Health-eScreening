@@ -5,9 +5,10 @@ import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.AssessmentResponse;
-import gov.va.escreening.dto.ae.CompletionResponse;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.AssessmentEngineDataValidationException;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.service.AssessmentEngineService;
 
@@ -23,12 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
 @Controller
 @RequestMapping(value = "/assessment")
@@ -63,10 +66,26 @@ public class AssessmentEngineController {
 		}
 	}
 	
-	@RequestMapping(value = "/welcome_msg", method = RequestMethod.GET)
-	public @ResponseBody String getWelcomeMessage()
-	{
-		return assessmentDelegate.getWelcomeMessage();
+	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
+	public @ResponseBody Map<String, String> getWelcomeMessage() throws IllegalSystemStateException	{
+		assessmentDelegate.ensureValidAssessmentContext();
+		String message = assessmentDelegate.getWelcomeMessage();
+		return ImmutableMap.of("message", Strings.nullToEmpty(message));
+	}
+
+	@RequestMapping(value = "/end", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
+	@ResponseBody
+	public Map<String,String> getCompletionData(HttpSession session) throws IllegalSystemStateException {
+		logger.debug("In getCompletionData");
+		assessmentDelegate.ensureValidAssessmentContext();
+		assessmentDelegate.markAssessmentAsComplete();
+
+		String message = assessmentDelegate.getCompletionMessage();
+		
+		// delete everything out of the session
+		session.invalidate();
+
+		return ImmutableMap.of("message", Strings.nullToEmpty(message));
 	}
 
 	@RequestMapping(value = "/services/assessments/active", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
@@ -75,43 +94,55 @@ public class AssessmentEngineController {
 			@RequestBody AssessmentRequest assessmentRequest,
 			HttpSession session) {
 
-		logger.debug("processData()::assessmentRequest \n{}", assessmentRequest);
+		logger.debug("POST:/services/assessments/active\nIn processData() \n{}", assessmentRequest);
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		// set the time of session create time as this will be used to measure
-		// the duration of this assessment
-		Long startTime=(Long)session.getAttribute("start_time");
-		if (startTime==null){
-			startTime=System.currentTimeMillis();
-		}
+        startInstrumentation(assessmentRequest, session);
 
-		assessmentRequest.setStartTime(startTime);
 		smrLister.clearSmrFromCache();
 		AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
 		smrLister.clearSmrFromCache();
-		
-		session.setAttribute("start_time", System.currentTimeMillis());
 
-		logger.debug("processData()::assessmentResponse \n{}", assessmentResponse);
+        finishInstrumentation(assessmentResponse, session);
 
 		return assessmentResponse;
 	}
 
-	@RequestMapping(value = "/services/assessments/end/{batteryId}", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
-	@ResponseBody
-	public CompletionResponse getCompletionData(@PathVariable int batteryId, HttpSession session) {
-		logger.debug("In getCompletionData");
-		assessmentDelegate.ensureValidAssessmentContext();
-		assessmentDelegate.markAssessmentAsComplete();
+    private void finishInstrumentation(AssessmentResponse assessmentResponse, HttpSession session) {
+        Long now = System.currentTimeMillis();
+        session.setAttribute("assessment_start_time", now);
 
-		// delete everything out of the session
-		session.invalidate();
+        if (assessmentResponse.getAssessment().getPageId()!=null) {
+            Integer moduleId = assessmentDelegate.getModuleId(assessmentResponse.getAssessment().getPageId());
+            String moduleStartTimeKey = String.format("module_%s_start_time", moduleId);
+            session.setAttribute(moduleStartTimeKey, now);
+        }
+    }
 
-		return assessmentDelegate.getCompletionResponse(batteryId);
-	}
+    private void startInstrumentation(AssessmentRequest assessmentRequest, HttpSession session) {
+        Long now = System.currentTimeMillis();
 
-	@RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
+        // get the module and seed its start time
+        if (assessmentRequest.getPageId()!=null) {
+            Integer moduleId = assessmentDelegate.getModuleId(assessmentRequest.getPageId());
+            String moduleStartTimeKey = String.format("module_%s_start_time", moduleId);
+            Long moduleStartTime = (Long) session.getAttribute(moduleStartTimeKey);
+            if (moduleStartTime == null) {
+                moduleStartTime = now;
+            }
+            assessmentRequest.setModuleStartTime(moduleId, moduleStartTime);
+        }
+        // set the time of session create time as this will be used to measure
+        // the duration of this assessment
+        Long assessmentStartTime=(Long)session.getAttribute("assessment_start_time");
+        if (assessmentStartTime==null){
+            assessmentStartTime=now;
+        }
+        assessmentRequest.setAssessmentStartTime(assessmentStartTime);
+    }
+
+    @RequestMapping(value = "/services/assessments/visibility", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
 	public Map<Integer, Boolean> processSurveyPageMeasureVisibility(
 			@RequestBody AssessmentRequest assessmentRequest) {
@@ -119,9 +150,9 @@ public class AssessmentEngineController {
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
-		long end1 = System.currentTimeMillis();
+		//long end1 = System.currentTimeMillis();
 		
 		/*** The following section are here for testing purpose only **********/
 //		Map<Integer, Boolean> regular = assessmentEngineService.getUpdatedVisibility(assessmentRequest);
@@ -145,9 +176,9 @@ public class AssessmentEngineController {
 	public ErrorResponse handleException(
 			AssessmentEngineDataValidationException ex) {
 
-		logger.debug("==>Assessment Engine Validation Exception");
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+		logger.error("==>Assessment Engine Validation Exception");
+		logger.error(ex.toString());
+		logger.error(ex.getErrorResponse().toString());
 
 		// returns the error response which contains a list of error messages
 		return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
@@ -158,11 +189,42 @@ public class AssessmentEngineController {
 	@ResponseBody
 	public ErrorResponse handleException(InvalidAssessmentContextException ex) {
 
-		logger.debug("==>Veteran Assessment Context  Exception");
-
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+		logger.error("==>Veteran Assessment Context  Exception");
+		logger.error(ex.toString());
+		logger.error(ex.getErrorResponse().toString());
 
 		return ex.getErrorResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
 	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException enfe) {
+		ErrorResponse er = enfe.getErrorResponse();
+    	logger.error(er.getLogMessage());
+        return er;
+    }
+	
+	@ExceptionHandler(IllegalSystemStateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleIllegalSystemStateException(IllegalSystemStateException isse) {
+		ErrorResponse er = isse.getErrorResponse();
+    	logger.error(er.getLogMessage());
+        return er;
+    }
+	
+	@ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleException(Exception e) {
+		logger.error("Unexpected error:", e);
+		
+		ErrorResponse er = new ErrorResponse();
+		er.setDeveloperMessage("Unexpected error: " + e + "\nCheck system log for stack trace before the ID given from this message.");
+		er.addMessage("An unexpected error has occurred. <br/>Please see the clerk.");
+		logger.error(er.getLogMessage());
+		
+        return er;
+    }
 }

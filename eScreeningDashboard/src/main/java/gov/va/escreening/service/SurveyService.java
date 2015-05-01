@@ -4,8 +4,10 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.Page;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
+import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.Survey;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface SurveyService {
@@ -57,15 +59,23 @@ public interface SurveyService {
      */
     Survey findOne(int surveyId);
 
-	SurveyInfo convertToSurveyItem(Survey survey);
-	
 	void removeMeasureFromSurvey(Integer surveyId, Integer questionId);
 
 	void createSurveyPage(Integer surveyId, Page surveyPage);
 
 	void updateSurveyPages(Integer surveyId, List<SurveyPageInfo> surveyPageInfo);
 
-	List<SurveyPageInfo> getSurveyPages(Integer surveyId);
+	List<SurveyPageInfo> getSurveyPages(Integer surveyId, int pageNumber);
 
 	SurveyInfo createSurvey(SurveyInfo survey);
+
+    List<SurveyInfo> toSurveyInfo(List<Survey> surveyList);
+
+    SurveyInfo findSurveyById(Integer surveyId);
+
+    SurveyPageInfo getSurveyPage(Integer surveyId, Integer pageId);
+
+    void removeSurveyPage(Integer surveyId, Integer pageId);
+
+    List<SurveyDto> getSurveyListByNames(List<String> surveyNames);
 }

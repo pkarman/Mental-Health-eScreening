@@ -216,8 +216,8 @@
     <div class="clear-fix"></div>
   </div>
 </div>
-<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-</body>
+
+	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
     <!-- Bootstrap JS -->
     <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
     
@@ -229,4 +229,6 @@
     <script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
     <script src="<c:url value="/resources/js/d3/d3pie.js" />"></script>
     <script src="<c:url value="/resources/js/d3/d3.tip.v0.6.3.js" />"></script>
+
+</body>
 </html>

@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-md-12">
+
+	    <input type="hidden" ng-model="next" required>
+
+        <form name="questionTypeForm" novalidate>
+            <div class="form-horizontal">
+
+                <div><strong>Select Question Type</strong></div>
+
+                <div ng-repeat="questionType in questionTypes">
+	                <label for="{{questionType.name}}">
+                    <input type="radio"
+		                   id="{{questionType.name}}"
+		                   name="questionTypes"
+                           ng-model="question.type"
+                           value="{{questionType.name}}">
+		                {{questionType.displayName}}
+	                </label>
+                </div>
+
+                <hr />
+
+                <button class="btn btn-primary btn-sm"
+                        ng-disabled="questionTypeForm.$invalid"
+                        ng-click="editQuestion(next);">Next <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

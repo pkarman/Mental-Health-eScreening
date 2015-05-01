@@ -19,6 +19,8 @@ import gov.va.escreening.repository.TemplateRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 public class TemplateTest {
-	
+	private static final Logger logger = LoggerFactory.getLogger(TemplateTest.class);
 	@Resource
 	TemplateRepository templateRepository;
 	
@@ -89,9 +91,9 @@ public class TemplateTest {
 		
 		TemplateFileDTO fileDTO = new TemplateFileDTO();
 		
-		Template template = templateRepository.findOne(40);
+		Template template = templateRepository.findOne(100);
 		
-		fileDTO.setId(40);;
+		fileDTO.setId(100);;
 		fileDTO.setIsGraphical(template.getIsGraphical());
 
 		fileDTO.setBlocks(new ArrayList<INode>());
@@ -130,8 +132,8 @@ public class TemplateTest {
 		typeDTO.setTemplateId(40);
 		typeDTO.setName(template.getTemplateType().getDescription());
 		fileDTO.setType(typeDTO);
-		
-		//System.out.println(om.writeValueAsString(fileDTO));
+
+		logger.warn(om.writeValueAsString(fileDTO));
 //		for(int i=0; i<3; i++)
 //		System.out.println(fileDTO.getBlocks().get(i).toFreeMarkerFormat());
 	}

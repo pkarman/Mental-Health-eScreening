@@ -56,11 +56,15 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = (Object.isDefined(jsonConfig.content))? jsonConfig.content: '';
         this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
 
+		if (jsonConfig.table) {
+			this.table = jsonConfig.table;
+		}
+
         if(Object.isArray(jsonConfig.contents)){
             jsonConfig.contents.forEach(function(blockData){
                 var contentObj = angular.copy(blockData);
                 if(contentObj.type == "var"){
-                    contentObj.content = new EScreeningDashboardApp.models.TemplateVariableContent(contentObj.content);
+                    contentObj.content = new EScreeningDashboardApp.models.AssessmentVariable(contentObj.content);
                 }
                 self.contents.push(contentObj);   
             });
@@ -82,6 +86,10 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = '';
         this.children = [];
         this.contents = [];
+
+		if (this.type === 'table') {
+			this.table = { type : 'var' };
+		}
     }
 
     function swapNbspForSpaces(text){
@@ -93,7 +101,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         var result = "";
         fragments.forEach(function(frag){
             var content = null;
-            if(frag.indexOf("<") != 0){
+            if(frag.indexOf("<") !== 0){
                 result += frag.replace(/\s/g, "&nbsp;"); 
             }
             else{
@@ -104,11 +112,11 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
     }
     
     
-	function transformTextContent(TemplateBlockService, variableHash){
+	function transformTextContent(TemplateBlockService){
 
 		if(this.type == "text"){
-		    this.content = swapNbspForSpaces(this.content);
-			this.contents = TemplateBlockService.parseIntoContents(this.content, variableHash);
+		    //this.content = swapNbspForSpaces(this.content);
+			this.contents = TemplateBlockService.parseIntoContents(this.content);
 			delete(this.content);
 		}
 	}
@@ -117,14 +125,14 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
         this.content = TemplateBlockService.joinContents(this.contents);
     }
 
-	function autoGenerateFields(variableHash){
-
+	//TODO: If we have domain objects for each block type then we can move this logic into each of them.
+	function autoGenerateFields(){
 		var block = this;
 
 		if(block.type == "text"){
 			block.summary = "";
 			block.name = Object.isDefined(block.name) ? block.name :"";
-			var setTitle = this.name.trim() == "";
+			var setTitle = this.name.trim() === "";
 
 			for(var i=0; ((setTitle && block.name < TEXT_NAME_LENGTH) || block.summary.length < 100)
 				&&  i< block.contents.length; i++){
@@ -132,7 +140,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				if(blockContent.type == "text"){
                     var text = blockContent.content.replace(/&nbsp;|<\s*br\s*\/*>/g, " ");
                     text = text.replace(CLEAN_SUMMARY_REG, "");
-                    if(block.summary == ""){
+                    if(block.summary === ""){
                         text = text.replace(/^\s+/, "");
                     }
 					block.summary += text;
@@ -156,13 +164,20 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 				}
 			}
 		}
-
-		if (block.type !== 'text' && block.type !== 'else') {
+		else if(block.type == 'table'){
+			if(angular.isDefined(block.table) 
+				&& angular.isDefined(block.table.content)){
+				
+				block.name = angular.isDefined(block.table.content.name) ?  block.table.content.name : "table_" + block.table.content.id;
+				block.summary = block.table.content.displayName;
+			} 
+		}
+		else if (block.type !== 'else') {
 		    var rightContentSummary = "";
 		    var rightContentName = "";
 		    
 		    if(angular.isDefined(block.right) && angular.isDefined(block.right.content)){
-		        var rightContent = block.right.content
+		        var rightContent = block.right.content;
 		        if(angular.isArray(block.measureAnswers)){
 		            block.measureAnswers.some(function(answer){
 		                if(answer.measureAnswerId === rightContent){
@@ -196,9 +211,63 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 			});
 		}
 	}
+	
+	
+	//TODO: If we have domain objects for each block type then we can move this logic into each of them.
+	/**
+	 * Iterates over this block's contents and the contents of its children and 
+	 * collects all assessment variables into an array. There can be duplicates.
+	 * @return an array of variables (will never be null, but can be empty)
+	 */
+	function getVariables(){
+		var variables = [];
+		var block = this;
+
+		if(block.type == "text"){
+			if(block.contents){
+				 block.contents.forEach(function(content){
+					 if(content.type == "var"){
+						 variables.push(content.content);
+					 }
+				 });
+			}
+		}
+		else if(block.type == 'table'){
+			if(angular.isDefined(block.table) 
+					&& angular.isDefined(block.table.content)){
+				variables.push(block.table.content);
+			}
+		}
+		else if (block.type == 'if' || block.type == 'elseif') {
+			if(angular.isDefined(block.left) 
+					&& angular.isDefined(block.left.content)
+					&& angular.isDefined(block.left.content.measureTypeId)){
+				variables.push(block.left.content);
+			}
+			if(angular.isDefined(block.right) 
+					&& angular.isDefined(block.right.content)
+					&& angular.isObject(block.right.content)
+					&& angular.isDefined(block.right.content)
+					&& angular.isDefined(block.right.content.measureTypeId)){
+				variables.push(block.right.content);
+			}
+		}
+		else if(block.type !== 'else'){
+			throw block.type + " is an unsupported type.";
+		}
+		
+		//add children
+		if(block.children){
+			block.children.forEach(function(child){
+				variables.push.apply(variables, child.getVariables());
+			});
+		}
+		
+		return variables;
+	}
 
     function toString() {
-        return "TemplateBlock [guid: " + guid +
+        return "TemplateBlock [guid: " + this.guid +
             ",section: " + this.section +
             ", name: " + this.name +
             ", type: " + this.type +
@@ -279,6 +348,7 @@ EScreeningDashboardApp.models.TemplateBlock = function (jsonConfig, parent) {
 	//keeping parent as a private field to avoid cyclic references 
 	this.getParent = function(){return myparent};
 	this.setParent = function(newParent){ myparent = newParent; }
+	this.getVariables = getVariables;
 	
 };
 EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(jsonTemplateBlocksConfig) {
@@ -289,7 +359,7 @@ EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray = function(
     });
 
     return templateBlocks;
-}
+};
 EScreeningDashboardApp.models.TemplateBlock.RightLeftMinimumConfig = {
     left: {
         type: "var",

@@ -18,6 +18,7 @@
 		<intercept-url pattern="/dashboard/assessmentDashboard/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/assessmentReport/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/assessmentSummary/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
+		<intercept-url pattern="/dashboard/clinics/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/createUser/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/editUser/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/exportData/**" access="hasAnyRole('Assistant','Clinician','Consultation and Program Evaluation Administrator','Healthcare System Technical Administrator')" />
@@ -33,6 +34,7 @@
 		<intercept-url pattern="/dashboard/userListView/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/userManagement/**" access="hasRole('Healthcare System Technical Administrator')" />
 		<intercept-url pattern="/dashboard/veteranSearch/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
+		<!--intercept-url pattern="/dashboard/reports/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" /-->
 		<intercept-url pattern="/dashboard/vista" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />
 
 		<intercept-url pattern="/dashboard/createBattery/**" access="hasAnyRole('Assistant','Clinician','Healthcare System Technical Administrator')" />

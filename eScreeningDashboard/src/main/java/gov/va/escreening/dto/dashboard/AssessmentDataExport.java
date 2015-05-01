@@ -1,162 +1,149 @@
 package gov.va.escreening.dto.dashboard;
 
+import com.google.common.collect.Maps;
 import gov.va.escreening.entity.ExportLog;
-import gov.va.escreening.entity.ExportLogData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class AssessmentDataExport {
 
-	String header;
-	List<String> data;
-	private List<List<DataExportCell>> tableContent;
-	private DataExportFilterOptions filterOptions;
+    String header;
+    List<String> data;
+    private DataExportFilterOptions filterOptions;
+    private byte[] exportZip;
 
-	public List<List<DataExportCell>> getTableContent() {
-		return tableContent;
-	}
 
-	public DataExportFilterOptions getFilterOptions() {
-		return filterOptions;
-	}
+    public DataExportFilterOptions getFilterOptions() {
+        return filterOptions;
+    }
 
-	public void setFilterOptions(DataExportFilterOptions filterOptions) {
-		this.filterOptions = filterOptions;
-	}
+    public void setFilterOptions(DataExportFilterOptions filterOptions) {
+        this.filterOptions = filterOptions;
+    }
 
-	public void setHeaderAndData(String header, List<String> data) {
-		this.header = header;
-		this.data = data;
+    public String getHeader() {
+        return header;
+    }
 
-		if (this.tableContent != null) {
-			this.tableContent.clear();
-		}
-	}
+    public List<String> getData() {
+        return data;
+    }
 
-	public String getHeader() {
-		return header;
-	}
+    public Integer getExportLogId() {
+        return getFilterOptions().getExportLogId();
+    }
 
-	public List<String> getData() {
-		return data;
-	}
+    public void setExportLogId(Integer exportLogId) {
+        getFilterOptions().setExportLogId(exportLogId);
+    }
 
-	public Integer getExportLogId() {
-		return getFilterOptions().getExportLogId();
-	}
+    public static AssessmentDataExport createFromExportLog(ExportLog exportLog) {
+        AssessmentDataExport ade = new AssessmentDataExport();
 
-	public void setExportLogId(Integer exportLogId) {
-		getFilterOptions().setExportLogId(exportLogId);
-	}
+        ade.setFilterOptions(createFilterOptionsFromExportLog(exportLog));
+        ade.setExportZip(exportLog.getExportZip());
+        return ade;
+    }
 
-	public static AssessmentDataExport createFromExportLog(ExportLog exportLog) {
-		AssessmentDataExport ade = new AssessmentDataExport();
+    private static DataExportFilterOptions createFilterOptionsFromExportLog(
+            ExportLog exportLog) {
+        DataExportFilterOptions newFilterOptions = new DataExportFilterOptions();
+        newFilterOptions.setFilePath(exportLog.getFilePath());
+        newFilterOptions.setAssessmentEnd(exportLog.getAssessmentEndFilter());
+        newFilterOptions.setAssessmentStart(exportLog.getAssessmentStartFilter());
+        newFilterOptions.setClinicianUserId(exportLog.getClinician() == null ? null : exportLog.getClinician().getUserId());
+        newFilterOptions.setComment(exportLog.getComment());
+        newFilterOptions.setCreatedByUserId(exportLog.getCreatedByUser() == null ? null : exportLog.getCreatedByUser().getUserId());
+        newFilterOptions.setExportedByUserId(exportLog.getExportedByUser().getUserId());
+        newFilterOptions.setExportLogId(exportLog.getExportLogId());
+        newFilterOptions.setExportTypeId(exportLog.getExportType().getExportTypeId());
+        newFilterOptions.setProgramId(exportLog.getProgram() == null ? null : exportLog.getProgram().getProgramId());
+        newFilterOptions.setVeteranId(exportLog.getVeteran() == null ? null : exportLog.getVeteran().getVeteranId());
+        return newFilterOptions;
+    }
 
-		ade.setFilterOptions(createFilterOptionsFromExportLog(exportLog));
-		Map<String, Object> headerAndDataMap = createHeaderAndDataFromExportLog(exportLog.getExportLogDataList());
-		ade.setHeaderAndData((String) headerAndDataMap.get("header"), (List<String>) headerAndDataMap.get("data"));
-		return ade;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	private static Map<String, Object> createHeaderAndDataFromExportLog(
-			List<ExportLogData> exportLogDataList) {
+        AssessmentDataExport that = (AssessmentDataExport) o;
 
-		Map<String, Object> headerAndDataMap = new HashMap<String, Object>();
+        if (!filterOptions.equals(that.filterOptions)) return false;
 
-		if (exportLogDataList == null) {
-			return headerAndDataMap;
-		}
-		// extract the header--it is always the very first row (with index of 0)
-		Iterator<ExportLogData> iterHeader = exportLogDataList.iterator();
-		ExportLogData header = iterHeader.next();
-		headerAndDataMap.put("header", header.getExportLogData());
+        return true;
+    }
 
-		List<String> data = new ArrayList<String>();
-		for (Iterator<ExportLogData> iterData = iterHeader; iterData.hasNext();) {
-			ExportLogData eld = iterData.next();
-			data.add(eld.getExportLogData());
-		}
-		headerAndDataMap.put("data", data);
+    @Override
+    public int hashCode() {
+        return filterOptions.hashCode();
+    }
 
-		return headerAndDataMap;
-	}
+    private String createHeaderFromDataExport(List<List<DataExportCell>> tableContent) {
 
-	private static DataExportFilterOptions createFilterOptionsFromExportLog(
-			ExportLog exportLog) {
-		DataExportFilterOptions newFilterOptions = new DataExportFilterOptions();
-		newFilterOptions.setFilePath(exportLog.getFilePath());
-		newFilterOptions.setAssessmentEnd(exportLog.getAssessmentEndFilter());
-		newFilterOptions.setAssessmentStart(exportLog.getAssessmentStartFilter());
-		newFilterOptions.setClinicianUserId(exportLog.getClinician() == null ? null : exportLog.getClinician().getUserId());
-		newFilterOptions.setComment(exportLog.getComment());
-		newFilterOptions.setCreatedByUserId(exportLog.getCreatedByUser() == null ? null : exportLog.getCreatedByUser().getUserId());
-		newFilterOptions.setExportedByUserId(exportLog.getExportedByUser().getUserId());
-		newFilterOptions.setExportLogId(exportLog.getExportLogId());
-		newFilterOptions.setExportTypeId(exportLog.getExportType().getExportTypeId());
-		newFilterOptions.setProgramId(exportLog.getProgram() == null ? null : exportLog.getProgram().getProgramId());
-		newFilterOptions.setVeteranId(exportLog.getVeteran() == null ? null : exportLog.getVeteran().getVeteranId());
-		return newFilterOptions;
-	}
+        String header = null;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
-		result = prime * result + ((filterOptions == null) ? 0 : filterOptions.hashCode());
-		result = prime * result + ((header == null) ? 0 : header.hashCode());
-		return result;
-	}
+        if (tableContent != null && !tableContent.isEmpty()) {
+            List<DataExportCell> firstRow = tableContent.iterator().next();
+            StringBuilder sb = new StringBuilder();
+            for (DataExportCell dec : firstRow) {
+                sb.append(dec.getColumnName().replaceAll(",", "-").replaceAll("~", "_"));
+                sb.append(",");
+            }
+            header = sb.toString();
+        } else {
+            // if export log is requested to be downloaded again
+            header = getHeader();
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof AssessmentDataExport)) {
-			return false;
-		}
-		AssessmentDataExport other = (AssessmentDataExport) obj;
-		if (data == null) {
-			if (other.data != null) {
-				return false;
-			}
-		} else if (!data.equals(other.data)) {
-			return false;
-		}
-		if (filterOptions == null) {
-			if (other.filterOptions != null) {
-				return false;
-			}
-		} else if (!filterOptions.equals(other.filterOptions)) {
-			return false;
-		}
-		if (header == null) {
-			if (other.header != null) {
-				return false;
-			}
-		} else if (!header.equals(other.header)) {
-			return false;
-		}
-		return true;
-	}
+        return header;
+    }
 
-	public void setTableContents(List<List<DataExportCell>> tableContents) {
-		this.tableContent = tableContents;
-	}
+    private List<String> createDataFromDataExport(
+            List<List<DataExportCell>> tableContent) {
 
-	public boolean hasTableContents() {
-		return getTableContent() != null && !getTableContent().isEmpty();
-	}
+        if (tableContent != null && !tableContent.isEmpty()) {
+            List<String> rows = new ArrayList<String>();
+            for (List<DataExportCell> row : tableContent) {
+                StringBuilder sb = new StringBuilder();
+                for (DataExportCell cell : row) {
+                    sb.append(cell.getCellValue().replaceAll(",", "-"));
+                    sb.append(",");
+                }
+                rows.add(sb.toString());
+            }
+            return rows;
 
-	public boolean hasData() {
-		return header != null && !header.isEmpty() && data != null && !data.isEmpty();
-	}
+        } else {
+            // if export log is downloaded again
+            return getData();
+        }
+    }
+
+    public void setHeaderAndRows(List<List<DataExportCell>> tableContents) {
+        this.header = createHeaderFromDataExport(tableContents);
+        this.data = createDataFromDataExport(tableContents);
+    }
+
+    public boolean hasData() {
+        return header != null && !header.isEmpty() && data != null && !data.isEmpty();
+    }
+
+    public void setExportZip(byte[] exportZip) {
+        this.exportZip = exportZip;
+    }
+
+    public byte[] getExportZip() {
+        return exportZip;
+    }
+
+    public Map<String, Object> getExportZipAsModel() {
+        Map<String, Object> m = Maps.newHashMap();
+        m.put("zipFileName", filterOptions.getFilePath());
+        m.put("zippedBytes", exportZip);
+
+        return m;
+    }
 }

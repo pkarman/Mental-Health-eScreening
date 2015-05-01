@@ -9,7 +9,11 @@ $("div.content ul li a")
              alert("mouse out");
          });
 
-        $.getJSON("allowedTabs", function(data) {
+		// Get Application URL
+		var url = location.protocol + "//" + document.domain + ":" + window.location.port + "/" 
+				  + location.pathname.split('/')[1] + "/" + "dashboard/";
+				  		
+        $.getJSON(url + "allowedTabs", function(data) {
     		  var tabToShow;
     		  $.each(data, function(key, val) {
 
@@ -115,6 +119,19 @@ $("div.content ul li a")
     		    				}else{
     		    					tabToShow = $("ul#tabs").append("<li class=''>" +
         									"<a href='myAccount'  id='myAccountTab' title='Click to open myAccount screen'>"+str+"</a>"
+        								+"</li>");
+    		    				}
+    		    			}
+
+    		    			else if(key=="reports"){
+    		    				str="Reports";
+    		    				if(page == key){
+    		    					tabToShow = $("ul#tabs").append("<li class='active'>" +
+        									"<a href='reports' class='' id='reportsTab' title='Click to open Reports screen'>"+str+"</a>"
+        								+"</li>");
+    		    				}else{
+    		    					tabToShow = $("ul#tabs").append("<li class=''>" +
+        									"<a href='reports'  id='reportsTab' title='Click to open Reports screen'>"+str+"</a>"
         								+"</li>");
     		    				}
     		    			}

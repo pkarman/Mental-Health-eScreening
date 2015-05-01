@@ -12,6 +12,7 @@ import gov.va.escreening.entity.Program;
 import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 
@@ -264,11 +265,12 @@ public interface CreateAssessmentDelegate {
 	 * @param selectedBatteryId
 	 * @param selectedSurveyIdList
 	 * @return
+	 * @throws AssessmentAlreadyExistException 
 	 */
 	Integer createVeteranAssessment(EscreenUser escreenUser, Integer veteranId,
 			Integer selectedProgramId, Integer selectedClinicId,
 			Integer selectedClinicianId, Integer selectedNoteTitleId,
-			Integer selectedBatteryId, List<Integer> selectedSurveyIdList);
+			Integer selectedBatteryId, List<Integer> selectedSurveyIdList) throws AssessmentAlreadyExistException;
 
 	/**
 	 * Retrieves the note titles associated with either programId or 'clinicId'.

@@ -104,7 +104,7 @@ public class VariableResolverTestController {
     		//String result = expressionEvaluatorService.evaluateFormula(missingVariable);
     	}
     	catch(ReferencedVariableMissingException rvme) {
-    		logger.error("Got expected exception of: " + rvme.getMessage());
+			logger.error("Got expected exception of: " + rvme.getMessage());
     	}
     	
     	return "notesBackendTestPage";

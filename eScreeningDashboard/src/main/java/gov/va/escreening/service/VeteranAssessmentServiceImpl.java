@@ -1,9 +1,9 @@
 package gov.va.escreening.service;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
-import gov.va.escreening.domain.AssessmentExpirationDaysEnum;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.domain.VeteranAssessmentDto;
@@ -12,7 +12,18 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
+import gov.va.escreening.dto.report.Report595DTO;
+import gov.va.escreening.entity.*;
+import gov.va.escreening.form.AssessmentReportFormBean;
+import gov.va.escreening.form.ExportDataFormBean;
+
+import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.ClinicalNote;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
@@ -28,9 +39,9 @@ import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.entity.VeteranAssessmentNote;
 import gov.va.escreening.entity.VeteranAssessmentSurvey;
-import gov.va.escreening.form.AssessmentReportFormBean;
-import gov.va.escreening.form.ExportDataFormBean;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.repository.ClinicalNoteRepository;
@@ -46,32 +57,24 @@ import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
+
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Resource;
-
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
+import gov.va.escreening.variableresolver.VariableResolverService;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Transactional
 @Service("veteranAssessmentService")
@@ -109,6 +112,15 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	private VeteranAssessmentMeasureVisibilityRepository veteranAssessmentMeasureVisibilityRepository;
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private VariableResolverService variableResolverSvc;
+	
+	@Autowired
+	private AssessmentAppointmentRepository assessmentApptRepo;
+	
+	@Autowired
+	private AssessmentVariableRepository assessmentVariableRepo;
 
 	@Resource(name = "esVeteranAssessmentDashboardAlertRepository")
 	VeteranAssessmentDashboardAlertRepository vadar;
@@ -530,8 +542,22 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	public Integer create(Integer veteranId, Integer programId,
 			Integer clinicId, Integer clinicianId, Integer createdByUserId,
 			Integer selectedNoteTitleId, Integer selectedBatteryId,
-			List<Integer> surveyIdList) {
+			List<Integer> surveyIdList) throws AssessmentAlreadyExistException {
 
+		List<Integer> programIdList = new ArrayList<Integer>();
+		programIdList.add(programId);
+		List<VeteranAssessment> assessments = veteranAssessmentRepository.findByVeteranIdAndProgramIdList(veteranId, programIdList);
+		if(assessments != null && assessments.size()>0)
+		{
+			for(VeteranAssessment va : assessments)
+			{
+				if(va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.CLEAN.getAssessmentStatusId() ||
+						va.getAssessmentStatus().getAssessmentStatusId() == AssessmentStatusEnum.INCOMPLETE.getAssessmentStatusId())
+				{
+					throw new AssessmentAlreadyExistException(va.getVeteranAssessmentId(), programId);
+				}
+			}
+		}
 		// 1. create a new veteran assessment.
 		VeteranAssessment veteranAssessment = new VeteranAssessment();
 
@@ -1110,4 +1136,309 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			= vadar.searchVeteranAssessment(programId.isEmpty() ? null : Integer.parseInt(programId), programIdList, searchAttributes);
 		return prepareAssessmentSearchResult(veteranAssessmentSearchResult);
 	}
+
+	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	@Override
+	public Map<String, String> getVeteranAssessmentVariableSeries(
+			int veteranId, int assessmentVariableID, int numOfMonth) {
+		
+		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
+		
+		List<AssessmentVariable> dbVariables = new ArrayList<>();
+		dbVariables.add(dbVariable);
+		
+		//if this variable is a measure (question) then add all answers' variables
+		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
+		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
+		        if(answer.getAssessmentVariable() != null){
+		            dbVariables.add(answer.getAssessmentVariable());
+		        }
+		        else{
+		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 
+		                    answer.getMeasureAnswerId());
+		        }
+		    }
+		}
+		List<VeteranAssessment> assessmentList = veteranAssessmentRepository
+				.findByVeteranId(veteranId);
+
+		Collections.sort(assessmentList, new Comparator<VeteranAssessment>()
+		{
+
+			@Override
+			public int compare(VeteranAssessment va1, VeteranAssessment va2) {
+				if((va1.getDateCompleted()!=null) && (va2.getDateCompleted()!=null))
+				{
+					return va1.getDateCompleted().compareTo(va2.getDateCompleted());
+				}
+				else if(va1.getDateUpdated() !=null && va2.getDateUpdated() !=null)
+				{
+					return va1.getDateUpdated().compareTo(va2.getDateUpdated());
+				}
+				else
+				{
+					if(va1.getDateUpdated() == null)
+					{
+						return -1;
+					}
+					else
+					{
+						return 1;
+					}
+				}
+			}
+			
+		});
+		
+		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
+		int total = 0;
+		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
+		{
+			VeteranAssessment va = assessmentList.get(i);
+			try {
+				Date d = va.getDateUpdated();
+				long time = d.getTime()/1000;
+				
+				long secInMonth = 30*24*3600*numOfMonth;
+				long current = Calendar.getInstance().getTimeInMillis()/1000;
+				long timeDiff = current - time;
+				if(timeDiff > secInMonth)
+				{
+					continue;
+				}
+					
+				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
+				AssessmentVariableDto result = dto.iterator().next();
+				
+				//TODO: Move this logic into the AssessmentVariableDto object
+				String value = null;
+				if (result.getValue() != null) {
+					value = result.getValue();
+				}
+				else if(result.getChildren() != null){
+				    double sum = 0d;
+				    boolean useSum = false;
+				    for(AssessmentVariableDto answerVariable : result.getChildren()){
+				        try{
+				            sum += Double.valueOf(answerVariable.getCalculationValue());
+				            useSum = true;
+				        }
+				        catch(Exception e){ /* ignore */ 
+				            logger.warn("Error converting answer's value into a double (answer variable: {})", answerVariable);
+				        }
+				    }
+				    if(useSum){
+				        value = Double.toString(sum);
+				    }
+				}
+				
+				if(value != null){
+				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
+				    total++;
+				}
+			} catch (Exception ex) {// do nothing
+				logger.warn("exception getting a assessment variable for time series", ex);
+			}
+		}
+		
+		return timeSeries;
+	}
+
+    @Override
+    public String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getVeteranCountFor593(strFromDate, strToDate, clinicIds);
+        if (i==null){
+            return "0";
+        }
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getAverageTimePerAssessment(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getAvgDurantionFor593(strFromDate, strToDate, clinicIds);
+
+        if (i==null){
+            return "0";
+        }
+
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getNumOfBatteries(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer i = veteranAssessmentRepository.getBatteryCountFor593(strFromDate, strToDate, clinicIds);
+
+        if (i==null){
+            return "0";
+        }
+
+        return Integer.toString(i);
+    }
+
+    @Override
+    public String getVeteranWithMultiple(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        Integer n = veteranAssessmentRepository.getVetWithMultipleBatteriesFor593(strFromDate, strToDate, clinicIds);
+        Integer m = veteranAssessmentRepository.getVeteranCountFor593(strFromDate, strToDate, clinicIds);
+
+        if (n==0){
+            return "0";
+        }
+        else{
+            return Integer.toString(n*100/m);
+        }
+    }
+
+    @Override
+    public List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.getBatteriesByDayFor593(strFromDate, strToDate, clinicIds);
+    }
+
+    @Override
+    public List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
+    }
+
+	@Override
+	public boolean createAssessmentWithAppointment(Integer veteranId, Integer programId,
+			Integer clinicId, Integer clinicianId, Integer createdByUserId,
+			Integer selectedNoteTitleId, Integer selectedBatteryId,
+			List<Integer> surveyIdList, Date date) throws AssessmentAlreadyExistException
+	{
+		Integer vetAssessmentId = create(veteranId, programId, clinicId, clinicianId,
+				createdByUserId, selectedNoteTitleId, selectedBatteryId, surveyIdList);
+		if(vetAssessmentId !=null)
+		{
+			AssessmentAppointment aa = new AssessmentAppointment();
+			aa.setAppointmentDate(date);
+			aa.setVetAssessmentId(vetAssessmentId);
+			aa.setDateCreated(Calendar.getInstance().getTime());
+			assessmentApptRepo.create(aa);
+			assessmentApptRepo.commit();
+			return true;
+		}
+		return false;
+	}
+
+    @Override
+    public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getTopSkippedQuestions(clinicIds, fromDate, toDate);
+    }
+
+    @Override
+    public String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate) {
+        return String.valueOf(veteranAssessmentRepository.getAvgNumOfAssessmentPerClinicianClinicFor593(strFromDate, strToDate, clinicIds));
+    }
+    @Override
+    public List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate) {
+
+        List<Integer> measureAnswerId = new ArrayList<>(2);
+        measureAnswerId.add(160);
+        measureAnswerId.add(161);
+
+        return veteranAssessmentRepository.getGenderCount(clinicIds, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEthnicityCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>(3);
+        measureAnswerId.add(220);
+        measureAnswerId.add(221);
+        measureAnswerId.add(222);
+
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getRaceCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>(10);
+        measureAnswerId.add(230);
+        measureAnswerId.add(231);
+        measureAnswerId.add(232);
+        measureAnswerId.add(233);
+        measureAnswerId.add(234);
+        measureAnswerId.add(235);
+        measureAnswerId.add(236);
+
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEducationCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+
+        for(int i=240; i<=247; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getEmploymentCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=250; i<=254; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+    @Override
+    public List<Integer> getTobaccoCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=3410; i<=3412; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public List<Integer> getBranchCount(List cList, String fromDate, String toDate) {
+        List<Integer> measureAnswerId = new ArrayList<>();
+        for(int i=920; i<=925; i++) {
+            measureAnswerId.add(i);
+        }
+        return veteranAssessmentRepository.getGenderCount(cList, fromDate, toDate, measureAnswerId);
+    }
+
+    @Override
+    public Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate) {
+        Integer measureId = 23;
+
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  23);
+    }
+
+    @Override
+    public int getTobaccoMissingCount(List<Integer> cList, String fromDate, String toDate) {
+
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  341);
+    }
+
+    @Override
+    public int getMissingBranchCount(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  92);
+    }
+
+    @Override
+    public int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  24);
+    }
+
+    @Override
+    public List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getAgeStatistics(cList, fromDate, toDate);
+    }
+
+    @Override
+    public List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate) {
+        return veteranAssessmentRepository.getNumOfDeploymentStatistics(cList, fromDate, toDate);
+    }
+
+    @Override
+    public int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds) {
+
+        return veteranAssessmentRepository.getAssessmentCount(fromDate, toDate, clinicIds);
+    }
+
+    @Override
+    public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
+        return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
+    }
 }

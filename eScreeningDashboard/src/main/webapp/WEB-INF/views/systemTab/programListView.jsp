@@ -62,10 +62,10 @@
     <table class="table table-striped table-hover" summary="Program List View">
       <thead>
         <tr>
-          <th scope="col"  class="col-md-1 text-right">ID</th>
-          <th>Name</th>
-          <th class="col-md-1 text-center">Disabled</th>
-          <th class="col-md-1 text-right">Action</th>
+          <th scope="col"  class="col-md-1 text-right ui-state-default ">ID</th>
+          <th class="ui-state-default ">Name</th>
+          <th class="col-md-1 ui-state-default text-center">Disabled</th>
+          <th class="col-md-1 ui-state-default text-right">Action</th>
         </tr>
       </thead>
       <c:forEach var="item" items="${programList}">

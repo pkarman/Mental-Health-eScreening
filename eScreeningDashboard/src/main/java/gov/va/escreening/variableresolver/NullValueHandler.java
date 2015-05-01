@@ -25,4 +25,7 @@ public interface NullValueHandler {
      * @return
      */
     String handleMeasure(MeasureAssessmentVariableResolver measureAssessmentVariableResolver, Integer measureId, Integer veteranAssessmentId);
+
+    String resolveCalculationDefaultValue(MeasureAssessmentVariableResolverImpl measureAssessmentVariableResolver, Integer measureId, Integer veteranAssessmentId);
+
 }

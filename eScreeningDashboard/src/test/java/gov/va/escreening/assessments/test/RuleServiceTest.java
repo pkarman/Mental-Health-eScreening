@@ -178,8 +178,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for single select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		//System.out.println(output);
-		logger.debug(output);
+		logger.info(output);
 	}
 
 	// AUDIT-C Screen 1
@@ -209,8 +208,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for long single select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		//System.out.println(output);
-		logger.debug(output);
+		logger.info(output);
 	}
 
 	/**
@@ -245,8 +243,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for multi select:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		//System.out.println(output);
-		logger.debug(output);
+		logger.info(output);
 	}
 
 	/**
@@ -282,8 +279,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for multi select matrix:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		//System.out.println(output);
-		logger.debug(output);
+		logger.info(output);
 	}
 
 	/**
@@ -324,16 +320,15 @@ public class RuleServiceTest extends AssessmentTestBase {
 
 		String output = "Test qa output for freetext and single select page:\n" + surveyMeasureRespSvc.generateQuestionsAndAnswers(survey, assessment.getVeteranAssessmentId());
 
-		//System.out.println(output);
-		logger.debug(output);
+		logger.info(output);
 	}
 
 	@Test
 	public void testFullQuesAndAnswers() {
 		List<Survey> surveyList = surveyRepo.findForVeteranAssessmentId(56);
 		for (Survey s : surveyList) {
-			logger.debug("==== Survey ID ======" + s.getSurveyId());
-			logger.debug(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 56));
+			logger.info("==== Survey ID ======" + s.getSurveyId());
+			logger.info(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 56));
 		}
 	}
 }

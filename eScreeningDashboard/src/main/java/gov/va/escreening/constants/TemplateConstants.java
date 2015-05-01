@@ -15,7 +15,7 @@ public class TemplateConstants {
      */
     public enum TemplateType{
     	CPRS_HEADER(1, "CPRS header"), CPRS_FOOTER(2, "CPRS footer"), CPRS_ENTRY(3, "CPRS module"),
-    	ASSESS_SCORE_TABLE(4, "assessment score table"), ASSESS_CONCLUSION(5, "assessment conclusion"),  //TODO: add an entry for assessment introduction
+    	ASSESS_SCORE_TABLE(4, "assessment score table"), ASSESS_CONCLUSION(5, "assessment conclusion"), ASSESS_WELCOME(10, "assessment welcome"),
     	VET_SUMMARY_HEADER(6, "veteran summary header"), VET_SUMMARY_FOOTER(7, "veteran summary footer"), VET_SUMMARY_ENTRY(8, "veteran summary module"),
     	VISTA_QA(9, "VistA questions/answers");
     	

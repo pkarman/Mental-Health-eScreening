@@ -47,6 +47,7 @@ import gov.va.escreening.vista.request.ORWU_NEWPERS_VistaLinkRequestContext;
 import gov.va.escreening.vista.request.TIU_CREATE_RECORD_RequestParameters;
 import gov.va.escreening.vista.request.TIU_CREATE_RECORD_VistaLinkRequest;
 import gov.va.escreening.vista.request.TIU_CREATE_RECORD_VistaLinkRequestContext;
+import gov.va.escreening.vista.request.TIU_GET_PN_TITLES_RequestParameters;
 import gov.va.escreening.vista.request.TIU_GET_PN_TITLES_VistaLinkRequest;
 import gov.va.escreening.vista.request.TIU_GET_PN_TITLES_VistaLinkRequestContext;
 import gov.va.escreening.vista.request.TIU_LOAD_BOILERPLATE_TEXT_RequestParameters;
@@ -96,8 +97,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     public VistaLocation findLocation(String locationName, String startingNameSearchCriteria) throws VistaLinkClientException {
         ORWU1_NEWLOC_RequestParameters requestParameters = new ORWU1_NEWLOC_RequestParameters(locationName, startingNameSearchCriteria);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext<ORWU1_NEWLOC_RequestParameters> context = new ORWU1_NEWLOC_VistaLinkRequestContext<ORWU1_NEWLOC_RequestParameters>(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaLocation> request = new ORWU1_NEWLOC_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWU1_NEWLOC_RequestParameters> context = new ORWU1_NEWLOC_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaLocation> request = new ORWU1_NEWLOC_VistaLinkRequest(context);
         VistaLocation vistaLocation = request.sendRequest();
         return vistaLocation;
     }
@@ -106,8 +107,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     public VistaLocation findLocation(String locationName, String startingNameSearchCriteria, Boolean sortDirection) throws VistaLinkClientException {
         ORWU1_NEWLOC_RequestParameters requestParameters = new ORWU1_NEWLOC_RequestParameters(locationName, startingNameSearchCriteria, sortDirection);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWU1_NEWLOC_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaLocation> request = new ORWU1_NEWLOC_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWU1_NEWLOC_RequestParameters> context = new ORWU1_NEWLOC_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaLocation> request = new ORWU1_NEWLOC_VistaLinkRequest(context);
         VistaLocation vistaLocation = request.sendRequest();
         return vistaLocation;
     }
@@ -116,8 +117,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     public VistaServiceCategoryEnum findServiceCategory(VistaServiceCategoryEnum initialServiceConnectionCategory, Long locationIEN) throws VistaLinkClientException {
         ORWPCE_GETSVC_RequestParameters requestParameters = new ORWPCE_GETSVC_RequestParameters(initialServiceConnectionCategory, locationIEN);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWPCE_GETSVC_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaServiceCategoryEnum> request = new ORWPCE_GETSVC_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWPCE_GETSVC_RequestParameters> context = new ORWPCE_GETSVC_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaServiceCategoryEnum> request = new ORWPCE_GETSVC_VistaLinkRequest(context);
         VistaServiceCategoryEnum serviceCategoryEnum = request.sendRequest();
         return serviceCategoryEnum;
     }
@@ -126,16 +127,16 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     public VistaServiceCategoryEnum findServiceCategory(VistaServiceCategoryEnum initialServiceConnectionCategory, Long locationIEN, Boolean inpatientStatus) throws VistaLinkClientException {
         ORWPCE_GETSVC_RequestParameters requestParameters = new ORWPCE_GETSVC_RequestParameters(initialServiceConnectionCategory, locationIEN, inpatientStatus);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWPCE_GETSVC_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaServiceCategoryEnum> request = new ORWPCE_GETSVC_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWPCE_GETSVC_RequestParameters> context = new ORWPCE_GETSVC_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaServiceCategoryEnum> request = new ORWPCE_GETSVC_VistaLinkRequest(context);
         VistaServiceCategoryEnum serviceCategoryEnum = request.sendRequest();
         return serviceCategoryEnum;
     }
 
     @Override
     public VistaNoteTitle[] findProgressNoteTitles() throws VistaLinkClientException {
-        VistaLinkRequestContext context = new TIU_GET_PN_TITLES_VistaLinkRequestContext(getRequest(), getConnection());
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaNoteTitle[]> request = new TIU_GET_PN_TITLES_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_GET_PN_TITLES_RequestParameters> context = new TIU_GET_PN_TITLES_VistaLinkRequestContext<>(getRequest(), getConnection());
+        VistaLinkRequest<VistaNoteTitle[]> request = new TIU_GET_PN_TITLES_VistaLinkRequest(context);
         VistaNoteTitle[] vistaNoteTitles = request.sendRequest();
         return vistaNoteTitles;
     }
@@ -162,8 +163,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
         ORWU_NEWPERS_RequestParameters requestParameters = new ORWU_NEWPERS_RequestParameters(firstNameSearchCriteria,
                 lastNameSearchCriteria, startingNameSearchCriteria, securityKeyFilterSearchCriteria, dateFilterSearchCriteria);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWU_NEWPERS_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaClinician[]> request = new ORWU_NEWPERS_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWU_NEWPERS_RequestParameters> context = new ORWU_NEWPERS_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaClinician[]> request = new ORWU_NEWPERS_VistaLinkRequest(context);
         VistaClinician[] clinicians = request.sendRequest();
         return clinicians;
     }
@@ -178,8 +179,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
                 lastNameSearchCriteria, startingNameSearchCriteria, sortDirectionFilterSearchCriteria, securityKeyFilterSearchCriteria,
                 dateFilterSearchCriteria, rdvUserFilterSearchCriteria, returnAllFilterSearchCriteria);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWU_NEWPERS_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaClinician[]> request = new ORWU_NEWPERS_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWU_NEWPERS_RequestParameters> context = new ORWU_NEWPERS_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaClinician[]> request = new ORWU_NEWPERS_VistaLinkRequest(context);
         VistaClinician[] clinicians = request.sendRequest();
         return clinicians;
     }
@@ -302,64 +303,64 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     public Boolean saveHealthFactor(Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader, Set<HealthFactorVisitData> healthFactorVisitDataList, HealthFactorProvider healthFactorProvider, Set<HealthFactor> healthFactors) throws VistaLinkClientException {
         ORWPCE_SAVE_RequestParameters requestParameters = new ORWPCE_SAVE_RequestParameters( noteIEN, locationIEN, historicalHealthFactor, healthFactorHeader,
                 healthFactorVisitDataList, healthFactorProvider, healthFactors);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWPCE_SAVE_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new ORWPCE_SAVE_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWPCE_SAVE_RequestParameters> context = new ORWPCE_SAVE_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new ORWPCE_SAVE_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public Boolean saveMentalHealthAssessment(Long patientIEN, String mentalHealthTestName, String mentalHealthTestAnswers) throws VistaLinkClientException{
         ORQQPXRM_MHV_RequestParameters requestParameters = new ORQQPXRM_MHV_RequestParameters(patientIEN, mentalHealthTestName, mentalHealthTestAnswers);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORQQPXRM_MHV_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new ORQQPXRM_MHV_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORQQPXRM_MHV_RequestParameters> context = new ORQQPXRM_MHV_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new ORQQPXRM_MHV_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public MentalHealthAssessmentResult getMentalHealthAssessmentResults(Long reminderDialogIEN, Long patientIEN, String mentalHealthTestName, String dateCode, String staffCode, String mentalHealthTestAnswers) throws VistaLinkClientException {
         ORQQPXRM_MENTAL_HEALTH_RESULTS_RequestParameters requestParameters = new ORQQPXRM_MENTAL_HEALTH_RESULTS_RequestParameters(reminderDialogIEN, patientIEN, mentalHealthTestName, dateCode, staffCode, mentalHealthTestAnswers);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORQQPXRM_MENTAL_HEALTH_RESULTS_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<MentalHealthAssessmentResult> request = new ORQQPXRM_MENTAL_HEALTH_RESULTS_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORQQPXRM_MENTAL_HEALTH_RESULTS_RequestParameters> context = new ORQQPXRM_MENTAL_HEALTH_RESULTS_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<MentalHealthAssessmentResult> request = new ORQQPXRM_MENTAL_HEALTH_RESULTS_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public Boolean saveMentalHealthPackage(Long patientIEN, String mentalHealthTestName, Date date, String staffCode, String mentalHealthTestAnswers) throws VistaLinkClientException {
         ORQQPXRM_MENTAL_HEALTH_SAVE_RequestParameters requestParameters = new ORQQPXRM_MENTAL_HEALTH_SAVE_RequestParameters(patientIEN, mentalHealthTestName, date, staffCode, mentalHealthTestAnswers);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORQQPXRM_MENTAL_HEALTH_SAVE_RequestParameters> context = new ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public PatientDemographics findPatientDemographics(Long patientIEN) throws VistaLinkClientException {
         ORWPT_SELECT_RequestParameters requestParameters = new ORWPT_SELECT_RequestParameters(patientIEN);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWPT_SELECT_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<PatientDemographics> request = new ORWPT_SELECT_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWPT_SELECT_RequestParameters> context = new ORWPT_SELECT_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<PatientDemographics> request = new ORWPT_SELECT_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public ConsultationUrgencyDataSet getConsultationUrgencyDataSet(String consultationOrderType) throws VistaLinkClientException {
         ORWDCN32_DEF_RequestParameters requestParameters = new ORWDCN32_DEF_RequestParameters(consultationOrderType);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORWDCN32_DEF_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<ConsultationUrgencyDataSet> request = new ORWDCN32_DEF_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORWDCN32_DEF_RequestParameters> context = new ORWDCN32_DEF_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<ConsultationUrgencyDataSet> request = new ORWDCN32_DEF_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     @Override
     public ConsultationServiceNameDataSet getConsultationServiceNameDataSet(String startPositionSearchCriteria, String purpose, Boolean includeSynonyms) throws VistaLinkClientException {
         ORQQCN_SVC_WITH_SYNONYMS_RequestParameters requestParameters = new ORQQCN_SVC_WITH_SYNONYMS_RequestParameters(startPositionSearchCriteria, purpose, includeSynonyms);
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new ORQQCN_SVC_WITH_SYNONYMS_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<ConsultationServiceNameDataSet> request = new ORQQCN_SVC_WITH_SYNONYMS_VistaLinkRequest(context);
+        VistaLinkRequestContext<ORQQCN_SVC_WITH_SYNONYMS_RequestParameters> context = new ORQQCN_SVC_WITH_SYNONYMS_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<ConsultationServiceNameDataSet> request = new ORQQCN_SVC_WITH_SYNONYMS_VistaLinkRequest(context);
         return request.sendRequest();
     }
 
     private boolean setProgressNoteText(VistaProgressNote progressNote) throws VistaLinkClientException {
         TIU_SET_DOCUMENT_TEXT_RequestParameters requestParameters = new TIU_SET_DOCUMENT_TEXT_RequestParameters(progressNote.getIEN(), progressNote.getBoilerPlateText(), progressNote.getContent());
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_SET_DOCUMENT_TEXT_RequestParameters> context = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequest(context);
         Boolean progressNoteTextSet = request.sendRequest();
 
         return progressNoteTextSet;
@@ -371,8 +372,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
                 progressNote.getBoilerPlateText(), progressNote.getContent(), appendContent, suppressEditBuffer);
 
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_SET_DOCUMENT_TEXT_RequestParameters> context = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new TIU_SET_DOCUMENT_TEXT_VistaLinkRequest(context);
         Boolean progressNoteTextSet = request.sendRequest();
 
         return progressNoteTextSet;
@@ -381,8 +382,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     private String[] getProgressNoteBoilerPlateText(Long titleIEN, Long patientIEN, String visitString) throws VistaLinkClientException {
         TIU_LOAD_BOILERPLATE_TEXT_RequestParameters requestParameters = new TIU_LOAD_BOILERPLATE_TEXT_RequestParameters(patientIEN, titleIEN, visitString);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<String[]> request = new TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_LOAD_BOILERPLATE_TEXT_RequestParameters> context = new TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<String[]> request = new TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest(context);
         String[] progressNoteBoilerPlateText = request.sendRequest();
 
         return progressNoteBoilerPlateText;
@@ -391,8 +392,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     private boolean lockProgressNote(Long progressNoteIEN) throws VistaLinkClientException {
         TIU_LOCK_RECORD_RequestParameters requestParameters = new TIU_LOCK_RECORD_RequestParameters(progressNoteIEN);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_LOCK_RECORD_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new TIU_LOCK_RECORD_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_LOCK_RECORD_RequestParameters> context = new TIU_LOCK_RECORD_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new TIU_LOCK_RECORD_VistaLinkRequest(context);
         Boolean progressNoteLocked = request.sendRequest();
         return progressNoteLocked;
     }
@@ -400,8 +401,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     private boolean unlockProgressNote(Long progressNoteIEN) throws VistaLinkClientException {
         TIU_UNLOCK_RECORD_RequestParameters requestParameters = new TIU_UNLOCK_RECORD_RequestParameters(progressNoteIEN);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_UNLOCK_RECORD_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<Boolean> request = new TIU_UNLOCK_RECORD_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_UNLOCK_RECORD_RequestParameters> context = new TIU_UNLOCK_RECORD_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<Boolean> request = new TIU_UNLOCK_RECORD_VistaLinkRequest(context);
         Boolean progressNoteUnlocked = request.sendRequest();
         return progressNoteUnlocked;
     }
@@ -414,8 +415,8 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
                 titleIEN, visitDateTime, locationIEN, visitIEN, identifiers, visitString, suppressPostCommitCodeFromExecuting,
                 saveTelnetCrossReference);
 
-        @SuppressWarnings("unchecked") VistaLinkRequestContext context = new TIU_CREATE_RECORD_VistaLinkRequestContext(getRequest(), getConnection(), requestParameters);
-        @SuppressWarnings("unchecked") VistaLinkRequest<VistaProgressNote> request = new TIU_CREATE_RECORD_VistaLinkRequest(context);
+        VistaLinkRequestContext<TIU_CREATE_RECORD_RequestParameters> context = new TIU_CREATE_RECORD_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
+        VistaLinkRequest<VistaProgressNote> request = new TIU_CREATE_RECORD_VistaLinkRequest(context);
         VistaProgressNote progressNote = request.sendRequest();
         return progressNote;
     }

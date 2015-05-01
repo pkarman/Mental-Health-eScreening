@@ -11,7 +11,7 @@ import java.util.List;
  * Created by pouncilt on 9/9/14.
  */
 public class SurveyPageInfo {
-    private Integer id;
+    private Integer surveyPageId;
     private String description;
     private int pageNumber;
     private String title;
@@ -20,13 +20,6 @@ public class SurveyPageInfo {
 
     public SurveyPageInfo() {}
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -72,7 +65,16 @@ public class SurveyPageInfo {
 
     @Override
     public String toString() {
-        return "SurveyPageInfo [id=" + id + ", description=" + description + ", pageNumber=" + pageNumber +
+        return "SurveyPageInfo [id=" + surveyPageId + ", description=" + description + ", pageNumber=" + pageNumber +
                 ", title=" + title + ", dateCreated=" + dateCreated + ", questions=" + questions + "]";
+    }
+
+    @JsonProperty("id")
+    public Integer getSurveyPageId() {
+        return surveyPageId;
+    }
+
+    public void setSurveyPageId(Integer surveyPageId) {
+        this.surveyPageId = surveyPageId;
     }
 }

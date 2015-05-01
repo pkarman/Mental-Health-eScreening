@@ -1,12 +1,19 @@
 package gov.va.escreening.vista;
 
+import static org.junit.Assert.*;
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.repository.HealthFactorRepository;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.VistaRepository;
 import gov.va.escreening.service.VistaService;
 import gov.va.escreening.vista.dto.DialogComponent;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,11 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -47,7 +49,7 @@ public class VistaRepositoryTest {
     {
         List<DialogComponent> result = vistaRepo.getClinicalReminderDialogs(DIVISION, null, DUZ, ESCREENING_TEST, "56");
         
-        logger.debug(result.toString());
+        logger.info(result.toString());
         
     }
     
@@ -93,15 +95,10 @@ public class VistaRepositoryTest {
     @Test
     public void testGetMHA()
     {
-        logger.debug(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "GAD-7"));
-        logger.debug(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
+        logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "GAD-7"));
+        logger.info(vistaRepo.getMHATestDetail(DIVISION, null, DUZ, null, "WHODAS 2"));
     }
     
-//    @Test
-//    public void testRefreshHF()
-//    {
-//        vistaServiceImpl.refreshHealthFactors(DIVISION, null, DUZ, null);
-//    }
     
     @Test
     public void testFetchVeteran()
@@ -109,7 +106,7 @@ public class VistaRepositoryTest {
     	List<VeteranDto> vList = vistaRepo.searchVeteran(DIVISION, null, DUZ, null, "0034");
     	for(VeteranDto dto : vList)
     	{
-    		logger.debug(dto.toString());
+    		logger.info(dto.toString());
     	}
     }
 }

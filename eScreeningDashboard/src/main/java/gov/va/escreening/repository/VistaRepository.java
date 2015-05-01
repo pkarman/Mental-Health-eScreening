@@ -199,4 +199,7 @@ public interface VistaRepository {
 
     public abstract String getMHATestDetail(String division, String vpid, String duz, String appProxyName, String MHATestName);
 
+	public abstract List<VistaVeteranAppointment> getVeteranAppointments(String division, String vpid,
+			String duz, Date start, Date end, String veteranIen);
+
 }

@@ -4,5 +4,6 @@
 		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">   
 		
 	<bean id="dataExportCsvView" class="gov.va.escreening.view.AssessmentDataExportCsvView"></bean>
+	<bean id="dataArchiveZipView" class="gov.va.escreening.view.AssessmentDataExportZipView"></bean>
 	<bean id="dataDictionaryExcelView" class="gov.va.escreening.view.DataDictionaryExcelView"></bean>
 </beans>

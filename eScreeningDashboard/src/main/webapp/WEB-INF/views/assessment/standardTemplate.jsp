@@ -40,6 +40,8 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/jquery/smoothness/jquery-ui.min.css">
 		<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="resources/css/assessment_new.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/common.css">
+        <link rel="stylesheet" type="text/css" href="resources/editors/vendors/textAngular/textAngular.css">
         
   		<script src="resources/js/jquery/jquery-1.10.2.min.js"></script>
   		<script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
@@ -82,17 +84,16 @@
             </c:forEach>
             </ul>
         </div>
-<!-- Three columns, fixed-fluid-fixed -->
-<div id="center" class="column contentAreaGrayRadial" aria-hidden="false"> <a name="skip" > </a >
-  <h1 id="viewTitle"></h1>
-  <!-- Dynamic Content Region -->
- 
-  <div id="assessmentContainer" role="application" aria-describedby="assessmentNotes"> 
-    <!-- This is the active region container for the active view's (page) form controls.  When a page is selected, the question JSON 
-            	returned, this will be populated with the form controls drawn by iteration over the response's JSON object. --> 
-  </div>
-  <!-- End Dynamic Content Region --> 
-  <!-- <noscript> section with descriptive text to provide users without JavaScript enabled, or screen reader-equipped, directions
+		<!-- Three columns, fixed-fluid-fixed -->
+        <div id="center" class="column contentAreaGrayRadial" aria-hidden="false">
+			 <a name="skip" > </a ><h1 id="viewTitle"></h1>
+			<!-- Dynamic Content Region -->
+			<div id="assessmentContainer" role="application" aria-describedby="assessmentNotes">
+            	<!-- This is the active region container for the active view's (page) form controls.  When a page is selected, the question JSON 
+            	returned, this will be populated with the form controls drawn by iteration over the response's JSON object. -->
+            </div>
+			<!-- End Dynamic Content Region -->
+            <!-- <noscript> section with descriptive text to provide users without JavaScript enabled, or screen reader-equipped, directions
             	 for use.  -->
             <noscript id="assessmentNotes">
             	<!-- TODO:: Describe usage of the Measures/Assessment here. -->

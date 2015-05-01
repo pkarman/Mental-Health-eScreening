@@ -3,10 +3,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
 <html>
-	<head>
+<head>
+    <title>Veteran Login</title>
+	
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -19,8 +21,7 @@
     <link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
     <link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
     <meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
-        
-    <title>Veteran Login</title>
+	
     <link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/login.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/common-ui-styles/forms.css" rel="stylesheet" type="text/css">
@@ -30,7 +31,8 @@
     <script type="text/javascript">
     
       $(document).ready(function() {	
-      // Check URL Querystring to play sound in case of timeout or complete
+      // TODO: Need to move to external JS file
+	  // Check URL Querystring to play sound in case of timeout or complete
       gup('reason');
       function gup( name ){
          name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -65,7 +67,23 @@
           alert('HTML5 Audio is not supported by your browser!');
         }
       }
-    });
+    
+	if (localStorage.getItem("tabletProgramLSText") === null) {
+		window.location.href = "tabletConfiguration";
+	}else{
+		if (localStorage.getItem("tabletProgramLSValue") != null) {
+			$("#programId").val(localStorage.getItem("tabletProgramLSValue"));  // update program input with the programID from the localStorage
+		}
+	}
+
+		var tabletProgramBlock ="#tabletProgramBlock";
+		if (typeof(Storage) != "undefined") {
+			$(tabletProgramBlock).html(localStorage.getItem("tabletProgramLSText"));
+		} else {
+			
+			$(tabletProgramBlock).html( "Sorry, your browser does not support Web Storage..." );
+		}
+	});
     
       $(function() {
         $("input[type=text]:first").focus();
@@ -130,13 +148,8 @@
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
-	</head>
-	<body>
-
-      
-    
-    
-    
+</head>
+<body>
     <%@ include file="/WEB-INF/views/partialpage/survey_header_new.jsp" %>
 	<div id="clear-fix"></div>
 <div class="container left-right-shadow">
@@ -159,7 +172,6 @@
 			 %>
   	</div>
   	
-  	
         <form:form id="assessmentLoginForm" method="post" modelAttribute="assessmentLoginFormBean" autocomplete="off" role="form">
        
         <%-- <div><span class="requireMark">*</span> indicates required fields</div> --%>
@@ -173,8 +185,10 @@
            <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
+					<input id="programId" name="programId" type="hidden" />
                     <form:label path="lastName">Last Name</form:label>
-                    <form:input path="lastName" id="lastName" class="immediate-help form-control input-lg" maxlength="30" placeholder="Enter Last Name" />
+                    
+					<form:input path="lastName" id="lastName" class="immediate-help form-control input-lg" maxlength="30" placeholder="Enter Last Name" />
                     <c:if test="${status.error}">
                           <div id="errorDiv" class="input-help"> <img id="errorImage" src="resources/images/errorIcon.jpg" class="errorImgWidth"/><form:errors path="lastName"/></div>
                      </c:if>
@@ -196,8 +210,6 @@
             <div class="row">
                   <div class="col-md-12">
                 <div class="form-group">
-
-
                           <form:label path="birthDate">Date of Birth</form:label>
                           <form:input path="birthDate" class="immediate-help form-control input-lg" maxlength="10" placeholder="MM/DD/YYYY"/>
                           <c:if test="${status.error}">
@@ -205,16 +217,12 @@
                               <form:errors path="birthDate" />
                             </div>
                       </c:if>
-
-
                     </div>
               </div>
                 </div>
             <div class="row">
                   <div class="col-md-12">
                 <div class="form-group">
-
-
                           <form:label path="middleName">Middle Name</form:label>
                           <form:input path="middleName" class="form-control input-lg"  maxlength="30" placeholder="Enter Middle Name" />
                           <c:if test="${status.error}">
@@ -223,8 +231,6 @@
                               <form:errors path="middleName" cssClass="error" />
                             </div>
                       </c:if>
-
-
                     </div>
               </div>
                 </div>

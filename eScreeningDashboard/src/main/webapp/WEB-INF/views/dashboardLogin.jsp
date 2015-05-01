@@ -2,6 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ page session="true" %>
 <!doctype html>
@@ -9,8 +10,6 @@
 	<head>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-
-      <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.js"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1">
     
       <!-- FAVICON -->
@@ -25,8 +24,9 @@
       <link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
       <link href="resources/css/login.css" rel="stylesheet" type="text/css"/>
       <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
-      <!--<link href="resources/css/common-ui-styles/forms.css" rel="stylesheet" type="text/css">-->
       <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css"/>
+      
+	  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.js"></script>
       <script type="text/javascript">
           $(function() {
             $("input[type=text]:first").focus(); 

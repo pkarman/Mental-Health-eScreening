@@ -30,6 +30,7 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.repository.SurveyRepository;
@@ -138,15 +139,38 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
 					.appendTemplate(t)
 					.generate();
-				logger.debug("Rendered template:\n{}", text);
+				logger.debug("Rendered module template:\n{}", text);
 				return text;
 			}
 		}
 		
 		ErrorBuilder
-			.throwing(IllegalSystemStateException.class)
+			.throwing(EntityNotFoundException.class)
 			.toUser(String.format("No template of type %s is defined for module %s. Please have the technical administrator use the template editor to create one.", type, survey.getName()))
 			.toAdmin(String.format("No template of type %s is defined for module: %s. Please use the template editor to create one.", type, survey))
+			.throwIt();	
+		
+		//since last statement will throw an exception we will never get here
+		return null;
+	}
+	
+	@Override
+	public String renderBatteryTemplate(Battery battery, TemplateType type, int veteranAssessmentId, ViewType viewType)
+			throws IllegalSystemStateException {
+		for(Template t : battery.getTemplates()){
+			if(type.getId() == t.getTemplateType().getTemplateTypeId()){
+				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
+					.appendTemplate(t)
+					.generate();
+				logger.debug("Rendered battery template:\n{}", text);
+				return text;
+			}
+		}
+		
+		ErrorBuilder
+			.throwing(EntityNotFoundException.class)
+			.toUser("No template available for battery. Please contact support.")
+			.toAdmin(String.format("No template of type %s is defined for battery: %s. Please use the template editor to create one.", type, battery.getName()))
 			.throwIt();	
 		
 		//since last statement will throw an exception we will never get here
@@ -204,7 +228,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		Map<Integer, Survey> surveysTaken = assessment.getSurveyMap();
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
-		List<Template> graphicalTemplates = new LinkedList();
+		List<Template> graphicalTemplates = new LinkedList<Template>();
 		for (SurveySection section : sections) {
 			boolean sectionStarted = false;
 			
@@ -265,6 +289,14 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();
 	}	
 	
+	/**
+	 * 
+	 * @param template
+	 * @param assessmentId
+	 * @return
+	 * @throws IllegalSystemStateException if the content of the template cannot be retrieved
+	 * @throws TemplateProcessorException if there is a problem getting the assessment variables for the template or an error during rendering
+	 */
 	private String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
 		String templateText = getTemplateText(template);
 		Integer templateId = template.getTemplateId();
@@ -584,54 +616,6 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			logger.debug("Resolving template tags for viewType {}", viewType);
 			return TemplateTagProcessor.resolveClinicalNoteTags(text.toString(), viewType);
 		}
-	}
-
-	@Override
-	public String generateCompletionMsgFor(int batteryId) {
-		String tt="<div class='moduleTemplateTitle'>";
-		String closeDiv="</div>";
-		String brk="<br/>";
-		String st="<div class='templateSectionTitle'>";
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(tt).append("Thank You!").append(closeDiv);
-		sb.append(brk);
-		sb.append(st).append("Please let the assistant know that you have completed your screen. They will provide you with a personalized summary of your screens. The results of this screen will be sent electronically to a Transition Case Manager for review.").append(closeDiv);
-		sb.append(brk);
-		sb.append(st).append("The goal of OEF/OIF/OND Care Management is to help you maximize your VA services and benefits. Here are some services that we provide: ").append(closeDiv);
-		sb.append(brk);
-		
-		sb.append(st).append("- Care coordination and support with access to VA healthcare services & benefits").append(closeDiv);
-		sb.append(st).append("- Advocacy to address post-deployment health concerns").append(closeDiv);
-		sb.append(st).append("- Resources to address  employment, education or housing  concerns  ").append(closeDiv);
-		sb.append(st).append("- Applying for VA, other government, and community benefits").append(closeDiv);
-		sb.append(st).append("- Resources for marriage, family, and spirituality concerns ").append(closeDiv);
-		sb.append(st).append("- Aid with concerns about drinking or drug use").append(closeDiv);
-		sb.append(st).append("- Assistance if you are feeling sad, depressed or anxious").append(closeDiv);
-		sb.append(st).append("- Assistance with visual impairments").append(closeDiv);
-		sb.append(st).append("- Help if you really aren’t sure what you need, but things just don’t feel right").append(closeDiv);
-		sb.append(brk);
-
-		sb.append(st).append("You may ask to meet with a Transition Case Manager today to discuss any issues presented in this screen. You can also call the OEF/OIF/OND Care Management team at any point in the future for assistance. Their contact information is listed on your personalized summary.").append(closeDiv);
-
-		return sb.toString();
-	}
-	
-	@Override
-	public freemarker.template.Template getTemplate(Integer templateId, String templateText)
-		throws IOException
-	{
-		// Convert the template to a string, load it into the freemarker
-				// configuration
-		Configuration fmConfiguration = getFreemarkerConfiguration();
-		String templateCacheName = String.format("template%s", templateId);
-		((StringTemplateLoader) fmConfiguration.getTemplateLoader()).putTemplate(templateCacheName, templateText);
-		return  fmConfiguration.getTemplate(templateCacheName);
-	}
-
-	public static void main(String[] args)
-	{
-		//System.out.println(new TemplateProcessorServiceImpl().generateCompletionMsgFor(5));
 	}
 }
 

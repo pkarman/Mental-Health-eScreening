@@ -28,7 +28,7 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
         
         String sql = "select sp.* from survey_page sp join survey s on sp.survey_id = s.survey_id join survey_section ss on s.survey_section_id = ss.survey_section_id "
                 + "where s.survey_id in (select survey_id from veteran_assessment_survey where veteran_assessment_survey.veteran_assessment_id= :veteranAssessmentId) "
-                + " order by ss.display_order, s.display_order, sp.page_number";
+                + " order by ss.display_order, s.display_order_for_section, sp.page_number";
 
         Query query = entityManager.createNativeQuery(sql, SurveyPage.class);
         query.setParameter("veteranAssessmentId", veteranAssessmentId);
@@ -95,8 +95,10 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.getResultList();
         
-        for(Object[] row: result)
-            logger.debug("Survey page ID: " + row[0] + ", has_skip: " + row[1]);
+        if(logger.isDebugEnabled()){
+            for(Object[] row: result)
+                logger.debug("Survey page ID: " + row[0] + ", has_skip: " + row[1]);
+        }
 
         return result;
     }
@@ -186,5 +188,5 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
             +") measure_compare group by survey_page_id ) survey_page_measure_count "
       +"INNER JOIN survey_page sp ON survey_page_measure_count.survey_page_id=sp.survey_page_id " 
       +"INNER JOIN survey s on sp.survey_id=s.survey_id " 
-      +"ORDER BY s.display_order, sp.page_number"; 
+      +"ORDER BY s.display_order_for_section, sp.page_number";
 }

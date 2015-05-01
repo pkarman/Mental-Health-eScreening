@@ -1,8 +1,12 @@
 package gov.va.escreening.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
+import gov.va.escreening.dto.report.DataPointDTO;
+import gov.va.escreening.dto.report.ImageInputDTO;
+import gov.va.escreening.dto.report.IntervalDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +15,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -57,5 +64,55 @@ public class SuveryJsonTest {
     public void testSurveySectionConversionToObject() throws Exception {
         SurveySectionInfo surveySection = mapper.readValue(surveySectionJsonResource.getFile(), SurveySectionInfo.class);
         Assert.assertNotNull(surveySection);
+    }
+
+    @Test
+    public void test() throws Exception {
+        ImageInputDTO imageInputDTO = new ImageInputDTO();
+
+        List<IntervalDTO> intervalDTOs = new ArrayList<>();
+
+        IntervalDTO intervalDTO = new IntervalDTO();
+        intervalDTO.setScore(0);
+        intervalDTO.setScoreMeaning("None");
+
+        intervalDTOs.add(intervalDTO);
+
+        intervalDTO = new IntervalDTO();
+        intervalDTO.setScore(5);
+        intervalDTO.setScoreMeaning("Mild");
+        intervalDTOs.add(intervalDTO);
+
+        imageInputDTO.setIntervals(intervalDTOs);
+
+        List<DataPointDTO> dataPointDTOs = new ArrayList<>();
+
+        imageInputDTO.setDataPoints(dataPointDTOs);
+
+        DataPointDTO dataPointDTO = new DataPointDTO();
+
+        dataPointDTO.setScore(20);
+        Date scoreDate = new Date();
+        scoreDate.setMonth(1);
+        scoreDate.setDate(1);
+        dataPointDTO.setScoreDate(scoreDate );
+
+        dataPointDTOs.add(dataPointDTO);
+
+        dataPointDTO = new DataPointDTO();
+
+        dataPointDTO.setScore(5);
+        scoreDate = new Date();
+        scoreDate.setMonth(2);
+        scoreDate.setDate(1);
+        dataPointDTO.setScoreDate(scoreDate) ;
+
+        dataPointDTOs.add(dataPointDTO);
+
+        ObjectMapper om = new ObjectMapper();
+        om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        System.out.println((om).writeValueAsString(imageInputDTO));
+
     }
 }

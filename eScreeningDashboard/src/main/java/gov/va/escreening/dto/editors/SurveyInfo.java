@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,27 +13,34 @@ import gov.va.escreening.serializer.JsonDateSerializer;
 
 @JsonRootName(value="survey")
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"isIncludedInBattery", "surveyStatusItemInfo"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     private static final long serialVersionUID = 1L;
 
-
     private Integer surveyId;
     private String name;
-    private String vistaTitle;
     private String description;
     private Integer version;
     private boolean hasMha;
     private String mhaTestName;
-    private String mhaResultGroupIen;
-    private Boolean clinicalReminder;
+    private Integer displayOrderForSection=1;
 	private Date dateCreated;
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
     private SurveyStatusInfo surveyStatusInfo;
+    private Integer clinicalReminderId;
 
 
-    @JsonProperty("id")
+    public Integer getClinicalReminderId() {
+		return clinicalReminderId;
+	}
+
+	public void setClinicalReminderId(Integer clinicalReminderId) {
+		this.clinicalReminderId = clinicalReminderId;
+	}
+
+	@JsonProperty("id")
     public Integer getSurveyId() {
         return surveyId;
     }
@@ -81,14 +89,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
         this.mhaTestName = mhaTestName;
     }
 
-    public String getMhaResultGroupIen() {
-        return mhaResultGroupIen;
-    }
-
-    public void setMhaResultGroupIen(String mhaResultGroupIen) {
-        this.mhaResultGroupIen = mhaResultGroupIen;
-    }
-
     @JsonSerialize(using=JsonDateSerializer.class)
     @JsonProperty("createdDate")
     public Date getDateCreated() {
@@ -100,22 +100,13 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     }
 
     @Override
-    public String getVistaTitle() {
-        return vistaTitle;
+    public void setDisplayOrderForSection(Integer displayOrder) {
+        this.displayOrderForSection=displayOrder;
     }
 
     @Override
-    public void setVistaTitle(String vistaTitle) {
-        this.vistaTitle = vistaTitle;
-    }
-
-    @Override
-    public Boolean isClinicalReminder() {
-        return this.clinicalReminder;
-    }
-
-    public void setClinicalReminder(boolean clinicalReminder) {
-        this.clinicalReminder = clinicalReminder;
+    public Integer getDisplayOrderForSection() {
+        return this.displayOrderForSection;
     }
 
     public Boolean getIsIncludedInBattery() {
@@ -150,9 +141,10 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     @Override
     public String toString() {
         return "SurveyItem [surveyId=" + surveyId + ", name=" + name + ", description=" + description + ", version="
-                + version + ", isMha=" + hasMha + ", mhaTestName=" + mhaTestName
-                + ", mhaResultGroupIen=" + mhaResultGroupIen + ", dateCreated=" + dateCreated
-                + ", isIncludedInBattery=" + isIncludedInBattery + /*", surveySectionItem=" + surveySectionItem
-                + ", surveyStatusItem=" + surveyStatusItem + */"]";
+                + version + ", isMha=" + hasMha 
+                + ", mhaTestName=" + mhaTestName
+                + ", dateCreated=" + dateCreated
+                + ", isIncludedInBattery=" + isIncludedInBattery
+                + "]";
     }
 }

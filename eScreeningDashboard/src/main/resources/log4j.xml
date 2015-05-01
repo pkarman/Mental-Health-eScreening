@@ -21,15 +21,15 @@
 
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="WARN" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="org.springframework.beans">
-		<level value="WARN" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="org.springframework.context">
-		<level value="WARN" />
+		<level value="INFO" />
 	</logger>
 
 	<category name="org.springframework.jdbc.core.JdbcTemplate">
@@ -37,16 +37,28 @@
 	</category>
 
 	<logger name="org.springframework.web">
-		<level value="WARN" />
+		<level value="INFO" />
+	</logger>
+
+	<!--
+	<logger name="org.springframework.ws.client.MessageTracing">
+		<level value="TRACE" />
+	</logger>
+	<logger name="org.hibernate.type">
+		<level value="TRACE" />
 	</logger>
 	
+	<logger name="org.apache.http.client">
+		<level value="TRACE" />
+	</logger>
+	-->
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
 		<level value="INFO" />
 	</logger>
 
 	<logger name="gov.va.escreening.interceptor">
-		<level value="WARN" />
+		<level value="INFO" />
 	</logger>
 
 

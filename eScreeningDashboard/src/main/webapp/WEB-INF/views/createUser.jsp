@@ -3,15 +3,15 @@
 <%@ page session="true" %>
 <html>
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-    <title>eScreening Create/Edit User</title>
-    <script type="text/javascript" src="resources/js/querystring.js"></script>
-    <script type="text/javascript" src="resources/js/createUser.js"></script>
+	<title>eScreening Create/Edit User</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-    <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
+	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
+
+	<script type="text/javascript" src="resources/js/querystring.js"></script>
+	<script type="text/javascript" src="resources/js/createUser.js"></script>	
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 </head>
 <body>
@@ -158,8 +158,7 @@
         </div>
       </div>
 	  <br>
-
-
+	  
       <div class="row">
       	<div class="col-md-12">
       		<div class="form-group">
@@ -190,15 +189,8 @@
           </div>
         </div>
       </div>
-      
-      
-      
-      
-      
-      
     </div>
-    
-   
+
     <!-- Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -217,9 +209,6 @@
         </div>
       </div>
     </div>
-
-
-    
     
     <!-- End Create User Form -->
     <div> 
@@ -250,9 +239,6 @@
       </tbody>
     </table>
   </div>
-  
-  
-  
   <input type="hidden" id="docMode" value="${userManagementPageMode}">
   <div id="formButton">
   <a onClick="createUser('${userManagementPageMode}')" class="searchBtn btn btn-primary">Save</a>
@@ -260,17 +246,9 @@
 </div>
 
 <script>
-
 $(document).ready(function() {
-	//console.log("IN");
 	$('#changePasswordModal').modal();				
 });
 </script>
-
-
-					
-
-
-
 </body>
 </html>

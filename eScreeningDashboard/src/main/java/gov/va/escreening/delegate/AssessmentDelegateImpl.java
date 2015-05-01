@@ -1,55 +1,33 @@
 package gov.va.escreening.delegate;
 
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_EVENT_MARKED_COMPLETED;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_CALL_TIME;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_EMAIL;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_FIRST_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_LAST_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_MIDDLE_NAME_ID;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_PHONE_;
-import static gov.va.escreening.constants.AssessmentConstants.MEASURE_IDENTIFICATION_SSN_LAST_FOUR;
-import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
-import static gov.va.escreening.constants.AssessmentConstants.SURVEY_IDENTIFICATION_ID;
+import com.google.common.base.Strings;
+import gov.va.escreening.constants.TemplateConstants.TemplateType;
+import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.AssessmentContext;
-import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.domain.AssessmentStatusEnum;
+import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranDtoHelper;
-import gov.va.escreening.dto.ae.Answer;
-import gov.va.escreening.dto.ae.AssessmentRequest;
-import gov.va.escreening.dto.ae.AssessmentResponse;
-import gov.va.escreening.dto.ae.CompletionResponse;
+import gov.va.escreening.dto.ae.*;
 import gov.va.escreening.dto.ae.Measure;
-import gov.va.escreening.entity.AssessmentStatus;
-import gov.va.escreening.entity.Battery;
-import gov.va.escreening.entity.SurveySection;
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.entity.VeteranAssessmentAuditLog;
-import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.entity.*;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.InvalidAssessmentContextException;
-import gov.va.escreening.repository.AssessmentStatusRepository;
-import gov.va.escreening.repository.BatteryRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.SurveySectionRepository;
-import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
-import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.service.AssessmentEngineService;
-import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.VeteranAssessmentSurveyService;
-import gov.va.escreening.service.VeteranService;
+import gov.va.escreening.repository.*;
+import gov.va.escreening.service.*;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Strings;
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
+
+import static gov.va.escreening.constants.AssessmentConstants.*;
 
 @Transactional
 public class AssessmentDelegateImpl implements AssessmentDelegate {
@@ -76,12 +54,18 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	private SurveyRepository surveyRepository;
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
-	
+
+    @Resource(type=SurveyPageRepository.class)
+    private SurveyPageRepository surveyPageRepository;
+
 	@Autowired
 	private BatteryRepository batteryRepo;
 
 	@Resource(type = TemplateProcessorService.class)
 	private TemplateProcessorService templateProcessorService;
+
+	@Resource(type = VeteranAssessmentSurveyScoreService.class)
+	private VeteranAssessmentSurveyScoreService vassSrv;
 
 	@Override
 	public List<VeteranDto> findVeterans(VeteranDto veteran) {
@@ -90,7 +74,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
-	public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId) {
+	public VeteranAssessment getAvailableVeteranAssessment(Integer veteranId, Integer programId) {
 
 		List<VeteranAssessment> veteranAssessments = veteranAssessmentService.getAvailableAssessmentsForVeteran(veteranId);
 
@@ -98,8 +82,11 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			return null;
 		} else {
 			for (VeteranAssessment assessment : veteranAssessments) {
-				if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
-					return assessment;
+				if(programId == null || assessment.getProgram().getProgramId().equals(programId))
+				{
+					if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
+						return assessment;
+				}
 			}
 			return null;
 		}
@@ -224,20 +211,46 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
-	public CompletionResponse getCompletionResponse(int batteryId) {
-		CompletionResponse response = new CompletionResponse();
-		Battery b = batteryRepo.findOne(batteryId);
-		
-		response.setCompletionText(b.getCompleteMessage());
-		return response;
+	public String getCompletionMessage() throws IllegalSystemStateException {
+		return getBatteryTempalte(TemplateType.ASSESS_CONCLUSION);
 	}
 
 	@Override
-	public String getWelcomeMessage()
-	{
-		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
-		return veteranAssessment.getBattery().getWelcomeMessage();
+	public String getWelcomeMessage() throws IllegalSystemStateException {
+		return getBatteryTempalte(TemplateType.ASSESS_WELCOME);
+	}
+	
+	private String getBatteryTempalte(TemplateType type) throws InvalidAssessmentContextException, EntityNotFoundException, IllegalSystemStateException{
+		Integer assessmentId = assessmentContext.getVeteranAssessmentId();
+		if(assessmentId == null){
+			throw new InvalidAssessmentContextException("No assessment found in context");
+		}
 		
+		VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
+		if(veteranAssessment == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+		        .toUser("Could not find the assessment.")
+		        .toAdmin("Could not find the assessment with ID: " + assessmentId)
+		        .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+		        .throwIt();
+		}
+		
+		Battery battery = veteranAssessment.getBattery();
+		if(battery == null){
+			ErrorBuilder.throwing(IllegalSystemStateException.class)
+		        .toUser("No battery assigned to this assessment.  Please contact support.")
+		        .toAdmin("No battery is associated with assessment with ID: " + assessmentId + ". Please report this incident to development team.")
+		        .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
+		        .throwIt();
+		}
+		
+		try{
+			return templateProcessorService.renderBatteryTemplate(battery, type, assessmentId, ViewType.HTML);
+		}
+		catch(EntityNotFoundException enf){
+			//if there is no defined template we will return an empty string
+			return "";
+		}
 	}
 	
 	@Override
@@ -248,6 +261,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		// update the status of the assessment to complete
 		AssessmentStatus status = assessmentStatusRepository.findOne(AssessmentStatusEnum.COMPLETE.getAssessmentStatusId());
 		veteranAssessment.setAssessmentStatus(status);
+        veteranAssessment.setDateCompleted(new Date());
 		veteranAssessmentRepository.update(veteranAssessment);
 
 		// TODO: Currently only a Veteran can take the assessment, person type will need to be detected once a
@@ -255,5 +269,20 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		veteranAssessment = veteranAssessmentRepository.findOne(assessmentId);
 		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
+
+        // after the assessment is done, we will calculate the score first before returing to UI.
+        recordAllReportableScores(veteranAssessment);
 	}
+
+    @Override
+    public void recordAllReportableScores(VeteranAssessment veteranAssessment) {
+        vassSrv.recordAllReportableScores(veteranAssessment);
+
+    }
+
+    @Override
+    public Integer getModuleId(Integer pageId) {
+        SurveyPage surveyPage = surveyPageRepository.findOne(pageId);
+        return surveyPage.getSurvey().getSurveyId();
+    }
 }

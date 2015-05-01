@@ -1,12 +1,15 @@
 package gov.va.escreening.dto.editors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 
 /**
  * Created by pouncilt on 8/5/14.
  */
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"answerId", "answerText", "answerType", "answerResponse", "otherAnswerResponse"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerInfo implements MeasureAnswerBaseProperties {
     private Integer id;
     private String text;
@@ -16,10 +19,11 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
     private String exportName;
     private String otherResponse;
     private Integer rowId;
-
+    private String calculationValue;
+    private Integer displayOrder;
+    private String mhaValue;
 
     public AnswerInfo() {
-
     }
 
     public Integer getId() {
@@ -102,10 +106,12 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
         this.vistaText = vistaText;
     }
 
+    @Override
     public String getExportName() {
         return exportName;
     }
 
+    @Override
     public void setExportName(String exportName) {
         this.exportName = exportName;
     }
@@ -128,11 +134,44 @@ public class AnswerInfo implements MeasureAnswerBaseProperties {
         this.otherResponse = otherResponse;
     }
 
+    @Override
     public Integer getRowId() {
         return rowId;
     }
 
+    @Override
     public void setRowId(Integer rowId) {
         this.rowId = rowId;
+    }
+
+    @Override
+    public String getCalculationValue() {
+        return calculationValue;
+    }
+
+    @Override
+    public void setCalculationValue(String calculationValue) {
+        this.calculationValue = calculationValue;
+    }
+
+    @Override
+	public Integer getDisplayOrder() {
+		return displayOrder;
+	}
+
+    @Override
+	public void setDisplayOrder(Integer displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+    @Override
+    public String getMhaValue() {
+        return this.mhaValue; 
+    }
+
+    @Override
+    public void setMhaValue(String mhaValue) {
+        this.mhaValue = mhaValue;
+        
     }
 }

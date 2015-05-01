@@ -1,0 +1,84 @@
+/* This css file should be used in every page */
+
+
+/* for wysiwyg created tables */
+.w-table{
+	width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding:0;
+    margin:0;
+}
+
+.no-border,
+td.no-border,
+th.no-border {
+	border: 0px none #000 !important;
+}
+
+td.no-top-border,
+th.no-top-border {
+	border-top: 0px none #000 !important;
+}
+
+td.no-bottom-border,
+th.no-bottom-border {
+	border-bottom: 0px none #000 !important;
+}
+
+td.no-right-border,
+th.no-right-border {
+	border-right: 0px none #000 !important;
+}
+
+td.no-left-border,
+th.no-left-border {
+	border-left: 0px none #000 !important;
+}
+
+.border-dotted,
+.border-dotted td, 
+.border-dotted th {
+	border: 1px dotted #000;
+}
+.border-dashed, 
+.border-dashed td, 
+.border-dashed th {
+	border: 1px dashed #000;
+}
+.border-solid, 
+.border-solid td, 
+.border-solid th {
+	border: 1px solid #000;
+}
+.border-double, 
+.border-double td, 
+.border-double th {
+	border: 1px double #000;
+}
+.border-groove, 
+.border-groove td, 
+.border-groove th {
+	border: 1px groove #000;
+}
+.border-ridge, 
+.border-ridge td, 
+.border-ridge th {
+	border: 1px ridge #000;
+}
+.border-inset, 
+.border-inset td, 
+.border-inset th {
+	border: 1px inset #000;
+}
+.border-outset, 
+.border-outset td, 
+.border-outset th {
+	border: 1px dotted #000;
+}
+.modal-window-sm .modal-dialog {
+  width: 400px;
+}
+.modal-window-sm .modal-content {
+  min-height: 200px;
+}

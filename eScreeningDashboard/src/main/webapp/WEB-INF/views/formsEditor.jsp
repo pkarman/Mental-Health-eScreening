@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html ng-app="Editors">
 <head lang="en">
+    <title>VA Editors</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +16,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>VA Editors</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- CSS -->
+	<link href="resources/editors/vendors/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/vendors/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/editors/css/angular-ui-tree.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/vendors/textAngular/textAngular.css" type="text/css">
@@ -26,18 +28,32 @@
     <link rel="stylesheet" href="resources/editors/css/escreening/formButtons.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/jquery-ui-1.10.3.custom.min.css" type="text/css">
     <link rel="stylesheet" href="resources/editors/css/escreening/standardtopofpage-dashboard_new.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/css/escreening/section_surveys.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="resources/editors/css/main.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/css/common.css">
+	<link rel="stylesheet" type="text/css" href="resources/editors/css/formsEditor.css">
+
+    <!-- JS -->
+	<!-- jQuery JS 1.10.2 -->
+	<script src="resources/editors/vendors/jquery/1.10.2/jquery.min.js"></script>
+
     <script src="resources/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/jquery.insert-at-caret.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js'></script>
+    <script src="resources/editors/vendors/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Angular JS 1.2.25 -->
+    <script type="text/javascript" src="resources/editors/vendors/angularjs/1.2.25/angular.min.js"></script>
+    <script type="text/javascript" src="resources/editors/vendors/angularjs/1.2.25/angular-resource.min.js"></script>
+    <script type="text/javascript" src='resources/editors/vendors/angularjs/1.2.25/angular-animate.min.js'></script>
     <script type="text/javascript" src="resources/vendor-libs/restangular/1.4.0/restangular.min.js"></script>
+
+    <!-- vendors -->
     <script type="text/javascript" src="resources/editors/vendors/lodash/lodash.min.js"></script>
-    
+    <script type="text/javascript" src="resources/vendor-libs/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+
+    <!-- Tabs -->
+    <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+
     <!-- Utility classes and non-Angular, non-framework classes -->
     <script type="text/javascript" src="resources/editors/js/app/utils/HttpRejectionProcessor.js"></script>
 
@@ -59,11 +75,11 @@
 
     <!-- Domain Object -->
     <script type="text/javascript" src="resources/editors/js/app/domains/EScreeningDashboardApp.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPage.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageUIObjectItemWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPageTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyPagesTransformer.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/Survey.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveyTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveysTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/SurveySection.js"></script>
@@ -85,6 +101,8 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/AnswersTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TableAnswersTransformer.js"></script>
 
+    <script type="text/javascript" src="resources/editors/js/app/domains/AssessmentVariable.js"></script>
+
     <script type="text/javascript" src="resources/editors/js/app/domains/Validation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/ValidationTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/ValidationsTransformer.js"></script>
@@ -94,6 +112,8 @@
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteryTransformer.js"></script> 
 	<script type="text/javascript" src="resources/editors/js/app/domains/BatteriesTransformer.js"></script>
 	
+    <script type="text/javascript" src="resources/editors/js/app/domains/ClinicalReminder.js"></script>
+
 	<!-- Template Domain -->
 
 	<script type="text/javascript" src="resources/editors/js/app/domains/Template.js"></script>
@@ -103,13 +123,12 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateVariableContent.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
 	<!-- Modules -->
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/angularUtils.js"></script>
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
-    <script type="text/javascript" src="resources/editors/js/directives/angular-routing.js"></script>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
     <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
     <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
@@ -119,13 +138,24 @@
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/angular-ui-tree.min.js"></script>
     
+    <!-- Application Definition file -->
+    <script type="text/javascript" src="resources/editors/main.js"></script>
+
+    <!-- UI-Router View States definition -->
+    <script type="text/javascript" src="resources/editors/states.js"></script>
+
     <!-- Services -->
+    <script type="text/javascript" src="resources/editors/js/app/services/assessment-variable.manager.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
+    <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/services/SurveyPageService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveySectionService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageSectionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
@@ -134,9 +164,8 @@
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/freemarkerWhiteSpaceFilter.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/filters/limitToWithEllipsis.js"></script>
-    
-    <!-- Application Definition file -->
-    <script type="text/javascript" src="resources/editors/main.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/on-enter.directive.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/strip-html.filter.js"></script>
     
     <!-- Controllers -->
     
@@ -147,94 +176,40 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAbstractController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesSelectionController.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/batteries/batteriesAddEditController.js"></script>
-    
+
+    <!-- Formula Management files -->
+    <script type="text/javascript" src="resources/editors/js/app/services/ManageFormulasService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasEditController.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/formulasListController.js"></script>
+
+
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
-    
-    <!-- Modules View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/moduleController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modulesEditController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/ModuleTemplateListController.js"></script>
 
-    <!-- Questions View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/questionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/freeTextReadOnlyQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/selectMultipleMatrixQuestionController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/controllers/questions/instructionQuestionController.js"></script>
-    
+    <!-- Modules View State(s) -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.list.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.instructions.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.table.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/modules/text-question.directive.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/modules/simple-question.directive.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/modules/matrix-question.directive.js"></script>
     <!-- Template View State(s) -->
-    <script type="text/javascript" src="resources/editors/js/app/controllers/templates/templateEditorController.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.edit.controller.js"></script>
+    
+    <!--  Directives -->
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/modules/matrix-transformation.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
 
-    <!-- UI-Router View States definition -->
-    <script type="text/javascript" src="resources/editors/states.js"></script>
-    
-    <style type="text/css">
-	    @media (min-width:1024px) { 
-			.navbar > .container {
-			    text-align: center;
-			}
-			.navbar-header,.navbar-brand,.navbar .navbar-nav,.navbar .navbar-nav > li {
-			    float: none;
-			    display: inline-block;
-			}
-			.collapse.navbar-collapse {
-			    float: none;
-			    display: inline-block!important;
-			    width: auto;
-			    clear: none;
-			}
-			/* Promote these to main.css when done. - JBH */
-			
-			.btnHeader{
-				color:#ffffff;
-				background-color:#003f72;
-				margin-left:-4px;
-				margin-right:-4px;
-			}
-			
-			.btnHeader:hover{
-				color:#ffffff;
-				background-color:#001441;
-			}
-			
-			.btnHeader:active{
-				color:#ffae00;
-				background-color:#001441;
-				
-			}
-			
-			.btnHeaderMid{
-				border-radius:0px;
-			}
-			
-			.btnHeaderLeft{
-				border-top-right-radius:0px;
-				border-bottom-right-radius:0px;
-			}
-			
-			.btnHeaderRight{
-				border-top-left-radius:0px;
-				border-bottom-left-radius:0px;
-			}
-			
-			.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
-				color: #ffae00;
-				background-color: #001441;
-				border-color: #adadad;
-			}
-		}
-    </style>
     <script type="text/javascript">	
         $(document).ready(function() {
             tabsLoad("formsEditor");
@@ -294,17 +269,23 @@
                          will set the links to 'active' if, for example on the first link, 'assessment-editor' or any of
                          its descendant states are activated. -->
                 <br> 
-                 <div class="row">
+                 <div class="row editorTopNav">
                  <div class="col-md-12  text-center">
                 <div class="button-group" ng-show="$state.current.name!=='home'">
-                	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.batteryselection">Manage Batteries</a>
-                	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules.list">Manage Module</a>
+                	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>
+                	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules">Manage Module</a>
                 	<a ng-class="{active: $state.includes('sections')}" class="btn btn-default btnHeader btnHeaderRight" ui-sref="sections">Manage Sections</a>
                 </div>
                 </div>
                 </div>
             <!-- </div>-->
             		 <div class="row">
+
+                         <div class="col-md-12">
+                             <!-- Alerts and Messages -->
+                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)">{{message.msg}}</alert>
+                         </div>
+
             		    <div class="col-md-12" ui-view></div>
                     </div>
         		</div>
@@ -348,5 +329,27 @@
     <script src="resources/js/lib/jquery.idletimer.js" type="text/javascript"></script> 	 	
     <script src="resources/js/lib/jquery.idletimeout.js" type="text/javascript"></script> 	 	
     <script src="resources/js/dashboard/dashboard_common.js" type="text/javascript"></script> 	    
+
+
+    <!-- angular-ui-select for mng formulas (starts after this line)-->
+    <!-- Select2 theme -->
+    <link rel="stylesheet" href="resources/bower_components/angular-ui-select/dist/select.min.css" type="text/css">
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/select2/3.4.5/select2.css">
+    <!--
+      Selectize theme Less versions are available at https://github.com/brianreavis/selectize.js/tree/master/dist/less
+    -->
+    <link rel="stylesheet" href="resources/editors/vendors/ajax/selectize.js/0.8.5/css/selectize.default.css">
+    <style>
+        /* body {padding: 15px;} */
+        .select2 > .select2-choice.ui-select-match {
+            /* Because of the inclusion of Bootstrap */
+            height: 29px;
+        }
+        .selectize-control > .selectize-dropdown {
+            top: 36px;
+        }
+    </style>
+    <script type="text/javascript" src="resources/bower_components/angular-ui-select/dist/select.min.js"></script>
+    <!-- angular-ui-select for mng formulas (finishes before this line)-->
 </body>
 </html>

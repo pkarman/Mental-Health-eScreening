@@ -7,6 +7,10 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+import gov.va.escreening.dto.report.Report593ByDayDTO;
+import gov.va.escreening.dto.report.Report593ByTimeDTO;
+import gov.va.escreening.dto.report.Report594DTO;
+import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.Consult;
 import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.HealthFactor;
@@ -14,7 +18,9 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jocchiuzzo
@@ -138,9 +144,10 @@ public interface VeteranAssessmentService {
      * @param selectedBatteryId
      * @param surveyIdList
      * @return
+     * @throws AssessmentAlreadyExistException 
      */
     Integer create(Integer veteranId, Integer programId, Integer clinicId, Integer clinicianId,
-            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList);
+            Integer createdByUserId, Integer selectedNoteTitleId, Integer selectedBatteryId, List<Integer> surveyIdList) throws AssessmentAlreadyExistException;
 
     /**
      * Updates an existing veteran assessment.
@@ -252,4 +259,77 @@ public interface VeteranAssessmentService {
      * @return
      */
     List<String> getHealthFactorReport(int veteranAssessmentId);
+    
+    /**
+     * Returns the a map of assessment vairable values overtime
+     * @param veteranID
+     * @param assessmentVariableID
+     * @param numOfMonth
+     * @return
+     */
+    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    		int numOfMonth);
+
+    String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getAverageTimePerAssessment(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getNumOfBatteries(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    String getVeteranWithMultiple(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Report593ByDayDTO> getBatteriesByDay(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    List<Report593ByTimeDTO> getBatteriesByTime(String strFromDate, String strToDate, List<Integer> clinicIds);
+
+    /**
+     * Creates an assessment that is associated with an appointment.
+     * @param veteranId
+     * @param programId
+     * @param clinicId
+     * @param clinicianId
+     * @param createdByUserId
+     * @param selectedNoteTitleId
+     * @param selectedBatteryId
+     * @param surveyIdList
+     * @param apptDate
+     * @return
+     */
+    public abstract boolean createAssessmentWithAppointment(Integer veteranId,
+			Integer programId, Integer clinicId, Integer clinicianId, Integer createdByUserId, Integer selectedNoteTitleId,
+			Integer selectedBatteryId, List<Integer> surveyIdList, Date apptDate) throws AssessmentAlreadyExistException;
+
+    List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate);
+
+    String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate);
+
+    List<Integer> getGenderCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Integer> getEthnicityCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getRaceCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEducationCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getEmploymentCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getTobaccoCount(List cList, String fromDate, String toDate);
+
+    List<Integer> getBranchCount(List cList, String fromDate, String toDate);
+
+    Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getTobaccoMissingCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingBranchCount(List<Integer> cList, String fromDate, String toDate);
+
+    int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getAgeStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    List<Number> getNumOfDeploymentStatistics(List<Integer> cList, String fromDate, String toDate);
+
+    int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
 }

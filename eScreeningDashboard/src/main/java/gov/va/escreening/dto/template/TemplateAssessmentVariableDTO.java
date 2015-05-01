@@ -80,4 +80,38 @@ public class TemplateAssessmentVariableDTO {
 	public void setMeasureAnswerId(Integer measureAnswerId) {
 		this.measureAnswerId = measureAnswerId;
 	}
+	
+	//TODO: move to the use of enum/enum sets (here and in AssessmentConstants)
+	public boolean measureTypeIn(Integer... measureTypeIds){
+		if(measureTypeId == null){
+			return false;
+		}
+		for(Integer typeId: measureTypeIds){
+			if(measureTypeId == typeId){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean measureTypeIs(Integer measureTypeId){
+		return this.measureTypeId != null && this.measureTypeId == measureTypeId;  
+	}
+	
+	//TODO: move to the use of enum/enum sets (here and in AssessmentConstants)
+	public boolean typeIn(Integer... typeIds){
+		if(typeId == null){
+			return false;
+		}
+		for(Integer typeId: typeIds){
+			if(this.typeId == typeId){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean typeIs(Integer typeId){
+		return this.typeId != null && this.typeId == typeId;  
+	}
 }
