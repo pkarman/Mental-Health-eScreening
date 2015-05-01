@@ -131,6 +131,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				});
 			}, 
 			function(response) {
+				//TODO: we should interpret the error response object to give more information to the user
+				MessageFactory.empty();
 				MessageFactory.error('An error occurred when trying to save the template. Please contact support.');
 			}
 		);

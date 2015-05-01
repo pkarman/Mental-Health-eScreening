@@ -313,7 +313,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
                     assessmentId, templateId));
 
 		String templateOutput = null;
-		try {
+		try {//TODO: This should be updated to have a ResolveParameters object passed into it. This allows us to reused the same parameters object which should reduce processing times.
 			templateOutput = processTemplate(templateText, assessmentVariables, templateId);
 		}
         catch (Exception e) {
@@ -393,6 +393,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			.toAdmin(technicalMessage).throwIt();
 	}
 
+	//TODO: This should be updated to have a ResolveParameters object passed into it. This allows us to reused the same parameters object which should reduce processing times.
 	String processTemplate(String templateText,
 			Collection<AssessmentVariableDto> assessmentVariables, int templateId) throws IOException, TemplateException {
 
