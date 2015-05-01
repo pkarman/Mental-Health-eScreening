@@ -8,6 +8,9 @@ import gov.va.escreening.exception.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -72,6 +75,16 @@ public interface AssessmentVariableService {
 	 * @throws EntityNotFoundException if no AV is found for the given answer
 	 */
 	AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId);
+	
+	/**
+	 * Collects all assessment variable associations (T) to be saved with AV related objects (e.g. templates, rules, formulas)
+	 * @param avIds the assessment variable IDs which are known to be in the related object
+	 * @param variableMap an optional map from ID to Assessment variable, used to minimize calls to DB to pull new ones
+	 * This map does not have to contain all AVs for the AvIds given.  
+	 * @return the full collection of assessment variables that should be associated with the related object.
+	 */
+	Set<AssessmentVariable> collectAssociatedVars(Set<Integer> avIds, 
+	        @Nullable Map<Integer, AssessmentVariable> currentVtMap);
 	
 	List<Map<String, String>> askFormulasFor(Integer moduleId);
 

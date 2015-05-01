@@ -40,6 +40,20 @@ SET e.name=SUBSTRING(
     			IFNULL(NULLIF(m.measure_text, ''), 
 		   			CONCAT('question_', CAST(m.measure_id AS CHAR)))),
 			1, 50);
+
+-- Update templates which contain measure AVs so they also list each measure's answer AVs as well
+INSERT INTO variable_template (template_id, assessment_variable_id)
+    select t.template_id, answer_av.assessment_variable_id
+    from template t
+    join variable_template vt on t.template_id=vt.template_id
+    join assessment_variable measure_av on vt.assessment_variable_id=measure_av.assessment_variable_id
+	join measure m on measure_av.measure_id=m.measure_id
+	join measure_answer ma on m.measure_id=ma.measure_id
+	join assessment_variable answer_av on ma.measure_answer_id=answer_av.measure_answer_id
+    left join variable_template answer_vt on 
+		t.template_id=answer_vt.template_id AND answer_av.assessment_variable_id=answer_vt.assessment_variable_id
+    WHERE 
+		measure_av.assessment_variable_type_id=1 AND answer_vt.variable_template_id is NULL;
 		
 -- add event for every question (name is set with first value that is non-null in this order: the variable name, or measure text, or question_[measure_id])
 INSERT INTO `event` (event_type_id, `name`, related_object_id)

@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +95,9 @@ public class RuleServiceImpl implements RuleService {
     private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
     @Autowired
     private VeteranAssessmentRepository veteranAssessmentRepository;
-
+    @Autowired
+    private AssessmentVariableService avService;
+    
     @Resource(name = "templateSmrNullHandler")
     private NullValueHandler templateSmrNullHandler;
 
@@ -172,28 +173,6 @@ public class RuleServiceImpl implements RuleService {
         return trueRules;
     }
 
-
-
-    //	private void buildResponseMap(){
-    //	    Map<Integer, Pair<gov.va.escreening.entity.Measure, Measure>> responseMap = Maps.newHashMapWithExpectedSize(measures.size());
-    //	    for (gov.va.escreening.entity.Measure m : measures) {
-    //            Measure userAnswer = null;
-    //            for (Measure answer : assessmentRequest.getUserAnswers()) {
-    //                if (answer.getMeasureId().intValue() == m.getMeasureId()) {
-    //
-    //                    userAnswer = answer;
-    //
-    //                    break;
-    //                }
-    //            }
-    //
-    //            if (userAnswer != null) {
-    //                responseMap.put(m.getMeasureId(), Pair.of(m, userAnswer));
-    //            }
-    //
-    //        }
-    //	}
-
     /**
      * Evaluates the given Rule's logical expression and returns result.
      * @param rule
@@ -217,36 +196,6 @@ public class RuleServiceImpl implements RuleService {
 
         return false;
     }
-
-    //	@Override
-    //	public boolean evaluate(
-    //	        Map<Integer, Pair<Measure, gov.va.escreening.dto.ae.Measure>> responseMap,
-    //	        Rule rule) {
-    //		try {
-    //			FormulaDto formula = new FormulaDto();
-    //			formula.setExpressionTemplate(rule.getExpression());
-    //			Map<Integer, AssessmentVariable> measureAnswerHash = assessmentVariableFactory
-    //					.createMeasureAnswerTypeHash(rule.getAssessmentVariables());
-    //
-    //			Optional<String> value = formulaAssessmentVariableResolver
-    //					.resolveAssessmentVariable(
-    //							createAssessmentVarChildrenList(rule.getAssessmentVariables()), 
-    //							formula,
-    //							responseMap, 
-    //							measureAnswerHash);
-    //
-    //			if (value.isPresent()) {
-    //				return Boolean.parseBoolean(value.get());
-    //			}
-    //		} catch (CouldNotResolveVariableException e) {
-    //			// we might want to throw the exception instead of returning false
-    //			// in the future
-    //			logger.debug("Could not resolve variable for rule {}, message {}",
-    //					rule, e.getMessage());
-    //		}
-    //
-    //		return false;
-    //	}
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -716,31 +665,21 @@ public class RuleServiceImpl implements RuleService {
      * @param avIds
      */
     private void setRuleAssessmentVariables(Rule rule, Set<Integer> avIds) {
-
-        Set<Integer> keepers = new HashSet<>();
-        if (rule.getAssessmentVariables() == null){
-            rule.setAssessmentVariables(Sets.<AssessmentVariable>newHashSetWithExpectedSize(avIds.size()));
+        //create set with both AVs given and the answer AVs
+        Map<Integer, AssessmentVariable> varMap;
+        if(rule.getAssessmentVariables() == null){
+            varMap = Collections.emptyMap();
+            rule.setAssessmentVariables(new HashSet<AssessmentVariable>());
         }
         else{
-            //remove the AVs that are not present in updated rule
-            Iterator<AssessmentVariable> avIter = rule.getAssessmentVariables().iterator();
-            while(avIter.hasNext()){
-                AssessmentVariable av = avIter.next();
-                if(!avIds.contains(av.getAssessmentVariableId())){
-                    avIter.remove(); 
-                }
-                else{
-                    keepers.add(av.getAssessmentVariableId());
-                }
+            varMap = Maps.newHashMapWithExpectedSize(rule.getAssessmentVariables().size());
+            for(AssessmentVariable av : rule.getAssessmentVariables()){
+                varMap.put(av.getAssessmentVariableId(), av);
             }
+            rule.getAssessmentVariables().clear();
         }
-
-        //add any AVs that are missing from the rule
-        for(Integer avId : avIds){
-            if(!keepers.contains(avId)){
-                rule.getAssessmentVariables().add(avRepository.findOne(avId));
-            }
-        }
+        
+        //Collect variables and added VariableTemplates to template
+        rule.getAssessmentVariables().addAll(avService.collectAssociatedVars(avIds, varMap));
     }
-
 }

@@ -82,6 +82,8 @@ public abstract class RestController {
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Response<ErrorResponse> handleIllegalArgumentException(Exception iae) {
+        logger.error("Unexpected error", iae);
+        
         ErrorResponse er;
         if (iae instanceof ErrorResponseException){
         	er = ((ErrorResponseException)iae).getErrorResponse();

@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
 import gov.va.escreening.constants.AssessmentConstants;
 
 import com.google.common.collect.*;
@@ -12,6 +13,8 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
+import gov.va.escreening.entity.Template;
+import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
@@ -22,6 +25,7 @@ import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.*;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import gov.va.escreening.service.export.FormulaColumnsBldr;
@@ -385,6 +389,37 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		}
 		return avs.get(0);
 	}
+	
+	@Override
+    public Set<AssessmentVariable> collectAssociatedVars(Set<Integer> avIds,
+            @Nullable Map<Integer, AssessmentVariable> varMap) {
+	    
+	    Set<AssessmentVariable> variableSet = new HashSet<>();        
+        for(Integer id : avIds){
+            AssessmentVariable av = varMap != null && varMap.containsKey(id) ? varMap.get(id) : avr.findOne(id);
+            variableSet.add(av);
+            
+            if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
+                Measure measure = av.getMeasure();
+                addMeasureVariables(measure, variableSet);
+                
+                //check for child questions to add
+                if(measure.isParent() && measure.getChildren() != null){
+                    for(Measure child : measure.getChildren()){
+                        addMeasureVariables(child, variableSet);
+                    }
+                }
+            }//TODO: Maybe we should add formula children also?
+        }
+        return variableSet;
+    }
+	
+	private void addMeasureVariables(Measure measure, Set<AssessmentVariable> variableSet){
+	    variableSet.add(measure.getAssessmentVariable());
+        for(MeasureAnswer ma : measure.getMeasureAnswerList()){
+            variableSet.add(ma.assessmentVariable());
+        }
+    }
 	
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
 			final Set<Integer> measureTypes) {
