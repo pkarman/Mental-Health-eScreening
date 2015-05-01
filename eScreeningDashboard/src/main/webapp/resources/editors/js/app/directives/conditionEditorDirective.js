@@ -8,8 +8,8 @@
     Editors.directive('conditionEditor', ['MeasureService', 'RecursionHelper', 
                                           function(MeasureService, RecursionHelper) {
     	var operators = [
-            { name: 'Equals',                    value: 'eq',    categories: ['numerical'] },
-            { name: 'Doesn\'t Equals',           value: 'neq',   categories: ['numerical'] },
+            { name: 'Equals',                    value: 'eq',    categories: ['numerical', 'equality'] },
+            { name: 'Doesn\'t Equals',           value: 'neq',   categories: ['numerical', 'equality'] },
             { name: 'Is Less Than',              value: 'lt',    categories: ['numerical'] },
             { name: 'Is Greater Than',           value: 'gt',    categories: ['numerical'] },
             { name: 'Is Less Than or Equals',    value: 'lte',   categories: ['numerical'] },
@@ -40,8 +40,9 @@
         					&& variable.transformations[0].name === 'numberOfEntries') {
         				includeOperator = true;
         			}
-        			if(variable.type.toUpperCase() === 'CUSTOM' 
-        				|| variable.type.toUpperCase() === 'FORMULA') {
+        			if(variable.type.toUpperCase() === 'CUSTOM'){
+        				includeOperator = _.contains(operator.categories, 'equality');
+        			} else if (variable.type.toUpperCase() === 'FORMULA') {
         				includeOperator = true;
         			} else if (variable.type.toUpperCase() === "QUESTION" 
         					&& variable.measureTypeId === 1) {
