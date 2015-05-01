@@ -136,9 +136,11 @@ public class MyAccountRestController extends BaseDashboardRestController {
        			   .replaceAll("\\%5E", "^")
        			   .replaceAll("\\%26", "&")
        			   .replaceAll("\\%20", " ")
+				   .replaceAll("\\%2B", "+")
+				   .replaceAll("\\%5C", "\\\\")
+				   .replaceAll("\\%7C", "|")
        			   .replaceAll("\\%7E", "~");
         
-
         	verifyCode = URLEncoder.encode(request.getParameter("verifyCode"), "UTF-8")   
       			   .replaceAll("\\%28", "(")                          
       			   .replaceAll("\\%29", ")")   		
@@ -153,9 +155,10 @@ public class MyAccountRestController extends BaseDashboardRestController {
       			   .replaceAll("\\%5E", "^")
       			   .replaceAll("\\%26", "&")
       			   .replaceAll("\\%20", " ")
+				   .replaceAll("\\%2B", "+")
+				   .replaceAll("\\%5C", "\\\\")
+				   .replaceAll("\\%7C", "|")
       			   .replaceAll("\\%7E", "~");
-           //accessCode = URLDecoder.decode(request.getParameter("accessCode"), "UTF-8");
-           //verifyCode = URLDecoder.decode(request.getParameter("verifyCode"), "UTF-8");
         }catch(Exception ex)
         {
         	logger.error("Error getting access/verify code", ex);
