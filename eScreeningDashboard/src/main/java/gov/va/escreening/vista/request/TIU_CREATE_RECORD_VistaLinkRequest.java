@@ -67,8 +67,18 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
     }
 
     public VistaProgressNote createProgressNote() throws Exception{
+    	String visitDate = null;
+    	if(this.visitString != null)
+        {
+        	String[] parts = visitString.split(";");
+        	if (parts.length ==3) visitDate = parts[1];
+        }
         if(identifiers.length >= 2 && identifiers[1] != null) {
             identifiers[1] = VistaUtils.convertToVistaDateString((Date) identifiers[1], VistaDateFormat.MMddHHmmss);
+            if(visitDate !=null)
+            {
+            	identifiers[1] = visitDate;
+            }
         }
 
         HashMap<String, Object> textHashMap = new HashMap<String, Object>();
@@ -81,7 +91,15 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
         List<Object> requestParams = new ArrayList<Object>();
         requestParams.add(this.patientIEN); // IEN of patient Required
         requestParams.add(this.titleIEN);   // IEN of title Required
-        requestParams.add((this.vistaVisitDateTime != null)?VistaUtils.convertToVistaDateString(this.vistaVisitDateTime, VistaDateFormat.MMddHHmmss): "");  // Optional
+        
+        if(visitDate != null)
+        {
+        	requestParams.add(visitDate);
+        }
+        else
+        {
+        	requestParams.add((this.vistaVisitDateTime != null)?VistaUtils.convertToVistaDateString(this.vistaVisitDateTime, VistaDateFormat.MMddHHmmss): "");  // Optional
+        }
         requestParams.add(this.locationIEN); // Optional
         requestParams.add((this.visitIEN != null)? this.visitIEN : ""); // Optional IEN of Visit
         //requestParams.add(this.identifiers); // Required  
@@ -94,6 +112,7 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
         request.clearParams();
         request.setParams(requestParams);
 
+        logger.info("TIU CREATE RECORD params:" + requestParams.toString());
         RpcResponse response = connection.executeRPC(request);
         logger.debug("Create Progress Note Response: " + response.getResults());
 
