@@ -342,6 +342,9 @@ public class TemplateServiceImpl implements TemplateService {
                 template.setGraphParams(null);
             }
         }
+        else{
+            template.setGraphParams(null);
+        }
         
         // save raw json file to the database
         if (templateFile.getBlocks() == null || templateFile.getBlocks().isEmpty()) {
