@@ -130,9 +130,9 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/bower_components/ng-table/ng-table.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
