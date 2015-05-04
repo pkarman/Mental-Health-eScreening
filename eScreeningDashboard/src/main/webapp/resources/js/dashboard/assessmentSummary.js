@@ -94,7 +94,15 @@ $(document).ready(function() {
 	});
 	clearInterval(timer);
 	*/
-	
-	
-	
 });
+
+// t808 returnURL to redirect to assessmentSummary 
+function returnURL(vid, mappingReturnURL){
+	// Check browser support
+	if (typeof(Storage) != "undefined") {
+		localStorage.setItem("lsvid", vid);
+		localStorage.setItem("mappingReturnURL", mappingReturnURL);
+	} else {
+		$(".errorMsg").html("Sorry, your browser does not support Web Storage...");
+	}
+}
