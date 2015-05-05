@@ -291,84 +291,89 @@
 
                     <c:when test="${measure.measureType.name == 'tableQuestion'}">
                         <!--tableQuestion start-->
-                        <c:forEach var="childMeasure" items="${measure.children}">
-                            <c:set var="tableQuestionCnt" value="${measureQuestionMap[childMeasure.measureId]}"/>
-                            <c:forEach begin="0" end="${tableQuestionCnt-1}" var="questionNo">
+                        <c:set var="tableQuestionCnt" value="${measureQuestionMap[measure.measureId]}"/>
+                        <c:if test="${not empty tableQuestionCnt}">
+                            <c:forEach begin="0" end="${tableQuestionCnt}" var="questionNo">
+                                <c:forEach var="childMeasure" items="${measure.children}">
+                                    <div class="left" class="measureTxtDiv">
+                                        <span class="measureText">Q ${questionNo+1}. ${childMeasure.measureText}</span>
+                                    </div>
+                                    <c:choose>
+                                        <c:when test="${childMeasure.measureType.name == 'freeText' or childMeasure.measureType.name == 'readOnlyText'}">
+                                            <div class="left0">
+                                                <c:forEach var="measureAnswer"
+                                                           items="${childMeasure.measureAnswerList}">
+                                                    <span class="answerTextValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].textValue}</span>
+                                                    <span class="answerTextValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].numberValue}</span>
+                                                </c:forEach>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${childMeasure.measureType.name == 'selectMulti'}">
+                                            <div class="left"><span class="measureText">(mark all that apply)</span>
+                                            </div>
+                                            <br/>
 
-                                <div class="left" class="measureTxtDiv">
-                                    <span class="measureText">Q ${questionNo+1}. ${childMeasure.measureText}</span>
-                                </div>
-                                <c:choose>
-                                    <c:when test="${childMeasure.measureType.name == 'freeText' or childMeasure.measureType.name == 'readOnlyText'}">
-                                        <div class="left0">
-                                            <c:forEach var="measureAnswer" items="${childMeasure.measureAnswerList}">
-                                                <span class="answerTextValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].textValue}</span>
-                                                <span class="answerTextValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].numberValue}</span>
-                                            </c:forEach>
-                                        </div>
-                                    </c:when>
-                                    <c:when test="${childMeasure.measureType.name == 'selectMulti'}">
-                                        <div class="left"><span class="measureText">(mark all that apply)</span></div>
-                                        <br/>
+                                            <ul class="answerTypeSelectMulti">
+                                                <c:forEach var="measureAnswer"
+                                                           items="${childMeasure.measureAnswerList}">
+                                                    <li>
+                                                        <div class="left1">
+                                                            <c:choose>
+                                                                <c:when test="${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].booleanValue}">
+                                                                    <img src="<c:url value="/resources/images/toggle_yes.png" />"
+                                                                         alt="Yes"/>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <img src="<c:url value="/resources/images/toggle_no.png" />"
+                                                                         alt="No"/>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </div>
+                                                        <div class="right1">
+                                                            <span class="optionText">${measureAnswer.answerText}</span>
 
-                                        <ul class="answerTypeSelectMulti">
-                                            <c:forEach var="measureAnswer" items="${childMeasure.measureAnswerList}">
-                                                <li>
-                                                    <div class="left1">
-                                                        <c:choose>
-                                                            <c:when test="${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].booleanValue}">
-                                                                <img src="<c:url value="/resources/images/toggle_yes.png" />"
-                                                                     alt="Yes"/>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <img src="<c:url value="/resources/images/toggle_no.png" />"
-                                                                     alt="No"/>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </div>
-                                                    <div class="right1">
-                                                        <span class="optionText">${measureAnswer.answerText}</span>
+                                                            <span class="answerOtherValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].otherValue}</span>
+                                                        </div>
+                                                    </li>
+                                                    <br/>
+                                                </c:forEach>
+                                            </ul>
+                                        </c:when>
+                                        <c:when test="${childMeasure.measureType.name == 'selectOne'}">
+                                            <div class="left"><span class="measureText">(mark one)</span></div>
+                                            <br/>
 
-                                                        <span class="answerOtherValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].otherValue}</span>
-                                                    </div>
-                                                </li>
-                                                <br/>
-                                            </c:forEach>
-                                        </ul>
-                                    </c:when>
-                                    <c:when test="${childMeasure.measureType.name == 'selectOne'}">
-                                        <div class="left"><span class="measureText">(mark one)</span></div>
-                                        <br/>
+                                            <ul class="answerTypeSelectOne">
+                                                <c:forEach var="measureAnswer"
+                                                           items="${childMeasure.measureAnswerList}">
+                                                    <li>
+                                                        <div class="left2">
+                                                            <c:choose>
 
-                                        <ul class="answerTypeSelectOne">
-                                            <c:forEach var="measureAnswer" items="${childMeasure.measureAnswerList}">
-                                                <li>
-                                                    <div class="left2">
-                                                        <c:choose>
+                                                                <c:when test="${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].booleanValue}">
+                                                                    <img src="<c:url value="/resources/images/radio_yes.png" />"
+                                                                         alt="Yes"/>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <img src="<c:url value="/resources/images/radio_no.png" />"
+                                                                         alt="No"/>
+                                                                </c:otherwise>
 
-                                                            <c:when test="${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].booleanValue}">
-                                                                <img src="<c:url value="/resources/images/radio_yes.png" />"
-                                                                     alt="Yes"/>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <img src="<c:url value="/resources/images/radio_no.png" />"
-                                                                     alt="No"/>
-                                                            </c:otherwise>
-
-                                                        </c:choose>
-                                                    </div>
-                                                    <div class="right1"><span
-                                                            class="optionText">${measureAnswer.answerText}</span>
-                                                        <span class="answerOtherValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].otherValue}</span>
-                                                    </div>
-                                                </li>
-                                                <br/>
-                                            </c:forEach>
-                                        </ul>
-                                    </c:when>
-                                </c:choose>
+                                                            </c:choose>
+                                                        </div>
+                                                        <div class="right1"><span
+                                                                class="optionText">${measureAnswer.answerText}</span>
+                                                            <span class="answerOtherValue">${(surveyMeasureResponseMap[measureAnswer.measureAnswerId])[questionNo].otherValue}</span>
+                                                        </div>
+                                                    </li>
+                                                    <br/>
+                                                </c:forEach>
+                                            </ul>
+                                        </c:when>
+                                    </c:choose>
+                                </c:forEach>
                             </c:forEach>
-                        </c:forEach>
+                        </c:if>
                         <ul class="answerTypeSelectOne">
                             <c:forEach var="measureAnswer" items="${measure.measureAnswerList}">
                                 <c:forEach var="response"

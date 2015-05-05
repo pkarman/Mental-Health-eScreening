@@ -39,7 +39,7 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
 
     @Transactional(readOnly = true)
     @Override
-    public Hashtable<Integer, List<SurveyMeasureResponse>> findForVeteranAssessmentId(int veteranAssessmentId, Map<Integer, Integer> measureQuestionMap) {
+    public Hashtable<Integer, List<SurveyMeasureResponse>> findForVeteranAssessmentId(int veteranAssessmentId, Map<Integer, Integer> tableQCntrMap) {
 
         List<SurveyMeasureResponse> resultList = surveyMeasureResponseRepository
                 .findForVeteranAssessmentId(veteranAssessmentId);
@@ -59,27 +59,20 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
                 surveyMeasureResponseMap.put(surveyMeasureResponse.getMeasureAnswer().getMeasureAnswerId(), responses);
             }
         }
-        fillTableQuestionMap(surveyMeasureResponseMap, measureQuestionMap);
+        fillTableQuestionMap(surveyMeasureResponseMap, tableQCntrMap);
 
         return surveyMeasureResponseMap;
     }
 
     private void fillTableQuestionMap(Hashtable<Integer, List<SurveyMeasureResponse>> surveyMeasureResponseMap, Map<Integer, Integer> m) {
-        Map<Measure, Integer> fm = Maps.newHashMap();
         for (List<SurveyMeasureResponse> smrLst : surveyMeasureResponseMap.values()) {
             for (SurveyMeasureResponse smr : smrLst) {
                 if (smr.getTabularRow() != null) {
-                    Measure measure = smr.getMeasure();
-                    Integer measureQuestionCnt = fm.get(measure) == null ? 1 : fm.get(measure) + 1;
-                    fm.put(measure, measureQuestionCnt);
+                    Integer mId = smr.getMeasure().getParent().getMeasureId();
+                    Integer prevTabRowCtr = m.get(mId) == null ? 0 : m.get(mId);
+                    m.put(mId, Math.max(prevTabRowCtr, smr.getTabularRow()));
                 }
             }
-        }
-
-        // now transfer the data from temp map of averages (as float) to m
-        for (Measure key : fm.keySet()) {
-            int maLstSz = key.getMeasureAnswerList().size();
-            m.put(key.getMeasureId(), fm.get(key) / (maLstSz == 0 ? 1 : maLstSz));
         }
     }
 
