@@ -197,21 +197,20 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance) {
+					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-						$scope.selections = {
-							show: true
-						};
-
-						$scope.assessmentVariable = {};
-
-							$scope.$on('assessmentVariableSelected', function(event, insertedVariable) {
-								console.debug("emit happend");
-								if (insertedVariable) {
-									var embed = TemplateBlockService.createAVElement(insertedVariable);
-									$modalInstance.close(embed);
-								}
-							});
+						$scope.assessmentVariable = new EScreeningDashboardApp.models.AssessmentVariable();
+						$scope.block = {};
+						$scope.allowTransformations = true;
+						$scope.selections = {show:true};
+						
+						//as soon as the modal should close the variable is used to create the modal result
+						$scope.$watch('selections.show',function(newVar, oldVar){
+							if (!newVar) {
+								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable);
+								$modalInstance.close(embed);
+							}
+						}, true);
 
 						$scope.cancel = function() {
 						    $modalInstance.close("");

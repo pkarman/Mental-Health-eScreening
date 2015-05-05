@@ -145,9 +145,9 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
 
     <!-- Services -->
-    <script type="text/javascript" src="resources/editors/js/app/services/assessment-variable.manager.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableManager.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
+    <script type="text/javascript" src="resources/editors/components/alerts/MessageFactory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/EventService.js"></script>

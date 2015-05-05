@@ -1,5 +1,3 @@
-Editors.controller('testModalCtrl', ['$scope', function($scope) {
-}]);
 Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$state', '$stateParams', '$modal', 'AssessmentVariableService', 'TemplateBlockService', 'template', 'relatedObj', 'MessageFactory',
                                                       function($rootScope, $scope, $state, $stateParams, $modal, AssessmentVariableService, TemplateBlockService, template, relatedObj, MessageFactory) {
 

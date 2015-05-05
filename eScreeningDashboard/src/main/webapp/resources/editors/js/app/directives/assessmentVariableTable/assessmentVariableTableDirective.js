@@ -19,7 +19,7 @@
 	            link: function (scope, element) {
 	            	
 	            	if(!scope.assessmentVariable){
-						throw "Assessment variable is a required attribute";
+	            		throw "Assessment variable is a required attribute";
 					}
 					            	
 					var parentBlock = AssessmentVariableService.parentBlock || {};
@@ -118,7 +118,6 @@
 										scope.toggles.transformations = true;
 									}
 									else{
-										scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 										scope.show = false;
 									}
 									
@@ -126,15 +125,12 @@
 								});														
 						}
 						else{
-							scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
 							scope.show = false;
 							scope.tableParams.reload();
 						}
 	                };
 
 					scope.applyTransformations = function applyTransformations(newScope) {
-
-						scope.show = false;
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
 
@@ -175,8 +171,7 @@
 						}
 
 						TemplateBlockService.addVariableToHash(scope.assessmentVariable);
-
-						scope.$emit('assessmentVariableSelected', scope.assessmentVariable);
+						scope.show = false;
 					};
 
 					scope.dismiss = function dismiss() {
