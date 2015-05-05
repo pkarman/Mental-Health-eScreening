@@ -5,7 +5,6 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 	$scope.template = template;
 	
-	//TODO: we can remove this after backend is updated
 	if(!$scope.template.graph){
 		$scope.template.graph = {};
 	}
@@ -72,54 +71,7 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 
 		//update template with graphical field values
 		if ($scope.template.isGraphical){
-
-			//update selected variable ID
-			$scope.template.graph.varId = $scope.assessmentVariable.id;
-			
-			//update ticks
-			if(!$scope.template.graph.ticks){
-				$scope.template.graph.ticks = [];
-			}
-			angular.copy($scope.ticks, $scope.template.graph.ticks);
-			
-			//update template intervals
-			var reverseLookup = {};
-			$scope.template.graph.intervals = {};
-			$scope.intervalList.forEach(function(interval){
-				if(	interval.name !== "" &&  interval.value !== ""){
-					$scope.template.graph.intervals[interval.name] = interval.value;
-					reverseLookup[interval.value] = interval.name;
-					//all intervals need a tick mark
-					$scope.template.graph.ticks.push(interval.value);
-				}
-			});
-			
-			//add the max X to the ticks for the user
-			if(angular.isDefined($scope.template.graph.maxXPoint) && 
-					$scope.template.graph.maxXPoint != null){
-				$scope.template.graph.ticks.push($scope.template.graph.maxXPoint);
-			}
-			
-			//we want both the ticks and the intervals map in order
-			$scope.template.graph.ticks.sort(function(a, b) {return a - b;});
-			
-			//remove duplicates and order the intervals map
-			var orderedIntervals = {};
-			var prev = null;
-			$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
-				function(tick){
-					if(tick !== prev){
-						if(reverseLookup[tick]){
-							orderedIntervals[reverseLookup[tick]] = tick;
-						}
-						prev = tick;
-						return true;
-					}
-					prev = tick;
-					return false;
-				});
-			
-			$scope.template.graph.intervals = orderedIntervals;
+			syncGraphParams();
 		}
 
 		$scope.template.saveFor($scope.relatedObj).then(
@@ -129,6 +81,8 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 				});
 			}, 
 			function(response) {
+				//TODO: we should interpret the error response object to give more information to the user
+				MessageFactory.empty();
 				MessageFactory.error('An error occurred when trying to save the template. Please contact support.');
 			}
 		);
@@ -163,6 +117,57 @@ Editors.controller('ModulesTemplatesEditController', ['$rootScope', '$scope', '$
 	function log(msg){
 		if($scope.debug)
 			console.log(msg);
+	}
+	
+	
+	function syncGraphParams(){
+		//update selected variable ID
+		$scope.template.graph.varId = $scope.assessmentVariable.id;
+		
+		//update ticks
+		$scope.template.graph.ticks = [];
+		if($scope.ticks && $scope.ticks.length > 0){
+			angular.copy($scope.ticks, $scope.template.graph.ticks);
+		}
+		
+		//update template intervals
+		var reverseLookup = {};
+		$scope.template.graph.intervals = {};
+		$scope.intervalList.forEach(function(interval){
+			if(	interval.name !== "" &&  interval.value !== ""){
+				$scope.template.graph.intervals[interval.name] = interval.value;
+				reverseLookup[interval.value] = interval.name;
+				//all intervals need a tick mark
+				$scope.template.graph.ticks.push(interval.value);
+			}
+		});
+		
+		//add the max X to the ticks for the user
+		if(angular.isDefined($scope.template.graph.maxXPoint) && 
+				$scope.template.graph.maxXPoint != null){
+			$scope.template.graph.ticks.push($scope.template.graph.maxXPoint);
+		}
+		
+		//we want both the ticks and the intervals map in order
+		$scope.template.graph.ticks.sort(function(a, b) {return a - b;});
+		
+		//remove duplicates and order the intervals map
+		var orderedIntervals = {};
+		var prev = null;
+		$scope.template.graph.ticks = $scope.template.graph.ticks.filter(
+			function(tick){
+				if(tick !== prev){
+					if(reverseLookup[tick]){
+						orderedIntervals[reverseLookup[tick]] = tick;
+					}
+					prev = tick;
+					return true;
+				}
+				prev = tick;
+				return false;
+			});
+		
+		$scope.template.graph.intervals = orderedIntervals;
 	}
 
 	//ng-tree options

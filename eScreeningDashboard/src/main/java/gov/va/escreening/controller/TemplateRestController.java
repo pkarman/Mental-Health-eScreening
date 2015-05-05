@@ -6,6 +6,7 @@ import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
 
@@ -188,9 +189,9 @@ public class TemplateRestController extends RestController {
 		try{
 			templateService.updateTemplateFile(templateId, templateFile);
 		}catch(IllegalArgumentException e) {
-			ErrorBuilder.throwing(EntityNotFoundException.class)
-            .toUser("Could not find the template.")
-            .toAdmin("Could not find the template with ID: " + templateId)
+			ErrorBuilder.throwing(EscreeningDataValidationException.class)
+            .toUser("An unexpected error while updating template. Please call support.")
+            .toAdmin("Error updating template: " + templateId + ". Error: " + e.getLocalizedMessage())
             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
             .throwIt();
 		}

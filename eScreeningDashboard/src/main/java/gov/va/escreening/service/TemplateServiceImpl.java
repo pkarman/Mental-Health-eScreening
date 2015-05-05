@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -272,6 +273,9 @@ public class TemplateServiceImpl implements TemplateService {
                     templateDto.getGraph().unwrappedScore(), 
                     templateDto.getName(), 
                     graphParams));
+            if(templateDto.getGraph().getVarId() != null){
+                ids.add(Integer.valueOf(templateDto.getGraph().getVarId()));
+            }
         }
 
 		file.append("${MODULE_START}\n");
@@ -334,6 +338,9 @@ public class TemplateServiceImpl implements TemplateService {
                 logger.error("Error setting graphical template parameters for new template", e); 
                 template.setGraphParams(null);
             }
+        }
+        else{
+            template.setGraphParams(null);
         }
         
         // save raw json file to the database
