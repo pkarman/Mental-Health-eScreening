@@ -113,7 +113,7 @@ angular.module('Editors').config(['$stateProvider', '$urlRouterProvider',
                 controller:'batteryAbstractController'
             })
 
-	            .state('batteries.list',{
+	        .state('batteries.list',{
                 url:'',
                 templateUrl:'resources/editors/views/batteries/batteryselect.html',
                 controller:'batterySelectionController'

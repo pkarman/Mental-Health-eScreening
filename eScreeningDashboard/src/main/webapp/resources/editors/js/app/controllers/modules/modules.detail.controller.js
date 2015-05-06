@@ -1,7 +1,8 @@
 (function() {
     'use strict';
 
-    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'Question', 'MessageFactory', function($scope, $state, $stateParams, survey, surveySections, surveyPages, clinicalReminders, SurveyService, Question, MessageFactory){
+    angular.module('Editors').controller('ModulesDetailController', ['$scope', '$state', '$stateParams', 'survey', 'surveys', 'surveySections', 'surveyPages', 'clinicalReminders', 'SurveyService', 'Question', 'MessageFactory', 
+                                                             function($scope, $state, $stateParams, survey, surveys, surveySections, surveyPages, clinicalReminders, SurveyService, Question, MessageFactory){
 
         $scope.survey = survey;
         $scope.surveyPages = surveyPages;
@@ -125,12 +126,28 @@
         $scope.save = function () {
 
             $scope.survey.save().then(function(survey) {
+            	var newSurvey = $scope.survey.id == null;
+            	
 				// Set the newly created ID and fromServer to true for subsequent saves
 				$scope.survey.id = survey.id;
 				$scope.survey.fromServer = true;
 
-                MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
+				MessageFactory.set('success', 'The ' + survey.name + ' module has been saved successfully.', false, true);
 
+				//update our survey list with these changes               
+				if(newSurvey){ //add new survey to surveys list
+					surveys.push($scope.survey);
+				}
+				else{ //update survey fields in list 
+					surveys.some(function(s){
+						if(s.id == $scope.survey.id){
+							_.extend(s, $scope.survey);
+							return true;
+						}
+						return false;
+					});
+				}
+                
                 _.each($scope.surveyPages, function(page) {
 					// Overwrite parentResource since it is doing strange things
                     page.parentResource = {
