@@ -647,10 +647,18 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
                 Object[] data = (Object[]) aRow;
 
                 int count = ((Number) data[0]).intValue();
-                int measureId = ((Number) data[1]).intValue();
-
                 if (count == 0)
                     break;
+
+                int measureId = ((Number) data[1]).intValue();
+
+                Measure m = measureRepository.findOne(measureId);
+
+                // only allow singleSelect or multiSelect
+                int measureType = m.getMeasureType().getMeasureTypeId();
+                if (measureType != 1 && measureType != 2 && measureType != 3) {
+                    continue;
+                }
 
                 Report595DTO dto = new Report595DTO();
 
@@ -670,7 +678,6 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
                 dto.setPercentage(percent + "% (" + count + "/" + total + ")");
 
-                Measure m = measureRepository.findOne(measureId);
 
                 dto.setQuestions(((Number) data[1]).intValue() + "");
                 dto.setQuestions(m.getMeasureText());
