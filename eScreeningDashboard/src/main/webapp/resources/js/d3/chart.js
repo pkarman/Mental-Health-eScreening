@@ -262,14 +262,14 @@ function graphGenerator(dataStructure, dataDataset){
 			   g 	= svg.append('g')
 			   			.attr('width', 100)
 						.attr('x', gWidth)
-						 .attr('transform', 'translate(' + gWidth + ',-15)')
+						 .attr('transform', 'translate(' + gWidth + ',-20)')
 						gWidth += 60  + 10;
 						
 			   text = g.append('text')
 		          .attr('fill', 'black')
 				  .attr('width', 100)
 		          .attr('x', 30)
-		          .attr('y', 100)
+		          .attr('y', 98)
 		          .attr('font-size', '10')
 				  .attr('font-family', 'Arial')
 				  .attr("dy", 0)
@@ -315,6 +315,7 @@ function graphGenerator(dataStructure, dataDataset){
 		var ticks 	= [];
 		var series  = graphParams.legends;
 		var title = graphParams.title;
+		var graphMaxValue	  = graphParams.maxXPoint;
 
 		$.each(dataDataset, function(date, valueStr){
 			//TODO: Add check if can't be parsed
@@ -475,6 +476,19 @@ function graphGenerator(dataStructure, dataDataset){
 				.classed("pointTextValue", true)
 				.text( function (d) { return +d.value; });
 	
+
+	    	 this.append('text')
+				.style("text-anchor", "middle")
+				.attr('x',-14)
+				.attr('y', 5)
+				.attr('fill', 'black')
+				.attr('font-size', '11')
+				.attr('font-weight', 'bold')
+				.style("text-anchor", "middle")
+				.attr('font-family', 'arial')
+				.attr("stroke", "black")
+				.text(graphMaxValue);
+
 
 			// Update Plot Started Here
 			this.selectAll(".trendline")

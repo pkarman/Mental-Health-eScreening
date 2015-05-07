@@ -1036,7 +1036,17 @@ $(document).ready(function() {
 				.append("text")
 				.classed("pointTextValue", true)
 				.text( function (d) { return +d.value; });
-	
+
+			this.append('text')
+				.style("text-anchor", "middle")
+				.attr('x',-14)
+				.attr('y', 5)
+				.attr('fill', 'black')
+				.attr('font-size', '11')
+				.style("text-anchor", "middle")
+				.attr('font-family', 'arial')
+				.text(graphMaxValue);
+					
 
 			// Update Plot Started Here
 			this.selectAll(".trendline")
