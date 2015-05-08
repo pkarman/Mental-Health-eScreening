@@ -44,7 +44,6 @@ import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolve
 import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolverImpl;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl;
-import gov.va.escreening.variableresolver.NullValueHandler;
 import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
@@ -68,7 +67,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -127,7 +125,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     public Map<Integer, AssessmentVariableDto> buildDtoMap(){
         Map<Integer, AssessmentVariableDto> dtoList = Maps.newHashMapWithExpectedSize(avMap.size());
         
-        ResolverParameters params = new ResolverParameters(123, mock(NullValueHandler.class), measureAnswerHash.values());
+        ResolverParameters params = new ResolverParameters(123, measureAnswerHash.values());
         params.addResponses(measureResponses.values());
         
         //We resolve the variables that were added and any answer variables

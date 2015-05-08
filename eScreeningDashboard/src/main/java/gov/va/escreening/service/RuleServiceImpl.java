@@ -32,7 +32,6 @@ import gov.va.escreening.repository.SurveyMeasureResponseRepository;
 import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
-import gov.va.escreening.variableresolver.NullValueHandler;
 import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.variableresolver.VariableResolverService;
 
@@ -45,7 +44,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,9 +96,6 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private AssessmentVariableService avService;
     
-    @Resource(name = "templateSmrNullHandler")
-    private NullValueHandler templateSmrNullHandler;
-
     @Override
     public void processRules(Integer veteranAssessmentId,
             Collection<SurveyMeasureResponse> responses) {
@@ -152,8 +147,7 @@ public class RuleServiceImpl implements RuleService {
             variables.addAll(r.getAssessmentVariables());
         }
      
-        ResolverParameters params = new ResolverParameters(veteranAssessmentId,
-                templateSmrNullHandler, variables);
+        ResolverParameters params = new ResolverParameters(veteranAssessmentId, variables);
         
         //add response found for this assessment
         VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);

@@ -45,7 +45,6 @@ public class ResolverParameters {
     private static final Logger logger = LoggerFactory.getLogger(ResolverParameters.class);
                     
     private final Integer assessmentId;
-    private final NullValueHandler nullHandler;
     //map from MeasureAnswer ID to Answer (DTO)
     private final ListMultimap<Integer, Answer> answerMap = LinkedListMultimap.create();
     //map from MeasureAnswer ID to AssessmentVariable
@@ -69,10 +68,8 @@ public class ResolverParameters {
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
     public ResolverParameters(int veteranAssessmentId,
-            NullValueHandler nullHandler,
             Collection<AssessmentVariable> assessmentVariables){
         assessmentId = veteranAssessmentId;
-        this.nullHandler = nullHandler;
         
         createAnswerHash(assessmentVariables);
         avMap = Maps.newHashMapWithExpectedSize(assessmentVariables.size());
@@ -85,10 +82,8 @@ public class ResolverParameters {
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
     public ResolverParameters(int veteranAssessmentId,
-            NullValueHandler nullHandler,
             List<VariableTemplate> variableTemplates){
         assessmentId = veteranAssessmentId;
-        this.nullHandler = nullHandler;
         
         createAnswerHash(variableTemplates);
         avMap = Maps.newHashMapWithExpectedSize(measureAnswerHash.size());
@@ -232,8 +227,36 @@ public class ResolverParameters {
         return assessmentId;
     }
     
-    public NullValueHandler getNullValueHandler(){
-        return nullHandler;
+    /**
+     * Used to handle the situation where a default value is needed when a variable is unresolvable.
+     * Note: At this point this method is used for Spring EL expression based variable resolution.
+     * @param av the variable that could not be resolved
+     * @return A string value to use as a default
+     */
+    public String handleUnresolableVariable(AssessmentVariable av){
+        switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+            MeasureAnswer ma = av.getMeasureAnswer();
+            logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
+                    ma.getMeasureAnswerId(), getAssessmentId());
+            
+            return ma.getMeasure().getMeasureType().getMeasureTypeId() == 3 ? "false" : "0";
+            
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+            logger.warn("There were no measure responses for Measure ID: {}, assessment ID: {}",
+                    av.getMeasure().getMeasureId(), getAssessmentId());
+            break;
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+            logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
+                    av.getAssessmentVariableId(), getAssessmentId());
+            break;
+            
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
+            logger.warn("Custom variable could generated for variable ID {}, assessment ID: {}.",
+                    av.getAssessmentVariableId(), getAssessmentId());
+            break;
+        }
+        return "0";
     }
     
     public void addResolvedVariable(AssessmentVariableDto variable){

@@ -62,9 +62,9 @@ public class FormulaAssessmentVariableResolverImpl implements
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, ResolverParameters params) {
 
-	    //logger.debug("\n\nResolving formula {} \nWith expression: {}", 
-	    //        assessmentVariable.getAssessmentVariableId(), 
-	    //        assessmentVariable.getFormulaTemplate());
+	    logger.debug("\n\nResolving formula {} \nWith expression: {}", 
+	            assessmentVariable.getAssessmentVariableId(), 
+	            assessmentVariable.getFormulaTemplate());
 	    
 	    Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -199,15 +199,12 @@ public class FormulaAssessmentVariableResolverImpl implements
     	        }
 	        }
 	        else{  //variable was not resolved
-                List<Answer> responses = params.getVariableAnswers(avId);
-                if(!responses.isEmpty()){
-                    value = responses.get(0).getAnswerResponse();
-                }
+	            value = params.handleUnresolableVariable(childAv);
 	        }
 	        
 	        if(value != null && value != DEFAULT_VALUE){
 	            valueMap.put(avId, value);
-	            //logger.debug("Value of variable {} is {}", avId, value);
+	            logger.debug("Value of variable {} is {}", avId, value);
 	        }
 	        else{
 	            logger.debug("Variable DTO {} could not be resolved to a value", avId);
@@ -306,6 +303,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 			ResolverParameters params,
 			List<AssessmentVariable> formulaTypeList) {
 
+	    //TODO: it would be far more efficient if we resolved variables on demand instead of resolving all of the here. 
 	    Set<AssessmentVariable> allDependencies = Sets.newHashSet();
 		for (AssessmentVarChildren dependencyAssociation : formulaDependencies) {
 			AssessmentVariable child = dependencyAssociation.getVariableChild();

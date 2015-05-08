@@ -36,11 +36,6 @@ public class VariableResolverServiceImpl implements VariableResolverService {
 	@Resource(name = "veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
 
-	@Resource(name = "templateSmrNullHandler")
-    NullValueHandler templateSmrNullHandler;
-	@Resource(name = "exportDataSmrNullHandler")
-    NullValueHandler exportDataSmrNullHandler;
-
     private static final Logger logger = LoggerFactory.getLogger(VariableResolverServiceImpl.class);
     
     //TODO: If we don't need to support the use of template ID and we can just use a template object that we already have queried, that would make this faster.
@@ -54,7 +49,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     	    
     	    //Initialize the resolver parameters
             List<VariableTemplate> variableTemplates = template.getVariableTemplateList();
-            ResolverParameters params = new ResolverParameters(veteranAssessmentId, exportDataSmrNullHandler, variableTemplates);
+            ResolverParameters params = new ResolverParameters(veteranAssessmentId, variableTemplates);
             
             //add all assessment responses
             VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
@@ -77,7 +72,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         // clear the smr cache before resolving variable for every assessment 
         smrLister.clearSmrFromCache();
         
-        ResolverParameters params = new ResolverParameters(veteranAssessmentId, exportDataSmrNullHandler, dbVariables);
+        ResolverParameters params = new ResolverParameters(veteranAssessmentId, dbVariables);
         
         //add responses from assessment
         VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
