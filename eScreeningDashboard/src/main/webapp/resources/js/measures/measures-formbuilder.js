@@ -728,12 +728,11 @@ function TableBuilder(formBuilder){
 			for(var i = 0; i < question.answers.length; i++){
 				var answer = question.answers[i];
 				
-				if(answer.answerType != null &&  answer.answerType == "none"){
+				if(answer.answerType != null &&  answer.answerType == "none" && question.isRequired != true){ // JH case added in case of required question
 					noneAnswer = answer;
 					break;
 				}
 			}
-			
 			if(noneAnswer != null && noneAnswer.answerText.replace(/^\s+|\s+$/g, '') != ""){
 				entryName = noneAnswer.answerText;
 			}

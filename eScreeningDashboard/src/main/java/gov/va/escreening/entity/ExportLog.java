@@ -67,6 +67,8 @@ public class ExportLog implements Serializable {
     @ManyToOne
     private Veteran veteran;
 
+
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "export_zip")
     private byte[] exportZip;
 

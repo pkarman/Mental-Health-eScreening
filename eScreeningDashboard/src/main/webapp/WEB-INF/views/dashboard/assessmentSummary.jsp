@@ -39,7 +39,7 @@
 
 	<div id="outerPageDiv">
 	<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
-	
+		<div class="alert alert-danger errorMsg hide" id="errorMsg" aria-hidden="true"></div>
 		<!-- NAV Start -->
 		<div class="navbar navbar-default navbar-update" role="navigation">
 			<div class="container bg_transparent">
@@ -428,8 +428,14 @@
 <script>
 //TODO: move all the below JS of to assessmentSummary.js
 // Cache all classes and IDs  
-$(document).ready(function() {              
-    $(this).on("click", '#VeteranSummaryButton', function(e){
+$(document).ready(function() {
+	
+	// t808 - call returnURL to assessmentSummary as URL to use as new redirection page
+	var vid = "${veteranAssessmentInfo.veteranId}";
+	returnURL(vid, "assessmentSummary");
+
+	
+	$(this).on("click", '#VeteranSummaryButton', function(e){
         e.preventDefault();
         var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
         $('#VeteranSummaryModal').modal('show');
@@ -1192,4 +1198,10 @@ $(document).ready(function() {
 		
 </script>
 
+
+<script>
+// JQuery 
+$(document).ready(function() {		
+});
+</script>
 </html>

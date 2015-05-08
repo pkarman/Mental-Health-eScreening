@@ -858,6 +858,24 @@ a.offscreen:focus, a.offscreen:active {
   background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
 }
 /* added by JH */
+/* Edit Veterans Assessment */
+.directionsBlock{
+	background-color:rgba(255,246,218,1.00);
+	border:1px solid rgba(0,0,0,1.00);
+	padding:8px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.custom-hr-editVeteran{
+	margin-bottom:0px !important;
+	margin-top:0px !important;
+}
+
+.custom-label-editVeteran{
+	font-weight:normal;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -1011,6 +1029,7 @@ a.offscreen:focus, a.offscreen:active {
 .icon-arrow-left{
 	background-position: -240px -96px;
 }
+
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {
