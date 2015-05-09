@@ -211,8 +211,12 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 				orderByPath = clinicianJoin.get("lastName");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
 				orderByPath = createdByUserJoin.get("lastName");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createDate")) {
 				orderByPath = veteranAssessmentRoot.get("dateCreated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateUpdated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("completeDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateCompleted");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
 				orderByPath = veteranJoin.get("veteranId");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {

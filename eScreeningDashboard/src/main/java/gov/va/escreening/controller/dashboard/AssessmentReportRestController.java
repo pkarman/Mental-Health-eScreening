@@ -276,25 +276,22 @@ public class AssessmentReportRestController extends BaseDashboardRestController 
 			sortColumn = "createdBy";
 			break;
 		case 4:
-			sortColumn = "assessmentDate";
+			sortColumn = "createDate";
 			break;
 		case 5:
-			sortColumn = "veteranId";
+			sortColumn = "assessmentDate";
 			break;
 		case 6:
-			sortColumn = "veteranName";
+			sortColumn = "completeDate";
 			break;
 		case 7:
-			sortColumn = "assessmentStatusName";
+			sortColumn = "veteranId";
 			break;
 		case 8:
-			sortColumn = "veteranAssessmentId";
+			sortColumn = "veteranName";
 			break;
 		case 9:
-			sortColumn = "veteranAssessmentId";
-			break;
-		case 10:
-			sortColumn = "veteranAssessmentId";
+			sortColumn = "assessmentStatusName";
 			break;
 		default:
 			sortColumn = "veteranAssessmentId";
