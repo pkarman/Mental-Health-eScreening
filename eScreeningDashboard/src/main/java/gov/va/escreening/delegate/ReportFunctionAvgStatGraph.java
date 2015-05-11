@@ -42,7 +42,7 @@ public class ReportFunctionAvgStatGraph extends ReportFunctionCommon implements 
     private void addModuleGraphReportDTO(Map<String, String> svgObject, Integer clinicId, Integer surveyId, String avName, Integer vId, String fromDate, String toDate, List<ModuleGraphReportDTO> moduleGraphs) {
         ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getSurveyDataForVetClinicReport(clinicId, surveyId, avName, vId, fromDate, toDate);
         if (moduleGraphReportDTO.getHasData()) {
-            String svgData = (svgObject != null && !svgObject.isEmpty()) ? svgObject.get(createChartId(surveyId, avName, vId, clinicId)) : null;
+            String svgData = extractSvgObject(svgObject, surveyId, avName, vId, clinicId);
             if (svgData != null) {
                 moduleGraphReportDTO.setImageInput(ReportsUtil.SVG_HEADER + svgData);
             }
@@ -50,4 +50,5 @@ public class ReportFunctionAvgStatGraph extends ReportFunctionCommon implements 
         }
         moduleGraphs.add(moduleGraphReportDTO);
     }
+
 }

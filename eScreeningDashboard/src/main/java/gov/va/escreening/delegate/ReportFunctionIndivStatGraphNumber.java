@@ -39,7 +39,7 @@ public class ReportFunctionIndivStatGraphNumber extends ReportFunctionCommon imp
     }
 
     private void addModuleGraphReportDTO(Map<String, String> svgObject, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate, List<ModuleGraphReportDTO> resultList) {
-        String svgData = (svgObject != null && !svgObject.isEmpty()) ? svgObject.get(createChartId(surveyId, avName, veteranId, null)) : null;
+        String svgData = extractSvgObject(svgObject, surveyId, avName, veteranId, null);
         if (svgData != null) {
             ModuleGraphReportDTO moduleGraphReportDTO = scoreService.getGraphReportDTOForIndividual(surveyId, avName, veteranId, fromDate, toDate);
             if (moduleGraphReportDTO.getHasData()) {

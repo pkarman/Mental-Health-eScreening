@@ -183,4 +183,12 @@ public class ReportFunctionCommon {
 
         return partitionMap;
     }
+
+    protected String extractSvgObject(Map<String, String> svgObject, Integer surveyId, String avName, Integer vId, Integer clinicId) {
+        String svgObjAsStr= (svgObject != null && !svgObject.isEmpty()) ? svgObject.get(createChartId(surveyId, avName, vId, clinicId)) : null;
+        // firefox returns the scg header as <svg height="300" width="450" id="chart"> and jasper has a logic to look for
+        // <svg id="chart" width="450" height="300">
+        svgObjAsStr = svgObjAsStr.replace("<svg height=\"300\" width=\"450\" id=\"chart\">", "<svg id=\"chart\" width=\"450\" height=\"300\">");
+        return svgObjAsStr;
+    }
 }
