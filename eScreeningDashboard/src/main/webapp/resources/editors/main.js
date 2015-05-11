@@ -197,13 +197,20 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', 
+					             function($scope, $modalInstance, AssessmentVariableService) {
 
 						$scope.assessmentVariable = new EScreeningDashboardApp.models.AssessmentVariable();
 						$scope.block = {};
 						$scope.allowTransformations = true;
 						$scope.selections = {show:true};
 						$scope.editorType = "text";
+						$scope.assessmentVariables = [];
+						
+						AssessmentVariableService.getLastCachedResults()
+							.then(function(avs){
+								$scope.assessmentVariables = avs;
+						});
 						
 						//as soon as the modal should close the variable is used to create the modal result
 						$scope.$watch('selections.show',function(newVar, oldVar){

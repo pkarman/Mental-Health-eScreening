@@ -46,7 +46,8 @@
 				<div ng-show="assessmentVariables.length == 0">Loading...</div>
 				<assessment-var-select 
 					id="selectVariable"
-					assessment-variable="assessmentVariable" 
+					assessment-variable="assessmentVariable"
+					assessment-variables="assessmentVariables"
 					editor-type="graphicalTemplate"
 					allow-transformations="false"
 					ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" 

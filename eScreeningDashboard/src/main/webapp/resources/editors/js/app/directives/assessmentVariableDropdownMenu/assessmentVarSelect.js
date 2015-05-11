@@ -7,6 +7,7 @@
 	            restrict: 'EA',
 	            scope: {
 	                assessmentVariable: '=',
+	                assessmentVariables: '=',
 	                editorType: '@',  //e.g. "text", "table", "condition" (used for both condition blocks and rule expression), "graphicalTemplate"
 					allowTransformations: '='
 	            },

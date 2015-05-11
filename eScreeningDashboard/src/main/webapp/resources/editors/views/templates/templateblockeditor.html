@@ -25,6 +25,7 @@
 									update-hidden>
 							<assessment-var-select 
 								assessment-variable="block.table.content"
+								assessment-variables="assessmentVariables"
 								editor-type="table"
 								allow-transformations="false"
 								ng-class="{error: templateBlockEditorForm.selectedAssessmentVariable.$invalid && showValidationMessages}" />
@@ -37,7 +38,7 @@
 		<div class="col-md-{{editorWidth}}" ng-if="block.type && block.type !== 'table' && block.type !== 'text' && block.type !== 'else'">
 			<div class="blockLableMarginTop">
 				<form name="blockCondition">
-					<condition-editor condition="block" />
+					<condition-editor condition="block" assessment-variables="assessmentVariables" />
 				</form>
 			</div>
 		</div>

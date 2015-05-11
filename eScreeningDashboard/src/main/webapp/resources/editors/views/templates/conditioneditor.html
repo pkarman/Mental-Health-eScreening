@@ -20,6 +20,7 @@
 						       update-hidden>
 						<assessment-var-select 
 							assessment-variable="condition.left.content"
+							assessment-variables="assessmentVariables"
 							editor-type="condition"
 							ng-class="{error: conditionForm.selectedAssessmentVariable.$invalid && conditionForm.selectedAssessmentVariable.$dirty}" />
 					</div>
@@ -120,7 +121,9 @@
 <div class="condition-editor-block-children" ng-if="condition.conditions && condition.conditions.length">
 	<div ng-repeat="subcondition in condition.conditions">
 		<form>
-			<condition-editor condition="subcondition" parent-condition="condition"/>
+			<condition-editor condition="subcondition"
+			assessment-variables="assessmentVariables"
+			parent-condition="condition"/>
 		</form>
 	</div>
 </div>

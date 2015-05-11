@@ -12,6 +12,7 @@
 	            restrict: 'EA',
 	            scope: {
 		            assessmentVariable: '=',
+		            assessmentVariables: '=',
 		            show: '=',
 		            editorType: '=',   //e.g. "text", "table", "condition" (used for both condition blocks and rule expression), "graphicalTemplate"
 		            allowTransformations: '='
@@ -32,12 +33,9 @@
 						list: true,
 						transformations: false
 					};
-					
+					scope.variablesLoaded = false;
 		            scope.searchObj = {type: '', displayName:''};
-
 					scope.assessmentVariableTypes = ['Question', 'Custom', 'Formula'];
-
-					scope.assessmentVariables = AssessmentVariableService.getLastCachedResults().$object;
 
 		            scope.tableParams = new ngTableParams({
 						page: 1, // show first page
@@ -91,6 +89,14 @@
 
 		            scope.tableParams.settings().$scope = scope;
 
+		            //Please remove this when we can get the table we use to update when the model changes (i.e. assessmentVariables)
+					scope.$watch('assessmentVariables',function(newVar, oldVar){
+						if (!angular.equals(newVar, oldVar)) {
+							scope.tableParams.reload();
+							scope.variablesLoaded = true;
+						}
+					}, true);
+					
 		            scope.select = function(e, av) {
 		            	scope.allowTransformations = angular.isUndefined(scope.allowTransformations) ? true : scope.allowTransformations;
 		            	
