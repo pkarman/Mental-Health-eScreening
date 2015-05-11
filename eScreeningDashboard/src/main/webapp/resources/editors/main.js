@@ -203,6 +203,7 @@ Editors.config(function(RestangularProvider, $provide) {
 						$scope.block = {};
 						$scope.allowTransformations = true;
 						$scope.selections = {show:true};
+						$scope.editorType = "text";
 						
 						//as soon as the modal should close the variable is used to create the modal result
 						$scope.$watch('selections.show',function(newVar, oldVar){

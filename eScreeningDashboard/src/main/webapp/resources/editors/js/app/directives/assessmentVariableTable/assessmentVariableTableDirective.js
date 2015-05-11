@@ -5,22 +5,27 @@
     "use strict";
 
     angular.module('EscreeningDashboardApp.services.assessmentVariable')
-	    .directive('assessmentVarTbl', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', 'limitToWithEllipsisFilter', function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter, limitToWithEllipsisFilter) {
+	    .directive('assessmentVarTbl', ['AssessmentVariableService', 'AssessmentVariableManager', 'MeasureService', 'TemplateBlockService', 'ngTableParams', '$filter', 'limitToWithEllipsisFilter', 
+	                            function(AssessmentVariableService, AssessmentVariableManager, MeasureService, TemplateBlockService, ngTableParams, $filter, limitToWithEllipsisFilter) {
 
 	        return {
 	            restrict: 'EA',
 	            scope: {
 		            assessmentVariable: '=',
 		            show: '=',
-					block: '=',   //this is only used for block.type
-					allowTransformations: '='
+		            editorType: '=',   //e.g. "text", "table", "condition" (used for both condition blocks and rule expression), "graphicalTemplate"
+		            allowTransformations: '='
 	            },
 				templateUrl: 'resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTable.html',
 	            link: function (scope, element) {
 	            	
 	            	if(!scope.assessmentVariable){
 	            		throw "Assessment variable is a required attribute";
-					}
+	            	}
+	            	
+	            	if(!scope.editorType){
+	            		throw "editor-type is a required attribute";
+	            	}
 					            	
 					var parentBlock = AssessmentVariableService.parentBlock || {};
 					scope.toggles = {
@@ -45,7 +50,7 @@
 							var avs,
 								filteredData;
 
-							if (scope.block && scope.block.type === 'table') {
+							if (scope.editorType === 'table') {
 								// Only display table questions for table block
 								filteredData = [];
 								_.each(scope.assessmentVariables, function(av) {
@@ -101,7 +106,7 @@
 						// NOTE: Blocks are not passed in when directive is called from textAngular
 						if (scope.allowTransformations) {
 							
-							AssessmentVariableManager.setTransformations(scope.assessmentVariable, scope.block).then(
+							AssessmentVariableManager.setTransformations(scope.assessmentVariable, scope.editorType).then(
 								function(transformations){
 									
 									if (transformations.length !== 0) {

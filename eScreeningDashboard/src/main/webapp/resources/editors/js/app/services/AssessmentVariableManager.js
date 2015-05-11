@@ -4,7 +4,7 @@
 	angular.module('Editors')
 		.factory('AssessmentVariableManager', ['MeasureService', '$q', function(MeasureService, $q) {
 
-			function setTransformations(av, block) {
+			function setTransformations(av, editorType) {
 				var deferred = $q.defer();
 
 				av.transformations = [];
@@ -17,10 +17,10 @@
 					});
 				}
 
-				//if this is a select multi then we only allow trans when in a text block (else set default transformations)
+				//if this is a select multi then we only allow trans when in a text editor (else set default transformations)
 				else {
 					if (av.measureTypeId !== 3
-						|| !block || block.type === 'text'){ //block is normally only defined with conditions (but this could change)
+						|| editorType === 'text'){
 					
 						av.setTransformations();
 					}

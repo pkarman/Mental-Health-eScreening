@@ -1,14 +1,13 @@
-
-    <div>
-        <div class="modal-body">
-            <assessment-var-tbl 
-            	assessment-variable="assessmentVariable"
-            	block="block" 
-            	allow-transformations="allowTransformations" 
-            	show="selections.show" 
-            	ng-if="selections.show" />
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
-        </div>
-    </div>
+<div>
+	<div class="modal-body">
+		<assessment-var-tbl 
+			assessment-variable="assessmentVariable"
+			editor-type="editorType"
+			allow-transformations="allowTransformations"
+			show="selections.show" 
+			ng-if="selections.show" />
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</div>
