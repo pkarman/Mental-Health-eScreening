@@ -1,5 +1,6 @@
 package gov.va.escreening.repository;
 
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -41,20 +42,12 @@ public class RuleRepositoryImpl extends AbstractHibernateRepository<Rule> implem
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Rule> getRuleForAssessment(int veteranAssessmentID)
-    {
-        //TODO: See if we make this more efficient
-        String sql = "select distinct rule.* from rule, rule_assessment_variable, assessment_variable "
-                + "where rule_assessment_variable.rule_id = rule.rule_id "
-                + "and rule_assessment_variable.assessment_variable_id=assessment_variable.assessment_variable_id "
-                + "and (assessment_variable.measure_id in (select measure_id from survey_measure_response where veteran_assessment_id="
-                + veteranAssessmentID + ") or assessment_variable.measure_answer_id in "
-                        + "(select measure_answer_id from survey_measure_response where veteran_assessment_id="
-                + veteranAssessmentID + "))";
-
-        Query q = entityManager.createNativeQuery(sql, Rule.class);
+    public List<Rule> getRuleForAssessment(int veteranAssessmentID){
+        Integer assessmentId = veteranAssessmentID;
         
-        return q.getResultList();
+        String sql = String.format(ASSESSMENT_RULES_QUERY_FORMAT, assessmentId, assessmentId, assessmentId, assessmentId);
+
+        return entityManager.createNativeQuery(sql, Rule.class).getResultList();
     }
 
     @Override
@@ -62,4 +55,29 @@ public class RuleRepositoryImpl extends AbstractHibernateRepository<Rule> implem
         return entityManager.createQuery("SELECT NEW " + RuleDto.class.getCanonicalName() + "(r.ruleId, r.name) FROM Rule r", RuleDto.class).getResultList();
     }
     
+    //TODO: This and getRulesForResponses can be combined to make the process of picking rules more efficient since we know what has changed 
+    private static String ASSESSMENT_RULES_QUERY_FORMAT =
+            "select distinct rule.* from rule, rule_assessment_variable, assessment_variable "
+            + "where rule_assessment_variable.rule_id = rule.rule_id "
+            + "and rule_assessment_variable.assessment_variable_id=assessment_variable.assessment_variable_id "
+            + "and ( "
+                //include all rules based on custom variables
+                + "assessment_variable.assessment_variable_type_id=" + AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM
+                //include rules that use measures in this assessment
+                +" OR assessment_variable.measure_id in "
+                    + "(select measure_id from survey_measure_response where veteran_assessment_id=%d) "
+                //include rules that use answers in this assessment
+                + "OR assessment_variable.measure_answer_id in "
+                    + "(select measure_answer_id from survey_measure_response where veteran_assessment_id=%d) "
+                //include rules that use formulas which are based on questions or answers for this assessment
+                + "OR assessment_variable.assessment_variable_id in " 
+                    + "(select parent_av.assessment_variable_id from assessment_variable parent_av "
+                    + "join assessment_var_children avc on parent_av.assessment_variable_id=avc.variable_parent "
+                    + "join assessment_variable child_av on avc.variable_child=child_av.assessment_variable_id "
+                    + "where "
+                        + "child_av.measure_id in (select measure_id from survey_measure_response where veteran_assessment_id=%d) " 
+                    + "OR "
+                        + "child_av.measure_answer_id in (select measure_answer_id from survey_measure_response where veteran_assessment_id=%d)"
+                    + ")"
+            + ")";
 }

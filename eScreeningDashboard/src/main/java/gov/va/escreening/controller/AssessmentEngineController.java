@@ -104,7 +104,7 @@ public class AssessmentEngineController {
 		long startTime = System.nanoTime();
         AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
         long endTime = System.nanoTime();
-        logger.debug("processPage time: {}", (endTime - startTime)/1000000l);
+        logger.debug("processPage time: {}ms", (endTime - startTime)/1000000l);
         
 		smrLister.clearSmrFromCache();
 
