@@ -51,9 +51,9 @@ public class DashboardHomeController {
     public Map<String, Boolean> getTabPermissions(HttpServletRequest request) {
         logger.debug("Request for tab permissions");
 
-        List<String> tabs = Arrays.asList("home", "userManagement", "formsEditor", "assessmentDashboard",
-                "assessmentReport", "veteranSearch", "exportData", "createBattery", "programManagement",
-                "systemConfiguration", "myAccount", "reports");
+        List<String> tabs = Arrays.asList("home", "assessmentDashboard", "createBattery", 
+										  "assessmentReport", "veteranSearch", "exportData", "formsEditor",
+										  "programManagement", "reports", "userManagement", "myAccount", "systemConfiguration");
 
         Map<String, Boolean> dashboardTabs = new LinkedHashMap<String, Boolean>();
 
