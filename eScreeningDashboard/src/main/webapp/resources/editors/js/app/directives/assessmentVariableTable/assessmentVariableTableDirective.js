@@ -93,8 +93,8 @@
 					scope.$watch('assessmentVariables',function(newVar, oldVar){
 						if (!angular.equals(newVar, oldVar)) {
 							scope.tableParams.reload();
-							scope.variablesLoaded = true;
 						}
+						scope.variablesLoaded = angular.isFunction(newVar.one);
 					}, true);
 					
 		            scope.select = function(e, av) {
