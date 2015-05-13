@@ -1,5 +1,7 @@
 package gov.va.escreening.xport;
 
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,6 +26,15 @@ public class FormulaExpressionTest {
 		String mathFormula = "((false?1:0) + (false?1:0))";
 		Assert.assertTrue(parser.parseExpression(mathFormula).getValue(String.class).equals("0"));
 	}
+	
+	@Test
+    public void parsingIdBasedMaps() {
+        ExpressionParser parser = new SpelExpressionParser();
+        @SuppressWarnings("unchecked")
+        Map<String,String> textMap = (Map<String,String>) parser.parseExpression("{\"1\":\"one\",\"2\":\"two\"}").getValue(Map.class);
+        
+        Assert.assertTrue(textMap.get("1").equals("one"));
+    }
 
 	@Test
 	public void formulaWithMin0() {
