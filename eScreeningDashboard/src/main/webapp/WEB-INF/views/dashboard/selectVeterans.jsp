@@ -7,13 +7,14 @@
 <html>
 <head>
     <title>Veterans Search</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
 	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
-
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
-
 
     <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">

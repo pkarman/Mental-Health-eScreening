@@ -6,6 +6,7 @@
 <html ng-app="selectVeteransFormApp">
 <head>
 	<title>Batch Complete</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">	
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>

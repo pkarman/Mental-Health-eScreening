@@ -7,7 +7,8 @@
 <html>
 <head>
     <title>Reports | Individual Statistic Reports</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
     <link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
     <link href="<c:url value="/resources/images/valogo.ico" />" rel="icon" type="image/x-icon" />

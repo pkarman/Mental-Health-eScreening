@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <htmL>
 <head>
-<base href="${pageContext.request.contextPath}/"/>
-
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>See Clerk</title>
+	<base href="${pageContext.request.contextPath}/"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- FAVICON -->
 	<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
@@ -16,14 +16,13 @@
 	<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
     
 
-<title>See Clerk</title>
-<link href="resources/css/home.css" rel="stylesheet" type="text/css">
-<link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
-<link href="resources/css/login.css" rel="stylesheet" type="text/css">
-<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
-<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
-<link href="resources/css/common-ui-styles/exception.css" rel="stylesheet" type="text/css"/>
-
+	<link href="resources/css/home.css" rel="stylesheet" type="text/css">
+	<link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
+	<link href="resources/css/login.css" rel="stylesheet" type="text/css">
+	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
+	<link href="resources/css/mobileStyle/mediaQueryMain.css" rel="stylesheet" type="text/css"/>
+	<link href="resources/css/common-ui-styles/exception.css" rel="stylesheet" type="text/css"/>
+	
 </head>
 <body>
 <div id="outerPageDiv">
@@ -54,4 +53,4 @@
 </div>
 </body>
 
-</htmL>
+</html>
