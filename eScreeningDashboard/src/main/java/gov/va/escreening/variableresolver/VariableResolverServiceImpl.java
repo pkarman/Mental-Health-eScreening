@@ -49,10 +49,10 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     	    
     	    //Initialize the resolver parameters
             List<VariableTemplate> variableTemplates = template.getVariableTemplateList();
-            ResolverParameters params = new ResolverParameters(veteranAssessmentId, variableTemplates);
+            VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+            ResolverParameters params = new ResolverParameters(assessment, variableTemplates);
             
             //add all assessment responses
-            VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
             params.addResponses(assessment.getSurveyMeasureResponseList());
             
             for(VariableTemplate variableTemplate : variableTemplates) {
@@ -72,10 +72,10 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         // clear the smr cache before resolving variable for every assessment 
         smrLister.clearSmrFromCache();
         
-        ResolverParameters params = new ResolverParameters(veteranAssessmentId, dbVariables);
+        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+        ResolverParameters params = new ResolverParameters(assessment, dbVariables);
         
         //add responses from assessment
-        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
         params.addResponses(assessment.getSurveyMeasureResponseList());
         
         for(AssessmentVariable dbVariable : dbVariables){

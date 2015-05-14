@@ -8,7 +8,10 @@ import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VariableTemplate;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +35,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * A class to contain the settings and cached content needed to resolved 
  * AssessmentVariables into AssessmentVariableDto.<br/>
@@ -44,7 +49,7 @@ import com.google.common.collect.Table;
 public class ResolverParameters {
     private static final Logger logger = LoggerFactory.getLogger(ResolverParameters.class);
                     
-    private final Integer assessmentId;
+    private final VeteranAssessment veteranAssessment;
     //map from MeasureAnswer ID to Answer (DTO)
     private final ListMultimap<Integer, Answer> answerMap = LinkedListMultimap.create();
     //map from MeasureAnswer ID to AssessmentVariable
@@ -60,16 +65,20 @@ public class ResolverParameters {
     private final Set<Integer> unresolvable = new HashSet<>();
     //Stores answer override text (this should be removed when we remove the use of override text)
     private final Map<Integer, Optional<String>> overrideMap = new HashMap<>();
+    //Stores mapping from measure ID to boolean which is true if the question was visible to the veteran.
+    //If a given ID is not in the map then the measure was visible
+    private Map<Integer, Boolean> measureVisibilityMap = null;
+    private ExpressionExtentionUtil expressionUtil = null;
     
     /**
-     * @param veteranAssessmentId the assessment to resolve against
+     * @param veteranAssessment the assessment to resolve against
      * @param nullHandler the null handler to be used when a value is null
      * @param assessmentVariables the dependent assessment variables for the operation
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
-    public ResolverParameters(int veteranAssessmentId,
+    public ResolverParameters(VeteranAssessment veteranAssessment,
             Collection<AssessmentVariable> assessmentVariables){
-        assessmentId = veteranAssessmentId;
+        this.veteranAssessment = checkNotNull(veteranAssessment);
         
         createAnswerHash(assessmentVariables);
         avMap = Maps.newHashMapWithExpectedSize(assessmentVariables.size());
@@ -81,9 +90,9 @@ public class ResolverParameters {
      * @param variableTemplates the dependent assessment variables for the operation
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
-    public ResolverParameters(int veteranAssessmentId,
+    public ResolverParameters(VeteranAssessment veteranAssessment,
             List<VariableTemplate> variableTemplates){
-        assessmentId = veteranAssessmentId;
+        this.veteranAssessment = checkNotNull(veteranAssessment);
         
         createAnswerHash(variableTemplates);
         avMap = Maps.newHashMapWithExpectedSize(measureAnswerHash.size());
@@ -224,7 +233,7 @@ public class ResolverParameters {
     
     
     public Integer getAssessmentId(){
-        return assessmentId;
+        return veteranAssessment.getVeteranAssessmentId();
     }
     
     /**
@@ -243,10 +252,19 @@ public class ResolverParameters {
             return ma.getMeasure().getMeasureType().getMeasureTypeId() == 3 ? "false" : "0";
             
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-            logger.warn("There were no measure responses for Measure ID: {}, assessment ID: {}",
-                    av.getMeasure().getMeasureId(), getAssessmentId());
+            //It is unacceptable to evaluate a formula if it relies on a visible measure which was skipped by the veteran
+            if(isMeasureVisibile(av.getMeasure())){
+                throw new CouldNotResolveVariableException(
+                        "Visible measure (with measure ID " 
+                                + av.getMeasure().getMeasureId() 
+                                + ") was not answered so parent formula cannot be evaluated");
+            }
             break;
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+            if(foundVisibleSkippedQuestion(av)){
+                throw new CouldNotResolveVariableException(
+                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
+            }
             logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
                     av.getAssessmentVariableId(), getAssessmentId());
             break;
@@ -257,6 +275,65 @@ public class ResolverParameters {
             break;
         }
         return "0";
+    }
+    
+    private boolean isMeasureVisibile(gov.va.escreening.entity.Measure measure){
+        if(measureVisibilityMap == null){
+            ImmutableMap.Builder<Integer, Boolean> mapBuilder = ImmutableMap.builder();
+            for(VeteranAssessmentMeasureVisibility measureVis : veteranAssessment.getMeasureVisibilityList()){
+                mapBuilder.put(measureVis.getMeasure().getMeasureId(), measureVis.getIsVisible());
+            }
+            measureVisibilityMap = mapBuilder.build();
+        }
+        Boolean isVisible = measureVisibilityMap.get(measure.getMeasureId());
+        return isVisible == null || isVisible;
+    }
+    
+    private boolean wasntAnswered(AssessmentVariableDto av){
+        if(expressionUtil == null){
+            expressionUtil = new ExpressionExtentionUtil();
+        }
+        return expressionUtil.wasntAnswered(av);
+    }
+    
+    /**
+     * Checks to see if the given formula contains any visible questions which were unanswered
+     * @param formulaAv
+     * @return true if the formula has any component (or sub-formula component) which is a measure which is unresolvable or 
+     * can be resolved but was not answered.
+     */
+    private boolean foundVisibleSkippedQuestion(AssessmentVariable formulaAv){
+        if(formulaAv.getAssessmentVarChildrenList() == null){
+            for(AssessmentVarChildren child : formulaAv.getAssessmentVarChildrenList()){
+                AssessmentVariable childVar = child.getVariableChild();
+                if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
+                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE)){
+                    
+                   if(childVar.getMeasure() != null
+                      && isMeasureVisibile(childVar.getMeasure())){
+                       
+                       if(unresolvable.contains(childVar.getAssessmentVariableId())){
+                           return true;
+                       }
+                       
+                       //now we have a visible measure which was resolved
+                       AssessmentVariableDto resolvedVar = getResolvedVariable(childVar.getAssessmentVariableId());
+                       
+                       checkState(resolvedVar != null, "A formula's dependent variable was not resolved before the formula.");
+                       
+                       if(wasntAnswered(resolvedVar)){
+                           return true;
+                       }
+                   }
+                }
+                else if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
+                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA)
+                        && foundVisibleSkippedQuestion(childVar)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     public void addResolvedVariable(AssessmentVariableDto variable){

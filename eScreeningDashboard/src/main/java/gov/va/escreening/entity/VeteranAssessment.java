@@ -128,6 +128,10 @@ public class VeteranAssessment implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "veteranAssessment")//, fetch = FetchType.LAZY)
 	private List<VeteranAssessmentNote> veteranAssessmentNoteList;
 
+    @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<VeteranAssessmentMeasureVisibility> measureVisibilityList;
+	
 	/**
 	 * Since we have state that must be tracked in the VeteranAssessmentSurvey we cannot use a set of Survey here (which
 	 * would have made more sense)
@@ -430,9 +434,18 @@ public class VeteranAssessment implements Serializable {
 		this.veteranAssessmentNoteList = veteranAssessmentNoteList;
 	}
 
-	/**
+	public List<VeteranAssessmentMeasureVisibility> getMeasureVisibilityList() {
+        return measureVisibilityList;
+    }
+
+    public void setMeasureVisibilityList(
+            List<VeteranAssessmentMeasureVisibility> measureVisibilityList) {
+        this.measureVisibilityList = measureVisibilityList;
+    }
+
+    /**
 	 * Note: Normally you want to interact with the Surveys not with the VeteranAssessmentSurveyList. If you don't need
-	 * to access fields in the join table itself your code will end up being much simpiler if you just update the
+	 * to access fields in the join table itself your code will end up being much simpler if you just update the
 	 * surveys using get/setSurvey methods.
 	 */
 	public void setVeteranAssessmentSurveyList(

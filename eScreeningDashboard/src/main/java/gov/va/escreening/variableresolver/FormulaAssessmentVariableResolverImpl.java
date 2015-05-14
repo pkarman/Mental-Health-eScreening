@@ -7,7 +7,6 @@ import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELEC
 import static gov.va.escreening.expressionevaluator.ExpressionExtentionUtil.DEFAULT_VALUE;
 import static gov.va.escreening.expressionevaluator.ExpressionExtentionUtil.NUMBER_FORMAT;
 import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
@@ -20,17 +19,15 @@ import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public class FormulaAssessmentVariableResolverImpl implements
 		FormulaAssessmentVariableResolver {
@@ -72,34 +69,31 @@ public class FormulaAssessmentVariableResolverImpl implements
         
         if(variableDto != null)
             return variableDto;
-        
 	    try{
-	    
 	        Integer veteranAssessmentId = params.getAssessmentId();
     
     		try {
     		    
-    			if (assessmentVariable.getFormulaTemplate() == null
-    					|| assessmentVariable.getFormulaTemplate().isEmpty())
+    			if (Strings.isNullOrEmpty(assessmentVariable.getFormulaTemplate())){
     				throw new CouldNotResolveVariableException(
     						String.format(
     								"Variable of type formula did not contain the required formulatempalte field"
     										+ " assessmentVariableId: %s, assessmentId: %s",
     								assessmentVariable.getAssessmentVariableId(),
     								veteranAssessmentId));
-    			
+    			}
     			List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
     			
-    			Set<AssessmentVariable> allformulaChildVars = 
-    			        resolveDependencies(assessmentVariable.getAssessmentVarChildrenList(), 
-    			                            params, formulaTypeList);
-                
+//    			Set<AssessmentVariable> allformulaChildVars = 
+//    			        resolveDependencies(assessmentVariable.getAssessmentVarChildrenList(), 
+//    			                            params, formulaTypeList);
+//                
         
                 FormulaDto rootFormula = new FormulaDto();
     			rootFormula.setExpressionTemplate(assessmentVariable.getFormulaTemplate());
+    			rootFormula.setVariableValueMap(createResolvedVarValueMap(assessmentVariable, params));
     			Map<Integer, AssessmentVariableDto> avMap = params.getResolvedVariableMap();
     			rootFormula.setAvMap(avMap);
-    			rootFormula.setVariableValueMap(createResolvedVarValueMap(allformulaChildVars, params));
     			
     			// iterate the list of formulas and add them to the object
     			for (AssessmentVariable formulaVariable : formulaTypeList) {
@@ -181,13 +175,23 @@ public class FormulaAssessmentVariableResolverImpl implements
 	}
 
 	private Map<Integer, String> createResolvedVarValueMap(
-	        Collection<AssessmentVariable> avChildSet, 
+	        AssessmentVariable formulaAv, 
 	        ResolverParameters params) {
-	    Map<Integer, String> valueMap = Maps.newHashMapWithExpectedSize(avChildSet.size());
+	    Map<Integer, String> valueMap = Maps.newHashMapWithExpectedSize(
+	            formulaAv.getAssessmentVarChildrenList() != null ? formulaAv.getAssessmentVarChildrenList().size() : 0);
 	    
-	    for(AssessmentVariable childAv : avChildSet){
+	    for(AssessmentVarChildren avChild : formulaAv.getAssessmentVarChildrenList()){
+	        AssessmentVariable childAv = avChild.getVariableChild();
 	        Integer avId = childAv.getAssessmentVariableId();
-	        AssessmentVariableDto variable = params.getResolvedVariable(avId);
+	        
+	        AssessmentVariableDto variable = null;
+	        
+	        try{
+	            variable = resolveDependency(childAv, params);
+	        }
+	        catch(CouldNotResolveVariableException resolverException){
+	            logger.debug("Child variable could not be resolved:\n{}", childAv);
+	        }
 	        
 	        String value = null;
 	        if(variable != null){	            
@@ -211,6 +215,27 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        }
 	    }
 	    return valueMap;
+	}
+	
+	private AssessmentVariableDto resolveDependency(AssessmentVariable child, 
+	        ResolverParameters params){
+	    
+	    switch (child.getAssessmentVariableTypeId()
+                .getAssessmentVariableTypeId()) {
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+            return measureVariableResolver.resolveAssessmentVariable(child, params);
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+            return measureAnswerVariableResolver.resolveAssessmentVariable(child, params);
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
+            return customVariableResolver.resolveAssessmentVariable(child, params);
+        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+            return resolveAssessmentVariable(child, params);
+        default:
+            throw new UnsupportedOperationException(String.format(
+                    "Assessment variable of type id: %s is not supported.",
+                    child.getAssessmentVariableTypeId()
+                            .getAssessmentVariableTypeId()));
+        }
 	}
 
     /**
@@ -298,48 +323,48 @@ public class FormulaAssessmentVariableResolverImpl implements
 	 * @param formulaTypeList
 	 * @return list of all AssessmentVariable needed from this formula and any sub-formula
 	 */
-	private Set<AssessmentVariable>  resolveDependencies(
-	        List<AssessmentVarChildren> formulaDependencies,
-			ResolverParameters params,
-			List<AssessmentVariable> formulaTypeList) {
-
-	    //TODO: it would be far more efficient if we resolved variables on demand instead of resolving all of the here. 
-	    Set<AssessmentVariable> allDependencies = Sets.newHashSet();
-		for (AssessmentVarChildren dependencyAssociation : formulaDependencies) {
-			AssessmentVariable child = dependencyAssociation.getVariableChild();
-			allDependencies.add(child);
-			switch (child.getAssessmentVariableTypeId()
-					.getAssessmentVariableTypeId()) {
-			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-				measureVariableResolver.resolveAssessmentVariable(child, params);
-				break;
-			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
-			    //here we lack the context to set the answer's exact row, this is OK because 
-			    //we don't support formulas using table answers.
-			    try{
-			        measureAnswerVariableResolver.resolveAssessmentVariable(child, params);
-			    }
-			    catch(CouldNotResolveVariableException e){
-			        //ignore
-			    }
-				break;
-			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
-			    customVariableResolver.resolveAssessmentVariable(child, params);
-				break;
-			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-				formulaTypeList.add(child);
-                allDependencies.addAll(resolveDependencies(
-						child.getAssessmentVarChildrenList(), params, formulaTypeList));
-				resolveAssessmentVariable(child, params);
-                
-				break;
-			default:
-				throw new UnsupportedOperationException(String.format(
-						"Assessment variable of type id: %s is not supported.",
-						child.getAssessmentVariableTypeId()
-								.getAssessmentVariableTypeId()));
-			}
-		}
-		return allDependencies;
-	}
+//	private Set<AssessmentVariable>  resolveDependencies(
+//	        List<AssessmentVarChildren> formulaDependencies,
+//			ResolverParameters params,
+//			List<AssessmentVariable> formulaTypeList) {
+//
+//	    //TODO: it would be far more efficient if we resolved variables on demand instead of resolving all of the here. 
+//	    Set<AssessmentVariable> allDependencies = Sets.newHashSet();
+//		for (AssessmentVarChildren dependencyAssociation : formulaDependencies) {
+//			AssessmentVariable child = dependencyAssociation.getVariableChild();
+//			allDependencies.add(child);
+//			switch (child.getAssessmentVariableTypeId()
+//					.getAssessmentVariableTypeId()) {
+//			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+//				measureVariableResolver.resolveAssessmentVariable(child, params);
+//				break;
+//			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+//			    //here we lack the context to set the answer's exact row, this is OK because 
+//			    //we don't support formulas using table answers.
+//			    try{
+//			        measureAnswerVariableResolver.resolveAssessmentVariable(child, params);
+//			    }
+//			    catch(CouldNotResolveVariableException e){
+//			        //ignore
+//			    }
+//				break;
+//			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
+//			    customVariableResolver.resolveAssessmentVariable(child, params);
+//				break;
+//			case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+//				formulaTypeList.add(child);
+//                allDependencies.addAll(resolveDependencies(
+//						child.getAssessmentVarChildrenList(), params, formulaTypeList));
+//				resolveAssessmentVariable(child, params);
+//                
+//				break;
+//			default:
+//				throw new UnsupportedOperationException(String.format(
+//						"Assessment variable of type id: %s is not supported.",
+//						child.getAssessmentVariableTypeId()
+//								.getAssessmentVariableTypeId()));
+//			}
+//		}
+//		return allDependencies;
+//	}
 }

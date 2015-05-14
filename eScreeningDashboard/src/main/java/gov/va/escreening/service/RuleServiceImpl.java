@@ -147,10 +147,10 @@ public class RuleServiceImpl implements RuleService {
             variables.addAll(r.getAssessmentVariables());
         }
      
-        ResolverParameters params = new ResolverParameters(veteranAssessmentId, variables);
+        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
+        ResolverParameters params = new ResolverParameters(assessment, variables);
         
         //add response found for this assessment
-        VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
         params.addResponses(assessment.getSurveyMeasureResponseList());
         
         //add any newly saved response

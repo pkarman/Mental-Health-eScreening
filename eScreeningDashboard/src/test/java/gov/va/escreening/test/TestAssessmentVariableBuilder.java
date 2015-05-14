@@ -25,6 +25,7 @@ import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
@@ -125,7 +126,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     public Map<Integer, AssessmentVariableDto> buildDtoMap(){
         Map<Integer, AssessmentVariableDto> dtoList = Maps.newHashMapWithExpectedSize(avMap.size());
         
-        ResolverParameters params = new ResolverParameters(123, measureAnswerHash.values());
+        ResolverParameters params = new ResolverParameters(assessment, measureAnswerHash.values());
         params.addResponses(measureResponses.values());
         
         //We resolve the variables that were added and any answer variables
@@ -252,15 +253,39 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         ma.setMeasureAnswerValidationList(new ArrayList<MeasureAnswerValidation>());
         return ma;
     }
-
+    
     /**
      * Interface for builders which create questions (aka measures)
      * 
      * @author Robin Carnow
      *
      */
-    public interface MeasureAvBuilder{
-        public Measure getMeasure();
+    public class MeasureAvBuilder extends ForwardingAssessmentVariableBuilder{
+        protected Measure measure;
+        
+        MeasureAvBuilder(AssessmentVariableBuilder rootBuilder){
+            super(rootBuilder);
+        }
+        
+        public final Measure getMeasure(){
+            return measure;
+        }
+        
+        /**
+         * Sets the visibility of the current question being built
+         * @param isVisible if true then this is a follow-up question which is visible to the veteran
+         * @return
+         */
+        public final AssessmentVariableBuilder setMeasureVisibility(boolean isVisible){
+            List<VeteranAssessmentMeasureVisibility> visList = assessment.getMeasureVisibilityList();
+            if(visList == null){
+                visList = new ArrayList<>();
+            }
+            visList.add(new VeteranAssessmentMeasureVisibility(assessment, measure, isVisible));
+            when(assessment.getMeasureVisibilityList()).thenReturn(visList);
+            
+            return this;
+        }
     }
 
     /**
@@ -269,8 +294,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
      * @author Robin Carnow
      *
      */
-    public class TableQuestionAvBuilder extends ForwardingAssessmentVariableBuilder{
-        private final Measure tableMeasure;
+    public class TableQuestionAvBuilder extends MeasureAvBuilder{
         private MeasureAvBuilder currentBuilder = null;
         private FreeTextAvBuilder currentFreeTextBuilder = null;
         private SelectAvBuilder currentSelectBuilder = null;
@@ -289,12 +313,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 answer.setAnswerType("none");
             }
 
-            tableMeasure = newMeasure(null, MEASURE_TYPE_TABLE, questionText, answer);
+            measure = newMeasure(null, MEASURE_TYPE_TABLE, questionText, answer);
 
             //create av for measure
             AssessmentVariable av = newAssessmentVariable(avId, TYPE_MEASURE);
-            av.setMeasure(tableMeasure);
-            tableMeasure.getAssessmentVariableList().add(av);
+            av.setMeasure(measure);
+            measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
 
             if(hasNone){
@@ -305,9 +329,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 if(noneResponse != null){
                     SurveyMeasureResponse srm = new SurveyMeasureResponse();
                     srm.setBooleanValue(noneResponse);
-                    srm.setMeasure(tableMeasure);
+                    srm.setMeasure(measure);
                     srm.setMeasureAnswer(answer);
-                    addMeasureResponse(tableMeasure, srm);
+                    addMeasureResponse(measure, srm);
                 }
             }
         }
@@ -329,8 +353,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             Measure childMeasure = childBuilder.getMeasure();
 
             //associate child with this parent
-            childMeasure.setParent(tableMeasure);
-            tableMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             //create responses
             if(responses != null){
@@ -505,15 +529,14 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             Measure childMeasure = childBuilder.getMeasure();
 
             //associate child with this parent
-            childMeasure.setParent(tableMeasure);
-            tableMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             return this;
         }
     }
 
-    public class SelectAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder {
-        private final Measure measure;
+    public class SelectAvBuilder extends MeasureAvBuilder {
         private final AssessmentVariable av;
         private Double defaultCalculationValue = 0.0;
         private List<AssessmentVariable> answerAvs = new ArrayList<>();
@@ -536,11 +559,6 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             av.setMeasure(measure);
             measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
-        }
-
-        @Override
-        public Measure getMeasure(){
-            return measure;
         }
 
         /**
@@ -611,8 +629,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     }
 
 
-    public class MatrixAvBuilder extends ForwardingAssessmentVariableBuilder{
-        private final Measure matrixMeasure;
+    public class MatrixAvBuilder extends MeasureAvBuilder{
         private final AssessmentVariable av;
         private final List<SelectAvBuilder> childBuilders = new LinkedList<>();
         private final List<MeasureAnswer> columns = new LinkedList<>();
@@ -633,12 +650,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 throw new IllegalArgumentException("measure type ID must be a matrix");
             }
 
-            matrixMeasure = newMeasure(null, measureTypeId, questionText);
-            matrixMeasure.setChildren(new LinkedHashSet<Measure>());
+            measure = newMeasure(null, measureTypeId, questionText);
+            measure.setChildren(new LinkedHashSet<Measure>());
 
             av = newAssessmentVariable(avId, TYPE_MEASURE);
-            av.setMeasure(matrixMeasure);
-            matrixMeasure.getAssessmentVariableList().add(av);
+            av.setMeasure(measure);
+            measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
         }
 
@@ -675,7 +692,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
          * @return this MatrixAVBuilder
          */
         private MatrixAvBuilder addChildQuestion(@Nullable Integer childMeasureId, @Nullable Integer childQuestionAvId, @Nullable String questionText){
-            Integer childMeasureTypeId = matrixMeasure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
+            Integer childMeasureTypeId = measure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
                     ?  MEASURE_TYPE_SELECT_ONE :  MEASURE_TYPE_SELECT_MULTI;
 
             SelectAvBuilder selectBuilder = new SelectAvBuilder(getRootBuilder(), childMeasureTypeId, childMeasureId, childQuestionAvId, questionText);
@@ -689,8 +706,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
             //associate child with this parent
             Measure childMeasure = selectBuilder.getMeasure();
-            childMeasure.setParent(matrixMeasure);
-            matrixMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             return this;
         }
@@ -758,8 +775,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
     }
 
-    public class FreeTextAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder{
-        private final Measure measure;
+    public class FreeTextAvBuilder extends MeasureAvBuilder{
 
         private FreeTextAvBuilder(AssessmentVariableBuilder rootBuilder, 
                 @Nullable Integer avId, 
@@ -805,11 +821,6 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             measure.getMeasureValidationList().add(mv);
 
             return this;
-        }
-
-        @Override
-        public Measure getMeasure(){
-            return measure;
         }
 
         private Measure newFreeTextMeasure(@Nullable Integer answerId, @Nullable String text){
