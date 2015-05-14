@@ -129,18 +129,30 @@ public class MyAccountRestController extends BaseDashboardRestController {
        			   .replaceAll("\\%27", "'")
        			   .replaceAll("\\%21", "!")
        			   .replaceAll("\\%25", "%")
-       			   .replaceAll("\\%3B", ";")
        			   .replaceAll("\\%40", "@")
        			   .replaceAll("\\%23", "#")
        			   .replaceAll("\\%24", "\\$")
-       			   .replaceAll("\\%5E", "^")
        			   .replaceAll("\\%26", "&")
        			   .replaceAll("\\%20", " ")
 				   .replaceAll("\\%2B", "+")
 				   .replaceAll("\\%5C", "\\\\")
 				   .replaceAll("\\%7C", "|")
-       			   .replaceAll("\\%7E", "~");
-        
+       			   .replaceAll("\\%7E", "~")
+				   .replaceAll("%2C", ",")
+				   .replaceAll("%3C", "<")
+				   .replaceAll("%3E", ">")
+				   .replaceAll("%3D", "=")
+				   .replaceAll("%2F", "/")
+				   .replaceAll("%22", "\"")
+				   .replaceAll("%3F", "?")
+				   .replaceAll("-", "-")
+				   .replaceAll("_", "_")
+				   .replaceAll("%5B", "[")
+				   .replaceAll("%7B", "{")
+				   .replaceAll("%5D", "]")
+				   .replaceAll("%7D", "}")
+				   .replaceAll("%60", "`");
+			
         	verifyCode = URLEncoder.encode(request.getParameter("verifyCode"), "UTF-8")   
       			   .replaceAll("\\%28", "(")                          
       			   .replaceAll("\\%29", ")")   		
@@ -148,17 +160,30 @@ public class MyAccountRestController extends BaseDashboardRestController {
       			   .replaceAll("\\%27", "'")
       			   .replaceAll("\\%21", "!")
       			   .replaceAll("\\%25", "%")
-      			   .replaceAll("\\%3B", ";")
+
       			   .replaceAll("\\%40", "@")
       			   .replaceAll("\\%23", "#")
       			   .replaceAll("\\%24", "\\$")
-      			   .replaceAll("\\%5E", "^")
       			   .replaceAll("\\%26", "&")
       			   .replaceAll("\\%20", " ")
 				   .replaceAll("\\%2B", "+")
 				   .replaceAll("\\%5C", "\\\\")
 				   .replaceAll("\\%7C", "|")
-      			   .replaceAll("\\%7E", "~");
+      			   .replaceAll("\\%7E", "~")
+				   .replaceAll("%2C", ",")
+				   .replaceAll("%3C", "<")
+				   .replaceAll("%3E", ">")
+				   .replaceAll("%3D", "=")
+				   .replaceAll("%2F", "/")
+				   .replaceAll("%22", "\"")
+				   .replaceAll("%3F", "?")
+				   .replaceAll("-", "-")
+				   .replaceAll("_", "_")
+				   .replaceAll("%5B", "[")
+				   .replaceAll("%7B", "{")
+				   .replaceAll("%5D", "]")
+				   .replaceAll("%7D", "}")
+				   .replaceAll("%60", "`");
         }catch(Exception ex)
         {
         	logger.error("Error getting access/verify code", ex);
@@ -166,7 +191,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
         
         boolean hasError = false;
         String userMessage = "";
-
+			
         if (StringUtils.isEmpty(accessCode)) {
             hasError = true;
             userMessage = "Access Code is required. ";
