@@ -394,17 +394,8 @@
 								</c:if>
 							</tbody>
 						</table>
-
-
 					</div>
 				</div>
-				
-
-
-			
-
-
-
 			</div>
 		</div>
 		</form:form>
@@ -412,7 +403,7 @@
 
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 
-</body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/veteranDetails.js" />"></script>
+</body>
 </html>
