@@ -3,7 +3,9 @@ package gov.va.escreening.service;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.ae.AssessmentRequest;
 import gov.va.escreening.dto.ae.AssessmentResponse;
+import gov.va.escreening.entity.SurveyPage;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AssessmentEngineService {
@@ -15,7 +17,7 @@ public interface AssessmentEngineService {
 	 * @param assessmentRequest
 	 * @return
 	 */
-	AssessmentResponse processPage(AssessmentRequest assessmentRequest);
+	AssessmentResponse processPage(AssessmentRequest assessmentRequest, List<SurveyPage> surveyPageList);
 
 	/**
 	 * Saves the veteran's answers found in the request. Any Rules dealing with

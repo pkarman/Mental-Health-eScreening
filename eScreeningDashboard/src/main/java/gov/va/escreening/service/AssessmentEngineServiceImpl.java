@@ -45,6 +45,7 @@ import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,6 +70,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 @Transactional
@@ -123,7 +127,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	@Override
-	public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
+	public AssessmentResponse processPage(AssessmentRequest assessmentRequest, List<SurveyPage> surveyPageList) {
 
 		// First validate and save data.
 		List<SurveyMeasureResponse> savedResponses = saveUserInput(assessmentRequest);
@@ -133,7 +137,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				assessmentContext.getVeteranAssessmentId(), savedResponses);
 
 		// If all went well, get the next set of question for the user, if any.
-		return getAssessmentResponse(assessmentRequest);
+		return getAssessmentResponse(assessmentRequest, surveyPageList);
 	}
 
 //	@Override
@@ -240,13 +244,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 * @return
 	 */
 	private AssessmentResponse getAssessmentResponse(
-			AssessmentRequest assessmentRequest) {
+			AssessmentRequest assessmentRequest, List<SurveyPage> surveyPageList) {
 
 		AssessmentResponse assessmentResponse = new AssessmentResponse();
 		assessmentResponse.setStatus(HttpStatus.OK.value());
 
 		// Get assessment for next
-		Assessment assessment = getAssessmentForNextPage(assessmentRequest);
+		Assessment assessment = getAssessmentForNextPage(assessmentRequest, surveyPageList);
 		assessmentResponse.setAssessment(assessment);
 
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
@@ -288,15 +292,15 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 * @return the next assessment
 	 */
 	private Assessment getAssessmentForNextPage(
-			AssessmentRequest assessmentRequest) {
+			AssessmentRequest assessmentRequest, List<SurveyPage> surveyPageList) {
 
 		String navigation = Strings.nullToEmpty(
 				assessmentRequest.getNavigation()).toLowerCase();
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 
 		// Get all the survey pages for the assessment.
-		List<SurveyPage> surveyPageList = surveyPageRepository
-				.getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
+//		List<SurveyPage> surveyPageList = surveyPageRepository
+//				.getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
 
 		Integer currentSurveyPageId;
 		if (assessmentRequest.getTargetSection() != null) {
@@ -447,7 +451,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		}
 		return page;
 	}
-
+	
+	
 	/**
 	 * Validate and save user input. <b>Note:</b> This saves all responses even
 	 * if they are hidden. As a result you must call

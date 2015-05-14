@@ -61,6 +61,7 @@ public class SurveyMeasureResponse implements Serializable {
     private Date dateModified;
 	
 	
+	
     @JoinColumn(name = "survey_id", referencedColumnName = "survey_id")
 	@ManyToOne(optional = false)
 	private Survey survey;
@@ -74,6 +75,19 @@ public class SurveyMeasureResponse implements Serializable {
 	@JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
 	@ManyToOne(optional = false)
 	private MeasureAnswer measureAnswer;
+	
+	@JoinColumn(name = "copiedFromAssessment", referencedColumnName = "veteran_assessment_id")
+	@ManyToOne(optional = true)
+	private VeteranAssessment copiedFromVeteranAssessment;
+
+	public VeteranAssessment getCopiedFromVeteranAssessment() {
+		return copiedFromVeteranAssessment;
+	}
+
+	public void setCopiedFromVeteranAssessment(
+			VeteranAssessment copiedFromVeteranAssessment) {
+		this.copiedFromVeteranAssessment = copiedFromVeteranAssessment;
+	}
 
 	public SurveyMeasureResponse() {
 	}

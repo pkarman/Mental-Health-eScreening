@@ -1,6 +1,9 @@
 package gov.va.escreening.delegate;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.AssessmentContext;
@@ -17,6 +20,8 @@ import gov.va.escreening.exception.InvalidAssessmentContextException;
 import gov.va.escreening.repository.*;
 import gov.va.escreening.service.*;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static gov.va.escreening.constants.AssessmentConstants.*;
 
@@ -54,7 +62,10 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	private SurveyRepository surveyRepository;
 	@Autowired
 	private SurveySectionRepository surveySectionRepository;
-
+	
+	@Autowired
+	private SurveyMeasureResponseRepository surveyMeasureResponseRepository;
+	
     @Resource(type=SurveyPageRepository.class)
     private SurveyPageRepository surveyPageRepository;
 
@@ -99,9 +110,60 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 		assessmentContext.setVeteran(veteran);
 		assessmentContext.setVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
+		
+		List<SurveyPage> fullList = surveyPageRepository.getSurveyPagesForVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
+		assessmentContext.setSurveyPageList(copyAnswersFromPast48HoursAndFilterSurvey(veteranAssessment, fullList));
 		assessmentContext.setIsInitialized(true);
 	}
 
+    /** This method copies answers from surveys that are answered within the past 48 hours, then remove the module from 
+     * current survey page list 
+     * @param assessment The current assessment
+     * @param fullList The full list of survey pages
+     * @return
+     */
+	List<SurveyPage> copyAnswersFromPast48HoursAndFilterSurvey(VeteranAssessment assessment, List<SurveyPage> fullList)
+	{
+		Map<Integer, List<SurveyPage>> map = Maps.newHashMap();
+		
+		for(SurveyPage sp : fullList)
+		{
+			if(!map.containsKey(sp.getSurvey().getSurveyId()))
+			{
+				map.put(sp.getSurvey().getSurveyId(), Lists.newArrayList(sp));
+			}
+			else
+			{
+				map.get(sp.getSurvey().getSurveyId()).add(sp);
+			}
+		}
+		
+		List<SurveyMeasureResponse> respList = surveyMeasureResponseRepository.findLast48HourAnswersForVet(assessment.getVeteran().getVeteranId());
+		
+		for(SurveyMeasureResponse resp : respList)
+		{
+			if(map.containsKey(resp.getSurvey().getSurveyId()))
+			{
+				SurveyMeasureResponse copied = new SurveyMeasureResponse();
+				try {
+					BeanUtils.copyProperties(copied, resp);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				copied.setVeteranAssessment(assessment);
+				copied.setCopiedFromVeteranAssessment(resp.getVeteranAssessment());
+				fullList.removeAll(map.get(resp.getSurvey().getSurveyId()));
+				
+				surveyMeasureResponseRepository.create(copied);
+			}
+		}
+		
+		surveyMeasureResponseRepository.commit();
+		return fullList;
+	}
+	
 	@Override
 	public void ensureValidAssessmentContext() throws InvalidAssessmentContextException {
 		logger.debug("Ensuring valid assessment context");
@@ -127,7 +189,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
 		}
 
-		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest);
+		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest, assessmentContext.getSurveyPageList());
 
 		prepopulateResponseAnswers(response);
 
