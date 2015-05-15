@@ -32,8 +32,10 @@ import javax.annotation.Resource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static gov.va.escreening.constants.AssessmentConstants.*;
 
@@ -104,6 +106,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	}
 
 	@Override
+	@Transactional
 	public void setUpAssessmentContext(VeteranDto veteran,
 			VeteranAssessment veteranAssessment) {
 		logger.debug("Set up assessment context");
@@ -126,6 +129,11 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	{
 		Map<Integer, List<SurveyPage>> map = Maps.newHashMap();
 		
+		Set<String> copiedAnswers = new HashSet<String>();
+		
+		List<SurveyMeasureResponse> alreadyAnswered = surveyMeasureResponseRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId());
+		
+		
 		for(SurveyPage sp : fullList)
 		{
 			if(!map.containsKey(sp.getSurvey().getSurveyId()))
@@ -138,11 +146,25 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			}
 		}
 		
+		/** this loop handles the case when a veteran log back in to finish the assessment,
+		 * If some of the modules have already been copied, don't include them in the page list,
+		 * also these modules cannot be copied again.
+		 */
+		for(SurveyMeasureResponse r : alreadyAnswered)
+		{
+			if(r.getCopiedFromVeteranAssessment() != null)
+			{
+				copiedAnswers.add(getUniqueKeyForSurveyMeasureResponse(r));
+				fullList.removeAll(map.get(r.getSurvey().getSurveyId()));
+			}
+		}
+		
 		List<SurveyMeasureResponse> respList = surveyMeasureResponseRepository.findLast48HourAnswersForVet(assessment.getVeteran().getVeteranId());
 		
 		for(SurveyMeasureResponse resp : respList)
 		{
-			if(map.containsKey(resp.getSurvey().getSurveyId()))
+			String key = getUniqueKeyForSurveyMeasureResponse(resp);
+			if(map.containsKey(resp.getSurvey().getSurveyId()) && copiedAnswers.contains(key))
 			{
 				SurveyMeasureResponse copied = new SurveyMeasureResponse();
 				try {
@@ -154,14 +176,21 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 				
 				copied.setVeteranAssessment(assessment);
 				copied.setCopiedFromVeteranAssessment(resp.getVeteranAssessment());
+				copied.setSurveyMeasureResponseId(null);
 				fullList.removeAll(map.get(resp.getSurvey().getSurveyId()));
 				
 				surveyMeasureResponseRepository.create(copied);
+				copiedAnswers.add(key);
 			}
 		}
 		
 		surveyMeasureResponseRepository.commit();
 		return fullList;
+	}
+	
+	private String getUniqueKeyForSurveyMeasureResponse(SurveyMeasureResponse smr)
+	{
+		return smr.getMeasure().getMeasureId() + ":" + smr.getMeasureAnswer().getMeasureAnswerId()+":"+smr.getTabularRow();
 	}
 	
 	@Override
@@ -188,7 +217,13 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			// we set the assessment ID from the context (not from the request)
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
 		}
-
+		
+		if(assessmentContext.getSurveyPageList().isEmpty())
+		{
+			//this means all of the surveys have been answered before, should transition to complete directly.
+			AssessmentResponse resp = new AssessmentResponse();
+			resp.setPage(new Page());
+		}
 		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest, assessmentContext.getSurveyPageList());
 
 		prepopulateResponseAnswers(response);

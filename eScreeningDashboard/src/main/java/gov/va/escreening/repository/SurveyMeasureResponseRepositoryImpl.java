@@ -271,7 +271,8 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 
 	@Override
 	public List<SurveyMeasureResponse> findLast48HourAnswersForVet(int veteranId) {
-		String sql = "FROM SurveyMeasureResponse smr where smr.veteranAssessment.veteran.veteranId=:vetId and smr.dateModified > :date";
+		String sql = "FROM SurveyMeasureResponse smr where smr.veteranAssessment.veteran.veteranId=:vetId "
+				+ "and smr.dateModified > :date and smr.copiedFromVeteranAssessment = null order by dateModified desc";
 		
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.HOUR, -48);
