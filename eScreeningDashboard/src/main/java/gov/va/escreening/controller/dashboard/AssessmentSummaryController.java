@@ -1,5 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.collect.Lists;
+import gov.va.escreening.delegate.SaveToVistaResponse;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.AlertDto;
@@ -47,338 +49,374 @@ import com.google.common.base.Throwables;
 @RequestMapping(value = "/dashboard")
 public class AssessmentSummaryController implements MessageSourceAware {
 
-	private static final Logger logger = LoggerFactory.getLogger(AssessmentSummaryController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentSummaryController.class);
 
-	private MessageSource messageSource;
-	private AssessmentStatusService assessmentStatusService;
-	private ClinicService clinicService;
-	private NoteTitleService noteTitleService;
-	private UserService userService;
-	private VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService;
-	private VeteranAssessmentService veteranAssessmentService;
-	private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
+    private MessageSource messageSource;
+    private AssessmentStatusService assessmentStatusService;
+    private ClinicService clinicService;
+    private NoteTitleService noteTitleService;
+    private UserService userService;
+    private VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService;
+    private VeteranAssessmentService veteranAssessmentService;
+    private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
 
-	@Resource(name = "vistaDelegate")
-	private VistaDelegate vistaDelegate;
+    @Resource(name = "vistaDelegate")
+    private VistaDelegate vistaDelegate;
 
-	private AssessmentEngineService assessmentEngineService;
+    private AssessmentEngineService assessmentEngineService;
 
-	@Resource(name = "assessmentStatusMap")
-	Map<String, String> assessmentStatusMap;
+    @Resource(name = "assessmentStatusMap")
+    Map<String, String> assessmentStatusMap;
 
-	@Autowired
-	public void setAssessmentEngineService(
-			AssessmentEngineService assessmentEngineService) {
-		this.assessmentEngineService = assessmentEngineService;
-	}
+    @Autowired
+    public void setAssessmentEngineService(
+            AssessmentEngineService assessmentEngineService) {
+        this.assessmentEngineService = assessmentEngineService;
+    }
 
-	@Autowired
-	public void setAssessmentStatusService(
-			AssessmentStatusService assessmentStatusService) {
-		this.assessmentStatusService = assessmentStatusService;
-	}
+    @Autowired
+    public void setAssessmentStatusService(
+            AssessmentStatusService assessmentStatusService) {
+        this.assessmentStatusService = assessmentStatusService;
+    }
 
-	@Autowired
-	public void setClinicService(ClinicService clinicService) {
-		this.clinicService = clinicService;
-	}
+    @Autowired
+    public void setClinicService(ClinicService clinicService) {
+        this.clinicService = clinicService;
+    }
 
-	@Autowired
-	public void setNoteTitleService(NoteTitleService noteTitleService) {
-		this.noteTitleService = noteTitleService;
-	}
+    @Autowired
+    public void setNoteTitleService(NoteTitleService noteTitleService) {
+        this.noteTitleService = noteTitleService;
+    }
 
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
-	@Autowired
-	public void setVeteranAssessmentDashboardAlertService(
-			VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService) {
-		this.veteranAssessmentDashboardAlertService = veteranAssessmentDashboardAlertService;
-	}
+    @Autowired
+    public void setVeteranAssessmentDashboardAlertService(
+            VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService) {
+        this.veteranAssessmentDashboardAlertService = veteranAssessmentDashboardAlertService;
+    }
 
-	@Autowired
-	public void setVeteranAssessmentService(
-			VeteranAssessmentService veteranAssessmentService) {
-		this.veteranAssessmentService = veteranAssessmentService;
-	}
+    @Autowired
+    public void setVeteranAssessmentService(
+            VeteranAssessmentService veteranAssessmentService) {
+        this.veteranAssessmentService = veteranAssessmentService;
+    }
 
-	@Autowired
-	public void setVeteranAssessmentSurveyService(
-			VeteranAssessmentSurveyService veteranAssessmentSurveyService) {
-		this.veteranAssessmentSurveyService = veteranAssessmentSurveyService;
-	}
+    @Autowired
+    public void setVeteranAssessmentSurveyService(
+            VeteranAssessmentSurveyService veteranAssessmentSurveyService) {
+        this.veteranAssessmentSurveyService = veteranAssessmentSurveyService;
+    }
 
-	/**
-	 * Returns the backing bean for the form.
-	 * 
-	 * @return
-	 */
-	@ModelAttribute
-	public AssessmentSummaryFormBean getAssessmentSummaryFormBean() {
-		logger.debug("Creating new AssessmentSummaryFormBean");
-		return new AssessmentSummaryFormBean();
-	}
+    /**
+     * Returns the backing bean for the form.
+     *
+     * @return
+     */
+    @ModelAttribute
+    public AssessmentSummaryFormBean getAssessmentSummaryFormBean() {
+        logger.debug("Creating new AssessmentSummaryFormBean");
+        return new AssessmentSummaryFormBean();
+    }
 
-	/**
-	 * Sets up the form for the view.
-	 * 
-	 * @param model
-	 * @param assessmentSummaryFormBean
-	 * @param veteranAssessmentId
-	 * @param escreenUser
-	 * @return
-	 */
-	@RequestMapping(value = "/assessmentSummary", method = RequestMethod.GET)
-	public String setupPage(
-			HttpServletRequest request,
-			Model model,
-			@ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
-			@RequestParam(value = "vaid", required = true) Integer veteranAssessmentId,
-			@CurrentUser EscreenUser escreenUser) {
+    /**
+     * Sets up the form for the view.
+     *
+     * @param model
+     * @param assessmentSummaryFormBean
+     * @param veteranAssessmentId
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/assessmentSummary", method = RequestMethod.GET)
+    public String setupPage(
+            HttpServletRequest request,
+            Model model,
+            @ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
+            @RequestParam(value = "vaid", required = true) Integer veteranAssessmentId,
+            @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("Using the assessment summary mapping");
-		logger.debug("veteranAssessmentId: " + veteranAssessmentId);
+        logger.debug("Using the assessment summary mapping");
+        logger.debug("veteranAssessmentId: " + veteranAssessmentId);
 
-		VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
-		model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
+        VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
+        model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
 
-		assessmentSummaryFormBean.setSelectedAssessmentStatusId(veteranAssessmentInfo.getAssessmentStatusId());
-		assessmentSummaryFormBean.setSelectedClinicianId(veteranAssessmentInfo.getClinicianId());
-		assessmentSummaryFormBean.setSelectedClinicId(veteranAssessmentInfo.getClinicId());
-		assessmentSummaryFormBean.setSelectedNoteTitleId(veteranAssessmentInfo.getNoteTitleId());
-		assessmentSummaryFormBean.setSelectedVeteranAssessmentId(veteranAssessmentId);
+        assessmentSummaryFormBean.setSelectedAssessmentStatusId(veteranAssessmentInfo.getAssessmentStatusId());
+        assessmentSummaryFormBean.setSelectedClinicianId(veteranAssessmentInfo.getClinicianId());
+        assessmentSummaryFormBean.setSelectedClinicId(veteranAssessmentInfo.getClinicId());
+        assessmentSummaryFormBean.setSelectedNoteTitleId(veteranAssessmentInfo.getNoteTitleId());
+        assessmentSummaryFormBean.setSelectedVeteranAssessmentId(veteranAssessmentId);
 
-		// Populate reference data.
-		fillModel(model, veteranAssessmentInfo, escreenUser);
+        // Populate reference data.
+        fillModel(model, veteranAssessmentInfo, escreenUser);
 
-		// Only tech admins can change status once it is in Finalized status.
-		boolean isReadOnly = false;
-		boolean isAbleToChangeStatus = false;
+        // Only tech admins can change status once it is in Finalized status.
+        boolean isReadOnly = false;
+        boolean isAbleToChangeStatus = false;
 
-		if (assessmentSummaryFormBean.getSelectedAssessmentStatusId().equals(AssessmentStatusEnum.FINALIZED.getAssessmentStatusId())) {
-			isAbleToChangeStatus = false;
-			isReadOnly = true;
-		} else {
-			isAbleToChangeStatus = true;
-			isReadOnly = false;
-		}
+        if (assessmentSummaryFormBean.getSelectedAssessmentStatusId().equals(AssessmentStatusEnum.FINALIZED.getAssessmentStatusId())) {
+            isAbleToChangeStatus = false;
+            isReadOnly = true;
+        } else {
+            isAbleToChangeStatus = true;
+            isReadOnly = false;
+        }
 
-		if (!isAbleToChangeStatus && request.isUserInRole("Healthcare System Technical Administrator")) {
-			isAbleToChangeStatus = true;
-		}
+        if (!isAbleToChangeStatus && request.isUserInRole("Healthcare System Technical Administrator")) {
+            isAbleToChangeStatus = true;
+        }
 
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-		model.addAttribute("isReadOnly", isReadOnly);
-		model.addAttribute("isAbleToChangeStatus", isAbleToChangeStatus);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        model.addAttribute("isReadOnly", isReadOnly);
+        model.addAttribute("isAbleToChangeStatus", isAbleToChangeStatus);
 
-		return "dashboard/assessmentSummary";
-	}
+        return "dashboard/assessmentSummary";
+    }
 
-	@RequestMapping(value = "/assessmentSummary", method = RequestMethod.POST)
-	public String processSavePageAndSaveToVista(
-			HttpServletRequest request,
-			Model model,
-			@Valid @ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
-			BindingResult result,
-			@RequestParam(value = "saveButton", required = false) String saveButton,
-			@RequestParam(value = "saveToVistaButton", required = false) String saveToVistaButton,
-			@CurrentUser EscreenUser escreenUser) {
+    @RequestMapping(value = "/assessmentSummary", method = RequestMethod.POST)
+    public String processSavePageAndSaveToVista(
+            HttpServletRequest request,
+            Model model,
+            @Valid @ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
+            BindingResult result,
+            @RequestParam(value = "saveButton", required = false) String saveButton,
+            @RequestParam(value = "saveToVistaButton", required = false) String saveToVistaButton,
+            @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("processSaveAllPage");
-		logger.debug("saveButton: " + saveButton);
-		logger.debug("saveToVistaButton: " + saveToVistaButton);
+        logger.debug("processSaveAllPage");
+        logger.debug("saveButton: " + saveButton);
+        logger.debug("saveToVistaButton: " + saveToVistaButton);
 
-		Integer veteranAssessmentId = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
+        Integer veteranAssessmentId = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
 
-		if (result.hasErrors()) {
-			VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
-			model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
+        if (result.hasErrors()) {
+            VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
+            model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
 
-			// Populate reference data.
-			fillModel(model, veteranAssessmentInfo, escreenUser);
-			model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+            // Populate reference data.
+            fillModel(model, veteranAssessmentInfo, escreenUser);
+            model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-			return "dashboard/assessmentSummary";
-		}
+            return "dashboard/assessmentSummary";
+        }
 
-		CallResult callResult = new CallResult();
-		callResult.setHasError(false);
+        List<CallResult> callResults = Lists.newArrayList();
 
-		try {
-			veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean.getSelectedClinicId(), assessmentSummaryFormBean.getSelectedNoteTitleId(), assessmentSummaryFormBean.getSelectedClinicianId(), assessmentSummaryFormBean.getSelectedAssessmentStatusId());
+        try {
+            veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean.getSelectedClinicId(), assessmentSummaryFormBean.getSelectedNoteTitleId(), assessmentSummaryFormBean.getSelectedClinicianId(), assessmentSummaryFormBean.getSelectedAssessmentStatusId());
+            callResults.add(new CallResult(false, "Successfully updated assessment.", null));
+        } catch (Exception e) {
+            callResults.add(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
+        }
 
-			callResult.setHasError(false);
-			callResult.setUserMessage("Successfully updated assessment.");
-		} catch (Exception e) {
-			callResult.setHasError(true);
-			callResult.setUserMessage("An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.");
-			callResult.setSystemMessage(e.getMessage());
-		}
 
-		// Check if we have any errors before trying to save to VistA
-		if (saveToVistaButton != null && !callResult.getHasError()) {
-			int vaid = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
-			try {
-				vistaDelegate.saveVeteranAssessmentToVista(vaid, escreenUser);
-				callResult.setHasError(false);
-				callResult.setUserMessage(messageSource.getMessage("vista.pass.saved", null, null));
-			} catch (IllegalStateException e) {
-				saveVeteranAssessmentToVistaFailed(callResult, "vista.err.data.missing", vaid, e);
-			} catch (Exception e) {
-				saveVeteranAssessmentToVistaFailed(callResult, "vista.err.fatal", vaid, e);
-			}
-		}
+        // Check if we have any errors before trying to save to VistA
+        if (saveToVistaButton != null && !hasError(callResults)) {
+            callResults.clear();
+            int vaid = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
+            try {
+                SaveToVistaResponse response = vistaDelegate.saveVeteranAssessmentToVista(vaid, escreenUser);
 
-		// Repopulate the model for the view.
-		model.addAttribute("callResult", callResult);
+                if (response.isSuccessful()) {
+                    callResults.add(new CallResult(false, messageSource.getMessage("vista.pass.saved", null, null), null));
+                } else {
+                    buildCallResults(callResults, response);
+                }
 
-		// Repopulate lookup model with data from database.
-		VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
-		model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
+            } catch (IllegalStateException e) {
+                saveVeteranAssessmentToVistaFailed(callResults, "vista.err.data.missing", vaid, e);
+            } catch (Exception e) {
+                saveVeteranAssessmentToVistaFailed(callResults, "vista.err.fatal", vaid, e);
+            }
+        }
 
-		// Populate reference data.
-		fillModel(model, veteranAssessmentInfo, escreenUser);
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        // Repopulate the model for the view.
+        model.addAttribute("callResults", callResults);
 
-		// Only tech admins can change status once it is in Finalized status.
-		boolean isReadOnly = false;
-		boolean isAbleToChangeStatus = false;
+        // Repopulate lookup model with data from database.
+        VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
+        model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
 
-		if (assessmentSummaryFormBean.getSelectedAssessmentStatusId().equals(AssessmentStatusEnum.FINALIZED.getAssessmentStatusId())) {
-			isAbleToChangeStatus = false;
-			isReadOnly = true;
-		} else {
-			isAbleToChangeStatus = true;
-			isReadOnly = false;
-		}
+        // Populate reference data.
+        fillModel(model, veteranAssessmentInfo, escreenUser);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-		if (!isAbleToChangeStatus && request.isUserInRole("Healthcare System Technical Administrator")) {
-			isAbleToChangeStatus = true;
-		}
+        // Only tech admins can change status once it is in Finalized status.
+        boolean isReadOnly = false;
+        boolean isAbleToChangeStatus = false;
 
-		model.addAttribute("isReadOnly", isReadOnly);
-		model.addAttribute("isAbleToChangeStatus", isAbleToChangeStatus);
+        if (assessmentSummaryFormBean.getSelectedAssessmentStatusId().equals(AssessmentStatusEnum.FINALIZED.getAssessmentStatusId())) {
+            isAbleToChangeStatus = false;
+            isReadOnly = true;
+        } else {
+            isAbleToChangeStatus = true;
+            isReadOnly = false;
+        }
 
-		return "dashboard/assessmentSummary";
-	}
+        if (!isAbleToChangeStatus && request.isUserInRole("Healthcare System Technical Administrator")) {
+            isAbleToChangeStatus = true;
+        }
 
-	private void saveVeteranAssessmentToVistaFailed(CallResult callResult,
-			String errMsgKey, int vaid, Exception exception) {
+        model.addAttribute("isReadOnly", isReadOnly);
+        model.addAttribute("isAbleToChangeStatus", isAbleToChangeStatus);
 
-		callResult.setHasError(true);
-		callResult.setUserMessage(messageSource.getMessage(errMsgKey, null, null));
+        return "dashboard/assessmentSummary";
+    }
 
-		if (exception != null) {
-			callResult.setSystemMessage(Throwables.getRootCause(exception).getMessage());
-		}
+    private void buildCallResults(List<CallResult> callResults, SaveToVistaResponse response) {
+        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.succMsg);
+        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.usrErr);
+        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.sysErr);
+        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.failMsg);
+        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.warnMsg);
 
-		logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", vaid, callResult.getUserMessage(), callResult.getSystemMessage()));
-		assessmentEngineService.transitionAssessmentStatusTo(vaid, AssessmentStatusEnum.ERROR);
-	}
+        buildCallResults(callResults, response.getPendingOperations());
 
-	/**
-	 * Handle cancel button event.
-	 * 
-	 * @param model
-	 * @param assessmentSummaryFormBean
-	 * @param escreenUser
-	 * @return
-	 */
-	@RequestMapping(value = "/assessmentSummary", method = RequestMethod.POST, params = "cancelButton")
-	public String processCancelPage(
-			Model model,
-			@ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
-			@CurrentUser EscreenUser escreenUser) {
+    }
 
-		logger.debug(assessmentSummaryFormBean.toString());
+    private void buildCallResults(List<CallResult> callResults, List<SaveToVistaResponse.PendingOperation> pendingOperations) {
+        for (SaveToVistaResponse.PendingOperation po : pendingOperations) {
+            callResults.add(new CallResult(true, String.format("Operation '%s' could not be performed because of previous errors", po.getDescription()), null));
+        }
+    }
 
-		return "redirect:/dashboard/assessmentDashboard";
-	}
+    private void buildCallResults(List<CallResult> callResults, SaveToVistaResponse response, SaveToVistaResponse.MsgType msgType) {
+        Map<SaveToVistaResponse.PendingOperation, String> msgsMap = response.getMsgsFor(msgType);
+        for (SaveToVistaResponse.PendingOperation po : msgsMap.keySet()) {
+            callResults.add(createCallResult(msgsMap.get(po), po, msgType));
+        }
+    }
 
-	/**
-	 * Adds all the reference data to the model.
-	 * 
-	 * @param model
-	 * @param veteranAssessmentId
-	 * @param programId
-	 */
-	private void fillModel(Model model,
-			VeteranAssessmentInfo veteranAssessmentInfo, EscreenUser escreenUser) {
+    private CallResult createCallResult(String msg, SaveToVistaResponse.PendingOperation po, SaveToVistaResponse.MsgType msgType) {
+        String usrMsg = msgType.isErr() ? String.format("%s operation failed", po.getDescription()) : null;
+        String sysMsg = msgType.isErr() ? msg : null;
+        return new CallResult(msgType.isErr(), usrMsg, sysMsg);
+    }
 
-		// Populate the lookup fields.
-		List<DropDownObject> assessmentStatusList = assessmentStatusService.getAssessmentStatusList();
-		model.addAttribute("assessmentStatusList", assessmentStatusList);
+    private boolean hasError(List<CallResult> callResults) {
+        for (CallResult cr : callResults) {
+            if (cr.getHasError()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		// filter assessmentList based on Role & current State
-		filterStatusByRoleAndCurrentState(assessmentStatusList, veteranAssessmentInfo, escreenUser);
+    private void saveVeteranAssessmentToVistaFailed(List<CallResult> callResults,
+                                                    String errMsgKey, int vaid, Exception exception) {
 
-		// Program should already selected.
-		Integer programId = veteranAssessmentInfo.getProgramId();
-		if (programId != null) {
-			List<DropDownObject> clinicList = clinicService.getDropDownObjectsByProgramId(programId);
-			model.addAttribute("clinicList", clinicList);
+        String errMsg = null;
+        if (exception != null) {
+            errMsg = Throwables.getRootCause(exception).getMessage();
+        }
+        CallResult callResult = new CallResult(true, messageSource.getMessage(errMsgKey, null, null), errMsg);
+        callResults.add(callResult);
 
-			List<DropDownObject> noteTitleList = noteTitleService.getNoteTitleList(programId);
-			model.addAttribute("noteTitleList", noteTitleList);
+        logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", vaid, callResult.getUserMessage(), callResult.getSystemMessage()));
+        assessmentEngineService.transitionAssessmentStatusTo(vaid, AssessmentStatusEnum.ERROR);
+    }
 
-			List<DropDownObject> clinicianList = userService.getClinicianDropDownObjects(programId);
-			model.addAttribute("clinicianList", clinicianList);
-		}
+    /**
+     * Handle cancel button event.
+     *
+     * @param model
+     * @param assessmentSummaryFormBean
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/assessmentSummary", method = RequestMethod.POST, params = "cancelButton")
+    public String processCancelPage(
+            Model model,
+            @ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
+            @CurrentUser EscreenUser escreenUser) {
 
-		// Get the progress list.
-		List<VeteranAssessmentProgressDto> progressList = veteranAssessmentSurveyService.getProgress(veteranAssessmentInfo.getVeteranAssessmentId());
-		model.addAttribute("progressList", progressList);
+        logger.debug(assessmentSummaryFormBean.toString());
 
-		List<AlertDto> alertList = veteranAssessmentDashboardAlertService.findForVeteranAssessmentId(veteranAssessmentInfo.getVeteranAssessmentId());
-		model.addAttribute("alertList", alertList);
-	}
+        return "redirect:/dashboard/assessmentDashboard";
+    }
 
-	/**
-	 * filter status based on role of user plus also the current state
-	 * 
-	 * @param assessmentStatusList
-	 *            list to be filtered. this is passed by reference and contents
-	 *            of this list will be mutated
-	 * @param veteranAssessmentInfo
-	 *            veteran info to be used to extract the current state of the
-	 *            assessment status
-	 * @param escreenUser
-	 *            the user performing this action
-	 */
-	private void filterStatusByRoleAndCurrentState(
-			List<DropDownObject> assessmentStatusList,
-			VeteranAssessmentInfo veteranAssessmentInfo, EscreenUser escreenUser) {
-		Integer currentStatusId = veteranAssessmentInfo.getAssessmentStatusId();
+    /**
+     * Adds all the reference data to the model.
+     *
+     * @param model
+     */
+    private void fillModel(Model model,
+                           VeteranAssessmentInfo veteranAssessmentInfo, EscreenUser escreenUser) {
 
-		String authority = escreenUser.getAuthority();
+        // Populate the lookup fields.
+        List<DropDownObject> assessmentStatusList = assessmentStatusService.getAssessmentStatusList();
+        model.addAttribute("assessmentStatusList", assessmentStatusList);
 
-		String filterKey = authority + ":" + currentStatusId;
+        // filter assessmentList based on Role & current State
+        filterStatusByRoleAndCurrentState(assessmentStatusList, veteranAssessmentInfo, escreenUser);
 
-		String allowedStatusesByRole = assessmentStatusMap.get(filterKey);
-		if (allowedStatusesByRole != null) {
-			List<String> allowableAssessmentStatuses = Arrays.asList(allowedStatusesByRole.split(","));
+        // Program should already selected.
+        Integer programId = veteranAssessmentInfo.getProgramId();
+        if (programId != null) {
+            List<DropDownObject> clinicList = clinicService.getDropDownObjectsByProgramId(programId);
+            model.addAttribute("clinicList", clinicList);
 
-			// traverse through the assessmentStatusList and remove that is not
-			// in allowableAssessmentStatuses
-			for (Iterator<DropDownObject> ddoIter = assessmentStatusList.iterator(); ddoIter.hasNext();) {
-				DropDownObject ddo = ddoIter.next();
-				if (!allowableAssessmentStatuses.contains(ddo.getStateId())) {
-					ddoIter.remove();
-				}
-			}
-		} else {
-			// if no allowable state is found for current role and current
-			// state, then DO NOT ALLOW to select any other state
-			assessmentStatusList.clear();
-		}
-	}
+            List<DropDownObject> noteTitleList = noteTitleService.getNoteTitleList(programId);
+            model.addAttribute("noteTitleList", noteTitleList);
 
-	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
+            List<DropDownObject> clinicianList = userService.getClinicianDropDownObjects(programId);
+            model.addAttribute("clinicianList", clinicianList);
+        }
+
+        // Get the progress list.
+        List<VeteranAssessmentProgressDto> progressList = veteranAssessmentSurveyService.getProgress(veteranAssessmentInfo.getVeteranAssessmentId());
+        model.addAttribute("progressList", progressList);
+
+        List<AlertDto> alertList = veteranAssessmentDashboardAlertService.findForVeteranAssessmentId(veteranAssessmentInfo.getVeteranAssessmentId());
+        model.addAttribute("alertList", alertList);
+    }
+
+    /**
+     * filter status based on role of user plus also the current state
+     *
+     * @param assessmentStatusList  list to be filtered. this is passed by reference and contents
+     *                              of this list will be mutated
+     * @param veteranAssessmentInfo veteran info to be used to extract the current state of the
+     *                              assessment status
+     * @param escreenUser           the user performing this action
+     */
+    private void filterStatusByRoleAndCurrentState(
+            List<DropDownObject> assessmentStatusList,
+            VeteranAssessmentInfo veteranAssessmentInfo, EscreenUser escreenUser) {
+        Integer currentStatusId = veteranAssessmentInfo.getAssessmentStatusId();
+
+        String authority = escreenUser.getAuthority();
+
+        String filterKey = authority + ":" + currentStatusId;
+
+        String allowedStatusesByRole = assessmentStatusMap.get(filterKey);
+        if (allowedStatusesByRole != null) {
+            List<String> allowableAssessmentStatuses = Arrays.asList(allowedStatusesByRole.split(","));
+
+            // traverse through the assessmentStatusList and remove that is not
+            // in allowableAssessmentStatuses
+            for (Iterator<DropDownObject> ddoIter = assessmentStatusList.iterator(); ddoIter.hasNext(); ) {
+                DropDownObject ddo = ddoIter.next();
+                if (!allowableAssessmentStatuses.contains(ddo.getStateId())) {
+                    ddoIter.remove();
+                }
+            }
+        } else {
+            // if no allowable state is found for current role and current
+            // state, then DO NOT ALLOW to select any other state
+            assessmentStatusList.clear();
+        }
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
 }

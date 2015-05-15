@@ -9,8 +9,8 @@ public interface VistaDelegate {
      * Saves the Veteran's assessment to VistA.
      * @param veteranAssessmentId
      * @param escreenUser
-     * @return 
+     * @return
      */
-	void saveVeteranAssessmentToVista(int veteranAssessmentId,
-			EscreenUser escreenUser) throws VistaLinkClientException;
+	SaveToVistaResponse saveVeteranAssessmentToVista(int veteranAssessmentId,
+												  EscreenUser escreenUser) throws VistaLinkClientException;
 }
