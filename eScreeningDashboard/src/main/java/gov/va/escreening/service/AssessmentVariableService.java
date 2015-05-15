@@ -77,7 +77,7 @@ public interface AssessmentVariableService {
 	AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId);
 	
 	/**
-	 * Collects all assessment variable associations (T) to be saved with AV related objects (e.g. templates, rules, formulas)
+	 * Collects all assessment variable associations to be saved with AV related objects (e.g. templates, rules, formulas)
 	 * @param avIds the assessment variable IDs which are known to be in the related object
 	 * @param variableMap an optional map from ID to Assessment variable, used to minimize calls to DB to pull new ones
 	 * This map does not have to contain all AVs for the AvIds given.  

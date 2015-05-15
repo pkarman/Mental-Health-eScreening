@@ -1,6 +1,6 @@
 package gov.va.escreening.service;
 
-import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 import gov.va.escreening.constants.AssessmentConstants;
 
 import com.google.common.collect.*;
@@ -13,8 +13,6 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyPageMeasure;
-import gov.va.escreening.entity.Template;
-import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
@@ -409,10 +407,27 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
                         addMeasureVariables(child, variableSet);
                     }
                 }
-            }//TODO: Maybe we should add formula children also?
+            }
+            if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_FORMULA){
+                addFormulaVariables(av, variableSet);
+            }
         }
         return variableSet;
     }
+	
+	private void addFormulaVariables(AssessmentVariable formula, 
+	        Set<AssessmentVariable> variableSet){
+	    variableSet.add(formula);
+	    for(AssessmentVarChildren av : formula.getAssessmentVarChildrenList()){
+	        AssessmentVariable avChild = av.getVariableChild();
+	        if(avChild.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_FORMULA){
+	            addFormulaVariables(avChild, variableSet);
+	        }
+	        else{
+	            variableSet.add(avChild);
+	        }
+	    }
+	}
 	
 	private void addMeasureVariables(Measure measure, Set<AssessmentVariable> variableSet){
 	    variableSet.add(measure.getAssessmentVariable());

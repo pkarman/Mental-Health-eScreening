@@ -303,7 +303,7 @@ public class ResolverParameters {
      * can be resolved but was not answered.
      */
     private boolean foundVisibleSkippedQuestion(AssessmentVariable formulaAv){
-        if(formulaAv.getAssessmentVarChildrenList() == null){
+        if(formulaAv.getAssessmentVarChildrenList() != null){
             for(AssessmentVarChildren child : formulaAv.getAssessmentVarChildrenList()){
                 AssessmentVariable childVar = child.getVariableChild();
                 if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()

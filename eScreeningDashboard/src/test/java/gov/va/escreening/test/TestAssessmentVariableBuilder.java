@@ -32,6 +32,7 @@ import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
 import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.UserRepository;
+import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
@@ -95,6 +96,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private final CustomAssessmentVariableResolver customResolver;
     private final FormulaAssessmentVariableResolver formulaResolver;
     private final AssessmentVariableDtoFactory variableResolver;
+    private final AssessmentVariableService avService;
     private final ExpressionEvaluatorService expressionService;
 
     //mocked supporting objects for resolvers
@@ -111,9 +113,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     public TestAssessmentVariableBuilder() {
         answerResolver = new MeasureAnswerAssessmentVariableResolverImpl();
         measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver);
+        avService = mock(AssessmentVariableService.class);
         customResolver = createCustomResolver();
         try{
-            expressionService = new ExpressionEvaluatorServiceImpl(assessmentVariableRepo);
+            expressionService = new ExpressionEvaluatorServiceImpl(assessmentVariableRepo, avService);
         }
         catch(Exception e){
             throw new IllegalStateException("Failure to register expression evaluator service functions.", e);

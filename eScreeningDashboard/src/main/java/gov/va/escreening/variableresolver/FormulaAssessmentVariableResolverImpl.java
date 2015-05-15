@@ -82,7 +82,7 @@ public class FormulaAssessmentVariableResolverImpl implements
     								assessmentVariable.getAssessmentVariableId(),
     								veteranAssessmentId));
     			}
-    			List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
+//    			List<AssessmentVariable> formulaTypeList = new ArrayList<AssessmentVariable>();
     			
 //    			Set<AssessmentVariable> allformulaChildVars = 
 //    			        resolveDependencies(assessmentVariable.getAssessmentVarChildrenList(), 
@@ -96,11 +96,11 @@ public class FormulaAssessmentVariableResolverImpl implements
     			rootFormula.setAvMap(avMap);
     			
     			// iterate the list of formulas and add them to the object
-    			for (AssessmentVariable formulaVariable : formulaTypeList) {
-    				Integer id = formulaVariable.getAssessmentVariableId();
-    				String template = formulaVariable.getFormulaTemplate();
-    				rootFormula.getChildFormulaMap().put(id, template);
-    			}
+//    			for (AssessmentVariable formulaVariable : formulaTypeList) {
+//    				Integer id = formulaVariable.getAssessmentVariableId();
+//    				String template = formulaVariable.getFormulaTemplate();
+//    				rootFormula.getChildFormulaMap().put(id, template);
+//    			}
     
     			String result = expressionEvaluatorService.evaluateFormula(rootFormula);
     

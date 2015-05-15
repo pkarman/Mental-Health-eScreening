@@ -11,11 +11,13 @@ import gov.va.escreening.entity.AssessmentFormula;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
+import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.ReferencedFormulaMissingException;
 import gov.va.escreening.exception.ReferencedVariableMissingException;
 import gov.va.escreening.formula.AvMapTypeEnum;
 import gov.va.escreening.formula.FormulaHandler;
 import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import org.slf4j.Logger;
@@ -26,6 +28,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +51,15 @@ public class ExpressionEvaluatorServiceImpl implements
             .compile("[$](.*?)[$]");
 
     private final AssessmentVariableRepository avr;
+    private final AssessmentVariableService avs;
     private final StandardEvaluationContext stdContext;
     private final ExpressionParser parser;
 
     @Autowired
-    public ExpressionEvaluatorServiceImpl(AssessmentVariableRepository avr)
+    public ExpressionEvaluatorServiceImpl(AssessmentVariableRepository avr, AssessmentVariableService avs)
             throws NoSuchMethodException, SecurityException {
         this.avr = checkNotNull(avr);
+        this.avs = checkNotNull(avs);
         stdContext = new StandardEvaluationContext();
         parser = new SpelExpressionParser();
     }
@@ -122,8 +128,8 @@ public class ExpressionEvaluatorServiceImpl implements
         logger.debug("Evaluating unresolved formula: {}", workingTemplate);
         
         String originalFormulaTemplate = workingTemplate;
-        workingTemplate = mergeChildFormulasIntoTemplate(workingTemplate,
-                formulaDto.getChildFormulaMap(), originalFormulaTemplate);
+//        workingTemplate = mergeChildFormulasIntoTemplate(workingTemplate,
+//                formulaDto.getChildFormulaMap(), originalFormulaTemplate);
         workingTemplate = mergeVariablesToTemplate(workingTemplate,
                 formulaDto.getVariableValueMap(), originalFormulaTemplate);
         
@@ -155,44 +161,45 @@ public class ExpressionEvaluatorServiceImpl implements
         return testResult;
     }
 
-    private String mergeChildFormulasIntoTemplate(String workingTemplate,
-            Map<Integer, String> childFormulas, String originalFormulaTemplate) {
-        if (childFormulas == null || childFormulas.size() == 0)
-            return workingTemplate;
-
-        int safetyCounter = 0;
-        do {
-            Iterator<Integer> keysIterator = childFormulas.keySet().iterator();
-            while (keysIterator.hasNext()) {
-                Integer key = keysIterator.next();
-                String childFormula = childFormulas.get(key);
-                String variablePattern = String.format("[$%s$]", key);
-                workingTemplate = workingTemplate.replace(variablePattern,
-                        String.format(" ( %s ) ", childFormula));
-            }
-
-            safetyCounter = safetyCounter + 1;
-            if (safetyCounter > 10)
-                throw new ReferencedFormulaMissingException(
-                        String.format(
-                                "A referenced formula was missing. The original template was: '%s'. The merged template was: '%s'.",
-                                originalFormulaTemplate, workingTemplate));
-
-        } while (workingTemplate.contains("$"));
-
-        return workingTemplate;
-    }
+//    private String mergeChildFormulasIntoTemplate(String workingTemplate,
+//            Map<Integer, String> childFormulas, String originalFormulaTemplate) {
+//        if (childFormulas == null || childFormulas.size() == 0)
+//            return workingTemplate;
+//
+//        int safetyCounter = 0;
+//        do {
+//            Iterator<Integer> keysIterator = childFormulas.keySet().iterator();
+//            while (keysIterator.hasNext()) {
+//                Integer key = keysIterator.next();
+//                String childFormula = childFormulas.get(key);
+//                String variablePattern = String.format("[$%s$]", key);
+//                workingTemplate = workingTemplate.replace(variablePattern,
+//                        String.format(" ( %s ) ", childFormula));
+//            }
+//
+//            safetyCounter = safetyCounter + 1;
+//            if (safetyCounter > 10)
+//                throw new ReferencedFormulaMissingException(
+//                        String.format(
+//                                "A referenced formula was missing. The original template was: '%s'. The merged template was: '%s'.",
+//                                originalFormulaTemplate, workingTemplate));
+//
+//        } while (workingTemplate.contains("$"));
+//
+//        return workingTemplate;
+//    }
     
     private String mergeVariablesToTemplate(String workingTemplate,
             Map<Integer, String> variableValueMap,
             String originalFormulaTemplate) {
+        
         if (variableValueMap != null && !variableValueMap.isEmpty()){
             Iterator<Integer> keysIterator = variableValueMap.keySet().iterator();
             while (keysIterator.hasNext()) {
                 Integer key = keysIterator.next();
                 String value = variableValueMap.get(key);
-                String variablePattern = String.format("[%s]", key);
-                workingTemplate = workingTemplate.replace(variablePattern, value);
+                String variablePattern = String.format("\\[\\$*%s\\$*\\]", key);
+                workingTemplate = workingTemplate.replaceAll(variablePattern, value);
             }
         }
         
@@ -240,23 +247,53 @@ public class ExpressionEvaluatorServiceImpl implements
         AssessmentVariable av = avId == null ? new AssessmentVariable()
                 : findAvById(avId);
 
-        List<AssessmentVarChildren> children = Lists.newArrayList();
         List<Map<String, Object>> parsedFormula = (List<Map<String, Object>>) parseFormula(
                 avTemplate.replaceAll("[$]", ""), AvMapTypeEnum.IDONLY);
 
+        Set<Integer> childAvIds = Sets.newHashSetWithExpectedSize(parsedFormula.size());
+        //collect the variable IDs we need to include
         for (Map<String, Object> formulaToken : parsedFormula) {
-            AssessmentVarChildren avc = new AssessmentVarChildren();
-            avc.setVariableParent(av);
-            avc.setVariableChild(findAvById((Integer) formulaToken.get("id")));
-            children.add(avc);
+            childAvIds.add((Integer) formulaToken.get("id"));
         }
+        
+        Map<Integer, AssessmentVarChildren> currentChildMap;
+        Map<Integer, AssessmentVariable> varMap;
+        if(av.getAssessmentVarChildrenList() == null){
+            varMap = Collections.emptyMap();
+            currentChildMap = Collections.emptyMap();
+            av.setAssessmentVarChildrenList(new ArrayList<AssessmentVarChildren>());
+        }
+        else{
+            varMap = Maps.newHashMapWithExpectedSize(av.getAssessmentVarChildrenList().size());
+            currentChildMap = Maps.newHashMapWithExpectedSize(av.getAssessmentVarChildrenList().size());
+            for(AssessmentVarChildren child : av.getAssessmentVarChildrenList()){
+                AssessmentVariable childAv = child.getVariableChild();
+                if(childAvIds.contains(childAv.getAssessmentVariableId())){
+                    varMap.put(childAv.getAssessmentVariableId(), childAv);
+                    currentChildMap.put(childAv.getAssessmentVariableId(), child);
+                }
+            }
+            av.getAssessmentVarChildrenList().clear();
+        }
+        
+        //collect the variable IDs we need to include
+        for (AssessmentVariable variable : avs.collectAssociatedVars(childAvIds, varMap)) {
+            AssessmentVarChildren avc = currentChildMap.get(variable.getAssessmentVariableId());
+            if(avc == null){
+                avc = new AssessmentVarChildren();
+                avc.setVariableParent(av);
+                avc.setVariableChild(variable);
+            }
+            
+            av.getAssessmentVarChildrenList().add(avc);
+        }
+        
         av.setFormulaTemplate(avTemplate);
         av.setDisplayName(avName.trim());
         av.setDescription((avDesc == null || avDesc.trim().isEmpty()) ? "No Description provided"
                 : avDesc.trim());
         av.setAssessmentVariableTypeId(new AssessmentVariableType(
                 AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA));
-        av.setAssessmentVarChildrenList(children);
 
         av.attachFormulaTokens(tokens);
 
@@ -383,27 +420,27 @@ public class ExpressionEvaluatorServiceImpl implements
         formulaDto.setVariableValueMap(avDataMap);
         formulaDto.setExpressionTemplate(expressionTemplate);
 
-        Map<Integer, String> refFormulaMap = Maps.newHashMap();
-        extractDataFromRefFormulas(verifiedMap, refFormulaMap);
-
-        formulaDto.setChildFormulaMap(refFormulaMap);
+//        Map<Integer, String> refFormulaMap = Maps.newHashMap();
+//        extractDataFromRefFormulas(verifiedMap, refFormulaMap);
+//
+//        formulaDto.setChildFormulaMap(refFormulaMap);
 
         return formulaDto;
     }
 
-    private void extractDataFromRefFormulas(Map<String, Object> verifiedMap,
-            Map<Integer, String> childFormulaMap) {
-        List<Map<String, Object>> formulaTokens = (List<Map<String, Object>>) verifiedMap
-                .get(key.verifiedIds.name());
-        for (Map<String, Object> formulaToken : formulaTokens) {
-            Integer avId = (Integer) formulaToken.get("id");
-            AssessmentVariable av = findAvById(avId);
-            if (av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA) {
-                childFormulaMap.put(av.getAssessmentVariableId(),
-                        av.getFormulaTemplate());
-            }
-        }
-    }
+//    private void extractDataFromRefFormulas(Map<String, Object> verifiedMap,
+//            Map<Integer, String> childFormulaMap) {
+//        List<Map<String, Object>> formulaTokens = (List<Map<String, Object>>) verifiedMap
+//                .get(key.verifiedIds.name());
+//        for (Map<String, Object> formulaToken : formulaTokens) {
+//            Integer avId = (Integer) formulaToken.get("id");
+//            AssessmentVariable av = findAvById(avId);
+//            if (av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA) {
+//                childFormulaMap.put(av.getAssessmentVariableId(),
+//                        av.getFormulaTemplate());
+//            }
+//        }
+//    }
 
     @Override
     public AssessmentVariable findAvById(Integer avId) {

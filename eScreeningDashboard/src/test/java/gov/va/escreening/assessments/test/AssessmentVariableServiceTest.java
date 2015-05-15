@@ -7,14 +7,12 @@ import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.service.VeteranAssessmentService;
 
-import java.util.Date;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;

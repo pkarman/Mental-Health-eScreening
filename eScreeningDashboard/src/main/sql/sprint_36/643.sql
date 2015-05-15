@@ -93,3 +93,33 @@ SELECT 3, SUBSTRING(
 FROM dashboard_alert a
 LEFT JOIN `event` e ON a.dashboard_alert_id AND e.event_type_id = 3
 WHERE e.event_id IS NULL;
+
+-- remove duplicates and add unique constraint to assessment_var_children table
+ALTER IGNORE TABLE assessment_var_children ADD CONSTRAINT ux_assessment_var_children_parent UNIQUE (variable_parent, variable_child);
+
+-- Fix formulas so each one is associated with its children and if one of them is a formula, also its grand children, etc.
+INSERT INTO assessment_var_children (variable_parent, variable_child)
+select distinct parent_av.assessment_variable_id, grd_child_avc.variable_child
+from assessment_variable parent_av
+join assessment_var_children parent_avc on parent_av.assessment_variable_id=parent_avc.variable_parent
+join assessment_variable child_av on parent_avc.variable_child=child_av.assessment_variable_id
+join assessment_var_children grd_child_avc on child_av.assessment_variable_id=grd_child_avc.variable_parent
+where
+child_av.assessment_variable_type_id=4
+and 0=(select count(*) 
+	 from assessment_var_children avc_test
+     where variable_parent=parent_av.assessment_variable_id
+     and variable_child=grd_child_avc.variable_child);
+     
+INSERT INTO assessment_var_children (variable_parent, variable_child)
+select distinct parent_av.assessment_variable_id, grd_child_avc.variable_child
+from assessment_variable parent_av
+join assessment_var_children parent_avc on parent_av.assessment_variable_id=parent_avc.variable_parent
+join assessment_variable child_av on parent_avc.variable_child=child_av.assessment_variable_id
+join assessment_var_children grd_child_avc on child_av.assessment_variable_id=grd_child_avc.variable_parent
+where
+child_av.assessment_variable_type_id=4
+and 0=(select count(*) 
+	 from assessment_var_children avc_test
+     where variable_parent=parent_av.assessment_variable_id
+     and variable_child=grd_child_avc.variable_child);

@@ -8,7 +8,6 @@ import java.util.Map;
 public class FormulaDto {
 	String expressionTemplate;
 	Map<Integer, String> variableValueMap = new Hashtable<Integer,String>();
-	Map<Integer, String> childFormulaMap = new Hashtable<Integer, String>();
 	
 	/**
 	 * Optional map from assessment variable ID to AssessmentVariableDto. 
@@ -28,13 +27,6 @@ public class FormulaDto {
 	}
 	public void setVariableValueMap(Map<Integer, String> variableValueMap) {
 		this.variableValueMap = variableValueMap;
-	}
-	
-	public Map<Integer, String> getChildFormulaMap() {
-		return childFormulaMap;
-	}
-	public void setChildFormulaMap(Map<Integer, String> childFormulaMap) {
-		this.childFormulaMap = childFormulaMap;
 	}
 	
     public Map<Integer, AssessmentVariableDto> getAvMap() {
