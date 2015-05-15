@@ -198,6 +198,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
@@ -238,6 +239,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         parameterMap.put("noData", resultList.isEmpty());
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
@@ -353,6 +355,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
@@ -496,6 +499,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("checkAll", ks);
         parameterMap.put("showCheckAll", bCheckAll);
 
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
@@ -535,6 +539,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
 
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
@@ -557,6 +562,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", new JREmptyDataSource());
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        logger.warn(parameterMap.toString());
 
         return parameterMap;
     }
@@ -585,6 +592,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
+        logger.warn(parameterMap.toString());
 
         return parameterMap;
     }
@@ -622,6 +631,8 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+        logger.warn(parameterMap.toString());
+
         return parameterMap;
     }
 
@@ -659,6 +670,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
