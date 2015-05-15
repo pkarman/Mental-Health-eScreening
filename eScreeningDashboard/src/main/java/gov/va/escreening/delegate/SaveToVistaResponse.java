@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.security.EscreenUser;
-import sun.jvm.hotspot.runtime.StackValueCollection;
 
 import java.util.EnumMap;
 import java.util.List;
