@@ -144,6 +144,7 @@ public class ReportDelegateImpl implements ReportDelegate {
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
         parameterMap.put("noData", resultList.isEmpty());
+        logger.warn(parameterMap.toString());
         return parameterMap;
     }
 
