@@ -143,6 +143,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+        parameterMap.put("noData", resultList.isEmpty());
         return parameterMap;
     }
 
@@ -236,6 +237,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+        parameterMap.put("noData", resultList.isEmpty());
         return parameterMap;
     }
 
@@ -318,6 +320,7 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         Map<String, Object> parameterMap = Maps.newHashMap();
         parameterMap.put("lastNameSSN", lastName + ", " + last4SSN);
+        parameterMap.put("noData", true);
         attachDates(parameterMap, requestData);
 
         VeteranDto veteran = new VeteranDto();
@@ -344,10 +347,12 @@ public class ReportDelegateImpl implements ReportDelegate {
             } else {
                 dataSource = new JRBeanCollectionDataSource(resultList);
             }
+            parameterMap.put("noData", resultList.isEmpty());
         }
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
+
         return parameterMap;
     }
 
