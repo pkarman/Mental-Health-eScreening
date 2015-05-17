@@ -52,37 +52,37 @@ public class VeteranAssessmentSurveyServiceImpl implements
 				.findSurveyListByVeteranAssessmentId(veteranAssessmentId);
 	}
 
-	@Override
-	public void updateProgress(int veteranAssessmentId, long startTime) {
-		logger.debug("updateProgress");
-
-		// Run the SQL and get the list of counts.
-		List<Object[]> resultList = veteranAssessmentSurveyRepository
-				.calculateProgress(veteranAssessmentId);
-
-		// Update the fields accordingly and save to database.
-		int runningTotalResponses = 0;
-		int runningTotalQuestions = 0;
-		for (Object[] row : resultList) {
-			int surveyId = Integer.valueOf(row[0].toString());
-			int countOfTotalQuestions = Integer.valueOf(row[1].toString());
-			int countOfTotalResponses = Integer.valueOf(row[2].toString());
-
-			gov.va.escreening.entity.VeteranAssessmentSurvey veteranAssessmentSurvey = veteranAssessmentSurveyRepository
-					.getByVeteranAssessmentIdAndSurveyId(veteranAssessmentId,
-							surveyId);
-			veteranAssessmentSurvey
-					.setTotalQuestionCount(countOfTotalQuestions);
-			veteranAssessmentSurvey
-					.setTotalResponseCount(countOfTotalResponses);
-			veteranAssessmentSurveyRepository.update(veteranAssessmentSurvey);
-
-			runningTotalResponses += countOfTotalResponses;
-			runningTotalQuestions += countOfTotalQuestions;
-		}
-		updateVeteranAssessmentProgress(veteranAssessmentId, startTime,
-				runningTotalResponses, runningTotalQuestions);
-	}
+//	@Override
+//	public void updateProgress(int veteranAssessmentId, long startTime) {
+//		logger.debug("updateProgress");
+//
+//		// Run the SQL and get the list of counts.
+//		List<Object[]> resultList = veteranAssessmentSurveyRepository
+//				.calculateProgress(veteranAssessmentId);
+//
+//		// Update the fields accordingly and save to database.
+//		int runningTotalResponses = 0;
+//		int runningTotalQuestions = 0;
+//		for (Object[] row : resultList) {
+//			int surveyId = Integer.valueOf(row[0].toString());
+//			int countOfTotalQuestions = Integer.valueOf(row[1].toString());
+//			int countOfTotalResponses = Integer.valueOf(row[2].toString());
+//
+//			gov.va.escreening.entity.VeteranAssessmentSurvey veteranAssessmentSurvey = veteranAssessmentSurveyRepository
+//					.getByVeteranAssessmentIdAndSurveyId(veteranAssessmentId,
+//							surveyId);
+//			veteranAssessmentSurvey
+//					.setTotalQuestionCount(countOfTotalQuestions);
+//			veteranAssessmentSurvey
+//					.setTotalResponseCount(countOfTotalResponses);
+//			veteranAssessmentSurveyRepository.update(veteranAssessmentSurvey);
+//
+//			runningTotalResponses += countOfTotalResponses;
+//			runningTotalQuestions += countOfTotalQuestions;
+//		}
+//		updateVeteranAssessmentProgress(veteranAssessmentId, startTime,
+//				runningTotalResponses, runningTotalQuestions);
+//	}
 
 	@Override
 	public void updateProgress(VeteranAssessment va, AssessmentRequest req,

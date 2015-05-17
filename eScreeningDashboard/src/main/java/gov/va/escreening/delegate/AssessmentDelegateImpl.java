@@ -164,7 +164,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		for(SurveyMeasureResponse resp : respList)
 		{
 			String key = getUniqueKeyForSurveyMeasureResponse(resp);
-			if(map.containsKey(resp.getSurvey().getSurveyId()) && copiedAnswers.contains(key))
+			if(map.containsKey(resp.getSurvey().getSurveyId()) && !copiedAnswers.contains(key))
 			{
 				SurveyMeasureResponse copied = new SurveyMeasureResponse();
 				try {
@@ -205,7 +205,19 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		logger.debug("Getting surveys for current assessment");
 		ensureValidAssessmentContext();
 
-		return surveySectionRepository.findForVeteranAssessmentId(assessmentContext.getVeteranAssessmentId());
+		assessmentContext.getSurveyPageList();
+		List<SurveySection> list = Lists.newArrayList();
+		
+		for(SurveyPage p : assessmentContext.getSurveyPageList())
+		{
+			if(!list.contains(p.getSurvey().getSurveySection()))
+			{
+				list.add(p.getSurvey().getSurveySection());
+			}
+		}
+		
+		return list;
+		//return surveySectionRepository.findForVeteranAssessmentId(assessmentContext.getVeteranAssessmentId());
 	}
 
 	@Override
@@ -218,15 +230,12 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
 		}
 		
-		if(assessmentContext.getSurveyPageList().isEmpty())
-		{
-			//this means all of the surveys have been answered before, should transition to complete directly.
-			AssessmentResponse resp = new AssessmentResponse();
-			resp.setPage(new Page());
-		}
 		AssessmentResponse response = assessmentEngineService.processPage(assessmentRequest, assessmentContext.getSurveyPageList());
 
-		prepopulateResponseAnswers(response);
+		if(!assessmentContext.getSurveyPageList().isEmpty())
+		{
+			prepopulateResponseAnswers(response);
+		}
 
 		return response;
 	}

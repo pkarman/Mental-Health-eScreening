@@ -259,15 +259,17 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 //		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
 //				assessmentRequest.getStartTime());
 		assessmentResponse
-				.setSurveyProgresses(getProgressStatuses(veteranAssessmentId));
+				.setSurveyProgresses(getProgressStatuses(veteranAssessmentId, surveyPageList));
 
 		// set the assessment's date last modified
 		assessmentResponse.setDateModified(veteranAssessmentRepository
 				.getDateModified(veteranAssessmentId).getTime());
 
-		Page page = getPage(veteranAssessmentId, assessment.getPageId());
-		assessmentResponse.setPage(page);
-
+		if(assessment.getPageId() !=null)
+		{
+			Page page = getPage(veteranAssessmentId, assessment.getPageId());
+			assessmentResponse.setPage(page);
+		}
 		return assessmentResponse;
 	}
 
@@ -368,6 +370,11 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			}
 		}
 
+		if(surveyPageList.isEmpty())
+		{
+			//go to the end directly
+			return new Assessment(null, false, true,false);
+		}
 		// Throw exception. This can happen if an invalid veteranAssessmentId or
 		// surveyPageId was passed.
 		if(currentSurveyPageId == null){
@@ -401,6 +408,36 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		return progressStatuses;
 	}
 
+	/**
+	 * Populates the progress status.
+	 * 
+	 * @param veteranAssessmentId
+	 * @return list of progress objects for each survey
+	 */
+	private List<SurveyProgress> getProgressStatuses(int veteranAssessmentId, List<SurveyPage> pages) {
+
+		List<VeteranAssessmentSurvey> veteranAssessmentSurveyList = veteranAssessmentSurveyRepository
+				.forVeteranAssessmentId(veteranAssessmentId);
+
+		Set<Integer> surveys = Sets.newHashSet();
+		for(SurveyPage p : pages)
+		{
+			surveys.add(p.getSurvey().getSurveyId());
+		}
+		
+		List<SurveyProgress> progressStatuses = new ArrayList<SurveyProgress>(
+				veteranAssessmentSurveyList.size());
+		for (VeteranAssessmentSurvey veteranAssessmentSurvey : veteranAssessmentSurveyList) {
+			
+			if(surveys.contains(veteranAssessmentSurvey.getSurvey().getSurveyId()))
+			{
+				progressStatuses.add(new SurveyProgress(veteranAssessmentSurvey));
+			}
+		}
+
+		return progressStatuses;
+	}
+	
 	/**
 	 * Gets the survey page, the measures, answer choices, and what the veteran
 	 * has already answered.
