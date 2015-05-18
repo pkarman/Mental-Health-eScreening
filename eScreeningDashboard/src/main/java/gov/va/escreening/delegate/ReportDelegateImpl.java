@@ -235,7 +235,11 @@ public class ReportDelegateImpl implements ReportDelegate {
             repFuncMap.get("indivStatGraphPlusNumber").createReport(new Object[]{userReqData, veteranId, surveyId, resultList, requestData.get("svgData")});
         }
 
-        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+        JRDataSource dataSource = new JREmptyDataSource();
+
+        if (resultList != null && !resultList.isEmpty()){
+            dataSource = new JRBeanCollectionDataSource(resultList);
+        }
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);
@@ -490,7 +494,7 @@ public class ReportDelegateImpl implements ReportDelegate {
             keyValueDTO = new KeyValueDTO();
             keyValueDTO.setValue(veteranAssessmentService.getVeteranWithMultiple(clinicIds, strFromDate, strToDate) + "%");
             keyValueDTO.setKey("Number and percent of veterans with multiple eScreening batteries");
-            if (!keyValueDTO.equals("0%")) {
+            if (!keyValueDTO.getValue().equals("0%")) {
                 parameterMap.put("noData", false);
             }
             ks.add(keyValueDTO);

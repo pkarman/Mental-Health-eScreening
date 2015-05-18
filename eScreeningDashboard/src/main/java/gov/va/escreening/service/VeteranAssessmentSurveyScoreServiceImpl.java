@@ -406,8 +406,11 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
             result.setVeteranCount(" Number of Veterans, N=" + vassRepos.getVeteranCountForClinic(clinicId, surveyId, avName, fromDate, toDate));
             return result;
         }
+        else{
+            result.setHasData(false);
+        }
 
-        return null;
+        return result;
     }
 
     /**
