@@ -29,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
@@ -116,24 +113,30 @@ public class SurveyServiceImpl implements SurveyService {
                         // logger.debug(surveyPage.getTitle());
 
                         List<Measure> mLst = surveyPage != null ? surveyPage.getMeasures() : null;
-                        if (mLst != null) {
-                            for (Measure measure : mLst) {
-                                // logger.debug(measure.getMeasureText());
-
-                                List<MeasureAnswer> maLst = measure != null ? measure.getMeasureAnswerList() : null;
-                                if (maLst != null) {
-                                    for (MeasureAnswer measureAnswer : maLst) {
-                                        // logger.debug(measureAnswer.getAnswerText());
-                                    }
-                                }
-                            }
-                        }
+                        exhaustMeasures(mLst);
                     }
                 }
             }
         }
 
         return surveyList;
+    }
+
+    private void exhaustMeasures(Collection<Measure> mLst) {
+        if (mLst != null) {
+            for (Measure measure : mLst) {
+                // logger.debug(measure.getMeasureText());
+
+                List<MeasureAnswer> maLst = measure != null ? measure.getMeasureAnswerList() : null;
+                if (maLst != null) {
+                    for (MeasureAnswer measureAnswer : maLst) {
+                        // logger.debug(measureAnswer.getAnswerText());
+                    }
+                }
+
+                exhaustMeasures(measure.getChildren());
+            }
+        }
     }
 
     @Transactional(readOnly = true)

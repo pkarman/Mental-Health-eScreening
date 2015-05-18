@@ -16,7 +16,7 @@
 
       <div class="form-group">
         <label for="entity-name"> Entity Name</label>
-        <input type="text" class="form-control" id="entity-name" ng-model="question.answers[0].text" placeholder="Enter Entity Name">
+        <input type="text" class="form-control" id="entity-name" ng-model="question.answers[0].text" placeholder="Enter Entity Name" ng-disabled="question.required">
       </div>
 
       <div class="form-group form-inline">

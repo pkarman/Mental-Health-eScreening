@@ -745,7 +745,7 @@
 							<goal>execute</goal>
 						</goals>
 						<configuration>
-							<orderFile>ascending</orderFile>
+						 	<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/main/sql/sprint_37</basedir>
 							</fileset>
