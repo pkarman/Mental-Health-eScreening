@@ -246,19 +246,17 @@ public class ResolverParameters {
         switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
             MeasureAnswer ma = av.getMeasureAnswer();
+            //TODO: profile this call to get the MA's measure to make sure we are not causing a new lookup
+            checkMeasureIsVisibile(ma.getMeasure());               
             logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
                     ma.getMeasureAnswerId(), getAssessmentId());
             
             return ma.getMeasure().getMeasureType().getMeasureTypeId() == 3 ? "false" : "0";
             
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-            //It is unacceptable to evaluate a formula if it relies on a visible measure which was skipped by the veteran
-            if(isMeasureVisibile(av.getMeasure())){
-                throw new CouldNotResolveVariableException(
-                        "Visible measure (with measure ID " 
-                                + av.getMeasure().getMeasureId() 
-                                + ") was not answered so parent formula cannot be evaluated");
-            }
+            checkMeasureIsVisibile(av.getMeasure());
+            logger.warn("There was no question response for Measure ID: {}, assessment ID: {}",
+                    av.getMeasure().getMeasureId(), getAssessmentId());
             break;
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
             if(foundVisibleSkippedQuestion(av)){
@@ -275,6 +273,20 @@ public class ResolverParameters {
             break;
         }
         return "0";
+    }
+    
+    /**
+     * It is unacceptable to evaluate a formula if it relies on a visible measure which was skipped by the veteran.
+     * This method tests to make sure the measure was invisible otherwise an exception is thrown
+     * @param measure
+     */
+    private void checkMeasureIsVisibile(gov.va.escreening.entity.Measure measure){
+        if(isMeasureVisibile(measure)){
+            throw new CouldNotResolveVariableException(
+                    "Visible measure (with measure ID " 
+                            + measure.getMeasureId() 
+                            + ") was not answered so parent formula cannot be evaluated");
+        }
     }
     
     private boolean isMeasureVisibile(gov.va.escreening.entity.Measure measure){

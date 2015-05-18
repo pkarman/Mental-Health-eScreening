@@ -18,8 +18,6 @@ import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
 import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.expressionevaluator.FormulaDto;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -203,6 +201,7 @@ public class FormulaAssessmentVariableResolverImpl implements
     	        }
 	        }
 	        else{  //variable was not resolved
+	            //TODO: This is slowing down our evaluation times so we have to optimize it
 	            value = params.handleUnresolableVariable(childAv);
 	        }
 	        
