@@ -327,7 +327,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Survey survey = surveyRepository.findOne(surveyId);
 
         ModuleGraphReportDTO result = new ModuleGraphReportDTO();
-        result.setModuleName(reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
+        result.setModuleName(avName == null ? reportsHelper.getModuleName(surveyId) : reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
 
 
         List<VeteranAssessmentSurveyScore> scores = vassRepos.getDataForIndividual(surveyId, avName, veteranId, fromDate, toDate);
@@ -375,7 +375,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         Survey survey = surveyRepository.findOne(surveyId);
         Clinic clinic = clinicRepository.findOne(clinicId);
 
-        result.setModuleName(survey.getName());
+        result.setModuleName(avName == null ? reportsHelper.getModuleName(surveyId) : reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
         result.setScoreName("Average " + survey.getName() + "Score");
 
         if (scores != null && !scores.isEmpty()) {
@@ -429,7 +429,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         ModuleGraphReportDTO result = new ModuleGraphReportDTO();
 
         Survey s = surveyRepository.findOne(surveyId);
-        result.setModuleName(reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
+        result.setModuleName(avName == null ? reportsHelper.getModuleName(surveyId) : reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap()));
         result.setScoreName("Average Score");
 
 
