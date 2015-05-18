@@ -6,11 +6,14 @@
 
 package gov.va.escreening.entity;
 
+import gov.va.escreening.constants.AssessmentConstants;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -29,7 +32,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -54,7 +59,6 @@ public class AssessmentVariable implements Serializable {
     private String description;
     @Column(name = "formula_template")
     private String formulaTemplate;
-    @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
@@ -271,5 +275,9 @@ public class AssessmentVariable implements Serializable {
         Map<String, Object> formulaAsMap = getAsMap();
         formulaAsMap.put("description", getDescription());
         return formulaAsMap;
+    }
+    
+    public boolean isFormula(){
+        return getAssessmentVariableTypeId().getAssessmentVariableTypeId().equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA);
     }
 }

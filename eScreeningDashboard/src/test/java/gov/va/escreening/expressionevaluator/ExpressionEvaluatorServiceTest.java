@@ -48,7 +48,7 @@ public class ExpressionEvaluatorServiceTest {
         for(AssessmentVarChildren child : formula.getAssessmentVarChildrenList()){
             AssessmentVariable childAv = child.getVariableChild();
             allDependents.add(childAv);
-            if(childAv.getAssessmentVariableTypeId().getAssessmentVariableTypeId().equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA)){
+            if(childAv.isFormula()){
                 addDependencies(childAv, allDependents);
             }
         }

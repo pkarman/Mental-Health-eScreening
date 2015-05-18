@@ -415,6 +415,18 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
         return variableSet;
     }
 	
+	@Override
+	public void updateParentFormulas(AssessmentVariable updatedVariable){
+	    Set<AssessmentVarChildren> childDeps = Sets.newHashSet(updatedVariable.getAssessmentVarChildrenList());
+	    for(AssessmentVariable parent : avr.getParentVariables(updatedVariable)){
+	        Set<AssessmentVarChildren> parentDeps = Sets.union(childDeps, Sets.newHashSet(parent.getAssessmentVarChildrenList()));
+	        parent.getAssessmentVarChildrenList().clear();
+	        parent.getAssessmentVarChildrenList().addAll(parentDeps);
+	        avr.update(parent);
+	        updateParentFormulas(parent);
+	    }
+	}
+	
 	private void addFormulaVariables(AssessmentVariable formula, 
 	        Set<AssessmentVariable> variableSet){
 	    variableSet.add(formula);

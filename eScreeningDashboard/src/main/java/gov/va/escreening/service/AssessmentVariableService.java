@@ -86,6 +86,12 @@ public interface AssessmentVariableService {
 	Set<AssessmentVariable> collectAssociatedVars(Set<Integer> avIds, 
 	        @Nullable Map<Integer, AssessmentVariable> currentVtMap);
 	
+	/**
+	 * Updates any parent formula assessment variables so they are updated with the given formula's dependencies 
+	 * @param updatedVariable
+	 */
+	void updateParentFormulas(AssessmentVariable updatedVariable);
+	
 	List<Map<String, String>> askFormulasFor(Integer moduleId);
 
 	String getPlainText(String htmlText);

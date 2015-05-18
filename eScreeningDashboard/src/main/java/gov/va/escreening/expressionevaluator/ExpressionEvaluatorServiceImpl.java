@@ -11,8 +11,6 @@ import gov.va.escreening.entity.AssessmentFormula;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
-import gov.va.escreening.entity.VariableTemplate;
-import gov.va.escreening.exception.ReferencedFormulaMissingException;
 import gov.va.escreening.exception.ReferencedVariableMissingException;
 import gov.va.escreening.formula.AvMapTypeEnum;
 import gov.va.escreening.formula.FormulaHandler;
@@ -299,6 +297,9 @@ public class ExpressionEvaluatorServiceImpl implements
 
         AssessmentVariable savedAv = avr.update(av);
 
+        //update parent formulas
+        avs.updateParentFormulas(savedAv);
+        
         return savedAv.getAssessmentVariableId();
     }
 

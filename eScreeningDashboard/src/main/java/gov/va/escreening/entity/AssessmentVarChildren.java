@@ -24,7 +24,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *
+ * TODO: It would be nice to remove this entry if possible and use a join table hibernate setup between 
+ * parent and child.
+ * 
  * @author jocchiuzzo
  */
 @Entity
@@ -49,16 +51,11 @@ public class AssessmentVarChildren implements Serializable {
     @ManyToOne(optional = false)
     private AssessmentVariable variableChild;
 
-    public AssessmentVarChildren() {
-    }
+    public AssessmentVarChildren() {}
 
-    public AssessmentVarChildren(Integer assessmentVarChildrenId) {
-        this.assessmentVarChildrenId = assessmentVarChildrenId;
-    }
-
-    public AssessmentVarChildren(Integer assessmentVarChildrenId, Date dateCreated) {
-        this.assessmentVarChildrenId = assessmentVarChildrenId;
-        this.dateCreated = dateCreated;
+    public AssessmentVarChildren(AssessmentVariable variableParent, AssessmentVariable variableChild) {
+        this.variableParent = variableParent;
+        this.variableChild = variableChild;
     }
 
     public Integer getAssessmentVarChildrenId() {
