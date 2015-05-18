@@ -247,22 +247,22 @@ public class ResolverParameters {
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
             MeasureAnswer ma = av.getMeasureAnswer();
             //TODO: profile this call to get the MA's measure to make sure we are not causing a new lookup
-            checkMeasureIsVisibile(ma.getMeasure());               
+            //checkMeasureIsVisibile(ma.getMeasure());               
             logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
                     ma.getMeasureAnswerId(), getAssessmentId());
             
             return ma.getMeasure().getMeasureType().getMeasureTypeId() == 3 ? "false" : "0";
             
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-            checkMeasureIsVisibile(av.getMeasure());
+            //checkMeasureIsVisibile(av.getMeasure());
             logger.warn("There was no question response for Measure ID: {}, assessment ID: {}",
                     av.getMeasure().getMeasureId(), getAssessmentId());
             break;
         case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-            if(foundVisibleSkippedQuestion(av)){
-                throw new CouldNotResolveVariableException(
-                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
-            }
+//            if(foundVisibleSkippedQuestion(av)){
+//                throw new CouldNotResolveVariableException(
+//                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
+//            }
             logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
                     av.getAssessmentVariableId(), getAssessmentId());
             break;
