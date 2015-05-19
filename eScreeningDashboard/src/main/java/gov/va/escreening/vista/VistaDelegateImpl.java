@@ -219,9 +219,9 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
     private void saveTbiConsultRequest(VeteranAssessment veteranAssessment,
-                                       VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
+       VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
         try {
-            Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
+        	Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
                 logger.debug("TBI Consult Response {}", vistaResponse);
@@ -287,10 +287,6 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         try {
             progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessment.getVeteranAssessmentId(), ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
             response.addSuccess(SaveToVistaResponse.PendingOperation.cprs, msg(SaveToVistaResponse.MsgKey.usr_pass_cprs__gen_success));
-            if (true) {
-                throw new IllegalStateException("TEST EXCEPTION for JSP to handle the callResults logic");
-            }
-
         } catch (Exception e) {
             response.addSysErr(SaveToVistaResponse.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
             return null;

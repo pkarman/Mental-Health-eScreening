@@ -102,32 +102,9 @@
                                 or read any data from VistA.
                             </div>
                         </c:if>
+						
                         <c:if test="${not empty callResults}">
                             <c:forEach var="callResult" items="${callResults}">
-                                <c:if test="${callResult.hasError}">
-                                    <div class="alert alert-danger">
-                                        <c:out value="${callResult.userMessage}"/>
-                                    </div>
-                                    <div class="panel-danger-system">
-                                        <div class="panel-group" id="accordion">
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">
-                                                    <h4 class="panel-title"><a data-toggle="collapse"
-                                                                               data-parent="#accordion"
-                                                                               href="#collapseOne"> System Error <span
-                                                            class="label label-danger">Click here for more error details</span>
-                                                    </a>
-                                                    </h4>
-                                                </div>
-                                                <div id="collapseOne" class="panel-collapse collapse">
-                                                    <div class="panel-body">
-                                                        <c:out value="${callResult.systemMessage}"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </c:if>
                                 <c:if test="${!callResult.hasError}">
                                     <c:if test="${not empty callResult.userMessage}">
                                         <div class="alert alert-info">
@@ -136,7 +113,45 @@
                                     </c:if>
                                 </c:if>
                             </c:forEach>
+                        </c:if>						
+
+
+						<c:if test="${not empty callResults}">
+							<!-- Add condition here to check if there is errors or not -->
+							<c:if test="${callResult.hasError}">
+								<div class="alert alert-danger panel-included">
+										<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+										<c:set var="counter" value="0"/>
+										<c:forEach var="callResult" items="${callResults}">
+											<c:set var="counter" value="${counter + 1}"/>
+											  <div class="panel">
+												<div class="panel-heading" role="tab" id="heading${counter}">
+												  <h4 class="panel-title" data-toggle="collapse" >
+													<c:choose>
+													  <c:when test="${not empty callResult.systemMessage}">
+														<a data-toggle="collapse" data-parent="#accordion" href="#collapse${counter}" aria-expanded="true" aria-controls="collapse${counter}"><span class="glyphicon glyphicon-plus"></span> <c:out value="${callResult.userMessage}"/>Click here for details.</a>
+													  </c:when>
+													  <c:otherwise>
+															<c:out value="${callResult.userMessage}"/>.							  
+													  </c:otherwise>
+													</c:choose>						
+												  </h4>
+												</div>
+												<div id="collapse${counter}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${counter + 1}">
+												  <div class="panel-body">
+													 <c:out value="${callResult.systemMessage}"/>
+												  </div>
+												</div>
+											  </div>
+											
+										</c:forEach>
+										</div>
+									</div>
+							</c:if>
                         </c:if>
+						
+
+
                         <div class="border-radius-main-form">
                             <div class="row">
                                 <div class="col-md-2"> Program Name
@@ -492,6 +507,7 @@
     //TODO: move all the below JS of to assessmentSummary.js
     // Cache all classes and IDs
     $(document).ready(function () {
+ 
 
         // t808 - call returnURL to assessmentSummary as URL to use as new redirection page
         var vid = "${veteranAssessmentInfo.veteranId}";

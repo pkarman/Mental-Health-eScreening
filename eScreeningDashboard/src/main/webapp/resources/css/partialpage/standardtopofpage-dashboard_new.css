@@ -698,8 +698,40 @@ table.gridtable td {
 }
 */
  
- 
+.panel-included .panel{
+	background-color:transparent;
+	border:1px solid rgba(169,68,66,0.20);
+	border:none;
+	box-shadow:none;
+}
 
+.panel-included .panel-group .panel-heading + .panel-collapse .panel-body{
+	border-top: none;
+	border-bottom:1px solid rgba(169,68,66,0.20);
+}
+
+.panel-included .panel-heading {
+	padding:4px;
+}
+
+.panel-included .panel-body {
+	padding: 4px 24px;
+}
+
+.panel-included .panel-group{
+	 margin-bottom: 0px;
+}
+
+.panel-included .panel-title{
+	font-size:14px;
+}
+  
+  
+  
+.panel-included .panel-heading h4 a{
+	font-weight:bold;
+	font-size:14px;
+}
 /* Common */
 .padding_0 {
   padding: 0px !important;
