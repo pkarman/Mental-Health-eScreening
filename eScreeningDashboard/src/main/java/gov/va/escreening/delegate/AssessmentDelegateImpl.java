@@ -113,13 +113,21 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 		assessmentContext.setVeteran(veteran);
 		assessmentContext.setVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
-		
-		List<SurveyPage> fullList = surveyPageRepository.getSurveyPagesForVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
-		assessmentContext.setSurveyPageList(copyAnswersFromPast48HoursAndFilterSurvey(veteranAssessment, fullList));
 		assessmentContext.setIsInitialized(true);
 	}
+	
+	
 
-    /** This method copies answers from surveys that are answered within the past 48 hours, then remove the module from 
+    @Override
+	public void prepareAssessmentContext() {
+		// TODO Auto-generated method stub
+    	VeteranAssessment veteranAssessment = veteranAssessmentRepository.findOne(assessmentContext.getVeteranAssessmentId());
+    	
+    	List<SurveyPage> fullList = surveyPageRepository.getSurveyPagesForVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
+		assessmentContext.setSurveyPageList(copyAnswersFromPast48HoursAndFilterSurvey(veteranAssessment, fullList));
+	}
+
+	/** This method copies answers from surveys that are answered within the past 48 hours, then remove the module from 
      * current survey page list 
      * @param assessment The current assessment
      * @param fullList The full list of survey pages
@@ -159,6 +167,12 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			}
 		}
 		
+		if(!assessment.getAssessmentStatus().getAssessmentStatusId().equals(AssessmentStatusEnum.CLEAN.getAssessmentStatusId()))
+		{
+			//Do not need to copy again
+			return fullList;
+		}
+		
 		List<SurveyMeasureResponse> respList = surveyMeasureResponseRepository.findLast48HourAnswersForVet(assessment.getVeteran().getVeteranId());
 		
 		for(SurveyMeasureResponse resp : respList)
@@ -185,6 +199,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		}
 		
 		surveyMeasureResponseRepository.commit();
+		
 		return fullList;
 	}
 	
@@ -217,7 +232,6 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		}
 		
 		return list;
-		//return surveySectionRepository.findForVeteranAssessmentId(assessmentContext.getVeteranAssessmentId());
 	}
 
 	@Override
