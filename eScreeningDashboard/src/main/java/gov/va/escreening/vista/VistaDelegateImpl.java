@@ -221,6 +221,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     private void saveTbiConsultRequest(VeteranAssessment veteranAssessment,
        VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
         try {
+            //if (true) {throw new IllegalStateException("BTBIS EXCEPTION for JSP to handle the callResults logic");}
         	Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));

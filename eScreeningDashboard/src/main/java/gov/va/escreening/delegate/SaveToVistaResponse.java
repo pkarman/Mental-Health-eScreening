@@ -2,11 +2,9 @@ package gov.va.escreening.delegate;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.security.EscreenUser;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,11 +68,12 @@ public class SaveToVistaResponse {
     private boolean hasErrors(PendingOperation po) {
         Map<MsgType, String> msgTypeMap = msgsTbl.row(po);
 
-        boolean clean = msgTypeMap == null || msgTypeMap.isEmpty();
-        clean |= msgTypeMap.get(MsgType.sysErr) == null || msgTypeMap.get(MsgType.sysErr).isEmpty();
-        clean |= msgTypeMap.get(MsgType.failMsg) == null || msgTypeMap.get(MsgType.failMsg).isEmpty();
-        clean |= msgTypeMap.get(MsgType.usrErr) == null || msgTypeMap.get(MsgType.usrErr).isEmpty();
-        return !clean;
+        //boolean clean = msgTypeMap == null || msgTypeMap.isEmpty();
+        boolean errorFree = msgTypeMap.get(MsgType.sysErr) == null || msgTypeMap.get(MsgType.sysErr).isEmpty();
+        errorFree &= msgTypeMap.get(MsgType.failMsg) == null || msgTypeMap.get(MsgType.failMsg).isEmpty();
+        errorFree &= msgTypeMap.get(MsgType.usrErr) == null || msgTypeMap.get(MsgType.usrErr).isEmpty();
+
+        return !errorFree;
     }
 
     public List<PendingOperation> getPendingOperations() {

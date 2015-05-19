@@ -119,33 +119,36 @@
 						<c:if test="${not empty callResults}">
 							<c:if test="${hasErrors}">
 								<div class="alert alert-danger panel-included">
-										<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
-										<c:set var="counter" value="0"/>
-										<c:forEach var="callResult" items="${callResults}">
-											<c:set var="counter" value="${counter + 1}"/>
-											  <div class="panel">
-												<div class="panel-heading" role="tab" id="heading${counter}">
-												  <h4 class="panel-title" data-toggle="collapse" >
-													<c:choose>
-													  <c:when test="${not empty callResult.systemMessage}">
-														<a data-toggle="collapse" data-parent="#accordion" href="#collapse${counter}" aria-expanded="true" aria-controls="collapse${counter}"><span class="glyphicon glyphicon-plus"></span> <c:out value="${callResult.userMessage}"/>Click here for details.</a>
-													  </c:when>
-													  <c:otherwise>
-															<c:out value="${callResult.userMessage}"/>.							  
-													  </c:otherwise>
-													</c:choose>						
-												  </h4>
-												</div>
-												<div id="collapse${counter}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${counter + 1}">
-												  <div class="panel-body">
-													 <c:out value="${callResult.systemMessage}"/>
-												  </div>
-												</div>
-											  </div>
-											
-										</c:forEach>
-										</div>
-									</div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <c:set var="counter" value="0"/>
+                                        <c:forEach var="callResult" items="${callResults}">
+                                            <c:if test="${callResult.hasError}">
+                                                <c:set var="counter" value="${counter + 1}"/>
+                                                <div class="panel">
+                                                    <div class="panel-heading" role="tab" id="heading${counter}">
+                                                        <h4 class="panel-title" data-toggle="collapse">
+                                                            <c:if test="${not empty callResult.systemMessage}">
+                                                                <a data-toggle="collapse" data-parent="#accordion"
+                                                                   href="#collapse${counter}" aria-expanded="true"
+                                                                   aria-controls="collapse${counter}"><span
+                                                                        class="glyphicon glyphicon-plus"></span> <c:out
+                                                                        value="${callResult.userMessage}"/>Click here for details.</a>
+                                                            </c:if>
+                                                            <c:if test="${empty callResult.systemMessage}">
+                                                                <c:out value="${callResult.userMessage}"/>
+                                                            </c:if>
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div id="collapse${counter}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${counter + 1}">
+                                                  <div class="panel-body">
+                                                     <c:out value="${callResult.systemMessage}"/>
+                                                  </div>
+                                                </div>
+                                            </c:if>
+                                        </c:forEach>
+                                    </div>
+                                </div>
 							</c:if>
                         </c:if>
 						
