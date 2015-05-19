@@ -294,7 +294,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
     }
 
     private CallResult createCallResult(String msg, SaveToVistaResponse.PendingOperation po, SaveToVistaResponse.MsgType msgType) {
-        String usrMsg = msgType.isErr() ? String.format("%s operation failed", po.getDescription()) : null;
+        String usrMsg = msgType.isErr() ? String.format("%s operation failed", po.getDescription()) : msg;
         String sysMsg = msgType.isErr() ? msg : null;
         return new CallResult(msgType.isErr(), usrMsg, sysMsg);
     }

@@ -287,6 +287,10 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         try {
             progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessment.getVeteranAssessmentId(), ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
             response.addSuccess(SaveToVistaResponse.PendingOperation.cprs, msg(SaveToVistaResponse.MsgKey.usr_pass_cprs__gen_success));
+            if (true) {
+                throw new IllegalStateException("TEST EXCEPTION for JSP to handle the callResults logic");
+            }
+
         } catch (Exception e) {
             response.addSysErr(SaveToVistaResponse.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
             return null;
