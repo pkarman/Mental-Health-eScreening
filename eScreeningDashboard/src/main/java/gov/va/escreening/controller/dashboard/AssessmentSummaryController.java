@@ -1,35 +1,15 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import gov.va.escreening.delegate.SaveToVistaResponse;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
-import gov.va.escreening.dto.AlertDto;
-import gov.va.escreening.dto.CallResult;
-import gov.va.escreening.dto.DropDownObject;
-import gov.va.escreening.dto.VeteranAssessmentInfo;
-import gov.va.escreening.dto.VeteranAssessmentProgressDto;
+import gov.va.escreening.dto.*;
 import gov.va.escreening.form.AssessmentSummaryFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.AssessmentEngineService;
-import gov.va.escreening.service.AssessmentStatusService;
-import gov.va.escreening.service.ClinicService;
-import gov.va.escreening.service.NoteTitleService;
-import gov.va.escreening.service.UserService;
-import gov.va.escreening.service.VeteranAssessmentDashboardAlertService;
-import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.VeteranAssessmentSurveyService;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import gov.va.escreening.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.common.base.Throwables;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -238,6 +224,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
 
         // Repopulate the model for the view.
         model.addAttribute("callResults", callResults);
+        model.addAttribute("hasErrors", hasErrors(callResults));
 
         // Repopulate lookup model with data from database.
         VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
@@ -267,6 +254,15 @@ public class AssessmentSummaryController implements MessageSourceAware {
         model.addAttribute("isAbleToChangeStatus", isAbleToChangeStatus);
 
         return "dashboard/assessmentSummary";
+    }
+
+    private boolean hasErrors(List<CallResult> callResults) {
+        for (CallResult cr : callResults) {
+            if (cr.getHasError()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void buildCallResults(List<CallResult> callResults, SaveToVistaResponse response) {
