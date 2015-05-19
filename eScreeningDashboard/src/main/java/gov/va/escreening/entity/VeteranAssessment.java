@@ -42,30 +42,30 @@ public class VeteranAssessment implements Serializable {
 	private Integer accessMode;
 
 	@JoinColumn(name = "assessment_status_id", referencedColumnName = "assessment_status_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY)
 	private AssessmentStatus assessmentStatus;
 
 	@JoinColumn(name = "battery_id", referencedColumnName = "battery_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private Battery battery;
 
 	@JoinColumn(name = "clinic_id", referencedColumnName = "clinic_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private Clinic clinic;
 
 	@JoinColumn(name = "clinician_id", referencedColumnName = "user_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private User clinician;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY)
 	@JoinTable(name = "veteran_assessment_consult", joinColumns = { @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id") }, inverseJoinColumns = { @JoinColumn(name = "consult_id", referencedColumnName = "consult_id", unique = true) })
 	private Set<Consult> consults;
 
 	@JoinColumn(name = "created_by_user_id", referencedColumnName = "user_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY)
 	private User createdByUser;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY)
 	@JoinTable(name = "veteran_assessment_dashboard_alert", joinColumns = { @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id") }, inverseJoinColumns = { @JoinColumn(name = "dashboard_alert_id", referencedColumnName = "dashboard_alert_id", unique = true) })
 	private Set<DashboardAlert> dashboardAlerts;
 
@@ -90,23 +90,23 @@ public class VeteranAssessment implements Serializable {
 	@Column(name = "duration")
 	private Integer duration;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY)
 	@JoinTable(name = "veteran_assessment_health_factor", joinColumns = { @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id") }, inverseJoinColumns = { @JoinColumn(name = "health_factor_id", referencedColumnName = "health_factor_id", unique = true) })
 	private Set<HealthFactor> healthFactors;
 
 	@JoinColumn(name = "note_title_id", referencedColumnName = "note_title_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private NoteTitle noteTitle;
 
 	@Column(name = "percent_complete")
 	private Integer percentComplete;
 
 	@JoinColumn(name = "program_id", referencedColumnName = "program_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private Program program;
 
 	@JoinColumn(name = "signed_by_user_id", referencedColumnName = "user_id")
-	@ManyToOne
+	@ManyToOne//(fetch = FetchType.LAZY)
 	private User signedByUser;
 
 	@Transient
@@ -116,7 +116,7 @@ public class VeteranAssessment implements Serializable {
 	private List<SurveyMeasureResponse> surveyMeasureResponseList;
 
 	@JoinColumn(name = "veteran_id", referencedColumnName = "veteran_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false)//, fetch = FetchType.LAZY)
 	private Veteran veteran;
 
 	@Id
@@ -125,14 +125,18 @@ public class VeteranAssessment implements Serializable {
 	@Column(name = "veteran_assessment_id")
 	private Integer veteranAssessmentId;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "veteranAssessment", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "veteranAssessment")//, fetch = FetchType.LAZY)
 	private List<VeteranAssessmentNote> veteranAssessmentNoteList;
 
+    @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<VeteranAssessmentMeasureVisibility> measureVisibilityList;
+	
 	/**
 	 * Since we have state that must be tracked in the VeteranAssessmentSurvey we cannot use a set of Survey here (which
 	 * would have made more sense)
 	 */
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "veteranAssessment")
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "veteranAssessment")//, fetch = FetchType.LAZY)
 	private List<VeteranAssessmentSurvey> veteranAssessmentSurveyList;
 
 	public VeteranAssessment() {
@@ -430,9 +434,18 @@ public class VeteranAssessment implements Serializable {
 		this.veteranAssessmentNoteList = veteranAssessmentNoteList;
 	}
 
-	/**
+	public List<VeteranAssessmentMeasureVisibility> getMeasureVisibilityList() {
+        return measureVisibilityList;
+    }
+
+    public void setMeasureVisibilityList(
+            List<VeteranAssessmentMeasureVisibility> measureVisibilityList) {
+        this.measureVisibilityList = measureVisibilityList;
+    }
+
+    /**
 	 * Note: Normally you want to interact with the Surveys not with the VeteranAssessmentSurveyList. If you don't need
-	 * to access fields in the join table itself your code will end up being much simpiler if you just update the
+	 * to access fields in the join table itself your code will end up being much simpler if you just update the
 	 * surveys using get/setSurvey methods.
 	 */
 	public void setVeteranAssessmentSurveyList(

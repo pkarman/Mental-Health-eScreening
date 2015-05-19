@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "measure_answer")
@@ -54,25 +56,27 @@ public class MeasureAnswer implements Serializable {
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "measureAnswer", fetch = FetchType.LAZY)
     private List<MeasureAnswerValidation> measureAnswerValidationList;
 
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
     @ManyToOne(optional = true)
     private Measure measure;
+    
     @JoinColumn(name = "calculation_type_id", referencedColumnName = "calculation_type_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private CalculationType calculationType;
+    
+    //Do not make this lazy because it is used a lot during veteran assessment page transitions
     @OneToMany(mappedBy = "measureAnswer")
     private List<AssessmentVariable> assessmentVariableList;
-    /**
-     * the following are response data which we do not want to change if this survey is changed *
-     */
-    @OneToMany(mappedBy = "measureAnswer")
-    private List<SurveyMeasureResponse> surveyMeasureResponseList;
 
     @Column(name = "vista_text")
     private String vistaText;
+    
+    @Transient
+    private AssessmentVariable assessmentVariable = null;
 
     public String getVistaText() {
         return vistaText;
@@ -211,25 +215,20 @@ public class MeasureAnswer implements Serializable {
      * @return
      * @throws IllegalSystemStateException is there is no AV for this measure.
      */
-	public AssessmentVariable getAssessmentVariable() {
-		List<AssessmentVariable> avList = getAssessmentVariableList();
-		if(avList == null || avList.isEmpty()){
-			ErrorBuilder.throwing(IllegalSystemStateException.class)
-				.toAdmin("Each measure answer should have an assessment variable assigned to it but the measure answer with the following ID doesn't: " + getMeasureAnswerId())
-				.toUser("A system issue has been detected. Please contact support")
-				.throwIt();
-		}
-		
-		return avList.get(0);
+	public AssessmentVariable assessmentVariable() {
+	    if(assessmentVariable == null){
+    		List<AssessmentVariable> avList = getAssessmentVariableList();
+    		if(avList == null || avList.isEmpty()){
+    			ErrorBuilder.throwing(IllegalSystemStateException.class)
+    				.toAdmin("Each measure answer should have an assessment variable assigned to it but the measure answer with the following ID doesn't: " + getMeasureAnswerId())
+    				.toUser("A system issue has been detected. Please contact support")
+    				.throwIt();
+    		}
+    		
+    		assessmentVariable = avList.get(0);
+	    }
+	    return assessmentVariable;
 	}
-
-    public List<SurveyMeasureResponse> getSurveyMeasureResponseList() {
-        return surveyMeasureResponseList;
-    }
-
-    public void setSurveyMeasureResponseList(List<SurveyMeasureResponse> surveyMeasureResponseList) {
-        this.surveyMeasureResponseList = surveyMeasureResponseList;
-    }
 
     @Override
     public int hashCode() {

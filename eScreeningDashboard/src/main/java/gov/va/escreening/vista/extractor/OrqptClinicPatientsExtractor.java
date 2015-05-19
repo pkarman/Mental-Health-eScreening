@@ -22,6 +22,10 @@ public class OrqptClinicPatientsExtractor implements VistaRecordExtractor<VistaC
         VistaClinicAppointment vistaClinicAppointment = new VistaClinicAppointment();
 
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
+        if(fields.length<9)
+        {
+        	return null;
+        }
 
         // 0. IEN
         vistaClinicAppointment.setVeteranIen(fields[0]);

@@ -41,7 +41,7 @@ public class ClinicServiceImpl implements ClinicService {
                 clinicDto.setProgramId(clinic.getProgram().getProgramId());
                 clinicDto.setProgramName(clinic.getProgram().getName());
             }
-
+            clinicDto.setClinicIen(clinic.getVistaIen());
             clinicDtoList.add(clinicDto);
         }
 

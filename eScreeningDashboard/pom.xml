@@ -11,8 +11,8 @@
 		<java-version>1.7</java-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<org.springframework-version>3.2.6.RELEASE</org.springframework-version>
-		<org.spring-security-version>3.1.4.RELEASE</org.spring-security-version>
+		<org.springframework-version>4.1.6.RELEASE</org.springframework-version>
+		<org.spring-security-version>3.2.7.RELEASE</org.spring-security-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
@@ -297,7 +297,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.1.0.Final</version>
+			<version>4.3.2.Final</version>
 		</dependency>
 
 		<!-- Test -->
@@ -319,6 +319,7 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>2.0.3-beta</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- JDBC -->
@@ -364,7 +365,7 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.7</version>
+			<version>3.12</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -628,6 +629,19 @@
 								</fileset>
 							</configuration>
 					</execution>
+					<execution>
+						<id>apply-sprint-31-data</id>
+							<phase>process-test-resources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<orderFile>ascending</orderFile>
+								<fileset>
+									<basedir>src/main/sql/sprint_31</basedir>
+								</fileset>
+							</configuration>
+					</execution>
 					<!-- PLEASE NOTE: this is a specific configuration for ticket 787.
 					     Please create another execution entry for all other sprint 31 tickets -->
 					<execution>
@@ -643,19 +657,6 @@
 								<basedir>src/main/sql/sprint_31_787</basedir>
 							</fileset>
 						</configuration>
-					</execution>
-					<execution>
-						<id>apply-sprint-31-data</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>execute</goal>
-							</goals>
-							<configuration>
-								<orderFile>ascending</orderFile>
-								<fileset>
-									<basedir>src/main/sql/sprint_31</basedir>
-								</fileset>
-							</configuration>
 					</execution>
 					<execution>
 						<id>apply-sprint-32-data</id>
@@ -684,6 +685,19 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-34-ticket-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_34</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
 						<id>apply-sprint-35-ticket-data</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -696,7 +710,7 @@
 							</fileset>
 						</configuration>
 					</execution>
-                    	<!-- PLEASE NOTE: this is a specific configuration for ticket 595 (found on branch t597).
+		                    	<!-- PLEASE NOTE: this is a specific configuration for ticket 595 (found on branch t597).
 					     Please create another execution entry for all other sprint 35 tickets -->
 					<execution>
 						<id>apply-sprint-35-ticket-595-data</id>
@@ -711,7 +725,20 @@
 								<basedir>src/main/sql/sprint_35_595</basedir>
 							</fileset>
 						</configuration>
-                    </execution>
+					</execution>
+					<execution>
+						<id>apply-sprint-36-ticket-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_36</basedir>
+							</fileset>
+						</configuration>
+					</execution>
 					<execution>
 						<id>apply-sprint-37-ticket-data</id>
 						<phase>process-test-resources</phase>

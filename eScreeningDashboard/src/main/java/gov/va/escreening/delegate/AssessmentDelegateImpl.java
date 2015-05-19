@@ -104,7 +104,6 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Override
 	public void ensureValidAssessmentContext() throws InvalidAssessmentContextException {
-		logger.debug("Ensuring valid assessment context");
 		if (!assessmentContext.getIsInitialized() || assessmentContext.getVeteran() == null)
 			throw new InvalidAssessmentContextException("Veteran not logged in");
 	}
@@ -121,7 +120,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
 
 		if (assessmentRequest != null) {
-			logger.debug("Assessment request: {}", assessmentRequest);
+			//logger.debug("Assessment request: {}", assessmentRequest);
 
 			// we set the assessment ID from the context (not from the request)
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());

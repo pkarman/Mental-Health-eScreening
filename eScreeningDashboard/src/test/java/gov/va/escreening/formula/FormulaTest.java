@@ -1,25 +1,24 @@
 package gov.va.escreening.formula;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
-import gov.va.escreening.expressionevaluator.FormulaDto;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.collect.Maps.newHashMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -30,12 +29,12 @@ public class FormulaTest {
 
     @Test
     public void testValidRoundFormula() {
-        String result = expressionEvaluator.evaluateFormula("T(Math).round(199/T(Math).pow( ( ( 6 * 12 ) + 0 ) ,2)*703)");
+        String result = expressionEvaluator.evaluateFormula("T(Math).round(199/T(Math).pow( ( ( 6 * 12 ) + 0 ) ,2)*703)", null);
         Assert.isTrue(result.equals("27"));
     }
     @Test
     public void testValidFormula() {
-        String result = expressionEvaluator.evaluateFormula("((2f)*(3f))");
+        String result = expressionEvaluator.evaluateFormula("((2f)*(3f))", null);
         Assert.isTrue(result.equals("6.0"));
     }
     @Test
@@ -47,7 +46,7 @@ public class FormulaTest {
 
     @Test
     public void testValidMaxFormula() {
-        String result = expressionEvaluator.evaluateFormula("T(Math).max(3.34,2.23)");
+        String result = expressionEvaluator.evaluateFormula("T(Math).max(3.34,2.23)", null);
         Assert.isTrue(result.equals("3.34"));
     }
 

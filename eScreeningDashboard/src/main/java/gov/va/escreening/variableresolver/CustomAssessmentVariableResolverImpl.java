@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.RoleEnum;
@@ -14,7 +15,6 @@ import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,8 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.google.common.base.Preconditions.*;
 
 @Transactional(noRollbackFor={CouldNotResolveVariableException.class, AssessmentVariableInvalidValueException.class, UnsupportedOperationException.class, Exception.class})
 public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVariableResolver {
@@ -54,36 +52,48 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
     }
     
     @Override
-    public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, Integer veteranAssessmentId) {
-		AssessmentVariableDto variableDto = null;
-		
-		Integer variableId = assessmentVariable.getAssessmentVariableId();
-		switch(variableId) {
-			case CUSTOM_PACKET_VERSION_VARIABLE_ID:
-				variableDto = packetVersionHandler();
-				break;
-			case CUSTOM_ASSIGNED_CLINICIAN_VARIABLE_ID:
-				variableDto = assignedClinicianHandler(veteranAssessmentId);
-				break;
-			case CUSTOM_SIGNING_CLINICIAN_VARIABLE_ID:
-				variableDto = signingClinicianHandler(veteranAssessmentId);
-				break;
-			case CUSTOM_TODAYS_DATE:
-				variableDto = getCurrentDate();
-				break;
-			case CUSTOM_ASSESSMENT_DURATION:
-				variableDto = getAssessmentDuration(veteranAssessmentId);
-				break;
-			case CUSTOM_VETERAN_APPOINTMENTS:
-				variableDto = getVeteranAppointments(veteranAssessmentId);
-				break;
-			case CUSTOM_ASSESSMENT_LAST_MODIFIED:
-				variableDto = getAssessmentLastModified(veteranAssessmentId);
-				break;
-			default:
-				throw new UnsupportedOperationException(
-					String.format("AssessmentVariable of type Custom with an id of %s is not supported.  A handler must be implemented to support the referenced id.", 
-						variableId));
+    public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable, ResolverParameters params) {
+        logger.debug("Resolving custom variable ID: {}", assessmentVariable.getAssessmentVariableId());
+        
+        Integer variableId = assessmentVariable.getAssessmentVariableId();
+        params.checkUnresolvable(variableId);
+        AssessmentVariableDto variableDto = params.getResolvedVariable(variableId);
+        
+		if(variableDto == null){
+		    try{
+		        Integer veteranAssessmentId = params.getAssessmentId();
+    			if(CUSTOM_PACKET_VERSION_VARIABLE_ID.equals(variableId)){
+    				variableDto = packetVersionHandler();
+    			}
+    			else if(CUSTOM_ASSIGNED_CLINICIAN_VARIABLE_ID.equals(variableId)){
+    				variableDto = assignedClinicianHandler(veteranAssessmentId);
+    			}
+    			else if(CUSTOM_SIGNING_CLINICIAN_VARIABLE_ID.equals(variableId)){
+    				variableDto = signingClinicianHandler(veteranAssessmentId);
+    			}
+    			else if(CUSTOM_TODAYS_DATE.equals(variableId)){
+    				variableDto = getCurrentDate();
+    			}
+    			else if(CUSTOM_ASSESSMENT_DURATION.equals(variableId)){
+    				variableDto = getAssessmentDuration(veteranAssessmentId);
+    			}
+    			else if(CUSTOM_VETERAN_APPOINTMENTS.equals(variableId)){
+    				variableDto = getVeteranAppointments(veteranAssessmentId);
+    			}
+    			else if(CUSTOM_ASSESSMENT_LAST_MODIFIED.equals(variableId)){
+    				variableDto = getAssessmentLastModified(veteranAssessmentId);
+    			}
+    			else{
+    				throw new UnsupportedOperationException(
+    					String.format("AssessmentVariable of type Custom with an id of %s is not supported.  A handler must be implemented to support the referenced id.", 
+    						variableId));
+    			}
+        		params.addResolvedVariable(variableDto);
+		    }
+		    catch(Exception e){
+		        params.addUnresolvableVariable(variableId);
+		        throw e;
+		    }
 		}
 		
 		return variableDto;

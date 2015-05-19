@@ -139,7 +139,11 @@ public class ReportDelegateImpl implements ReportDelegate {
 
         }
 
-        JRDataSource dataSource = new JRBeanCollectionDataSource(resultList);
+        JRDataSource dataSource = new JREmptyDataSource();
+
+        if (resultList != null && !resultList.isEmpty()){
+            dataSource = new JRBeanCollectionDataSource(resultList);
+        }
 
         parameterMap.put("datasource", dataSource);
         parameterMap.put("REPORT_FILE_RESOLVER", fileResolver);

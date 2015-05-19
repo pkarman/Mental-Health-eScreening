@@ -153,7 +153,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         Map<String, Map<String, String>> formulaeMap = Maps.newHashMap();
 
-        Iterable<AssessmentVariable> avFormulaeEntities = avr.findAllFormulae();
+        List<AssessmentVariable> avFormulaeEntities = avr.findAllFormulae();
 
         for (VeteranAssessment va : matchingAssessments) {
             Iterable<AssessmentVariableDto> avFormulaeList = vrs.resolveVariablesFor(va.getVeteranAssessmentId(), avFormulaeEntities);

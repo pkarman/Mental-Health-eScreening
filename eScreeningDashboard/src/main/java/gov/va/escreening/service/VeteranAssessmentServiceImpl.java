@@ -12,6 +12,7 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
+
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
 import gov.va.escreening.dto.report.Report594DTO;
@@ -19,7 +20,44 @@ import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
-import gov.va.escreening.repository.*;
+
+import gov.va.escreening.entity.AssessmentAppointment;
+import gov.va.escreening.entity.AssessmentStatus;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.ClinicalNote;
+import gov.va.escreening.entity.Consult;
+import gov.va.escreening.entity.DashboardAlert;
+import gov.va.escreening.entity.Event;
+import gov.va.escreening.entity.HealthFactor;
+import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.entity.SurveyPage;
+import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentAuditLog;
+import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
+import gov.va.escreening.entity.VeteranAssessmentNote;
+import gov.va.escreening.entity.VeteranAssessmentSurvey;
+import gov.va.escreening.repository.AssessmentAppointmentRepository;
+import gov.va.escreening.repository.AssessmentStatusRepository;
+import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.BatteryRepository;
+import gov.va.escreening.repository.ClinicRepository;
+import gov.va.escreening.repository.ClinicalNoteRepository;
+import gov.va.escreening.repository.EventRepository;
+import gov.va.escreening.repository.NoteTitleRepository;
+import gov.va.escreening.repository.ProgramRepository;
+import gov.va.escreening.repository.SurveyRepository;
+import gov.va.escreening.repository.UserRepository;
+import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
+import gov.va.escreening.repository.VeteranAssessmentDashboardAlertRepository;
+import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
+import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
+import gov.va.escreening.repository.VeteranAssessmentRepository;
+import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
+import gov.va.escreening.repository.VeteranRepository;
+
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
@@ -77,6 +115,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 	
 	@Autowired
 	private VariableResolverService variableResolverSvc;
+	
+	@Autowired
+	private AssessmentAppointmentRepository assessmentApptRepo;
 	
 	@Autowired
 	private AssessmentVariableRepository assessmentVariableRepo;
@@ -360,11 +401,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 				if (veteranAssessment.getDashboardAlerts() != null && veteranAssessment.getDashboardAlerts().size() > 0) {
 					for (DashboardAlert dashboardAlert : veteranAssessment.getDashboardAlerts()) {
-						AlertDto alertDto = new AlertDto();
-						alertDto.setAlertId(dashboardAlert.getDashboardAlertId());
-						alertDto.setAlertName(dashboardAlert.getName());
-
-						assessmentSearchResult.getAlerts().add(alertDto);
+						assessmentSearchResult.getAlerts().add(new AlertDto(dashboardAlert));
 					}
 				}
 
@@ -1102,8 +1139,22 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
-		List<AssessmentVariable> dbVariables = new ArrayList<>(1);
+		
+		List<AssessmentVariable> dbVariables = new ArrayList<>();
 		dbVariables.add(dbVariable);
+		
+		//if this variable is a measure (question) then add all answers' variables
+		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
+		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
+		        if(answer.assessmentVariable() != null){
+		            dbVariables.add(answer.assessmentVariable());
+		        }
+		        else{
+		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 
+		                    answer.getMeasureAnswerId());
+		        }
+		    }
+		}
 		List<VeteranAssessment> assessmentList = veteranAssessmentRepository
 				.findByVeteranId(veteranId);
 
@@ -1153,11 +1204,33 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				}
 					
 				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
-				
 				AssessmentVariableDto result = dto.iterator().next();
+				
+				//TODO: Move this logic into the AssessmentVariableDto object
+				String value = null;
 				if (result.getValue() != null) {
-					timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  result.getValue());
-					total++;
+					value = result.getValue();
+				}
+				else if(result.getChildren() != null){
+				    double sum = 0d;
+				    boolean useSum = false;
+				    for(AssessmentVariableDto answerVariable : result.getChildren()){
+				        try{
+				            sum += Double.valueOf(answerVariable.getCalculationValue());
+				            useSum = true;
+				        }
+				        catch(Exception e){ /* ignore */ 
+				            logger.warn("Error converting answer's value into a double (answer variable: {})", answerVariable);
+				        }
+				    }
+				    if(useSum){
+				        value = Double.toString(sum);
+				    }
+				}
+				
+				if(value != null){
+				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
+				    total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);
@@ -1221,6 +1294,27 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         return veteranAssessmentRepository.getBatteriesByTimeFor593(strFromDate, strToDate, clinicIds);
     }
 
+	@Override
+	public boolean createAssessmentWithAppointment(Integer veteranId, Integer programId,
+			Integer clinicId, Integer clinicianId, Integer createdByUserId,
+			Integer selectedNoteTitleId, Integer selectedBatteryId,
+			List<Integer> surveyIdList, Date date) throws AssessmentAlreadyExistException
+	{
+		Integer vetAssessmentId = create(veteranId, programId, clinicId, clinicianId,
+				createdByUserId, selectedNoteTitleId, selectedBatteryId, surveyIdList);
+		if(vetAssessmentId !=null)
+		{
+			AssessmentAppointment aa = new AssessmentAppointment();
+			aa.setAppointmentDate(date);
+			aa.setVetAssessmentId(vetAssessmentId);
+			aa.setDateCreated(Calendar.getInstance().getTime());
+			assessmentApptRepo.create(aa);
+			assessmentApptRepo.commit();
+			return true;
+		}
+		return false;
+	}
+
     @Override
     public List<Report595DTO> getTopSkippedQuestions(List<Integer> clinicIds, String fromDate, String toDate) {
         return veteranAssessmentRepository.getTopSkippedQuestions(clinicIds, fromDate, toDate);
@@ -1230,7 +1324,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public String calculateAvgAssessmentsPerClinician(List<Integer> clinicIds, String strFromDate, String strToDate) {
         return String.valueOf(veteranAssessmentRepository.getAvgNumOfAssessmentPerClinicianClinicFor593(strFromDate, strToDate, clinicIds));
     }
-
     @Override
     public List<Integer> getGenderCount(List<Integer> clinicIds, String fromDate, String toDate) {
 
@@ -1344,10 +1437,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
         return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
     }
-
 	@Override
 	public int getMissingEthnicityCount(List cList, String fromDate, String toDate) {
 		return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  21);
 	}
-
 }

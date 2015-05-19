@@ -1,26 +1,24 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.entity.AssessmentVariable;
-import gov.va.escreening.entity.VariableTemplate;
 
-import java.util.List;
-import java.util.Map;
 
+/**
+ * Used to Spring inject, but after a refactor, the methods are in VariableResolver
+ * 
+ * @author Robin Carnow
+ *
+ */
 public interface AssessmentVariableDtoFactory {
-    
-	AssessmentVariableDto createAssessmentVariableDto(AssessmentVariable assessmentVariable, Integer veteranAssessmentId,
-			Map<Integer, AssessmentVariable> measureAnswerHash, NullValueHandler smrNullHandler);
-	
-	/**
-	 * Creates a Map from {@link gov.va.escreening.entity.MeasureAnswer} ID to AssessmentVariable. Only 
-	 * AssessmentVariable of type AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER are included.
-	 */
-	Map<Integer, AssessmentVariable> createMeasureAnswerTypeHash(List<VariableTemplate> variableTemplates);
-	
-	/**
-     * Creates a Map from {@link gov.va.escreening.entity.MeasureAnswer} ID to AssessmentVariable. Only 
-     * AssessmentVariable of type AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER are included.
+    /**
+     * Resolves the given {@link AssessmentVariable} to an {@link AssessmentVariableDto} 
+     * with veteran responses
+     * @param assessmentVariable the assessment variable to resolve
+     * @param params parameters to use during resolution of variable
+     * @return resolved assessment variable DTO
      */
-    Map<Integer, AssessmentVariable> createMeasureAnswerTypeHash(Iterable<AssessmentVariable> assessmentVariables);
+    public AssessmentVariableDto resolveAssessmentVariable(
+            AssessmentVariable assessmentVariable,
+            ResolverParameters params);
 }
 

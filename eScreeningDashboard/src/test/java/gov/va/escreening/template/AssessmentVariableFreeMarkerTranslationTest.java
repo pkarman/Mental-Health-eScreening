@@ -1,8 +1,11 @@
 package gov.va.escreening.template;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import static gov.va.escreening.constants.AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX;
+import static gov.va.escreening.constants.AssessmentConstants.MEASURE_TYPE_TABLE;
+import static org.junit.Assert.assertEquals;
+import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.dto.template.INode;
 import gov.va.escreening.dto.template.TemplateAssessmentVariableDTO;
 import gov.va.escreening.dto.template.TemplateBaseContent;
@@ -10,6 +13,9 @@ import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.dto.template.TemplateTextDTO;
 import gov.va.escreening.dto.template.TemplateVariableContent;
 import gov.va.escreening.dto.template.VariableTransformationDTO;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.annotation.Nullable;
 
@@ -19,9 +25,6 @@ import org.junit.runners.JUnit4;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import static org.junit.Assert.*;
-import static gov.va.escreening.constants.AssessmentConstants.*;
 
 /**
  * This class is concerned with testing the translation of assessment variable DTO objects into FreeMarker
@@ -94,7 +97,7 @@ public class AssessmentVariableFreeMarkerTranslationTest {
 			TemplateVariableContent varContent = new TemplateVariableContent();
 			varContent.setContent(variable);
 			
-			String translation = TemplateBaseContent.translate(null, varContent, null, new HashSet<Integer>());
+			String translation = BlockUtil.toFreeMarker(varContent, new HashSet<Integer>());
 			
 			System.out.println(translation);
 			String expected = "transformationFunc2(transformationFunc1(var123,\"first\",\"second\",\"third\"),true,false)";
@@ -182,10 +185,8 @@ public class AssessmentVariableFreeMarkerTranslationTest {
 			TemplateVariableContent varContent = new TemplateVariableContent();
 			varContent.setContent(variable);
 			
-			String translation = TemplateBaseContent.translate(null, varContent, null, new HashSet<Integer>());
-			
-			//System.out.println(translation);
-			
+			String translation = BlockUtil.toFreeMarker(varContent, new HashSet<Integer>());
+
 			assertEquals(expectedOutput, translation);
 		}		
 		
@@ -197,7 +198,7 @@ public class AssessmentVariableFreeMarkerTranslationTest {
 			TemplateVariableContent leftContent = new TemplateVariableContent();
 			leftContent.setContent(leftVariable);
 			
-			String translation = TemplateBaseContent.translate(jsConditionOp, leftContent, rightContent, new HashSet<Integer>());
+			String translation = BlockUtil.conditionToFreeMarker(jsConditionOp, leftContent, rightContent, new HashSet<Integer>());
 			
 			//System.out.println(translation);
 			
@@ -236,7 +237,8 @@ public class AssessmentVariableFreeMarkerTranslationTest {
 			return variable;
 		}
 		
-		private TemplateFileDTO createTemplateFile(TemplateVariableContent content){
+		@SuppressWarnings("unused")
+        private TemplateFileDTO createTemplateFile(TemplateVariableContent content){
 			
 			TemplateFileDTO fileDTO = new TemplateFileDTO();
 			fileDTO.setId(40);

@@ -1,24 +1,13 @@
 package gov.va.escreening.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static gov.va.escreening.constants.AssessmentConstants.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.entity.AssessmentVarChildren;
@@ -36,10 +25,14 @@ import gov.va.escreening.entity.Validation;
 import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.entity.Veteran;
 import gov.va.escreening.entity.VeteranAssessment;
+import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 import gov.va.escreening.expressionevaluator.ExpressionEvaluatorService;
-import gov.va.escreening.repository.SurveyMeasureResponseRepository;
+import gov.va.escreening.expressionevaluator.ExpressionEvaluatorServiceImpl;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
+import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.UserRepository;
+import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
@@ -53,11 +46,29 @@ import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolve
 import gov.va.escreening.variableresolver.MeasureAnswerAssessmentVariableResolverImpl;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolver;
 import gov.va.escreening.variableresolver.MeasureAssessmentVariableResolverImpl;
-import gov.va.escreening.variableresolver.NullValueHandler;
+import gov.va.escreening.variableresolver.ResolverParameters;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
-import static org.mockito.Mockito.*;
-import static com.google.common.base.Preconditions.*;
-import static gov.va.escreening.constants.AssessmentConstants.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Root {@link AssessmentVariableBuilder} used for integration testing.
@@ -66,17 +77,18 @@ import static gov.va.escreening.constants.AssessmentConstants.*;
  *
  */
 public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
-    //if this value changes in ClinicalNoteTemplateFunctions.ftl then it has to change here.
-    public static final String DEFAULT_VALUE = "notset";
+    public static final String DEFAULT_VALUE = ExpressionExtentionUtil.DEFAULT_VALUE;
 
     private static final Logger logger = LoggerFactory.getLogger(TestAssessmentVariableBuilder.class); 
     private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
-    private static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE);
+    public static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE);
     private static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_CUSTOM);
+    private static final AssessmentVariableType TYPE_FORMULA = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_FORMULA);
 
     //Tracks what is added/built
     private final Map<Integer, AssessmentVariable> avMap = new HashMap<>();
     private final Map<Integer, AssessmentVariable> measureAnswerHash = new HashMap<>();
+    private final LinkedListMultimap<Integer, SurveyMeasureResponse> measureResponses = LinkedListMultimap.create();
 
     //resolvers - used to make sure all business rules are followed
     private final MeasureAnswerAssessmentVariableResolver answerResolver;
@@ -84,10 +96,11 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private final CustomAssessmentVariableResolver customResolver;
     private final FormulaAssessmentVariableResolver formulaResolver;
     private final AssessmentVariableDtoFactory variableResolver;
+    private final AssessmentVariableService avService;
+    private final ExpressionEvaluatorService expressionService;
 
     //mocked supporting objects for resolvers
-    private final SurveyMeasureResponseRepository surveyResponseRepo = mock(SurveyMeasureResponseRepository.class);
-    private final ExpressionEvaluatorService expressionService = mock(ExpressionEvaluatorService.class);
+    private final AssessmentVariableRepository assessmentVariableRepo = mock(AssessmentVariableRepository.class);
     private final VeteranAssessment assessment = mock(VeteranAssessment.class);
     private final Veteran vet = mock(Veteran.class);
     private final List<VistaVeteranAppointment>appointments = new ArrayList<>();
@@ -97,20 +110,36 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     private int defaultAnswerId = 3000;
     private int defualtAvId = 1000;
 
-    public TestAssessmentVariableBuilder(){
-        answerResolver = new MeasureAnswerAssessmentVariableResolverImpl(surveyResponseRepo);
-        measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver, surveyResponseRepo);
+    public TestAssessmentVariableBuilder() {
+        answerResolver = new MeasureAnswerAssessmentVariableResolverImpl();
+        measureResolver = new MeasureAssessmentVariableResolverImpl(answerResolver);
+        avService = mock(AssessmentVariableService.class);
         customResolver = createCustomResolver();
-        formulaResolver = new FormulaAssessmentVariableResolverImpl(expressionService, answerResolver, measureResolver);
-        variableResolver = new AssessmentVariableDtoFactoryImpl(customResolver, formulaResolver, answerResolver, measureResolver); 
+        try{
+            expressionService = new ExpressionEvaluatorServiceImpl(assessmentVariableRepo, avService);
+        }
+        catch(Exception e){
+            throw new IllegalStateException("Failure to register expression evaluator service functions.", e);
+        }
+        formulaResolver = new FormulaAssessmentVariableResolverImpl(expressionService, answerResolver, measureResolver, customResolver);
+        variableResolver = new AssessmentVariableDtoFactoryImpl(customResolver, formulaResolver, answerResolver, measureResolver);
     }
 
     @Override
-    public List<AssessmentVariableDto> getDTOs(){
-        List<AssessmentVariableDto> dtoList = new ArrayList<>(avMap.size());
-        for(AssessmentVariable av : avMap.values()){
+    public Map<Integer, AssessmentVariableDto> buildDtoMap(){
+        Map<Integer, AssessmentVariableDto> dtoList = Maps.newHashMapWithExpectedSize(avMap.size());
+        
+        ResolverParameters params = new ResolverParameters(assessment, measureAnswerHash.values());
+        params.addResponses(measureResponses.values());
+        
+        //We resolve the variables that were added and any answer variables
+        Collection<AssessmentVariable> variables = new LinkedList<>(avMap.values());
+        variables.addAll(measureAnswerHash.values());
+        
+        for(AssessmentVariable av : variables){
             try{
-                dtoList.add(variableResolver.createAssessmentVariableDto(av, 123, measureAnswerHash, mock(NullValueHandler.class)));
+                AssessmentVariableDto dto = variableResolver.resolveAssessmentVariable(av, params);
+                dtoList.put(dto.getVariableId(), dto);
             }
             catch(CouldNotResolveVariableException e){
                 /*ignored*/
@@ -119,29 +148,39 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         }
         return dtoList;
     }
+    
+    @Override
+    public Collection<AssessmentVariableDto> getDTOs(){
+        return buildDtoMap().values();
+    }
 
     @Override
-    public FreeTextAvBuilder addFreeTextAV(int avId, String questionText, @Nullable String response){
+    public Collection<AssessmentVariable> getVariables(){
+        return ImmutableSet.copyOf(avMap.values());
+    }
+    
+    @Override
+    public FreeTextAvBuilder addFreeTextAv(@Nullable Integer avId, String questionText, @Nullable String response){
         return new FreeTextAvBuilder(this, avId, questionText, response);
     }
 
     @Override
-    public SelectAvBuilder addSelectOneAV(@Nullable Integer avId, @Nullable String questionText){
+    public SelectAvBuilder addSelectOneAv(@Nullable Integer avId, @Nullable String questionText){
         return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_ONE, null, avId, questionText);
     }
 
     @Override
-    public SelectAvBuilder addSelectMultiAV(@Nullable Integer avId, @Nullable String questionText){
+    public SelectAvBuilder addSelectMultiAv(@Nullable Integer avId, @Nullable String questionText){
         return new SelectAvBuilder(this, MEASURE_TYPE_SELECT_MULTI, null, avId, questionText);
     }
 
     @Override
-    public MatrixAvBuilder addSelectOneMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+    public MatrixAvBuilder addSelectOneMatrixAv(@Nullable Integer avId, @Nullable String questionText){
         return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_ONE_MATRIX, avId, questionText);
     }
 
     @Override
-    public MatrixAvBuilder addSelectMultiMatrixAV(@Nullable Integer avId, @Nullable String questionText){
+    public MatrixAvBuilder addSelectMultiMatrixAv(@Nullable Integer avId, @Nullable String questionText){
         return new MatrixAvBuilder(this, MEASURE_TYPE_SELECT_MULTI_MATRIX, avId, questionText);
     }
 
@@ -153,71 +192,19 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     }
 
     @Override
-    public CustomAvBuilder addCustomAV(int avId){
+    public CustomAvBuilder addCustomAv(int avId){
         return new CustomAvBuilder(this, avId);
     }
-
+    
+    @Override
+    public FormulaAvBuilder addFormulaAv(int avId, String expression){
+        return new FormulaAvBuilder(this, avId, expression);
+    }
 
     //Builder methods 
 
-    /**
-     * It is important to note that calling this a second time with the same measure ID will overwrite the previous call.
-     * @param measure the measure to update
-     * @param row optional index of the row to set in the responses
-     * @param smrs
-     */
-    private void setMeasureResponses(Measure measure, @Nullable Integer row, SurveyMeasureResponse... smrs){
-        List<SurveyMeasureResponse> responseList;
-        Integer measureId = measure.getMeasureId();
-
-        if(smrs == null){ 
-            responseList = Collections.emptyList();
-        }
-        else{ 
-            responseList = Arrays.asList(smrs); 
-        }
-
-        //set the list on the measure
-        measure.setSurveyMeasureResponseList(responseList);
-
-        //setup service calls
-        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-
-        if(row != null){
-            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
-        }
-    }
-
     private void addMeasureResponse(Measure measure, @Nullable Integer row, SurveyMeasureResponse response){
-        List<SurveyMeasureResponse> responseList;
-        Integer measureId = measure.getMeasureId();
-
-        if(row != null){
-            responseList = surveyResponseRepo.findForAssessmentIdMeasureRow(4, measureId, row);
-        }
-        else{
-            responseList = surveyResponseRepo.getForVeteranAssessmentAndMeasure(4, measureId);	
-        }
-
-        if(responseList == null){
-            responseList = new LinkedList<>();
-        }
-
-        responseList.add(response);
-
-        //set the list on the measure
-        measure.setSurveyMeasureResponseList(responseList);
-
-        //setup service calls
-        when(surveyResponseRepo.getForVeteranAssessmentAndMeasure(anyInt(), eq(measureId))).thenReturn(responseList);
-
-        if(row != null){
-            when(surveyResponseRepo.findForAssessmentIdMeasureRow(anyInt(), eq(measureId), eq(row))).thenReturn(responseList);
-        }
-    }
-
-    private void setMeasureResponses(Measure measure,  SurveyMeasureResponse... smrs){
-        setMeasureResponses(measure, null, smrs);
+        measureResponses.put(measure.getMeasureId(), response);
     }
 
     private void addMeasureResponse(Measure measure, SurveyMeasureResponse response){
@@ -269,15 +256,39 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         ma.setMeasureAnswerValidationList(new ArrayList<MeasureAnswerValidation>());
         return ma;
     }
-
+    
     /**
      * Interface for builders which create questions (aka measures)
      * 
      * @author Robin Carnow
      *
      */
-    public interface MeasureAvBuilder{
-        public Measure getMeasure();
+    public class MeasureAvBuilder extends ForwardingAssessmentVariableBuilder{
+        protected Measure measure;
+        
+        MeasureAvBuilder(AssessmentVariableBuilder rootBuilder){
+            super(rootBuilder);
+        }
+        
+        public final Measure getMeasure(){
+            return measure;
+        }
+        
+        /**
+         * Sets the visibility of the current question being built
+         * @param isVisible if true then this is a follow-up question which is visible to the veteran
+         * @return
+         */
+        public final AssessmentVariableBuilder setMeasureVisibility(boolean isVisible){
+            List<VeteranAssessmentMeasureVisibility> visList = assessment.getMeasureVisibilityList();
+            if(visList == null){
+                visList = new ArrayList<>();
+            }
+            visList.add(new VeteranAssessmentMeasureVisibility(assessment, measure, isVisible));
+            when(assessment.getMeasureVisibilityList()).thenReturn(visList);
+            
+            return this;
+        }
     }
 
     /**
@@ -286,8 +297,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
      * @author Robin Carnow
      *
      */
-    public class TableQuestionAvBuilder extends ForwardingAssessmentVariableBuilder{
-        private final Measure tableMeasure;
+    public class TableQuestionAvBuilder extends MeasureAvBuilder{
         private MeasureAvBuilder currentBuilder = null;
         private FreeTextAvBuilder currentFreeTextBuilder = null;
         private SelectAvBuilder currentSelectBuilder = null;
@@ -306,12 +316,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 answer.setAnswerType("none");
             }
 
-            tableMeasure = newMeasure(null, MEASURE_TYPE_TABLE, questionText, answer);
+            measure = newMeasure(null, MEASURE_TYPE_TABLE, questionText, answer);
 
             //create av for measure
             AssessmentVariable av = newAssessmentVariable(avId, TYPE_MEASURE);
-            av.setMeasure(tableMeasure);
-            tableMeasure.getAssessmentVariableList().add(av);
+            av.setMeasure(measure);
+            measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
 
             if(hasNone){
@@ -322,9 +332,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 if(noneResponse != null){
                     SurveyMeasureResponse srm = new SurveyMeasureResponse();
                     srm.setBooleanValue(noneResponse);
-                    srm.setMeasure(tableMeasure);
+                    srm.setMeasure(measure);
                     srm.setMeasureAnswer(answer);
-                    setMeasureResponses(tableMeasure, srm);
+                    addMeasureResponse(measure, srm);
                 }
             }
         }
@@ -346,8 +356,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             Measure childMeasure = childBuilder.getMeasure();
 
             //associate child with this parent
-            childMeasure.setParent(tableMeasure);
-            tableMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             //create responses
             if(responses != null){
@@ -359,7 +369,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                         srm.setMeasure(childMeasure);
                         srm.setMeasureAnswer(childMeasure.getMeasureAnswerList().get(0));
                         srm.setTabularRow(rowIndex);
-                        setMeasureResponses(childMeasure, rowIndex, srm);
+                        addMeasureResponse(childMeasure, rowIndex, srm);
                     }
                     rowIndex++;
                 }
@@ -512,7 +522,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         
         private TableQuestionAvBuilder addChildSelect(Integer measureTypeId, 
                 @Nullable Integer explicitMeasureId,
-                @Nullable Integer avId, @Nullable String questionText){
+                @Nullable Integer avId, 
+                @Nullable String questionText){
 
             SelectAvBuilder childBuilder = new SelectAvBuilder(getRootBuilder(), measureTypeId, explicitMeasureId, avId, questionText);
             currentSelectBuilder = childBuilder;
@@ -521,15 +532,14 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             Measure childMeasure = childBuilder.getMeasure();
 
             //associate child with this parent
-            childMeasure.setParent(tableMeasure);
-            tableMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             return this;
         }
     }
 
-    public class SelectAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder {
-        private final Measure measure;
+    public class SelectAvBuilder extends MeasureAvBuilder {
         private final AssessmentVariable av;
         private Double defaultCalculationValue = 0.0;
         private List<AssessmentVariable> answerAvs = new ArrayList<>();
@@ -552,11 +562,6 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             av.setMeasure(measure);
             measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
-        }
-
-        @Override
-        public Measure getMeasure(){
-            return measure;
         }
 
         /**
@@ -585,6 +590,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             defaultCalculationValue++;
 
             measure.getMeasureAnswerList().add(answer);
+            answer.setMeasure(measure);
 
             //create av for answer
             AssessmentVariable aav = associateAnswerAv(avId, answer);
@@ -626,8 +632,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     }
 
 
-    public class MatrixAvBuilder extends ForwardingAssessmentVariableBuilder{
-        private final Measure matrixMeasure;
+    public class MatrixAvBuilder extends MeasureAvBuilder{
         private final AssessmentVariable av;
         private final List<SelectAvBuilder> childBuilders = new LinkedList<>();
         private final List<MeasureAnswer> columns = new LinkedList<>();
@@ -648,12 +653,12 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 throw new IllegalArgumentException("measure type ID must be a matrix");
             }
 
-            matrixMeasure = newMeasure(null, measureTypeId, questionText);
-            matrixMeasure.setChildren(new LinkedHashSet<Measure>());
+            measure = newMeasure(null, measureTypeId, questionText);
+            measure.setChildren(new LinkedHashSet<Measure>());
 
             av = newAssessmentVariable(avId, TYPE_MEASURE);
-            av.setMeasure(matrixMeasure);
-            matrixMeasure.getAssessmentVariableList().add(av);
+            av.setMeasure(measure);
+            measure.getAssessmentVariableList().add(av);
             avMap.put(av.getAssessmentVariableId(), av);
         }
 
@@ -690,7 +695,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
          * @return this MatrixAVBuilder
          */
         private MatrixAvBuilder addChildQuestion(@Nullable Integer childMeasureId, @Nullable Integer childQuestionAvId, @Nullable String questionText){
-            Integer childMeasureTypeId = matrixMeasure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
+            Integer childMeasureTypeId = measure.getMeasureType().getMeasureTypeId() ==  MEASURE_TYPE_SELECT_ONE_MATRIX 
                     ?  MEASURE_TYPE_SELECT_ONE :  MEASURE_TYPE_SELECT_MULTI;
 
             SelectAvBuilder selectBuilder = new SelectAvBuilder(getRootBuilder(), childMeasureTypeId, childMeasureId, childQuestionAvId, questionText);
@@ -704,8 +709,8 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
             //associate child with this parent
             Measure childMeasure = selectBuilder.getMeasure();
-            childMeasure.setParent(matrixMeasure);
-            matrixMeasure.getChildren().add(childMeasure);
+            childMeasure.setParent(measure);
+            measure.getChildren().add(childMeasure);
 
             return this;
         }
@@ -773,8 +778,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
 
     }
 
-    public class FreeTextAvBuilder extends ForwardingAssessmentVariableBuilder implements MeasureAvBuilder{
-        private final Measure measure;
+    public class FreeTextAvBuilder extends MeasureAvBuilder{
 
         private FreeTextAvBuilder(AssessmentVariableBuilder rootBuilder, 
                 @Nullable Integer avId, 
@@ -804,7 +808,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
                 srm.setTextValue(response);
                 srm.setMeasure(measure);
                 srm.setMeasureAnswer(answer);
-                setMeasureResponses(measure, srm);
+                addMeasureResponse(measure, srm);
             }
         }
 
@@ -820,11 +824,6 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
             measure.getMeasureValidationList().add(mv);
 
             return this;
-        }
-
-        @Override
-        public Measure getMeasure(){
-            return measure;
         }
 
         private Measure newFreeTextMeasure(@Nullable Integer answerId, @Nullable String text){
@@ -933,5 +932,33 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         when(cad.getVeteranAppointments(eq(mockUser), anyString())).thenReturn(appointments);
 
         return new CustomAssessmentVariableResolverImpl(sps, vas, ur, cad);
-    }	
+    }
+    
+    public class FormulaAvBuilder extends ForwardingAssessmentVariableBuilder{
+        private final AssessmentVariable variable;
+        
+        private FormulaAvBuilder(AssessmentVariableBuilder rootBuilder, @Nullable Integer avId, String expression){
+            super(rootBuilder);
+
+            variable = newAssessmentVariable(avId, TYPE_FORMULA);
+            variable.setFormulaTemplate(expression);
+            avMap.put(variable.getAssessmentVariableId(), variable);
+        }
+        
+        /**
+         * Add assessment variables which are found in the formula's expression. 
+         * If this is not done they will not be resolved or available when the expression is evaluated.
+         * @param children one or more of this formula's dependencies 
+         * @return this builder
+         */
+        public FormulaAvBuilder addAvChildren(Collection<AssessmentVariable> children){
+            for(AssessmentVariable child : children){
+                AssessmentVarChildren vc = new AssessmentVarChildren();
+                vc.setVariableChild(child);
+                vc.setVariableParent(variable);
+                variable.getAssessmentVarChildrenList().add(vc);
+            }
+            return this;
+        }
+    }
 }

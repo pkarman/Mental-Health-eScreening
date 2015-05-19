@@ -447,15 +447,12 @@ $(document).ready(function() {
 	   		    $(modal_contents).show().html(r);
 	            $(".graphicBody").each(function(graphId){
 	            	
-	                //TODO: mayb we should add a "loading..." icon while we get data from server
-	                
 	            	var $this = $(this);
 	                var graphObj  = $.parseJSON($this.html());
 					
 	                $this.html(""); //clear the graph area
 	        		var stackGraphParams = processIntervals(graphObj);
 	        		var timeSeriesParams = processIntervals(graphObj);
-	                
 					
 	                var parentDiv = $this.parents(".moduleTemplate");
 	                parentDiv.addClass("graphicBlock");
@@ -473,7 +470,9 @@ $(document).ready(function() {
 	        		//Add d3 graph
 	                var graphContainerId = "graph_" + graphId;
 	                var graphSelector = "#" + graphContainerId;
-	                graphContainer.children(".graphicBody").prop("id", graphContainerId)
+	                graphContainer.children(".graphicBody")
+	                	.prop("id", graphContainerId)
+	                	.append("<div class='text-center'><h5>Loading...</h5></div>");
 	                
 	                //get time series for the variable
 	                // Call timeSeries JSON
@@ -481,6 +480,7 @@ $(document).ready(function() {
 						type : 'get',
 						url : 'assessmentSummary/assessmentvarseries/' + vid + '/' + graphObj.varId + '/' + graphObj.numberOfMonths,
 						success : function(points){  
+							graphContainer.children(".graphicBody").empty();
 							
 							//append correct graph type given the number of historical results for the variable
 							if(hasMoreThanOne(points)){
@@ -495,7 +495,10 @@ $(document).ready(function() {
 								graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer +"</div>");
 							}									
 						},
-				  		error: handleError
+				  		error: function(xhr, exception, errorThrown){
+				  			graphContainer.children(".graphicBody").empty();
+				  			handleError(xhr, exception, errorThrown);
+				  		}
 					});
 	            });
 	            
@@ -504,31 +507,32 @@ $(document).ready(function() {
  	    });
  	    
  	   function handleError(xhr, exception, errorThrown) {
-           data = xhr.responseJSON.error;
+           var data = xhr.responseJSON.error;
            var userMessage       = [];
-           var developerMessage  = [];
+           var developerMessage  = "No details received from server";
            
-           if(data){                     
-             for (var j = 0; j < data.errorMessages.length; j++) {
-               errorMessages = data.errorMessages[j];
-               userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
-             }
-             if(data.developerMessage.length > 0){
-               result =          "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>";
-               result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
-               developerMessage.push(result);
-             }
-	           
-           }
-           else{
-        	   userMessage.push("<div class='userErrorMessage'>An unexpected error was received. Please call support.</div>");
-           }
-           var panelTemplate = userMessage;
-               panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
-               panelTemplate = panelTemplate + developerMessage;
-               panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
+		if(data){
+			if(data.errorMessages){
+	        	for (var j = 0; j < data.errorMessages.length; j++) {
+	        		errorMessages = data.errorMessages[j];
+	            	userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
+				}
+			}
+			if(data.developerMessage && data.developerMessage.length > 0){
+				developerMessage = "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>"
+								 + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
+			}
+		}
+		else{
+			userMessage.push("<div class='userErrorMessage'>An unexpected error was received. Please call support.</div>");
+		}
+		
+		var panelTemplate = userMessage;
+		panelTemplate += '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+		panelTemplate += developerMessage;
+		panelTemplate += '</div></div></div></div></div></div>'
            
-           $(modal_contents).show().html(panelTemplate);
+		$(modal_contents).html(panelTemplate).show();
  	   }
  	   
  	  function hasMoreThanOne(obj) {
@@ -686,14 +690,8 @@ $(document).ready(function() {
 		return graphParams;
 	}
 	
-	
-    //TODO:
-	  // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
-	     // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
-	  // 2. the y axis label should not be given 
-	  // 3. the score is not showing up in the graph
        
-    var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
+    var colors	= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 	
 	function appendStackGraph(parentSelector, graphParams){
 
@@ -753,7 +751,6 @@ $(document).ready(function() {
 			    .range([0, width]),
 			    
 			notes = dataset[0].map(function(d) { return d.y; }),
-			_ = console.log(notes),
 			
 			yScale = d3.scale.ordinal()
 			    .domain(notes)
@@ -856,8 +853,6 @@ $(document).ready(function() {
 		          .attr('x', textWidth - 15)
 		          .attr('y', 90);
 		      	  textWidth += parseFloat(text.node().getComputedTextLength())  + 30;
-              console.log("Parse 8----");
-              console.log(text.node().getComputedTextLength());
 		  });
 		  
 		  // Fix graphic bar issue

@@ -113,6 +113,7 @@ input[type=submit]:hover, button:hover, input[type=button]:hover{
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
 	cursor:hand;
 	cursor:pointer;
+ 	color:#ffffff !important;
 }
 .submitImg{
 	width:168px;

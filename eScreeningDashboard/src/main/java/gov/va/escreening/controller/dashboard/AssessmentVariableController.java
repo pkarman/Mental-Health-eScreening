@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -60,6 +59,22 @@ public class AssessmentVariableController {
 		er.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return er;
 	}
+	
+	@RequestMapping(value = "/services/assessmentVariables", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<Map<String, Object>> getAssessmentVarsForSurvey() {
+
+        Table<String, String, Object> t = avs.getAssessmentAllVars(true, false);
+
+        if (t.isEmpty()) {
+            ErrorBuilder
+                .throwing(EntityNotFoundException.class)
+                .toUser("No variables were found on the system.  Please contact your system administrator.")
+                .toAdmin("No assessment variables were found on the system")
+                .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
+        }
+        return avTableToList(t);
+    }
 
 	@RequestMapping(value = "/services/assessmentVariables", params="surveyId", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -79,8 +94,8 @@ public class AssessmentVariableController {
 				.setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue()).throwIt();
 		}
 		return avTableToList(t);
-    }
-
+	}
+	
     @RequestMapping(value = "/services/avs2MngFormulas", params = "moduleId", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List<Map<String, Object>> getAssessmentVarsToMngFormulas(@RequestParam("moduleId") Integer moduleId) {

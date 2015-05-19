@@ -1,13 +1,17 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.dto.ae.AssessmentRequest;
+import gov.va.escreening.dto.rule.EventDto;
+import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.SurveyMeasureResponse;
+import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 
 import java.util.Collection;
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Service class used to query, manipulate, and evaluate Events and Rules (e.g. evaluate expressions, fire events).
@@ -35,10 +39,102 @@ public interface RuleService {
      */
     void updateVisibilityForQuestions(Integer veteranAssessmentId, Collection<Measure> questions);
 
-    public abstract boolean evaluate(Integer veteranAssessmentId, Rule rule);
-
-	public boolean evaluate(
-			Rule r,
-			Map<Integer, Pair<gov.va.escreening.entity.Measure, gov.va.escreening.dto.ae.Measure>> responseMap);
+	/**
+	 * @param rules all rules
+	 * @param veteranAssessmentId
+	 * @param assessmentRequest the assessment request we are evaluating rules for
+	 * @return a set of rules which evaluate to true
+	 */
+    public Set<Rule> filterTrue(Collection<Rule> rules, AssessmentRequest assessmentRequest);
     
+    /**
+     * @param rules all rules
+     * @param veteranAssessmentId assessment variable ID we are evaluating rules for
+     * @return a set of rules which evaluate to true
+     */
+    public Set<Rule> filterTrue(Collection<Rule> rules, Integer veteranAssessmentId);
+    
+	/**
+	 * Get all events of the give type
+	 * @param typeId ID of the type of events to return
+	 * @return list of events defined on the system
+	 * @throws EscreeningDataValidationException if type is non-null and invalid
+	 */
+	public List<EventDto> getEventsByType(int typeId);
+	
+	/**
+	 * @return All events on the system (can be many)
+	 */
+	public List<EventDto> getAllEvents();
+    
+    /**
+     * @return get all rules on the system <b>without the condition field set</b>
+     */
+    List<RuleDto> getRules();
+    
+    /**
+     * Create a new rule
+     * @param rule to create
+     * @return the created rule
+     */
+    RuleDto createRule(RuleDto rule);
+    
+    /**
+     * Retrieve the rule with the given ID
+     * @param ruleId
+     * @return the rule DTO
+     * @throws EntityNotFoundException if not found
+     */
+    RuleDto getRule(Integer ruleId);
+    
+    /**
+     * Update a rule using the given DTO's fields
+     * @param ruleId ID of the rule to update 
+     * @param rule the new values
+     * @return the updated rule
+     * @throws EntityNotFoundException if not found
+     */
+    RuleDto updateRule(Integer ruleId, RuleDto rule);
+    
+    /**
+     * Delete rule with the given ID
+     * @param ruleId 
+     * @throws EntityNotFoundException if not found
+     */
+    void deleteRule(Integer ruleId);
+    
+    /**
+     * Get the events for the given rule
+     * @param ruleId ID of the rule
+     * @return non-null list of events
+     * @throws EntityNotFoundException if not found
+     */
+    List<EventDto> getRuleEvents(Integer ruleId);
+    
+    /**
+     * Add the given event to the rule with the given ID
+     * @param ruleId ID of the rule
+     * @param event to add
+     * @return the added event
+     * @throws EntityNotFoundException if not found
+     */
+    EventDto addEventToRule(Integer ruleId, EventDto event);
+    
+    /**
+     * Gets a rule's event
+     * @param ruleId ID of the rule
+     * @param eventId ID of the event 
+     * @return the event requested
+     * @throws EntityNotFoundException if: rule is not found, or rule does not have the given event
+     */
+    EventDto getRuleEvent(Integer ruleId, Integer eventId);
+    
+    /**
+     * Remove event from rule
+     * @param ruleId ID of rule to remove event from
+     * @param eventId ID of event to remove 
+     * @throws EntityNotFoundException if: rule is not found, or rule does not have the given event
+     */
+    void deleteRuleEvent(Integer ruleId, Integer eventId);
+	
 }

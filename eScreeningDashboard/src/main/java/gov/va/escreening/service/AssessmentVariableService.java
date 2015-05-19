@@ -8,6 +8,9 @@ import gov.va.escreening.exception.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -35,6 +38,15 @@ public interface AssessmentVariableService {
      */
     Table<String, String, Object> getAssessmentVarsForBattery(int batteryId);
 
+    /**
+     * return all {@link AssessmentVariable} as a table of name value pair
+     * <p/>
+     * {@link Table} Table<String, String, String> is defined as row, column name, and column value
+     *
+     * @return
+     */
+    Table<String, String, Object> getAssessmentAllVars(boolean ignoreAnswers, boolean includeFormulaTokens);
+    
 
     Multimap<Survey, Measure> buildSurveyMeasuresMap();
 
@@ -63,6 +75,22 @@ public interface AssessmentVariableService {
 	 * @throws EntityNotFoundException if no AV is found for the given answer
 	 */
 	AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId);
+	
+	/**
+	 * Collects all assessment variable associations to be saved with AV related objects (e.g. templates, rules, formulas)
+	 * @param avIds the assessment variable IDs which are known to be in the related object
+	 * @param variableMap an optional map from ID to Assessment variable, used to minimize calls to DB to pull new ones
+	 * This map does not have to contain all AVs for the AvIds given.  
+	 * @return the full collection of assessment variables that should be associated with the related object.
+	 */
+	Set<AssessmentVariable> collectAssociatedVars(Set<Integer> avIds, 
+	        @Nullable Map<Integer, AssessmentVariable> currentVtMap);
+	
+	/**
+	 * Updates any parent formula assessment variables so they are updated with the given formula's dependencies 
+	 * @param updatedVariable
+	 */
+	void updateParentFormulas(AssessmentVariable updatedVariable);
 	
 	List<Map<String, String>> askFormulasFor(Integer moduleId);
 

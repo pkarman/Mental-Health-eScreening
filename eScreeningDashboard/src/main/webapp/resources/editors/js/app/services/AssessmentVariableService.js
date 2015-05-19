@@ -23,30 +23,27 @@ angular.module('EscreeningDashboardApp.services.assessmentVariable', ['restangul
         // Expose the public AssessmentVariableService API to the rest of the application.
         //return service;
         return {
+        	
             /**
              * Will retrieve the list of assessment variables given the query parameter.
              */
 
             query: function (queryParams, useQueryCache) {
-                var results = [];
-                useQueryCache = (Object.isBoolean(useQueryCache))? useQueryCache: false;
+                var results;
 
-                if(Object.isDefined(queryParams) && (Object.isDefined(queryParams.surveyId) || Object.isDefined(queryParams.batteryId))) {
-                    if(useQueryCache) {
-                        if(Object.isDefined(cachedHashResults[queryParams])){
-                            results = cachedHashResults[queryParams];
-                        } else {
-                            cachedResults.push(cachedHashResults[queryParams] = service.getList(queryParams));
-                            results = cachedHashResults[queryParams];
-                        }
-                    } else {
-                        cachedResults.push(cachedHashResults[queryParams] = service.getList(queryParams));
-                        results = cachedHashResults[queryParams];
-                    }
-                } else {
-                    throw new BytePushers.exceptions.InvalidParameterException("query parameters can not be null.");
+                var params = Object.isDefined(queryParams) && (Object.isDefined(queryParams.surveyId) || Object.isDefined(queryParams.batteryId)) ?  queryParams : null;
+                var paramsHash = params == null ? "all" : params;
+                
+                if(useQueryCache) {
+                    results = cachedHashResults[paramsHash];
+                } 
+                
+                if(!results){
+                	results = service.getList(params);
+                	cachedHashResults[paramsHash] = results;
+                	cachedResults.push(results);
                 }
-
+                
                 return results;
             },
 

@@ -1,5 +1,8 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.condition.BlockTranslator;
+import gov.va.escreening.condition.BlockUtil;
+
 import java.util.List;
 import java.util.Set;
 
@@ -71,23 +74,37 @@ public class TemplateFollowingConditionBlock{
 		}
 	}
 	
-	public String toFreeMarkerFormatFormula(Set<Integer>ids)
-	{
-		StringBuffer sb = new StringBuffer();
-		sb.append(" ").append(getOperatorForConnector()).append(" (").append(FormulaUtil.createFormula(operator, left, right, ids));
-		
-		if (conditions != null && conditions.size() > 0)
-		{
-			for(TemplateFollowingConditionBlock tfcb : conditions)
-			{
-				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
-			}
-		}
-		
-		sb.append(" ) ");
-		return sb.toString();
+	public StringBuilder toFreeMarker(StringBuilder sb, Set<Integer>ids){
+	    return appendTranslation(BlockUtil.getFreeMarkerTranslator(), sb, ids);
+	}
+
+	public StringBuilder toSpringEl(StringBuilder sb, Set<Integer>ids){
+	    return appendTranslation(BlockUtil.getSpringElTranslator(), sb, ids);
 	}
 	
-	
-
+	/**
+	 * Translates subconditions with proper parenthesization 
+	 * @param translator
+	 * @param sb
+	 * @param ids
+	 * @return
+	 */
+	public StringBuilder appendTranslation(BlockTranslator translator, StringBuilder sb, Set<Integer>ids){
+	    StringBuilder result = sb;
+        
+        result.append(" ")
+            .append(getOperatorForConnector())
+            .append(" (")
+            .append(BlockUtil.translateCondition(translator, operator, left, right, ids));
+        
+        if (conditions != null && conditions.size() > 0){
+            
+            for(TemplateFollowingConditionBlock tfcb : conditions){
+                result = tfcb.appendTranslation(translator, result, ids);
+            }
+        }
+        
+        return result.append(" ) ");
+	}
 }
+
