@@ -117,8 +117,7 @@
 
 
 						<c:if test="${not empty callResults}">
-							<!-- Add condition here to check if there is errors or not -->
-							<c:if test="${callResult.hasError}">
+							<c:if test="${hasErrors}">
 								<div class="alert alert-danger panel-included">
 										<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 										<c:set var="counter" value="0"/>
