@@ -26,7 +26,8 @@ public interface VariableResolverService {
 	 * @return the resolved assessment variable dtos
 	 * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
 	 */
-    Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, Collection<AssessmentVariable> dbVariables);
+    Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
+            Collection<AssessmentVariable> dbVariables);
     
     /**
      * 

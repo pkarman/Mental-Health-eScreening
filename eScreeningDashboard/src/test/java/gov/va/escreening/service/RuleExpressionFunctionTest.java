@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 @Category(IntegrationTest.class)
 @RunWith(JUnit4.class)
 public class RuleExpressionFunctionTest {
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(RuleExpressionFunctionTest.class);
     
     protected TestAssessmentVariableBuilder avBuilder;
