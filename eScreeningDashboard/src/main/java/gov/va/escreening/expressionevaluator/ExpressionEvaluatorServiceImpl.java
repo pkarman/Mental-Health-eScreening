@@ -11,6 +11,7 @@ import gov.va.escreening.entity.AssessmentFormula;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.AssessmentVariableType;
+import gov.va.escreening.exception.ReferencedFormulaMissingException;
 import gov.va.escreening.exception.ReferencedVariableMissingException;
 import gov.va.escreening.formula.AvMapTypeEnum;
 import gov.va.escreening.formula.FormulaHandler;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
+import static gov.va.escreening.constants.AssessmentConstants.*;
 
 public class ExpressionEvaluatorServiceImpl implements
         ExpressionEvaluatorService {
@@ -47,6 +50,8 @@ public class ExpressionEvaluatorServiceImpl implements
             .compile("\\[(.*?)\\]");
     private static final Pattern formulaRefPattern = Pattern
             .compile("[$](.*?)[$]");
+    private static final Pattern formulaRefIdPattern = Pattern
+            .compile("\\[\\$([0-9]+)\\$\\]");
 
     private final AssessmentVariableRepository avr;
     private final AssessmentVariableService avs;
@@ -112,11 +117,33 @@ public class ExpressionEvaluatorServiceImpl implements
 
         try {
             String formula = buildFormulaFromMin(tokens);
+            formula = expandChildFormulas(formula, new HashMap<Integer, AssessmentVariable>());
             return evaluateFormula(createFormulaDto(formula, formulaOperands));
         } catch (NoSuchMethodException e) {
             logger.error(e.getMessage());
             throw new IllegalStateException(e);
         }
+    }
+    
+    private String expandChildFormulas(String formula, Map<Integer, AssessmentVariable> avMap) throws NumberFormatException{
+        Matcher matcher = formulaRefIdPattern.matcher(formula);
+        
+        String resolved = formula;
+        if(matcher.matches()){
+            for(int i = 1; i <= matcher.groupCount(); i++){
+                Integer formulaId = Integer.valueOf(matcher.group(i));
+                
+                AssessmentVariable formulaVariable = avMap.get(formulaId);
+                if(formulaVariable == null){
+                    formulaVariable = checkNotNull(avr.findOne(formulaId), "Invalid formula ID " + formulaId);
+                }
+                
+                String resolvedChild = expandChildFormulas(formulaVariable.getFormulaTemplate(), avMap);
+                String variablePattern = String.format("\\[\\$%s\\$\\]", formulaVariable.getAssessmentVariableId());
+                resolved = resolved.replaceAll(variablePattern, String.format(" ( %s ) ", resolvedChild));
+            }
+        }        
+        return resolved;
     }
 
     @Override
@@ -374,13 +401,12 @@ public class ExpressionEvaluatorServiceImpl implements
             AssessmentVariable av = avr.findOne(id);
             switch (av.getAssessmentVariableTypeId()
                     .getAssessmentVariableTypeId()) {
-            case 1:
-            case 2:
+            case ASSESSMENT_VARIABLE_TYPE_MEASURE:
+            case ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
                 return "[" + onlyToken + "]";
-            case 4:
+            case ASSESSMENT_VARIABLE_TYPE_FORMULA:
                 return "[$" + onlyToken + "$]";
-
-            case 5:
+            case ASSESSMENT_VARIABLE_TYPE_TIME_SERIES:
                 Matcher m = formulaTokenPattern.matcher(av.getDescription());
                 if (m.find()) {
                     return m.group(1);
