@@ -47,7 +47,8 @@ $(document).ready(function(e) {
 	$('#backBtn').css('visibility', 'hidden');
 	// Set up the initial service call.
 	callMeasure(measuresURL, JSON.stringify({}), initialPageCallback);
-
+	
+	
 	// Button actions
 	$('#saveExitBtn').click(function(){
 		callMeasure(measuresURL, 
@@ -605,6 +606,13 @@ function buildFormFromJSON(json){
 			.on("click", reshowBackButtonAction);
 	}
 	else{
+		/* Check if there is no pageId take the veteran to the done screen */
+		if(json.assessment.pageId == null){
+			showLastPageCall();
+			$('#nextBtn').css('visibility', 'hidden');
+			$('#saveExitBtn').css('visibility', 'hidden');
+		}
+
 		// Set the Form Title.
 		$('#viewTitle').text(json.page.pageTitle);
 		
