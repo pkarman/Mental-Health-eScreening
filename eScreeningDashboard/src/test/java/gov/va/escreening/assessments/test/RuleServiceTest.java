@@ -149,20 +149,32 @@ public class RuleServiceTest extends AssessmentTestBase {
 		final Rule r = ruleRepo.findOne(105);
 
 		assertFalse(evaluateRule(assessment.getVeteranAssessmentId(), r));
-
-		SurveyMeasureResponse res = createResponse(542, 5421, true, assessment.getVeteranAssessmentId(), 22);
+		
 		assessment.setSurveyMeasureResponseList(new ArrayList<SurveyMeasureResponse>());
+		
+		SurveyMeasureResponse res = createResponse(542, 5420, false, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
+		res = createResponse(542, 5421, true, assessment.getVeteranAssessmentId(), 22);
+        assessment.getSurveyMeasureResponseList().add(res);
 
+        res = createResponse(543, 5430, false, assessment.getVeteranAssessmentId(), 22);
+        assessment.getSurveyMeasureResponseList().add(res);
+        
 		res = createResponse(543, 5431, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
 
+		res = createResponse(544, 5440, false, assessment.getVeteranAssessmentId(), 22);
+        assessment.getSurveyMeasureResponseList().add(res);
+        
 		res = createResponse(544, 5441, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
 
 		res = createResponse(545, 5450, true, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
-
+		
+		res = createResponse(545, 5451, false, assessment.getVeteranAssessmentId(), 22);
+        assessment.getSurveyMeasureResponseList().add(res);
+		
 		logger.debug("Updating assessment: {}", assessment);
 		
 		vetAssessmentRepo.update(assessment);

@@ -37,6 +37,18 @@ public class FormulaTest {
         String result = expressionEvaluator.evaluateFormula("((2f)*(3f))", null);
         Assert.isTrue(result.equals("6.0"));
     }
+
+    @Test
+    public void testValidBooleanFormula() {
+        String result = expressionEvaluator.evaluateFormula("(true||false)", null);
+        Assert.isTrue(result.equals("true"));
+    }
+
+    @Test
+    public void testValidMaxBooleanFormula() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).max((true||false||false||true)?0:999,(true||false||false||true)?1:0)", null);
+        Assert.isTrue(result.equals("1"));
+    }
     @Test
     public void mathRemoval() {
         String result = "T(Math).round([demo_weight])+T(Math).pow(T(Math).max([demo_weight],[demo_race_pacisl]),3)";

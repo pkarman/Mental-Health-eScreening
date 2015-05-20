@@ -263,13 +263,13 @@ public class Measure implements Serializable, MeasureBaseProperties {
             boolean addToTableAnswers){
         
         if(answerResponses == null || answerResponses.isEmpty()){
-        	answers.add(new Answer(measureAnswer, null));
+        	answers.add(new Answer(measureAnswer));
         }
         else{// we have responses
             
         	//If this is a table question, we need to add an empty answer to the answers list (used for the generation of new entries)
         	if(addToTableAnswers){ 
-        		answers.add(new Answer(measureAnswer, null));
+        		answers.add(new Answer(measureAnswer));
         	}
         	
         	//If we have responses then add them to answers or to table answers

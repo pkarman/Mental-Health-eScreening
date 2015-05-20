@@ -80,10 +80,10 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
     public static final String DEFAULT_VALUE = ExpressionExtentionUtil.DEFAULT_VALUE;
 
     private static final Logger logger = LoggerFactory.getLogger(TestAssessmentVariableBuilder.class); 
-    private static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
+    public static final AssessmentVariableType TYPE_ANSWER = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER);
     public static final AssessmentVariableType TYPE_MEASURE = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_MEASURE);
-    private static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_CUSTOM);
-    private static final AssessmentVariableType TYPE_FORMULA = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_FORMULA);
+    public static final AssessmentVariableType TYPE_CUSTOM = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_CUSTOM);
+    public static final AssessmentVariableType TYPE_FORMULA = new AssessmentVariableType(ASSESSMENT_VARIABLE_TYPE_FORMULA);
 
     //Tracks what is added/built
     private final Map<Integer, AssessmentVariable> avMap = new HashMap<>();
@@ -218,6 +218,7 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
         var.setVariableTemplateList(vtList);
         var.setAssessmentVarChildrenList(new ArrayList<AssessmentVarChildren>());
         var.setAssessmentVariableTypeId(type);
+        avMap.put(var.getAssessmentVariableId(), var);
         return var;
     }
     
@@ -953,10 +954,9 @@ public class TestAssessmentVariableBuilder implements AssessmentVariableBuilder{
          */
         public FormulaAvBuilder addAvChildren(Collection<AssessmentVariable> children){
             for(AssessmentVariable child : children){
-                AssessmentVarChildren vc = new AssessmentVarChildren();
-                vc.setVariableChild(child);
-                vc.setVariableParent(variable);
-                variable.getAssessmentVarChildrenList().add(vc);
+                //adding this just in case test adds their own, but normally we already know about the children
+                avMap.put(child.getAssessmentVariableId(), child);
+                variable.getAssessmentVarChildrenList().add(new AssessmentVarChildren(variable, child));
             }
             return this;
         }

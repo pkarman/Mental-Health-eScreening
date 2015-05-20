@@ -11,7 +11,6 @@ import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
-import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,11 +70,9 @@ public class ResolverParameters {
     //Stores mapping from measure ID to boolean which is true if the question was visible to the veteran.
     //If a given ID is not in the map then the measure was visible
     private Map<Integer, Boolean> measureVisibilityMap = null;
-    private ExpressionExtentionUtil expressionUtil = null;
     
     /**
      * @param veteranAssessment the assessment to resolve against
-     * @param nullHandler the null handler to be used when a value is null
      * @param assessmentVariables the dependent assessment variables for the operation
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
@@ -86,14 +86,13 @@ public class ResolverParameters {
     
     /**
      * @param veteranAssessmentId the assessment to resolve against
-     * @param nullHandler the null handler to be used when a value is null
      * @param variableTemplates the dependent assessment variables for the operation
      * (e.g. with rules AV dependencies are found in the rule_assessment_variable table)
      */
     public ResolverParameters(VeteranAssessment veteranAssessment,
             List<VariableTemplate> variableTemplates){
         this.veteranAssessment = checkNotNull(veteranAssessment);
-        
+
         createAnswerHash(variableTemplates);
         avMap = Maps.newHashMapWithExpectedSize(measureAnswerHash.size());
     }
@@ -144,7 +143,17 @@ public class ResolverParameters {
             List<Answer> answers = response.getAnswers();
             if(answers != null){
                 for(Answer answer : response.getAnswers()){
-                    addMeasureResponse(measureId, answer);  
+                    AssessmentVariable answerAv = getAnswerAv(answer.getAnswerId());
+                    if(answerAv == null){
+                        logger.debug("An answer was submitted which was not recorded during construction of this object. measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId());
+                        continue;
+                    }
+                    MeasureAnswer ma = avIdToMeasureAnswerMap.get(answerAv.getAssessmentVariableId());
+                    if(ma == null){
+                        logger.debug("No measure answer mapping found for answer with measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId() );
+                        continue;
+                    }
+                    addMeasureResponse(measureId, new Answer(ma, answer));  
                 }
             }
         }
@@ -214,6 +223,11 @@ public class ResolverParameters {
         return answerMap.get(measureAnswerId);
     }
     
+    /**
+     * Retrieves the cached AssessmentVariable 
+     * @param measureAnswerId
+     * @return AssessmentVariable for the measureAnswer ID given.
+     */
     public AssessmentVariable getAnswerAv(Integer measureAnswerId){
         return measureAnswerHash.get(measureAnswerId);
     }
@@ -243,36 +257,35 @@ public class ResolverParameters {
      * @return A string value to use as a default
      */
     public String handleUnresolableVariable(AssessmentVariable av){
-        switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
-        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
-            MeasureAnswer ma = av.getMeasureAnswer();
-            //TODO: profile this call to get the MA's measure to make sure we are not causing a new lookup
-            //checkMeasureIsVisibile(ma.getMeasure());               
-            logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
-                    ma.getMeasureAnswerId(), getAssessmentId());
-            
-            return ma.getMeasure().getMeasureType().getMeasureTypeId() == 3 ? "false" : "0";
-            
-        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
-            //checkMeasureIsVisibile(av.getMeasure());
-            logger.warn("There was no question response for Measure ID: {}, assessment ID: {}",
-                    av.getMeasure().getMeasureId(), getAssessmentId());
-            break;
-        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-//            if(foundVisibleSkippedQuestion(av)){
-//                throw new CouldNotResolveVariableException(
-//                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
-//            }
-            logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
-                    av.getAssessmentVariableId(), getAssessmentId());
-            break;
-            
-        case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
-            logger.warn("Custom variable could generated for variable ID {}, assessment ID: {}.",
-                    av.getAssessmentVariableId(), getAssessmentId());
-            break;
-        }
-        return "0";
+            switch(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId()){
+            case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
+                MeasureAnswer ma = av.getMeasureAnswer();
+                checkMeasureIsVisibile(ma.getMeasure());               
+                logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
+                        ma.getMeasureAnswerId(), getAssessmentId());
+                
+                return ma.getMeasure().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_MULTI ? "false" : "0";
+                
+            case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
+                checkMeasureIsVisibile(av.getMeasure());
+                logger.warn("There was no question response for Measure ID: {}, assessment ID: {}",
+                        av.getMeasure().getMeasureId(), getAssessmentId());
+                break;
+            case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
+    //            if(foundVisibleSkippedQuestion(av)){
+    //                throw new CouldNotResolveVariableException(
+    //                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
+    //            }
+                logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
+                        av.getAssessmentVariableId(), getAssessmentId());
+                break;
+                
+            case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
+                logger.warn("Custom variable could generated for variable ID {}, assessment ID: {}.",
+                        av.getAssessmentVariableId(), getAssessmentId());
+                break;
+            }
+            return "0";
     }
     
     /**
@@ -292,8 +305,10 @@ public class ResolverParameters {
     private boolean isMeasureVisibile(gov.va.escreening.entity.Measure measure){
         if(measureVisibilityMap == null){
             ImmutableMap.Builder<Integer, Boolean> mapBuilder = ImmutableMap.builder();
-            for(VeteranAssessmentMeasureVisibility measureVis : veteranAssessment.getMeasureVisibilityList()){
-                mapBuilder.put(measureVis.getMeasure().getMeasureId(), measureVis.getIsVisible());
+            if(veteranAssessment.getMeasureVisibilityList() != null){
+                for(VeteranAssessmentMeasureVisibility measureVis : veteranAssessment.getMeasureVisibilityList()){
+                    mapBuilder.put(measureVis.getMeasure().getMeasureId(), measureVis.getIsVisible());
+                }
             }
             measureVisibilityMap = mapBuilder.build();
         }
@@ -301,12 +316,12 @@ public class ResolverParameters {
         return isVisible == null || isVisible;
     }
     
-    private boolean wasntAnswered(AssessmentVariableDto av){
-        if(expressionUtil == null){
-            expressionUtil = new ExpressionExtentionUtil();
-        }
-        return expressionUtil.wasntAnswered(av);
-    }
+//    private boolean wasntAnswered(AssessmentVariableDto av){
+//        if(expressionUtil == null){
+//            expressionUtil = new ExpressionExtentionUtil();
+//        }
+//        return expressionUtil.wasntAnswered(av);
+//    }
     
     /**
      * Checks to see if the given formula contains any visible questions which were unanswered
@@ -314,39 +329,39 @@ public class ResolverParameters {
      * @return true if the formula has any component (or sub-formula component) which is a measure which is unresolvable or 
      * can be resolved but was not answered.
      */
-    private boolean foundVisibleSkippedQuestion(AssessmentVariable formulaAv){
-        if(formulaAv.getAssessmentVarChildrenList() != null){
-            for(AssessmentVarChildren child : formulaAv.getAssessmentVarChildrenList()){
-                AssessmentVariable childVar = child.getVariableChild();
-                if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
-                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE)){
-                    
-                   if(childVar.getMeasure() != null
-                      && isMeasureVisibile(childVar.getMeasure())){
-                       
-                       if(unresolvable.contains(childVar.getAssessmentVariableId())){
-                           return true;
-                       }
-                       
-                       //now we have a visible measure which was resolved
-                       AssessmentVariableDto resolvedVar = getResolvedVariable(childVar.getAssessmentVariableId());
-                       
-                       checkState(resolvedVar != null, "A formula's dependent variable was not resolved before the formula.");
-                       
-                       if(wasntAnswered(resolvedVar)){
-                           return true;
-                       }
-                   }
-                }
-                else if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
-                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA)
-                        && foundVisibleSkippedQuestion(childVar)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    private boolean foundVisibleSkippedQuestion(AssessmentVariable formulaAv){
+//        if(formulaAv.getAssessmentVarChildrenList() != null){
+//            for(AssessmentVarChildren child : formulaAv.getAssessmentVarChildrenList()){
+//                AssessmentVariable childVar = child.getVariableChild();
+//                if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
+//                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE)){
+//                    
+//                   if(childVar.getMeasure() != null
+//                      && isMeasureVisibile(childVar.getMeasure())){
+//                       
+//                       if(unresolvable.contains(childVar.getAssessmentVariableId())){
+//                           return true;
+//                       }
+//                       
+//                       //now we have a visible measure which was resolved
+//                       AssessmentVariableDto resolvedVar = getResolvedVariable(childVar.getAssessmentVariableId());
+//                       
+//                       checkState(resolvedVar != null, "A formula's dependent variable was not resolved before the formula.");
+//                       
+//                       if(wasntAnswered(resolvedVar)){
+//                           return true;
+//                       }
+//                   }
+//                }
+//                else if(childVar.getAssessmentVariableTypeId().getAssessmentVariableTypeId()
+//                        .equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA)
+//                        && foundVisibleSkippedQuestion(childVar)){
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
     
     public void addResolvedVariable(AssessmentVariableDto variable){
         avMap.put(variable.getVariableId(), variable);

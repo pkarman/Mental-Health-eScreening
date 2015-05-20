@@ -103,19 +103,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     private void processScreensForOridinary(List<Map> ordinaryAvMaps, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
-        //todo implement this correctly after consulting from client about rules for following ambiguities
-        // suppose for Module AV Halluciniation, there are two assessment variables which are needed to combine there score and based on their score, screening is decided
-
-        // health18_voices		health19_seeing		Result AV Name		Result Score
-        //  POSTIVE				POSITIVE			?					POSITIVE
-        //  POSITIVE			NEGATIVE			health18_voices		POSTIVE
-        //  POSITIVE			MISSING				health18_voices		POSITIVE
-        //  NEGATIVE			POSITIVE			health19_seeing		POSTIVE
-        //  NEGATIVE			NEGATIVE			?					NEGATIVE
-        //  NEGATIVE			MISSING				health18_voices		?
-        //  MISSING				POSITIVE			health19_seeing		POSITIVE
-        //  MISSING				NEGATIVE			health19_seeing		?
-        //  MISSING				MISSING				?					MISSING
 
         List<VeteranAssessmentSurveyScore> negScoresLst = Lists.newArrayList();
         List<VeteranAssessmentSurveyScore> missScoresLst = Lists.newArrayList();
@@ -185,7 +172,6 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     private void decideScoreScreen(VeteranAssessmentSurveyScore vass, List<Map> pos, List<Map> neg) {
-        Integer vassScore = vass.getScore();
         if (resolveExpression(vass, pos)) {
             vass.setScreenNumber(POSITIVE_SCORE);// if score is equal or more than the threshold than +ve screen is POSITIVEßß
         } else if (resolveExpression(vass, neg)) {
@@ -495,7 +481,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
 
     private VeteranAssessmentSurveyScore tryCreateVASS(Survey s, AssessmentVariableDto avDto, VeteranAssessment veteranAssessment) {
         String scoreAsStr = avDto.getDisplayText();
-        if (!"false".equals(avDto.getValue()) && scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
+        if (!"false".equals(avDto.getValue()) && !"999".equals(avDto.getValue()) && scoreAsStr != null && !scoreAsStr.trim().isEmpty()) {
             VeteranAssessmentSurveyScore vass = createVASS(veteranAssessment, tryCalcScore(scoreAsStr, avDto), s, avDto.getDisplayName(), null);
             return vass;
         }

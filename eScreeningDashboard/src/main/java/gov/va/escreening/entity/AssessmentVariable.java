@@ -79,9 +79,11 @@ public class AssessmentVariable implements Serializable {
     //TODO: We should change this to have a list (or Set really) of AssessmentVariables and not a list of AssessmentVarChildren
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent", orphanRemoval = true)
     private List<AssessmentVarChildren> assessmentVarChildrenList;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId", fetch = FetchType.LAZY)
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true)
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("displayOrder")
     private List<AssessmentFormula> assessmentFormulas;
 

@@ -1,5 +1,7 @@
 package gov.va.escreening.dto.ae;
 
+import static com.google.common.base.Preconditions.*;
+
 import com.google.common.base.Strings;
 
 import gov.va.escreening.constants.AssessmentConstants;
@@ -8,13 +10,16 @@ import gov.va.escreening.entity.MeasureAnswerBaseProperties;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
 import org.apache.commons.lang3.StringUtils;
-
-import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
 
 public class Answer implements Serializable, MeasureAnswerBaseProperties {
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(Answer.class);
+    
     /* Possible answer types
      * These should all be lower case */
     public enum Type{
@@ -189,9 +194,21 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     public String getAnswerDisplayResponse() {
         return answerDisplayResponse;
     }
-
-    public void setAnswerDisplayResponse(String answerDisplayResponse) {
-        this.answerDisplayResponse = answerDisplayResponse;
+    
+    private void setAnswerDisplayResponse(MeasureAnswer measureAnswer){
+        if(measureAnswer.getMeasure().getMeasureType().getMeasureTypeId() 
+                == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
+            answerDisplayResponse = answerResponse;
+        }
+        else{
+            //The constraint has been removed which would set null here if the answer is of type none. Template functions do not assume
+            //this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
+            //delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
+            //show the text of the None answer so null should not be returned.
+            answerDisplayResponse = answerText;
+        }
+        
+        //logger.debug("Set answerDisplayResponse to: {}", answerDisplayResponse);
     }
     
     /**
@@ -203,9 +220,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     
     public Answer() {}
 
-    public Answer(MeasureAnswer measureAnswer, 
-            @Nullable SurveyMeasureResponse measureResponse){
-
+    public Answer(MeasureAnswer measureAnswer){        
         answerId = measureAnswer.getMeasureAnswerId();
         answerText = measureAnswer.getAnswerText();
         answerType = measureAnswer.getAnswerType();
@@ -216,42 +231,57 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         calculationValue=measureAnswer.getCalculationValue();
         displayOrder =  measureAnswer.getDisplayOrder();
         mhaValue = measureAnswer.getMhaValue();
-
+    }
+    
+    public Answer(MeasureAnswer measureAnswer, SurveyMeasureResponse measureResponse){
+        this(measureAnswer);
+        //logger.debug("Creating answer using measure answer {} with response {}", measureAnswer, measureResponse);
+        
+        checkNotNull(measureResponse, "measureResponse is required");
+        
         //set user response
-        if(measureResponse != null){
-            rowId = measureResponse.getTabularRow();
+        rowId = measureResponse.getTabularRow();
 
-            if (StringUtils.isNotBlank(measureResponse.getOtherValue())) {
-                otherAnswerResponse = measureResponse.getOtherValue();
-            }
+        if (StringUtils.isNotBlank(measureResponse.getOtherValue())) {
+            otherAnswerResponse = measureResponse.getOtherValue();
+        }
 
-            if (measureResponse.getNumberValue() != null) {                   
-                answerResponse = measureResponse.getNumberValue().toString();
-            }
-            else if (measureResponse.getBooleanValue() != null) {
-                answerResponse = measureResponse.getBooleanValue().toString();
-            }
-            else if (!Strings.isNullOrEmpty(measureResponse.getTextValue())) {
-                answerResponse = measureResponse.getTextValue();
-            }
-            //measureResponse might be non-null from the veteran but still not have any value set 
-//            else{
-//                throw new CouldNotResolveVariableException(
-//                        String.format("A value was not set for survey measure responseid: %s",
-//                                measureResponse.getSurveyMeasureResponseId()));
-//            }
-            
-            if(measureAnswer.getMeasure().getMeasureType().getMeasureTypeId() 
-                    == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
-                answerDisplayResponse = answerResponse;
-            }
-            else{
-                //The constraint has been removed which would set null here if the answer is of type none. Template functions do not assume
-                //this business rule but it is possible that the handwritten templates do.  This constraint was lifted because it causes the
-                //delimited output of select multi to throw error since null was being returned here for the display text.  PO would like to
-                //show the text of the None answer so null should not be returned.
-                answerDisplayResponse = answerText;
-            }
+        if (measureResponse.getNumberValue() != null) {                   
+            answerResponse = measureResponse.getNumberValue().toString();
+        }
+        else if (measureResponse.getBooleanValue() != null) {
+            answerResponse = measureResponse.getBooleanValue().toString();
+        }
+        else if (!Strings.isNullOrEmpty(measureResponse.getTextValue())) {
+            answerResponse = measureResponse.getTextValue();
+        }
+  
+        setAnswerDisplayResponse(measureAnswer);
+    }
+    
+    /**
+     * Constructor which builds an answer with the DB field values given by the measureAnswer and then applies any 
+     * responses to the object.
+     * @param measureAnswer contains the meta data fields from the database.
+     * @param otherAnswer the other Answer object to pull response values from
+     */
+    public Answer(MeasureAnswer measureAnswer, Answer otherAnswer){
+        this(measureAnswer);
+        //logger.debug("Creating answer using measure answer {} and other answer {}", measureAnswer, otherAnswer);
+        
+        checkNotNull(otherAnswer, "otherAnswer is required");
+        setRowId(otherAnswer.getRowId());
+        setAnswerResponse(otherAnswer.getAnswerResponse());
+        
+        if (StringUtils.isNotBlank(otherAnswer.getOtherAnswerResponse())) {
+            setOtherAnswerResponse(otherAnswer.getOtherAnswerResponse());
+        }
+        
+        if(otherAnswer.getAnswerDisplayResponse() != null){
+            answerDisplayResponse = otherAnswer.getAnswerDisplayResponse();
+        }
+        else{
+            setAnswerDisplayResponse(measureAnswer);
         }
     }
 
@@ -259,6 +289,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.answerId = answerId;
         this.answerText = answerText;
         this.answerResponse = answerResponse;
+        //logger.debug("Creating with: answerId {}, answerText {}, answerResponse {}", new Object[]{ answerId, answerText, answerResponse});
     }
 
     @Override

@@ -201,7 +201,6 @@ public class FormulaAssessmentVariableResolverImpl implements
     	        }
 	        }
 	        else{  //variable was not resolved
-	            //TODO: This is slowing down our evaluation times so we have to optimize it
 	            value = params.handleUnresolableVariable(childAv);
 	        }
 	        
