@@ -67,19 +67,23 @@
           <div class="panel-heading">
               <h3 class="panel-title">{{section.name}}
                 <div class="pull-right">
-                  <button class="btn btn-success btn-xs" ng-show="section.visible" ng-hide="!section.visible"  ng-click="section.isExpanded = !section.isExpanded"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"  title="Expand / Collapse Available Modules by Section"></span> </button>
+                  <button class="btn btn-success btn-xs" ng-show="section.visible" ng-click="section.isExpanded = !section.isExpanded"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'"  title="Expand / Collapse Available Modules by Section"></span> </button>
                 </div>              
               </h3>
           </div>
+  
           <div collapse="!section.isExpanded">
             <div class="panel-body" ng-show="section.isExpanded">
               <ul class="list-group" ng-model="section.surveys">
-                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in section.surveys track by $index" ng-show="survey.visible==true"> {{survey.name}} <span>Module</span>
-                  <div class="form-group buttonaction pull-right cursor-pointer"> <span class="glyphicon glyphicon-chevron-right buttonaction pull-right " ng-click="selectForBattery(survey);"></span> </div>
+                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in section.surveys track by $index" ng-show="survey.visible==true">
+					{{survey.name}} <span>Module</span>
+                  <div class="form-group buttonaction pull-right cursor-pointer">
+				  <span class="glyphicon glyphicon-chevron-right buttonaction pull-right " ng-click="selectForBattery(survey);"></span> </div>
                 </li>
               </ul>
             </div>
           </div>
+		  
         </div>
       </div>
     </div>
@@ -87,21 +91,25 @@
   <div class="col-md-7">
     <h2>Assigned Modules by Section</h2>
     <div class="border-radius-main-box gray-lighter scroll-div-y" style="height:500px;">
+	  
+	  <div ng-model="message" ng-show="showMessage" class="notificationMsg fadein fadeout alert alert-info">{{notificationMsg}}</div>
       <div class="app screen first" ng-model="batterySections" style="height:380px;overflow-x:visible;">
-        <div class="panel panel-default" ng-repeat="sec in batterySections" ng-show="sec.visible==true">
+        <div class="panel panel-default" ng-repeat="section in batterySections" ng-show="section.visible==true">
           
           <div class="panel-heading">
-            <h3 class="panel-title">{{sec.name}}
+            <h3 class="panel-title">{{section.name}}
               <div class="pull-right">
-                <button class="btn btn-success btn-xs" ng-show="sec.surveys.length > 0" ng-click="sec.isExpanded = !sec.isExpanded;"><span ng-class="sec.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'" title="Expand / Collapse Assigned Modules by Section"></span></button>
+                <button class="btn btn-success btn-xs" ng-show="section.surveys.length > 0" ng-click="section.isExpanded = !section.isExpanded;"><span ng-class="section.isExpanded ? 'glyphicon glyphicon-minus' : 'glyphicon glyphicon-plus'" title="Expand / Collapse Assigned Modules by Section"></span></button>
               </div>
             </h3>
           </div>
           
-          <div collapse="!sec.isExpanded">
-            <div class="panel-body" ng-show="sec.isExpanded">
-              <ul class="list-group" ng-model="sec.surveys">
-                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in sec.surveys track by $index" ng-show="survey.visible==true"> <span> {{survey.name}}</span> <span class="glyphicon glyphicon-remove-circle buttonaction pull-right color-red cursor-pointer" ng-click="removeFromBattery(survey);"></span> </li>
+          <div collapse="!section.isExpanded">
+            <div class="panel-body" ng-show="section.isExpanded">
+              <ul class="list-group" ng-model="section.surveys">
+                <li class="list-group-item" ng-animate="'animate'" ng-repeat="survey in section.surveys track by $index" ng-show="survey.visible==true">
+				{{survey.name}}<span class="glyphicon glyphicon-remove-circle buttonaction pull-right color-red cursor-pointer" ng-click="removeFromBattery(survey);"></span>
+				</li>
               </ul>
             </div>
           </div>
