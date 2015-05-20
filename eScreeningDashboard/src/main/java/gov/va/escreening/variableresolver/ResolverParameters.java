@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +143,17 @@ public class ResolverParameters {
             List<Answer> answers = response.getAnswers();
             if(answers != null){
                 for(Answer answer : response.getAnswers()){
-                    addMeasureResponse(measureId, answer);  
+                    AssessmentVariable answerAv = getAnswerAv(answer.getAnswerId());
+                    if(answerAv == null){
+                        logger.debug("An answer was submitted which was not recorded during construction of this object. measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId());
+                        continue;
+                    }
+                    MeasureAnswer ma = avIdToMeasureAnswerMap.get(answerAv.getAssessmentVariableId());
+                    if(ma == null){
+                        logger.debug("No measure answer mapping found for answer with measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId() );
+                        continue;
+                    }
+                    addMeasureResponse(measureId, new Answer(ma, answer));  
                 }
             }
         }
@@ -210,6 +223,11 @@ public class ResolverParameters {
         return answerMap.get(measureAnswerId);
     }
     
+    /**
+     * Retrieves the cached AssessmentVariable 
+     * @param measureAnswerId
+     * @return AssessmentVariable for the measureAnswer ID given.
+     */
     public AssessmentVariable getAnswerAv(Integer measureAnswerId){
         return measureAnswerHash.get(measureAnswerId);
     }

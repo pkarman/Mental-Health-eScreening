@@ -3,8 +3,6 @@ package gov.va.escreening.variableresolver;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.dto.ae.Answer;
 import gov.va.escreening.entity.AssessmentVariable;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,24 +55,17 @@ public class AssessmentVariableDto {
 	public AssessmentVariableDto(){};
 
 	public AssessmentVariableDto(Integer variableId, String key, String type, String name, Integer column) {
+	    logger.debug("Creating variable {} (constructor 1)", name);
 		this.variableId = variableId;
 		this.key = key;
 		this.type = type;
 		this.name = name;
 		this.column = column;
-	}
-	
-	public AssessmentVariableDto(Integer variableId, String key, String type, String name, Integer column, Integer measureTypeId) {
-		this.variableId = variableId;
-		this.key = key;
-		this.type = type;
-		this.name = name;
-		this.column = column;
-		this.measureTypeId = measureTypeId;
 	}
 	
 	public AssessmentVariableDto(Integer variableId, String key, String type, String name, String value,
 			String displayText, String overrideText, String otherText, Integer column) {
+	    logger.debug("Creating variable with: name '{}' displayText {} (constructor 2)", name, displayText);
 		this.variableId = variableId;
 		this.key = key;
 		this.type = type;
@@ -84,35 +75,6 @@ public class AssessmentVariableDto {
 		this.overrideText = overrideText;
 		this.otherText = otherText;
 		this.column = column;
-	}
-	
-	public AssessmentVariableDto(Integer variableId, String key, String type, String name, String value,
-			String displayText, String overrideText, String otherText, List<AssessmentVariableDto> children) {
-		this.variableId = variableId;
-		this.key = key;
-		this.type = type;
-		this.name = name;
-		this.value = value;
-		this.displayText = displayText;
-		this.overrideText = overrideText;
-		this.otherText = otherText;
-		this.children = children;
-	}
-	
-	public AssessmentVariableDto(Integer variableId, String key, String type, String name, String value,
-			String displayText, String overrideText, String otherText, String calcValue, Integer column, Integer row, String otherValue) {
-		this.variableId = variableId;
-		this.key = key;
-		this.type = type;
-		this.name = name;
-		this.value = value;
-		this.displayText = displayText;
-		this.overrideText = overrideText;
-		this.otherText = otherText;
-		this.calculationValue = calcValue;
-		this.column = column;
-		this.row = row;
-		this.otherValue = otherValue;
 	}
 	
 	/**
@@ -133,6 +95,8 @@ public class AssessmentVariableDto {
 		name = createName(av);
 		column = createColumn(av);
 		displayName = av.getDisplayName();
+
+		logger.debug("Creating variable with name '{}' and displayName '{}' (AssessmentVariable constructor)", name, displayName);
 		
 		if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER){
 			
