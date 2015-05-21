@@ -30,7 +30,7 @@ public class ClinicalReminderServiceImpl implements ClinicalReminderService {
         List<ClinicalReminderDto> dtoList = new ArrayList<ClinicalReminderDto>(list.size());
         for(ClinicalReminder c : list)
         {
-        	dtoList.add(new ClinicalReminderDto(c.getClinicalReminderId(), c.getPrintName()));
+        	dtoList.add(new ClinicalReminderDto(c.getClinicalReminderId(), c.getPrintName()+"("+c.getVistaIen() + ")"));
         }
         return dtoList;
     }
