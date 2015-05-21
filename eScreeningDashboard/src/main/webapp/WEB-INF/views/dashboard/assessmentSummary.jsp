@@ -68,7 +68,7 @@
 						<div class="h1_status form-inline">
 						  <form:label path="selectedAssessmentStatusId">Update Status to:</form:label>
 						  <form:select path="selectedAssessmentStatusId" cssClass="form-control">
-							<form:option value="5" label="Please Select a Status"/>
+							<form:option value="${veteranAssessmentInfo.assessmentStatusId}" label="Please Select a Status"/>
 							<form:options items="${assessmentStatusList}" itemValue="stateId" itemLabel="stateName" />
 						  </form:select>
 						  <div class="text-right">
@@ -77,7 +77,7 @@
 						</div>
 					  </c:if>
 					  <c:if test="${empty assessmentStatusList}">
-						<form:hidden path="selectedAssessmentStatusId"/>
+						<form:hidden path="selectedAssessmentStatusId" value="${veteranAssessmentInfo.assessmentStatusId}" />
 					  </c:if>
 					</div>
 				  </div>
