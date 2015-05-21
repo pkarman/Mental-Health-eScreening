@@ -129,7 +129,7 @@ public class ExpressionEvaluatorServiceImpl implements
         Matcher matcher = formulaRefIdPattern.matcher(formula);
         
         String resolved = formula;
-        if(matcher.matches()){
+        while(matcher.find()){
             for(int i = 1; i <= matcher.groupCount(); i++){
                 Integer formulaId = Integer.valueOf(matcher.group(i));
                 
@@ -142,7 +142,8 @@ public class ExpressionEvaluatorServiceImpl implements
                 String variablePattern = String.format("\\[\\$%s\\$\\]", formulaVariable.getAssessmentVariableId());
                 resolved = resolved.replaceAll(variablePattern, String.format(" ( %s ) ", resolvedChild));
             }
-        }        
+        }
+        logger.debug("Expanded formula: {} to: {}", formula, resolved);
         return resolved;
     }
 
