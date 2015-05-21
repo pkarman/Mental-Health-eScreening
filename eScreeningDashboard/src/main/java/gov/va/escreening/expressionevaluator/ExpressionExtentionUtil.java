@@ -40,7 +40,7 @@ import com.google.common.collect.Sets;
  */
 public class ExpressionExtentionUtil {
     public static final String DEFAULT_VALUE = "notset";
-    public static final String NUMBER_FORMAT = "%sf";
+    public static final String NUMBER_FORMAT = "%s";
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionExtentionUtil.class);
     private static final String DEFAULT_PREFIX = "";
