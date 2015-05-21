@@ -22,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * TODO: It would be nice to remove this entry if possible and use a join table hibernate setup between 
@@ -30,7 +31,8 @@ import javax.persistence.TemporalType;
  * @author jocchiuzzo
  */
 @Entity
-@Table(name = "assessment_var_children")
+@Table(name = "assessment_var_children",
+uniqueConstraints = { @UniqueConstraint( columnNames = { "variable_parent", "variable_child" }) })
 @NamedQueries({
     @NamedQuery(name = "AssessmentVarChildren.findAll", query = "SELECT a FROM AssessmentVarChildren a")})
 public class AssessmentVarChildren implements Serializable {

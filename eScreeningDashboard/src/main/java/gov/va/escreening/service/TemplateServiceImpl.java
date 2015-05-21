@@ -16,6 +16,7 @@ import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.Template;
 import gov.va.escreening.entity.VariableTemplate;
 import gov.va.escreening.exception.EntityNotFoundException;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.repository.BatteryRepository;
@@ -218,7 +219,10 @@ public class TemplateServiceImpl implements TemplateService {
 	            return null;
 	        }
 	    }else{
-	        dto.setBlocks(Collections.<INode>emptyList());
+	        ErrorBuilder.throwing(EscreeningDataValidationException.class)
+	            .toAdmin("Template's json file is not defined. This means it is a handwritten template and cannot be edited with editor. ID: " + templateId)
+	            .toUser("The editing of this template version is unsupported.")
+	            .throwIt();
 	    }
 
 	    if(t.getGraphParams() != null){

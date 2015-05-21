@@ -32,6 +32,22 @@ public class FormulaTest {
         String result = expressionEvaluator.evaluateFormula("T(Math).round(199/T(Math).pow( ( ( 6 * 12 ) + 0 ) ,2)*703)", null);
         Assert.isTrue(result.equals("27"));
     }
+
+    @Test
+    public void testMinFormula() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).min(0f+999f+999f+999f,999f)", null);
+        Assert.isTrue(result.equals("999.0"));
+    }
+    @Test
+    public void testBTBIS___tbi_score1___Formula() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).min( " +
+                "( T(Math).max(false||false||false||false||false||false||true?0f:999f,false||false||false||false||false||false?1f:0f) ) + " +
+                "( T(Math).max(false||false||false||false||false||false?0f:999f,false||false||false||false||false?1f:0f) ) + " +
+                "( T(Math).max(false||false||false||false||false||false||false?0f:999f,false||false||false||false||false||false?1f:0f) ) + " +
+                "( T(Math).max(false||false||false||false||false||false||false?0f:999f,false||false||false||false||false||false?1f:0f) ) ," +
+                "999f)", null);
+        Assert.isTrue(result.equals("999.0"));
+    }
     @Test
     public void testValidFormula() {
         String result = expressionEvaluator.evaluateFormula("((2f)*(3f))", null);

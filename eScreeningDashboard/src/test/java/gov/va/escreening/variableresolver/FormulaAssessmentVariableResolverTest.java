@@ -62,8 +62,8 @@ public class FormulaAssessmentVariableResolverTest {
     }
     
     @Test
-    public void testFormulaWithAnswerOfInvisibleUnansweredQuestion() throws Exception{
-        assertFormulaResult("[2]?1:0 + [4]?1:0", 1, avBuilder
+    public void testFormulaWithAnswerOfInvisibleUnansweredSelectOneQuestion() throws Exception{
+        assertFormulaResult("[1] + [3]", 1d, avBuilder
                 .addSelectOneAv(1, "first-select-one-visible")
                     .addAnswer(null, 2, "select multi option 1", null, 1d, true, null)
                 .addSelectOneAv(3, "second-select-one-invisible")
@@ -72,12 +72,22 @@ public class FormulaAssessmentVariableResolverTest {
     }
     
     @Test
+    public void testFormulaWithAnswerOfInvisibleUnansweredSelectMultiQuestion() throws Exception{
+        assertFormulaResult("[2]?1:0 + [4]?1:0", 1, avBuilder
+                .addSelectMultiAv(1, "first-select-one-visible")
+                    .addAnswer(null, 2, "select multi option 1", null, null, true, null)
+                .addSelectMultiAv(3, "second-select-one-invisible")
+                    .addAnswer(null, 4, "select one option 1", null, null, null, null)
+                    .setMeasureVisibility(false));
+    }
+    
+    @Test
     public void testFormulaWithAnswerOfVisibleUnansweredQuestion() throws Exception{
         Collection<AssessmentVariable> dependencies = avBuilder
                 .addSelectOneAv(1, "first-select-one-visible")
-                    .addAnswer(null, 2, "select multi option 1", null, 1d, null, null)
+                    .addAnswer(null, 2, "first select one option 1", null, 1d, null, null)
                 .addSelectOneAv(3, "second-select-one-visible")
-                    .addAnswer(null, 4, "select one option 1", null, 2d, true, null)
+                    .addAnswer(null, 4, "second select one option 1", null, 2d, true, null)
                 .getVariables();
             
             avBuilder
@@ -111,7 +121,37 @@ public class FormulaAssessmentVariableResolverTest {
                 .addAnswer(null, null, "fourth", null, null, false, null));
     }
     
+    @Test
+    public void testResolvingChildFormulas() throws Exception{
+        avBuilder
+                .addSelectMultiAv(1, "first-select-one-visible")
+                    .addAnswer(null, 2, "select multi option 1", null, 1d, true, null)
+                .addSelectMultiAv(3, "second-select-one-visible")
+                    .addAnswer(null, 4, "select one option 1", null, 2d, null, null)
+                    .setMeasureVisibility(false);
+        
+            Collection<AssessmentVariable> formula5Dependencies = avBuilder.getVariables();
+            avBuilder
+                .addFormulaAv(5, "[2]?1:0 + [4]?1:0")
+                .addAvChildren(formula5Dependencies);
+            
+            Collection<AssessmentVariable> formula6Dependencies = avBuilder.getVariables();
+            avBuilder
+                .addFormulaAv(6, "[$5$] + [$5$]")
+                .addAvChildren(formula6Dependencies);
+            
+            assertFormulaResult("[$6$] + [$6$]", 4d, avBuilder);
+    }
     
+    @Test
+    public void testSelectOneResolvesToCalculatedValue() throws Exception{
+        assertFormulaResult("[1]", 4d, avBuilder
+            .addSelectOneAv(1, "test select one question")
+                .addAnswer(null, null, "first", null, null, false, null)
+                .addAnswer(null, null, "second", null, null, false, null)
+                .addAnswer(null, null, "third", null, null, false, null)
+                .addAnswer(null, null, "fourth", null, 4d, true, null));
+    }
     
     private void assertFormulaResult(String formulaExpression,
             Double expectedResult,

@@ -1103,7 +1103,10 @@ function MatrixBuilder(formBuilder, selectBuilder){
 		//clear answer text
 	    var columnHeader = answer.answerText;
 		answer.answerText = "";
-		return selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		var radio = selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		radio.find("input[type=radio]")
+			.change(formBuilder.checkVisibility);
+		return radio;
 	}
 
 	function multiMatrixAnswerFactory(answer, measureId){
