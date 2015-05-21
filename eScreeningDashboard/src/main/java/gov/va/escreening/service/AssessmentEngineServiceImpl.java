@@ -127,7 +127,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	}
 
 	@Override
-	public AssessmentResponse processPage(AssessmentRequest assessmentRequest, List<SurveyPage> surveyPageList) {
+	public AssessmentResponse processPage(AssessmentRequest assessmentRequest,
+			List<SurveyPage> surveyPageList) {
 
 		// First validate and save data.
 		List<SurveyMeasureResponse> savedResponses = saveUserInput(assessmentRequest);
@@ -140,34 +141,34 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		return getAssessmentResponse(assessmentRequest, surveyPageList);
 	}
 
-//	@Override
-//	public Map<Integer, Boolean> getUpdatedVisibility(
-//			AssessmentRequest assessmentRequest) {
-//		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
-//				.getPageId());
-//		checkArgument(page != null, "Invalid page ID given");
-//
-//		// we set the assessment ID from the context (not from the request)
-//		assessmentRequest.setAssessmentId(assessmentContext
-//				.getVeteranAssessmentId());
-//
-//		try {
-//			// First validate and save data.
-//			saveUserInput(assessmentRequest);
-//		} catch (Throwable t) {
-//			logger.warn(
-//					"Error during save of user data for follow-up question visibility update:\n{}",
-//					t.getLocalizedMessage());
-//		}
-//
-//		// update visibility for the measures found on the page
-//		ruleProcessorService.updateVisibilityForQuestions(
-//				assessmentContext.getVeteranAssessmentId(), page.getMeasures());
-//
-//		return measureVisibilityRepository.getVisibilityMapForSurveyPage(
-//				assessmentRequest.getAssessmentId(),
-//				assessmentRequest.getPageId());
-//	}
+	// @Override
+	// public Map<Integer, Boolean> getUpdatedVisibility(
+	// AssessmentRequest assessmentRequest) {
+	// SurveyPage page = surveyPageRepository.findOne(assessmentRequest
+	// .getPageId());
+	// checkArgument(page != null, "Invalid page ID given");
+	//
+	// // we set the assessment ID from the context (not from the request)
+	// assessmentRequest.setAssessmentId(assessmentContext
+	// .getVeteranAssessmentId());
+	//
+	// try {
+	// // First validate and save data.
+	// saveUserInput(assessmentRequest);
+	// } catch (Throwable t) {
+	// logger.warn(
+	// "Error during save of user data for follow-up question visibility update:\n{}",
+	// t.getLocalizedMessage());
+	// }
+	//
+	// // update visibility for the measures found on the page
+	// ruleProcessorService.updateVisibilityForQuestions(
+	// assessmentContext.getVeteranAssessmentId(), page.getMeasures());
+	//
+	// return measureVisibilityRepository.getVisibilityMapForSurveyPage(
+	// assessmentRequest.getAssessmentId(),
+	// assessmentRequest.getPageId());
+	// }
 
 	@Override
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
@@ -216,7 +217,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		for (Rule r : rules) {
 			try {
 				boolean result = ruleProcessorService.evaluate(r, responseMap);
-				
+
 				for (Event e : r.getEvents()) {
 					if (e.getEventType().getEventTypeId() == RuleConstants.EVENT_TYPE_SHOW_QUESTION) {
 						if (result) {
@@ -250,23 +251,23 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		assessmentResponse.setStatus(HttpStatus.OK.value());
 
 		// Get assessment for next
-		Assessment assessment = getAssessmentForNextPage(assessmentRequest, surveyPageList);
+		Assessment assessment = getAssessmentForNextPage(assessmentRequest,
+				surveyPageList);
 		assessmentResponse.setAssessment(assessment);
 
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 		// Now that we have saved the submitted data, update the progress and
 		// get it.
-//		veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
-//				assessmentRequest.getStartTime());
-		assessmentResponse
-				.setSurveyProgresses(getProgressStatuses(veteranAssessmentId, surveyPageList));
+		// veteranAssessmentSurveyService.updateProgress(veteranAssessmentId,
+		// assessmentRequest.getStartTime());
+		assessmentResponse.setSurveyProgresses(getProgressStatuses(
+				veteranAssessmentId, surveyPageList));
 
 		// set the assessment's date last modified
 		assessmentResponse.setDateModified(veteranAssessmentRepository
 				.getDateModified(veteranAssessmentId).getTime());
 
-		if(assessment.getPageId() !=null)
-		{
+		if (assessment.getPageId() != null) {
 			Page page = getPage(veteranAssessmentId, assessment.getPageId());
 			assessmentResponse.setPage(page);
 		}
@@ -301,8 +302,8 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		Integer veteranAssessmentId = assessmentRequest.getAssessmentId();
 
 		// Get all the survey pages for the assessment.
-//		List<SurveyPage> surveyPageList = surveyPageRepository
-//				.getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
+		// List<SurveyPage> surveyPageList = surveyPageRepository
+		// .getSurveyPagesForVeteranAssessmentId(veteranAssessmentId);
 
 		Integer currentSurveyPageId;
 		if (assessmentRequest.getTargetSection() != null) {
@@ -370,22 +371,22 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			}
 		}
 
-		if(surveyPageList.isEmpty())
-		{
-			//go to the end directly
-			return new Assessment(null, false, true,false);
+		if (surveyPageList.isEmpty()) {
+			// go to the end directly
+			return new Assessment(null, false, true, false);
 		}
 		// Throw exception. This can happen if an invalid veteranAssessmentId or
 		// surveyPageId was passed.
-		if(currentSurveyPageId == null){
+		if (currentSurveyPageId == null) {
 			throw new IllegalArgumentException(String.format(
-					"Could not find a module page for Veteran assessment %s", veteranAssessmentId));
+					"Could not find a module page for Veteran assessment %s",
+					veteranAssessmentId));
 		}
-		
+
 		throw new IllegalArgumentException(String.format(
 				"Something is off: Veteran assessment is %s Survey page is %s",
 				veteranAssessmentId, currentSurveyPageId));
-	
+
 	}
 
 	/**
@@ -414,30 +415,31 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 	 * @param veteranAssessmentId
 	 * @return list of progress objects for each survey
 	 */
-	private List<SurveyProgress> getProgressStatuses(int veteranAssessmentId, List<SurveyPage> pages) {
+	private List<SurveyProgress> getProgressStatuses(int veteranAssessmentId,
+			List<SurveyPage> pages) {
 
 		List<VeteranAssessmentSurvey> veteranAssessmentSurveyList = veteranAssessmentSurveyRepository
 				.forVeteranAssessmentId(veteranAssessmentId);
 
 		Set<Integer> surveys = Sets.newHashSet();
-		for(SurveyPage p : pages)
-		{
+		for (SurveyPage p : pages) {
 			surveys.add(p.getSurvey().getSurveyId());
 		}
-		
+
 		List<SurveyProgress> progressStatuses = new ArrayList<SurveyProgress>(
 				veteranAssessmentSurveyList.size());
 		for (VeteranAssessmentSurvey veteranAssessmentSurvey : veteranAssessmentSurveyList) {
-			
-			if(surveys.contains(veteranAssessmentSurvey.getSurvey().getSurveyId()))
-			{
-				progressStatuses.add(new SurveyProgress(veteranAssessmentSurvey));
+
+			if (surveys.contains(veteranAssessmentSurvey.getSurvey()
+					.getSurveyId())) {
+				progressStatuses
+						.add(new SurveyProgress(veteranAssessmentSurvey));
 			}
 		}
 
 		return progressStatuses;
 	}
-	
+
 	/**
 	 * Gets the survey page, the measures, answer choices, and what the veteran
 	 * has already answered.
@@ -481,15 +483,13 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				}
 			}
 		}
-		
-		if(measureVisibilityMap.isEmpty())
-		{
+
+		if (measureVisibilityMap.isEmpty()) {
 			page.setHasVisibilityRules(false);
 		}
 		return page;
 	}
-	
-	
+
 	/**
 	 * Validate and save user input. <b>Note:</b> This saves all responses even
 	 * if they are hidden. As a result you must call
@@ -597,24 +597,47 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				continue;
 			}
 
-			if (dbMeasure.getMeasureType().getMeasureTypeId() != null
-					&& dbMeasure.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE) {
+			Integer measureType = dbMeasure.getMeasureType().getMeasureTypeId();
+			if (measureType != null
+					&& measureType == AssessmentConstants.MEASURE_TYPE_TABLE) {
 				tableMeasures.add(dbMeasure);
 			}
 
 			// set the new measure
 			submissionBuilder.setMeasure(measure, dbMeasure);
-
-			if (measure.getIsVisible() && measure.getAnswers() != null) {
+			boolean answered = false;
+			if (measure.getIsVisible() && measure.getAnswers() != null
+					&& !measure.getAnswers().isEmpty()) {
 				// Now, for each answer, we need to validate and then save add
 				// response to surveyMeasureResponseList.
-				prepareSurveyResponseList(surveyMeasureResponseList,
-						errorResponse, assessmentRequest, measure,
-						submissionBuilder, veteranAssessment, surveyPage,
-						dbMeasure);
+				// First find out if the measure was really answered, This is to avoid saving
+				// unanswered measures in the surveyMeasureResponse table which causes problems downstream.
+				answered = true;
+				if (measureType == AssessmentConstants.MEASURE_TYPE_SELECT_MULTI
+						|| measureType == AssessmentConstants.MEASURE_TYPE_SELECT_MULTI_MATRIX
+						|| measureType == AssessmentConstants.MEASURE_TYPE_SELECT_ONE
+						|| measureType == AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX) {
+					
+					answered = false;
+
+					for (Answer a : measure.getAnswers()) {
+						if (!StringUtils.isEmpty(a.getAnswerResponse())
+								&& a.getAnswerResponse().equalsIgnoreCase(
+										"true")) {
+							answered = true;
+							break;
+						}
+					}
+				}
 			}
-			else
-			{
+
+				if (answered) {
+					prepareSurveyResponseList(surveyMeasureResponseList,
+							errorResponse, assessmentRequest, measure,
+							submissionBuilder, veteranAssessment, surveyPage,
+							dbMeasure);
+				}
+			 else {
 				measuresToDelete.add(measure.getMeasureId());
 			}
 		}
@@ -640,22 +663,23 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 					surveyMeasureResponseRepository.update(response);
 				}
 			}
-			
-			List<VeteranAssessmentMeasureVisibility> visList = measureVisibilityRepository.getVisibilityListFor(assessmentRequest.getAssessmentId());
-			for(VeteranAssessmentMeasureVisibility vis : visList)
-			{
-				if(visMap.containsKey(vis.getMeasure().getMeasureId()) && 
-						(vis.getIsVisible().booleanValue() != visMap.get(vis.getMeasure().getMeasureId())))
-				{
-					vis.setIsVisible(visMap.get(vis.getMeasure().getMeasureId()));
+
+			List<VeteranAssessmentMeasureVisibility> visList = measureVisibilityRepository
+					.getVisibilityListFor(assessmentRequest.getAssessmentId());
+			for (VeteranAssessmentMeasureVisibility vis : visList) {
+				if (visMap.containsKey(vis.getMeasure().getMeasureId())
+						&& (vis.getIsVisible().booleanValue() != visMap.get(vis
+								.getMeasure().getMeasureId()))) {
+					vis.setIsVisible(visMap
+							.get(vis.getMeasure().getMeasureId()));
 					measureVisibilityRepository.update(vis);
 				}
 			}
-			
-			//now, delete the measure answers that are not valid anymore
-			if(!measuresToDelete.isEmpty())
-			{
-				surveyMeasureResponseRepository.deleteResponsesForMeasures(assessmentRequest.getAssessmentId(), measuresToDelete);
+
+			// now, delete the measure answers that are not valid anymore
+			if (!measuresToDelete.isEmpty()) {
+				surveyMeasureResponseRepository.deleteResponsesForMeasures(
+						assessmentRequest.getAssessmentId(), measuresToDelete);
 			}
 			// TODO: Currently only a Veteran can take the assessment, person
 			// type will need to be detected once a
@@ -668,8 +692,9 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 							AssessmentConstants.PERSON_TYPE_VETERAN);
 			veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
-			veteranAssessmentSurveyService.updateProgress(veteranAssessment, assessmentRequest, survey, visList);
-			
+			veteranAssessmentSurveyService.updateProgress(veteranAssessment,
+					assessmentRequest, survey, visList);
+
 			// clear the threadlocal cache
 			smrLister.clearSmrFromCache();
 
