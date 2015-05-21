@@ -140,7 +140,7 @@ public class FormulaAssessmentVariableResolverTest {
                 .addFormulaAv(6, "[$5$] + [$5$]")
                 .addAvChildren(formula6Dependencies);
             
-            assertFormulaResult("[$6$] + [$6$]", 4d, avBuilder);
+            assertFormulaResult("[$6$] + [$6$]", 4, avBuilder);
     }
     
     @Test
