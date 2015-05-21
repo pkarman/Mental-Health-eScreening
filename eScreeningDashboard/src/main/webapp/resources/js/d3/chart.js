@@ -485,7 +485,6 @@ function graphGenerator(dataStructure, dataDataset){
 				.attr('x', -22)
 				.attr('y', -6)
 
-
 				 this.append('text')
 					.style("text-anchor", "right")
 					.attr('x',-14)
@@ -497,6 +496,27 @@ function graphGenerator(dataStructure, dataDataset){
 					.attr('font-family', 'arial')
 					.attr("stroke", "black")
 					.text(graphMaxValue);
+
+
+			/* Add BG for graphMaxValue*/
+			this.append("rect")
+				.attr('fill', "#fff")
+				.attr('width', "14px")
+				.attr('height', "9px")
+				.attr('x', -21)
+				.attr('y', height -5)
+
+				 this.append('text')
+					.style("text-anchor", "right")
+					.attr('x',-14)
+					.attr('y', height + 3)
+					.attr('fill', 'black')
+					.attr('font-size', '11')
+					.attr('font-weight', 'bold')
+					.style("text-anchor", "middle")
+					.attr('font-family', 'arial')
+					.attr("stroke", "black")
+					.text(graphParams.graphStart);
 			 
 
 			/* y start point 
