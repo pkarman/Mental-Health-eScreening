@@ -276,8 +276,8 @@ public class ExpressionEvaluatorServiceImpl implements
         List<Map<String, Object>> parsedFormula = (List<Map<String, Object>>) parseFormula(
                 avTemplate.replaceAll("[$]", ""), AvMapTypeEnum.IDONLY);
 
-        Set<Integer> childAvIds = Sets.newHashSetWithExpectedSize(parsedFormula.size());
         //collect the variable IDs we need to include
+        Set<Integer> childAvIds = Sets.newHashSetWithExpectedSize(parsedFormula.size());
         for (Map<String, Object> formulaToken : parsedFormula) {
             childAvIds.add((Integer) formulaToken.get("id"));
         }
@@ -294,10 +294,8 @@ public class ExpressionEvaluatorServiceImpl implements
             currentChildMap = Maps.newHashMapWithExpectedSize(av.getAssessmentVarChildrenList().size());
             for(AssessmentVarChildren child : av.getAssessmentVarChildrenList()){
                 AssessmentVariable childAv = child.getVariableChild();
-                if(childAvIds.contains(childAv.getAssessmentVariableId())){
-                    varMap.put(childAv.getAssessmentVariableId(), childAv);
-                    currentChildMap.put(childAv.getAssessmentVariableId(), child);
-                }
+                varMap.put(childAv.getAssessmentVariableId(), childAv);
+                currentChildMap.put(childAv.getAssessmentVariableId(), child);
             }
             av.getAssessmentVarChildrenList().clear();
         }
