@@ -3,7 +3,10 @@ package gov.va.escreening.delegate;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
+import gov.va.escreening.domain.AssessmentStatusEnum;
+import gov.va.escreening.dto.CallResult;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentEngineService;
 
 import java.util.List;
 import java.util.Map;
@@ -11,16 +14,44 @@ import java.util.Map;
 /**
  * Created by munnoo on 5/13/15.
  */
-public class SaveToVistaResponse {
+public class SaveToVistaContext {
     private final int veteranAssessmentId;
     private final EscreenUser escreenUser;
+    private final AssessmentEngineService assessmentEngineService;
     private Table<PendingOperation, MsgType, String> msgsTbl = HashBasedTable.create();
     private List<PendingOperation> pendingOperations = Lists.newArrayList(PendingOperation.values());
+    private List<CallResult> callResults = Lists.newArrayList();
 
-    public SaveToVistaResponse(int veteranAssessmentId, EscreenUser escreenUser) {
+    public SaveToVistaContext(int veteranAssessmentId, EscreenUser escreenUser, AssessmentEngineService assessmentEngineService) {
         this.veteranAssessmentId = veteranAssessmentId;
         this.escreenUser = escreenUser;
+        this.assessmentEngineService = assessmentEngineService;
     }
+
+    public int getVeteranAssessmentId() {
+        return veteranAssessmentId;
+    }
+
+    public List<CallResult> getCallResults() {
+        if (hasAnyError()) {
+            buildCallResultsWithErr();
+        }
+        return callResults;
+    }
+
+    private boolean hasAnyError() {
+        for (PendingOperation po : PendingOperation.values()) {
+            if (hasErrors(po)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addCallResult(CallResult callResult) {
+        this.callResults.add(callResult);
+    }
+
 
     public boolean isSuccessful() {
         return pendingOperations.isEmpty() &&
@@ -61,14 +92,13 @@ public class SaveToVistaResponse {
         add(po, MsgType.failMsg, failedMsg);
     }
 
-    public boolean isDone(PendingOperation operation) {
-        return !this.pendingOperations.contains(operation);
+    public boolean opFailed(PendingOperation operation) {
+        return this.pendingOperations.contains(operation);
     }
 
     private boolean hasErrors(PendingOperation po) {
         Map<MsgType, String> msgTypeMap = msgsTbl.row(po);
 
-        //boolean clean = msgTypeMap == null || msgTypeMap.isEmpty();
         boolean errorFree = msgTypeMap.get(MsgType.sysErr) == null || msgTypeMap.get(MsgType.sysErr).isEmpty();
         errorFree &= msgTypeMap.get(MsgType.failMsg) == null || msgTypeMap.get(MsgType.failMsg).isEmpty();
         errorFree &= msgTypeMap.get(MsgType.usrErr) == null || msgTypeMap.get(MsgType.usrErr).isEmpty();
@@ -82,6 +112,49 @@ public class SaveToVistaResponse {
 
     public Map<PendingOperation, String> getMsgsFor(MsgType msgType) {
         return msgsTbl.column(msgType);
+    }
+
+    private void buildCallResultsWithErr() {
+        buildCallResults(SaveToVistaContext.MsgType.succMsg);
+        buildCallResults(SaveToVistaContext.MsgType.usrErr);
+        buildCallResults(SaveToVistaContext.MsgType.sysErr);
+        buildCallResults(SaveToVistaContext.MsgType.failMsg);
+        buildCallResults(SaveToVistaContext.MsgType.warnMsg);
+
+        buildCallResultsForPendingOperations();
+        assessmentEngineService.transitionAssessmentStatusTo(this.veteranAssessmentId, AssessmentStatusEnum.ERROR);
+    }
+
+    private void buildCallResultsForPendingOperations() {
+        for (SaveToVistaContext.PendingOperation po : pendingOperations) {
+            callResults.add(new CallResult(true, String.format("Operation '%s' could not be performed because of previous errors", po.getDescription()), null));
+        }
+    }
+
+    private void buildCallResults(SaveToVistaContext.MsgType msgType) {
+        Map<SaveToVistaContext.PendingOperation, String> msgsMap = getMsgsFor(msgType);
+        for (SaveToVistaContext.PendingOperation po : msgsMap.keySet()) {
+            callResults.add(createCallResult(msgsMap.get(po), po, msgType));
+        }
+    }
+
+    private CallResult createCallResult(String msg, SaveToVistaContext.PendingOperation po, SaveToVistaContext.MsgType msgType) {
+        String usrMsg = msgType.isErr() ? String.format("%s operation failed", po.getDescription()) : msg;
+        String sysMsg = msgType.isErr() ? msg : null;
+        return new CallResult(msgType.isErr(), usrMsg, sysMsg);
+    }
+
+    public boolean hasError() {
+        for (CallResult cr : this.callResults) {
+            if (cr.getHasError()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public EscreenUser getEscUserId() {
+        return escreenUser;
     }
 
     public enum PendingOperation {

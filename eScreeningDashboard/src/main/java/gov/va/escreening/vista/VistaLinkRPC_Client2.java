@@ -1,7 +1,7 @@
 package gov.va.escreening.vista;
 
 import com.google.common.base.Throwables;
-import gov.va.escreening.delegate.SaveToVistaResponse;
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.vista.request.ORWDXM1_BLDQRSP_RequestParameters;
@@ -527,7 +527,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
     @Override
     public boolean savePainScale(final VeteranAssessment veteranAssessment,
-                                 final String visitDate, final SaveToVistaResponse response) {
+                                 final String visitDate, final SaveToVistaContext ctxt) {
         final int basicPainSurveyID = 20;
         Integer painScale = -1;
         if (veteranAssessment.getSurveyMap().containsKey(basicPainSurveyID)) {
@@ -589,13 +589,13 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 logger.info("Save vitals result= " + result);
                 if (!result.trim().equals("1")) {
                     logger.error("Save vitals failed");
-                    response.addFailedMsg(SaveToVistaResponse.PendingOperation.pain_scale, "Save Pain Scale failed");
+                    ctxt.addFailedMsg(SaveToVistaContext.PendingOperation.pain_scale, "Save Pain Scale failed");
                 } else {
-                    response.addSuccess(SaveToVistaResponse.PendingOperation.pain_scale, "Pain scale saved successfully");
+                    ctxt.addSuccess(SaveToVistaContext.PendingOperation.pain_scale, "Pain scale saved successfully");
                     return true; //success
                 }
             } catch (VistaLinkClientException ex) {
-                response.addSysErr(SaveToVistaResponse.PendingOperation.pain_scale, Throwables.getRootCause(ex).getMessage());
+                ctxt.addSysErr(SaveToVistaContext.PendingOperation.pain_scale, Throwables.getRootCause(ex).getMessage());
                 logger.warn("Exception occurred during save vitals", ex);
                 return false;
             }

@@ -5,17 +5,11 @@ import com.google.common.base.Throwables;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
-import gov.va.escreening.delegate.SaveToVistaResponse;
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.MentalHealthAssessment;
-import gov.va.escreening.entity.AssessmentAppointment;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.entity.HealthFactor;
-import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyMeasureResponse;
-import gov.va.escreening.entity.VeteranAssessment;
-import gov.va.escreening.entity.VeteranAssessmentAuditLog;
-import gov.va.escreening.entity.VeteranAssessmentAuditLogHelper;
 import gov.va.escreening.repository.AssessmentAppointmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
 import gov.va.escreening.repository.VistaRepository;
@@ -24,33 +18,7 @@ import gov.va.escreening.service.AssessmentEngineService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.util.SurveyResponsesHelper;
-import gov.va.escreening.vista.dto.HealthFactorHeader;
-import gov.va.escreening.vista.dto.HealthFactorLists;
-import gov.va.escreening.vista.dto.HealthFactorProvider;
-import gov.va.escreening.vista.dto.HealthFactorVisitData;
-import gov.va.escreening.vista.dto.MentalHealthAssessmentResult;
-import gov.va.escreening.vista.dto.ProgressNoteParameters;
-import gov.va.escreening.vista.dto.VisitInfo_DT;
-import gov.va.escreening.vista.dto.VisitInfo_HL;
-import gov.va.escreening.vista.dto.VisitInfo_OL;
-import gov.va.escreening.vista.dto.VisitInfo_PR;
-import gov.va.escreening.vista.dto.VisitInfo_PT;
-import gov.va.escreening.vista.dto.VisitInfo_VC;
-import gov.va.escreening.vista.dto.VistaDateFormat;
-import gov.va.escreening.vista.dto.VistaProgressNote;
-import gov.va.escreening.vista.dto.VistaServiceCategoryEnum;
-import gov.va.escreening.vista.dto.VistaVeteranAppointment;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import gov.va.escreening.vista.dto.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,26 +29,23 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.util.*;
+
 @Service("vistaDelegate")
 public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
     private static final Logger logger = LoggerFactory.getLogger(VistaDelegateImpl.class);
-    private MessageSource messageSource;
-
-    private VeteranAssessmentService veteranAssessmentService;
-
-    @Value("${quick.order.ien}")
-    private long quickOrderIen;
-
     @Resource(name = "surveyResponsesHelper")
     SurveyResponsesHelper surveyResponsesHelper;
-
     @Resource(name = "rpcConnectionProvider")
     RpcConnectionProvider rpcConnectionProvider;
-
     @Resource(name = "assessmentEngineService")
     AssessmentEngineService assessmentEngineService;
-
+    private MessageSource messageSource;
+    private VeteranAssessmentService veteranAssessmentService;
+    @Value("${quick.order.ien}")
+    private long quickOrderIen;
     @Autowired
     private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
 
@@ -101,23 +66,21 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
     @Transactional(readOnly = false)
     @Override
-    public SaveToVistaResponse saveVeteranAssessmentToVista(int veteranAssessmentId,
-                                                            EscreenUser escreenUser) throws VistaLinkClientException {
-        SaveToVistaResponse response = new SaveToVistaResponse(veteranAssessmentId, escreenUser);
+    public void saveVeteranAssessmentToVista(SaveToVistaContext ctxt) throws VistaLinkClientException {
 
-        VeteranAssessment veteranAssessment = checkVeteranAssessment(veteranAssessmentId, escreenUser, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.veteran)) {
-            return response;
+        VeteranAssessment veteranAssessment = checkVeteranAssessment(ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.veteran)) {
+            return;
         }
 
-        final VistaLinkClientStrategy vistaLinkClientStrategy = rpcConnectionProvider.createVistaLinkClientStrategy(escreenUser, "", "OR CPRS GUI CHART");
+        final VistaLinkClientStrategy vistaLinkClientStrategy = rpcConnectionProvider.createVistaLinkClientStrategy(ctxt.getEscUserId(), "", "OR CPRS GUI CHART");
         final VistaLinkClient vistaLinkClient = vistaLinkClientStrategy.getClient();
         Long patientIEN = Long.parseLong(veteranAssessment.getVeteran().getVeteranIen());
 
         // Get Mental Health Assessments
-        MentalHealthAssessmentResult mentalHealthAssessmentResult = saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.mha)) {
-            return response;
+        MentalHealthAssessmentResult mentalHealthAssessmentResult = saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.mha)) {
+            return;
         }
 
         // Generate CPRS Note based on the responses to the survey
@@ -125,61 +88,60 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Long locationIEN = Long.parseLong(veteranAssessment.getClinic().getVistaIen());
         Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
         VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, locationIEN, inpatientStatus);
-        Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
+        Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
         String visitDate = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
-        String visitStr = findVisitStr(escreenUser, patientIEN.toString(), veteranAssessment);
+        String visitStr = findVisitStr(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
         String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
 
-        VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.cprs)) {
-            return response;
+        VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.cprs)) {
+            return;
         }
 
 
         // Do Health Factors
-        saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.hf)) {
-            return response;
+        saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
+            return;
         }
 
         // save TBI Consult request
-        saveTbiConsultRequest(veteranAssessment, vistaLinkClient, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.tbi)) {
-            return response;
+        saveTbiConsultRequest(veteranAssessment, vistaLinkClient, ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.tbi)) {
+            return;
         }
 
-        savePainScale(veteranAssessment, visitDate, vistaLinkClient, response);
-        if (!response.isDone(SaveToVistaResponse.PendingOperation.pain_scale)) {
-            return response;
+        savePainScale(veteranAssessment, visitDate, vistaLinkClient, ctxt);
+        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.pain_scale)) {
+            return;
         }
 
         // save this activity in audit log
         VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
         veteranAssessmentAuditLogRepository.update(auditLogEntry);
-        return response;
     }
 
-    private void savePainScale(VeteranAssessment veteranAssessment, String visitDate, VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
-        vistaLinkClient.savePainScale(veteranAssessment, visitDate, response);
-        response.requestDone(SaveToVistaResponse.PendingOperation.pain_scale);
+    private void savePainScale(VeteranAssessment veteranAssessment, String visitDate, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
+        vistaLinkClient.savePainScale(veteranAssessment, visitDate, ctxt);
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.pain_scale);
     }
 
-    private VeteranAssessment checkVeteranAssessment(int veteranAssessmentId, EscreenUser escreenUser, SaveToVistaResponse response) {
+    private VeteranAssessment checkVeteranAssessment(SaveToVistaContext ctxt) {
         VeteranAssessment veteranAssessment = null;
-        if (!escreenUser.getCprsVerified()) {
-            response.addUserError(SaveToVistaResponse.PendingOperation.veteran, msg(SaveToVistaResponse.MsgKey.usr_err_vet__verification));
+        if (!ctxt.getEscUserId().getCprsVerified()) {
+            ctxt.addUserError(SaveToVistaContext.PendingOperation.veteran, msg(SaveToVistaContext.MsgKey.usr_err_vet__verification));
         } else {
             // 1. Get Veteran's assessment.
-            veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
+            veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(ctxt.getVeteranAssessmentId());
             if (veteranAssessment == null) {
-                response.addUserError(SaveToVistaResponse.PendingOperation.veteran, msg(SaveToVistaResponse.MsgKey.usr_err_vet__not_found));
+                ctxt.addUserError(SaveToVistaContext.PendingOperation.veteran, msg(SaveToVistaContext.MsgKey.usr_err_vet__not_found));
             } else if (StringUtils.isEmpty(veteranAssessment.getVeteran().getVeteranIen())) {
                 // 2. Make sure Veteran has been mapped to a VistA record. Else, this
                 // will not work.
-                response.addUserError(SaveToVistaResponse.PendingOperation.veteran, msg(SaveToVistaResponse.MsgKey.usr_err_vet__failed_mapping));
+                ctxt.addUserError(SaveToVistaContext.PendingOperation.veteran, msg(SaveToVistaContext.MsgKey.usr_err_vet__failed_mapping));
             }
         }
-        response.requestDone(SaveToVistaResponse.PendingOperation.veteran);
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.veteran);
         return veteranAssessment;
     }
 
@@ -219,19 +181,19 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
     private void saveTbiConsultRequest(VeteranAssessment veteranAssessment,
-       VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
+                                       VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
         try {
             //if (true) {throw new IllegalStateException("BTBIS EXCEPTION for JSP to handle the callResults logic");}
-        	Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
+            Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
                 logger.debug("TBI Consult Response {}", vistaResponse);
-                response.addSuccess(SaveToVistaResponse.PendingOperation.tbi, msg(SaveToVistaResponse.MsgKey.usr_pass_tbi__saved_success));
+                ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.tbi, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.tbi, Throwables.getRootCause(e).getMessage());
         }
-        response.requestDone(SaveToVistaResponse.PendingOperation.tbi);
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.tbi);
     }
 
     private Survey isTBIConsultSelected(VeteranAssessment veteranAssessment) {
@@ -247,13 +209,13 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
 
-    private String msg(SaveToVistaResponse.MsgKey msgKey) {
-        return messageSource.getMessage(msgKey.name(), null, null);
+    private String msg(SaveToVistaContext.MsgKey msgKey, Object... args) {
+        return messageSource.getMessage(msgKey.name(), args, null);
     }
 
     private void saveMentalHealthFactors(Long locationIEN, String visitString,
                                          String visitDate, Boolean inpatientStatus, Long progressNoteIEN,
-                                         VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient, SaveToVistaResponse response) throws VistaLinkClientException {
+                                         VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) throws VistaLinkClientException {
 
         HealthFactorProvider healthFactorProvider = createHealthFactorProvider(veteranAssessment);
 
@@ -267,29 +229,29 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         if (healthFactorSet != null) {
             if (!healthFactorSet.getCurrentHealthFactors().isEmpty()) {
                 healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.AMBULATORY, false, visitDate);
-                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, response);
+                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
 
             if (!healthFactorSet.getHistoricalHealthFactors().isEmpty()) {
                 // TODO: Need to get visit date from the historical health
                 // factor prompts.
                 healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.AMBULATORY, true, visitDate);
-                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, true, healthFactorSet.getHistoricalHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, response);
+                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, true, healthFactorSet.getHistoricalHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
-            response.requestDone(SaveToVistaResponse.PendingOperation.hf);
+            ctxt.requestDone(SaveToVistaContext.PendingOperation.hf);
         }
 
     }
 
     private VistaProgressNote saveProgressNote(Long patientIEN,
                                                Long locationIEN, String visitString,
-                                               VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
+                                               VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
         String progressNoteContent = null;
         try {
             progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessment.getVeteranAssessmentId(), ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
-            response.addSuccess(SaveToVistaResponse.PendingOperation.cprs, msg(SaveToVistaResponse.MsgKey.usr_pass_cprs__gen_success));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.cprs, msg(SaveToVistaContext.MsgKey.usr_pass_cprs__gen_success));
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
             return null;
         }
 
@@ -297,52 +259,54 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         try {
             Boolean appendContent = true;
             Long visitIEN = null;
-            Date visitDateTime = veteranAssessment.getDateCompleted();
             Long titleIEN = Long.parseLong(veteranAssessment.getNoteTitle().getVistaIen());
-            Date visitDate = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
+            Date visitDate = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
             Object[] identifiers = {Long.parseLong(veteranAssessment.getClinician().getVistaDuz().trim()), visitDate, locationIEN, null};
-            ProgressNoteParameters progressNoteParameters = new ProgressNoteParameters(patientIEN, titleIEN, locationIEN, visitIEN, visitDateTime, visitString, identifiers, progressNoteContent, appendContent);
+            ProgressNoteParameters progressNoteParameters = new ProgressNoteParameters(patientIEN, titleIEN, locationIEN, visitIEN, visitDate, visitString, identifiers, progressNoteContent, appendContent);
             vistaProgressNote = vistaLinkClient.saveProgressNote(progressNoteParameters);
-            response.addSuccess(SaveToVistaResponse.PendingOperation.cprs, msg(SaveToVistaResponse.MsgKey.usr_pass_cprs__saved_success));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.cprs, msg(SaveToVistaContext.MsgKey.usr_pass_cprs__saved_success));
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
         }
 
-        response.requestDone(SaveToVistaResponse.PendingOperation.cprs);
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.cprs);
 
         return vistaProgressNote;
     }
 
     private MentalHealthAssessmentResult saveMentalHealthAssessments(
             Long patientIEN, VeteranAssessment veteranAssessment,
-            VistaLinkClient vistaLinkClient, SaveToVistaResponse response) throws VistaLinkClientException {
+            VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) throws VistaLinkClientException {
 
         List<MentalHealthAssessment> mentalHealthAssessments = veteranAssessmentService.getMentalHealthAssessments(veteranAssessment.getVeteranAssessmentId());
         MentalHealthAssessmentResult mhaResults = null;
 
-        if (!checkMHA(mentalHealthAssessments, response)) {
+        if (!hasMhaData(mentalHealthAssessments, ctxt)) {
             return mhaResults;
         }
 
         for (MentalHealthAssessment mentalHealthAssessment : mentalHealthAssessments) {
-            mhaResults = sendMhaToVista(veteranAssessment, patientIEN, mentalHealthAssessment, vistaLinkClient, response);
+            mhaResults = sendMhaToVista(veteranAssessment, patientIEN, mentalHealthAssessment, vistaLinkClient, ctxt);
             if (mhaResults != null) {
-                saveMhaToDb(mentalHealthAssessment, mhaResults, veteranAssessment, response);
+                saveMhaToDb(mentalHealthAssessment, mhaResults, veteranAssessment, ctxt);
             }
         }
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.sendMhaToVista);
+        ctxt.requestDone(SaveToVistaContext.PendingOperation.saveMhaToDb);
 
-        if (response.isDone(SaveToVistaResponse.PendingOperation.sendMhaToVista) && response.isDone(SaveToVistaResponse.PendingOperation.saveMhaToDb)) {
-            response.requestDone(SaveToVistaResponse.PendingOperation.mha);
+        if (!ctxt.opFailed(SaveToVistaContext.PendingOperation.sendMhaToVista) &&
+                !ctxt.opFailed(SaveToVistaContext.PendingOperation.saveMhaToDb)) {
+            ctxt.requestDone(SaveToVistaContext.PendingOperation.mha);
         }
 
         return mhaResults;
     }
 
-    private boolean checkMHA(List<MentalHealthAssessment> mentalHealthAssessments, SaveToVistaResponse response) {
+    private boolean hasMhaData(List<MentalHealthAssessment> mentalHealthAssessments, SaveToVistaContext ctxt) {
         if (mentalHealthAssessments.isEmpty()) {
-            response.requestDone(SaveToVistaResponse.PendingOperation.sendMhaToVista);
-            response.requestDone(SaveToVistaResponse.PendingOperation.saveMhaToDb);
-            response.requestDone(SaveToVistaResponse.PendingOperation.mha);
+            ctxt.requestDone(SaveToVistaContext.PendingOperation.sendMhaToVista);
+            ctxt.requestDone(SaveToVistaContext.PendingOperation.saveMhaToDb);
+            ctxt.requestDone(SaveToVistaContext.PendingOperation.mha);
             return false;
         }
 
@@ -351,24 +315,25 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
     private void saveMhaToDb(MentalHealthAssessment mentalHealthAssessment,
                              MentalHealthAssessmentResult mhaResults,
-                             VeteranAssessment veteranAssessment, SaveToVistaResponse response) {
+                             VeteranAssessment veteranAssessment, SaveToVistaContext ctxt) {
         // save mental health assessment score to database here.
         Integer veteranAssessmentId = veteranAssessment.getVeteranAssessmentId();
         Long mhaSurveyId = mentalHealthAssessment.getSurveyId();
         String mhaDesc = mhaResults.getMentalHealthAssessmentResultDescription();
         try {
             veteranAssessmentService.saveMentalHealthTestResult(veteranAssessmentId, mhaSurveyId.intValue(), mhaDesc);
-            response.addSuccess(SaveToVistaResponse.PendingOperation.saveMhaToDb, msg(SaveToVistaResponse.MsgKey.usr_pass_mha__mhtr_success));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.saveMhaToDb, msg(SaveToVistaContext.MsgKey.usr_pass_mha__mhtr_success, veteranAssessmentId, mhaSurveyId, mhaDesc));
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.saveMhaToDb, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.saveMhaToDb, Throwables.getRootCause(e).getMessage());
         }
-        response.requestDone(SaveToVistaResponse.PendingOperation.saveMhaToDb);
+
     }
 
     private MentalHealthAssessmentResult sendMhaToVista(
             VeteranAssessment veteranAssessment, Long patientIEN,
             MentalHealthAssessment mentalHealthAssessment,
-            VistaLinkClient vistaLinkClient, SaveToVistaResponse response) {
+            VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
+
         String mhaTestName = mentalHealthAssessment.getMentalHealthTestName();
         String mhaTestAnswers = mentalHealthAssessment.getMentalHealthTestAnswers();
         Long mhaReminderDialogIEN = mentalHealthAssessment.getReminderDialogIEN();
@@ -381,7 +346,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                     veteranAssessment.getVeteranAssessmentId(), patientIEN, mhaTestName, mhaReminderDialogIEN);
             logger.warn(warmMsg);
 
-            response.addWarnMsg(SaveToVistaResponse.PendingOperation.sendMhaToVista, warmMsg);
+            ctxt.addWarnMsg(SaveToVistaContext.PendingOperation.sendMhaToVista, warmMsg);
             return null;
         }
 
@@ -392,13 +357,13 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         try {
             savePassed = vistaLinkClient.saveMentalHealthAssessment(patientIEN, mhaTestName, mhaTestAnswers);
             if (savePassed) {
-                response.addSuccess(SaveToVistaResponse.PendingOperation.sendMhaToVista, msg(SaveToVistaResponse.MsgKey.usr_pass_mha__success));
+                ctxt.addSuccess(SaveToVistaContext.PendingOperation.sendMhaToVista, msg(SaveToVistaContext.MsgKey.usr_pass_mha__success, patientIEN));
             } else {
-                response.addFailedMsg(SaveToVistaResponse.PendingOperation.sendMhaToVista, msg(SaveToVistaResponse.MsgKey.usr_err_mha__failed));
+                ctxt.addFailedMsg(SaveToVistaContext.PendingOperation.sendMhaToVista, msg(SaveToVistaContext.MsgKey.usr_err_mha__failed, patientIEN));
                 return null;
             }
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
             return null;
         }
 
@@ -406,19 +371,17 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String staffCode = veteranAssessment.getClinician().getVistaDuz();
         try {
             vistaLinkClient.saveMentalHealthPackage(patientIEN, mhaTestName, new Date(), staffCode, mhaTestAnswers);
-            response.addSuccess(SaveToVistaResponse.PendingOperation.sendMhaToVista, msg(SaveToVistaResponse.MsgKey.usr_pass_mha__mhp_success));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.sendMhaToVista, msg(SaveToVistaContext.MsgKey.usr_pass_mha__mhp_success, patientIEN));
             try {
                 String dateCode = "T";
                 assessmentResults = vistaLinkClient.getMentalHealthAssessmentResults(mhaReminderDialogIEN, patientIEN, mhaTestName, dateCode, staffCode, mhaTestAnswers);
-                response.addSuccess(SaveToVistaResponse.PendingOperation.sendMhaToVista, msg(SaveToVistaResponse.MsgKey.usr_pass_mha__mhar_success));
+                ctxt.addSuccess(SaveToVistaContext.PendingOperation.sendMhaToVista, msg(SaveToVistaContext.MsgKey.usr_pass_mha__mhar_success, patientIEN));
             } catch (Exception e) {
-                response.addSysErr(SaveToVistaResponse.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
+                ctxt.addSysErr(SaveToVistaContext.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
             }
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.sendMhaToVista, Throwables.getRootCause(e).getMessage());
         }
-
-        response.requestDone(SaveToVistaResponse.PendingOperation.sendMhaToVista);
         return assessmentResults;
     }
 
@@ -428,13 +391,14 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             Set<gov.va.escreening.vista.dto.HealthFactor> healthFactors,
             HealthFactorHeader healthFactorHeader,
             HealthFactorProvider healthFactorProvider,
-            Set<HealthFactorVisitData> healthFactorVisitDataList, SaveToVistaResponse response) throws VistaLinkClientException {
+            Set<HealthFactorVisitData> healthFactorVisitDataList,
+            SaveToVistaContext ctxt) throws VistaLinkClientException {
 
         try {
             vistaLinkClient.saveHealthFactor(noteIEN, locationIEN, historicalHealthFactor, healthFactorHeader, healthFactorVisitDataList, healthFactorProvider, healthFactors);
-            response.addSuccess(SaveToVistaResponse.PendingOperation.hf, msg(SaveToVistaResponse.MsgKey.usr_pass_hf__saved_success));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.hf, msg(SaveToVistaContext.MsgKey.usr_pass_hf__saved_success));
         } catch (Exception e) {
-            response.addSysErr(SaveToVistaResponse.PendingOperation.hf, Throwables.getRootCause(e).getMessage());
+            ctxt.addSysErr(SaveToVistaContext.PendingOperation.hf, Throwables.getRootCause(e).getMessage());
         }
     }
 
@@ -472,18 +436,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String ien = healthFactor.getVistaIen();
         String name = healthFactor.getName();
         boolean historicalHealthFactor = healthFactor.getIsHistorical(); // Indicates
-        // if
-        // we
-        // need
-        // to
-        // use
-        // OL
-        // or
-        // not.
-        String healthFactorCommentText = null; // TODO: We will need to get the
-        // comment text from the veteran
-        // assessment.
-
+        String healthFactorCommentText = null;
         return new gov.va.escreening.vista.dto.HealthFactor(actionSymbol, ien, name, historicalHealthFactor, sequenceNumber, healthFactorCommentText);
     }
 
@@ -492,8 +445,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String ien = veteranAssessment.getClinician().getVistaDuz();
         String name = veteranAssessment.getClinician().getLastName() + "," + veteranAssessment.getClinician().getFirstName();
         Boolean primaryPhysician = false; // TODO: Need to determine if the
-        // escreen user is the primary
-        // physician.
+        // escreen user is the primary physician.
         return new HealthFactorProvider(ien, name, primaryPhysician);
     }
 

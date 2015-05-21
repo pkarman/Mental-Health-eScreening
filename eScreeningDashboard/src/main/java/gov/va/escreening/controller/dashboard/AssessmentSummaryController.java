@@ -1,8 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import gov.va.escreening.delegate.SaveToVistaResponse;
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.*;
@@ -12,7 +11,6 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
@@ -36,68 +34,37 @@ import java.util.Map;
 public class AssessmentSummaryController implements MessageSourceAware {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentSummaryController.class);
+    @Resource(name = "assessmentStatusMap")
+    Map<String, String> assessmentStatusMap;
 
     private MessageSource messageSource;
+
+    @Resource(type = AssessmentStatusService.class)
     private AssessmentStatusService assessmentStatusService;
+
+    @Resource(type = ClinicService.class)
     private ClinicService clinicService;
+
+    @Resource(type = NoteTitleService.class)
     private NoteTitleService noteTitleService;
+
+    @Resource(type = UserService.class)
     private UserService userService;
+
+    @Resource(type = VeteranAssessmentDashboardAlertService.class)
     private VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService;
+
+    @Resource(type = VeteranAssessmentService.class)
     private VeteranAssessmentService veteranAssessmentService;
+
+    @Resource(type = VeteranAssessmentSurveyService.class)
     private VeteranAssessmentSurveyService veteranAssessmentSurveyService;
 
     @Resource(name = "vistaDelegate")
     private VistaDelegate vistaDelegate;
 
+    @Resource(type = AssessmentEngineService.class)
     private AssessmentEngineService assessmentEngineService;
-
-    @Resource(name = "assessmentStatusMap")
-    Map<String, String> assessmentStatusMap;
-
-    @Autowired
-    public void setAssessmentEngineService(
-            AssessmentEngineService assessmentEngineService) {
-        this.assessmentEngineService = assessmentEngineService;
-    }
-
-    @Autowired
-    public void setAssessmentStatusService(
-            AssessmentStatusService assessmentStatusService) {
-        this.assessmentStatusService = assessmentStatusService;
-    }
-
-    @Autowired
-    public void setClinicService(ClinicService clinicService) {
-        this.clinicService = clinicService;
-    }
-
-    @Autowired
-    public void setNoteTitleService(NoteTitleService noteTitleService) {
-        this.noteTitleService = noteTitleService;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Autowired
-    public void setVeteranAssessmentDashboardAlertService(
-            VeteranAssessmentDashboardAlertService veteranAssessmentDashboardAlertService) {
-        this.veteranAssessmentDashboardAlertService = veteranAssessmentDashboardAlertService;
-    }
-
-    @Autowired
-    public void setVeteranAssessmentService(
-            VeteranAssessmentService veteranAssessmentService) {
-        this.veteranAssessmentService = veteranAssessmentService;
-    }
-
-    @Autowired
-    public void setVeteranAssessmentSurveyService(
-            VeteranAssessmentSurveyService veteranAssessmentSurveyService) {
-        this.veteranAssessmentSurveyService = veteranAssessmentSurveyService;
-    }
 
     /**
      * Returns the backing bean for the form.
@@ -175,11 +142,9 @@ public class AssessmentSummaryController implements MessageSourceAware {
             @RequestParam(value = "saveToVistaButton", required = false) String saveToVistaButton,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("processSaveAllPage");
-        logger.debug("saveButton: " + saveButton);
-        logger.debug("saveToVistaButton: " + saveToVistaButton);
-
         Integer veteranAssessmentId = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
+
+        SaveToVistaContext ctxt = new SaveToVistaContext(veteranAssessmentId, escreenUser, assessmentEngineService);
 
         if (result.hasErrors()) {
             VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
@@ -192,39 +157,34 @@ public class AssessmentSummaryController implements MessageSourceAware {
             return "dashboard/assessmentSummary";
         }
 
-        List<CallResult> callResults = Lists.newArrayList();
-
         try {
             veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean.getSelectedClinicId(), assessmentSummaryFormBean.getSelectedNoteTitleId(), assessmentSummaryFormBean.getSelectedClinicianId(), assessmentSummaryFormBean.getSelectedAssessmentStatusId());
-            callResults.add(new CallResult(false, "Successfully updated assessment.", null));
+            ctxt.addCallResult(new CallResult(false, "Successfully updated assessment.", null));
         } catch (Exception e) {
-            callResults.add(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
+            ctxt.addCallResult(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
         }
 
 
         // Check if we have any errors before trying to save to VistA
-        if (saveToVistaButton != null && !hasError(callResults)) {
-            callResults.clear();
-            int vaid = assessmentSummaryFormBean.getSelectedVeteranAssessmentId();
+        if (saveToVistaButton != null && !ctxt.hasError()) {
+            ctxt.getCallResults().clear();
             try {
-                SaveToVistaResponse response = vistaDelegate.saveVeteranAssessmentToVista(vaid, escreenUser);
+                vistaDelegate.saveVeteranAssessmentToVista(ctxt);
 
-                if (response.isSuccessful()) {
-                    callResults.add(new CallResult(false, messageSource.getMessage("vista.pass.saved", null, null), null));
-                } else {
-                    buildCallResults(callResults, response);
+                if (ctxt.isSuccessful()) {
+                    ctxt.addCallResult(new CallResult(false, messageSource.getMessage("vista.pass.saved", null, null), null));
                 }
 
             } catch (IllegalStateException e) {
-                saveVeteranAssessmentToVistaFailed(callResults, "vista.err.data.missing", vaid, e);
+                saveVeteranAssessmentToVistaFailed(ctxt, "vista.err.data.missing", e);
             } catch (Exception e) {
-                saveVeteranAssessmentToVistaFailed(callResults, "vista.err.fatal", vaid, e);
+                saveVeteranAssessmentToVistaFailed(ctxt, "vista.err.fatal", e);
             }
         }
 
         // Repopulate the model for the view.
-        model.addAttribute("callResults", callResults);
-        model.addAttribute("hasErrors", hasErrors(callResults));
+        model.addAttribute("callResults", ctxt.getCallResults());
+        model.addAttribute("hasErrors", ctxt.hasError());
 
         // Repopulate lookup model with data from database.
         VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
@@ -256,66 +216,15 @@ public class AssessmentSummaryController implements MessageSourceAware {
         return "dashboard/assessmentSummary";
     }
 
-    private boolean hasErrors(List<CallResult> callResults) {
-        for (CallResult cr : callResults) {
-            if (cr.getHasError()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private void buildCallResults(List<CallResult> callResults, SaveToVistaResponse response) {
-        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.succMsg);
-        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.usrErr);
-        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.sysErr);
-        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.failMsg);
-        buildCallResults(callResults, response, SaveToVistaResponse.MsgType.warnMsg);
-
-        buildCallResults(callResults, response.getPendingOperations());
-
-    }
-
-    private void buildCallResults(List<CallResult> callResults, List<SaveToVistaResponse.PendingOperation> pendingOperations) {
-        for (SaveToVistaResponse.PendingOperation po : pendingOperations) {
-            callResults.add(new CallResult(true, String.format("Operation '%s' could not be performed because of previous errors", po.getDescription()), null));
-        }
-    }
-
-    private void buildCallResults(List<CallResult> callResults, SaveToVistaResponse response, SaveToVistaResponse.MsgType msgType) {
-        Map<SaveToVistaResponse.PendingOperation, String> msgsMap = response.getMsgsFor(msgType);
-        for (SaveToVistaResponse.PendingOperation po : msgsMap.keySet()) {
-            callResults.add(createCallResult(msgsMap.get(po), po, msgType));
-        }
-    }
-
-    private CallResult createCallResult(String msg, SaveToVistaResponse.PendingOperation po, SaveToVistaResponse.MsgType msgType) {
-        String usrMsg = msgType.isErr() ? String.format("%s operation failed", po.getDescription()) : msg;
-        String sysMsg = msgType.isErr() ? msg : null;
-        return new CallResult(msgType.isErr(), usrMsg, sysMsg);
-    }
-
-    private boolean hasError(List<CallResult> callResults) {
-        for (CallResult cr : callResults) {
-            if (cr.getHasError()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void saveVeteranAssessmentToVistaFailed(List<CallResult> callResults,
-                                                    String errMsgKey, int vaid, Exception exception) {
-
+    private void saveVeteranAssessmentToVistaFailed(SaveToVistaContext ctxt, String errMsgKey, Exception exception) {
         String errMsg = null;
         if (exception != null) {
             errMsg = Throwables.getRootCause(exception).getMessage();
         }
         CallResult callResult = new CallResult(true, messageSource.getMessage(errMsgKey, null, null), errMsg);
-        callResults.add(callResult);
-
-        logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", vaid, callResult.getUserMessage(), callResult.getSystemMessage()));
-        assessmentEngineService.transitionAssessmentStatusTo(vaid, AssessmentStatusEnum.ERROR);
+        logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", ctxt.getVeteranAssessmentId(), callResult.getUserMessage(), callResult.getSystemMessage()));
+        ctxt.addCallResult(callResult);
     }
 
     /**
