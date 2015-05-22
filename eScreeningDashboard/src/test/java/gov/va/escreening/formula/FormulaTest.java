@@ -35,7 +35,7 @@ public class FormulaTest {
 
     @Test
     public void testMinFormula() {
-        String result = expressionEvaluator.evaluateFormula("T(Math).min(0f+999f+999f+999f,999f)", null);
+        String result = expressionEvaluator.evaluateFormula("gov.va.escreening.util.ReportsUtil.calcTbi_score(1f+1f+0f+999f)", null);
         Assert.isTrue(result.equals("999.0"));
     }
     @Test

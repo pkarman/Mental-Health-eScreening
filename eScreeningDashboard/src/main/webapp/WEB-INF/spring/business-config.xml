@@ -120,7 +120,7 @@
     <util:map id="modulesForPositiveScreeningMap" map-class="java.util.HashMap">
         <entry key="AUDIT-C" value="[{var:'alc_score_audit',pos:[{op:'gte',val:4}],neg:[{op:'lt',val:4}]}]"/>
         <entry key="AV Hallucinations" value="[{var:'health18_voices',pos:[{op:'gt',val:0}], neg:[{op:'eq',val:0}]},{var:'health19_seeing',pos:[{op:'gt',val:0}],neg:[{op:'eq',val:0}]}]"/>
-        <entry key="BTBIS" value="[{var:tbi_score1, pos:[{op:'eq',val:4}],neg:[{op:'lt',val:4}]}]"/>
+        <entry key="BTBIS" value="[{var:tbi_score1, pos:[{op:'eq',val:4}],neg:[{op:'lt',val:4},{op:'eq',val:2997},{op:'eq',val:1999},{op:'eq',val:1001}]}]"/>
         <entry key="DAST-10" value="[{var:'DAST_score', pos:[{op:'gte', val:3}], neg:[{op:'lt',val:3}]}]"/>
         <entry key="MDQ" value="[{var:'hyp_score',pos:[{op:'gte',val:1}],neg:[{op:'eq',val:0}]}]"/>
         <entry key="MST" value="[{var:'mst1_2',pos:[{op:'eq',val:1}],neg:[{op:'eq',val:2},{op:'eq',val:0}]}]"/>
