@@ -135,6 +135,10 @@ public class ResolverParameters {
         // iterate through the list and remove measures (constant time operation for rows)
         for(Measure response : responses){
             measureResponseTable.row(response.getMeasureId()).clear();
+            
+            for(Answer answer : response.getAnswers()){
+                answerMap.removeAll(answer.getAnswerId());
+            }
         }
         
         //add responses

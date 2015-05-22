@@ -782,6 +782,8 @@ function TableBuilder(formBuilder){
 				// reshow the none button
 				$(this).nextAll(".tableNone").fadeIn();
 				$(this).val("Add " + entryName);
+				
+				formBuilder.checkVisibility();
 			} );
 		
 		$("<div/>")
@@ -890,16 +892,6 @@ function TableBuilder(formBuilder){
 			.html(entryName  + "  " + (rowIndex + 1))
 			.appendTo(deleteWrapper);
 		
-		// In case if we need the toggling features otherwise delete the following code
-		/*
-		$("<input/>")
-			.addClass("toggleButton")
-			.attr("type", "button")
-			.val("Toggle")
-			.click(function() {	$(this).parent().nextAll("li").toggle(); })
-			.appendTo(deleteWrapper);
-		*/
-		
 		$("<input/>")
 			.addClass("tableDeleteButton")
 			.attr("type", "button")
@@ -916,7 +908,6 @@ function TableBuilder(formBuilder){
 				}
 				
 				removeEntry(self.tableEntryFor($(this)));
-				
 			})
 			.appendTo(deleteWrapper);
 		
@@ -1017,6 +1008,8 @@ function TableBuilder(formBuilder){
 					var index = $(this).index();
 					$(this).find(".entryLabelText").html(entryName + "  " + (index+1));
 				});
+				
+				formBuilder.checkVisibility();
 			});
 	}
 	

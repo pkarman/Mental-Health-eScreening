@@ -123,3 +123,7 @@ and 0=(select count(*)
 	 from assessment_var_children avc_test
      where variable_parent=parent_av.assessment_variable_id
      and variable_child=grd_child_avc.variable_child);
+
+-- we removed the "f" from all numerical variables so we have to update this formula to keep it using 
+UPDATE `escreening`.`assessment_variable` SET `formula_template`='( [140] * 12.0 ) + [141]' WHERE `assessment_variable_id`='10';
+     
