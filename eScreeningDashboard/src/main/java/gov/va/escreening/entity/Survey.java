@@ -134,7 +134,11 @@ public class Survey implements Serializable, SurveyBaseProperties{
     public Boolean getIsPublished() {
         return this.isPublished;
     }
-
+    
+    public Boolean isPublished() {
+        return this.isPublished;
+    }
+    
     @Override
     public void setIsPublished(Boolean isPublished) {
         this.isPublished = isPublished;

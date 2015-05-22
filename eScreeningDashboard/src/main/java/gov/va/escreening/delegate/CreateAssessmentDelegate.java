@@ -152,12 +152,25 @@ public interface CreateAssessmentDelegate {
 	VeteranDto getVeteranFromDatabase(int veteranId);
 
 	/**
-	 * Retrieves all the survey in the system.
+	 * Retrieves all published surveys.<br/>
+     * Note: Some care should be used because the requirement is that we must 
+     * keep the association of a survey to an assessment even if it has become 
+     * unpublished. 
 	 * 
 	 * @return
 	 */
 	List<SurveyDto> getSurveyList();
 
+	/**
+	 * Retrieves all the published surveys OR surveys already assigned to the given veteran assessment.<br/>
+     * Note: Some care should be used because the requirement is that we must 
+     * keep the association of a survey to an assessment even if it has become 
+     * unpublished. 
+     * 
+	 * @return
+	 */
+	List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId);
+	
 	/**
 	 * Returns all the surveys currently associated with the veteran assessment.
 	 * 

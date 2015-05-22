@@ -325,9 +325,11 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
 				
 				for(Survey survey : battery.getSurveys()){
-					List<Measure> measures = survey.createMeasureList();
-					//TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
-                    filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+				    if(survey.isPublished()){
+				        List<Measure> measures = survey.createMeasureList();
+				        //TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
+				        filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+				    }
 				}
 				assessments = avModelBldr.getResult();
 			}

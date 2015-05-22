@@ -84,7 +84,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			for (VeteranAssessment assessment : veteranAssessments) {
 				if(programId == null || assessment.getProgram().getProgramId().equals(programId))
 				{
-					if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
+					if (!surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).isEmpty())
 						return assessment;
 				}
 			}

@@ -13,18 +13,6 @@ import java.util.List;
 public interface SurveyService {
 
     /**
-     * Retrieves all non auto assigned surveys.
-     * @return
-     */
-    List<SurveyDto> getAssignableSurveys();
-
-    /**
-     * Retrieves auto assigned
-     * @return
-     */
-    List<SurveyDto> getRequiredSurveys();
-
-    /**
      * Retrieves all the survey assigned to the veteran.
      * @param veteranAssessmentId
      * @return
@@ -39,10 +27,20 @@ public interface SurveyService {
     List<SurveyDto> getSurveyListForVeteranAssessment(int veteranAssessmentId);
     
     /**
-     * Retrieves all the survey.
+     * Retrieves all published surveys.<br/>
+     * Note: Some care should be used because the requirement is that we must 
+     * keep the association of a survey to an assessment even if it has become 
+     * unpublished. 
      * @return
      */
     List<SurveyDto> getSurveyList();
+    
+    /**
+     * Retrieves surveys that are either published or already assigned to the veteran assessment with the given ID.
+     * @param veteranAssessmentId
+     * @return
+     */
+    List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId);
     
     /**
      * Retrieves all the survey.

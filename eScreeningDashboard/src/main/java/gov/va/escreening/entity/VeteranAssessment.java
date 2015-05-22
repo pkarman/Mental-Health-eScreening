@@ -287,7 +287,8 @@ public class VeteranAssessment implements Serializable {
 	/**
 	 * Please note: If a getter is added for veteranAssessmentSurveyList please take into account the fact that
 	 * surveyMap should be set to null after any change of that list. This means that to make this work we would have to
-	 * return an ImmutableList from it.
+	 * return an ImmutableList from it.<br/>
+	 * Also note that this method returns <strong>all surveys</strong> whether they are published or not.
 	 */
 	public ImmutableList<VeteranAssessmentSurvey> getVeteranAssessmentSurveyList() {
 		return ImmutableList.copyOf(veteranAssessmentSurveyList);
