@@ -2,12 +2,15 @@ package gov.va.escreening.dto.editors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
+
 import gov.va.escreening.entity.SurveyBaseProperties;
 import gov.va.escreening.serializer.JsonDateSerializer;
 
@@ -30,9 +33,18 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private SurveySectionInfo surveySectionInfo;
     private SurveyStatusInfo surveyStatusInfo;
     private Integer clinicalReminderId;
+    private List<Integer> clinicalReminderIdList=Lists.newArrayList();
 
 
-    public Integer getClinicalReminderId() {
+    public List<Integer> getClinicalReminderIdList() {
+		return clinicalReminderIdList;
+	}
+
+	public void setClinicalReminderIdList(List<Integer> clinicalReminderIdList) {
+		this.clinicalReminderIdList = clinicalReminderIdList;
+	}
+
+	public Integer getClinicalReminderId() {
 		return clinicalReminderId;
 	}
 

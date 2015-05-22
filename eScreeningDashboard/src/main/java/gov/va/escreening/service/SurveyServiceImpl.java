@@ -1,11 +1,6 @@
 package gov.va.escreening.service;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-
-import gov.va.escreening.constants.AssessmentConstants;
-import gov.va.escreening.domain.MeasureTypeEnum;
+import static org.springframework.beans.BeanUtils.copyProperties;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Page;
@@ -13,11 +8,30 @@ import gov.va.escreening.dto.editors.QuestionInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
-import gov.va.escreening.entity.*;
-import gov.va.escreening.exception.AssessmentVariableInvalidValueException;
+import gov.va.escreening.entity.ClinicalReminder;
+import gov.va.escreening.entity.ClinicalReminderSurvey;
+import gov.va.escreening.entity.Measure;
+import gov.va.escreening.entity.MeasureAnswer;
+import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.SurveyPage;
+import gov.va.escreening.entity.SurveySection;
 import gov.va.escreening.exception.EscreeningDataValidationException;
-import gov.va.escreening.repository.*;
+import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.ClinicalReminderRepository;
+import gov.va.escreening.repository.ClinicalReminderSurveyRepository;
+import gov.va.escreening.repository.MeasureRepository;
+import gov.va.escreening.repository.SurveyPageRepository;
+import gov.va.escreening.repository.SurveyRepository;
+import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +41,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
-
-import java.util.*;
-
-import static org.springframework.beans.BeanUtils.copyProperties;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 @Transactional(readOnly = true)
 @Service
@@ -220,10 +232,20 @@ public class SurveyServiceImpl implements SurveyService {
         Integer clinicalReminderId = surveyInfo.getClinicalReminderId();
         clinicalReminderSurveyRepo.removeSurveyMapping(surveyInfo.getSurveyId());
         
-        if(clinicalReminderId!=null && clinicalReminderId >0)
+        if(surveyInfo.getClinicalReminderIdList() != null && !surveyInfo.getClinicalReminderIdList().isEmpty())
         {
-         clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());;
+        	for(Integer crId : surveyInfo.getClinicalReminderIdList())
+        	{
+        		clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());
+        	}
         }
+        
+        else if(clinicalReminderId!=null && clinicalReminderId >0) //TODO:TEMP CODE, TO BE DELETED WHEN UI is DONE.
+        {
+           clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());
+        }
+        
+        
         return surveyInfo;
     }
     
@@ -414,7 +436,13 @@ public class SurveyServiceImpl implements SurveyService {
                 if(survey.getClinicalReminderSurveyList()!=null && !survey.getClinicalReminderSurveyList().isEmpty())
                 {
                 	si.setClinicalReminderId(survey.getClinicalReminderSurveyList().get(0).getClinicalReminder().getClinicalReminderId());
+                	
+                	for(ClinicalReminderSurvey cr : survey.getClinicalReminderSurveyList())
+                	{
+                		si.getClinicalReminderIdList().add(cr.getClinicalReminder().getClinicalReminderId());
+                	}
                 }
+                
                 return si;
             }
         };
