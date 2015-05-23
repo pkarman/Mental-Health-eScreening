@@ -184,11 +184,11 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		}
 
 		if (fromAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateCreated"), fromAssessmentDate));
+			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), fromAssessmentDate));
 		}
 
 		if (toAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateCreated"), toAssessmentDate));
+			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), toAssessmentDate));
 		}
 
 		if (programIdList != null && programIdList.size() > 0) {
