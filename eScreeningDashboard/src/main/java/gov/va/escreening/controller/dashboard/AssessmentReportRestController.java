@@ -263,34 +263,32 @@ public class AssessmentReportRestController extends BaseDashboardRestController 
 		}
 
 		switch (sortColumnIndex) {
+//		case 0:
+//			sortColumn = "veteranAssessmentId";
+//			break;
+
 		case 0:
-			sortColumn = "veteranAssessmentId";
-			break;
-		case 1:
 			sortColumn = "programName";
 			break;
-		case 2:
+		case 1:
 			sortColumn = "clinicianName";
 			break;
-		case 3:
+		case 2:
 			sortColumn = "createdBy";
 			break;
-		case 4:
+		case 3:
 			sortColumn = "createDate";
 			break;
-		case 5:
+		case 4:
 			sortColumn = "assessmentDate";
 			break;
-		case 6:
-			sortColumn = "completeDate";
-			break;
-		case 7:
+		case 5:
 			sortColumn = "veteranId";
 			break;
-		case 8:
+		case 6:
 			sortColumn = "veteranName";
 			break;
-		case 9:
+		case 7:
 			sortColumn = "assessmentStatusName";
 			break;
 		default:
