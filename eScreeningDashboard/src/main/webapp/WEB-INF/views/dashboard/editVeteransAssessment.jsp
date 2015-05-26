@@ -201,12 +201,12 @@
                                             </c:forEach>
                                             <form:errors path="selectedBatteryId" cssClass="help-inline"/>
 										</div>
-										<hr />
+										<hr class="custom-hr-editVeteran" />
 												<div class="row">
 													<div class="col-md-6 padding_5"><div class="border_right_gray text-center"><strong>Highlight & Select Screening Modules</strong></div></div>
 													<div class="col-md-6 padding_5"><div class="text-center"><strong>Highlight Screening Modules</strong></div></div>
 												</div>
-												<hr />
+												<hr class="custom-hr-editVeteran" />
 												
 										<ul class="battery_list" style="padding: 0px">
 											<li></li>
@@ -234,7 +234,15 @@
 									</div>
 
 									<div class="col-md-8">
-				    					<table class="table table-striped table-hover module_list" summary="Screening Modules Table">
+											<div class="directionsBlock">
+												<strong>Directions&nbsp;&nbsp; </strong>
+												<input name="name" id="id" type="checkbox" checked="checked" class="directionChecked">
+												<label class="custom-label-editVeteran"> Use module for all selected veterans</label>
+												&nbsp;&nbsp;&nbsp;
+												<input name="name" id="id" type="checkbox" class="directionIndeterminate">
+												<label class="custom-label-editVeteran">Remain the same state</label>
+											</div>
+										<table class="table table-striped table-hover module_list" summary="Screening Modules Table">
 				    						<thead>
 				    							<tr>
 				    								<th scope="col" class="col-md-6">Screening Module</th>

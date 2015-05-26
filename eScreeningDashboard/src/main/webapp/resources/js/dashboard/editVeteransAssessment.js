@@ -206,6 +206,7 @@ $(document).ready(function() {
 		$(checkbox).removeAttr('indeterminate');
 		$(checkbox).prop("indeterminate", false); 
 		reset_check = true;
+		keepDirectionCheckboxes();
 	}
 	
 	function clearAllSelectins() {
@@ -219,6 +220,8 @@ $(document).ready(function() {
 		$(checkbox).removeAttr('indeterminate');
 		$(checkbox).prop("indeterminate", false); 
 		reset_check = true;
+		
+		keepDirectionCheckboxes();
 	}
 	
 	function clearAllModulesSelectins() {
@@ -231,6 +234,7 @@ $(document).ready(function() {
 		$(checkbox).prop("indeterminate", false); 
 		
 		reset_check = true;
+		keepDirectionCheckboxes();
 	}
 	
 	$(selectedProgramId).on("change", function(e) {
@@ -250,4 +254,23 @@ $(document).ready(function() {
 		$(selectedClinicId).change(function() {
 		});
 	});
+	
+	function keepDirectionCheckboxes(){
+		// keep directions checkboxes the same
+		document.getElementsByClassName("directionIndeterminate")[0].indeterminate = true;
+		$(".directionChecked").prop('checked',true);
+	}
+	
+	
+	/* Direction block to fix the checkboxes */
+	document.getElementsByClassName("directionIndeterminate")[0].indeterminate = true;
+	$(".directionIndeterminate").on("click", function(e) {
+		document.getElementsByClassName("directionIndeterminate")[0].indeterminate = true;
+	});
+	$(".directionChecked").on("click", function(e) {
+		$(this).prop('checked',true);
+	});
+	
+	
+	
 });

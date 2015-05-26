@@ -1,5 +1,6 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.collect.Maps;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -9,6 +10,7 @@ import gov.va.escreening.service.VeteranAssessmentService;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,7 @@ public class AssessmentPreviewController {
         logger.debug("In AssessmentReportController::setupPageAssessmentReport");
 
         logger.debug("veteranId: " + veteranAssessmentId);
-        
+
         // Get the veteran assessment.
         VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);
         model.addAttribute("veteranAssessment", veteranAssessment);
@@ -46,11 +48,13 @@ public class AssessmentPreviewController {
         List<Survey> surveyList = surveyService.findForVeteranAssessmentId(veteranAssessmentId);
         model.addAttribute("surveyList", surveyList);
 
+        Map<Integer, Integer> measureQuestionMap = Maps.newHashMap();
+
         Hashtable<Integer, List<SurveyMeasureResponse>> surveyMeasureResponseMap = surveyMeasureResponseService
-                .findForVeteranAssessmentId(veteranAssessmentId);
+                .findForVeteranAssessmentId(veteranAssessmentId, measureQuestionMap);
         model.addAttribute("surveyMeasureResponseMap", surveyMeasureResponseMap);
+        model.addAttribute("measureQuestionMap", measureQuestionMap);
 
         return "dashboard/assessmentPreview";
     }
-
 }

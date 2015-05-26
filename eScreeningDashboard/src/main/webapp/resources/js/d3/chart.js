@@ -1,3 +1,4 @@
+/* V 1.01 */
 function graphGenerator(dataStructure, dataDataset){
 	var graphWrapper 	= $(".graphWrapper");
 	var colors		= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
@@ -47,6 +48,7 @@ function graphGenerator(dataStructure, dataDataset){
 		graphParams.dataset = [];
 		graphParams.scoresInterval;
 		graphParams.graphStart = 0;
+		ticks = graphParams.ticks;
 		
 		var prevInterval, prevName;
 		
@@ -76,6 +78,8 @@ function graphGenerator(dataStructure, dataDataset){
 		//if this is null then that means the final interval will end the graph (there must be a tick for this last point)
 		if(graphParams.maxXPoint != null){
 			graphParams.dataset.push([{x:"", y:graphParams.maxXPoint}]);
+		}else{
+			graphParams.dataset.push([{x:"", y:d3.max(ticks)}]);
 		}
 		return graphParams;
 	}
@@ -107,10 +111,10 @@ function graphGenerator(dataStructure, dataDataset){
 		      value;
 		      
 		      // Settings
-		      xMax            = d3.max(ticks), // change to maxPoint in case not able to send me the right ticket // graphParams.maxXPoint
-		      xCurrent        = graphParams.score, //4,
+		      //xMax            = d3.max(ticks), // change to maxPoint in case not able to send me the right ticket // graphParams.maxXPoint
+		      var graphMaxValue	  = graphParams.maxXPoint,
+			  xCurrent        = graphParams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
-			  
 		      // colors       = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
 		      series          = graphParams.legends,
 		      dataset         = graphParams.dataset,
@@ -122,6 +126,14 @@ function graphGenerator(dataStructure, dataDataset){
 
 		
 			  // ticks 		  = ticks.push(graphParams.maxXPoint),
+			  if( graphParams.maxXPoint != null ){
+				graphMaxValue	  = graphParams.maxXPoint;
+				ticks.push(graphMaxValue);
+			  }else{
+				graphMaxValue	  = d3.max(ticks);
+			  }
+
+
 	    stack(dataset);
 		var dataset = dataset.map(
 		    function(group) {
@@ -144,7 +156,7 @@ function graphGenerator(dataStructure, dataDataset){
 			        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
 			
 			xScale = d3.scale.linear()
-			    .domain([graphParams.graphStart, xMax])
+			    .domain([graphParams.graphStart, graphMaxValue])
 			    .range([0, width]),
 			    
 			notes = dataset[0].map(function(d) { return d.y; }),
@@ -183,7 +195,7 @@ function graphGenerator(dataStructure, dataDataset){
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / (xMax - graphParams.graphStart)) * ( xCurrent - graphParams.graphStart ) ;
+		var xPos = parseFloat(width / (graphMaxValue - graphParams.graphStart)) * ( xCurrent - graphParams.graphStart ) ;
 		var yPos = 0;
 		
 		pointer = svg.append('rect')
@@ -250,14 +262,14 @@ function graphGenerator(dataStructure, dataDataset){
 			   g 	= svg.append('g')
 			   			.attr('width', 100)
 						.attr('x', gWidth)
-						 .attr('transform', 'translate(' + gWidth + ',-15)')
+						 .attr('transform', 'translate(' + gWidth + ',-20)')
 						gWidth += 60  + 10;
 						
 			   text = g.append('text')
 		          .attr('fill', 'black')
 				  .attr('width', 100)
 		          .attr('x', 30)
-		          .attr('y', 100)
+		          .attr('y', 98)
 		          .attr('font-size', '10')
 				  .attr('font-family', 'Arial')
 				  .attr("dy", 0)
@@ -303,6 +315,7 @@ function graphGenerator(dataStructure, dataDataset){
 		var ticks 	= [];
 		var series  = graphParams.legends;
 		var title = graphParams.title;
+		var graphMaxValue	  = graphParams.maxXPoint;
 
 		$.each(dataDataset, function(date, valueStr){
 			//TODO: Add check if can't be parsed
@@ -371,7 +384,8 @@ function graphGenerator(dataStructure, dataDataset){
 
 		var y = d3.scale.linear()
 			.domain([yStartPoint, d3.max(ticks, function (d) {
-			return +d.value;
+			return graphParams.maxXPoint;
+			//return +d.value;
 		})])
 			.range([height, 0]);
 		
@@ -462,6 +476,19 @@ function graphGenerator(dataStructure, dataDataset){
 				.classed("pointTextValue", true)
 				.text( function (d) { return +d.value; });
 	
+
+	    	 this.append('text')
+				.style("text-anchor", "middle")
+				.attr('x',-14)
+				.attr('y', 5)
+				.attr('fill', 'black')
+				.attr('font-size', '11')
+				.attr('font-weight', 'bold')
+				.style("text-anchor", "middle")
+				.attr('font-family', 'arial')
+				.attr("stroke", "black")
+				.text(graphMaxValue);
+
 
 			// Update Plot Started Here
 			this.selectAll(".trendline")
@@ -558,7 +585,8 @@ function graphGenerator(dataStructure, dataDataset){
 			//Create Y Scale for bar graph
 			var yScale = d3.scale.linear()
 				 .domain([yStartPoint, d3.max(ticks, function (d) {
-				 return +d.value;
+				 // return +d.value;
+				 return graphParams.maxXPoint;
 			})])
 				.range([height, 0]);
 	
@@ -579,12 +607,14 @@ function graphGenerator(dataStructure, dataDataset){
 			})
 				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
 				.attr("height", function (d) {
-					if( maxValue >= +d[0].y){
+					if( graphParams.maxXPoint >= +d[0].y){
 						return height - yScale(+d[0].y) + 0;
 					}else{
 						return height - yScale(+maxValue) + 0 ;
 					}
 				});
+				
+				
 
 
 			this.append('text')

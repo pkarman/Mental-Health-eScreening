@@ -39,7 +39,7 @@
 
 	<div id="outerPageDiv">
 	<%@ include file="/WEB-INF/views/partialpage/standardtopofpage-partial.jsp" %>
-	
+		<div class="alert alert-danger errorMsg hide" id="errorMsg" aria-hidden="true"></div>
 		<!-- NAV Start -->
 		<div class="navbar navbar-default navbar-update" role="navigation">
 			<div class="container bg_transparent">
@@ -428,8 +428,14 @@
 <script>
 //TODO: move all the below JS of to assessmentSummary.js
 // Cache all classes and IDs  
-$(document).ready(function() {              
-    $(this).on("click", '#VeteranSummaryButton', function(e){
+$(document).ready(function() {
+	
+	// t808 - call returnURL to assessmentSummary as URL to use as new redirection page
+	var vid = "${veteranAssessmentInfo.veteranId}";
+	returnURL(vid, "assessmentSummary");
+
+	
+	$(this).on("click", '#VeteranSummaryButton', function(e){
         e.preventDefault();
         var modal_contents 	= $("#VeteranSummaryModal .modal_contents");
         $('#VeteranSummaryModal').modal('show');
@@ -657,6 +663,7 @@ $(document).ready(function() {
 		graphParams.dataset = [];
 		graphParams.scoresInterval;
 		graphParams.graphStart = 0;
+		ticks = graphParams.ticks;
 		
 		var prevInterval, prevName;
 		
@@ -686,6 +693,8 @@ $(document).ready(function() {
 		//if this is null then that means the final interval will end the graph (there must be a tick for this last point)
 		if(graphParams.maxXPoint != null){
 			graphParams.dataset.push([{x:"", y:graphParams.maxXPoint}]);
+		}else{
+			graphParams.dataset.push([{x:"", y:d3.max(ticks)}]);
 		}
 		return graphParams;
 	}
@@ -714,7 +723,8 @@ $(document).ready(function() {
 		      value;
 		      
 		      // Settings
-		      xMax            = d3.max(ticks),
+		      // xMax            = d3.max(ticks),
+			  var graphMaxValue   = graphParams.maxXPoint,
 		      xCurrent        = graphParams.score, //4,
 		      ticks           = ticks, //[0, 4, 10, 20, 27],
 		      // colors          = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65', '#0d3054', '#0a2845', '#082038', "#000000"],
@@ -724,7 +734,14 @@ $(document).ready(function() {
 		      pointerWidth    = 36,
 		      pointerHeight   = 36,
 		      stack = d3.layout.stack();
-		
+			  
+			if( graphParams.maxXPoint != null ){
+				graphMaxValue	  = graphParams.maxXPoint;
+				ticks.push(graphMaxValue);
+			}else{
+				graphMaxValue	  = d3.max(ticks);
+			}
+			  
 	    stack(dataset);
 	    var dataset = dataset.map(
 		    function(group) {
@@ -747,7 +764,7 @@ $(document).ready(function() {
 			        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')'),
 			
 			xScale = d3.scale.linear()
-			    .domain([graphParams.graphStart, xMax])
+			    .domain([graphParams.graphStart, graphMaxValue])
 			    .range([0, width]),
 			    
 			notes = dataset[0].map(function(d) { return d.y; }),
@@ -785,7 +802,7 @@ $(document).ready(function() {
 			            .attr('height', function(d) { return yScale.rangeBand(); })
 			            .attr('width', function(d) { return xScale(d.x); });
 
-		var xPos = parseFloat(width / (xMax - graphParams.graphStart)) * ( xCurrent - graphParams.graphStart ) ;
+		var xPos = parseFloat(width / (graphMaxValue - graphParams.graphStart)) * ( xCurrent - graphParams.graphStart ) ;
 		var yPos = 0;
 		
 		pointer = svg.append('rect')
@@ -867,10 +884,10 @@ $(document).ready(function() {
 		
     	$(parentSelector).addClass("timeSeries");
 
-		var ticks = [];
-		var maxValue;
-		
-		var series   = graphParams.legends;
+		var ticks = [],
+		maxValue, 
+		graphMaxValue 	= graphParams.maxXPoint,
+		series   		= graphParams.legends;
 		
 		$.each(points, function(date, valueStr){
 			//TODO: Add check if can't be parsed
@@ -886,6 +903,8 @@ $(document).ready(function() {
 		});
 		
 		ticks.reverse(); // reverse the order on the ticks 
+		graphParams.maxXPoint != null ?  graphMaxValue = graphParams.maxXPoint : graphMaxValue = maxValue; 
+		
 		//var maxValue = d3.max(ticks , function(d) { return +d.value;} );
 		
 		// Vars
@@ -945,7 +964,8 @@ $(document).ready(function() {
 
 		var y = d3.scale.linear()
 			.domain([yStartPoint, d3.max(ticks, function (d) {
-			return +d.value;
+			//return +d.value;
+			return graphMaxValue;
 		})])
 			.range([height, 0]);
 		
@@ -1017,7 +1037,17 @@ $(document).ready(function() {
 				.append("text")
 				.classed("pointTextValue", true)
 				.text( function (d) { return +d.value; });
-	
+
+			this.append('text')
+				.style("text-anchor", "middle")
+				.attr('x',-14)
+				.attr('y', 5)
+				.attr('fill', 'black')
+				.attr('font-size', '11')
+				.style("text-anchor", "middle")
+				.attr('font-family', 'arial')
+				.text(graphMaxValue);
+					
 
 			// Update Plot Started Here
 			this.selectAll(".trendline")
@@ -1109,7 +1139,8 @@ $(document).ready(function() {
 			//Create Y Scale for bar graph
 			var yScale = d3.scale.linear()
 				 .domain([yStartPoint, d3.max(ticks, function (d) {
-				 return +d.value;
+				 // return +d.value;
+				 return graphMaxValue;
 			})])
 				.range([height, 0]);
 	
@@ -1130,10 +1161,10 @@ $(document).ready(function() {
 			})
 				.attr("width", xScale.rangeBand()) //returns rangeRoundBands width
 				.attr("height", function (d) {
-					if( maxValue >= +d[0].y){
+					if( graphMaxValue >= +d[0].y){
 						return height - yScale(+d[0].y) + 0;
 					}else{
-						return height - yScale(+maxValue) + 0 ;
+						return height ;
 					}
 				});
 	
@@ -1187,4 +1218,10 @@ $(document).ready(function() {
 		
 </script>
 
+
+<script>
+// JQuery 
+$(document).ready(function() {		
+});
+</script>
 </html>

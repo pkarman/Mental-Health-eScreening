@@ -1,4 +1,4 @@
-Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$stateParams','battery','sections','BatteryService',function($rootScope,$scope,$state,$stateParams,battery,sections,BatteryService){
+Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$stateParams','battery','sections','BatteryService', '$location', '$anchorScroll', '$timeout', function($rootScope,$scope,$state,$stateParams,battery,sections,BatteryService, $location, $anchorScroll,  $timeout){
 
     $scope.totalSections = 0;
 	$scope.totalModules = 0;
@@ -93,6 +93,17 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 		
 		return section;
 	};
+	var showMessage = function (){
+		$scope.notificationMsg = 'Module has been assigned to section.';
+		$scope.showMessage = true;
+
+		// Simulate .6 seconds loading delay
+		$timeout(function() {
+			// Loadind done here - Show message for 1 more seconds.
+			$timeout(function() {
+				$scope.showMessage = false;
+			}, 1000); }, 600);
+	}
 
     var performDirtyCheckOfSelectedModules = function (addNewlySelectedSurveys){
         // check to see if the battToSave.surveys has the same survey collection. If it is the same, do not mark the form as dirty. Otherwise mark the form as dirty.
@@ -182,8 +193,32 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
         $scope.selectedSurveyModulesIsDirty = $scope.isDirty = true;
 
         var survId = survey.id;
-        var secId = survey.surveySection.id;
-        // Check the parent Survey Section, and if all surveys are not visible, set visible to false.
+        var secId = survey.surveySection.id;		
+		        
+        // Set visibility on the Battery Sections.
+        $scope.batterySections.forEach(function(section){
+            // Collapge all sections and show only the selected section 
+			if (secId != section.id)
+				section.isExpanded = false;
+			
+			if (secId == section.id){
+                section.visible = true;
+				
+                // Now find the Survey match and make it visible.
+                section.surveys.forEach(function(survey){
+                    if (survId == survey.id){
+                        survey.visible = true;
+                    }
+                });
+				
+				// Workaround Add timeout to expand the section
+				$timeout(function() {
+					section.isExpanded = true;
+				}, 100);
+            }
+        });
+
+		// Check the parent Survey Section, and if all surveys are not visible, set visible to false.
         $scope.availSections.forEach(function(section){
             var howManyVisible = 0;
             if (secId == section.id){
@@ -192,24 +227,13 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
                         howManyVisible++;
                     }
                 });
-                section.visible = section.isExpanded = howManyVisible > 0 ? true : false;
+                section.isExpanded = section.visible =  howManyVisible > 0 ? true : false;
             }
         });
-
-        // Set visibility on the Battery Sections.
-        $scope.batterySections.forEach(function(section){
-            if (secId == section.id){
-                section.visible = true;
-                // Now find the Survey match and make it visible.
-                section.surveys.forEach(function(survey){
-                    if (survId == survey.id){
-                        survey.visible = true;
-                    }
-                });
-            }
-        });
-
         performDirtyCheckOfSelectedModules();
+
+		showMessage();
+		
     };
 
     $scope.removeFromBattery = function(survey){
@@ -227,7 +251,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 						howManyVisible++;
 					}
 				});
-				section.visible = section.isExpanded = howManyVisible > 0 ? true : false;
+				section.isExpanded = section.visible = howManyVisible > 0 ? true : false;
 			}
 		});
 		
@@ -241,6 +265,7 @@ Editors.controller('batteryAddEditController',['$rootScope','$scope','$state','$
 						survey.visible = true;
 					}
 				});
+				section.isExpanded = true;
 			}
 		});
 

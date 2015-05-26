@@ -183,13 +183,13 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
             criteriaList.add(criteriaBuilder.equal(createdByUserJoin.get("userId"), createdByUserId));
         }
 
-        if (fromAssessmentDate != null) {
-            criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date>get("dateCreated"), fromAssessmentDate));
-        }
+		if (fromAssessmentDate != null) {
+			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), fromAssessmentDate));
+		}
 
-        if (toAssessmentDate != null) {
-            criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date>get("dateCreated"), toAssessmentDate));
-        }
+		if (toAssessmentDate != null) {
+			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), toAssessmentDate));
+		}
 
         if (programIdList != null && programIdList.size() > 0) {
             Expression<Integer> exp = programJoin.get("programId");
@@ -204,29 +204,33 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         @SuppressWarnings("rawtypes")
         Expression orderByPath = veteranAssessmentRoot.get("veteranAssessmentId");
 
-        if (StringUtils.isNotBlank(searchAttributes.getSortColumn())) {
-            if (searchAttributes.getSortColumn().equalsIgnoreCase("programName")) {
-                orderByPath = programJoin.get("name");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("clinicianName")) {
-                orderByPath = clinicianJoin.get("lastName");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
-                orderByPath = createdByUserJoin.get("lastName");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
-                orderByPath = veteranAssessmentRoot.get("dateCreated");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
-                orderByPath = veteranJoin.get("veteranId");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {
-                orderByPath = veteranJoin.get("lastName");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentStatusName")) {
-                orderByPath = assessmentStatusJoin.get("name");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("ssnLastFour")) {
-                orderByPath = veteranJoin.get("ssnLastFour");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("duration")) {
-                orderByPath = veteranAssessmentRoot.get("duration");
-            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("percentComplete")) {
-                orderByPath = veteranAssessmentRoot.get("percentComplete");
-            }
-        }
+		if (StringUtils.isNotBlank(searchAttributes.getSortColumn())) {
+			if (searchAttributes.getSortColumn().equalsIgnoreCase("programName")) {
+				orderByPath = programJoin.get("name");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("clinicianName")) {
+				orderByPath = clinicianJoin.get("lastName");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
+				orderByPath = createdByUserJoin.get("lastName");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateCreated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateUpdated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("completeDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateCompleted");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
+				orderByPath = veteranJoin.get("veteranId");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {
+				orderByPath = veteranJoin.get("lastName");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentStatusName")) {
+				orderByPath = assessmentStatusJoin.get("name");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("ssnLastFour")) {
+				orderByPath = veteranJoin.get("ssnLastFour");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("duration")) {
+				orderByPath = veteranAssessmentRoot.get("duration");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("percentComplete")) {
+				orderByPath = veteranAssessmentRoot.get("percentComplete");
+			}
+		}
 
         if (searchAttributes.getSortDirection() == SortDirection.SORT_DESCENDING) {
 
