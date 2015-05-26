@@ -317,9 +317,6 @@ iframe {
 #mainContent .ui-tabs .ui-tabs-nav li a {
   padding: 0.1em 3em;
 }
-#mainContent table.dataTable tr.odd, #mainContent table.dataTable tr.odd td.sorting_1, #mainContent table.dataTable tr.even td.sorting_1 {
-  background-color: transparent;
-}
 .exportImg {
   margin: 0px;
   padding: 0px;
@@ -397,7 +394,7 @@ iframe {
   padding: 0.1em 3em;
 }
 #mainContent table.dataTable tr.odd, #mainContent table.dataTable tr.odd td.sorting_1, #mainContent table.dataTable tr.even td.sorting_1 {
-  background-color: transparent;
+  background-color: rgba(0,0,0,.05);
 }
 .exportImg {
   margin: 0px;

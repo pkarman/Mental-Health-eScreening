@@ -184,11 +184,11 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 		}
 
 		if (fromAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateCreated"), fromAssessmentDate));
+			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), fromAssessmentDate));
 		}
 
 		if (toAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateCreated"), toAssessmentDate));
+			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), toAssessmentDate));
 		}
 
 		if (programIdList != null && programIdList.size() > 0) {
@@ -211,8 +211,12 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 				orderByPath = clinicianJoin.get("lastName");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
 				orderByPath = createdByUserJoin.get("lastName");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createDate")) {
 				orderByPath = veteranAssessmentRoot.get("dateCreated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateUpdated");
+			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("completeDate")) {
+				orderByPath = veteranAssessmentRoot.get("dateCompleted");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
 				orderByPath = veteranJoin.get("veteranId");
 			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {
