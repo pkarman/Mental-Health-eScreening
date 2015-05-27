@@ -5,12 +5,10 @@ import gov.va.escreening.vista.VistaLinkClientException;
 
 public interface VistaDelegate {
 
-    /**
-     * Saves the Veteran's assessment to VistA.
-     * @param veteranAssessmentId
-     * @param escreenUser
-     * @return 
-     */
-	void saveVeteranAssessmentToVista(int veteranAssessmentId,
-			EscreenUser escreenUser) throws VistaLinkClientException;
+	/**
+	 * Saves the Veteran's assessment to VistA.
+	 * @param ctxt
+	 * @return
+	 */
+	void saveVeteranAssessmentToVista(SaveToVistaContext ctxt) throws VistaLinkClientException;
 }
