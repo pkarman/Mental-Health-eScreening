@@ -34,11 +34,6 @@ public class FormulaTest {
     }
 
     @Test
-    public void testMinFormula() {
-        String result = expressionEvaluator.evaluateFormula("gov.va.escreening.util.ReportsUtil.calcTbi_score(1f+1f+0f+999f)", null);
-        Assert.isTrue(result.equals("999.0"));
-    }
-    @Test
     public void testBTBIS___tbi_score1___Formula() {
         String result = expressionEvaluator.evaluateFormula("T(Math).min( " +
                 "( T(Math).max(false||false||false||false||false||false||true?0f:999f,false||false||false||false||false||false?1f:0f) ) + " +
