@@ -131,7 +131,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 			Long locationIEN = Long.parseLong(veteranAssessment.getClinic().getVistaIen());
 			Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
 			VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, locationIEN, inpatientStatus);
-			Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
+			Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
 			String visitDate = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
 			String visitStr = findVisitStr(escreenUser, patientIEN.toString(), veteranAssessment);
 			String visitString = visitStr != null?visitStr:(locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
@@ -277,13 +277,13 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 			VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient) throws Exception {
 
 		Long titleIEN = Long.parseLong(veteranAssessment.getNoteTitle().getVistaIen());
-		Date visitDate = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : new Date();
+		Date visitDate = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
 		Object[] identifiers = { Long.parseLong(veteranAssessment.getClinician().getVistaDuz().trim()), visitDate, locationIEN, null };
 		String progressNoteContent = templateProcessorService.generateCPRSNote(veteranAssessment.getVeteranAssessmentId(), ViewType.TEXT, EnumSet.of(TemplateType.VISTA_QA));
 		Boolean appendContent = true;
 		Long visitIEN = null;
-		Date visitDateTime = veteranAssessment.getDateCompleted();
-		ProgressNoteParameters progressNoteParameters = new ProgressNoteParameters(patientIEN, titleIEN, locationIEN, visitIEN, visitDateTime, visitString, identifiers, progressNoteContent, appendContent);
+		
+		ProgressNoteParameters progressNoteParameters = new ProgressNoteParameters(patientIEN, titleIEN, locationIEN, visitIEN, visitDate, visitString, identifiers, progressNoteContent, appendContent);
 		return vistaLinkClient.saveProgressNote(progressNoteParameters);
 	}
 
