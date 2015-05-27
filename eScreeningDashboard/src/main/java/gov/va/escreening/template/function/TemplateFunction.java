@@ -3,7 +3,13 @@ package gov.va.escreening.template.function;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateModelException;
 
-
+/**
+ * This class serves as a super class for FreeMarker extension methods. 
+ * (this was previously used by TableHashCreator.java)
+ * 
+ * @author Robin Carnow
+ *
+ */
 public class TemplateFunction {
 
 	/**

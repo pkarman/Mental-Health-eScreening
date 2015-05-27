@@ -1,90 +1,74 @@
-/**
- * Created by pouncilt on 10/23/14.
- */
-/**
- * Represents the application api.  If the variable is already defined use it,
- * otherwise create an empty object.
- *
- * @type {EScreeningDashboardApp|*|EScreeningDashboardApp|*|{}|{}}
- */
-var EScreeningDashboardApp = EScreeningDashboardApp || {};
-/**
- * Represents the application static variable. Use existing static variable, if one already exists,
- * otherwise create a new one.
- *
- * @static
- * @type {*|EScreeningDashboardApp.models|*|EScreeningDashboardApp.models|Object|*|Object|*}
- */
-EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
+var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models") };
 
-/**
- * Constructor method for the TemplateCondition class.  The properties of this class can be initialized with
- * the jsonConfig.
- * @class
- * @classdesc   This class is a domain model class; which means it has both behavior and state
- *              information about the user.
- * @param {String}  jsonConfig  Represents the JSON representation of an TemplateCondition object.
- * @constructor
- * @author Tonté Pouncil
- */
-EScreeningDashboardApp.models.TemplateCondition = function (jsonConfig) {
-    this.guid = EScreeningDashboardApp.getInstance().guid();
-    this.connector;
-    this.left;
-    this.operator;
-    this.right;
+(function () {
+	'use strict';
+	
+	function TemplateCondition(jsonConfig) {
+	    this.guid = EScreeningDashboardApp.getInstance().guid();
+	    this.connector;
+	    this.left;
+	    this.operator;
+	    this.right;
+	    this.conditions = []
+	    
+	    if(jsonConfig != null) {
+	        this.connector = jsonConfig.connector;
+	        this.left = new Operand(leftPrototype, jsonConfig.left);
+	        this.operator = jsonConfig.operator;
+	        this.right = new Operand(rightPrototype, jsonConfig.right);
+	    
+	        if(jsonConfig.conditions){
+	        	jsonConfig.conditions.forEach(function(conditionConfig){
+	        		this.conditions.push(new EScreeningDashboardApp.models.TemplateCondition(conditionConfig));
+	        	}, this);
+	        }
+	    }
+	    
+	    if(this.left == null){
+	    	this.left = new Operand(leftPrototype);
+	    }
+	    
+	    if(this.right == null){
+	        this.right = new Operand(rightPrototype);
+	    }
+	
+	    this.autoGenerateFields = function() {
+			this.summary = this.connector + " " + (this.left.content.displayName || this.left.content.name) + " " + this.operator + " " + this.right.content;
+		}
+	};
+	
+	function Operand(prototype, jsonConfig) {
+	    this.type = prototype.type;
+	    this.content = angular.copy(prototype.content);
 
-    if(Object.isDefined(jsonConfig)) {
-        this.connector = (Object.isDefined(jsonConfig.connector))? jsonConfig.connector: null;
-        this.left = (Object.isDefined(jsonConfig.left))? new EScreeningDashboardApp.models.TemplateLeftVariable(jsonConfig.left): null;
-        this.operator = (Object.isDefined(jsonConfig.operator))? jsonConfig.operator: null;
-        this.right = (Object.isDefined(jsonConfig.right))? new EScreeningDashboardApp.models.TemplateRightVariable(jsonConfig.right): null;
-    }
+	    if(jsonConfig != null) {
+	        this.type = jsonConfig.type;
+	        
+	        if (this.type === "text") {
+	            this.content = jsonConfig.content;
+	        } else if (this.type === "var") {
+	            this.content = new EScreeningDashboardApp.models.AssessmentVariable(jsonConfig.content);
+	        }
+	    }
+	};
+	
+	var leftPrototype =  {
+	        type: "var",
+	        content: {}
+	};
+	var rightPrototype =  {
+	        type: "text",
+	        content: ""
+	};
+	
+	EScreeningDashboardApp.models.TemplateCondition = TemplateCondition; 
+	EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig = new TemplateCondition({connector:"or"});
+	EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig = new TemplateCondition({connector:"and"});
+	
+})();
 
-    this.toString = function () {
-        return "TemplateCondition [guid: " + guid +
-            ", connector: " + this.connector +
-            ", left variable: " + this.left +
-            ", operator: " + this.operator +
-            ", right operator: " + this.operator + "]";
-    };
 
-	function autoGenerateFields() {
-		this.summary = this.connector + " " + (this.left.content.displayName || this.left.content.name) + " " + this.operator + " " + this.right.content;
-	}
 
-	this.autoGenerateFields = autoGenerateFields;
-};
-EScreeningDashboardApp.models.TemplateCondition.createConditionsArray = function(jsonConditionsConfig) {
-    var conditions = [];
 
-    jsonConditionsConfig.forEach(function (jsonConditionConfig){
-        conditions.push(new EScreeningDashboardApp.models.TemplateCondition(jsonConditionConfig));
-    });
 
-    return conditions;
-};
-EScreeningDashboardApp.models.TemplateCondition.OrConditionMinimumConfig = {
-    connector: "or",
-    left: {
-        type: "var",
-        content: {}
-    },
-    right: {
-        type: "text",
-        content: ""
-    },
-    conditions: []
-};
-EScreeningDashboardApp.models.TemplateCondition.AndConditionMinimumConfig = {
-    connector: "and",
-    left: {
-        type: "var",
-        content: {}
-    },
-    right: {
-        type: "text",
-        content: ""
-    },
-    conditions: []
-};
+

@@ -20,7 +20,7 @@ public class ErrorResponseRuntimeException extends RuntimeException implements E
         response = error;
     }
     
-    //TODO: this constructor shouldn't be used since we want to push developers to use the ErrorBuilder class and provide both developer message and user message.
+    //TODO: this constructor shouldn't be used since we want to have developers use the ErrorBuilder class and provide both developer message and user message.
     public ErrorResponseRuntimeException(String message) {
         
         //Sets both developer message and user message to the given string in the Error Response
@@ -35,9 +35,14 @@ public class ErrorResponseRuntimeException extends RuntimeException implements E
     
     @Override
     public String getMessage() {
-    	StringBuilder sBuilder = new StringBuilder(response.getDeveloperMessage());
-    	sBuilder.append("\nUser messages:\n").append(response.getUserMessage("\n"));
-        return response == null ? "null" : sBuilder.toString();
+        if(response == null){
+            return "null";
+        }
+        
+        String devMsg = response.getDeveloperMessage() == null ? "" : response.getDeveloperMessage();
+    	return new StringBuilder(devMsg)
+    	    .append("\nUser messages:\n")
+    	    .append(response.getUserMessage("\n")).toString();
     }
     
     @Override

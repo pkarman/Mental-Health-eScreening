@@ -5,6 +5,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+    <title>Assessment Preview</title>
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
@@ -13,7 +15,6 @@
     <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon"/>
     <link href="resources/css/common-ui-styles/fonts.css" rel="stylesheet" type="text/css">
     <link href="resources/css/print-preview.css" rel="stylesheet" type="text/css">
-    <title>Assessment Preview</title>
     <style type="text/css">
         /* for print preview styles  */
         @page {

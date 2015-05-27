@@ -1,29 +1,31 @@
 package gov.va.escreening.controller;
 
 import gov.va.escreening.domain.ErrorCodeEnum;
-import gov.va.escreening.dto.MeasureAnswerDTO;
-import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.template.TemplateFileDTO;
 import gov.va.escreening.exception.EntityNotFoundException;
-import gov.va.escreening.exception.ErrorResponseException;
-import gov.va.escreening.security.CurrentUser;
-import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.TemplateTypeService;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -101,7 +103,7 @@ public class TemplateRestController extends RestController {
         return templateTypes;
 	}
 	
-	@RequestMapping(value="/services/templateTypes/{templateTypeId}/surveys/{surveyId}", method=RequestMethod.POST /*, consumes="application/json", produces="application/json"*/)
+	@RequestMapping(value="/services/templateTypes/{templateTypeId}/surveys/{surveyId}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public Integer createTemplateForSurvey(
@@ -187,9 +189,9 @@ public class TemplateRestController extends RestController {
 		try{
 			templateService.updateTemplateFile(templateId, templateFile);
 		}catch(IllegalArgumentException e) {
-			ErrorBuilder.throwing(EntityNotFoundException.class)
-            .toUser("Could not find the template.")
-            .toAdmin("Could not find the template with ID: " + templateId)
+			ErrorBuilder.throwing(EscreeningDataValidationException.class)
+            .toUser("An unexpected error while updating template. Please call support.")
+            .toAdmin("Error updating template: " + templateId + ". Error: " + e.getLocalizedMessage())
             .setCode(ErrorCodeEnum.OBJECT_NOT_FOUND.getValue())
             .throwIt();
 		}

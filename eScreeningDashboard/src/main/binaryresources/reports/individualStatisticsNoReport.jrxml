@@ -37,7 +37,7 @@
 				<textFieldExpression><![CDATA[$P{fromToDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="143" width="150" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
+				<reportElement x="0" y="143" width="572" height="20" uuid="24f4129e-02a3-402f-8a1b-5b60a6fd9711"/>
 				<textElement>
 					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>

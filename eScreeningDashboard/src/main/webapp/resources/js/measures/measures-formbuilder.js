@@ -781,6 +781,8 @@ function TableBuilder(formBuilder){
 				// reshow the none button
 				$(this).nextAll(".tableNone").fadeIn();
 				$(this).val("Add " + entryName);
+				
+				formBuilder.checkVisibility();
 			} );
 		
 		$("<div/>")
@@ -889,16 +891,6 @@ function TableBuilder(formBuilder){
 			.html(entryName  + "  " + (rowIndex + 1))
 			.appendTo(deleteWrapper);
 		
-		// In case if we need the toggling features otherwise delete the following code
-		/*
-		$("<input/>")
-			.addClass("toggleButton")
-			.attr("type", "button")
-			.val("Toggle")
-			.click(function() {	$(this).parent().nextAll("li").toggle(); })
-			.appendTo(deleteWrapper);
-		*/
-		
 		$("<input/>")
 			.addClass("tableDeleteButton")
 			.attr("type", "button")
@@ -915,7 +907,6 @@ function TableBuilder(formBuilder){
 				}
 				
 				removeEntry(self.tableEntryFor($(this)));
-				
 			})
 			.appendTo(deleteWrapper);
 		
@@ -927,7 +918,7 @@ function TableBuilder(formBuilder){
 		formBuilder.fillFormContainer(measures, questionDiv, rowIndex);
 		
 		//set highlight for entry on any focus in it
-		questionDiv.find("*").focus(function(){highlightEntry($(this), true);});
+		//questionDiv.find("*").focus(function(){highlightEntry($(this), true);});
 	
 		//this is needed to that we can shrink the entry for animations (i.e. entry css does not allow)
 		var entryWrapper = $("<div/>")
@@ -1016,6 +1007,8 @@ function TableBuilder(formBuilder){
 					var index = $(this).index();
 					$(this).find(".entryLabelText").html(entryName + "  " + (index+1));
 				});
+				
+				formBuilder.checkVisibility();
 			});
 	}
 	
@@ -1102,7 +1095,10 @@ function MatrixBuilder(formBuilder, selectBuilder){
 		//clear answer text
 	    var columnHeader = answer.answerText;
 		answer.answerText = "";
-		return selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		var radio = selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		radio.find("input[type=radio]")
+			.change(formBuilder.checkVisibility);
+		return radio;
 	}
 
 	function multiMatrixAnswerFactory(answer, measureId){

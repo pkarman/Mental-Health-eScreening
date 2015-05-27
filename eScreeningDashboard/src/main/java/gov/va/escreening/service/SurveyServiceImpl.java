@@ -3,6 +3,7 @@ package gov.va.escreening.service;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.MeasureTypeEnum;
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nullable;
 
 import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
@@ -62,37 +65,6 @@ public class SurveyServiceImpl implements SurveyService {
     @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<SurveyDto> getAssignableSurveys() {
-        logger.debug("getAssignableSurveys()");
-
-        List<Survey> surveys = surveyRepository.getAssignableSurveys();
-
-        // create adapter object for view
-        List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
-        for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
-        }
-
-        return surveyDtoList;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<SurveyDto> getRequiredSurveys() {
-        logger.debug("getRequiredSurveys()");
-
-        List<Survey> surveys = surveyRepository.getRequiredSurveys();
-
-        List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
-        for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
-        }
-
-        return surveyDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -159,22 +131,46 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SurveyDto> getSurveyList() {
         logger.debug("getSurveyList()");
-
-        List<Survey> surveys = surveyRepository.getSurveyList();
-
+        return toDtos(surveyRepository.getSurveyList(), Collections.<Integer>emptySet());
+    }
+    
+    @Transactional(readOnly = true)
+    @Override
+    public List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId){
+        List<Survey> assessmentSurveys = surveyRepository.findForVeteranAssessmentId(veteranAssessmentId);
+        if(assessmentSurveys == null){
+            throw new IllegalArgumentException("Unknown assessment");
+        }
+        Set<Integer> allowableSurveys = Sets.newHashSetWithExpectedSize(assessmentSurveys.size());
+        for(Survey assessmentSurvey : assessmentSurveys){
+            allowableSurveys.add(assessmentSurvey.getSurveyId());
+        }
+        
+        return toDtos(surveyRepository.getSurveyList(), allowableSurveys);
+    }
+    
+    /**
+     * Filters only public surveys and turns them into SurveyDtos
+     * @param surveys
+     * @param allowableSurveys - surveys that should be included even if they are not public
+     * @return
+     */
+    private List<SurveyDto> toDtos(List<Survey> surveys, Set<Integer> allowableSurveys){
         List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
         for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
+            if(survey.isPublished() || allowableSurveys.contains(survey.getSurveyId())){
+                surveyDtoList.add(new SurveyDto(survey));
+            }
         }
-
         return surveyDtoList;
     }
-
+    
+    /**
+     * This will return all surveys regardless if they are published or not
+     */
     @Transactional(readOnly = true)
     @Override
     public List<SurveyInfo> getSurveyItemList() {
-
-
         List<Survey> surveys = surveyRepository.getSurveyList();
         List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys);
 

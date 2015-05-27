@@ -21,6 +21,7 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private Integer surveyId;
     private String name;
     private String description;
+    private Boolean isPublished;
     private Integer version;
     private boolean hasMha;
     private String mhaTestName;
@@ -31,7 +32,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private SurveyStatusInfo surveyStatusInfo;
     private Integer clinicalReminderId;
 
-
     public Integer getClinicalReminderId() {
 		return clinicalReminderId;
 	}
@@ -41,60 +41,84 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 	}
 
 	@JsonProperty("id")
-    public Integer getSurveyId() {
+	@Override
+	public Integer getSurveyId() {
         return surveyId;
     }
 
+	@Override
     public void setSurveyId(Integer surveyId) {
         this.surveyId = surveyId;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
-
+    
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
+    public Boolean getIsPublished() {
+        return isPublished;
+    }
+
+    @Override
+    public void setIsPublished(Boolean isPublished) {
+        this.isPublished = isPublished;
+    }
+
+    @Override
     public Integer getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(Integer version) {
         this.version = version;
     }
 
+    @Override
     public boolean isMha() {
         return hasMha;
     }
 
+    @Override
     public void setMha(boolean hasMha) {
         this.hasMha = hasMha;
     }
 
+    @Override
     public String getMhaTestName() {
         return mhaTestName;
     }
 
+    @Override
     public void setMhaTestName(String mhaTestName) {
         this.mhaTestName = mhaTestName;
     }
 
     @JsonSerialize(using=JsonDateSerializer.class)
     @JsonProperty("createdDate")
+    @Override
     public Date getDateCreated() {
         return dateCreated;
     }
 
+    @Override
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
@@ -140,8 +164,12 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
     @Override
     public String toString() {
-        return "SurveyItem [surveyId=" + surveyId + ", name=" + name + ", description=" + description + ", version="
-                + version + ", isMha=" + hasMha 
+        return "SurveyItem [surveyId=" + surveyId 
+                + ", name=" + name 
+                + ", description=" + description 
+                + ", isPublished=" + isPublished
+                + ", version=" + version 
+                + ", isMha=" + hasMha 
                 + ", mhaTestName=" + mhaTestName
                 + ", dateCreated=" + dateCreated
                 + ", isIncludedInBattery=" + isIncludedInBattery

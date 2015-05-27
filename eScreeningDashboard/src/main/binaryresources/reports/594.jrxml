@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="594Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="2.4157650000000026"/>
+	<property name="ireport.zoom" value="1.363636363636365"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="49"/>
+	<property name="ireport.layers" value="##Thu Apr 16 21:08:55 PDT 2015\nlayer.1.name=Layer 1\nlayer.1.visible=true\nlayer.1.id=1\nlayer.0.name=Background\nlayer.0.visible=true\nlayer.0.id=0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="noData" class="java.lang.Boolean"/>
@@ -13,7 +14,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="151" splitType="Stretch">
+		<band height="155" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="243" height="77" uuid="b00222cc-7bfe-4a07-92c2-3656cd7de5ef"/>
 				<imageExpression><![CDATA["/reports/dva_eha_logo_black_print.jpg"]]></imageExpression>
@@ -60,6 +61,7 @@
 	</title>
 	<detail>
 		<band height="47" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<frame>
 				<reportElement x="0" y="0" width="286" height="47" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
 				<box>
@@ -100,4 +102,16 @@
 			</frame>
 		</band>
 	</detail>
+	<summary>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="212" y="18" width="212" height="20" uuid="f6b5f444-9c8d-4f95-9006-5c7eae7858ec"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Results Found]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

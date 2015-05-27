@@ -7,6 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Assessment Summary</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -31,7 +32,6 @@
           type="text/css"/>
 
     <link href="<c:url value="/resources/css/partialpage/assessmentSummary.css" />" rel="stylesheet" type="text/css"/>
-    <title>Assessment Summary</title>
 </head>
 <body>
 
@@ -85,7 +85,7 @@
                                 </div>
                             </c:if>
                             <c:if test="${empty assessmentStatusList}">
-                                <form:hidden path="selectedAssessmentStatusId"/>
+                                <form:hidden path="selectedAssessmentStatusId" value="${veteranAssessmentInfo.assessmentStatusId}" />
                             </c:if>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                                 or read any data from VistA.
                             </div>
                         </c:if>
-						
+
                         <c:if test="${not empty callResults}">
                             <c:forEach var="callResult" items="${callResults}">
                                 <c:if test="${!callResult.hasError}">
@@ -113,12 +113,12 @@
                                     </c:if>
                                 </c:if>
                             </c:forEach>
-                        </c:if>						
+                        </c:if>
 
 
-						<c:if test="${not empty callResults}">
-							<c:if test="${hasErrors}">
-								<div class="alert alert-danger panel-included">
+                        <c:if test="${not empty callResults}">
+                            <c:if test="${hasErrors}">
+                                <div class="alert alert-danger panel-included">
                                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
                                         <c:set var="counter" value="0"/>
                                         <c:forEach var="callResult" items="${callResults}">
@@ -141,17 +141,17 @@
                                                     </div>
                                                 </div>
                                                 <div id="collapse${counter}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${counter + 1}">
-                                                  <div class="panel-body">
-                                                     <c:out value="${callResult.systemMessage}"/>
-                                                  </div>
+                                                    <div class="panel-body">
+                                                        <c:out value="${callResult.systemMessage}"/>
+                                                    </div>
                                                 </div>
                                             </c:if>
                                         </c:forEach>
                                     </div>
                                 </div>
-							</c:if>
+                            </c:if>
                         </c:if>
-						
+
 
 
                         <div class="border-radius-main-form">
@@ -509,7 +509,7 @@
     //TODO: move all the below JS of to assessmentSummary.js
     // Cache all classes and IDs
     $(document).ready(function () {
- 
+
 
         // t808 - call returnURL to assessmentSummary as URL to use as new redirection page
         var vid = "${veteranAssessmentInfo.veteranId}";
@@ -533,8 +533,6 @@
                 success: function (r) {
                     $(modal_contents).show().html(r);
                     $(".graphicBody").each(function (graphId) {
-
-                        //TODO: mayb we should add a "loading..." icon while we get data from server
 
                         var $this = $(this);
                         var graphObj = $.parseJSON($this.html());
@@ -560,7 +558,9 @@
                         //Add d3 graph
                         var graphContainerId = "graph_" + graphId;
                         var graphSelector = "#" + graphContainerId;
-                        graphContainer.children(".graphicBody").prop("id", graphContainerId)
+                        graphContainer.children(".graphicBody")
+                                .prop("id", graphContainerId)
+                                .append("<div class='text-center'><h5>Loading...</h5></div>");
 
                         //get time series for the variable
                         // Call timeSeries JSON
@@ -568,6 +568,7 @@
                             type: 'get',
                             url: 'assessmentSummary/assessmentvarseries/' + vid + '/' + graphObj.varId + '/' + graphObj.numberOfMonths,
                             success: function (points) {
+                                graphContainer.children(".graphicBody").empty();
 
                                 //append correct graph type given the number of historical results for the variable
                                 if (hasMoreThanOne(points)) {
@@ -582,7 +583,10 @@
                                     graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer + "</div>");
                                 }
                             },
-                            error: handleError
+                            error: function(xhr, exception, errorThrown){
+                                graphContainer.children(".graphicBody").empty();
+                                handleError(xhr, exception, errorThrown);
+                            }
                         });
                     });
 
@@ -591,31 +595,32 @@
             });
 
             function handleError(xhr, exception, errorThrown) {
-                data = xhr.responseJSON.error;
+                var data = xhr.responseJSON.error;
                 var userMessage = [];
-                var developerMessage = [];
+                var developerMessage  = "No details received from server";
 
-                if (data) {
-                    for (var j = 0; j < data.errorMessages.length; j++) {
-                        errorMessages = data.errorMessages[j];
-                        userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
+                if(data){
+                    if(data.errorMessages){
+                        for (var j = 0; j < data.errorMessages.length; j++) {
+                            errorMessages = data.errorMessages[j];
+                            userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
+                        }
                     }
-                    if (data.developerMessage.length > 0) {
-                        result = "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>";
-                        result = result + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
-                        developerMessage.push(result);
+                    if(data.developerMessage && data.developerMessage.length > 0){
+                        developerMessage = "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>"
+                        + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
                     }
-
                 }
-                else {
+                else{
                     userMessage.push("<div class='userErrorMessage'>An unexpected error was received. Please call support.</div>");
                 }
-                var panelTemplate = userMessage;
-                panelTemplate = panelTemplate + '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
-                panelTemplate = panelTemplate + developerMessage;
-                panelTemplate = panelTemplate + '</div></div></div></div></div></div>'
 
-                $(modal_contents).show().html(panelTemplate);
+                var panelTemplate = userMessage;
+                panelTemplate += '<div class="panel-danger-system detailedErrorMessageBlock"><div class="panel-group" id="veteranSummaryAccordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"> <a data-toggle="collapse" data-parent="#veteranSummaryAccordion" href="#collapseOne2"> System Error <span class="label label-danger">Click here for more error details</span> </a> </h4></div><div id="collapseOne2" class="panel-collapse collapse"><div class="panel-body"><div class="detailedErrorMessage">';
+                panelTemplate += developerMessage;
+                panelTemplate += '</div></div></div></div></div></div>'
+
+                $(modal_contents).html(panelTemplate).show();
             }
 
             function hasMoreThanOne(obj) {
@@ -777,13 +782,7 @@
     }
 
 
-    //TODO:
-    // 1. for the colors of each bar, what happens when we have more than 6 intervals?  We need the start color and then end color and then
-    // we take the number of intervals and calculate the colors needed to get from the start color to the end color.
-    // 2. the y axis label should not be given
-    // 3. the score is not showing up in the graph
-
-    var colors = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
+    var colors	= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 
     function appendStackGraph(parentSelector, graphParams) {
 
@@ -853,7 +852,6 @@
                 notes = dataset[0].map(function (d) {
                     return d.y;
                 }),
-                _ = console.log(notes),
 
                 yScale = d3.scale.ordinal()
                         .domain(notes)
@@ -962,8 +960,6 @@
                     .attr('x', textWidth - 15)
                     .attr('y', 90);
             textWidth += parseFloat(text.node().getComputedTextLength()) + 30;
-            console.log("Parse 8----");
-            console.log(text.node().getComputedTextLength());
         });
 
         // Fix graphic bar issue

@@ -6,14 +6,14 @@
 
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Create Battery</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
-<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
+	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
 
 	<link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
 
@@ -23,33 +23,23 @@
 	<link rel="apple-touch-icon" sizes="114x114" href="resources/images/favico_va_touch_114x114.png" />
 	<link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
 	<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
-  <meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
+	<meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
 
-
-
-  <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css" />
-  <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-  <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
-  <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
-  <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
-  
-  <!-- Bootstrap -->
-  <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-  <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
-
-
-<title>Create Battery</title>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		tabsLoad("createBattery");
-	});
-</script>
-
-<style type="text/css">
-
+	<link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
 	
-</style>
+	<!-- Bootstrap -->
+	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			tabsLoad("createBattery");
+		});
+	</script>
 </head>
 <body>
 <a href="#skip" class="offscreen">Skip to main content</a>

@@ -23,6 +23,15 @@
         $scope.goToSections = function () {
             $state.go('sections');
         };
+
+		$scope.goToRuleNew = function() {
+			$state.go('rules.detail');
+		};
+
+		$scope.goToRuleEdit = function() {
+			$state.go('rules');
+		};
+
     }]);
 
 })();
