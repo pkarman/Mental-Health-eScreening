@@ -957,6 +957,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 			if (survey.isMha()) {
 
+				boolean surveyIsCopied = false;
 				String mentalHealthTestName = survey.getMhaTestName();
 				String reminderDialogIEN = survey.getMhaResultGroupIen();
 				String mentalHealthTestAnswers = "";
@@ -1004,7 +1005,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				// Get all the answers and lookup the MHA values we need to
 				// send.
 				// Should always have a question that is marked as MHA, but....
-				if (measureIdList != null && measureIdList.size() > 0) {
+				if (measureIdList != null && measureIdList.size() > 0 && !surveyIsCopied) {
 
 					// we now have a list of measure id
 					// Get all the answers the veteran submitted for the measure
@@ -1016,7 +1017,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 						boolean respondHasMeasureId = false;
 
 						for (SurveyMeasureResponse response : veteranAssessment.getSurveyMeasureResponseList()) {
-
+							if(response.getCopiedFromVeteranAssessment() != null)
+							{
+								//skip the whole survey because it was copied.
+								surveyIsCopied = true;
+								break;
+							}
 							if (response.getMeasure().getMeasureId().equals(measureId)) {
 								respondHasMeasureId = true;
 								if (response.getBooleanValue()) { // responded = true
@@ -1030,16 +1036,24 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 							// Append it.
 							mentalHealthTestAnswers += mhaValue;
 						}
+						
+						if(surveyIsCopied) break;
 					}
 				}
 
-				MentalHealthAssessment mentalHealthAssessment = new MentalHealthAssessment();
-				mentalHealthAssessment.setSurveyId(surveyId);
-				mentalHealthAssessment.setMentalHealthTestName(mentalHealthTestName);
-				mentalHealthAssessment.setReminderDialogIEN(reminderDialogIEN == null ? 0L : Long.parseLong(reminderDialogIEN.trim()));
-				mentalHealthAssessment.setMentalHealthTestAnswers(mentalHealthTestAnswers);
+				if (!surveyIsCopied) {
+					MentalHealthAssessment mentalHealthAssessment = new MentalHealthAssessment();
+					mentalHealthAssessment.setSurveyId(surveyId);
+					mentalHealthAssessment
+							.setMentalHealthTestName(mentalHealthTestName);
+					mentalHealthAssessment
+							.setReminderDialogIEN(reminderDialogIEN == null ? 0L
+									: Long.parseLong(reminderDialogIEN.trim()));
+					mentalHealthAssessment
+							.setMentalHealthTestAnswers(mentalHealthTestAnswers);
 
-				mentalHealthAssessmentList.add(mentalHealthAssessment);
+					mentalHealthAssessmentList.add(mentalHealthAssessment);
+				}
 			}
 		}
 

@@ -232,30 +232,6 @@ public class VeteranAssessmentSurveyServiceImpl implements
         }
     }
 
-    private void updateVeteranAssessmentProgress(int veteranAssessmentId,
-			long startTime, int countOfTotalResponses, int countOfTotalQuestions) {
-
-		VeteranAssessment va = veteranAssessmentRepository
-				.findOne(veteranAssessmentId);
-
-		// determine the percentage completed
-		int percentCompleted = (int) ((float) countOfTotalResponses
-				/ countOfTotalQuestions * 100);
-		va.setPercentComplete(percentCompleted);
-
-		int durationCurrent = getAssessmentProgressDurationInminutes(startTime);
-		Integer previousDuration = va.getDuration();
-		if (previousDuration == null) {
-			previousDuration = 0;
-		}
-		va.setDuration(previousDuration + durationCurrent);
-		// determine the duration this veteran is on this assessment (in
-		// minutes)
-
-		va.setDateUpdated(new Date());
-		veteranAssessmentRepository.update(va);
-	}
-
 	private int getAssessmentProgressDurationInminutes(long sessionCreationTime) {
 		DateTime ft = new DateTime();
 		int minutesOfHour = ft.minus(sessionCreationTime).getMinuteOfHour();

@@ -73,6 +73,9 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Autowired
 	private BatteryRepository batteryRepo;
+	
+	@Autowired
+	private VeteranAssessmentSurveyRepository vaSurveyRepo;
 
 	@Resource(type = TemplateProcessorService.class)
 	private TemplateProcessorService templateProcessorService;
@@ -174,7 +177,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		}
 		
 		List<SurveyMeasureResponse> respList = surveyMeasureResponseRepository.findLast48HourAnswersForVet(assessment.getVeteran().getVeteranId());
-		
+		Map<Integer, VeteranAssessmentSurvey> vasToCopy = Maps.newHashMap();
 		for(SurveyMeasureResponse resp : respList)
 		{
 			String key = getUniqueKeyForSurveyMeasureResponse(resp);
@@ -194,11 +197,41 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 				fullList.removeAll(map.get(resp.getSurvey().getSurveyId()));
 				
 				surveyMeasureResponseRepository.create(copied);
-				copiedAnswers.add(key);
+				copiedAnswers.add(key);		
+				
+				if(!vasToCopy.containsKey(copied.getSurvey().getSurveyId()))
+				{
+					vasToCopy.put(copied.getSurvey().getSurveyId(), vaSurveyRepo.getByVeteranAssessmentIdAndSurveyId(resp.getVeteranAssessment().getVeteranAssessmentId(),
+							copied.getSurvey().getSurveyId()));
+				}
 			}
 		}
 		
 		surveyMeasureResponseRepository.commit();
+		int total = 0;
+		int answered = 0;
+		for(VeteranAssessmentSurvey s : vasToCopy.values())
+		{
+			VeteranAssessmentSurvey vas = vaSurveyRepo.getByVeteranAssessmentIdAndSurveyId(assessment.getVeteranAssessmentId(),
+					s.getSurvey().getSurveyId());
+			vas.setMhaResult(s.getMhaResult());
+			vas.setTotalQuestionCount(s.getTotalQuestionCount());
+			vas.setTotalResponseCount(s.getTotalResponseCount());
+			
+			total += vas.getTotalQuestionCount();
+			answered += vas.getTotalResponseCount();
+			vaSurveyRepo.update(vas);
+		}
+		vaSurveyRepo.commit();
+		
+		//Need to update the total progress if the full list is empty, because this is the only chance
+		//for it to be updated.
+		if(fullList.isEmpty() && total != 0)
+		{
+			assessment.setPercentComplete(answered * 100/total);
+			veteranAssessmentRepository.update(assessment);
+			veteranAssessmentRepository.commit();
+		}
 		
 		return fullList;
 	}
