@@ -1109,6 +1109,20 @@ td.matrixQuestionText input.selectOther{
 /*input:focus,  div.selectOneInput:focus{
 outline:#FF0004 dotted;
 }*/
+.padding-bottom{
+	padding-bottom:100px !important;
+}
+.clearfix:before,
+.clearfix:after{
+	display: table;
+	content: " ";
+}
+.clearfix:after{
+	clear: both;
+}
+.hide{
+	display:none;
+}
 
 @media (min-width: 768px) {
 	/* 

@@ -9,7 +9,7 @@
 <head>
     <title>Veteran Login</title>	
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
   
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.js"></script>
@@ -198,7 +198,7 @@
             <div class="col-md-12">
                   <div class="form-group">
                     <form:label path="lastFourSsn">Last Four SSN</form:label>
-                    <form:input path="lastFourSsn" id="lastFourSsn" class="immediate-help form-control input-lg" maxlength="4" type="password" placeholder="Enter Last Four SSN" />
+                    <form:input path="lastFourSsn" id="lastFourSsn" class="immediate-help form-control input-lg" maxlength="4" type="password" placeholder="Enter Last Four SSN" pattern="[0-9]*" inputmode="numeric" />
                     <c:if test="${status.error}">
                           <div id="lastFourSsnErrorDiv" class="input-help errorInputStyle"> <img id="lastFourSsnImage" src="resources/images/errorIcon.jpg" class="errorImgWidth" /><form:errors path="lastFourSsn" /></div>
                     </c:if>
