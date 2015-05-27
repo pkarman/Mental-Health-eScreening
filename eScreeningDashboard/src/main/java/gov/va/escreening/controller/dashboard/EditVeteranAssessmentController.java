@@ -70,6 +70,15 @@ public class EditVeteranAssessmentController {
 		return new EditVeteranAssessmentFormBean();
 	}
 
+	/**
+	 * Called when the Create Battery page is opened (new or not)
+	 * @param model
+	 * @param editVeteranAssessmentFormBean
+	 * @param veteranAssessmentId
+	 * @param veteranId
+	 * @param escreenUser
+	 * @return
+	 */
 	@RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.GET)
 	public String setupPage(
 			Model model,
@@ -146,8 +155,8 @@ public class EditVeteranAssessmentController {
 		model.addAttribute("batterySurveyList", batterySurveyList);
 
 		// 7. Get all the modules (surveys) that can be assigned
-		List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
-
+		List<SurveyDto> surveyList = isCreateMode ? createAssessmentDelegate.getSurveyList() : createAssessmentDelegate.getSurveyListUnionAssessment(veteranAssessmentId);
+		
 		// 8. Populate survey list with list of batteries it is associated with
 		// to make it easier in view.
 		for (BatterySurveyDto batterySurvey : batterySurveyList) {
@@ -211,9 +220,9 @@ public class EditVeteranAssessmentController {
 		// 15. Get all the surveys already assigned to this veteran assessment.
 		List<SurveyDto> veteranAssessmentSurveyList = null;
 
-		if (!isCreateMode) {
-			veteranAssessmentSurveyList = createAssessmentDelegate.getVeteranAssessmentSurveyList(veteranAssessmentId);
-		}
+        if (!isCreateMode) {
+            veteranAssessmentSurveyList = createAssessmentDelegate.getVeteranAssessmentSurveyList(veteranAssessmentId);
+        }
 
 		if (veteranAssessmentSurveyList != null && veteranAssessmentSurveyList.size() > 0) {
 
@@ -253,7 +262,7 @@ public class EditVeteranAssessmentController {
 
 		return "dashboard/editVeteranAssessment";
 	}
-
+	
 	private Map<String, String> createProgramsMap(
 			List<DropDownObject> batteryList) {
 		Map<String, String> pm = new HashMap<String, String>();
