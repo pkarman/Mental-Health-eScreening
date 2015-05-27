@@ -44,7 +44,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(2, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId3() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(3,true,false);
 		showAssessmentsAsJson(3, assessments);
@@ -56,7 +56,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(4, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId5() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(5,true,false);
 		showAssessmentsAsJson(5, assessments);
@@ -68,7 +68,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(6, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId7() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(7,true,false);
 		showAssessmentsAsJson(7, assessments);
@@ -80,7 +80,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(8, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId9() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(9,true,false);
 		showAssessmentsAsJson(9, assessments);
@@ -92,7 +92,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(10, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId11() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(11,true,false);
 		showAssessmentsAsJson(11, assessments);
@@ -104,7 +104,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(12, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId13() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(13,true,false);
 		showAssessmentsAsJson(13, assessments);
@@ -116,7 +116,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(14, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId15() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(15,true,false);
 		showAssessmentsAsJson(15, assessments);
@@ -128,7 +128,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(16, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId17() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(17,true,false);
 		showAssessmentsAsJson(17, assessments);
@@ -146,7 +146,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(19, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId20() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(20,true,false);
 		showAssessmentsAsJson(20, assessments);
@@ -158,7 +158,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(21, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId22() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(22,true,false);
 		showAssessmentsAsJson(22, assessments);
@@ -170,7 +170,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(23, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId24() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(24,true,false);
 		showAssessmentsAsJson(24, assessments);
@@ -182,7 +182,7 @@ public class AvSyncMeasureTest {
 		showAssessmentsAsJson(25, assessments);
 	}
 
-	@Test
+	//@Test
 	public void testAssessmentVariablesForSurveyId26() {
 		Table<String, String, Object> assessments = avs.getAssessmentVarsForSurvey(26,true,false);
 		showAssessmentsAsJson(26, assessments);

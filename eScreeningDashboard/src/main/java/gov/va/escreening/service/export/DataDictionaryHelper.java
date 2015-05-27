@@ -28,9 +28,9 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	public final String SALT_DEFAULT = "1";
 	public final String EXPORT_KEY_PREFIX = "EXPORT";
 	public final String FORMULA_KEY_PREFIX = "FORMULA";
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Resource(name = "assessmentVariableService")
-    AssessmentVariableService avs;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	@Resource(name = "assessmentVariableService")
+	AssessmentVariableService avs;
 	MessageSource msgSrc;
 
 	Map<Integer, Resolver> resolverMap;
@@ -44,9 +44,9 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	}
 
 	public void buildDataDictionaryFor(Survey s,
-			Table<String, String, String> t, Collection<Measure> smList,
-			Multimap mvMap, Collection<AssessmentVariable> avList,
-			Set<String> avUsed) {
+									   Table<String, String, String> t, Collection<Measure> smList,
+									   Multimap mvMap, Collection<AssessmentVariable> avList,
+									   Set<String> avUsed) {
 		for (Measure m : smList) {
 			addDictionaryRowsFor(m, s, mvMap, t, SALT_DEFAULT);
 		}
@@ -55,7 +55,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	}
 
 	void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+							  Table<String, String, String> t, String salt) {
 		findResolver(m).addDictionaryRows(s, m, mvMap, t, salt);
 	}
 
@@ -66,16 +66,16 @@ public class DataDictionaryHelper implements MessageSourceAware {
 	}
 
 	private void addFormulaeFor(Survey s, Table<String, String, String> t,
-			Collection<Measure> smList, Collection<AssessmentVariable> avList,
-			Set<String> avUsed) {
+								Collection<Measure> smList, Collection<AssessmentVariable> avList,
+								Set<String> avUsed) {
 
-        Set<List<String>> tgtFormulaeSet = Sets.newLinkedHashSet();
+		Set<List<String>> tgtFormulaeSet = Sets.newLinkedHashSet();
 		buildFormulaeFor(s, tgtFormulaeSet, avUsed, smList, avList);
 
 		if (tgtFormulaeSet != null) {
 			int index = 0;
-            for (List<String> formula : tgtFormulaeSet) {
-                Iterator<String> formulaTokens = formula.iterator();
+			for (List<String> formula : tgtFormulaeSet) {
+				Iterator<String> formulaTokens = formula.iterator();
 				String indexAsStr = String.format("%s_%s_%s", FORMULA_KEY_PREFIX, s.getSurveyId(), index++);
 
 				t.put(indexAsStr, msg("ques.type"), "formula");
@@ -83,18 +83,18 @@ public class DataDictionaryHelper implements MessageSourceAware {
 				t.put(indexAsStr, msg("var.name"), formulaTokens.next());
 
 				if (formulaTokens.hasNext()) {
-                    t.put(indexAsStr, msg("av.id"), formulaTokens.next());
-                }
-                if (formulaTokens.hasNext()) {
-                    t.put(indexAsStr, msg("ques.desc.business"), formulaTokens.next());
-                }
-                if (formulaTokens.hasNext()) {
-                    t.put(indexAsStr, msg("formula.template"), formulaTokens.next());
-                }
-                if (formulaTokens.hasNext()) {
-                    t.put(indexAsStr, msg("var.size"), formulaTokens.next());
-                }
-                if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("av.id"), formulaTokens.next());
+				}
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("ques.desc.business"), formulaTokens.next());
+				}
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("formula.template"), formulaTokens.next());
+				}
+				if (formulaTokens.hasNext()) {
+					t.put(indexAsStr, msg("var.size"), formulaTokens.next());
+				}
+				if (formulaTokens.hasNext()) {
 					t.put(indexAsStr, msg("vals.range"), formulaTokens.next());
 				}
 				if (formulaTokens.hasNext()) {
@@ -122,25 +122,25 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		this.resolverMap.put(8, new InstructionResolver(this)); // instruction
 	}
 
-    private void buildFormulaeFor(Survey survey, final Set<List<String>> surveyFormulae,
-			final Set<String> avUsed, Collection<Measure> smList,
-			Collection<AssessmentVariable> avLstWithFormulae) {
-        AvBuilder<Set<List<String>>> formulaColumnsBldr = new FormulaColumnsBldr(surveyFormulae, avUsed, avs);
-        avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false, false);
-            }
+	private void buildFormulaeFor(Survey survey, final Set<List<String>> surveyFormulae,
+								  final Set<String> avUsed, Collection<Measure> smList,
+								  Collection<AssessmentVariable> avLstWithFormulae) {
+		AvBuilder<Set<List<String>>> formulaColumnsBldr = new FormulaColumnsBldr(surveyFormulae, avUsed, avs);
+		avs.filterBySurvey(survey, formulaColumnsBldr, smList, avLstWithFormulae, false, false);
+	}
 
 
-    String msg(String propertySuffix) {
-        return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
-                }
+	String msg(String propertySuffix) {
+		return msgSrc.getMessage("data.dict.column." + propertySuffix, null, null);
+	}
 
-    public String getPlainText(String htmlText) {
-        return avs.getPlainText(htmlText);
-            }
-                        }
+	public String getPlainText(String htmlText) {
+		return avs.getPlainText(htmlText);
+	}
+}
 
 abstract class Resolver {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	protected final DataDictionaryHelper ddh;
 
 	protected Resolver(DataDictionaryHelper ddh) {
@@ -152,7 +152,7 @@ abstract class Resolver {
 	}
 
 	public final void addDictionaryRows(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+										Table<String, String, String> t, String salt) {
 		addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 
@@ -165,7 +165,7 @@ abstract class Resolver {
 	}
 
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+										Table<String, String, String> t, String salt) {
 
 		int index = 0;
 		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), index++, false, salt);
@@ -180,15 +180,15 @@ abstract class Resolver {
 	}
 
 	protected final void addSingleRow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, MeasureAnswer ma, int index,
-			boolean other, String salt) {
+									  Table<String, String, String> t, MeasureAnswer ma, int index,
+									  boolean other, String salt) {
 
 		String rowId = generateRowId("" + m.getMeasureId(), salt, index);
 
 		String quesType = index == 0 ? m.getMeasureType().getName() : "";
 		String quesDesc = ddh.getPlainText(index == 0 ? m.getMeasureText() : ma.getAnswerText());
 		boolean addMore = ma != null;
-		String varName = addMore ? !other ? Strings.nullToEmpty(ma.getIdentifyingText()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+		String varName = getVariableName(addMore, s,m,mvMap,ma,index,other,salt);
 		String valsRange = addMore ? getValuesRange(m, ma, other) : "";
 		String valsDesc = addMore ? getValuesDescription(m, ma, other) : "";
 		String dataVal = addMore ? getValidationDescription(m, mvMap, other) : "";
@@ -198,6 +198,11 @@ abstract class Resolver {
 		addRow(t, rowId, quesType, quesDesc, varName, valsRange, valsDesc, dataVal, followup, skiplevel, other);
 	}
 
+	protected String getVariableName(boolean addMore, Survey s, Measure m, Multimap mvMap, MeasureAnswer ma, int index, boolean other, String salt){
+		return addMore ? !other ? Strings.nullToEmpty(ma.getIdentifyingText()) : Strings.nullToEmpty(ma.getOtherExportName()) : "";
+	}
+
+
 	protected String generateRowId(String partialRowId, String salt, int index) {
 		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + partialRowId + salt) : salt);
 		String rowId = String.format("%s_%s_%s", ddh.EXPORT_KEY_PREFIX, mId, index);
@@ -205,8 +210,8 @@ abstract class Resolver {
 	}
 
 	protected void addRow(Table<String, String, String> t, String rowId,
-			String quesType, String quesDesc, String varName, String valsRange,
-			String valsDesc, String dataVal, String followup, String skiplevel, boolean other) {
+						  String quesType, String quesDesc, String varName, String valsRange,
+						  String valsDesc, String dataVal, String followup, String skiplevel, boolean other) {
 
 		t.put(rowId, ddh.msg("ques.type"), quesType);
 		t.put(rowId, ddh.msg("ques.desc"), quesDesc);
@@ -241,7 +246,7 @@ class MultiSelectResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+										Table<String, String, String> t, String salt) {
 
 		int index = 0;
 		addSingleRow(s, m, mvMap, t, null, index++, false, salt);
@@ -256,9 +261,15 @@ class MultiSelectResolver extends Resolver {
 
 class SelectOneResolver extends Resolver {
 	Joiner nonNumericJoiner = Joiner.on(", ").skipNulls();
-	
+
 	protected SelectOneResolver(DataDictionaryHelper ddr) {
 		super(ddr);
+	}
+
+	@Override
+	protected String getVariableName(boolean addMore, Survey s, Measure m, Multimap mvMap, MeasureAnswer ma, int index, boolean other, String salt) {
+		String measureVarName=m.getVariableName();
+		return addMore ? (!other ? (Strings.isNullOrEmpty(measureVarName) ? (Strings.nullToEmpty(ma.getIdentifyingText())) : measureVarName) : Strings.nullToEmpty(ma.getOtherExportName())) : "";
 	}
 
 	/**
@@ -269,10 +280,10 @@ class SelectOneResolver extends Resolver {
 		if (isOther){
 			return ddh.findResolver(1).getValuesRange(m,unusedMa,isOther);
 		}
-		
+
 		List<MeasureAnswer> maList = m.getMeasureAnswerList();
-        if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
-        	try{
+		if(m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE){
+			try{
 				int min = Integer.MAX_VALUE;
 				int max = Integer.MIN_VALUE;
 				for (MeasureAnswer ma : maList) {
@@ -281,21 +292,21 @@ class SelectOneResolver extends Resolver {
 					max = Math.max(max, val);
 				}
 				return String.format("%s-%s,999", min, max);
-        	}
-        	catch(NumberFormatException bfe){
-        		List<String> nonNumberValues = new ArrayList<>(maList.size());
-        		for (MeasureAnswer ma : maList) {
-        			nonNumberValues.add(ma.getCalculationValue());
-        		}
-        		return nonNumericJoiner.join(nonNumberValues);
-        	}
+			}
+			catch(NumberFormatException bfe){
+				List<String> nonNumberValues = new ArrayList<>(maList.size());
+				for (MeasureAnswer ma : maList) {
+					nonNumberValues.add(ma.getCalculationValue());
+				}
+				return nonNumericJoiner.join(nonNumberValues);
+			}
 		}
 		return "undefined";
 	}
 
 	/**
 	 * consolidate measure answers' calculationValue wirh the answer text. The output will be in following format
-     * <p/>
+	 * <p/>
 	 * 1=English,2=Spanish,3=Tagalog,4=Chinese,5=German,6=Japanese,7=Korean,8=Russian,9=Vietnamese,10=Other, please
 	 * specify,999=missing
 	 */
@@ -314,7 +325,7 @@ class SelectOneResolver extends Resolver {
 			return sb.toString();
 
 		}
-        return "undefined";
+		return "undefined";
 	}
 }
 
@@ -354,7 +365,7 @@ class SelectOneMatrixResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+										Table<String, String, String> t, String salt) {
 
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 
@@ -382,7 +393,7 @@ class SelectMultiMatrixResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
+										Table<String, String, String> t, String salt) {
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }
@@ -394,8 +405,8 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-			Table<String, String, String> t, String salt) {
-	    String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
+										Table<String, String, String> t, String salt) {
+		String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
 		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getIdentifyingText());
 		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "", false);
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);

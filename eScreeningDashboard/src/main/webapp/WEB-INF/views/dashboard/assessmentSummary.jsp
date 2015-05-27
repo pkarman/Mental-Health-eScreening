@@ -7,6 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Assessment Summary</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
@@ -29,7 +30,6 @@
     <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css" />
     
     <link href="<c:url value="/resources/css/partialpage/assessmentSummary.css" />" rel="stylesheet" type="text/css" />
-    <title>Assessment Summary</title>
 </head>
 <body>
 
@@ -77,7 +77,7 @@
 						</div>
 					  </c:if>
 					  <c:if test="${empty assessmentStatusList}">
-						<form:hidden path="selectedAssessmentStatusId"/>
+						<form:hidden path="selectedAssessmentStatusId" value="${veteranAssessmentInfo.assessmentStatusId}" />
 					  </c:if>
 					</div>
 				  </div>

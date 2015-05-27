@@ -6,6 +6,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Map Veteran to VistA Record</title>
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -24,7 +26,6 @@
   <!-- Bootstrap -->
   <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
   
-  <title>Map Veteran to VistA Record</title>
 
   <style type="text/css">
     .loading{

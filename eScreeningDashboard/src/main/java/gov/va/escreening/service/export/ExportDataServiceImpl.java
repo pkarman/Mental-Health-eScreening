@@ -117,6 +117,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         List<DataExportCell> exportDataRowCells = buildMandatoryColumns(assessment, show);
 
         for (String surveyName : preFetchedData.get(surveyNamesKey()).keySet()) {
+            List<String> formulaNames = dds.findAllFormulas(surveyName,dd);
             Map<String, String> usrRespMap = preFetchedData.get(usrRespKey(assessment, surveyName));
             Map<String, String> surveyDictionary = preFetchedData.get(dictHdrKey(surveyName));
             Map<String, String> answerTypeOther = preFetchedData.get(answerTypeOtherKey(surveyName));
@@ -127,7 +128,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
             for (Entry<String, String> surveyEntry : surveyDictionary.entrySet()) {
                 String surveyExportName = surveyEntry.getValue();
                 if (!surveyExportName.isEmpty()) {
-                    DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, show);
+                    DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, formulaNames, show);
                     if (logger.isDebugEnabled()) {
                         logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
                     }
@@ -139,7 +140,6 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         }
         return exportDataRowCells;
     }
-
     private String surveyNamesKey() {
         return "DATA_DICTIONARY_SURVEY";
     }
@@ -218,8 +218,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         return dataExportReport;
     }
 
-    public DataExportCell createExportCell(Map<String, String> usrRespMap,
-                                           Map<String, String> formulaeMap, Map<String, String> answerTypeOther, String exportName, boolean show) {
+    private DataExportCell createExportCell(Map<String, String> usrRespMap,
+                                            Map<String, String> formulaeMap, Map<String, String> answerTypeOther, String exportName, List<String> formulaNames, boolean show) {
 
         // try to find the user response
         String exportVal = usrRespMap == null ? null : usrRespMap.get(exportName);
@@ -228,10 +228,18 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         // find out if this is an other datatype
         boolean other = "true".equals(answerTypeOther.get(exportName));
-        boolean formula = formulaeMap.get(exportName) != null;
+        boolean formula = isFormula(exportName, formulaNames, formulaeMap);
         // if other=true than the export name is of type other (o), or if formula=true than the export name is formula (f), else otherwise it is a regular data type (r)
         char dataType = other ? 'o' : formula ? 'f' : 'r';
         return new DataExportCell(exportName, exportVal, dataType);
+    }
+
+    private boolean isFormula(String exportName, List<String> formulaNames, Map<String, String> formulaeMap) {
+        boolean f = formulaeMap.get(exportName) != null;
+        if (!f) {
+            f = formulaNames.contains(exportName);
+        }
+        return f;
     }
 
     private ExportLog createExportLogFromOptions(DataExportFilterOptions options) {
