@@ -16,13 +16,14 @@ ${MODULE_START}
 <#-- AUDIT C --> <#assign screen = "AUDIT C"> <#assign status = empty> <#assign score = empty> <#assign cutoff = empty> <#assign rows = []>  <#if var1229??> <#assign score = getFormulaDisplayText(var1229)> <#if score != "notset"> <#assign cutoff = "3-women/4-men"> <#assign score = score?number>  <#if (score >= 0) && (score <= 2)> <#assign status = "Negative"> <#elseif (score >= 4) && (score <= 998)> <#assign status = "Positive"> <#elseif (score == 3 )> <#assign status = "Positive for women/Negative for men"> </#if> <#else> <#assign score = empty> </#if> <#if (score?string == empty) || (status == empty)> <#assign status = empty> <#assign score = empty> </#if> </#if>  <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  
 <#-- TBI --> 
 <#assign screen = "BTBIS (TBI)"> 
-<#assign status = "Skipped"> <#assign score = "N/A"> <#assign cutoff = "N/A">  
+<#assign status = empty> <#assign score = empty> <#assign cutoff = empty>  
 <#if var10718?? && var10718.value??> 
+    <#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Skipped">
 	<#if (var10718.value?number  >=4) && (var10718.value?number <999)> 
-		<#assign score = "N/A"> <#assign cutoff = "N/A"> <#assign status = "Positive"> 
+		<#assign status = "Positive"> 
 	</#if>  
 	<#if (var10718.value?number  <4)> 
-		<#assign status = "Negative"> <#assign score = empty> <#assign cutoff = empty> 
+		<#assign status = "Negative"> 
 	</#if> 
 	</#if>
 <#assign rows = rows + [[screen, status, score, cutoff]]> <@resetRow/>  
