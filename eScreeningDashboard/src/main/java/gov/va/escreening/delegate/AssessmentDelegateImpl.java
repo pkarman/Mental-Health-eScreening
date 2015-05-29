@@ -84,7 +84,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 			for (VeteranAssessment assessment : veteranAssessments) {
 				if(programId == null || assessment.getProgram().getProgramId().equals(programId))
 				{
-					if (surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).size() > 0)
+					if (!surveyRepository.findForVeteranAssessmentId(assessment.getVeteranAssessmentId()).isEmpty())
 						return assessment;
 				}
 			}
@@ -104,7 +104,6 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Override
 	public void ensureValidAssessmentContext() throws InvalidAssessmentContextException {
-		logger.debug("Ensuring valid assessment context");
 		if (!assessmentContext.getIsInitialized() || assessmentContext.getVeteran() == null)
 			throw new InvalidAssessmentContextException("Veteran not logged in");
 	}
@@ -121,7 +120,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
 
 		if (assessmentRequest != null) {
-			logger.debug("Assessment request: {}", assessmentRequest);
+			//logger.debug("Assessment request: {}", assessmentRequest);
 
 			// we set the assessment ID from the context (not from the request)
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());
@@ -270,7 +269,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, ASSESSMENT_EVENT_MARKED_COMPLETED, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), PERSON_TYPE_VETERAN);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 
-        // after the assessment is done, we will calculate the score first before returing to UI.
+        // after the assessment is done, we will calculate the score first before returning to UI.
         recordAllReportableScores(veteranAssessment);
 	}
 

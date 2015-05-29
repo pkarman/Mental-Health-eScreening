@@ -20,13 +20,16 @@ public class VeteranAssessmentSurveyScore implements Serializable {
     @Column(name = "assessment_survey_score_id")
     private Integer assessmentSurveyScoreId;
 
-    @JoinColumn(name="veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
+    @JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
     @ManyToOne
     private VeteranAssessment veteranAssessment;
 
-    @JoinColumn(name="survey_id", referencedColumnName = "survey_id")
+    @JoinColumn(name = "survey_id", referencedColumnName = "survey_id")
     @ManyToOne
     private Survey survey;
+
+    @Column(name = "av_name")
+    private String avName;
 
     @Column(name = "survey_score")
     private Integer score;
@@ -108,5 +111,13 @@ public class VeteranAssessmentSurveyScore implements Serializable {
 
     public void setScreenNumber(Integer screenNumber) {
         this.screenNumber = screenNumber;
+    }
+
+    public String getAvName() {
+        return avName;
+    }
+
+    public void setAvName(String avName) {
+        this.avName = avName;
     }
 }

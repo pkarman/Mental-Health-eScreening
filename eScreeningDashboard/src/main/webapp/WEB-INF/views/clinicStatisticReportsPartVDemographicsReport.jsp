@@ -6,7 +6,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports | Clinic Statistic Reports: Demographics Report</title>
+	<title>Reports | Clinic Statistic Reports: Demographics Report</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
@@ -68,17 +69,11 @@
 				<div class="row">
 					
 					<div class="col-md-4">
-						<div class="checkbox_group_label"><strong>Select VistA Clinics *</strong></div>
+						<label>Select VistA Clinics *</label>
 						<div class="clearfix"></div>
 						<div class="border-radius-main-form gray-lighter">
-							
-							
-							
-							
-							
-							
-							
-							<!-- TODO: Program Evaluator Role only 602 / 603
+							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by  Clinic" />
+							<!-- Program Evaluator Role only 602 / 603 -->
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
@@ -86,16 +81,16 @@
 								</div>
 							</div>
 							<hr class="hr_margin_5">
-							-->
-							
-							
-							
 							
 							
 							<div class="vertical_scoll_list_b module_list">
-								 <ul ng-repeat="clinic in clinicsList">
-									<li><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></li>
-								 </ul>
+
+									<table  id="clinics-list-table">
+										<tr ng-repeat="clinic in clinicsList">
+										  <td><div class="checkbox"><input type="checkbox" id="module_{{clinic.clinicId}}" checklist-model="report.clinicsList" checklist-value="clinic.clinicId" name="module_{{clinic.clinicId}}" class="checkbox_group_clinic" checkbox-group  />  <label class="labelAlign" for="module_{{clinic.clinicId}}">{{clinic.clinicName}}</label></div></td>
+										</tr>
+								  </table>
+								  
 							</div>
 						</div>
 					</div>
@@ -151,5 +146,6 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsModule.js" />"></script>
+	
 </body>
 </html>

@@ -1,12 +1,17 @@
 package gov.va.escreening.repository;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.dto.report.ScoreDateDTO;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
-import gov.va.escreening.util.ReportRepositoryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.*;
@@ -23,13 +28,30 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     @Autowired
     private VeteranRepository veteranRepository;
 
-    public VeteranAssessmentSurveyScoreRepositoryImpl() {
-        super();
+    @Resource(name = "modulesForPositiveScreeningMap")
+    Map<String, String> modulesForPositiveScreeningMap;
 
+    Map<String, List<Map>> posNegScreenScoreRulesMap;
+
+    /**
+     * build posNegScreenScoreRulesMap after dependency injection is done to perform any initialization
+     */
+    @PostConstruct
+    private void constructPosNegScreenScoreRulesMap() {
+        Gson gson = new GsonBuilder().create();
+        this.posNegScreenScoreRulesMap = Maps.newHashMap();
+        for (String moduleName : modulesForPositiveScreeningMap.keySet()) {
+            String modulePosNegJson = modulesForPositiveScreeningMap.get(moduleName);
+            List<Map> modulePosNegMap = gson.fromJson(modulePosNegJson, List.class);
+            this.posNegScreenScoreRulesMap.put(moduleName, modulePosNegMap);
+        }
+    }
+
+    public VeteranAssessmentSurveyScoreRepositoryImpl() {
         setClazz(VeteranAssessmentSurveyScore.class);
     }
 
-     /**
+    /**
      * Query for 601
      *
      * @param surveyId
@@ -39,18 +61,19 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
      * @return
      */
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
-                " where vassr.dateCompleted >= :fromDate " +
-                " and vassr.dateCompleted <= :toDate " +
+                " where vassr.dateCompleted between :fromDate and :toDate " +
                 " and vassr.survey.id = :surveyId  " +
+                ((avName != null) ? " and vassr.avName = :avName  " : "") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.screenNumber is null" +
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("veteranId", veteranId);
 
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
@@ -60,19 +83,21 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, Integer veteranId, String fromDate, String toDate) {
+    public List<VeteranAssessmentSurveyScore> getDataForIndividual(Integer clinicId, Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate) {
 
         String hql = "select vassr from VeteranAssessmentSurveyScore vassr  " +
                 " where vassr.dateCompleted >= :fromDate " +
                 " and vassr.dateCompleted <= :toDate " +
                 " and vassr.survey.id = :surveyId  " +
+                ((avName != null) ? " and vassr.avName = :avName  " : "") +
                 " and vassr.veteran.id = :veteranId " +
                 " and vassr.clinic.id = :clinicId " +
-                " and vassr.screenNumber is null "+
+                " and vassr.screenNumber is null " +
                 " order by vassr.dateCompleted desc ";
 
         TypedQuery<VeteranAssessmentSurveyScore> query = entityManager.createQuery(hql, VeteranAssessmentSurveyScore.class);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("veteranId", veteranId);
         query.setParameter("clinicId", clinicId);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
@@ -84,7 +109,6 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     /**
      * Query for 600 Individual data for clinic
      *
-     * @param clinicIds
      * @param surveyIds
      * @param fromDate
      * @param toDate
@@ -113,47 +137,184 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
     @Override
-    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String fromDate, String toDate){
-        String sql = "select count(distinct(veteran_id)) "+
-                " from veteran_assessment_survey_score s " +
-                " where clinic_id = :clinicId and survey_id = :surveyId " +
-                " and date_completed >= :fromDate and date_completed <= :toDate " +
-                " and s.screen_number is null ";
+    public int getVeteranCountForClinic(Integer clinicId, Integer surveyId, String avName, String fromDate, String toDate) {
+        String sql = "SELECT count(DISTINCT(veteran_id)) " +
+                " FROM veteran_assessment_survey_score s " +
+                " WHERE clinic_id = :clinicId AND survey_id = :surveyId " +
+                ((avName != null) ? " AND s.av_name = :avName " : "") +
+                " AND s.date_completed between :fromDate :toDate " +
+                " AND s.screen_number IS NULL ";
 
         Query query = entityManager.createNativeQuery(sql);
 
         query.setParameter("clinicId", clinicId);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
-        List<Object> result =  query.getResultList();
+        List<Object> result = query.getResultList();
 
-        return ((Number)result.get(0)).intValue();
+        return ((Number) result.get(0)).intValue();
     }
 
     @Override
-    public List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds, List<String> surveyNameList) {
-
-        Query q = entityManager.createNativeQuery("select survey.name, score.screen_number, count(*) from veteran_assessment_survey_score score inner join survey survey " +
-                "on score.survey_id = survey.survey_id " +
-                "where score.screen_number is not null and survey.name in (:surveyNames) " +
-                "  and score.date_completed >= :fromDate and score.date_completed <= :toDate " +
-                "  and score.clinic_id in (:clinicIds) " +
-                " group by survey.name, score.screen_number " +
-                " order by survey.name, score.screen_number ");
-
-        setParameters(q, fromDate, toDate, clinicIds);
-        q.setParameter("surveyNames", surveyNameList );
-
-        List<Object[]>  rows = q.getResultList();
+    public List<Report599DTO> getClinicStatisticReportsPartVIPositiveScreensReport(String fromDate, String toDate, List<Integer> clinicIds) {
 
         List<Report599DTO> dtos = new ArrayList<>();
 
-        Map<String, Report599DTO> cache = new HashMap<>();
+        // step#1: partition modules in three lists
+        // (1) modules with assessment variables which do not need to be splitted. use generic Query q
+        List<String> regularModules = partitionRegularModules();
+        processRegularModules(dtos, regularModules, fromDate, toDate, clinicIds);
+        // (2) modules with assessment variables which needs to be splitted (splittable). use a Query with group by splittable
+        Map<String, List<Map>> splittableModules = partitionSplittableModules();
+        processSplittableModules(dtos, splittableModules, fromDate, toDate, clinicIds);
+        // (3) modules with assessment variables which needs to be splitted (non-splittable). Use a Query with no splittable assessment variables
+        processNonSplittablesFromSplittableModules(dtos, splittableModules, fromDate, toDate, clinicIds);
 
-        for(Object[] aRow : rows) {
 
+        for (Report599DTO dto : dtos) {
+            int total = 0;
+            if (dto.getMissingCount() == null) {
+                dto.setMissingCount("0");
+            } else {
+                total += Integer.parseInt(dto.getMissingCount());
+            }
+
+            if (dto.getNegativeCount() == null) {
+                dto.setNegativeCount("0");
+            } else {
+                total += Integer.parseInt(dto.getNegativeCount());
+            }
+
+            if (dto.getPositiveCount() == null) {
+                dto.setPositiveCount("0");
+            } else {
+                total += Integer.parseInt(dto.getPositiveCount());
+            }
+
+            if (total == 0) {
+                dto.setMissingPercent("0%");
+                dto.setPositivePercent("0%");
+                dto.setNegativePercent("0%");
+
+                dto.setMissingCount("0/0");
+                dto.setPositiveCount("0/0");
+                dto.setNegativeCount("0/0");
+            } else {
+                dto.setMissingPercent(
+                        String.format("%3.0f%%", Float.parseFloat(dto.getMissingCount()) / total * 100)
+                );
+                dto.setPositivePercent(
+                        String.format("%3.0f%%", Float.parseFloat(dto.getPositiveCount()) / total * 100)
+                );
+                dto.setNegativePercent(
+                        String.format("%3.0f%%", Float.parseFloat(dto.getNegativeCount()) / total * 100)
+                );
+                dto.setMissingCount(dto.getMissingCount() + "/" + total);
+                dto.setPositiveCount(dto.getPositiveCount() + "/" + total);
+                dto.setNegativeCount(dto.getNegativeCount() + "/" + total);
+            }
+        }
+        return dtos;
+    }
+
+    private void processNonSplittablesFromSplittableModules(List<Report599DTO> dtos, Map<String, List<Map>> splittableModules, String fromDate, String toDate, List<Integer> clinicIds) {
+        for (String moduleName : splittableModules.keySet()) {
+            Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
+                    "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
+                    "ON score.survey_id = survey.survey_id " +
+                    "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
+                    "AND score.av_name NOT IN (:splittableAvs) " +
+                    "AND score.date_completed BETWEEN :fromDate AND :toDate " +
+                    "AND score.clinic_id IN (:clinicIds) " +
+                    "GROUP BY survey.name, score.screen_number " +
+                    "ORDER BY survey.name, score.screen_number");
+
+            setParameters(q, fromDate, toDate, clinicIds);
+            q.setParameter("surveyName", moduleName);
+            List<String> splittableAvs = getAvs(splittableModules.get(moduleName));
+            q.setParameter("splittableAvs", splittableAvs);
+            List<Object[]> rows = q.getResultList();
+            primeDTosFromRawRows(dtos, rows);
+        }
+    }
+
+    private void processSplittableModules(List<Report599DTO> dtos, Map<String, List<Map>> splittableModules, String fromDate, String toDate, List<Integer> clinicIds) {
+
+        for (String moduleName : splittableModules.keySet()) {
+            for (Map m : splittableModules.get(moduleName)) {
+                Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
+                        "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
+                        "ON score.survey_id = survey.survey_id " +
+                        "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
+                        "AND score.av_name = :splittableAv " +
+                        "AND score.date_completed BETWEEN :fromDate AND :toDate " +
+                        "AND score.clinic_id IN (:clinicIds) " +
+                        "GROUP BY survey.name, score.screen_number " +
+                        "ORDER BY survey.name, score.screen_number");
+
+                setParameters(q, fromDate, toDate, clinicIds);
+                q.setParameter("surveyName", moduleName);
+                q.setParameter("splittableAv", m.get("var"));
+                List<Object[]> rows = q.getResultList();
+
+                for (Object[] r : rows) {
+                    r[0] = m.get("alias").toString();
+                }
+
+                primeDTosFromRawRows(dtos, rows);
+            }
+        }
+    }
+
+    private List<String> getAvs(List<Map> splittableModules) {
+        List<String> avLst = Lists.newArrayList();
+        for (Map m : splittableModules) {
+            avLst.add(m.get("var").toString());
+        }
+        return avLst;
+    }
+
+    private Map<String, List<Map>> partitionSplittableModules() {
+        Map<String, List<Map>> modulesWithSplittableAVs = Maps.newHashMap();
+
+        for (String moduleName : this.posNegScreenScoreRulesMap.keySet()) {
+            List<Map> splittableAVs = Lists.newArrayList();
+            for (Map posNegScreenScoreRulesMap : this.posNegScreenScoreRulesMap.get(moduleName)) {
+                Boolean splittable = (Boolean) posNegScreenScoreRulesMap.get("split");
+                if (splittable != null && splittable) {
+                    splittableAVs.add(posNegScreenScoreRulesMap);
+                }
+            }
+            if (!splittableAVs.isEmpty()) {
+                modulesWithSplittableAVs.put(moduleName, splittableAVs);
+            }
+        }
+
+        return modulesWithSplittableAVs;
+    }
+
+    private void processRegularModules(List<Report599DTO> dtos, List<String> regularModules, String fromDate, String toDate, List<Integer> clinicIds) {
+        Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
+                "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
+                "ON score.survey_id = survey.survey_id " +
+                "WHERE score.screen_number IS NOT NULL AND survey.name IN (:surveyNames) " +
+                "AND score.date_completed BETWEEN :fromDate AND :toDate " +
+                "AND score.clinic_id IN (:clinicIds) " +
+                "GROUP BY survey.name, score.screen_number " +
+                "ORDER BY survey.name, score.screen_number");
+
+        setParameters(q, fromDate, toDate, clinicIds);
+        q.setParameter("surveyNames", regularModules);
+        List<Object[]> rows = q.getResultList();
+        primeDTosFromRawRows(dtos, rows);
+    }
+
+    private void primeDTosFromRawRows(List<Report599DTO> dtos, List<Object[]> rows) {
+        Map<String, Report599DTO> cache = Maps.newHashMap();
+        for (Object[] aRow : rows) {
             String moduleName = (String) aRow[0];
             Report599DTO dto = cache.get(moduleName);
             if (dto == null) {
@@ -170,91 +331,66 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 dto.setNegativeCount(Integer.toString(count));
             } else if (screenNumber == 1) {
                 dto.setPositiveCount(Integer.toString(count));
-            } else if (screenNumber == 999){
+            } else if (screenNumber == 999) {
                 dto.setMissingCount(Integer.toString(count));
             }
         }
 
-        for(Report599DTO dto : dtos){
+    }
 
-            int total = 0;
-            if (dto.getMissingCount() == null){
-                dto.setMissingCount("0");
-            }
-            else{
-                total += Integer.parseInt(dto.getMissingCount());
-            }
-
-            if (dto.getNegativeCount()==null){
-                dto.setNegativeCount("0");
-            }else{
-                total += Integer.parseInt(dto.getNegativeCount());
-            }
-
-            if (dto.getPositiveCount() == null){
-                dto.setPositiveCount("0");
-            }else{
-                total += Integer.parseInt(dto.getPositiveCount());
-            }
-
-            if (total == 0){
-                dto.setMissingPercent("0%");
-                dto.setPositivePercent("0%");
-                dto.setNegativePercent("0%");
-
-                dto.setMissingCount("0/0");
-                dto.setPositiveCount("0/0");
-                dto.setNegativeCount("0/0");
-            }else{
-                dto.setMissingPercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getMissingCount()) / total * 100)
-                );
-                dto.setPositivePercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getPositiveCount()) / total * 100)
-                );
-                dto.setNegativePercent(
-                        String.format("%3d%%", Integer.parseInt(dto.getNegativeCount()) / total * 100)
-                );
-                dto.setMissingCount(dto.getMissingCount()+"/"+total);
-                dto.setPositiveCount(dto.getPositiveCount()+"/"+total);
-                dto.setNegativeCount(dto.getNegativeCount()+"/"+total);
+    private List<String> partitionRegularModules() {
+        List<String> regularModules = Lists.newArrayList();
+        for (String moduleName : posNegScreenScoreRulesMap.keySet()) {
+            if (!isSplittable(posNegScreenScoreRulesMap.get(moduleName))) {
+                regularModules.add(moduleName);
             }
         }
+        return regularModules;
+    }
 
-        return dtos;
+    private boolean isSplittable(List<Map> posNegScreenScoreRulesList) {
+        for (Map posNegScreenScoreRulesMap : posNegScreenScoreRulesList) {
+            Boolean splittable = (Boolean) posNegScreenScoreRulesMap.get("split");
+            if (splittable != null && splittable) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public List<ScoreDateDTO> getDataForClicnic(Integer clinicId, Integer surveyId,
-                                                                String fromDate, String toDate) {
+                                                String avName, String fromDate, String toDate) {
 
-        String sql = "select c.name, survey_id, date(date_completed), count(*), avg(survey_score) " +
-                " from veteran_assessment_survey_score s " +
-                " inner join clinic c on s.clinic_id = c.clinic_id " +
-                " where c.clinic_id = :clinicId and survey_id = :surveyId " +
-                " and date_completed >= :fromDate and date_completed <= :toDate " +
-                " and s.screen_number is null " +
-                " group by c.name, survey_id, date(date_completed) " +
-                " order by c.name, survey_id, date(date_completed) ";
+        String sql = "SELECT c.name, survey_id, date(date_completed), count(*), avg(survey_score) " +
+                " FROM veteran_assessment_survey_score s " +
+                " INNER JOIN clinic c ON s.clinic_id = c.clinic_id " +
+                " WHERE c.clinic_id = :clinicId AND survey_id = :surveyId " +
+                ((avName != null) ? " AND s.av_name = :avName " : "") +
+                " AND s.date_completed between :fromDate AND :toDate " +
+                " AND s.screen_number IS NULL " +
+                " GROUP BY c.name, survey_id, date(date_completed) " +
+                " ORDER BY c.name, survey_id, date(date_completed) ";
 
         Query query = entityManager.createNativeQuery(sql);
 
         query.setParameter("clinicId", clinicId);
         query.setParameter("surveyId", surveyId);
+        if (avName != null) query.setParameter("avName", avName);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
 
-        List<Object[]> result =  query.getResultList();
+        List<Object[]> result = query.getResultList();
 
         List<ScoreDateDTO> scores = new ArrayList<>(result.size());
 
-        for(Object [] objects : result){
+        for (Object[] objects : result) {
             ScoreDateDTO scoreDateDTO = new ScoreDateDTO();
-            scoreDateDTO.setClinicName((String)objects[0]);
-            scoreDateDTO.setSurveyId((Integer)objects[1]);
-            scoreDateDTO.setDateCompleted((Date)objects[2]);
-            scoreDateDTO.setCount(((Number)objects[3]).intValue());
-            scoreDateDTO.setScore(((Number)objects[4]).floatValue());
+            scoreDateDTO.setClinicName((String) objects[0]);
+            scoreDateDTO.setSurveyId((Integer) objects[1]);
+            scoreDateDTO.setDateCompleted((Date) objects[2]);
+            scoreDateDTO.setCount(((Number) objects[3]).intValue());
+            scoreDateDTO.setScore(((Number) objects[4]).floatValue());
 
             scores.add(scoreDateDTO);
         }
@@ -263,39 +399,13 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
     }
 
 
-
-    @Override
-    public List getAverageForClicnic(Integer clinicId, Integer surveyId,
-                                  String fromDate, String toDate) {
-
-        String sql = "select clinic_id, survey_id, avg(survey_score) " +
-                " from veteran_assessment_survey_score " +
-                " where clinic_id = :clinicId and survey_id = :surveyId " +
-                " and date_completed >= :fromDate and date_completed <= :toDate " +
-                " and screen_number is null" +
-                " group by clinic_id, survey_id " +
-                " order by clinic_id, survey_id  ";
-
-        Query query = entityManager.createNativeQuery(sql);
-
-        query.setParameter("clinicId", clinicId);
-        query.setParameter("surveyId", surveyId);
-        query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
-        query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
-
-        List result =  query.getResultList();
-
-        return result;
-    }
-
-
-    private void setParameters(Query query, String fromDate, String toDate, List<Integer> clinicIds){
+    private void setParameters(Query query, String fromDate, String toDate, List<Integer> clinicIds) {
         query.setParameter("clinicIds", clinicIds);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
     }
 
-    private void setParameters(Query query, String fromDate, String toDate, Integer clinicId){
+    private void setParameters(Query query, String fromDate, String toDate, Integer clinicId) {
         query.setParameter("clinicId", clinicId);
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));

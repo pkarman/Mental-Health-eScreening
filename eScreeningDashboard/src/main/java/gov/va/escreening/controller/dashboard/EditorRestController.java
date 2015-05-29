@@ -1,7 +1,7 @@
 package gov.va.escreening.controller.dashboard;
 
 
-import gov.va.escreening.delegate.EditorsViewDelegate;
+import gov.va.escreening.delegate.EditorsDelegate;
 import gov.va.escreening.domain.ClinicalReminderDto;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
@@ -34,13 +34,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.ws.rs.NotFoundException;
 
+// TODO: This class should extend RestController and much of the nonstandard response object usage should be removed 
 @Controller
 @RequestMapping(value = "/dashboard")
 public class EditorRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(EditorRestController.class);
 
-    private EditorsViewDelegate editorsViewDelegate;
+    private EditorsDelegate editorsViewDelegate;
     @Autowired
     private MeasureRepository measureRepo;
     
@@ -48,7 +49,7 @@ public class EditorRestController {
     private ClinicalReminderService clinicalReminderSvc;
 
     @Autowired
-    public void setEditorsViewDelegate(EditorsViewDelegate editorsViewDelegate) {
+    public void setEditorsViewDelegate(EditorsDelegate editorsViewDelegate) {
         this.editorsViewDelegate = editorsViewDelegate;
     }
 
@@ -169,6 +170,10 @@ public class EditorRestController {
         return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), "The data is deleted successfully.");
     }
 
+    /*
+    ============= /services/surveys  =============
+   */
+    
     @RequestMapping(value = "/services/surveys", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public Response<SurveyInfo> addSurvey(@RequestBody SurveyInfo survey,
@@ -237,13 +242,10 @@ public class EditorRestController {
         return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyInfoItems);
     }
 
-    @RequestMapping(value = "/services/surveys/{surveyId}", method = RequestMethod.DELETE, produces = "application/json")
-    @ResponseBody
-    public Response<Object> deleteSurvey(@PathVariable("surveyId") Integer surveyId, @CurrentUser EscreenUser escreenUser) {
-        //editorsViewDelegate.deleteBattery(surveyId);
-        return new Response<>(new ResponseStatus(ResponseStatus.Request.Succeeded), null);
-    }
-
+ 
+    /*
+    ============= /services/battery =============
+   */
 
     @RequestMapping(value = "/services/battery", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
@@ -314,53 +316,18 @@ public class EditorRestController {
 
         return createBatteriesResponse(batteryInfoList);
     }
-
+    
     @RequestMapping(value = "/services/batteries/{batteryId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
     public Map<String, Map<String, String>> deleteBattery(@PathVariable("batteryId") Integer batteryId, @CurrentUser EscreenUser escreenUser) {
         editorsViewDelegate.deleteBattery(batteryId);
         return createDeleteBatterySuccessfulResponse();
     }
+    
 
-    @ExceptionHandler(AssessmentEngineDataValidationException.class)
-    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public Map<String, Map<String, String>> handleException(
-            AssessmentEngineDataValidationException ex) {
-
-        logger.error(ex.getErrorResponse().getLogMessage(), ex);
-        // returns the error response which contains a list of error messages
-        //return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
-        return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public Map<String, Map<String, String>> handleException(NotFoundException e) {
-        logger.error("Object not found:", e);
-
-        ErrorResponse er = new ErrorResponse();
-        er.setDeveloperMessage(e.getMessage());
-        er.setStatus(HttpStatus.NOT_FOUND.value());
-        // returns the error response which contains a list of error messages
-        //return er;
-        return createRequestFailureResponse(e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public Map<String, Map<String, String>> handleException(Exception e) {
-        logger.error("Unexpected error:", e);
-
-        ErrorResponse er = new ErrorResponse();
-        er.setDeveloperMessage(e.getMessage());
-        er.setStatus(HttpStatus.BAD_REQUEST.value());
-        // returns the error response which contains a list of error messages
-        //return er;
-        return createRequestFailureResponse(e.getMessage());
-    }
+   /*
+    ============= /services/surveySections =============
+   */
 
     @RequestMapping(value = "/services/surveySections", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -372,26 +339,6 @@ public class EditorRestController {
         return createSectionsResponse(surveySectionInfoList);
     }
 
-    @RequestMapping(value = "/services/clinicalReminders", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Map getClinicalReminders(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSections");
-
-        List<ClinicalReminderDto> crDtoList = clinicalReminderSvc.findAll();
-
-        Map status = new HashMap();
-        status.put("message", "The Quick Brown fox jumps over the lazy dog");
-        status.put("status", crDtoList != null && !crDtoList.isEmpty() ? "succeeded" : "failed");
-
-        Map clinicalReminders = new HashMap();
-        clinicalReminders.put("clinicalReminders", crDtoList);
-
-        Map responseMap = new HashMap();
-        responseMap.put("status", status);
-        responseMap.put("payload", clinicalReminders);
-        return responseMap;
-    }
-    
     @RequestMapping(value = "/services/surveySections/{sectionId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map<String, Object> getSection(
@@ -476,6 +423,77 @@ public class EditorRestController {
             @CurrentUser EscreenUser escreenUser) {
         editorsViewDelegate.deleteSection(sectionId);
         return createDeleteSectionSuccessfulResponse();
+    }
+    
+ 
+    /*
+    ============= /services/clinicalReminders =============
+   */
+    
+    //TODO: This should be rewritten to use standard response object
+    @RequestMapping(value = "/services/clinicalReminders", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Map getClinicalReminders(@CurrentUser EscreenUser escreenUser) {
+        logger.debug("getSections");
+
+        List<ClinicalReminderDto> crDtoList = clinicalReminderSvc.findAll();
+
+        Map status = new HashMap();
+        status.put("message", "The Quick Brown fox jumps over the lazy dog");
+        status.put("status", crDtoList != null && !crDtoList.isEmpty() ? "succeeded" : "failed");
+
+        Map clinicalReminders = new HashMap();
+        clinicalReminders.put("clinicalReminders", crDtoList);
+
+        Map responseMap = new HashMap();
+        responseMap.put("status", status);
+        responseMap.put("payload", clinicalReminders);
+        return responseMap;
+    }
+    
+    
+    /*
+    ============= Exception handling: this should be removed when this class is updated to extend RestController =============
+   */
+
+    @ExceptionHandler(AssessmentEngineDataValidationException.class)
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, Map<String, String>> handleException(
+            AssessmentEngineDataValidationException ex) {
+
+        logger.error(ex.getErrorResponse().getLogMessage(), ex);
+        // returns the error response which contains a list of error messages
+        //return ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
+        return createRequestFailureResponse(ex.getErrorResponse().getUserMessage("\n"));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Map<String, Map<String, String>> handleException(NotFoundException e) {
+        logger.error("Object not found:", e);
+
+        ErrorResponse er = new ErrorResponse();
+        er.setDeveloperMessage(e.getMessage());
+        er.setStatus(HttpStatus.NOT_FOUND.value());
+        // returns the error response which contains a list of error messages
+        //return er;
+        return createRequestFailureResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, Map<String, String>> handleException(Exception e) {
+        logger.error("Unexpected error:", e);
+
+        ErrorResponse er = new ErrorResponse();
+        er.setDeveloperMessage(e.getMessage());
+        er.setStatus(HttpStatus.BAD_REQUEST.value());
+        // returns the error response which contains a list of error messages
+        //return er;
+        return createRequestFailureResponse(e.getMessage());
     }
 
     private Map<String, Object> createSectionsResponse(List<SurveySectionInfo> surveySectionInfoList) {

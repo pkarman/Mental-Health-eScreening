@@ -22,13 +22,17 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
- *
+ * TODO: It would be nice to remove this entry if possible and use a join table hibernate setup between 
+ * parent and child.
+ * 
  * @author jocchiuzzo
  */
 @Entity
-@Table(name = "assessment_var_children")
+@Table(name = "assessment_var_children",
+uniqueConstraints = { @UniqueConstraint( columnNames = { "variable_parent", "variable_child" }) })
 @NamedQueries({
     @NamedQuery(name = "AssessmentVarChildren.findAll", query = "SELECT a FROM AssessmentVarChildren a")})
 public class AssessmentVarChildren implements Serializable {
@@ -49,16 +53,11 @@ public class AssessmentVarChildren implements Serializable {
     @ManyToOne(optional = false)
     private AssessmentVariable variableChild;
 
-    public AssessmentVarChildren() {
-    }
+    public AssessmentVarChildren() {}
 
-    public AssessmentVarChildren(Integer assessmentVarChildrenId) {
-        this.assessmentVarChildrenId = assessmentVarChildrenId;
-    }
-
-    public AssessmentVarChildren(Integer assessmentVarChildrenId, Date dateCreated) {
-        this.assessmentVarChildrenId = assessmentVarChildrenId;
-        this.dateCreated = dateCreated;
+    public AssessmentVarChildren(AssessmentVariable variableParent, AssessmentVariable variableChild) {
+        this.variableParent = variableParent;
+        this.variableChild = variableChild;
     }
 
     public Integer getAssessmentVarChildrenId() {
@@ -115,7 +114,9 @@ public class AssessmentVarChildren implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.AssessmentVarChildren[ assessmentVarChildrenId=" + assessmentVarChildrenId + " ]";
+        return "AssessmentVarChildren[ parentId=" + variableParent.getAssessmentVariableId() 
+                + ", childId=" + variableChild.getAssessmentVariableId()
+                + "]";
     }
     
 }

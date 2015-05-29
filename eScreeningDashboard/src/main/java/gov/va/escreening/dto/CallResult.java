@@ -6,15 +6,13 @@ public class CallResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Boolean hasError;
-    private String userMessage;
-    private String systemMessage;
+    final private boolean hasError;
+    final private String userMessage;
+    final private String systemMessage;
 
-    public Boolean getHasError() {
-        return hasError;
-    }
-
-    public void setHasError(Boolean hasError) {
+    public CallResult(boolean hasError, String userMsg, String systemMsg) {
+        this.userMessage = userMsg;
+        this.systemMessage = systemMsg;
         this.hasError = hasError;
     }
 
@@ -22,19 +20,11 @@ public class CallResult implements Serializable {
         return userMessage;
     }
 
-    public void setUserMessage(String userMessage) {
-        this.userMessage = userMessage;
-    }
-
     public String getSystemMessage() {
         return systemMessage;
     }
 
-    public void setSystemMessage(String systemMessage) {
-        this.systemMessage = systemMessage;
-    }
-
-    public CallResult() {
-        // default constructor.
+    public boolean getHasError() {
+        return hasError;
     }
 }

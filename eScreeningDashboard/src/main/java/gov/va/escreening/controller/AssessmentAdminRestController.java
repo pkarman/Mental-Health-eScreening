@@ -103,20 +103,6 @@ public class AssessmentAdminRestController {
         return veterans;
     }
 
-    /*
-     * Description for getAllSurveys() Returns a list of all versions of all surveys in json format Example output:
-     * [{"surveyId":1,"version":1,"description" :"Demographics","order":1,"surveySection"
-     * :{"surveySectionId":1,"description":"Demographics and Social Information" ,"order":1}}]
-     */
-    @RequestMapping(value = "/services/survey/getAllSurveys", method = RequestMethod.GET)
-    @ResponseBody
-    public List<SurveyDto> getAllSurveys() {
-        logger.debug("In getAllSurveys");
-
-        List<SurveyDto> surveys = surveyService.getAssignableSurveys();
-        return surveys;
-    }
-
     @RequestMapping(value = "/assessments", method = RequestMethod.GET)
     @ResponseBody
     @Deprecated

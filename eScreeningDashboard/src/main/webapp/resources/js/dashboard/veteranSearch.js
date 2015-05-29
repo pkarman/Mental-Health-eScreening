@@ -30,7 +30,7 @@ app.directive('reportTable', function() {
  			{ "mData": "email" },
  			{ "mData": "gender" },
  			{ "mData": "lastAssessmentDate", "sType": "date","sClass":"numeric" },
- 			{ "mData": "totalAssessments","sClass":"numeric", "sWidth":"25px", "mRender": function(data, type, full) { return '<a href="assessmentReport?vid='+full.veteranId+'" class="btn btn-primary btn-xs">View Total Assessments <span class="badge">' + data + '</span></a>'; } }
+ 			{ "mData": "totalAssessments","sClass":"numeric", "bSortable": false, "mRender": function(data, type, full) { return '<a href="assessmentReport?vid='+full.veteranId+'" class="btn btn-primary btn-xs">View Total Assessments <span class="badge">' + data + '</span></a>'; } }
  		];
         options["aoColumns"] = aoColumns;
 

@@ -45,8 +45,6 @@ public class Program implements Serializable {
     private List<VeteranAssessment> veteranAssessmentList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "program")
     private List<UserProgram> userProgramList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program")
-    private List<ProgramSurvey> programSurveyList;
     @OneToMany(mappedBy = "program")
     private List<NoteTitleMap> noteTitleMapList;
     @OneToMany(mappedBy = "program")
@@ -120,14 +118,6 @@ public class Program implements Serializable {
 
     public void setUserProgramList(List<UserProgram> userProgramList) {
         this.userProgramList = userProgramList;
-    }
-
-    public List<ProgramSurvey> getProgramSurveyList() {
-        return programSurveyList;
-    }
-
-    public void setProgramSurveyList(List<ProgramSurvey> programSurveyList) {
-        this.programSurveyList = programSurveyList;
     }
 
     public List<NoteTitleMap> getNoteTitleMapList() {

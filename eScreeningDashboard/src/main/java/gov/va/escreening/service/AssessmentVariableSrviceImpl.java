@@ -1,7 +1,10 @@
 package gov.va.escreening.service;
 
+import static gov.va.escreening.constants.AssessmentConstants.*;
 import gov.va.escreening.constants.AssessmentConstants;
+
 import com.google.common.collect.*;
+
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -19,12 +22,12 @@ import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import gov.va.escreening.service.export.FormulaColumnsBldr;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +64,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			this.assessments = assessments;
 		}
 
+		//TODO: This has to be refactored to use TemplateAssessmentVariableDTO objects and not a multi map all with the same key
 		private void addAv2Table(AssessmentVariable av, Measure m,
 				MeasureAnswer ma) {
 			Integer avId = av.getAssessmentVariableId();
@@ -202,7 +206,12 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
         return htmlText != null ? htmlText.replaceAll("\\<.*?>", "") : "";
     }
 
-    @Override
+	@Override
+	public AssessmentVariable findById(Integer variableId) {
+		return avr.findOne(variableId);
+	}
+
+	@Override
     public void filterBySurvey(Survey survey, AvBuilder<?> avBldr,
                                Collection<Measure> smList, Collection<AssessmentVariable> avList,
                                boolean useFilteredMeasures, boolean includeFormulaTokens) {
@@ -247,7 +256,26 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
     public Collection<AssessmentVariable> findAllFormulas() {
 		return avr.findAllFormulae();
 	}
+	
+	//TODO: all of these getAssessment* method need to be refactored to be more efficient
 
+	@Override
+    @Transactional(readOnly = true)
+	public Table<String, String, Object> getAssessmentAllVars(boolean ignoreAnswers, boolean includeFormulaTokens){
+	    Table<String, String, Object> assessments = TreeBasedTable.create();
+        
+        List<Survey> surveys = sr.findAll();
+        Collection<AssessmentVariable> avList = avr.findAll();
+        AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
+        
+        for(Survey survey : surveys){
+            List<Measure> measures = survey.createMeasureList();
+            //TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
+            filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+        }
+        return avModelBldr.getResult();
+	}
+	
 	@Override
     public Collection<AssessmentVariable> findByDisplayNames(List<String> displayNames) {
 		return avr.findByDisplayNames(displayNames);
@@ -300,9 +328,11 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				AvBuilder<Table<String, String, Object>>  avModelBldr = new TableTypeAvModelBuilder(assessments);
 				
 				for(Survey survey : battery.getSurveys()){
-					List<Measure> measures = survey.createMeasureList();
-					//TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
-                    filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+				    if(survey.isPublished()){
+				        List<Measure> measures = survey.createMeasureList();
+				        //TODO: the implementation of filterBySurvey is not very efficient; it should be updated.
+				        filterBySurvey(survey, avModelBldr, measures, avList, true, false);
+				    }
 				}
 				assessments = avModelBldr.getResult();
 			}
@@ -364,6 +394,66 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 		}
 		return avs.get(0);
 	}
+	
+	@Override
+    public Set<AssessmentVariable> collectAssociatedVars(Set<Integer> avIds,
+            @Nullable Map<Integer, AssessmentVariable> varMap) {
+	    
+	    Set<AssessmentVariable> variableSet = new HashSet<>();        
+        for(Integer id : avIds){
+            AssessmentVariable av = varMap != null && varMap.containsKey(id) ? varMap.get(id) : avr.findOne(id);
+            variableSet.add(av);
+            
+            if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_MEASURE){
+                Measure measure = av.getMeasure();
+                addMeasureVariables(measure, variableSet);
+                
+                //check for child questions to add
+                if(measure.isParent() && measure.getChildren() != null){
+                    for(Measure child : measure.getChildren()){
+                        addMeasureVariables(child, variableSet);
+                    }
+                }
+            }
+            if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_FORMULA){
+                addFormulaVariables(av, variableSet);
+            }
+        }
+        return variableSet;
+    }
+	
+	@Override
+	public void updateParentFormulas(AssessmentVariable updatedVariable){
+	    Set<AssessmentVarChildren> childDeps = Sets.newHashSet(updatedVariable.getAssessmentVarChildrenList());
+	    for(AssessmentVariable parent : avr.getParentVariables(updatedVariable)){
+	        Set<AssessmentVarChildren> parentDeps = Sets.union(childDeps, Sets.newHashSet(parent.getAssessmentVarChildrenList()));
+	        parent.getAssessmentVarChildrenList().clear();
+	        parent.getAssessmentVarChildrenList().addAll(parentDeps);
+	        avr.update(parent);
+	        updateParentFormulas(parent);
+	    }
+	}
+	
+	private void addFormulaVariables(AssessmentVariable formula, 
+	        Set<AssessmentVariable> variableSet){
+	    variableSet.add(formula);
+	    for(AssessmentVarChildren av : formula.getAssessmentVarChildrenList()){
+	        AssessmentVariable avChild = av.getVariableChild();
+	        if(avChild.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == ASSESSMENT_VARIABLE_TYPE_FORMULA){
+	            addFormulaVariables(avChild, variableSet);
+	        }
+	        else{
+	            variableSet.add(avChild);
+	        }
+	    }
+	}
+	
+	private void addMeasureVariables(Measure measure, Set<AssessmentVariable> variableSet){
+	    variableSet.add(measure.getAssessmentVariable());
+        for(MeasureAnswer ma : measure.getMeasureAnswerList()){
+            variableSet.add(ma.assessmentVariable());
+        }
+    }
 	
 	private Collection<Measure> filterMeasures(Collection<Measure> measures,
 			final Set<Integer> measureTypes) {

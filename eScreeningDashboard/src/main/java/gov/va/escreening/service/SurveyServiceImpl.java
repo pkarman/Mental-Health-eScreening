@@ -1,6 +1,9 @@
 package gov.va.escreening.service;
 
-import static org.springframework.beans.BeanUtils.copyProperties;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.ae.Page;
@@ -8,31 +11,10 @@ import gov.va.escreening.dto.editors.QuestionInfo;
 import gov.va.escreening.dto.editors.SurveyInfo;
 import gov.va.escreening.dto.editors.SurveyPageInfo;
 import gov.va.escreening.dto.editors.SurveySectionInfo;
-import gov.va.escreening.entity.ClinicalReminder;
-import gov.va.escreening.entity.ClinicalReminderSurvey;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureAnswer;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.SurveyPage;
-import gov.va.escreening.entity.SurveySection;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.EscreeningDataValidationException;
-import gov.va.escreening.repository.AssessmentVariableRepository;
-import gov.va.escreening.repository.ClinicalReminderRepository;
-import gov.va.escreening.repository.ClinicalReminderSurveyRepository;
-import gov.va.escreening.repository.MeasureRepository;
-import gov.va.escreening.repository.SurveyPageRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.SurveySectionRepository;
+import gov.va.escreening.repository.*;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -41,9 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
+import java.util.*;
+
+import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Transactional(readOnly = true)
 @Service
@@ -74,37 +57,6 @@ public class SurveyServiceImpl implements SurveyService {
     @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<SurveyDto> getAssignableSurveys() {
-        logger.debug("getAssignableSurveys()");
-
-        List<Survey> surveys = surveyRepository.getAssignableSurveys();
-
-        // create adapter object for view
-        List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
-        for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
-        }
-
-        return surveyDtoList;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<SurveyDto> getRequiredSurveys() {
-        logger.debug("getRequiredSurveys()");
-
-        List<Survey> surveys = surveyRepository.getRequiredSurveys();
-
-        List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
-        for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
-        }
-
-        return surveyDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -171,22 +123,46 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SurveyDto> getSurveyList() {
         logger.debug("getSurveyList()");
-
-        List<Survey> surveys = surveyRepository.getSurveyList();
-
+        return toDtos(surveyRepository.getSurveyList(), Collections.<Integer>emptySet());
+    }
+    
+    @Transactional(readOnly = true)
+    @Override
+    public List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId){
+        List<Survey> assessmentSurveys = surveyRepository.findForVeteranAssessmentId(veteranAssessmentId);
+        if(assessmentSurveys == null){
+            throw new IllegalArgumentException("Unknown assessment");
+        }
+        Set<Integer> allowableSurveys = Sets.newHashSetWithExpectedSize(assessmentSurveys.size());
+        for(Survey assessmentSurvey : assessmentSurveys){
+            allowableSurveys.add(assessmentSurvey.getSurveyId());
+        }
+        
+        return toDtos(surveyRepository.getSurveyList(), allowableSurveys);
+    }
+    
+    /**
+     * Filters only public surveys and turns them into SurveyDtos
+     * @param surveys
+     * @param allowableSurveys - surveys that should be included even if they are not public
+     * @return
+     */
+    private List<SurveyDto> toDtos(List<Survey> surveys, Set<Integer> allowableSurveys){
         List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
         for (Survey survey : surveys) {
-            surveyDtoList.add(new SurveyDto(survey));
+            if(survey.isPublished() || allowableSurveys.contains(survey.getSurveyId())){
+                surveyDtoList.add(new SurveyDto(survey));
+            }
         }
-
         return surveyDtoList;
     }
-
+    
+    /**
+     * This will return all surveys regardless if they are published or not
+     */
     @Transactional(readOnly = true)
     @Override
     public List<SurveyInfo> getSurveyItemList() {
-
-
         List<Survey> surveys = surveyRepository.getSurveyList();
         List<SurveyInfo> surveyInfoList = toSurveyInfo(surveys);
 

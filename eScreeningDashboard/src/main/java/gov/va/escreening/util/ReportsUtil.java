@@ -14,4 +14,8 @@ public class ReportsUtil {
     public static final String REPORT_TYPE = "reportType";
 
     public static final String SVG_HEADER = "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n";
+
+    public static float calcTbi_score(float n){
+        return n+1;
+    }
 }

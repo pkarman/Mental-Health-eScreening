@@ -63,7 +63,7 @@
 	            </div>
 	        </div>
             <div class="row">
-                <div ng-if="survey.clinicalReminderId" class="col-sm-2">
+                <div class="col-sm-2">
                     <div class="form-group">
 	                    <label class="checkbox">
 		                    <input type="checkbox"
@@ -78,6 +78,16 @@
 			                    ng-model="survey.mhaTestName"
 			                    placeholder="MHA Test Name"
 			                    required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+	                    <label class="checkbox">
+		                    <input type="checkbox"
+			                    ng-model="survey.isPublished"> Publish Module?
+	                    </label>
                     </div>
                 </div>
             </div>

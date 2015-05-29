@@ -8,6 +8,7 @@
 <html>
 <head>
 	<title>Batch Create Battery</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
@@ -27,7 +28,6 @@
 	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
-	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
 	
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
@@ -296,10 +296,8 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-
 	<!-- Scripts -->
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-	
 	<!-- Page Scripts -->
 	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </body>

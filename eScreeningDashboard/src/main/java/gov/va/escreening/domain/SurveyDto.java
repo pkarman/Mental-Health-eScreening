@@ -13,6 +13,7 @@ public class SurveyDto implements Serializable {
     private Integer surveyId;
     private String name;
     private String description;
+    private boolean isPublished;
     private Integer version;
     private Date dateCreated;
     private String note;
@@ -27,6 +28,7 @@ public class SurveyDto implements Serializable {
         setSurveyId(survey.getSurveyId());
         setName(survey.getName());
         setDescription(survey.getDescription());
+        isPublished = survey.isPublished();
         setVersion(survey.getVersion());
         setDateCreated(survey.getDateCreated());
 
