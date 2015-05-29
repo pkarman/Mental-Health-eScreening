@@ -230,7 +230,9 @@ public class AssessmentVariable implements Serializable {
 
     @Override
     public String toString() {
-        return "[id=" + assessmentVariableId + "]";
+        return "[id=" + assessmentVariableId  
+                +", displayName=" + displayName
+                + "]";
     }
 
     public Map<String, Object> getAsMap() {
