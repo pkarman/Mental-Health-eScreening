@@ -54,8 +54,8 @@
 		            <div class="form-group">
 			            <label for="selectClinicalReminder">Clinical Reminder</label>
 
-			            <select id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
-					            ng-model="survey.clinicalReminderId"
+			            <select multiple id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
+					            ng-model="survey.clinicalReminderIdList"
 					            ng-options="clinicalReminder.id as clinicalReminder.name for clinicalReminder in clinicalReminders">
 				            <option value="">No Clinical Reminder</option>
 			            </select>

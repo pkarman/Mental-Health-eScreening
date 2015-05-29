@@ -229,22 +229,15 @@ public class SurveyServiceImpl implements SurveyService {
             reorderSurveySection(oldSurveySection, survey);
         }
         
-        Integer clinicalReminderId = surveyInfo.getClinicalReminderId();
         clinicalReminderSurveyRepo.removeSurveyMapping(surveyInfo.getSurveyId());
         
         if(surveyInfo.getClinicalReminderIdList() != null && !surveyInfo.getClinicalReminderIdList().isEmpty())
         {
         	for(Integer crId : surveyInfo.getClinicalReminderIdList())
         	{
-        		clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());
+        		clinicalReminderSurveyRepo.createClinicalReminderSurvey(crId, surveyInfo.getSurveyId());
         	}
         }
-        
-        else if(clinicalReminderId!=null && clinicalReminderId >0) //TODO:TEMP CODE, TO BE DELETED WHEN UI is DONE.
-        {
-           clinicalReminderSurveyRepo.createClinicalReminderSurvey(clinicalReminderId, surveyInfo.getSurveyId());
-        }
-        
         
         return surveyInfo;
     }
@@ -397,7 +390,7 @@ public class SurveyServiceImpl implements SurveyService {
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
         
         //we have to always set this to the last index of the section
-        surveyInfo.setDisplayOrderForSection(surveySection.getSurveyList().size()+1);
+        surveyInfo.setDisplayOrderForSection(surveySection.getSurveyList().size() + 1);
         
         Survey survey = new Survey();
         BeanUtils.copyProperties(surveyInfo, survey);
@@ -406,10 +399,10 @@ public class SurveyServiceImpl implements SurveyService {
 
         surveyRepository.create(survey);
         
-        if(surveyInfo.getClinicalReminderId() != null && surveyInfo.getClinicalReminderId() > 0)
+        for(Integer crId:surveyInfo.getClinicalReminderIdList())
         {
         	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
-        	ClinicalReminder reminder = clinicalReminderRepo.findOne(surveyInfo.getClinicalReminderId());
+        	ClinicalReminder reminder = clinicalReminderRepo.findOne(crId);
         	cr.setClinicalReminder(reminder);
         	cr.setSurvey(survey);
         	clinicalReminderSurveyRepo.create(cr);
@@ -435,8 +428,6 @@ public class SurveyServiceImpl implements SurveyService {
                 
                 if(survey.getClinicalReminderSurveyList()!=null && !survey.getClinicalReminderSurveyList().isEmpty())
                 {
-                	si.setClinicalReminderId(survey.getClinicalReminderSurveyList().get(0).getClinicalReminder().getClinicalReminderId());
-                	
                 	for(ClinicalReminderSurvey cr : survey.getClinicalReminderSurveyList())
                 	{
                 		si.getClinicalReminderIdList().add(cr.getClinicalReminder().getClinicalReminderId());

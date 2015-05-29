@@ -32,7 +32,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
     private Boolean isIncludedInBattery;
     private SurveySectionInfo surveySectionInfo;
     private SurveyStatusInfo surveyStatusInfo;
-    private Integer clinicalReminderId;
     private List<Integer> clinicalReminderIdList=Lists.newArrayList();
 
 
@@ -42,14 +41,6 @@ public class SurveyInfo implements Serializable, SurveyBaseProperties {
 
 	public void setClinicalReminderIdList(List<Integer> clinicalReminderIdList) {
 		this.clinicalReminderIdList = clinicalReminderIdList;
-	}
-
-	public Integer getClinicalReminderId() {
-		return clinicalReminderId;
-	}
-
-	public void setClinicalReminderId(Integer clinicalReminderId) {
-		this.clinicalReminderId = clinicalReminderId;
 	}
 
 	@JsonProperty("id")
