@@ -220,7 +220,7 @@ public class VeteranAssessmentSurveyServiceImpl implements
         int percentCompleted = (int) ((float) answered / total * 100);
         va.setPercentComplete(percentCompleted);
 
-        int durationCurrent = getAssessmentProgressDurationInminutes(assessmentRequest.getAssessmentStartTime());
+        int durationCurrent = getAssessmentProgressInSeconds(assessmentRequest.getAssessmentStartTime());
         Integer previousDuration = va.getDuration();
         if (previousDuration == null) {
             previousDuration = 0;
@@ -253,7 +253,7 @@ public class VeteranAssessmentSurveyServiceImpl implements
                 / countOfTotalQuestions * 100);
         va.setPercentComplete(percentCompleted);
 
-        int durationCurrent = getAssessmentProgressDurationInminutes(startTime);
+        int durationCurrent = getAssessmentProgressInSeconds(startTime);
         Integer previousDuration = va.getDuration();
         if (previousDuration == null) {
             previousDuration = 0;
@@ -266,10 +266,12 @@ public class VeteranAssessmentSurveyServiceImpl implements
         veteranAssessmentRepository.update(va);
     }
 
-    private int getAssessmentProgressDurationInminutes(long sessionCreationTime) {
-        DateTime ft = new DateTime();
-        int minutesOfHour = ft.minus(sessionCreationTime).getMinuteOfHour();
-        return minutesOfHour;
+    private int getAssessmentProgressInSeconds(long st) {
+        long now = System.currentTimeMillis();
+        int elapsedMilli = (int) (now - st);
+        Period p = new Period(elapsedMilli);
+        int secs = (int) p.toStandardDuration().getStandardSeconds();
+        return secs;
     }
 
     @Override
