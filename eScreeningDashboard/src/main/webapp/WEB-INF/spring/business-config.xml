@@ -88,23 +88,6 @@
 
     </util:map>
 
-    <!-- Following is a list those clinicalReminderIen which are to be shown
-        in the Clicical Reminder List of escreening -->
-    <util:list id="allowedClinicalReminders" value-type="java.lang.String">
-        <value>Alcohol Use Screen (AUDIT-C)</value>
-        <value>Body Mass Index more than 25</value>
-        <value>Depression Screening</value>
-        <value>Evaluation of Embedded Fragments</value>
-        <value>Homelessness Screening</value>
-        <value>Iraq_Afghan Post-Deployment Screen</value>
-        <value>MST Screening</value>
-        <value>PCL Needed for PTSD</value>
-        <value>Primary Care Depression Screening</value>
-        <value>Screen for Embedded Fragments</value>
-        <value>Screen for PTSD</value>
-        <value>TBI Screening</value>
-    </util:list>
-
     <util:map id="modulesForScoringMap" map-class="java.util.HashMap">
         <entry key="Basic Pain" value="[{var:'pain_number'}]"/>
         <entry key="BMI over 24" value="[{var:'demo_BMI'}]"/>
