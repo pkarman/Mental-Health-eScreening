@@ -1,11 +1,9 @@
 package gov.va.escreening.assessments.test;
 
 import static org.junit.Assert.*;
-import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
-import gov.va.escreening.entity.AssessmentVariableType;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.repository.AssessmentVariableRepository;
 import gov.va.escreening.service.AssessmentVariableService;
@@ -13,7 +11,6 @@ import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 @Transactional
@@ -134,8 +130,9 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         assertDescendantsHaveDep(avRepo.findOne(rootFormula.getAssessmentVariableId()), newDependency);
 
         //Remove the dependency from the child formula
+        childFormula.setFormulaTemplate("");
         removeChildAv(childFormula, newDependency);
-
+        
         //Call test method (this updates all formulas up the chain)
         avService.updateParentFormulas(childFormula);
 
@@ -178,6 +175,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 
         //remove the dep from one of the descendants but not the other
         removeChildAv(childFormula2, newDependency);
+        childFormula2.setFormulaTemplate("");
         
         //Call test method to update parents (this should not remove the dep from the root formula)
         avService.updateParentFormulas(childFormula2);
@@ -187,6 +185,10 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         
         //Now remove the dep from the other sibling and the dep show go away
         removeChildAv(childFormula1, newDependency);
+        childFormula1.setFormulaTemplate("");
+        
+        //Call test method to update parents (this should remove the dep from the root formula because this is the last reference to it)
+        avService.updateParentFormulas(childFormula1);
         
         //test to make sure the dependency has been removed from all descendants
         assertDescendantsMissingDep(avRepo.findOne(rootFormula.getAssessmentVariableId()), newDependency);
@@ -230,7 +232,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         AssessmentVarChildren varChild = new AssessmentVarChildren(formula, childFormula);
         formula.getAssessmentVarChildrenList().add(varChild);
         avRepo.update(formula);
-        
+        logger.debug("Added child formula {} to formula {}", childFormula.getAssessmentVariableId(), formula.getAssessmentVariableId());
         return childFormula;
     }
     
@@ -242,10 +244,13 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
     private AssessmentVariable addNewDependency(AssessmentVariable formula){
         AssessmentVariable newDependency = new AssessmentVariable();
         newDependency.setDisplayName("testchildvar");
-        newDependency.setAssessmentVariableTypeId(TestAssessmentVariableBuilder.TYPE_MEASURE);
+        newDependency.setAssessmentVariableTypeId(TestAssessmentVariableBuilder.TYPE_ANSWER);
         avRepo.create(newDependency);
+        //add dependency to fake formula 
+        formula.setFormulaTemplate("[" + newDependency.getAssessmentVariableId() + "]");
         formula.getAssessmentVarChildrenList().add(new AssessmentVarChildren(formula, newDependency));
         avRepo.update(formula);
+        logger.debug("Added new dependency {} to formula {}", newDependency.getAssessmentVariableId(), formula.getAssessmentVariableId());
         return newDependency;
     }
     
@@ -271,7 +276,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         for(AssessmentVariable descendant : collectDescendantList(formula)){
             Set<AssessmentVariable> descendentDeps = getDeps(descendant);
             assertFalse("Formula with ID " + descendant.getAssessmentVariableId() 
-                    + " does has the dependency with ID " + dependency.getAssessmentVariableId(),
+                    + " does have a dependency with variable ID " + dependency.getAssessmentVariableId(),
                     descendentDeps.contains(dependency));
         }
     }
@@ -281,6 +286,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
      * @param parent
      * @param child
      */
+    @Transactional
     private void removeChildAv(AssessmentVariable parent, AssessmentVariable child){
         Iterator<AssessmentVarChildren> childIter = parent.getAssessmentVarChildrenList().iterator();
         while(childIter.hasNext()){
@@ -288,6 +294,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
             if(children.getVariableParent().equals(parent) && children.getVariableChild().equals(child)){
                 childIter.remove();
                 avRepo.update(parent);
+                avRepo.commit();
                 return;
             }
         }
