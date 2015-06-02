@@ -9,6 +9,7 @@ package gov.va.escreening.entity;
 import gov.va.escreening.constants.AssessmentConstants;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +33,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -186,6 +185,31 @@ public class AssessmentVariable implements Serializable {
             this.assessmentVarChildrenList.addAll(assessmentVarChildrenList);
         }
     }
+    
+    //TODO: when we move away from using AssessmentVarChildren, this should be replaced with a simple assignment
+    public void setChildren(Set<AssessmentVariable> children){
+        //create map of current assessmentVarChildren
+        if(assessmentVarChildrenList == null){
+            assessmentVarChildrenList = new ArrayList<>(children.size());
+        }
+        
+        Map<Integer, AssessmentVarChildren> currentChildMap = Maps.newHashMapWithExpectedSize(getAssessmentVarChildrenList().size());
+        for(AssessmentVarChildren varChild : assessmentVarChildrenList){
+            currentChildMap.put(varChild.getVariableChild().getAssessmentVariableId(), varChild);
+        }
+        
+        List<AssessmentVarChildren> newChildren = new ArrayList<>(children.size());
+        for(AssessmentVariable child : children){
+            AssessmentVarChildren newVarChild = currentChildMap.get(child.getAssessmentVariableId());
+            if(newVarChild == null){
+                newVarChild = new AssessmentVarChildren(this, child);
+            }
+            newChildren.add(newVarChild);
+        }
+        
+        assessmentVarChildrenList.clear();
+        assessmentVarChildrenList.addAll(newChildren);
+    }
 
     public List<AssessmentVariableColumn> getAssessmentVariableColumnList() {
         return assessmentVariableColumnList;
@@ -230,7 +254,9 @@ public class AssessmentVariable implements Serializable {
 
     @Override
     public String toString() {
-        return "[id=" + assessmentVariableId + "]";
+        return "[id=" + assessmentVariableId  
+                +", displayName=" + displayName
+                + "]";
     }
 
     public Map<String, Object> getAsMap() {

@@ -22,6 +22,7 @@ import gov.va.escreening.repository.SurveyPageMeasureRepository;
 import gov.va.escreening.repository.SurveyRepository;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -32,27 +33,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 
 @Service("assessmentVariableService")
 public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
-
+    private static final String FORMULA_FORMAT = "[%d]";
+    
 	@Resource(name = "filterMeasureTypes")
-	Set<Integer> filterMeasureTypes;
+	private Set<Integer> filterMeasureTypes;
 
 	@Resource(type = SurveyRepository.class)
-	SurveyRepository sr;
+	private SurveyRepository sr;
 
 	@Resource(type = AssessmentVariableRepository.class)
-	AssessmentVariableRepository avr;
+	private AssessmentVariableRepository avr;
 
 	@Resource(type = SurveyPageMeasureRepository.class)
-	SurveyPageMeasureRepository spmr;
+	private SurveyPageMeasureRepository spmr;
 	
 	@Resource(type = BatteryRepository.class)
-	BatteryRepository batteryRepo;
+	private BatteryRepository batteryRepo;
 
 	@Resource(type = MeasureRepository.class)
-	MeasureRepository measureRepo;
+	private MeasureRepository measureRepo;
 
 	@Resource(type = MeasureAnswerRepository.class)
 	private MeasureAnswerRepository measureAnswerRepo;
@@ -423,16 +426,56 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
     }
 	
 	@Override
+	@Transactional
 	public void updateParentFormulas(AssessmentVariable updatedVariable){
-	    Set<AssessmentVarChildren> childDeps = Sets.newHashSet(updatedVariable.getAssessmentVarChildrenList());
+	    Map<Integer, AssessmentVariable> updatedDeps = toAvMap(updatedVariable.getAssessmentVarChildrenList());
+	    //TODO: this became complex and inefficient because of the fact that at every formula level we have all dependencies. So if there is time, this should be refactored
 	    for(AssessmentVariable parent : avr.getParentVariables(updatedVariable)){
-	        Set<AssessmentVarChildren> parentDeps = Sets.union(childDeps, Sets.newHashSet(parent.getAssessmentVarChildrenList()));
-	        parent.getAssessmentVarChildrenList().clear();
-	        parent.getAssessmentVarChildrenList().addAll(parentDeps);
+	        Set<AssessmentVariable> newDeps = Sets.newHashSet(updatedDeps.values());
+	        Map<Integer, AssessmentVariable> nonFormulaVars = Maps.newHashMap();
+	        StringBuilder allformulaText = new StringBuilder();
+	        
+	        //iterate over all other children and pull deps from them
+	        for(AssessmentVarChildren varChild : parent.getAssessmentVarChildrenList()){
+	            AssessmentVariable child = varChild.getVariableChild();
+	            
+	            //collect and add any other child deps for this child
+	            if(child.isFormula()){
+	                newDeps.add(child);
+	                allformulaText.append(Strings.nullToEmpty(child.getFormulaTemplate()));
+	                if(!child.equals(updatedVariable)){
+	                    Map<Integer, AssessmentVariable> childDeps = toAvMap(updatedVariable.getAssessmentVarChildrenList());
+	                    newDeps.addAll(collectAssociatedVars(childDeps.keySet(), childDeps));
+	                }
+	            }
+	            else{
+	                nonFormulaVars.put(child.getAssessmentVariableId(), child);
+	            }
+	        }
+	        
+	        String allFormulas = allformulaText.toString();
+	        //add non formula variables as long as they are found in formulas
+	        for(Entry<Integer, AssessmentVariable> nonFormula : nonFormulaVars.entrySet()){
+	            if(allFormulas.contains(String.format(FORMULA_FORMAT, nonFormula.getKey()))){
+                    //add nonFormula dep if it is in the formula (if this is not the case it is a dep that should be ignored)
+	                newDeps.add(nonFormula.getValue());
+	            }
+	        }
+	        
+	        parent.setChildren(newDeps);
 	        avr.update(parent);
 	        updateParentFormulas(parent);
 	    }
 	}
+	
+	
+	private Map<Integer, AssessmentVariable> toAvMap(List<AssessmentVarChildren> varChildren){
+	    Map<Integer, AssessmentVariable> avMap = Maps.newHashMapWithExpectedSize(varChildren.size());
+	    for(AssessmentVarChildren av : varChildren){
+	        avMap.put(av.getVariableChild().getAssessmentVariableId(), av.getVariableChild());
+	    }
+	    return avMap;
+    }
 	
 	private void addFormulaVariables(AssessmentVariable formula, 
 	        Set<AssessmentVariable> variableSet){
