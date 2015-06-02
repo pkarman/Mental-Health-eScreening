@@ -532,13 +532,11 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 			for (AssessmentVarChildren avc : avcList) {
 				AssessmentVariable av = avc.getVariableChild();
 
-				boolean isFormulaType = av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == 4;
-
 				// no need to compare measure or compare measure answer if the av is a formula type
-				if (!isFormulaType && compareMeasure(av, m)) {
+				if (!av.isFormula() && compareMeasure(av, m)) {
 					avBldr.buildFromMeasure(av, avc, m);
 					handleCustomType(avFormula, avBldr);
-				} else if (!ignoreAnswers && !isFormulaType && compareMeasureAnswer(av, m)) {
+				} else if (!ignoreAnswers && !av.isFormula() && compareMeasureAnswer(av, m)) {
 					avBldr.buildFromMeasureAnswer(av, avc, m, avc.getVariableChild().getMeasureAnswer());
 					handleCustomType(avFormula, avBldr);
 				}
