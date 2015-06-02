@@ -1,11 +1,15 @@
 <div class="row">
     <div class="col-md-6">
-      <h1>Manage Module</h1>
+        <h1>Manage Module</h1>
     </div>
     <div class="col-md-6">
         <div class="btn-layout pull-right">
-          <button ng-click="editFormulas(survey.id);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Formulas</button>
-          <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;" class="btn btn-primary h1_button" type="button">Manage Templates</button>
+            <button ng-click="editFormulas(survey.id);" ng-disabled="!survey.id;" class="btn btn-primary h1_button"
+                    type="button">Manage Formulas
+            </button>
+            <button ng-click="editTemplates(survey.id, survey.name);" ng-disabled="!survey.id;"
+                    class="btn btn-primary h1_button" type="button">Manage Templates
+            </button>
         </div>
     </div>
 </div>
@@ -14,155 +18,172 @@
 <alert ng-repeat="alert in alerts" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
 
 <form name="moduleDetailsForm" novalidate>
-<div class="row">
-    <div class="col-md-12">
-
-        <div class="border-radius-main-form gray-lighter">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label for="inputTitle">Title *</label>
-                        <input name="inputTitle" id="inputTitle" type="text" class="form-control"
-                               ng-model="survey.name"
-                               placeholder="Enter Module Title" requried>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-	                <div class="form-group">
-		                <label for="selectSurveySection">Section *</label>
-
-		                <select id="selectSurveySection" name="selectSurveySection" class="form-control"
-				                ng-model="survey.surveySection"
-				                ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
-				                ng-change="survey.displayOrderForSection=''"
-				                required>
-			                <option value=""> -- Choose Section --</option>
-		                </select>
-	                </div>
-	            </div>
-            </div>
-            <div class="row">
-	            <div class="col-sm-8">
-                    <div class="form-group">
-                        <label for="inputDescription">Description</label>
-                        <input name="inputDescription" id="inputDescription" type="text" class="form-control"
-                               ng-model="survey.description"
-                               placeholder="Enter Module Description">
-                    </div>
-		        </div>
-	            <div class="col-md-4">
-		            <div class="form-group">
-			            <label for="selectClinicalReminder">Clinical Reminder</label>
-
-			            <select multiple id="selectClinicalReminder" name="selectClinicalReminder" class="form-control"
-					            ng-model="survey.clinicalReminderIdList"
-					            ng-options="clinicalReminder.id as clinicalReminder.name for clinicalReminder in clinicalReminders">
-				            <option value="">No Clinical Reminder</option>
-			            </select>
-		            </div>
-	            </div>
-	        </div>
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="form-group">
-	                    <label class="checkbox">
-		                    <input type="checkbox"
-			                    ng-model="survey.mha"> Is MHA?
-	                    </label>
-                    </div>
-                </div>
-                <div ng-if="survey.mha" class="col-sm-6">
-                    <div class="form-group">
-	                    <label for="mhaTestName">MHA Test Name *</label>
-	                    <input name="mhaTestName" id="mhaTestName" type="text" class="form-control"
-			                    ng-model="survey.mhaTestName"
-			                    placeholder="MHA Test Name"
-			                    required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-	                    <label class="checkbox">
-		                    <input type="checkbox"
-			                    ng-model="survey.isPublished"> Publish Module?
-	                    </label>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <br>
-
+    <div class="border-radius-main-form gray-lighter">
         <div class="row">
-            <div class="col-md-4 text-center">
-                <div class="border-radius-top-box  gray-lighter">
-                  <div class="section_header_title pull-left">Items</div>
-                  <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span class="fa fa-ellipsis-h"></span> Page Break</button>
-                  <div class="clearfix"></div>
-                 </div>
+            <div class="col-md-12">
+                <div class="col-md-7">
+                    <div class="row">
+                        <!-- title-->
+                        <div class="form-group">
+                            <label for="inputTitle">Title *</label>
+                            <input name="inputTitle" id="inputTitle" type="text" class="form-control"
+                                   ng-model="survey.name"
+                                   placeholder="Enter Module Title" requried>
+                        </div>
+                    </div>
+                    <!-- description-->
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="inputDescription">Description</label>
+                            <input name="inputDescription" id="inputDescription" type="text" class="form-control"
+                                   ng-model="survey.description"
+                                   placeholder="Enter Module Description">
+                        </div>
+                    </div>
+                    <!-- is mha -->
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input type="checkbox"
+                                           ng-model="survey.mha"> Is MHA?
+                                </label>
+                            </div>
+                        </div>
+                        <div ng-if="survey.mha" class="col-sm-4">
+                            <div class="form-group">
+                                <label for="mhaTestName">MHA Test Name *</label>
+                                <input name="mhaTestName" id="mhaTestName" type="text" class="form-control"
+                                       ng-model="survey.mhaTestName"
+                                       placeholder="MHA Test Name"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input type="checkbox"
+                                           ng-model="survey.isPublished"> Publish Module?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="selectSurveySection">Section *</label>
 
-
-                <div class="border-radius-bottom-box" style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
-                    <ul class="list-group app screen first" ng-model="surveyPages">
-                        <li class="list-group-item text-left" ng-repeat="page in surveyPages | orderBy: 'pageNumber'"
+                            <select id="selectSurveySection" name="selectSurveySection" class="form-control"
+                                    ng-model="survey.surveySection"
+                                    ng-options="surveySection as surveySection.name for surveySection in surveySections track by surveySection.id"
+                                    ng-change="survey.displayOrderForSection=''"
+                                    required>
+                                <option value=""> -- Choose Section --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="selectClinicalReminder">Clinical Reminder <small>To select more than one, hold down
+                                the CTRL key</small></label>
+                            <select multiple id="selectClinicalReminder" name="selectClinicalReminder"
+                                    class="form-control"
+                                    ng-model="survey.clinicalReminderIdList"
+                                    ng-options="clinicalReminder.id as clinicalReminder.name for clinicalReminder in clinicalReminders">
+                                <option value="">No Clinical Reminder</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4 text-center">
+                    <div class="border-radius-top-box  gray-lighter">
+                        <div class="section_header_title pull-left">Items</div>
+                        <button class="btn btn-success btn-sm pull-right" ng-click="addPage();"><span
+                                class="fa fa-ellipsis-h"></span> Page Break
+                        </button>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="border-radius-bottom-box"
+                         style="background-color:#fff; max-height:470px; min-height:470px;overflow-y:scroll;">
+                        <ul class="list-group app screen first" ng-model="surveyPages">
+                            <li class="list-group-item text-left"
+                                ng-repeat="page in surveyPages | orderBy: 'pageNumber'"
                                 ng-class="{'unsortable': page.sortable === false}">
 
-                            <div class="page-divider-container">
-                                <div class="page-divider-container-row">
-                                    <div class="page-divider">
-                                        <button type="button" class="btn btn-default btn-circle pull-left">
-                                            Page {{page.pageNumber}}
-                                            <span class="glyphicon glyphicon-remove-circle"
-                                                    style="margin-left: 10px;color:red;"
-                                                    ng-show="page.pageNumber > 1"
-                                                    ng-really-click="deletePage($index);" ng-really-message="Are you sure you want to delete this page item?"/>
-                                        </button>
-                                        <button class="btn btn-success btn-sm pull-right" ng-click="addQuestion(page);"><span
-                                                class="glyphicon glyphicon-plus"></span> Add Item
-                                        </button>
+                                <div class="page-divider-container">
+                                    <div class="page-divider-container-row">
+                                        <div class="page-divider">
+                                            <button type="button" class="btn btn-default btn-circle pull-left">
+                                                Page {{page.pageNumber}}
+                                        <span class="glyphicon glyphicon-remove-circle"
+                                              style="margin-left: 10px;color:red;"
+                                              ng-show="page.pageNumber > 1"
+                                              ng-really-click="deletePage($index);"
+                                              ng-really-message="Are you sure you want to delete this page item?"/>
+                                            </button>
+                                            <button class="btn btn-success btn-sm pull-right"
+                                                    ng-click="addQuestion(page);"><span
+                                                    class="glyphicon glyphicon-plus"></span> Add Item
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <ul class="list-group app screen sortable-questions" style="margin-top:5px;" ui-sortable="sortableQuestionOptions" ng-model="page.questions">
-                                <li class="list-group-item text-left"
+                                <ul class="list-group app screen sortable-questions" style="margin-top:5px;"
+                                    ui-sortable="sortableQuestionOptions" ng-model="page.questions">
+                                    <li class="list-group-item text-left"
                                         ng-repeat="question in page.questions | orderBy: 'displayOrder'"
                                         ng-class="{unsortable: question.sortable === false, active: question.selected}">
-                                    <div class="form-inline">
-                                        <div class="glyphicon glyphicon-align-justify pull-left" style="margin:10px 10px 10px 0px;"></div>
-                                        <div class="pull-left">
-                                            <div class="strong" style="font-size:12px;" ng-click="editQuestion(page, question);">{{question.variableName || question.text | limitToWithEllipsis: 35 | stripHTML}}</div>
-                                            <div style="font-size:12px;">{{question.type || 'Select question type'}}</div>
-                                        </div>
-                                        <div class="pull-right margin_top_10">
-                                            <span>
-                                                <span class="glyphicon glyphicon-edit cursor_pointer" ng-click="editQuestion(page, question);"></span>
-                                            </span>
-                                            <span class="glyphicon glyphicon-remove-circle cursor_pointer"
-                                                    style="margin-left: 10px; color:red;"
-		                                            ng-really-click="deleteQuestion(page, $index);" ng-really-message="Are you sure you want to delete this question?"></span>
+                                        <div class="form-inline">
+                                            <div class="glyphicon glyphicon-align-justify pull-left"
+                                                 style="margin:10px 10px 10px 0px;"></div>
+                                            <div class="pull-left">
+                                                <div class="strong" style="font-size:12px;"
+                                                     ng-click="editQuestion(page, question);">
+                                                    {{question.variableName || question.text | limitToWithEllipsis:
+                                                    35 | stripHTML}}
+                                                </div>
+                                                <div style="font-size:12px;">{{question.type || 'Select question
+                                                    type'}}
+                                                </div>
+                                            </div>
+                                            <div class="pull-right margin_top_10">
+                                        <span>
+                                            <span class="glyphicon glyphicon-edit cursor_pointer"
+                                                  ng-click="editQuestion(page, question);"></span>
+                                        </span>
+                                        <span class="glyphicon glyphicon-remove-circle cursor_pointer"
+                                              style="margin-left: 10px; color:red;"
+                                              ng-really-click="deleteQuestion(page, $index);"
+                                              ng-really-message="Are you sure you want to delete this question?"></span>
 
+                                            </div>
+                                            <div class="clearfix"></div>
                                         </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-            </div>
-            <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
-              <div class="border-radius-top-box  gray-lighter">
-              <div class="section_header_title pull-left">Properties</div>
-              <div class="clearfix"></div>
-              </div>
-                <div class="border-radius-bottom-box padding_10" style="min-height:470px; background-color:#FFFFFF;">
-                    <div class="row">
-                        <div class="col-md-12" ui-view>
-                            <div style="min-height:20px;text-align: center;">
-                                <p>Select one of the left side questions to edit.</p>
+                <div class="col-md-8" style="overflow-y:auto;overflow-x:hidden; ">
+                    <div class="border-radius-top-box  gray-lighter">
+                        <div class="section_header_title pull-left">Properties</div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="border-radius-bottom-box padding_10"
+                         style="min-height:470px; background-color:#FFFFFF;">
+                        <div class="row">
+                            <div class="col-md-12" ui-view>
+                                <div style="min-height:20px;text-align: center;">
+                                    <p>Select one of the left side questions to edit.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -170,7 +191,6 @@
             </div>
         </div>
     </div>
-</div>
 </form>
 <br>
 
