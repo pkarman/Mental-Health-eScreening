@@ -136,23 +136,30 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		return getAssessmentResponse(assessmentRequest);
 	}
 
+	private List<Integer> measureIdsForPage(AssessmentRequest assessmentRequest){
+	    SurveyPage page = surveyPageRepository.findOne(assessmentRequest
+                .getPageId());
+
+        checkArgument(page != null, "Invalid page ID given");
+        
+        List<gov.va.escreening.entity.Measure> measures = page.getMeasures();
+
+        List<Integer> objectIds = new ArrayList<>();
+        for (gov.va.escreening.entity.Measure m : measures) {
+            objectIds.add(m.getMeasureId());
+        }
+        
+        return objectIds;
+	}
+	
 	@Override
 	public Map<Integer, Boolean> getUpdatedVisibilityInMemory(
 			AssessmentRequest assessmentRequest) {
 
 		Map<Integer, Boolean> visibilityMap = new HashedMap<Integer, Boolean>();
 
-		SurveyPage page = surveyPageRepository.findOne(assessmentRequest
-				.getPageId());
-
-		checkArgument(page != null, "Invalid page ID given");
+		List<Integer> objectIds = measureIdsForPage(assessmentRequest);
 		
-		List<gov.va.escreening.entity.Measure> measures = page.getMeasures();
-
-		List<Integer> objectIds = new ArrayList<>();
-		for (gov.va.escreening.entity.Measure m : measures) {
-		    objectIds.add(m.getMeasureId());
-		}
 		List<Event> events = eventRepo.getEventByTypeFilteredByObjectIds(
 				RuleConstants.EVENT_TYPE_SHOW_QUESTION, objectIds);
 
@@ -504,7 +511,15 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		// Well, if we got this far, then we can start applying the data
 		// validation rule defined in the survey tables.
 
-		Map<Integer, Boolean> visMap = getUpdatedVisibilityInMemory(assessmentRequest);
+		//TODO: Check to see if this call to update visibility is needed here? We are overriding these values for measures pull from this page and getUpdatedVisibilityInMemory only checks visibility for the current page (I think). So the visibility from the current page should be used and save use this call which is costly.
+		//Map<Integer, Boolean> visMap = getUpdatedVisibilityInMemory(assessmentRequest);
+		
+		List<Integer> pageMeasureIds = measureIdsForPage(assessmentRequest);
+		Map<Integer, Boolean> visMap = Maps.newHashMapWithExpectedSize(pageMeasureIds.size());
+		for(Integer measureId : pageMeasureIds){
+		    visMap.put(measureId, Boolean.FALSE);
+		}
+		
 		List<Integer> measuresToDelete = new ArrayList<Integer>();
 
 		Set<gov.va.escreening.entity.Measure> tableMeasures = new HashSet<gov.va.escreening.entity.Measure>();

@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.domain.AssessmentStatusEnum;
@@ -12,7 +13,6 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
-
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
 import gov.va.escreening.dto.report.Report594DTO;
@@ -20,7 +20,6 @@ import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
-
 import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -57,11 +56,11 @@ import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
-
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +69,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -801,7 +801,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				veteranAssessmentMeasureVisibilityRepository.create(new VeteranAssessmentMeasureVisibility(assessment, eventMeasure));
 			}
 		}
-
 	}
 
 	@Transactional(readOnly = false)

@@ -742,7 +742,7 @@ public class ExpressionExtentionUtil {
      * @return the response to the select one or default value
      */
     private String getSelectOneResponse(AssessmentVariableDto var){
-        if(var != null && var.getChildren() != null){
+        if(var != null && var.getChildren() != null && !var.getChildren().isEmpty()){
             AssessmentVariableDto answer = getSelectOneAnswerVar(var);
             if(answer != null){
                return getResponseText(answer); 
