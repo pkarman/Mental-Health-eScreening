@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import static gov.va.escreening.templateprocessor.TemplateTags.*;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -53,6 +58,10 @@ public class TemplateServiceImpl implements TemplateService {
         + "${MODULE_TITLE_START}%s${MODULE_TITLE_END}\n"
         + "${GRAPH_SECTION_START}\n ${GRAPH_BODY_START}\n%s\n"
         + " ${GRAPH_BODY_END}\n${GRAPH_SECTION_END}\n";
+	
+	private static final Pattern GRAPHICAL_TEMPLATE_PATTERN = Pattern.compile( 
+	        createTagRegex(Style.XML, MODULE_TITLE_START) 
+	        + "+.+" + createTagRegex(Style.XML, GRAPH_SECTION_END) + "+");
 
 	@Autowired
 	private TemplateRepository templateRepository;
@@ -239,6 +248,21 @@ public class TemplateServiceImpl implements TemplateService {
 		surveyRepository.update(survey);
 		
 		return templateId;
+	}
+	
+	@Override
+	public GraphParamsDto getGraphParams(Template t) throws JsonParseException, JsonMappingException, IOException{
+	    if(t.getGraphParams() == null){
+	        return null;
+	    }
+    	
+    	ObjectMapper om = new ObjectMapper();
+    	return om.readValue(t.getGraphParams(), GraphParamsDto.class);
+	}
+	
+	@Override
+	public String replaceGraphWith(String templateOutput, String replacement){
+	    return GRAPHICAL_TEMPLATE_PATTERN.matcher(templateOutput).replaceFirst(replacement);
 	}
 
 	private String generateFreeMarkerTemplateFile(TemplateFileDTO templateDto, Set<Integer>ids, String graphParams) {

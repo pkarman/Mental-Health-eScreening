@@ -1,6 +1,8 @@
 package gov.va.escreening.variableresolver;
 
 import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Template;
+import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
 import java.util.Collection;
@@ -16,7 +18,7 @@ public interface VariableResolverService {
      * @return
      * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
      */
-	List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(Integer veteranAssessmentId, Integer templateId);
+	List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(VeteranAssessment assessment, Template template);
 
 	/**
 	 * Resolves the given AssessmentVariable to a list of AssessmentVariableDto. 

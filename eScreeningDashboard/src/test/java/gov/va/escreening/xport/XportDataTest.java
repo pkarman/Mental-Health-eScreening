@@ -25,7 +25,6 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import junit.framework.Assert;
@@ -437,7 +436,7 @@ public class XportDataTest {
         StopWatch sw = new StopWatch(name);
         for (int i = 0; i < 2; i++) {
             sw.start("iter_" + i);
-            String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va.getVeteranAssessmentId(), ViewType.TEXT);
+            String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va, ViewType.TEXT);
             sw.stop();
             assertTrue(!progressNoteContent.isEmpty());
         }

@@ -40,16 +40,14 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     
     //TODO: If we don't need to support the use of template ID and we can just use a template object that we already have queried, that would make this faster.
     @Override
-	public List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(Integer veteranAssessmentId, Integer templateId) {
+	public List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(VeteranAssessment assessment, Template template) {
     	
     	List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
     	
-    	Template template = templateRepository.findOne(templateId);
     	if(template != null){ //process the requested templateType
     	    
     	    //Initialize the resolver parameters
             List<VariableTemplate> variableTemplates = template.getVariableTemplateList();
-            VeteranAssessment assessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
             ResolverParameters params = new ResolverParameters(assessment, variableTemplates);
             
             //add all assessment responses

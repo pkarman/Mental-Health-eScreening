@@ -26,6 +26,7 @@ import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.dto.ae.ErrorBuilder;
+import gov.va.escreening.dto.template.GraphParamsDto;
 import gov.va.escreening.entity.Battery;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveySection;
@@ -40,6 +41,8 @@ import gov.va.escreening.repository.SurveySectionRepository;
 import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.service.SurveyMeasureResponseService;
+import gov.va.escreening.service.TemplateService;
+import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.templateprocessor.TemplateTags.Style;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
@@ -89,6 +92,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	
 	@Autowired
 	private SurveyRepository surveyRepository;
+	
+	@Autowired
+	private TemplateService templateService;
+	
+	@Resource
+    VeteranAssessmentService assessmentService;
 
 	@Resource(name="veteranAssessmentSmrList")
 	VeteranAssessmentSmrList smrLister;
@@ -134,13 +143,13 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 	
 	@Override
-	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException {
+	public String renderSurveyTemplate(int surveyId, TemplateType type, VeteranAssessment veteranAssessment, ViewType viewType) throws IllegalSystemStateException {
 		Survey survey = surveyRepository.findOne(surveyId);
 		checkArgument(survey != null, String.format("Module not found with ID %s", surveyId));
 		
 		for(Template t : survey.getTemplates()){
 			if(type.getId() == t.getTemplateType().getTemplateTypeId()){
-				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
+				String text = new TemplateEvaluator(veteranAssessment, viewType)
 					.appendTemplate(t)
 					.generate();
 				logger.debug("Rendered module template:\n{}", text);
@@ -159,11 +168,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 	
 	@Override
-	public String renderBatteryTemplate(Battery battery, TemplateType type, int veteranAssessmentId, ViewType viewType)
+	public String renderBatteryTemplate(Battery battery, TemplateType type, VeteranAssessment veteranAssessment, ViewType viewType)
 			throws IllegalSystemStateException {
 		for(Template t : battery.getTemplates()){
 			if(type.getId() == t.getTemplateType().getTemplateTypeId()){
-				String text = new TemplateEvaluator(veteranAssessmentId, viewType)
+				String text = new TemplateEvaluator(veteranAssessment, viewType)
 					.appendTemplate(t)
 					.generate();
 				logger.debug("Rendered battery template:\n{}", text);
@@ -226,7 +235,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 				
 		// start generation of template with header, section, templates for each
 		// module in a section, and in the end the footer
-		TemplateEvaluator evaluator = new TemplateEvaluator(veteranAssessmentId, viewType)
+		TemplateEvaluator evaluator = new TemplateEvaluator(assessment, viewType)
 			.appendHeader(templateMap.get(documentType.getHeaderType()));
 		
 		StringBuilder quesAndAnswers = new StringBuilder();
@@ -260,11 +269,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 						}
 						else if(type.equals(TemplateType.VISTA_QA) 
 						        && optionalTemplates.contains(TemplateType.VISTA_QA)){
-							quesAndAnswers.append(processTemplate(template, veteranAssessmentId));
+							quesAndAnswers.append(processTemplate(template, assessment));
 						}
 						else if(type.equals(TemplateType.CPRS_PROGRESS_HISTORY)
 						        && documentType.getRequiredTypes().contains(TemplateType.CPRS_PROGRESS_HISTORY)){
-						    cprsHistory.append(processTemplate(template, veteranAssessmentId));
+						    cprsHistory.append(processTemplate(template, assessment));
 						}
 					}
 				}
@@ -283,7 +292,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		/* Add Veteran Progress templates grouped together */
 		if(documentType.getRequiredTypes().contains(TemplateType.CPRS_PROGRESS_HISTORY)){
-		    evaluator.appendGroupedTemplates("VETERAN PROGRESS", cprsHistory.toString());
+		    evaluator.appendGroupedTemplates("HISTORICAL VALUES", cprsHistory.toString());
 		}
 		
 		/* Add optional VistA questions/answer text */
@@ -302,31 +311,71 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 * @throws IllegalSystemStateException if the content of the template cannot be retrieved
 	 * @throws TemplateProcessorException if there is a problem getting the assessment variables for the template or an error during rendering
 	 */
-	private String processTemplate(Template template, Integer assessmentId) throws IllegalSystemStateException {
+	private String processTemplate(Template template, VeteranAssessment assessment) throws IllegalSystemStateException {
 		String templateText = getTemplateText(template);
 		Integer templateId = template.getTemplateId();
 		// It is valid to get an empty list of AssessmentVariables back as the
 		// questions might not have been answered yet.
         List<AssessmentVariableDto> assessmentVariables = variableResolverService
-                .resolveVariablesForTemplateAssessment(assessmentId, templateId);
+                .resolveVariablesForTemplateAssessment(assessment, template);
 		if (assessmentVariables == null)
             throwError(String.format(
                     "No AssessmentVariables are defined for assessment with ID: %s, and Template with ID: %s",
-                    assessmentId, templateId));
+                    assessment.getVeteranAssessmentId(), templateId));
 
 		String templateOutput = null;
 		try {//TODO: This should be updated to have a ResolveParameters object passed into it. This allows us to reused the same parameters object which should reduce processing times.
 			templateOutput = processTemplate(templateText, assessmentVariables, templateId);
+			if(TemplateConstants.typeForId(template.getTemplateType().getTemplateTypeId()).equals(TemplateType.CPRS_PROGRESS_HISTORY)){
+			    templateOutput = insertProgressHistoryGraph(template, assessment, templateOutput);
+			}    
 		}
         catch (Exception e) {
             throwError(String.format("Processing templateId: %s for veteranassessmentid: %s failed with the "
-                    + "following exception: %s", templateId, assessmentId, e.getMessage()));
+                    + "following exception: %s", templateId, assessment.getVeteranAssessmentId(), e.getMessage()));
         }
 
 		return templateOutput;
 	}
 
-	/**
+	private String insertProgressHistoryGraph(Template template,  VeteranAssessment assessment, String templateOutput) {
+        if(!template.getIsGraphical() || Strings.nullToEmpty(templateOutput).trim().isEmpty())
+            return templateOutput;
+        
+        //create translate graph params object into object 
+        GraphParamsDto graphParams = null;
+        try {
+            graphParams = templateService.getGraphParams(template);
+        } catch (IOException e) {
+            ErrorBuilder.throwing(IllegalSystemStateException.class)
+            .toAdmin("The template " + template.getName() 
+                    + " (" +  template.getTemplateId() 
+                    + ") has an invalid graph_params field. Error is: " + e.getLocalizedMessage())
+            .toUser("There was an unexpected error during template rendering. Please call support.")
+            .throwIt();
+        }
+        
+        if(graphParams == null)
+            return templateOutput;
+        
+        //get values for the veteran 
+        Map<String, String> historicalValues = assessmentService.getVeteranAssessmentVariableSeries(
+                assessment.getVeteran().getVeteranId(), 
+                graphParams.getVarId(), 
+                graphParams.getNumberOfMonths());        
+        
+        //generate graph
+        String historicalGraph = generateHistoricalGraph(graphParams, historicalValues);
+	    
+        //replace graph portion with ascii graph
+        return templateService.replaceGraphWith(templateOutput, historicalGraph);
+    }
+	
+	private String generateHistoricalGraph(GraphParamsDto graphParams, Map<String, String> historicalValues){
+	    return "this is the ascii graph";
+	}
+
+    /**
 	 * Queries the DB to get the required battery level templates and returns a map from template type to the template instance.
 	 * @param assessment
 	 * @param requiredTemplates the battery level templates to include
@@ -534,13 +583,13 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	 */
 
 	private class TemplateEvaluator {
-		private final int assessmentId;
+		private final VeteranAssessment veteranAssessment;
 		private final ViewType viewType;
 		private final StringBuilder text = new StringBuilder("");
 		private boolean sectionStarted = false;
 
-		private TemplateEvaluator(int assessmentId, ViewType viewType) {
-			this.assessmentId = assessmentId;
+		private TemplateEvaluator(VeteranAssessment veteranAssessment, ViewType viewType) {
+			this.veteranAssessment = veteranAssessment;
 			this.viewType = viewType;
 		}
 
@@ -585,7 +634,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		}
 		
 		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
-			String templateText = processTemplate(moduleTemplate, assessmentId);
+			String templateText = processTemplate(moduleTemplate, veteranAssessment);
 			if(!templateText.trim().isEmpty()){ // only append if there is content
 				logger.debug("Appending module template {}", moduleTemplate);
 				text.append(MODULE_COMPONENTS_START.xml())
@@ -603,7 +652,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		 */
 		private TemplateEvaluator appendTemplate(Template moduleTemplate) throws IllegalSystemStateException {
 			logger.debug("Appending template {}", moduleTemplate.getName());
-			text.append(processTemplate(moduleTemplate, assessmentId));
+			text.append(processTemplate(moduleTemplate, veteranAssessment));
 			return this;
 		}
 		

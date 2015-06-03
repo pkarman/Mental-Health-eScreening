@@ -244,7 +244,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 		}
 		
 		try{
-			return templateProcessorService.renderBatteryTemplate(battery, type, assessmentId, ViewType.HTML);
+			return templateProcessorService.renderBatteryTemplate(battery, type, veteranAssessment, ViewType.HTML);
 		}
 		catch(EntityNotFoundException enf){
 			//if there is no defined template we will return an empty string
