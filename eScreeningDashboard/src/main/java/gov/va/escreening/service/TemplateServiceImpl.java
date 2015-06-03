@@ -2,7 +2,6 @@ package gov.va.escreening.service;
 
 import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.constants.TemplateConstants;
-import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.dto.TemplateTypeDTO;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.dto.template.GraphParamsDto;
@@ -75,29 +74,6 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Autowired
 	AssessmentVariableService assessmentVariableService;
-	
-
-	@SuppressWarnings("serial")
-	private static List<TemplateType> surveyTemplates = new ArrayList<TemplateType>() {
-		{
-			add(TemplateType.CPRS_ENTRY);
-			add(TemplateType.VET_SUMMARY_ENTRY);
-			add(TemplateType.VISTA_QA);
-
-		}
-	};
-
-	@SuppressWarnings("serial")
-	private static List<TemplateType> batteryTemplates = new ArrayList<TemplateType>() {
-		{
-			add(TemplateType.CPRS_HEADER);
-			add(TemplateType.CPRS_FOOTER);
-			add(TemplateType.ASSESS_SCORE_TABLE);
-			add(TemplateType.ASSESS_CONCLUSION);
-			add(TemplateType.VET_SUMMARY_HEADER);
-			add(TemplateType.VET_SUMMARY_FOOTER);
-		}
-	};
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -108,8 +84,8 @@ public class TemplateServiceImpl implements TemplateService {
 			throw new IllegalArgumentException();
 		}
 
-		if (surveyTemplates.contains(TemplateConstants.typeForId(template
-				.getTemplateType().getTemplateTypeId()))) {
+		if (TemplateConstants.isSurveyTemplate(template
+				.getTemplateType().getTemplateTypeId())) {
 			// need to remove this template from associated survey
 			List<Survey> surveys = surveyRepository
 					.findByTemplateId(templateId);

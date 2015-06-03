@@ -201,10 +201,10 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 	/**
 	 * Renders an entire document containing a header, entries, footer, and any optional templates
-	 * @param assessment the assessment the document is being created for
+	 * @param veteranAssessmentId the assessment the document is being created for
 	 * @param viewType the type of rendering
 	 * @param documentType the type of document that is to be built (e.g. cprs note, or veteran summary printout)
-	 * @param templateMap map from template type to the template to render
+	 * @param optionalTemplates set of optional template types to be included in rendered template 
 	 * @param includeSections if true then sections should be surrounded by section tags. If templates are find to be 
 	 * graphical, then they will not be appended in their section.  They will be appended to the end. So includeSections
 	 * should be false when graphical templates are included.
@@ -259,17 +259,11 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 								evaluator.appendModule(template);
 							}
 						}
-						else if (type.equals(TemplateType.VISTA_QA))
-						{
+						else if (type.equals(TemplateType.VISTA_QA)){
 							quesAndAnswers.append(processTemplate(template, veteranAssessmentId));
 						}
+						//else if(type.equals(other))
 					}
-					
-//                    if (templateMap.containsKey(TemplateType.VISTA_QA) && templateMap.
-//                    		&& survey.getClinicalReminderSurveyList() != null 
-//                    		&& (!survey.getClinicalReminderSurveyList().isEmpty())){                   	
-//                        quesAndAnswers.append(processTemplate(templateMap.get(TemplateType.VISTA_QA), veteranAssessmentId));
-//                    }
 				}
 			}
 		}
