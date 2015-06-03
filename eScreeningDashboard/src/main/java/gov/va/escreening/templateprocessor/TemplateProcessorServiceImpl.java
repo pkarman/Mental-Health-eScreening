@@ -68,6 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
@@ -219,8 +220,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		checkArgument(assessment != null, "Assessment ID is invalid");
 		
 		//get Battery level templates
-		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, 
-				Sets.union(EnumSet.of(documentType.getHeaderType(), documentType.getFooterType()), optionalTemplates));
+		Set<TemplateType> requiredBatteryTemplateTypes = Sets.union(documentType.getRequiredBatteryTypes(), 
+                    Sets.difference(optionalTemplates, TemplateConstants.moduleTemplateTypes()));
+		Map<TemplateType, Template> templateMap = getTemplateMap(assessment, requiredBatteryTemplateTypes);
 				
 		// start generation of template with header, section, templates for each
 		// module in a section, and in the end the footer
@@ -228,16 +230,13 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			.appendHeader(templateMap.get(documentType.getHeaderType()));
 		
 		StringBuilder quesAndAnswers = new StringBuilder();
+		StringBuilder cprsHistory = new StringBuilder();
 		
 		Map<Integer, Survey> surveysTaken = assessment.getSurveyMap();
 		List<SurveySection> sections = surveySectionRepository.findForVeteranAssessmentId(veteranAssessmentId);
 		List<Template> graphicalTemplates = new LinkedList<Template>();
 		for (SurveySection section : sections) {
 			boolean sectionStarted = false;
-			
-			// start section
-//			if(includeSections)
-//				evaluator.startSection(section);
 			
 			// append templates in section-order for each survey found in the battery
 			for (Survey survey : section.getSurveyList()) {
@@ -259,10 +258,14 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 								evaluator.appendModule(template);
 							}
 						}
-						else if (type.equals(TemplateType.VISTA_QA)){
+						else if(type.equals(TemplateType.VISTA_QA) 
+						        && optionalTemplates.contains(TemplateType.VISTA_QA)){
 							quesAndAnswers.append(processTemplate(template, veteranAssessmentId));
 						}
-						//else if(type.equals(other))
+						else if(type.equals(TemplateType.CPRS_PROGRESS_HISTORY)
+						        && documentType.getRequiredTypes().contains(TemplateType.CPRS_PROGRESS_HISTORY)){
+						    cprsHistory.append(processTemplate(template, veteranAssessmentId));
+						}
 					}
 				}
 			}
@@ -278,9 +281,14 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			evaluator.appendTemplate(templateMap.get(TemplateType.ASSESS_SCORE_TABLE));
 		}
 		
+		/* Add Veteran Progress templates grouped together */
+		if(documentType.getRequiredTypes().contains(TemplateType.CPRS_PROGRESS_HISTORY)){
+		    evaluator.appendGroupedTemplates("VETERAN PROGRESS", cprsHistory.toString());
+		}
+		
 		/* Add optional VistA questions/answer text */
-		if(templateMap.containsKey(TemplateType.VISTA_QA)) {
-			evaluator.appendQuestionsAndAnswers(quesAndAnswers.toString());
+		if(optionalTemplates.contains(TemplateType.VISTA_QA)) {
+			evaluator.appendGroupedTemplates("CLINICAL REMINDERS", quesAndAnswers.toString());
 		}
 		
 		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();
@@ -319,9 +327,9 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 
 	/**
-	 * Queries the DB to get the required templates and returns a map from template type to the template instance.
+	 * Queries the DB to get the required battery level templates and returns a map from template type to the template instance.
 	 * @param assessment
-	 * @param requiredTemplates
+	 * @param requiredTemplates the battery level templates to include
 	 * @return
 	 * @throws IllegalSystemStateException
 	 */
@@ -329,11 +337,6 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			throws IllegalSystemStateException{
 		
 		EnumMap<TemplateType, Template> templateMap = new EnumMap<>(TemplateConstants.TemplateType.class);
-		
-		//TODO: PLEASE remove this when we go to a template system for questions and answers
-		if(requiredTemplates.contains(TemplateType.VISTA_QA)){ 
-			templateMap.put(TemplateType.VISTA_QA, new Template());
-		}
 
 		Battery battery = assessment.getBattery();
 
@@ -345,8 +348,8 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 					templateMap.put(type, template);
 					
 					//TODO: Commenting out this shortcut just in case we forget to remove the VISTA_QA temp code above. Please uncomment when we go to vista question answer
-//					if(templateMap.size() == requiredTemplates.size())
-//						break;
+					if(templateMap.size() == requiredTemplates.size())
+						break;
 				}
 			}
 		} 
@@ -359,8 +362,10 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		}
 
 		// throw a system configuration exception if we don't have all required templates
-		Set<TemplateType> missingTemplates = Sets.difference(requiredTemplates, templateMap.keySet());
+		
 		if(templateMap.size() != requiredTemplates.size()) {
+		    Set<TemplateType> missingTemplates = Sets.difference(requiredTemplates, templateMap.keySet());
+		    
 			String errorMsg = "For battery '" + battery.getName()
 					+ "' the following required templates are missing: " +Joiner.on(',').join(missingTemplates);
 			
@@ -602,13 +607,15 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 			return this;
 		}
 		
-	    private TemplateEvaluator appendQuestionsAndAnswers(String qaTemplate) throws IllegalSystemStateException{
-            endPreviousSection();
-            logger.debug("Appending clinical reminder questions");
-            startSection(new SurveySection(null, "CLINICAL REMINDERS", null));
-            text.append(qaTemplate);
-            endPreviousSection();
-            logger.debug("Completed clinical reminder questions");
+	    private TemplateEvaluator appendGroupedTemplates(String sectionLabel, String templateGroupText) throws IllegalSystemStateException{
+	        if(!Strings.isNullOrEmpty(templateGroupText)){
+                endPreviousSection();
+                logger.debug("Appending {} section", sectionLabel);
+                startSection(new SurveySection(null, sectionLabel, null));
+                text.append(templateGroupText);
+                endPreviousSection();
+                logger.debug("Completed {} section", sectionLabel);
+	        }
             return this;
         }
 

@@ -90,45 +90,56 @@ public class TemplateConstants {
     public static String moduleTemplateIds(){
         return moduleTemplateTypeIdString;
     }
-    
-    public interface TemplateDocument{
-    	public TemplateType getHeaderType();
-    	
-    	public TemplateType getEntryType();
-    	
-    	public TemplateType getFooterType();
-    }
-
+   
     /**
      * Defines each of the template system's document types 
      * @author Robin Carnow
      *
      */
-    public enum DocumentType implements TemplateDocument{
-    	CPRS_NOTE(TemplateType.CPRS_HEADER, TemplateType.CPRS_ENTRY, TemplateType.CPRS_FOOTER),
+    public enum DocumentType {
+    	CPRS_NOTE(TemplateType.CPRS_HEADER, TemplateType.CPRS_ENTRY, TemplateType.CPRS_FOOTER, TemplateType.VISTA_QA, TemplateType.CPRS_PROGRESS_HISTORY),
     	VET_SUMMARY(TemplateType.VET_SUMMARY_HEADER, TemplateType.VET_SUMMARY_ENTRY, TemplateType.VET_SUMMARY_FOOTER);
     	
-    	TemplateType headerType, entryType, footerType;
+    	private final TemplateType headerType, entryType, footerType;
+    	private final Set<TemplateType> allTypes;
+    	private final Set<TemplateType> batteryTypes; 
     	
-    	DocumentType(TemplateType headerType, TemplateType entryType, TemplateType footerType){
+    	DocumentType(TemplateType headerType, TemplateType entryType, TemplateType footerType, TemplateType... otherTypes){
     		this.headerType = headerType;
     		this.entryType = entryType;
     		this.footerType = footerType;
+    		allTypes = ImmutableSet.<TemplateType>builder()
+		            .add(headerType, entryType, footerType)
+		            .add(otherTypes)
+		            .build();
+    		
+    		ImmutableSet.Builder<TemplateType> batteryTypeSetBuilder = ImmutableSet.<TemplateType>builder();
+    		for(TemplateType type : allTypes){
+    		    if(!type.isModuleTemplate){
+    		        batteryTypeSetBuilder.add(type);
+    		    }
+    		}
+    		batteryTypes = batteryTypeSetBuilder.build();
     	}
 
-		@Override
 		public TemplateType getHeaderType() {
 			return headerType;
 		}
 
-		@Override
 		public TemplateType getEntryType() {
 			return entryType;
 		}
 
-		@Override
 		public TemplateType getFooterType() {
 			return footerType;
+		}
+		
+		public Set<TemplateType> getRequiredTypes(){
+		    return allTypes;
+		}
+		
+		public Set<TemplateType> getRequiredBatteryTypes(){
+		    return batteryTypes;
 		}
     
     }
