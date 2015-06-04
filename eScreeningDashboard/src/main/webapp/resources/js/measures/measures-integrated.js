@@ -621,6 +621,8 @@ function buildFormFromJSON(json){
 		
 		validateSingleAndMultiOtherInput();
 		
+		//initialize the visibility of questions on the page
+		checkQuestionVis();
 	}
 }
 

@@ -44,7 +44,7 @@ public class BlockUtil {
 	    
 		switch (operator) {
 		case "eq":
-			return translator.translateCondition(operator, left, right, avIds) + " = " + translator.translateCondition(null, right, null, avIds);
+			return translator.translateCondition(operator, left, right, avIds) + " == " + translator.translateCondition(null, right, null, avIds);
 		case "neq":
 			return translator.translateCondition(operator, left, right, avIds) + " != " + translator.translateCondition(null, right, null, avIds);
 		case "gt":

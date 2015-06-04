@@ -105,8 +105,12 @@ public class AssessmentSearchResult implements Serializable {
         this.ssnLastFour = ssnLastFour;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public String getDuration() {
+        int min = (int) duration / 60;
+        int sec = (int) duration % 60;
+
+        String minSec= String.format("%02d min %02d sec ", min,sec);
+        return minSec;
     }
 
     public void setDuration(Integer duration) {

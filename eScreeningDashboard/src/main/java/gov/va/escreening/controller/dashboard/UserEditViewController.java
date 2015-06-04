@@ -211,7 +211,7 @@ public class UserEditViewController {
 		}
 
 		// If there is an error, return the same view.
-		if (!callResult.getHasError()) {
+		if (callResult!=null && callResult.getHasError()) {
 
 			model.addAttribute("callResult", callResult);
 
@@ -222,6 +222,7 @@ public class UserEditViewController {
 			return "adminTab/userEditView";
 		}
 
+		model.addAttribute("callResult", new CallResult(false,"User data saved successfully", null));
 		return "redirect:/dashboard/userListView";
 	}
 

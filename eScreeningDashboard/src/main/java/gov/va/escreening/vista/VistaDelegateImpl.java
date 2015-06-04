@@ -7,6 +7,7 @@ import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.delegate.VistaDelegate;
+import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.entity.HealthFactor;
@@ -119,6 +120,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         // save this activity in audit log
         VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
         veteranAssessmentAuditLogRepository.update(auditLogEntry);
+        assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
     }
 
     private void savePainScale(VeteranAssessment veteranAssessment, String visitDate, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {

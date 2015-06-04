@@ -82,7 +82,7 @@ function showLastPageCall() {
 		  url: "end",
 	      dataType: 'json',
 	      contentType: "application/json; charset=utf-8",
-		  async:false,
+		  async:true,
 		  success: function(data){
 			  showCongratsPage(data.message);
 		  },
