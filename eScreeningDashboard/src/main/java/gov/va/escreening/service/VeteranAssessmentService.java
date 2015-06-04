@@ -267,7 +267,7 @@ public interface VeteranAssessmentService {
      * @param numOfMonth
      * @return
      */
-    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    Map<String, Double> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
     		int numOfMonth);
 
     String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate);

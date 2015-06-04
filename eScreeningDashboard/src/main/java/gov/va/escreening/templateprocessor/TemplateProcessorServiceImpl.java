@@ -52,17 +52,22 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -359,20 +364,200 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
             return templateOutput;
         
         //get values for the veteran 
-        Map<String, String> historicalValues = assessmentService.getVeteranAssessmentVariableSeries(
+        Map<String, Double> historicalValues = assessmentService.getVeteranAssessmentVariableSeries(
                 assessment.getVeteran().getVeteranId(), 
                 graphParams.getVarId(), 
                 graphParams.getNumberOfMonths());        
         
         //generate graph
-        String historicalGraph = generateHistoricalGraph(graphParams, historicalValues);
+        String historicalGraph = generateHistoricalGraph(template.getName(), graphParams, historicalValues);
 	    
         //replace graph portion with ascii graph
         return templateService.replaceGraphWith(templateOutput, historicalGraph);
     }
 	
-	private String generateHistoricalGraph(GraphParamsDto graphParams, Map<String, String> historicalValues){
-	    return "this is the ascii graph";
+	private static final int HISTORICAL_GRAPH_WIDTH = 80;
+	private static final int HISTORICAL_GRAPH_COL_WIDTH = 4;
+	private static final String HISTORICAL_GRAPH_EMPTY_COL = StringUtils.repeat(StringUtils.SPACE, HISTORICAL_GRAPH_COL_WIDTH);
+	private static final String HISTORICAL_GRAPH_BAR_COL = StringUtils.center("#", HISTORICAL_GRAPH_COL_WIDTH);
+	private static final DecimalFormat HISTORICAL_GRAPH_FORMAT_2DIGIT_NUM = new DecimalFormat("#.#");
+	private static final DecimalFormat HISTORICAL_GRAPH_FORMAT_3DIGIT_NUM = new DecimalFormat("#");
+	private static final String HISTORICAL_GRAPH_EMPTY_X_HEADER = "|           ";
+	private static final String HISTORICAL_GRAPH_DATE_X_HEADER = "|  DATE     ";
+	private static final int HISTORICAL_GRAPH_X_HEADER_WIDTH = 11;
+	
+	String generateHistoricalGraph(String name, GraphParamsDto graphParams, Map<String, Double> historicalValuesMap){
+	    StringBuilder graph = new StringBuilder();
+	    
+	    int historyCount = historicalValuesMap.size();
+	    List<String> historyDates = new ArrayList<>(historyCount);
+	    double[] historyValues = new double[historyCount];
+	    double maxHistory = Double.MIN_VALUE;
+	    int i = 0;
+	    for(Entry<String, Double> historyEntry : historicalValuesMap.entrySet()){
+	        double value = historyEntry.getValue();
+	        
+	        if(i == 0){
+	            maxHistory = value;
+	        }
+	        
+	        historyDates.add(historyEntry.getKey());
+	        historyValues[i++] = value;
+	        if(value > maxHistory){
+	            maxHistory = value;
+	        }
+	    }
+
+	    int minValue = (int) Math.floor(graphParams.getIntervals().values().iterator().next());
+	    
+	    //set current value to max
+	    //int currentValue = (int)Math.ceil(maxHistory); //graphParams.getMaxXPoint() != null ? graphParams.getMaxXPoint() ? graphParams.getIntervals().values().
+	    
+	    //add title
+	    graph.append(StringUtils.center(name, HISTORICAL_GRAPH_WIDTH))
+	        .append("\n\n");
+	    
+	    int largestYRow = (int)Math.ceil(maxHistory)+1;
+	    int halfway = (largestYRow - minValue)/2;
+	    for(int currentValue = largestYRow; currentValue >= minValue; currentValue--){
+	        appendGraphMargin(graph, currentValue, halfway);
+	        
+	        for(i = 0; i < historyValues.length; i++){
+	            appendHistoryValue(graph, currentValue, historyValues[i]);
+	        }
+	        
+	        graph.append("\n");
+	    }
+	    
+	    appendGraphHorizontalLine(graph, historyCount);
+	    
+	    //add X axis
+	    for(i = 0; i < 10; i++){
+	        
+	        if(i == 5){
+	            graph.append(HISTORICAL_GRAPH_DATE_X_HEADER);
+	        }
+	        else{
+	            graph.append(HISTORICAL_GRAPH_EMPTY_X_HEADER);
+	        }
+	        
+	        for(int historyIndex = 0; historyIndex < historyCount; historyIndex++){
+	            graph.append("| ")
+	                .append(historyDates.get(historyIndex).charAt(i))
+	                .append(StringUtils.SPACE);	    
+            }
+	        graph.append("|\n");
+	    }
+	    
+	    appendGraphHorizontalLine(graph, historyCount);
+	    
+	    graph.append("|")
+	        .append(StringUtils.center(
+	            Strings.nullToEmpty(graphParams.getTitle()), 
+	            (HISTORICAL_GRAPH_COL_WIDTH * historyCount)+HISTORICAL_GRAPH_X_HEADER_WIDTH))
+	        .append("|\n");
+	    
+	    appendGraphHorizontalLine(graph, historyCount);
+	    
+	    if(!Strings.nullToEmpty(graphParams.getFooter()).trim().isEmpty()){
+	        graph.append(StringUtils.center(
+	                Strings.nullToEmpty(graphParams.getFooter()),
+	                (HISTORICAL_GRAPH_COL_WIDTH * historyCount)+ HISTORICAL_GRAPH_X_HEADER_WIDTH +2));
+	    }
+	    
+	    appendLegend(graph, graphParams.getIntervals(), graphParams.getMaxXPoint());
+	    
+	    return graph.toString();
+	}
+	
+	private void appendLegend(StringBuilder graph, Map<String, Double> intervals, Double maxValue){
+	    int maxLabelWidth = 0;
+	    for(String intervalName : intervals.keySet()){
+	        if(intervalName.length() > maxLabelWidth){
+	            maxLabelWidth = intervalName.length();
+	        }
+	    }
+	    
+	    graph.append("\n\n");    
+	    Entry<String, Double> prev = null;
+	    Iterator<Entry<String, Double>> intervalIter = intervals.entrySet().iterator();
+	    while(intervalIter.hasNext()){
+	        Entry<String, Double> interval = intervalIter.next();
+	        String currentValue = HISTORICAL_GRAPH_FORMAT_2DIGIT_NUM.format(interval.getValue());
+	        
+	        if(prev != null){
+                graph.append(currentValue)
+                    .append("\n");
+            }
+	        
+	        graph.append(StringUtils.rightPad(interval.getKey(), maxLabelWidth+2))
+	             .append(currentValue);
+	            
+	            
+            if(!intervalIter.hasNext()){
+                if(maxValue == null){
+                    graph.append(" = X");
+                }
+                else{
+                    graph.append(" >= X <= ")
+                        .append(HISTORICAL_GRAPH_FORMAT_2DIGIT_NUM.format(maxValue));
+                }
+            }
+            else{
+                graph.append(" >= X < ");
+            }
+	            
+	        prev = interval;
+	    }
+	}
+	
+	private void appendGraphHorizontalLine(StringBuilder graph, int historyCount){
+	    graph.append("+===========+")
+        .append(StringUtils.repeat("=", (HISTORICAL_GRAPH_COL_WIDTH * historyCount)-1))
+        .append("+\n");
+	}
+	
+	private void appendHistoryValue(StringBuilder graph, int currentValue, double historyValue){
+	    //the next larger integer from the truncated version of the history value
+	    int nextHistoryValue = ((int)historyValue) + 1;
+	    
+	    if(currentValue > nextHistoryValue){
+	        graph.append(HISTORICAL_GRAPH_EMPTY_COL);
+	    }else if(currentValue == nextHistoryValue){
+	        //print the number
+	        String barValue = historyValue >= 100d ? 
+	                HISTORICAL_GRAPH_FORMAT_3DIGIT_NUM.format(historyValue) 
+	                : HISTORICAL_GRAPH_FORMAT_2DIGIT_NUM.format(historyValue);
+	            
+	        graph.append(StringUtils.center(barValue, HISTORICAL_GRAPH_COL_WIDTH));
+	    }
+	    else{
+	        graph.append(HISTORICAL_GRAPH_BAR_COL);
+	    }
+	}
+	
+	private void appendGraphMargin(StringBuilder graph, int currentValue, int halfway){
+	    
+	    if(currentValue == halfway){
+	        graph.append(" SCORE   ");
+	    }
+	    else{
+	        graph.append("         ");
+	    }
+	    if(currentValue % 5 == 0){
+	        if(currentValue < 100 && currentValue > 9){
+	            graph.append(" ");
+	        }
+	        else if(currentValue < 10){
+	            graph.append("  ");
+	        }
+	        graph.append(currentValue);
+	    }
+	    else{
+	        graph.append("   ");
+	    }
+	    
+	    graph.append('|');
 	}
 
     /**

@@ -142,7 +142,7 @@ public class AssessmentSummaryRestController extends RestController{
     
     @RequestMapping(value = "/assessmentSummary/assessmentvarseries/{veteranId}/{assessmentVarId}/{numMonth}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Map<String, String> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
+    public Map<String, Double> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
     		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth, HttpServletRequest request) {
         logRequest(logger, request);
         logger.debug("getAssessmentVariableTimeSeires: Get time series for veteran {}, assessment variable ID {}.", veteranId, assessmentVarId);

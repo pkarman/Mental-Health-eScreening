@@ -1135,7 +1135,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	@Override
-	public Map<String, String> getVeteranAssessmentVariableSeries(
+	public Map<String, Double> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
@@ -1186,7 +1186,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
-		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, Double> timeSeries = new LinkedHashMap<>();
 		int total = 0;
 		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
 		{
@@ -1207,9 +1207,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				AssessmentVariableDto result = dto.iterator().next();
 				
 				//TODO: Move this logic into the AssessmentVariableDto object
-				String value = null;
+				Double value = null;
 				if (result.getValue() != null) {
-					value = result.getValue();
+					value = Double.valueOf(result.getValue());
 				}
 				else if(result.getChildren() != null){
 				    double sum = 0d;
@@ -1224,7 +1224,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				        }
 				    }
 				    if(useSum){
-				        value = Double.toString(sum);
+				        value = sum;
 				    }
 				}
 				
