@@ -52,6 +52,8 @@ public class TemplateTagProcessor {
     	
     	noteText = noteText.replace(LINE_BREAK.xml(), "<br>");
     	noteText = noteText.replace(NBSP.xml(), "&nbsp;");
+        noteText = noteText.replace(PRE_START.xml(), "<pre>");
+        noteText = noteText.replace(PRE_END.xml(), "</pre>");
     	
     	noteText = noteText.replace(MATRIX_TABLE_START.xml(), "<table>");
     	noteText = noteText.replace(MATRIX_TABLE_END.xml(), "</table>");
@@ -81,7 +83,7 @@ public class TemplateTagProcessor {
 	}
 	
 	private static final Pattern textEmptyReplace = Pattern.compile(createTagRegex(Style.XML, 
-			BATTERY_HEADER_START,
+			BATTERY_HEADER_START, PRE_START, PRE_END,
 			MODULE_COMPONENTS_START, MODULE_COMPONENTS_END, MODULE_TITLE_START, MODULE_START, 
 			MATRIX_TABLE_START, MATRIX_TABLE_END, MATRIX_TH_START, MATRIX_TH_END, MATRIX_TR_START, MATRIX_TR_END, MATRIX_TD_START, MATRIX_TD_END));
 	
@@ -166,6 +168,8 @@ public class TemplateTagProcessor {
         
         noteText = noteText.replace(LINE_BREAK.xml(), "<br/>");
     	noteText = noteText.replace(NBSP.xml(), "&nbsp;");
+    	noteText = noteText.replace(PRE_START.xml(), "<pre>");
+    	noteText = noteText.replace(PRE_END.xml(), "</pre>");
     	
     	noteText = noteText.replace(MATRIX_TABLE_START.xml(), "<table>");
     	noteText = noteText.replace(MATRIX_TABLE_END.xml(), "</table>");
@@ -191,8 +195,12 @@ public class TemplateTagProcessor {
         for(String line : lines){
         	if(line.contains("<t") || line.contains("</t"))
         		wrappedText.append("<br/>").append(line);
-        	else
-        		wrappedText.append("<br/>").append(WordUtils.wrap(line, 80, "<br/>", true));
+        	else{
+        	    //add a temp special space to so wrapping works as expected
+        		String lineWithSpaceSub = line.replaceAll("&nbsp;", new String(Character.toChars(0x00A0)));
+        		lineWithSpaceSub = WordUtils.wrap(lineWithSpaceSub, 80, "<br/>", true);
+        	    wrappedText.append("<br/>").append(lineWithSpaceSub.replaceAll("\\u00A0", "&nbsp;"));
+        	}
         }
         return wrappedText.toString();
 		
