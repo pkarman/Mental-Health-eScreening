@@ -111,8 +111,14 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 				name: 'delimitTableField',
 				displayName: 'Delimited Table Field',
 				params: ['0', ',', 'and', '', true, '']
+			},
+			none:{
+				name:'none',
+				displayName: 'No Transformation',
 			}
 		};
+		
+		//Note: if you add the none transformation, you are allowing the user to not apply any transformation
 
 		// If appointment (id 6 is reserved for appointment AV), add delimit
 		if (av.id === 6) {
@@ -121,20 +127,25 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 
 		// Freetext with date
 		if (av.measureTypeId === 1) {
+			av.transformations = [transformations.none];
 			_.each(arr, function(validation) {
 				if (validation.value === 'date') {
-					av.transformations = [transformations.yearsFromDate];
+					av.transformations.push(transformations.yearsFromDate);
 				}
 			});
 		}
 		// If select multi, add delimit (for other answer types pull the veteran text)
-			else if (av.measureTypeId === 3) {
+		else if (av.measureTypeId === 3) {
 			av.transformations = [transformations.delimit];
 		}
 
 		// If table, add delimitTableField and numberOfEntries
-			else if (av.measureTypeId === 4) {
-			av.transformations = [transformations.delimitTableField, transformations.numberOfEntries];
+		else if (av.measureTypeId === 4) {
+			av.transformations = [];
+			if(arr == 'condition'){
+				av.transformations.push(transformations.none);
+			}
+			av.transformations.push(transformations.delimitTableField, transformations.numberOfEntries);	
 		}
 
 		// If select One and select multi matrix, add delimitedMatrixQuestions(rowAvIdToOutputMap, columnVarIds)

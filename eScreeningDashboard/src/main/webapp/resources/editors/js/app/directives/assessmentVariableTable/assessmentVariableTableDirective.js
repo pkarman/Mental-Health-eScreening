@@ -115,7 +115,9 @@
 							AssessmentVariableManager.setTransformations(scope.assessmentVariable, scope.editorType).then(
 								function(transformations){
 									
-									if (transformations.length !== 0) {
+									if (transformations.length !== 0 
+											&& !(transformations.length === 1
+													&& transformations[0].name === "none")) {
 										
 										if (av.getMeasureTypeName() === 'table') {
 											// Get the childQuestions table variables
@@ -144,6 +146,11 @@
 					scope.applyTransformations = function applyTransformations(newScope) {
 						scope.toggles.list = false;
 						scope.toggles.transformations = false;
+						
+						if(newScope.transformationType 
+								&& newScope.transformationType.name === 'none'){
+							newScope.transformationType = undefined;
+						}
 
 						// Apply select transformation to AV
 						if (newScope.transformationType 

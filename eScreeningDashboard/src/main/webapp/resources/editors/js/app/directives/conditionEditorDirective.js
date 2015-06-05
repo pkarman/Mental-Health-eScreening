@@ -5,8 +5,8 @@
 (function(angular) {
     "use strict";
 
-    Editors.directive('conditionEditor', ['MeasureService', 'RecursionHelper', 
-                                          function(MeasureService, RecursionHelper) {
+    Editors.directive('conditionEditor', ['MeasureService', 'RecursionHelper', 'AssessmentVariableManager', 
+                                          function(MeasureService, RecursionHelper, AssessmentVariableManager) {
     	var operators = [
             { name: 'Equals',                    value: 'eq',    categories: ['numerical', 'equality'] },
             { name: 'Doesn\'t Equals',           value: 'neq',   categories: ['numerical', 'equality'] },
@@ -21,25 +21,48 @@
 			{ name: 'Was Answer None',     value: 'none',   categories: ['table'] },
 			{ name: 'Wasn\'t Answer None', value: 'nnone', categories: ['table'] },
 
-            { name: 'Has Result',      value: 'result',   categories: ['formula', 'matrix', 'custom'] },
-            { name: 'Has No Result',   value: 'nresult', categories: ['formula', 'matrix', 'custom'] },
+            { name: 'Has Result',      value: 'result',   categories: ['formula', 'matrix', 'custom','result'] },
+            { name: 'Has No Result',   value: 'nresult', categories: ['formula', 'matrix', 'custom','result'] },
 
             { name: 'Response is',     value: 'response',  categories: ['select'] },
             { name: 'Response isn\'t',  value: 'nresponse', categories: ['select'] }
         ];
     	
+    	//This is where the business rules for what operators are available after a variable and transformation are picked
     	var filterOperators = function(operator) {
     		var variable = this;
-        	var includeOperator = false;
+        	var hasTransformation = variable.transformations && variable.transformations.length > 0 && variable.transformations[0].name !== "none";
 
-        	if (operator && variable.type) {
+        	if(hasTransformation){
+        		return filterOperatorByTransformation(operator, variable.transformations[variable.transformations.length -1]);
+        	}
+        	return filterOperatorByQuestion(operator, variable);
+        }
+    	
+    	function filterOperatorByTransformation(operator, transformation){
+    		if (operator){
+    			
+	    		if(_.contains(operator.categories, 'numerical') 
+	    				&& (transformation.name === 'numberOfEntries'
+	    					|| transformation.name === 'yearsFromDate')){
+	    			return true;
+	    		}
+
+	    		if(transformation.name.indexOf("delimit") == 0
+	    				&& (_.contains(operator.categories, 'equality') 
+	    					|| _.contains(operator.categories, 'result'))){
+	    			return true;
+	    		}
+	    		
+    		}    		
+    		return false;
+    	}
+    	
+    	function filterOperatorByQuestion(operator, variable){
+    		var includeOperator = false;
+    		
+    		if (operator && variable.type) {
         		if(_.contains(operator.categories, 'numerical')) {
-        			if (variable.measureTypeId === 4 
-        					&& variable.transformations 
-        					&& variable.transformations.length > 0 
-        					&& variable.transformations[0].name === 'numberOfEntries') {
-        				includeOperator = true;
-        			}
         			if(variable.type.toUpperCase() === 'CUSTOM'){
         				includeOperator = _.contains(operator.categories, 'equality');
         			} else if (variable.type.toUpperCase() === 'FORMULA') {
@@ -48,7 +71,7 @@
         					&& variable.measureTypeId === 1) {
         				includeOperator = true;
         			}
-        		} else if((variable.type.toUpperCase() === 'QUESTION') 
+        		} else if(variable.type.toUpperCase() === 'QUESTION' 
         				&& variable.getMeasureTypeName() !== 'single-matrix' 
         				&& variable.getMeasureTypeName() !== 'multi-matrix' 
         				&& _.contains(operator.categories, 'question')) {
@@ -64,7 +87,8 @@
         				includeOperator = true;
         			}
         		}
-        		else if((variable.measureTypeId === 4) && _.contains(operator.categories, 'table')) {
+        		else if(variable.measureTypeId === 4 
+        				&& _.contains(operator.categories, 'table')) {
         			includeOperator = true;
         		}
         		else if((variable.getMeasureTypeName() === 'single-matrix' || variable.getMeasureTypeName() === 'multi-matrix') && _.contains(operator.categories, 'matrix')) {
@@ -74,7 +98,7 @@
         		}
         	}
         	return includeOperator;
-        }
+    	}
     	
     	return {
             restrict: 'E',

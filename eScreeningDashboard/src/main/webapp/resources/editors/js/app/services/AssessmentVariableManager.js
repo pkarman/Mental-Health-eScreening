@@ -21,8 +21,8 @@
 				else {
 					if (av.measureTypeId !== 3
 						|| editorType === 'text'){
-					
-						av.setTransformations();
+						
+						av.setTransformations(editorType);
 					}
 					deferred.resolve(av.transformations);
 				}

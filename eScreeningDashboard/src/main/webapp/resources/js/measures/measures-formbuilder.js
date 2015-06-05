@@ -781,8 +781,6 @@ function TableBuilder(formBuilder){
 				// reshow the none button
 				$(this).nextAll(".tableNone").fadeIn();
 				$(this).val("Add " + entryName);
-				
-				formBuilder.checkVisibility();
 			} );
 		
 		$("<div/>")
@@ -802,7 +800,7 @@ function TableBuilder(formBuilder){
 			// we may have to add table data here for each row or maybe the datatable plugin can do it in a nicer way
 			
 			//for now we will just add a set of child measures to the question entry container
-			createTableForm(id, questionContainer, i, false, entryName).addClass("wasClicked");
+			createTableForm(id, questionContainer, i, false, entryName, true).addClass("wasClicked");
 		}
 	    
 		//configure None option if found in answers array
@@ -814,7 +812,8 @@ function TableBuilder(formBuilder){
 				.attr("type", "button")
 				.val("None")
 				.click( function(){ 
-					clearTableQuestion(table, noneAnswer.answerId, $(this));
+					clearTableQuestion(table, noneAnswer.answerId, $(this), true);
+					formBuilder.checkVisibility();
 				} )
 				.appendTo(table.find(".tableQuestionButtons"));
 			
@@ -856,9 +855,10 @@ function TableBuilder(formBuilder){
 	 * @param rowIndex the row of the table that the form represents
 	 * @param animate if true then an animation will be used to show the new entry. **Should animate only after first entry is showing.
 	 * @param entryName is the name of each entry (e.g. Child, Enlistment, etc.)
+	 * @param skipVisCheck if true then the visibility check called after the entry has been added will be skipped
 	 * @returns the entry that was created and appended to the given container (for further custom updates). 
 	 */
-	function createTableForm(tableMeasureId, container, rowIndex, animate, entryName){
+	function createTableForm(tableMeasureId, container, rowIndex, animate, entryName, skipVisCheck){
 		var measures = self.getTableModel(tableMeasureId)['childMeasures'];
 		var onlyOneMeasure = measures.length == 1;
 		
@@ -944,6 +944,10 @@ function TableBuilder(formBuilder){
 			container.append(entryWrapper);
 		}
 		
+		if(!skipVisCheck){
+			formBuilder.checkVisibility();	
+		}
+		
 		return entryWrapper;
 	}
 	
@@ -964,7 +968,7 @@ function TableBuilder(formBuilder){
 		tableQuestionLookup[tableQuestion.measureId] = {'childMeasures': tableQuestion.childMeasures, 'answers': tableQuestion.answers};
 	}
 
-	function clearTableQuestion(table, noneAnswerId, noneButton){		
+	function clearTableQuestion(table, noneAnswerId, noneButton, skipVisCheck){		
 		var noneInput = $("<input/>")
 			.addClass("tableQuestionNA")
 			.attr("id", "inp" + noneAnswerId)
@@ -980,7 +984,7 @@ function TableBuilder(formBuilder){
 		table.find(".tableQuestionEntryContainer")
 			.append(noneDiv)
 			.find(".tableQuestionEntry")
-				.each(function(){removeEntry($(this));});
+				.each(function(){removeEntry($(this), skipVisCheck);});
 		
 		//hide noneButton
 		noneButton.fadeOut(400, function(){noneButton.hide();});
@@ -993,7 +997,7 @@ function TableBuilder(formBuilder){
 	}
 	
 
-	function removeEntry(entry){
+	function removeEntry(entry, skipVisCheck){
 		entry.animate(
 			{height: 0, opacity: 0}, 500, 
 			function(){
@@ -1008,7 +1012,9 @@ function TableBuilder(formBuilder){
 					$(this).find(".entryLabelText").html(entryName + "  " + (index+1));
 				});
 				
-				formBuilder.checkVisibility();
+				if(!skipVisCheck){	
+					formBuilder.checkVisibility();
+				}
 			});
 	}
 	
