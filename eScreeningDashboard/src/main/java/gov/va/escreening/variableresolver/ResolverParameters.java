@@ -70,6 +70,8 @@ public class ResolverParameters {
     //Stores mapping from measure ID to boolean which is true if the question was visible to the veteran.
     //If a given ID is not in the map then the measure was visible
     private Map<Integer, Boolean> measureVisibilityMap = null;
+    //Stores measures which are table children
+    private Set<Integer> tableMeasures = new HashSet<>();
     
     /**
      * @param veteranAssessment the assessment to resolve against
@@ -276,10 +278,6 @@ public class ResolverParameters {
                         av.getMeasure().getMeasureId(), getAssessmentId());
                 break;
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-    //            if(foundVisibleSkippedQuestion(av)){
-    //                throw new CouldNotResolveVariableException(
-    //                        "Unable to resolve the formula variable with ID: " + av.getAssessmentVariableId());
-    //            }
                 logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
                         av.getAssessmentVariableId(), getAssessmentId());
                 break;
@@ -313,11 +311,17 @@ public class ResolverParameters {
                 for(VeteranAssessmentMeasureVisibility measureVis : veteranAssessment.getMeasureVisibilityList()){
                     mapBuilder.put(measureVis.getMeasure().getMeasureId(), measureVis.getIsVisible());
                 }
-            }
+            }            
             measureVisibilityMap = mapBuilder.build();
         }
+        
         Boolean isVisible = measureVisibilityMap.get(measure.getMeasureId());
-        return isVisible == null || isVisible;
+        boolean isTableChildQuestion = tableMeasures.contains(measure.getMeasureId());
+        
+        if(isVisible == null){//if null it means there are no rules determining the visibility of the question
+            isVisible = !isTableChildQuestion;
+        }
+        return isVisible;
     }
     
 //    private boolean wasntAnswered(AssessmentVariableDto av){
@@ -423,6 +427,7 @@ public class ResolverParameters {
         return null;
     }    
     
+    //**TODO: bookkeeping has been updated to allow for the removal of this, but not time for it now.. please remove this and test.
     //TODO: Make this obsolete by updating our bookkeeping of AVs for Rules, Formula, and Templates to save not only the AVs used by any dependent AVs.
     //we need variable resolution to be as fast as possible so this calculation should be saved once when these system objects are saved
     private Set<AssessmentVariable> collectAnswerAvs(AssessmentVariable av, Set<AssessmentVariable> answerAvs){
@@ -446,6 +451,18 @@ public class ResolverParameters {
     }
     
     /**
+     * Checks to see if the AV is for a table question and if so children are pulled and their ID are saved
+     * @param av
+     */
+    private void collectTableChildren(AssessmentVariable av){
+        if(av.getMeasure() != null && av.getMeasure().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_TABLE){
+            for(gov.va.escreening.entity.Measure child : av.getMeasure().getChildren()){
+                tableMeasures.add(child.getMeasureId());
+            }
+        }
+    }
+    
+    /**
      * Initializes the measureAnswerHash which maps from measureAnswerId to AssessmentVariable.<br/>
      * Accessed during AV DTO resolving by {@link #getAnswerAv(Integer)}<br/>
      * Note: This method may become deprecated <br/>
@@ -454,10 +471,12 @@ public class ResolverParameters {
     private final void createAnswerHash(Collection<AssessmentVariable> assessmentVariables){
         Set<AssessmentVariable> answerAvs = Sets.newHashSet();    
         
+        //TODO: bookkeeping has been updated to allow for the removal of collectAnswerAvs, but not time for it now.. please remove this and test.
         //TODO: Make this loop obsolete by updating our bookkeeping of AVs for Rules, Formula, and Templates to save not only the AVs used by any dependent AVs.
         //we need variable resolution to be as fast as possible so this calculation should be saved once when these system objects are saved
         for(AssessmentVariable av : assessmentVariables){
             collectAnswerAvs(av, answerAvs);
+            collectTableChildren(av);
         }
         
         measureAnswerHash = Maps.newHashMapWithExpectedSize(answerAvs.size());
