@@ -751,9 +751,12 @@ function TableBuilder(formBuilder){
 			.addClass("searchBtn")
 			.addClass("tableQuestionAdd")
 			.on("click", function(){
+				var noneDiv = questionContainer.find("div.tableQuestionNA");
+				var checkVis = noneDiv.size() > 0;
+				
 				if(questionContainer.children().length == 0) {
 					var rowCount = questionContainer.children().size();
-					createTableForm(id, questionContainer, rowCount, true, entryName);
+					createTableForm(id, questionContainer, rowCount, true, entryName, checkVis);
 				}
 				else {
 					if (surveyValidation != null && surveyValidation.pageIsValid()){ // we don't really need to validate on every Add						
@@ -765,7 +768,7 @@ function TableBuilder(formBuilder){
 							var entryCount = questionContainer.find(".tableQuestionEntry").size();
 							var lastEntryIsClicked = questionContainer.find("div.tableQuestionEntry:last").hasClass("wasClicked");
 							if(entryCount == 0 || lastEntryIsClicked) {
-								createTableForm(id, questionContainer, entryCount, true, entryName);
+								createTableForm(id, questionContainer, entryCount, true, entryName, checkVis);
 							}
 							else{
 								openTableQuestionEntryClicked();
@@ -773,10 +776,11 @@ function TableBuilder(formBuilder){
 						}
 			    	}
 				}
-
-				questionContainer
-					.find("div.tableQuestionNA")
-					.slideUp(400, function(){$(this).remove();});
+				
+				noneDiv.slideUp(400, function(){
+						$(this).remove();
+						formBuilder.checkVisibility();
+					});
 				
 				// reshow the none button
 				$(this).nextAll(".tableNone").fadeIn();
